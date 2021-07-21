@@ -8,13 +8,18 @@
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:views="clr-namespace:Dynamo.Views"
+             xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d"                          
-             Height="Auto" Width="Auto" Visibility="Visible"             
+             Height="Auto" Width="Auto"
+             Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                                  
-             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"                 
+             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
-             Canvas.Top="{Binding Top, Mode=TwoWay}">   
+             Canvas.Top="{Binding Top, Mode=TwoWay}"
+             AllowDrop="True"
+             IsHitTestVisible="True"
+             d:DataContext="{d:DesignInstance Type=viewModels:AnnotationViewModel}">   
     
     <UserControl.Resources>
         <CornerRadius x:Key="ExpanderCornerRadius"
@@ -121,22 +126,19 @@
                     </Grid.ColumnDefinitions>
                     <Rectangle Fill="Transparent"
                                Grid.ColumnSpan="1" />
-                    <fa:ImageAwesome x:Name="sign"
-                                     Icon="ChevronDown"
-                                     Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.FontSize}"
-                                     Foreground="#808080"
-                                     Margin="5,0,0,0"
-                                     VerticalAlignment="Center">
-                    </fa:ImageAwesome>
+                    <Image x:Name="sign"
+                           Source="/DynamoCoreWpf;component/UI/Images/caret_down_48px.png"
+                           Width="16"
+                           Height="16" />
                 </Grid>
             </Border>
             <ControlTemplate.Triggers>
                 <!--Change the icon when toggled-->
                 <Trigger Property="IsChecked"
                             Value="True">
-                    <Setter Property="Icon"
+                    <Setter Property="Source"
                             TargetName="sign"
-                            Value="ChevronUp" />
+                            Value="/DynamoCoreWpf;component/UI/Images/caret_up_48px.png" />
                 </Trigger>
 
                 <!--MouseOver, Pressed behaviors-->
@@ -181,33 +183,67 @@
                                     </ContentPresenter>
 
                                     <!--Lock/Unlock group -->
-                                    <fa:ImageAwesome x:Name="lock"
-                                                     Grid.Column="1"
-                                                     Icon="Unlock"
-                                                     Foreground="#808080"
-                                                     Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.FontSize}"
-                                                     Margin="5">
-                                    </fa:ImageAwesome>
+                                    <Button x:Name="lockUnlock"
+                                            Grid.Column="1"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="0"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="2.5"
+                                            VerticalAlignment="Bottom"
+                                            Click="lockUnlock_Click">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsLocked}"
+                                                                 Value="True">
+                                                        <Setter Property="Content">
+                                                            <Setter.Value>
+                                                                <Image Source="/DynamoCoreWpf;component/UI/Images/lock_48px.png" />
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsLocked}"
+                                                                 Value="False">
+                                                        <Setter Property="Content">
+                                                            <Setter.Value>
+                                                                <Image Source="/DynamoCoreWpf;component/UI/Images/unlock_48px.png" />
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+
 
                                     <!--Expander button-->
                                     <ToggleButton OverridesDefaultStyle="True"
                                                   Grid.Column="2"
+                                                  Margin="0,0,0,2.5"
                                                   Template="{StaticResource GroupExpanderTemplate}"
                                                   IsChecked="{Binding IsExpanded, Mode=TwoWay, 
                                                 RelativeSource={RelativeSource TemplatedParent}}"
-                                                  Margin="5" />
+                                                  VerticalAlignment="Bottom" />
 
                                     <!--Group context menu-->
-                                    <fa:ImageAwesome x:Name="contextMenu"
-                                                     Grid.Column="3"
-                                                     Icon="EllipsisV"
-                                                     Foreground="#808080"
-                                                     Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.FontSize}"
-                                                     Margin="5">
-                                    </fa:ImageAwesome>
+                                    <Button x:Name="contextMenu"
+                                            Grid.Column="3"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="0"
+                                            Margin="0,2.5,0,2.5"
+                                            Height="16"
+                                            VerticalAlignment="Bottom"
+                                            Click="contextMenu_Click">
+                                        <Button.Content>
+                                            <Image  Source="/DynamoCoreWpf;component/UI/Images/more_vertical_48px.png" />
+                                        </Button.Content>
+                                    </Button>
                                 </Grid>
                             </Border>
-                            
+
                             <Border x:Name="Content"
                                     Grid.Row="1">
                                 <ContentPresenter />
@@ -289,9 +325,11 @@
     </UserControl.Triggers>
 
     <Grid Name="AnnotationGrid"
-          Height="Auto">
+          Height="Auto"
+          IsHitTestVisible="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
             <ContextMenu>
@@ -304,6 +342,9 @@
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuGraphLayout}"
                            Name="GraphLayoutAnnotation"
                            Click="OnGraphLayoutAnnotation" />
+                <MenuItem Header="Add to group"
+                          Name="AddToGroup"
+                          Command="{Binding AddGroupToGroupCommand}" />
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuFont}"
                            Name="ChangeSize">
                     <MenuItem Header="14"
@@ -378,6 +419,7 @@
             </ContextMenu>
         </Grid.ContextMenu>
         <Border Name="selectionBorder"
+                Grid.RowSpan="2"
                 Background="Transparent"
                 BorderBrush="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}"
                 BorderThickness="2"
@@ -394,16 +436,47 @@
             </Border.Visibility>
         </Border>
 
-        <Expander x:Name="GroupExpander" 
-                  Width="{Binding Width}" 
-                  IsExpanded="True"
+        <Border x:Name="nodeHoveringStateBorder"
+                Grid.RowSpan="2"
+                Background="Transparent"
+                CornerRadius="{StaticResource ExpanderCornerRadius}"
+                IsHitTestVisible="False"
+                Canvas.ZIndex="41"
+                BorderBrush="#CCCCCC"
+                BorderThickness="6px"
+                Visibility="{Binding NodeHoveringState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                Margin="-4px">
+            <!--<Border.BorderBrush>
+                <DrawingBrush Viewport="0,0,15,15"
+                              ViewportUnits="Absolute"
+                              TileMode="Tile">
+                    <DrawingBrush.Drawing>
+                        <DrawingGroup>
+                            <GeometryDrawing Brush="#CCCCCC">
+                                <GeometryDrawing.Geometry>
+                                    <GeometryGroup>
+                                        <RectangleGeometry Rect="0,0,50,50" />
+                                        <RectangleGeometry Rect="50,50,50,50" />
+                                    </GeometryGroup>
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                        </DrawingGroup>
+                    </DrawingBrush.Drawing>
+                </DrawingBrush>
+            </Border.BorderBrush>-->
+        </Border>
+                
+        <Expander x:Name="GroupExpander"
+                  Width="{Binding AnnotationRectangleWidth}" 
+                  IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
                   Expanded="GroupExpander_Expanded"
-                  Collapsed="GroupExpander_Collapsed">
+                  Collapsed="GroupExpander_Collapsed"
+                  Grid.Row="0">
             <Expander.Header>
                 <Grid x:Name="TextBlockGrid"
                       Grid.Row="0"
                       Height="auto"
-                      MaxWidth="{Binding Width}"
+                      MaxWidth="{Binding AnnotationRectangleWidth}"
                       Margin="5,0,5,0"
                       VerticalAlignment="Top">
                     <Grid.RowDefinitions>
@@ -415,7 +488,7 @@
                         <Grid>
                             <TextBlock x:Name="GroupTextBlock"
                                        Text="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBlock'}"
-                                       MaxWidth="{Binding Width}"
+                                       MaxWidth="{Binding AnnotationRectangleWidth}"
                                        MinHeight="20"
                                        FontFamily="Trebuchet"
                                        FontSize="{Binding FontSize}"
@@ -425,10 +498,11 @@
                                        Margin="0,0,0,0">
                             </TextBlock>
                             <TextBox Name="GroupTextBox"
+                                     MaxLength="30"
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationText,Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBox'}"
                                      TextWrapping="Wrap"
-                                     MaxWidth="{Binding Width}"
+                                     MaxWidth="{Binding AnnotationRectangleWidth}"
                                      MinHeight="20"
                                      FontFamily="Trebuchet"
                                      FontSize="{Binding FontSize}"
@@ -447,23 +521,24 @@
                             <TextBlock x:Name="GroupDescriptionTextBlock"
                                        Grid.Row="1"
                                        Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
-                                       MaxWidth="{Binding Width}"
+                                       MaxWidth="{Binding AnnotationRectangleWidth}"
                                        MinHeight="20"
                                        FontFamily="Trebuchet"
-                                       FontSize="{Binding FontSize, Converter={StaticResource GroupFontSizeConverter}}"
+                                       FontSize="12"
                                        LineStackingStrategy="BlockLineHeight"
                                        TextWrapping="Wrap"
                                        Visibility="Visible">
                             </TextBlock>
                             <TextBox Name="GroupDescriptionTextBox"
+                                     MaxLength="280"
                                      Grid.Row="1"
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
                                      TextWrapping="Wrap"
-                                     MaxWidth="{Binding Width}"
+                                     MaxWidth="{Binding AnnotationRectangleWidth}"
                                      MinHeight="20"
                                      FontFamily="Trebuchet"
-                                     FontSize="{Binding FontSize, Converter={StaticResource GroupFontSizeConverter}}"
+                                     FontSize="12"
                                      IsVisibleChanged="GroupDescriptionTextBox_OnIsVisibleChanged"
                                      GotFocus="GroupDescriptionTextBox_GotFocus"
                                      TextChanged="GroupDescriptionTextBox_TextChanged"
@@ -577,16 +652,65 @@
                 </Grid>
             </Expander.Header>
 
-            <Rectangle  Name="AnnotationRectangle"
-                        Width="{Binding Width}"
-                        Height="{Binding Height}"
-                        IsHitTestVisible="True"
-                        Opacity="0.5">
-                <Rectangle.Fill>
-                    <SolidColorBrush Color="{Binding Background}"></SolidColorBrush>
-                </Rectangle.Fill>
-            </Rectangle>
+            <Grid>
+                <Border  Name="AnnotationRectangle"
+                         Width="{Binding AnnotationRectangleWidth, Mode=TwoWay}"
+                         Height="{Binding AnnotationRectangleHeight, Mode=TwoWay}"
+                         IsHitTestVisible="True"
+                         Opacity="0.5">
+                    <Border.Background>
+                        <SolidColorBrush Color="{Binding Background}"></SolidColorBrush>
+                    </Border.Background>
+                </Border>
 
+                <Thumb 
+                       Width="10"
+                       Height="10"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Bottom"
+                       Margin="2,2,10,2"
+                       DragDelta="AnnotationRectangleThumb_DragDelta" />
+            </Grid>
         </Expander>
+        <Border x:Name="CollapsedAnnotationRectangle"
+                Width="{Binding AnnotationRectangleWidth}"
+                Height="143px"
+                Visibility="{Binding ElementName=GroupExpander, Path=IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
+                Opacity="0.5"
+                Grid.Row="1">
+            <Border.Background>
+                <SolidColorBrush Color="{Binding Background}"></SolidColorBrush>
+            </Border.Background>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--INPUT PORTS-->
+                <ItemsControl Name="inputPortControl"
+                              Grid.Column="0"
+                              Canvas.ZIndex="20"
+                              HorizontalContentAlignment="Left"
+                              Style="{StaticResource InOutPortControlStyle}"
+                              ItemsSource="{Binding Path=InPorts}"
+                              Margin="0,10">
+                </ItemsControl>
+
+
+                <!--OUTPUT PORTS-->
+                <ItemsControl Name="outputPortControl"
+                              Grid.Column="2"
+                              Canvas.ZIndex="20"
+                              HorizontalContentAlignment="Right"
+                              Style="{StaticResource InOutPortControlStyle}"
+                              ItemsSource="{Binding Path=OutPorts}"
+                              Margin="0,10">
+                </ItemsControl>
+            </Grid>
+
+        </Border>
     </Grid>
 </UserControl>
+

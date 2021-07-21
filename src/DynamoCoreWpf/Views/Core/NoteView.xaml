@@ -10,7 +10,8 @@
              d:DesignHeight="100" d:DesignWidth="200" 
              MinWidth="50"
              MinHeight="20"
-             Height="Auto" Width="Auto" MaxWidth="300" Visibility="Visible"
+             Height="Auto" Width="Auto" MaxWidth="300"
+             Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}" 
              MouseDown="OnNoteMouseDown" >

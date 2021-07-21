@@ -1,15 +1,22 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Dynamo.Controls;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
+using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
 using TextBox = System.Windows.Controls.TextBox;
 
@@ -311,7 +318,8 @@ namespace Dynamo.Nodes
 
         private void GroupExpander_Expanded(object sender, RoutedEventArgs e)
         {
-            this.ViewModel?.ShowGroupNodes();
+
+            //this.ViewModel.IsExpanded = true;
             SetTextHeight();
         }
 
@@ -330,7 +338,68 @@ namespace Dynamo.Nodes
 
         private void GroupExpander_Collapsed(object sender, RoutedEventArgs e)
         {
-            this.ViewModel?.CollapseGroupNodes();
+            //this.inputPortControl.ItemContainerGenerator.StatusChanged += ItemContainerGenerator_StatusChanged;
+            //this.ViewModel.IsExpanded = false;
+            //ReDrawConnectors();
+        }
+
+        private void ReDrawConnectors()
+        {
+            var t = this.inputPortControl.ItemContainerGenerator.Items;
+            //foreach (var item in this.inputPortControl.Items.OfType<PortViewModel>())
+            //{
+            //    var newEndPoint = item.TranslatePoint(this.ViewModel.InPorts.First().Center, this.inputPortControl);
+            //    var t = ViewModel.WorkspaceViewModel.Connectors.Where(x => x.ActiveStartPort.GUID == this.ViewModel.InPorts.First().PortModel.GUID).FirstOrDefault();
+            //    //t.Redraw(newEndPoint);
+            //}
+        }
+
+        private void AnnotationRectangleThumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+        {
+            var yAdjust = AnnotationRectangle.ActualHeight + e.VerticalChange;
+            var xAdjust = AnnotationRectangle.ActualWidth + e.HorizontalChange;
+
+            if (xAdjust >= ViewModel.Width)
+            {
+                ViewModel.AnnotationRectangleWidth = xAdjust;
+            }
+
+            if (yAdjust >= ViewModel.Height)
+            {
+                ViewModel.AnnotationRectangleHeight = yAdjust;
+            }
+        }
+
+        private void lockUnlock_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.IsLocked = !ViewModel.IsLocked;
+        }
+
+        private void contextMenu_Click(object sender, RoutedEventArgs e)
+        {
+            this.AnnotationGrid.ContextMenu.DataContext = ViewModel;
+            this.AnnotationGrid.ContextMenu.IsOpen = true;
+        }
+
+        private void AnnotationGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            var t = Mouse.Captured;
+            if (!DynamoSelection.Instance.Selection.Any())
+            {
+                return;
+            }
+
+            //ViewModel.AnnotationModel.Select();
+
+            //foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>())
+            //{
+            //    if (!(modelb is AnnotationModel))
+            //    {
+            //        var command = new DynamoModel.AddModelToGroupCommand(modelb.GUID);
+            //        ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+            //    }
+            //}
+
         }
     }
 }

@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
@@ -17,6 +21,8 @@ namespace Dynamo.ViewModels
     public class AnnotationViewModel : ViewModelBase
     {
         private AnnotationModel annotationModel;
+        private double annotationRectangleWidth;
+        private double annotationRectangleHeight;
         public readonly WorkspaceViewModel WorkspaceViewModel;        
         
         [JsonIgnore]
@@ -27,6 +33,28 @@ namespace Dynamo.ViewModels
             {
                 annotationModel = value;
                 RaisePropertyChanged("AnnotationModel");
+            }
+        }
+
+        [JsonIgnore]
+        public double AnnotationRectangleWidth
+        {
+            get => annotationRectangleWidth;
+            set
+            {
+                annotationRectangleWidth = value;
+                RaisePropertyChanged(nameof(AnnotationRectangleWidth));
+            }
+        }
+
+        [JsonIgnore]
+        public double AnnotationRectangleHeight
+        {
+            get => annotationRectangleHeight;
+            set
+            {
+                annotationRectangleHeight = value;
+                RaisePropertyChanged(nameof(AnnotationRectangleHeight));
             }
         }
 
@@ -66,8 +94,16 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public double ZIndex
         {
-            get { return 1; }
-            
+            get 
+            {
+                var zIndex = 1;
+                if (annotationModel.IsNested)
+                {
+                    return zIndex + 1;
+                }
+
+                return zIndex; 
+            }
         }
 
         [JsonIgnore]
@@ -150,6 +186,20 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private DelegateCommand addGroupToGroupCommand;
+        [JsonIgnore]
+        public DelegateCommand AddGroupToGroupCommand
+        {
+            get
+            {
+                if (addGroupToGroupCommand == null)
+                    addGroupToGroupCommand =
+                        new DelegateCommand(AddGroupToGroup, CanAddGroupToGroup);
+
+                return addGroupToGroupCommand;
+            }
+        }
+
         private bool CanAddToGroup(object obj)
         {
             return DynamoSelection.Instance.Selection.Count >= 0;
@@ -166,6 +216,28 @@ namespace Dynamo.ViewModels
                     {
                         this.AnnotationModel.AddToSelectedModels(model, true);
                     }
+                }
+            }
+        }
+
+        private bool CanAddGroupToGroup(object obj)
+        {
+            return DynamoSelection.Instance.Selection.Count >= 0 && !this.AnnotationModel.IsNested;
+        }
+
+        private void AddGroupToGroup(object obj)
+        {
+            if (annotationModel.IsSelected)
+            {
+                var selectedModels = DynamoSelection.Instance.Selection
+                    .OfType<AnnotationModel>()
+                    .Where(x=>x.GUID != this.AnnotationModel.GUID && !x.IsNested);
+
+                foreach (var model in selectedModels)
+                {
+                    this.AnnotationModel.AddToSelectedModels(model, false);
+                    model.IsNested = true;
+                    
                 }
             }
         }
@@ -188,12 +260,116 @@ namespace Dynamo.ViewModels
         {
             get { return annotationModel.Nodes; }
         }
-       
+
+        public IEnumerable<ViewModelBase> ViewModelBases
+        {
+            get;set;
+        }
+
+        private ObservableCollection<PortViewModel> inPorts;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonIgnore]
+        public ObservableCollection<PortViewModel> InPorts
+        {
+            get => inPorts;
+            private set
+            {
+                inPorts = value;
+            }
+        }
+
+        private ObservableCollection<PortViewModel> outPorts;
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonIgnore]
+        public ObservableCollection<PortViewModel> OutPorts
+        {
+            get => outPorts;
+            private set
+            {
+                outPorts = value;
+            }
+        }
+
+        private bool isLocked;
+        public bool IsLocked
+        {
+            get => isLocked;
+            set
+            {
+                isLocked = value;
+                RaisePropertyChanged(nameof(IsLocked));
+            }
+        }
+
+        private bool isExpanded;
+        public bool IsExpanded
+        {
+            get => isExpanded;
+            set
+            {
+                if (isExpanded == value) return;
+                
+                isExpanded = value;
+                if (isExpanded)
+                {
+                    this.ShowGroupNodes();
+                }
+                else
+                {
+                    this.CollapseGroupNodes();
+                    this.SetGroupInputPorts();
+                    this.SetGroupOutPorts();
+                }
+                RaisePropertyChanged(nameof(IsExpanded));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonIgnore]
+        public Rect2D DropBoundary
+        {
+            get
+            {
+                var rect = new Rect2D();
+                rect.X = Left;
+                rect.Y = Top;
+                rect.Height = AnnotationRectangleHeight + AnnotationModel.TextBlockHeight;
+                rect.Width = AnnotationRectangleWidth;
+                return rect;
+            }
+        }
+
+        private bool nodeHoveringState;
+        [JsonIgnore]
+        public bool NodeHoveringState 
+        { 
+            get => nodeHoveringState;
+            set
+            {
+                if (nodeHoveringState == value)
+                {
+                    return;
+                }
+
+                nodeHoveringState = value;
+                RaisePropertyChanged(nameof(NodeHoveringState));
+            } 
+        }
+
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
-        {             
+        {
             annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;
             model.PropertyChanged += model_PropertyChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
+
             //https://jira.autodesk.com/browse/QNTM-3770
             //Notes and Groups are serialized as annotations. Do not unselect the node selection during
             //Notes serialization
@@ -203,8 +379,53 @@ namespace Dynamo.ViewModels
                 var selectNothing = new DynamoModel.SelectModelCommand(Guid.Empty, System.Windows.Input.ModifierKeys.None.AsDynamoType());
                 WorkspaceViewModel.DynamoViewModel.ExecuteCommand(selectNothing);
             }
-            
+
+            AnnotationRectangleWidth = model.Width;
+            AnnotationRectangleHeight = model.Height;
+
+            InPorts = new ObservableCollection<PortViewModel>();
+            OutPorts = new ObservableCollection<PortViewModel>();
+
+            ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
+            IsExpanded = true;
         }
+
+        internal void SetGroupInputPorts()
+        {
+            InPorts.Clear();
+
+            var groupPortModels = Nodes.OfType<NodeModel>()
+                .SelectMany(x => x.InPorts
+                    .Where(p => !p.IsConnected || !p.Connectors.Any(c => Nodes.Contains(c.Start.Owner)))
+                );
+
+            var originalPortViewModels = WorkspaceViewModel.Nodes
+                .SelectMany(x => x.InPorts)
+                .Where(x => groupPortModels.Contains(x.PortModel));
+
+            var newPortViewModels = originalPortViewModels.Select(x => x.CreateProxyPortViewModel());
+
+            if (newPortViewModels == null) return;
+            InPorts.AddRange(newPortViewModels);
+        }
+
+        internal void SetGroupOutPorts()
+        {
+            OutPorts.Clear();
+
+            var groupPortModels = Nodes.OfType<NodeModel>()
+                .SelectMany(x => x.OutPorts
+                    .Where(p => !p.IsConnected || !p.Connectors.Any(c => Nodes.Contains(c.End.Owner)))
+                );
+
+            var portViewModels = WorkspaceViewModel.Nodes
+                .SelectMany(x => x.OutPorts)
+                .Where(x => groupPortModels.Contains(x.PortModel));
+
+            if (portViewModels == null) return;
+            OutPorts.AddRange(portViewModels);
+        }
+
 
         internal void ClearSelection()
         {
@@ -215,17 +436,33 @@ namespace Dynamo.ViewModels
 
         internal void CollapseGroupNodes()
         {
-            foreach (var node in Nodes)
+            foreach (var viewModel in ViewModelBases)
             {
-                node.IsCollapsed = true;
+                if (viewModel is AnnotationViewModel annotationViewModel)
+                {
+                    annotationViewModel.IsCollapsed = true;
+                    annotationViewModel.CollapseGroupNodes();
+                }
+                viewModel.IsCollapsed = true;
             }
         }
 
         internal void ShowGroupNodes()
         {
-            foreach (var node in Nodes)
+            if (!IsExpanded)
             {
-                node.IsCollapsed = false;
+                return;
+            }
+
+            foreach (var viewModel in ViewModelBases)
+            {
+                if (viewModel is AnnotationViewModel annotationViewModel)
+                {
+                    annotationViewModel.IsCollapsed = false;
+                    annotationViewModel.ShowGroupNodes();
+                }
+
+                viewModel.IsCollapsed = false;
             }
         }
 
@@ -257,9 +494,17 @@ namespace Dynamo.ViewModels
                     break;
                 case "Width":
                     RaisePropertyChanged("Width");
+                    if (AnnotationModel.Width >= AnnotationRectangleWidth)
+                    {
+                        AnnotationRectangleWidth = AnnotationModel.Width;
+                    }
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
+                    if (AnnotationModel.Height >= AnnotationRectangleHeight)
+                    {
+                        AnnotationRectangleHeight = AnnotationModel.Height;
+                    }
                     break;
                 case nameof(AnnotationDescriptionText):
                     RaisePropertyChanged(nameof(AnnotationDescriptionText));
@@ -279,6 +524,14 @@ namespace Dynamo.ViewModels
                 case "SelectedModels":
                     this.AnnotationModel.UpdateBoundaryFromSelection();
                     break;
+                case nameof(AnnotationModel.IsNested):
+                    RaisePropertyChanged(nameof(ZIndex));
+                    AddToGroupCommand.RaiseCanExecuteChanged();
+                    break;
+                case nameof(AnnotationModel.Nodes):
+                    ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
+                    break;
+
             }
         }
 
@@ -293,7 +546,9 @@ namespace Dynamo.ViewModels
 
             //Select all the models inside the group - This avoids some performance bottleneck 
             //with many nodes selected at the same time - which makes moving the group very slow
-            DynamoSelection.Instance.Selection.AddRange(this.AnnotationModel.Nodes);
+
+            var groupedGroupsNodes = this.AnnotationModel.Nodes.OfType<AnnotationModel>().SelectMany(x => x.Nodes);
+            DynamoSelection.Instance.Selection.AddRange(this.AnnotationModel.Nodes.Concat(groupedGroupsNodes));
         }
 
         internal void AddGroupAndGroupedNodesToSelection()
@@ -304,6 +559,11 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynamoModel.SelectModelCommand(guids, Keyboard.Modifiers.AsDynamoType()));
 
+        }
+
+        private void SelectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            AddToGroupCommand.RaiseCanExecuteChanged();
         }
     }
 }

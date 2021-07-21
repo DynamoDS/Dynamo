@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml;
 using Dynamo.Graph.Nodes;
@@ -164,6 +165,7 @@ namespace Dynamo.Graph.Annotations
                         model.Disposed+=model_Disposed;
                     }
                 }
+                RaisePropertyChanged(nameof(Nodes));
             }            
         }
 
@@ -191,7 +193,7 @@ namespace Dynamo.Graph.Annotations
         /// </summary>      
         public override Rect2D Rect
         {
-            get { return new Rect2D(this.X, this.Y, this.Width, this.Height); }
+            get { return new Rect2D(this.X, this.Y, this.Width, this.Height + this.TextBlockHeight); }
         }
 
         private double textBlockHeight;
@@ -256,6 +258,18 @@ namespace Dynamo.Graph.Annotations
                 RaisePropertyChanged(nameof(PinnedNode));
             }
         }
+        
+        private bool isNested;
+        public bool IsNested 
+        { 
+            get => isNested; 
+            internal set
+            {
+                if (value == isNested) return;
+                isNested = value;
+                RaisePropertyChanged(nameof(IsNested));
+            } 
+        }
 
         #endregion
 
@@ -269,21 +283,32 @@ namespace Dynamo.Graph.Annotations
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();           
             var noteModels = notes as NoteModel[] ?? notes.ToArray();
             DeletedModelBases = new List<ModelBase>(); 
-            this.Nodes = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();      
+            this.Nodes = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();
             UpdateBoundaryFromSelection();
         }
+
+        //internal void SetGroupInputPorts()
+        //{
+        //    var inputPorts = nodes.OfType<NodeModel>()
+        //        .SelectMany(x => x.InPorts
+        //            .Where(p => !p.IsConnected || !p.Connectors.Any(c=>Nodes.Contains(c.Start.Owner)))
+        //        );
+
+        //    if (inputPorts == null) return;
+        //    InPorts.AddRange(inputPorts);
+        //}
 
 
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
-            {                
-                case "Position":                  
-                     UpdateBoundaryFromSelection();
+            {
+                case "Position":
+                    UpdateBoundaryFromSelection();
                     break;
                 case "Text":
                     UpdateBoundaryFromSelection();
-                    break;               
+                    break;
             }
         }
 
@@ -471,6 +496,7 @@ namespace Dynamo.Graph.Annotations
         internal void AddToSelectedModels(ModelBase model, bool checkOverlap = false)
         {           
             var list = this.Nodes.ToList();
+            if (model.GUID == this.GUID) return;
             if (list.Where(x => x.GUID == model.GUID).Any()) return;
             if (!CheckModelIsInsideGroup(model, checkOverlap)) return;           
             list.Add(model);
@@ -500,6 +526,11 @@ namespace Dynamo.Graph.Annotations
         {
             foreach (var models in Nodes)
             {
+                if (models is AnnotationModel annotationModel)
+                {
+                    annotationModel.Select();
+                    continue;
+                }
                 models.IsSelected = true;
             }
 

@@ -576,7 +576,19 @@ namespace Dynamo.ViewModels
             set { NodeModel.UserDescription = value; }
         }
 
-        public bool IsCollapsed => NodeModel.IsCollapsed;
+        public override bool IsCollapsed
+        {
+            get => base.IsCollapsed;
+            set
+            {
+                foreach (var connector in WorkspaceViewModel.GetViewModelsInternal(NodeModel.AllConnectors.Select(x => x.GUID)))
+                {
+                    connector.IsCollapsed = value;
+                }
+
+                base.IsCollapsed = value;
+            }
+        }
 
         #endregion
 
@@ -862,9 +874,6 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsFrozen":
                     RaiseFrozenPropertyChanged();
-                    break;
-                case nameof(NodeModel.IsCollapsed):
-                    RaisePropertyChanged(nameof(IsCollapsed));
                     break;
             }
         }
