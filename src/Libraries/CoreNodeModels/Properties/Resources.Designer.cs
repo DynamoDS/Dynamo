@@ -1115,7 +1115,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns the result of either the True or False input depending on what boolean value is toggled in the test input..
+        ///   Looks up a localized string similar to Returns the result of either True or False input depending on what boolean value is toggled in the test input. Supports recursion which requires that only a single branch be executed. Achieve this by making sure that both True and False branches are isolated and do not interact with each other..
         /// </summary>
         public static string ScopeIfDescription {
             get {
