@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -688,6 +689,22 @@ namespace Dynamo.ViewModels
 
                     owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
+                    // When mouse is released get any group with NodeHoveringState
+                    // set to true (this should only ever be one),
+                    // and add all ModelBase items in selection to that group
+                    var dropGroup = owningWorkspace.Annotations
+                        .Where(x => x.NodeHoveringState)
+                        .FirstOrDefault();
+
+                    if (dropGroup != null)
+                    {
+                        foreach (var item in DynamoSelection.Instance.Selection.OfType<ModelBase>())
+                        {
+                            dropGroup.AnnotationModel.AddToSelectedModels(item);
+                        }
+                        dropGroup.NodeHoveringState = false;
+                    }
+
                     SetCurrentState(State.None); // Dragging operation ended.
                 }
                 else if (this.currentState == State.DragSetup)
@@ -771,6 +788,44 @@ namespace Dynamo.ViewModels
                 {
                     // Update the dragged nodes (note: this isn't recorded).
                     owningWorkspace.UpdateDraggedSelection(mouseCursor.AsDynamoType());
+
+                    if (DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any()) return false;
+
+                    // Here we check if the mouse cursor is inside any Annotation groups
+                    var dropGroup = owningWorkspace.Annotations
+                        .Where(x => x.DropBoundary.Contains(mouseCursor.X, mouseCursor.Y))
+                        .FirstOrDefault();
+
+                    // If the dropGroup is null or any of the selected items is already in the dropGroup,
+                    // we disable the drop border by setting NodeHoveringState to false
+                    if (dropGroup is null ||
+                        dropGroup.Nodes.Intersect(DynamoSelection.Instance.Selection).Any())
+                    {
+                        owningWorkspace.Annotations
+                            .Where(x => x.NodeHoveringState)
+                            .ToList()
+                            .ForEach(x => x.NodeHoveringState = false);
+                    }
+
+                    // If the dropGroups NodeHoveringState is set to false
+                    // we need to set it to true for the drop border to be displayed.
+                    else if (!dropGroup.NodeHoveringState)
+                    {
+                        // make sure there are no other group
+                        // set to NodeHoveringState before setting
+                        // the current group.
+                        // If we dont do this there are scenarios where
+                        // two groups are very close and a node is dragged
+                        // quickly between the two where the hovering state
+                        // is not reset.
+                        owningWorkspace.Annotations
+                            .Where(x => x.NodeHoveringState)
+                            .ToList()
+                            .ForEach(x => x.NodeHoveringState = false);
+
+                        dropGroup.NodeHoveringState = true;
+                    }
+
                 }
 
                 return false; // Mouse event not handled.

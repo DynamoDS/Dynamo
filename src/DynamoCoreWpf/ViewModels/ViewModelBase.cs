@@ -20,6 +20,22 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private bool isCollapsed;
+        public virtual bool IsCollapsed
+        {
+            get => isCollapsed;
+            set
+            {
+                if (isCollapsed == value)
+                {
+                    return;
+                }
+
+                isCollapsed = value;
+                RaisePropertyChanged(nameof(IsCollapsed));
+            }
+        }
+
         /// <summary>
         /// Dispose this viewModel, in the case of our ViewModels this usually means
         /// unsubscribing from events which we subscribed to in the construction of

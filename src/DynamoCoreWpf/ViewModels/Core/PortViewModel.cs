@@ -229,6 +229,11 @@ namespace Dynamo.ViewModels
             _node.WorkspaceViewModel.PropertyChanged -= Workspace_PropertyChanged;
         }
 
+        internal PortViewModel CreateProxyPortViewModel()
+        {
+            return new PortViewModel(_node, _port);
+        }
+
         /// <summary>
         /// Sets up the node autocomplete window to be placed relative to the node.
         /// </summary>
