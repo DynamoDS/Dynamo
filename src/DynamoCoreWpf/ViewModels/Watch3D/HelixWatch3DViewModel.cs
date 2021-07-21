@@ -46,7 +46,7 @@ using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public class CameraData
-    { 
+    {
         // Default camera position data. These values have been rounded
         // to the nearest whole value.
         // eyeX="-16.9655136013663" eyeY="24.341577725171" eyeZ="50.6494323150915" 
@@ -98,7 +98,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             UpY = defaultCameraUpDirection.Y;
             UpZ = defaultCameraUpDirection.Z;
         }
-        
+
         public override bool Equals(object obj)
         {
             var other = obj as CameraData;
@@ -122,7 +122,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <returns></returns>
         internal bool containsNaN()
         {
-            var numericComponents = new List<double>(){ EyeX, EyeY, EyeZ, LookX, LookY, LookZ, UpX, UpY, UpZ, NearPlaneDistance, FarPlaneDistance };
+            var numericComponents = new List<double>() { EyeX, EyeY, EyeZ, LookX, LookY, LookZ, UpX, UpY, UpZ, NearPlaneDistance, FarPlaneDistance };
             if (numericComponents.Any(d => (Double.IsNaN(d))))
             {
                 return true;
@@ -190,7 +190,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private const int DepthBiasVertexColors = 10;
         private const int DepthBiasNormalMesh = 100;
         private const int DepthBiasSelectedMesh = 0;
-        internal static BoundingBox DefaultBounds = new BoundingBox(new Vector3(-25f, -25f, -25f), new Vector3(25f,25f,25f));
+        internal static BoundingBox DefaultBounds = new BoundingBox(new Vector3(-25f, -25f, -25f), new Vector3(25f, 25f, 25f));
 
         private ObservableElement3DCollection sceneItems;
 
@@ -210,7 +210,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         // This makes sure the NVidia graphics card is used for rendering when available. In the absence of this
         // there are found to be issues with Helix crashing when the app is used with external monitors. 
         // See: https://github.com/helix-toolkit/helix-toolkit/wiki/Tips-on-performance-optimization-(WPF.SharpDX-and-UWP)#2-laptops-with-nvidia-optimus-dual-graphics-cardhelixtoolkitsharpdx-only
-        private static NVOptimusEnabler nvEnabler = new NVOptimusEnabler();
+        private static NVOptimusEnabler nvEnabler;
 
 #if DEBUG
         private readonly Stopwatch renderTimer = new Stopwatch();
@@ -521,6 +521,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         // This method is about indicating whether watch3d updated its stream or not.
         protected internal virtual void OnWatchExecution()
         {
+        }
+
+        static HelixWatch3DViewModel()
+        {
+            try
+            {
+                nvEnabler = new NVOptimusEnabler();
+            }
+            catch (DllNotFoundException) { };
         }
 
         protected HelixWatch3DViewModel(NodeModel model, Watch3DViewModelStartupParams parameters) 
