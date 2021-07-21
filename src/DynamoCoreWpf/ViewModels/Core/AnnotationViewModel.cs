@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Graph;
@@ -21,8 +20,6 @@ namespace Dynamo.ViewModels
     public class AnnotationViewModel : ViewModelBase
     {
         private AnnotationModel annotationModel;
-        private double annotationRectangleWidth;
-        private double annotationRectangleHeight;
         public readonly WorkspaceViewModel WorkspaceViewModel;        
         
         [JsonIgnore]
