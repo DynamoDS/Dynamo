@@ -1787,6 +1787,7 @@
                       VerticalAlignment="Stretch"
                       Margin="0"
                       Background="Transparent"
+                      DragCompleted="RightExtensionSidebar_DragCompleted"
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
 
         <!--Start Page-->

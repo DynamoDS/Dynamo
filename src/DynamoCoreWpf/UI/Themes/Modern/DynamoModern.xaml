@@ -3388,13 +3388,19 @@
         <Setter Property="Foreground" Value="#222"/>
         <Setter Property="Padding" Value="10"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
-        <Setter Property="TextBlock.Effect">
+    </Style>
+
+    <!--This style will be used for setting the style of the Note's user control-->
+    <Style x:Key="NoteUserControlStyle"
+           TargetType="UserControl">
+        <Setter Property="BorderBrush" Value="#549ee7"/>
+        <Setter Property="Effect">
             <Setter.Value>
                 <DropShadowEffect ShadowDepth="0" Color="#222" Opacity="0.25" BlurRadius="9.0" />
             </Setter.Value>
         </Setter>
     </Style>
-
+    
     <!--This Style will be used for the small trash icon button that appears when a new Style is created in the Visual Settings tab-->
     <Style x:Key="FlatIconButtonStyle" 
            TargetType="{x:Type Button}">
@@ -3501,6 +3507,12 @@
                    R="128"
                    G="128"
                    B="128"/>
+
+    <SolidColorBrush x:Key="PopupRatingControlBackColor" 
+                             Color="#F5F5F5" />
+
+    <SolidColorBrush x:Key="CheckMarkBackColor" 
+                             Color="#87B340" />
 
     <!--Style for the buttons in a Tooltip part of the Dynamo Guided Tours-->
     <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">
@@ -3661,4 +3673,17 @@
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
 
+    <Style x:Key="SurveyTitleLabelStyle" TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="MinHeight" Value="50"/>
+        <Setter Property="Foreground" Value="#3C3C3C"/>
+    </Style>
+
+    <Style x:Key="RatingTitleLabelStyle" TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#3C3C3C"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
 </ResourceDictionary>

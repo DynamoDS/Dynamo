@@ -9,6 +9,7 @@ using System.Net;
 using System.Reflection;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using Autodesk.Analytics.Core;
 using Dynamo.Core;
 using Dynamo.Logging;
 
