@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Extensions;
 using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.PackageManager.UI
@@ -14,6 +15,7 @@ namespace Dynamo.PackageManager.UI
     {
         private readonly List<IViewExtension> requestedExtensions = new List<IViewExtension>();
         private PackageManagerExtension packageManager;
+        private ExtensionLibraryLoader librayLoader;
         public string Name
         {
             get
@@ -48,7 +50,7 @@ namespace Dynamo.PackageManager.UI
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-           // Do nothing for now
+            InspectPackageForNodeViewCustomizationBinaries(packageManager?.PackageLoader.LocalPackages);
         }
 
         public void Shutdown()
@@ -60,6 +62,7 @@ namespace Dynamo.PackageManager.UI
         {
             var packageManager = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             this.packageManager = packageManager;
+            this.librayLoader = viewStartupParams.LibraryLoader as ExtensionLibraryLoader;
 
             //when this extension is started up we should look for all packages,
             //and find the viewExtension manifest files in those packages.
@@ -69,11 +72,36 @@ namespace Dynamo.PackageManager.UI
                 //attach event which we can use to watch when new packages are fully loaded.
                 packageManager.PackageLoader.PackgeLoaded += packageLoadedHandler;
                 var packagesToCheck = packageManager.PackageLoader.LocalPackages;
-                requestLoadViewExtensionsForLoadedPackages(packagesToCheck);
+                RequestLoadViewExtensionsForLoadedPackages(packagesToCheck);
+                // also look for assemblies that only contains view customization (no nodeModels) as they won't have
+                // been imported into the customizationLibrary previously.
+                InspectPackageForNodeViewCustomizationBinaries(packagesToCheck);
             }
         }
 
-        private void requestLoadViewExtensionsForLoadedPackages(IEnumerable<Package> packages)
+        private void InspectPackageForNodeViewCustomizationBinaries(IEnumerable<Package> packages)
+        {
+            foreach (var package in packages)
+            {
+                // these packages are already loaded, these assemblies which contain only INodeViewCustomizatons
+                // should already be loaded as well - so we need to check packageAssemblies that are marked as NodeLibraies
+                // check if they contain INodeViewCustomization and if so inject them into the CustmizationLibrary
+                if (package.Loaded)
+                {
+                    foreach(var nodeLibAssem in package.LoadedAssemblies.Where(x => x.IsNodeLibrary))
+                    {
+                        // if this assembly is a nodeLibrary(was in nodelibraries list) and it contains customizations
+                        // TODO be careful of loading customizations twice.
+                        if (Wpf.NodeViewCustomizationLoader.ContainsNodeViewCustomizationType(nodeLibAssem.Assembly))
+                        {
+                            librayLoader.LoadNodeViewCustomizationAssembly(nodeLibAssem.Assembly);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void RequestLoadViewExtensionsForLoadedPackages(IEnumerable<Package> packages)
         {
             foreach (var package in packages)
             {
@@ -97,7 +125,7 @@ namespace Dynamo.PackageManager.UI
         private void packageLoadedHandler(Package package)
         {
             //when a package is loaded with packageManager, this extension should inspect it for viewExtensions.
-            this.requestLoadViewExtensionsForLoadedPackages(new List<Package>() { package });
+            this.RequestLoadViewExtensionsForLoadedPackages(new List<Package>() { package });
         }
     }
 }

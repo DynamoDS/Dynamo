@@ -325,10 +325,12 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     Enumerates all assemblies in the package
+        ///     Enumerates all assemblies in the package. This method currently has the side effect that it will
+        ///     load all binaries in the package bin folder unless the package is loaded from a special package path
+        ///     I.E. Builtin Packages.
         /// </summary>
         /// <returns>The list of all node library assemblies</returns>
-        internal IEnumerable<PackageAssembly> EnumerateAssembliesInBinDirectory()
+        internal IEnumerable<PackageAssembly> EnumerateAndLoadAssembliesInBinDirectory()
         {
             var assemblies = new List<PackageAssembly>();
 
@@ -342,7 +344,7 @@ namespace Dynamo.PackageManager
             foreach (var assemFile in (new System.IO.DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
             {
                 Assembly assem;
-
+                //TODO when can we make this false. 3.0?
                 bool shouldLoadFile = true;
                 if (this.RequiresSignedEntryPoints)
                 {
@@ -420,7 +422,7 @@ namespace Dynamo.PackageManager
             {
                 throw new ArgumentNullException("name");
             }
-
+            //TODO I'm guessing this was added for legacy or handbuilt packages - all assemblies are treated as node libraries
             if (nodeLibraryFullNames == null)
             {
                 return true;

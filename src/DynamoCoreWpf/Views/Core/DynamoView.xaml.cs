@@ -672,14 +672,18 @@ namespace Dynamo.Controls
 
         private void SubscribeNodeViewCustomizationEvents()
         {
+            dynamoViewModel.Model.RequestLoadNodeViewCustomization += Model_RequestLoadNodeViewCustomization;
             dynamoViewModel.Model.Loader.AssemblyLoaded += LoaderOnAssemblyLoaded;
             dynamoViewModel.NodeViewReady += ApplyNodeViewCustomization;
         }
+
+       
 
         private void UnsubscribeNodeViewCustomizationEvents()
         {
             if (dynamoViewModel == null) return;
 
+            dynamoViewModel.Model.RequestLoadNodeViewCustomization -= Model_RequestLoadNodeViewCustomization;
             dynamoViewModel.Model.Loader.AssemblyLoaded -= LoaderOnAssemblyLoaded;
             dynamoViewModel.NodeViewReady -= ApplyNodeViewCustomization;
         }
@@ -696,6 +700,11 @@ namespace Dynamo.Controls
         private void LoaderOnAssemblyLoaded(NodeModelAssemblyLoader.AssemblyLoadedEventArgs args)
         {
             nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(args.Assembly));
+        }
+        //TODO rename handler
+        private void Model_RequestLoadNodeViewCustomization(System.Reflection.Assembly customizationAssembly)
+        {
+            nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(customizationAssembly));
         }
 
         #endregion

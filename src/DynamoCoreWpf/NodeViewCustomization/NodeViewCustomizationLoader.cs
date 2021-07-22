@@ -20,8 +20,7 @@ namespace Dynamo.Wpf
 
             try
             {
-                var customizerType = typeof (INodeViewCustomization<>);
-                var customizerImps = assem.GetTypes().Where(t => !t.IsAbstract && ImplementsGeneric(customizerType, t));
+                var customizerImps = GetCustomizationTypes(assem);
 
                 foreach (var customizerImp in customizerImps)
                 {
@@ -31,11 +30,11 @@ namespace Dynamo.Wpf
 
                     if (types.ContainsKey(nodeModelType))
                     {
-                        types[nodeModelType] = types[nodeModelType].Concat(new[] {customizerImp});
+                        types[nodeModelType] = types[nodeModelType].Concat(new[] { customizerImp });
                     }
                     else
                     {
-                        types.Add(nodeModelType, new[] {customizerImp});
+                        types.Add(nodeModelType, new[] { customizerImp });
                     }
                 }
             }
@@ -46,6 +45,13 @@ namespace Dynamo.Wpf
             }
 
             return new NodeViewCustomizations(types);
+        }
+
+        private static IEnumerable<Type> GetCustomizationTypes(Assembly assem)
+        {
+            var customizerType = typeof(INodeViewCustomization<>);
+            var customizerImps = assem.GetTypes().Where(t => !t.IsAbstract && ImplementsGeneric(customizerType, t));
+            return customizerImps;
         }
 
         private static Type GetCustomizerTypeParameters(Type toCheck)
@@ -115,6 +121,11 @@ namespace Dynamo.Wpf
             }
 
             return false;
+        }
+
+        internal static bool ContainsNodeViewCustomizationType(Assembly assem)
+        {
+            return GetCustomizationTypes(assem).Any();
         }
     }
 }
