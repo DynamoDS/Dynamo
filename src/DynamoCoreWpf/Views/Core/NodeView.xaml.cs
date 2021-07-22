@@ -409,19 +409,19 @@ namespace Dynamo.Controls
             var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
             ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
 
-            if (ViewModel.WorkspaceViewModel.Zoom < 0.4)
-            {
-                grid.ContextMenu.IsOpen = true;
-                e.Handled = true;
-                return;
-            }
-
             view.mainGrid.Focus();
 
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
+            if (ViewModel.WorkspaceViewModel.Zoom < 0.4)
+            {
+                grid.ContextMenu.IsOpen = true;
+                e.Handled = true;
+                return;
+            }
+            
             viewModel.OnSelected(this, EventArgs.Empty);
 
             if (e.ClickCount == 2)
