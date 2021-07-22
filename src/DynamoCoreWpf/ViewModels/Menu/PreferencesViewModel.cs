@@ -65,7 +65,7 @@ namespace Dynamo.ViewModels
         private bool isWarningEnabled;
         private GeometryScalingOptions optionsGeometryScale = null;
 
-        private InstalledPackagesViewModel installedPackagesViewModel;
+        internal InstalledPackagesViewModel InstalledPackagesViewModel { get; }
         private string selectedPackagePathForInstall;
         #endregion Private Properties
 
@@ -150,7 +150,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Returns all installed packages
         /// </summary>
-        public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
+        public ObservableCollection<PackageViewModel> LocalPackages => InstalledPackagesViewModel.LocalPackages;
 
         //This includes all the properties that can be set on the General tab
         #region General Properties
@@ -702,7 +702,7 @@ namespace Dynamo.ViewModels
             this.runPreviewEnabled = dynamoViewModel.HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled;
             this.homeSpace = dynamoViewModel.HomeSpace;
             this.dynamoViewModel = dynamoViewModel;
-            this.installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
+            this.InstalledPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
                 dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
 
             PythonEnginesList = new ObservableCollection<string>();
