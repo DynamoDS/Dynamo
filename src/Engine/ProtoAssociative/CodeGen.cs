@@ -330,7 +330,8 @@ namespace ProtoAssociative
             return null;
         }
 
-        private bool CyclicDependencyTest(ProtoCore.AssociativeGraph.GraphNode node, ref SymbolNode cyclicSymbol1, ref SymbolNode cyclicSymbol2)
+        // Returns true if there is no cyclic dependency, returns false otherwise.
+        private bool CyclicDependencyTest(GraphNode node, ref SymbolNode cyclicSymbol1, ref SymbolNode cyclicSymbol2)
         {
             if (null == node || node.updateNodeRefList.Count == 0)
             {
@@ -339,16 +340,15 @@ namespace ProtoAssociative
 
             var indexMap = new Dictionary<GraphNode, int>();
             var lowlinkMap = new Dictionary<GraphNode, int>();
-            var S = new Stack<GraphNode>();
+            var s = new Stack<GraphNode>();
             int index = 0;
 
-            for (int n = 0; n < codeBlock.instrStream.dependencyGraph.GraphList.Count; ++n)
+            foreach (var subNode in codeBlock.instrStream.dependencyGraph.GraphList)
             {
-                ProtoCore.AssociativeGraph.GraphNode subNode = codeBlock.instrStream.dependencyGraph.GraphList[n];
                 indexMap[subNode] = Constants.kInvalidIndex;
             }
 
-            var dependencyList = StrongConnectComponent(node, ref index, lowlinkMap, indexMap, S);
+            var dependencyList = StrongConnectComponent(node, ref index, lowlinkMap, indexMap, s);
             if (dependencyList == null)
             {
                 return true;
@@ -360,7 +360,7 @@ namespace ProtoAssociative
 
                 foreach (var n in dependencyList.GroupBy(x => x.guid).Select(y => y.First()))
                 {
-                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency,
+                    core.BuildStatus.LogWarning(WarningID.InvalidStaticCyclicDependency,
                         ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, core.CurrentDSFileName, graphNode: n);
                 }
                 firstNode.isCyclic = true;
