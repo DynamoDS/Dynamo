@@ -627,7 +627,10 @@ namespace Dynamo.Engine
                     throwOnFailure: !isExplicitlyImportedLib));
                 return false;
             }
-            importedLibraries.Add(library);
+            if (!importedLibraries.Contains(library))
+            {
+                importedLibraries.Add(library);
+            }
 
             return true;
         }
@@ -1095,7 +1098,10 @@ namespace Dynamo.Engine
             if (pathManager.PackagesDirectories.Any(
                 directory => library.StartsWith(directory)))
             {
-                packagedLibraries.Add(library);
+                if (!packagedLibraries.Contains(library))
+                {
+                    packagedLibraries.Add(library);
+                }
             }
 
             EventHandler<LibraryLoadingEventArgs> handler = LibraryLoading;

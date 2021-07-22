@@ -5,7 +5,6 @@ using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
-using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
@@ -22,6 +21,7 @@ namespace Dynamo.ViewModels
         private const double autocompletePopupSpacing = 2.5;
         private SolidColorBrush portBorderBrushColor = new SolidColorBrush(Color.FromArgb(255,204, 204, 204));
         private SolidColorBrush portBackgroundColor = new SolidColorBrush(Color.FromArgb(0,60, 60, 60));
+        internal bool inputPortDisconnectedByConnectCommand = false;
 
         /// <summary>
         /// Port model.
@@ -471,6 +471,13 @@ namespace Dynamo.ViewModels
         {
             var wsViewModel = _node.WorkspaceViewModel;
             wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
+
+            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
+            if (this.inputPortDisconnectedByConnectCommand)
+            {
+                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
+            }
+
             // Bail out from connect state
             wsViewModel.CancelActiveState();
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);

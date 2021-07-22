@@ -691,6 +691,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pin to node.
+        /// </summary>
+        public static string ContextPinToNode {
+            get {
+                return ResourceManager.GetString("ContextPinToNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove from Group.
         /// </summary>
         public static string ContextUnGroupFromSelection {
@@ -2541,6 +2550,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rate this guide.
+        /// </summary>
+        public static string GetStartedGuideRatingTextTitle {
+            get {
+                return ResourceManager.GetString("GetStartedGuideRatingTextTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use the Help menu to access tools and resources to help you get started.\n\nYou can choose sample scripts, browse the Dynamo Dictionary, replay this and other tutorials, and more!.
         /// </summary>
         public static string GetStartedGuideResourcesText {
@@ -2573,6 +2591,24 @@ namespace Dynamo.Wpf.Properties {
         public static string GetStartedGuideRunStatusBarTitle {
             get {
                 return ResourceManager.GetString("GetStartedGuideRunStatusBarTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more about working in Dynamo with the #Dynamo Primer=https://primer.dynamobim.org/.
+        /// </summary>
+        public static string GetStartedGuideSurveyText {
+            get {
+                return ResourceManager.GetString("GetStartedGuideSurveyText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finished.
+        /// </summary>
+        public static string GetStartedGuideSurveyTitle {
+            get {
+                return ResourceManager.GetString("GetStartedGuideSurveyTitle", resourceCulture);
             }
         }
         

@@ -1,15 +1,16 @@
 ﻿using Dynamo.Configuration;
+using Dynamo.Events;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -145,11 +146,6 @@ namespace Dynamo.ViewModels
                 return DebugModes.IsEnabled("DynamoPreferencesMenuDebugMode");
             }
         }
-
-        /// <summary>
-        /// Returns all installed packages
-        /// </summary>
-        public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
 
         //This includes all the properties that can be set on the General tab
         #region General Properties
@@ -747,8 +743,7 @@ namespace Dynamo.ViewModels
             //This piece of code will populate all the description text for the RadioButtons in the Geometry Scaling section.
             optionsGeometryScale = new GeometryScalingOptions();
 
-            //This will set the default option for the Geometry Scaling Radio Buttons, the value is comming from the DynamoViewModel
-            optionsGeometryScale.EnumProperty = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(dynamoViewModel.ScaleFactorLog);
+            UpdateGeoScaleRadioButtonSelected(dynamoViewModel.ScaleFactorLog);
 
             optionsGeometryScale.DescriptionScaleRange = new ObservableCollection<string>();
             optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Small].Item2,
@@ -773,13 +768,33 @@ namespace Dynamo.ViewModels
             var loadPackagesParams = new LoadPackageParams
             {
                 Preferences = preferenceSettings,
-                PathManager = dynamoViewModel.Model.PathManager,
             };
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
 
+            WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
+
             PropertyChanged += Model_PropertyChanged;
+        }
+
+        /// <summary>
+        /// This method will be executed everytime the WorkspaceModel.ScaleFactor value is updated.
+        /// </summary>
+        /// <param name="args"></param>
+        private void PreferencesViewModel_WorkspaceSettingsChanged(WorkspacesSettingsChangedEventArgs args)
+        {
+            //The WorkspaceSettingsChanged event is refering to the double ScaleFactor, then we need to make the conversion to Logarithm scale factor ScaleFactorLog       
+            UpdateGeoScaleRadioButtonSelected(Convert.ToInt32(Math.Log10(args.ScaleFactor)));
+        }
+
+        /// <summary>
+        /// This method will update the currently selected Radio Button in the Geometry Scaling section.
+        /// </summary>
+        /// <param name="scaleFactor"></param>
+        private void UpdateGeoScaleRadioButtonSelected(int scaleFactor)
+        {
+            optionsGeometryScale.EnumProperty = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
         }
 
         /// <summary>
@@ -788,6 +803,7 @@ namespace Dynamo.ViewModels
         internal virtual void UnsubscribeAllEvents()
         {
             PropertyChanged -= Model_PropertyChanged;
+            WorkspaceEvents.WorkspaceSettingsChanged -= PreferencesViewModel_WorkspaceSettingsChanged;
         }
 
 
