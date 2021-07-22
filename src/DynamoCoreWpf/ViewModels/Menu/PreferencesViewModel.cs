@@ -65,7 +65,7 @@ namespace Dynamo.ViewModels
         private bool isWarningEnabled;
         private GeometryScalingOptions optionsGeometryScale = null;
 
-        private InstalledPackagesViewModel installedPackagesViewModel { get; }
+        private InstalledPackagesViewModel installedPackagesViewModel;
         private string selectedPackagePathForInstall;
         #endregion Private Properties
 
