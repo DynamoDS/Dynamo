@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -700,40 +701,7 @@ namespace Dynamo.ViewModels
             ZIndex = ++StaticZIndex;
             ++NoteViewModel.StaticZIndex;
 
-            ///////////////////////////////////////////////////
-
-            DynamoModel model = DynamoViewModel.Model;
-            IEnumerable searchEntries = model.SearchModel.SearchEntries.OfType<NodeSearchElement>();
-            IconServices iconServices = new IconServices(model.PathManager);
-
-            IconWarehouse currentWarehouse = null;
-            var currentWarehouseAssembly = string.Empty;
-
-            List<String> missingIcons = new List<string>();
-            foreach (var entry in searchEntries)
-            {
-                var searchEle = entry as NodeSearchElement;
-                if (String.IsNullOrEmpty(searchEle.IconName)) continue;
-
-                var smallIconName = searchEle.IconName + Configurations.SmallIconPostfix;
-                
-                // Only retrieve the icon warehouse for different assembly.
-                if (currentWarehouseAssembly != searchEle.Assembly)
-                {
-                    currentWarehouseAssembly = searchEle.Assembly;
-                    currentWarehouse = iconServices.GetForAssembly(searchEle.Assembly);
-                }
-
-                ImageSource smallIcon = null;
-                if (currentWarehouse != null)
-                {
-                    smallIcon = currentWarehouse.LoadIconInternal(smallIconName);
-                }
-
-                if (smallIcon != null) ImageSource = smallIcon;
-            }
-
-            /////////////////////////////////
+            ImageSource = workspaceViewModel.InCanvasSearchViewModel.GetNodeIcon(this);
         }
 
         /// <summary>
@@ -1441,7 +1409,7 @@ namespace Dynamo.ViewModels
                     group.AddGroupAndGroupedNodesToSelection();
             }
         }
-
+        
         #region Private Helper Methods
         private Point GetTopLeft()
         {

@@ -462,16 +462,16 @@ namespace Dynamo.ViewModels
             DynamoViewModel.PasteCommand.CanExecuteChanged += CopyPasteChanged;
 
             // sync collections
+            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel)
+            {
+                Visible = true
+            };
 
             foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
             foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
             foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
             foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
-
-            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel)
-            {
-                Visible = true
-            };
+            
             NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
             {
                 Visible = true

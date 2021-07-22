@@ -1,13 +1,12 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!--a good color picker-->
-    <!--http://www.colorspire.com/rgb-color-wheel/-->
-    
-    <!--Universal-->
-    <SolidColorBrush Color="#BBBBBB" x:Key="DynamoStandardLabelTextBrush"></SolidColorBrush>
-    
-    <!--Autodesk Colors-->
+    <!--  a good color picker  -->
+    <!--  http://www.colorspire.com/rgb-color-wheel/  -->
+
+    <!--  Universal  -->
+    <SolidColorBrush x:Key="DynamoStandardLabelTextBrush" Color="#BBBBBB" />
+
+    <!--  Autodesk Colors  -->
     <Color x:Key="PrimaryCharcoal100">#EEEEEE</Color>
     <Color x:Key="PrimaryCharcoal200">#DCDCDC</Color>
     <Color x:Key="PrimaryCharcoal300">#CCCCCC</Color>
@@ -25,29 +24,29 @@
     <Color x:Key="Blue300">#6AC0E7</Color>
     <Color x:Key="Blue400">#38ABDF</Color>
     <Color x:Key="DarkBlue200">#BCD3EE</Color>
-    
-    <!--Autodesk Colors-->
-    <SolidColorBrush x:Key="PrimaryCharcoal100Brush" Color="{StaticResource PrimaryCharcoal100}"/>
-    <SolidColorBrush x:Key="PrimaryCharcoal200Brush" Color="{StaticResource PrimaryCharcoal200}"/>
-    <SolidColorBrush x:Key="PrimaryCharcoal300Brush" Color="{StaticResource PrimaryCharcoal300}"/>
-    <SolidColorBrush x:Key="MidGreyBrush" Color="{StaticResource MidGrey}"/>
-    <SolidColorBrush x:Key="DarkMidGreyBrush" Color="{StaticResource DarkMidGrey}"/>
-    <SolidColorBrush x:Key="DarkGreyBrush" Color="{StaticResource DarkGrey}"/>
-    <SolidColorBrush x:Key="DarkerGreyBrush" Color="{StaticResource DarkerGrey}"/>
-    <SolidColorBrush x:Key="LilacBrush" Color="{StaticResource Lilac}"/>
-    <SolidColorBrush x:Key="Green300Brush" Color="{StaticResource Green300}"/>
-    <SolidColorBrush x:Key="Turqoise300Brush" Color="{StaticResource Turqoise300}"/>
-    <SolidColorBrush x:Key="YellowOrange500Brush" Color="{StaticResource YellowOrange500}"/>
-    <SolidColorBrush x:Key="Red400Brush" Color="{StaticResource Red400}"/>
-    <SolidColorBrush x:Key="Red500Brush" Color="{StaticResource Red500}"/>
-    <SolidColorBrush x:Key="Blue200Brush" Color="{StaticResource Blue200}"/>
-    <SolidColorBrush x:Key="Blue300Brush" Color="{StaticResource Blue300}"/>
-    <SolidColorBrush x:Key="Blue400Brush" Color="{StaticResource Blue400}"/>
-    <SolidColorBrush x:Key="DarkBlue200Brush" Color="{StaticResource DarkBlue200}"/>
-     
-    <!--Workspaces-->
-    <SolidColorBrush Color="#353535" x:Key="DynamoWindowBrush"/>
-    <SolidColorBrush Color="#232323" x:Key="WorkspaceBackgroundBrush"/>
+
+    <!--  Autodesk Colors  -->
+    <SolidColorBrush x:Key="PrimaryCharcoal100Brush" Color="{StaticResource PrimaryCharcoal100}" />
+    <SolidColorBrush x:Key="PrimaryCharcoal200Brush" Color="{StaticResource PrimaryCharcoal200}" />
+    <SolidColorBrush x:Key="PrimaryCharcoal300Brush" Color="{StaticResource PrimaryCharcoal300}" />
+    <SolidColorBrush x:Key="MidGreyBrush" Color="{StaticResource MidGrey}" />
+    <SolidColorBrush x:Key="DarkMidGreyBrush" Color="{StaticResource DarkMidGrey}" />
+    <SolidColorBrush x:Key="DarkGreyBrush" Color="{StaticResource DarkGrey}" />
+    <SolidColorBrush x:Key="DarkerGreyBrush" Color="{StaticResource DarkerGrey}" />
+    <SolidColorBrush x:Key="LilacBrush" Color="{StaticResource Lilac}" />
+    <SolidColorBrush x:Key="Green300Brush" Color="{StaticResource Green300}" />
+    <SolidColorBrush x:Key="Turqoise300Brush" Color="{StaticResource Turqoise300}" />
+    <SolidColorBrush x:Key="YellowOrange500Brush" Color="{StaticResource YellowOrange500}" />
+    <SolidColorBrush x:Key="Red400Brush" Color="{StaticResource Red400}" />
+    <SolidColorBrush x:Key="Red500Brush" Color="{StaticResource Red500}" />
+    <SolidColorBrush x:Key="Blue200Brush" Color="{StaticResource Blue200}" />
+    <SolidColorBrush x:Key="Blue300Brush" Color="{StaticResource Blue300}" />
+    <SolidColorBrush x:Key="Blue400Brush" Color="{StaticResource Blue400}" />
+    <SolidColorBrush x:Key="DarkBlue200Brush" Color="{StaticResource DarkBlue200}" />
+
+    <!--  Workspaces  -->
+    <SolidColorBrush x:Key="DynamoWindowBrush" Color="#353535" />
+    <SolidColorBrush x:Key="WorkspaceBackgroundBrush" Color="#232323" />
 
     <Color x:Key="WorkspaceBackgroundHome">#F9F9F9</Color>
     <Color x:Key="WorkspaceBackgroundCustom">#FFFFDC</Color>

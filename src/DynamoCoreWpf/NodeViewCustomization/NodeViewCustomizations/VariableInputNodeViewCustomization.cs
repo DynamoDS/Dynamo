@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Nodes;
