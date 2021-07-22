@@ -215,7 +215,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void AddPackagePathReflectsCorrectInstalledPackages()
+        public void InstalledPackagesContainsCorrectNumberOfPackages()
         {
             var pathManager = new Mock<IPathManager>();
             pathManager.SetupGet(x => x.PackagesDirectories).Returns(
@@ -245,18 +245,11 @@ namespace DynamoCoreWpfTests
             var installedPackagesViewModel = new InstalledPackagesViewModel(ViewModel, loader);
             Assert.AreEqual(18, installedPackagesViewModel.LocalPackages.Count);
 
-            packagesLoaded = false;
-            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
-                () => new List<string> { PackagesDirectory, BuiltInPackagesTestDir });
-            loadPackageParams.NewPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
+            var installedPackagesView = new Dynamo.Wpf.Controls.InstalledPackagesControl();
+            installedPackagesView.DataContext = installedPackagesViewModel;
+            DispatcherUtil.DoEvents();
 
-            // This function is called upon addition of new package paths in the UI.
-            loader.LoadCustomNodesAndPackages(loadPackageParams, ViewModel.Model.CustomNodeManager);
-            Assert.AreEqual(19, loader.LocalPackages.Count());
-
-            // Assert packages are reloaded if there are new package paths.
-            Assert.True(packagesLoaded);
-            Assert.AreEqual(19, installedPackagesViewModel.LocalPackages.Count);
+            Assert.AreEqual(18, installedPackagesView.SearchResultsListBox.Items.Count);
 
         }
 
