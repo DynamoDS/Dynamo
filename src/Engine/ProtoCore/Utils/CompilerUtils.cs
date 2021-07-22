@@ -336,6 +336,8 @@ namespace ProtoCore.Utils
                     reWrittenNodes = MigrationRewriter.MigrateMethodNames(reWrittenNodes, priorNames, core.BuildStatus.LogDeprecatedMethodWarning);
                 }
 
+                ParserUtils.AssemblyDetector.GetAssemblyFromCodeBlock(core.ClassTable, reWrittenNodes);
+
                 // Clone a disposable copy of AST nodes for PreCompile() as Codegen mutates AST's
                 // while performing SSA transforms and we want to keep the original AST's
                 var codeblock = new CodeBlockNode();
