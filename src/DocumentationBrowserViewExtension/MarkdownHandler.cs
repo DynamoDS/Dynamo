@@ -43,12 +43,12 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="nodeNamespace"></param>
-        internal void ParseToHtml(ref StringWriter writer, string nodeNamespace)
+        internal void ParseToHtml(ref StringWriter writer, string nodeNamespace, string packageName)
         {
             if (writer is null)
                 throw new ArgumentNullException(nameof(writer));
 
-            var mdFilePath = PackageDocumentationManager.Instance.GetAnnotationDoc(nodeNamespace);
+            var mdFilePath = PackageDocumentationManager.Instance.GetAnnotationDoc(nodeNamespace, packageName);
 
             string mdString;
 

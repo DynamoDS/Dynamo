@@ -43,7 +43,7 @@ namespace Dynamo.Search.SearchElements
             this.functionDescriptor = functionDescriptor;
 
             Name = functionDescriptor.UserFriendlyName;
-            
+
             if (functionDescriptor.IsOverloaded)
             {
                 var parameters = new StringBuilder();
@@ -53,7 +53,7 @@ namespace Dynamo.Search.SearchElements
 
                 Parameters = parameters.ToString();
             }
-            
+
             FullCategoryName = functionDescriptor.Category;
             Description = functionDescriptor.Description;
             Assembly = functionDescriptor.Assembly;

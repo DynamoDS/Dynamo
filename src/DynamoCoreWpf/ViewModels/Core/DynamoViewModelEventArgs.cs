@@ -184,6 +184,13 @@ namespace Dynamo.ViewModels
         /// Nodes category.
         /// </summary>
         public string Category { get; }
+
+        /// <summary>
+        /// Name of the package this node belongs to
+        /// </summary>
+        //public string PackageName => Category.Split('.').FirstOrDefault();
+        public string PackageName { get; private set; }
+
         /// <summary>
         /// Collection of the nodes input names.
         /// </summary>
@@ -211,6 +218,8 @@ namespace Dynamo.ViewModels
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
+            var packageInfo = dynamoViewModel.Model.CurrentWorkspace.GetNodePackage(model);
+            PackageName = packageInfo?.Name ?? string.Empty;
             MinimumQualifiedName = GetMinimumQualifiedName(model, dynamoViewModel);
             Type = model.Name;
             Description = model.Description;
@@ -269,25 +278,22 @@ namespace Dynamo.ViewModels
 
                 case DSFunctionBase dSFunction:
                     var descriptor = dSFunction.Controller.Definition;
-                    var className = descriptor.ClassName;
-                    var functionName = descriptor.FunctionName;
-                    if (descriptor.IsOverloaded)
+                    if (descriptor.IsOverloaded && NodeModelHasCollisions(descriptor.QualifiedName, viewModel))
                     {
                         var inputString = GetInputNames(nodeModel);
-                        return $"{className}.{functionName}({inputString})";
+                        return $"{descriptor.QualifiedName}({inputString})";
                     }
 
-                    return $"{className}.{functionName}";
+                    return descriptor.QualifiedName;
 
                 case NodeModel node:
                     var type = node.GetType();
-                    if (NodeModelHasCollisions(node.Name, viewModel))
+                    if (NodeModelHasCollisions(type.FullName, viewModel))
                     {
                         return $"{type.FullName}({GetInputNames(nodeModel)})";
                     }
                     
                     return type.FullName;
-                     
 
                 default:
                     return string.Empty;
@@ -316,14 +322,15 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private static bool NodeModelHasCollisions(string nodeName, DynamoViewModel viewModel)
+        private static bool NodeModelHasCollisions(string typeName, DynamoViewModel viewModel)
         {     
             var searchEntries = viewModel.Model.SearchModel.SearchEntries
-                .Where(x => x.Name == nodeName)
+                .Where(x => x.CreationName == typeName)
                 .Select(x => x).ToList();
 
             if (searchEntries.Count() > 1)
                 return true;
+
             return false;
         }
 

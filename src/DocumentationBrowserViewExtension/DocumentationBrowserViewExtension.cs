@@ -56,6 +56,7 @@ namespace Dynamo.DocumentationBrowser
         public override void Startup(ViewStartupParams viewStartupParams)
         {
             pmExtension = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            PackageDocumentationManager.Instance.AddDynamoPaths(viewStartupParams.PathManager);
         }
 
         public override void Loaded(ViewLoadedParams viewLoadedParams)
@@ -63,6 +64,7 @@ namespace Dynamo.DocumentationBrowser
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
 
             this.ViewModel.MessageLogged += OnViewModelMessageLogged;
+            PackageDocumentationManager.Instance.MessageLogged += OnMessageLogged;
 
             this.viewLoadedParamsReference = viewLoadedParams; 
 
@@ -96,7 +98,7 @@ namespace Dynamo.DocumentationBrowser
         private void OnPackgeLoaded(Package pkg)
         {
             // Add documentation files from the package to the DocManager
-            PackageDocumentationManager.Instance.AddPackageDocumentation(pkg.NodeDocumentaionDirectory);
+            PackageDocumentationManager.Instance.AddPackageDocumentation(pkg.NodeDocumentaionDirectory, pkg.Name);
         }
 
         private void MenuItemUnCheckedHandler(object sender, RoutedEventArgs e)

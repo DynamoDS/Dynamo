@@ -25,7 +25,7 @@ namespace DynamoCLI
                 }
                 var runner = new CommandLineRunner(model);
                 runner.Run(cmdLineArgs);
-                
+
             }
             catch (Exception e)
             {

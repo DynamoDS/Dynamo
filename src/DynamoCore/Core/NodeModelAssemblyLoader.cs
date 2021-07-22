@@ -199,6 +199,39 @@ namespace Dynamo.Models
             return assem.GetTypes().Any(IsNodeSubType);
         }
 
+        internal static bool ContainsNodeModelSubTypeReflectionLoaded(Assembly assem, Type nodeModelType = null)
+        {
+            if(nodeModelType is null)
+                return assem.GetTypes().Any(x => IsNodeSubType(x));
+            
+            return assem.GetTypes().Any(x => IsNodeSubTypeReflectionLoaded(x, nodeModelType));
+        }
+
+        /// <summary>
+        /// Similar to IsNodeSubType this will determine if a Type is a node.
+        /// This implementation is meant to be used when scanning types in ReflectionContext.
+        /// </summary>
+        /// <param name="t">Type to check</param>
+        /// <param name="nodeModelType">Type of NodeModel, this is needed to be sure we are comparing the same NodeModel type reference</param>
+        /// <returns></returns>
+        internal static bool IsNodeSubTypeReflectionLoaded(Type t, Type nodeModelType)
+        {
+            bool isNodeSubType = false;
+            try
+            {
+                isNodeSubType = !t.IsAbstract &&
+                    t.IsSubclassOf(nodeModelType) &&
+                    t.GetConstructor(Type.EmptyTypes) != null;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
+
+            return isNodeSubType;
+        }
+
         /// <summary>
         ///     Enumerate the types in an assembly and add them to DynamoController's
         ///     dictionaries and the search view model.  Internally catches exceptions and sends the error 
