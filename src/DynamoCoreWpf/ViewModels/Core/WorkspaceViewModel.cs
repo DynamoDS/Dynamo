@@ -461,7 +461,11 @@ namespace Dynamo.ViewModels
             DynamoViewModel.CopyCommand.CanExecuteChanged += CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged += CopyPasteChanged;
 
+
             // sync collections
+            // Note: This was moved above the below 4 lines so that node icons could be retrieved.
+            // Doing this relies on having access to the InCanvasSearchViewModel / SearchViewModel.
+
             InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel)
             {
                 Visible = true

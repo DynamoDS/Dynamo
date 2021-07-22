@@ -15,9 +15,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Migration;
-using Dynamo.Models;
 using Dynamo.Scheduler;
-using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Visualization;
@@ -882,7 +880,7 @@ namespace Dynamo.Graph.Nodes
                     {
                         MarkDownStreamNodesAsModified(this);
                         OnNodeModified();
-                        RaisePropertyChanged("IsFrozen");
+                        RaisePropertyChanged(nameof(IsFrozen));
                     }
                 }
                 //If the node is frozen, then do not execute the graph immediately.
@@ -891,7 +889,7 @@ namespace Dynamo.Graph.Nodes
                 {
                     ComputeUpstreamOnDownstreamNodes();
                     OnUpdateASTCollection();
-                    RaisePropertyChanged("IsFrozen");
+                    RaisePropertyChanged(nameof(IsFrozen));
                 }
             }
         }

@@ -163,13 +163,13 @@
                                                         Value="White" />
                                                 <Setter TargetName="dockPanel"
                                                         Property="Background"
-                                                        Value="{StaticResource NodeContextMenuForegroundHighlight}" />
+                                                        Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver"
                                                      Value="False">
                                                 <Setter TargetName="dockPanel"
                                                         Property="Background"
-                                                        Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                                                        Value="{StaticResource NodeContextMenuBackground}" />
                                             </Trigger>
                                             <DataTrigger Binding="{Binding ElementName=ContentPresenter, Path=Content}"
                                                          Value="Dismissed Alerts">
@@ -732,11 +732,18 @@
                 Grid.ColumnSpan="3"
                 Margin="-2"
                 Background="Transparent"
-                BorderBrush="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}"
+                BorderBrush="{StaticResource Blue300Brush}"
                 BorderThickness="4"
                 Canvas.ZIndex="41"
                 CornerRadius="7,7,0,0"
-                IsHitTestVisible="False" />
+                IsHitTestVisible="False">
+                <Border.Visibility>
+                    <Binding Converter="{StaticResource BooleanToVisibilityConverter}"
+                             Mode="OneWay"
+                             Path="IsSelected"
+                             UpdateSourceTrigger="PropertyChanged" />
+                </Border.Visibility>
+        </Border>
 
         <!--  DO NOT ERASE. THIS IS FOR DEBUGGING  -->
         <!--<Rectangle Name="ForceReexecBorder"

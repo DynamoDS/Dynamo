@@ -27,7 +27,7 @@ namespace CoreNodeModelsWpf.Nodes
                 MinWidth= 150,
                 Height = Configurations.PortHeightInPixels,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
             };
 
 

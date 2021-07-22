@@ -599,7 +599,7 @@ namespace Dynamo.Controls
             switch (state)
             {
                 case PreviewState.ExecutionPreview:
-                    return NoneBrush;
+                    return ExecutionPreviewBrush;
                 case PreviewState.None:
                     return NoneBrush;
                 case PreviewState.Selection:
@@ -1234,6 +1234,11 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Used to ensure input and output ports are set to the right height.
+    /// There is a special case for code block output ports: the first code block output port should
+    /// align with the first port on any other node, despite being different sizes. The offset is achieved using the margin.
+    /// </summary>
     public class NodeOriginalNameToMarginConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

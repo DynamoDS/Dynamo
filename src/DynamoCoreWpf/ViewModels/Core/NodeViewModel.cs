@@ -1,28 +1,22 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Configuration;
-using Dynamo.Core;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
-using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
 using Point = System.Windows.Point;
@@ -701,7 +695,7 @@ namespace Dynamo.ViewModels
             ZIndex = ++StaticZIndex;
             ++NoteViewModel.StaticZIndex;
 
-            ImageSource = workspaceViewModel.InCanvasSearchViewModel.GetNodeIcon(this);
+            if(workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource)) ImageSource = imgSource;
         }
 
         /// <summary>

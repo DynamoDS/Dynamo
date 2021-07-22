@@ -23,6 +23,7 @@ namespace Dynamo.ViewModels
         private SolidColorBrush portBorderBrushColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
         private SolidColorBrush portBackgroundColor = new SolidColorBrush(Color.FromArgb(0, 60, 60, 60));
         internal bool inputPortDisconnectedByConnectCommand = false;
+        private bool _showUseLevelMenu;
 
         /// <summary>
         /// Port model.
@@ -165,15 +166,7 @@ namespace Dynamo.ViewModels
             get { return _port.MarginThickness.AsWindowsType(); }
         }
 
-        public PortEventType EventType
-        {
-            get => eventType;
-            set => eventType = value;
-        }
-
-        private bool _showUseLevelMenu;
-        private PortEventType eventType;
-
+        public PortEventType EventType { get; set; }
 
         /// <summary>
         /// If should display Use Levels popup menu. 
@@ -370,6 +363,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsConnected":
                     RaisePropertyChanged("IsConnected");
+                    RefreshPortColors();
                     break;
                 case "IsEnabled":
                     RaisePropertyChanged("IsEnabled");
@@ -394,9 +388,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "KeepListStructure":
                     RaisePropertyChanged("ShouldKeepListStructure");
+                    RefreshPortColors();
                     break;
             }
-            RefreshPortColors();
         }
 
         /// <summary>
