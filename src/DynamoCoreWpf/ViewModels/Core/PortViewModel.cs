@@ -4,6 +4,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
@@ -19,8 +20,8 @@ namespace Dynamo.ViewModels
         private DelegateCommand _useLevelsCommand;
         private DelegateCommand _keepListStructureCommand;
         private const double autocompletePopupSpacing = 2.5;
-        private SolidColorBrush portBorderBrushColor = new SolidColorBrush(Color.FromArgb(255,204, 204, 204));
-        private SolidColorBrush portBackgroundColor = new SolidColorBrush(Color.FromArgb(0,60, 60, 60));
+        private SolidColorBrush portBorderBrushColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
+        private SolidColorBrush portBackgroundColor = new SolidColorBrush(Color.FromArgb(0, 60, 60, 60));
         internal bool inputPortDisconnectedByConnectCommand = false;
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace Dynamo.ViewModels
             get { return _port.PortType; }
         }
 
-        
+
         /// <summary>
         /// If port is selected.
         /// </summary>
@@ -124,7 +125,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public ElementState State
         {
-            get { return _node.State; }    
+            get { return _node.State; }
         }
 
         /// <summary>
@@ -172,7 +173,7 @@ namespace Dynamo.ViewModels
 
         private bool _showUseLevelMenu;
         private PortEventType eventType;
-        
+
 
         /// <summary>
         /// If should display Use Levels popup menu. 
@@ -262,7 +263,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(PortBackgroundColor));
             }
         }
-        
+
         #endregion
 
         #region events
@@ -325,7 +326,7 @@ namespace Dynamo.ViewModels
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
 
-            return new[] { placement }; 
+            return new[] { placement };
         }
 
         private void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -401,7 +402,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// UseLevels command
         /// </summary>
-        public DelegateCommand UseLevelsCommand 
+        public DelegateCommand UseLevelsCommand
         {
             get
             {
@@ -540,78 +541,59 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void RefreshPortColors()
         {
-            switch (_node.State)
-            {
-                case ElementState.Dead:
-                    break;
-                case ElementState.Active:
-                    break;
-                case ElementState.Warning:
-                    break;
-                case ElementState.PersistentWarning:
-                    break;
-                case ElementState.Error:
-                    break;
-                case ElementState.AstBuildBroken:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
+            // The visual appearance of ports can be affected by many different logical states
+            // Inputs have more display styles than outputs
             if (_port.PortType == PortType.Input)
             {
+                // Special case for keeping list structure visual appearance
+                if (_port.UseLevels && _port.KeepListStructure)
+                {
+                    PortBackgroundColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortKeepListStructureBackground"];
+                    PortBorderBrushColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortKeepListStructureBorderBrush"];
+                }
+
                 // Port has a default value, shows blue marker
-                if (_port.DefaultValue != null)
+                else if (_port.DefaultValue != null)
                 {
                     if (!_port.IsConnected)
                     {
-                        PortBackgroundColor = new SolidColorBrush(Colors.Transparent);
-                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(204, 204, 204));
+                        PortBackgroundColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortDefaultBackground"];
+                        PortBorderBrushColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortDefaultBorderBrush"];
                     }
                     else
                     {
-                        PortBackgroundColor = new SolidColorBrush(Color.FromArgb(51, 153, 224, 255));
-                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                        PortBackgroundColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsConnectedBackground"];
+                        PortBorderBrushColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsConnectedBorderBrush"];
                     }
                 }
-                else 
+                else
                 {
                     // Port isn't connected and has no default value
                     if (!_port.IsConnected)
                     {
-                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(107, 67, 67));
-                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(244, 134, 134));
+                        PortBackgroundColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsNotConnectedBackground"];
+                        PortBorderBrushColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsNotConnectedBorderBrush"];
                     }
                     // Port is connected and has no default value
                     else
                     {
-                        // Special case for keeping list structure
-                        if (_port.UseLevels && _port.KeepListStructure)
-                        {
-                            PortBackgroundColor = new SolidColorBrush(Color.FromRgb(94, 165, 196));
-                            PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-                        }
-                        // Normal blue connected styling
-                        else
-                        {
-                            PortBackgroundColor = new SolidColorBrush(Color.FromArgb(51, 153, 224, 255));
-                            PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-                        }
+                        PortBackgroundColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsConnectedBackground"];
+                        PortBorderBrushColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsConnectedBorderBrush"];
                     }
                 }
             }
-            // It's an output port
+            // It's an output port, which either displays a connected style or a disconnected style
             else
             {
                 if (_port.IsConnected)
                 {
-                    PortBackgroundColor = new SolidColorBrush(Color.FromArgb(51, 153, 224, 255));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                    PortBackgroundColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsConnectedBackground"];
+                    PortBorderBrushColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsConnectedBorderBrush"];
                 }
                 else
                 {
-                    PortBackgroundColor = new SolidColorBrush(Colors.Transparent);
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(204, 204, 204));
+                    PortBackgroundColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortDefaultBackground"];
+                    PortBorderBrushColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortDefaultBorderBrush"];
                 }
             }
         }

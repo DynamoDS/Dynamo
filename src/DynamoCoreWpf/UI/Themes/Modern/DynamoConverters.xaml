@@ -48,36 +48,6 @@
         SelectionBrush="#6AC0E7" />
 
     <controls:ConnectionStateToVisibilityCollapsedConverter x:Key="ConnectionStateToVisibilityCollapsedConverter" />
-
-    <controls:StateToColorConverter
-        x:Key="StateToColorConverter"
-        BodyBackgroundActive="{StaticResource bodyBackgroundActive}"
-        BodyBackgroundBroken="{StaticResource bodyBackgroundBroken}"
-        BodyBackgroundError="{StaticResource bodyBackgroundError}"
-        BodyBackgroundInactive="{StaticResource bodyBackgroundInactive}"
-        BodyBackgroundWarning="{StaticResource bodyBackgroundWarning}"
-        HeaderBackgroundActive="{StaticResource headerBackgroundActive}"
-        HeaderBackgroundBroken="{StaticResource headerBackgroundBroken}"
-        HeaderBackgroundError="{StaticResource headerBackgroundError}"
-        HeaderBackgroundInactive="{StaticResource headerBackgroundInactive}"
-        HeaderBackgroundWarning="{StaticResource headerBackgroundWarning}"
-        HeaderBorderActive="{StaticResource headerBorderActive}"
-        HeaderBorderBroken="{StaticResource headerBorderBroken}"
-        HeaderBorderError="{StaticResource headerBorderError}"
-        HeaderBorderInactive="{StaticResource headerBorderInactive}"
-        HeaderBorderWarning="{StaticResource headerBorderWarning}"
-        HeaderForegroundActive="{StaticResource headerForegroundActive}"
-        HeaderForegroundBroken="{StaticResource headerForegroundBroken}"
-        HeaderForegroundError="{StaticResource headerForegroundError}"
-        HeaderForegroundInactive="{StaticResource headerForegroundInactive}"
-        HeaderForegroundWarning="{StaticResource headerForegroundWarning}"
-        OuterBorderActive="{StaticResource outerBorderActive}"
-        OuterBorderBroken="{StaticResource outerBorderBroken}"
-        OuterBorderError="{StaticResource outerBorderError}"
-        OuterBorderInactive="{StaticResource outerBorderInactive}"
-        OuterBorderSelection="{StaticResource outerBorderSelection}"
-        OuterBorderWarning="{StaticResource outerBorderWarning}" />
-
     <controls:AttachmentToPathConverter x:Key="AttachmentToPathConverter" />
     <controls:AttachmentToRowColumnConverter x:Key="AttachmentToRowColumnConverter" />
     <controls:PortToAttachmentConverter x:Key="PortToAttachmentConverter" />
@@ -197,18 +167,4 @@
         x:Key="PinIconForegroundConverter"
         FalseBrush="{StaticResource UnpinnedIconForegroundColor}"
         TrueBrush="{StaticResource PinnedIconForegroundColor}" />
-    <controls:BooleanToBrushConverter
-        x:Key="KeepListStructureHighlightColorConverter"
-        FalseBrush="{StaticResource NotKeepListStructureHighlight}"
-        TrueBrush="{StaticResource KeepListStructureHighlight}" />
-    <controls:BooleanToBrushConverter
-        x:Key="PortIsConnectedBackgroundConverter"
-        FalseBrush="{StaticResource PortIsNotConnectedBackground}"
-        TrueBrush="{StaticResource PortIsConnectedBackground}" />
-    <controls:BooleanToBrushConverter
-        x:Key="PortIsConnectedBorderBrushConverter"
-        FalseBrush="{StaticResource PortIsNotConnectedBorderBrush}"
-        TrueBrush="{StaticResource PortIsConnectedBorderBrush}" />
-
-
 </ResourceDictionary>

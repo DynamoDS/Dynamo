@@ -59,49 +59,24 @@
     <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#232323" />
 
     <!--  Nodes  -->
+    <SolidColorBrush x:Key="NodeFrozenOverlayBackground" Color="#BCD3EE" />
+    <SolidColorBrush x:Key="NodeOptionsButtonBackground" Color="#282828" />
+    <SolidColorBrush x:Key="NodeOptionsButtonForeground" Color="{StaticResource Blue300}" />
+    <SolidColorBrush x:Key="NodeDismissedWarningsGlyphForeground" Color="#4B4B4B" />
+    <SolidColorBrush x:Key="NodeDismissedWarningsGlyphBackground" Color="#EBEBEB" />
+    <SolidColorBrush x:Key="NodeLacingGlyphBackground" Color="#EBEBEB" />
+    <SolidColorBrush x:Key="NodePreviewHiddenGlyphBackground" Color="{StaticResource PrimaryCharcoal100}" />
 
-    <!--  Node colors in inactive state  -->
-    <SolidColorBrush x:Key="headerBackgroundInactive" Color="{StaticResource DarkMidGrey}" />
-    <SolidColorBrush x:Key="headerForegroundInactive" Color="{StaticResource PrimaryCharcoal200}" />
-    <SolidColorBrush x:Key="headerBorderInactive" Color="Transparent" />
-    <SolidColorBrush x:Key="outerBorderInactive" Color="Transparent" />
-    <SolidColorBrush x:Key="bodyBackgroundInactive" Color="{StaticResource DarkerGrey}" />
-
-    <!--  Node colors in active state  -->
-    <SolidColorBrush x:Key="headerBackgroundActive" Color="{StaticResource DarkMidGrey}" />
-    <SolidColorBrush x:Key="headerForegroundActive" Color="{StaticResource PrimaryCharcoal200}" />
-    <SolidColorBrush x:Key="headerBorderActive" Color="Transparent" />
-    <SolidColorBrush x:Key="outerBorderActive" Color="Transparent" />
-    <SolidColorBrush x:Key="bodyBackgroundActive" Color="{StaticResource DarkerGrey}" />
-
-    <!--  Node colors in warning state  -->
-    <SolidColorBrush x:Key="headerBackgroundWarning" Color="#5e5543" />
-    <SolidColorBrush x:Key="headerForegroundWarning" Color="#ffffff" />
-    <SolidColorBrush x:Key="headerBorderWarning" Color="#5e5543" />
-    <SolidColorBrush x:Key="outerBorderWarning" Color="#5e5543" />
-    <SolidColorBrush x:Key="bodyBackgroundWarning" Color="#fcdc95" />
-
-    <!--  Node colors in erroneous state  -->
-    <SolidColorBrush x:Key="headerBackgroundError" Color="#c14c49" />
-    <SolidColorBrush x:Key="headerForegroundError" Color="#ffffff" />
-    <SolidColorBrush x:Key="headerBorderError" Color="#c14c49" />
-    <SolidColorBrush x:Key="outerBorderError" Color="#c14c49" />
-    <SolidColorBrush x:Key="bodyBackgroundError" Color="#f8bcbd" />
-
-    <!--  Node colors in ast build broken state  -->
-    <SolidColorBrush x:Key="headerBackgroundBroken" Color="#c14c49" />
-    <SolidColorBrush x:Key="headerForegroundBroken" Color="#ffffff" />
-    <SolidColorBrush x:Key="headerBorderBroken" Color="#c14c49" />
-    <SolidColorBrush x:Key="outerBorderBroken" Color="#c14c49" />
-    <SolidColorBrush x:Key="bodyBackgroundBroken" Color="#f8bcbd" />
+    <SolidColorBrush x:Key="NodeContextMenuForeground" Color="{StaticResource PrimaryCharcoal100}" />
+    <SolidColorBrush x:Key="NodeContextMenuBackground" Color="{StaticResource MidGrey}" />
+    <SolidColorBrush x:Key="NodeContextMenuForegroundHighlight" Color="#282828" />
+    <SolidColorBrush x:Key="NodeContextMenuBackgroundHighlight" Color="#808080" />
+    <SolidColorBrush x:Key="NodeContextMenuSeparatorColor" Color="#AFAFAF" />
 
     <!--  Node colors in selected state  -->
     <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
 
     <SolidColorBrush x:Key="autocompletionWindow" Color="#4192d9" />
-
-    <!--  NodeLabel background color  -->
-    <SolidColorBrush x:Key="renamedLabelBackground" Color="#FCDC95" />
 
     <!--  Update Manager  -->
     <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed" />
@@ -156,10 +131,17 @@
     <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#c6c6c6" />
 
     <!--  Port color  -->
+    <SolidColorBrush x:Key="PortDefaultBackground" Color="Transparent" />
     <SolidColorBrush x:Key="PortIsConnectedBackground" Color="#465A63" />
-    <SolidColorBrush x:Key="PortIsNotConnectedBackground" Color="#3C3C3C" />
+    <SolidColorBrush x:Key="PortIsNotConnectedBackground" Color="#6B4343" />
+    <SolidColorBrush x:Key="PortKeepListStructureBackground" Color="#5EA5C4" />
+    
+    <SolidColorBrush x:Key="PortDefaultBorderBrush" Color="{StaticResource PrimaryCharcoal300}" />
     <SolidColorBrush x:Key="PortIsConnectedBorderBrush" Color="#6AC0E7" />
-    <SolidColorBrush x:Key="PortIsNotConnectedBorderBrush" Color="#CCCCCC" />
-    <SolidColorBrush x:Key="KeepListStructureHighlight" Color="#6DD2FF" />
-    <SolidColorBrush x:Key="NotKeepListStructureHighlight" Color="#535353" />
+    <SolidColorBrush x:Key="PortIsNotConnectedBorderBrush" Color="#F48686" />
+    <SolidColorBrush x:Key="PortKeepListStructureBorderBrush" Color="#6AC0E7" />
+
+    <SolidColorBrush x:Key="PortUsingDefaultValueMarkerColor" Color="#9BD5EF" />
+    <SolidColorBrush x:Key="PortUseLevelsCheckBoxColor" Color="#808080" />
+
 </ResourceDictionary>
