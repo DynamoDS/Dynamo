@@ -486,11 +486,13 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="path"></param>
         /// <param name="image">The image to write</param>
-        /// <returns name="void">No output </returns>
+        /// <returns name="image">Created image object</returns>
         /// <search>write image,image,file,filepath</search>
-        public static void WriteToFile(string path, Bitmap image)
+        public static Bitmap WriteToFile(string path, Bitmap image)
         {
             image.Save(FileSystem.AbsolutePath(path));
+
+            return image;
         }
     }
 }
