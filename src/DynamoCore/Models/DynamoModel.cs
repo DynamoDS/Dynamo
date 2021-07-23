@@ -1361,6 +1361,9 @@ namespace Dynamo.Models
            // don't import assembly if its marked node lib and contains any nodemodels and any nodecustomizations
            // as a consequence we won't import any ZT nodes from assemblies that contain customziations and are marked node libraries.
            // We'll only apply the customizations and import NodeModels which are present.
+           // I think this is consistent with the current behavior - IE today - if a nodeModel exists in an assembly, the rest of the assembly 
+           // is not imported as ZT - the same will be true if the assembly contains a NodeViewCustomization.
+
            // TODO(mjk) draw up matrix of current behaviors which nodeLib flag can control.
             if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem)
                 && !(NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(assem)))

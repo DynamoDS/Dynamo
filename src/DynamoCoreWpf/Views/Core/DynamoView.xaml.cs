@@ -672,7 +672,6 @@ namespace Dynamo.Controls
 
         private void SubscribeNodeViewCustomizationEvents()
         {
-            dynamoViewModel.Model.RequestLoadNodeViewCustomization += Model_RequestLoadNodeViewCustomization;
             dynamoViewModel.Model.Loader.AssemblyLoaded += LoaderOnAssemblyLoaded;
             dynamoViewModel.NodeViewReady += ApplyNodeViewCustomization;
         }
@@ -683,7 +682,6 @@ namespace Dynamo.Controls
         {
             if (dynamoViewModel == null) return;
 
-            dynamoViewModel.Model.RequestLoadNodeViewCustomization -= Model_RequestLoadNodeViewCustomization;
             dynamoViewModel.Model.Loader.AssemblyLoaded -= LoaderOnAssemblyLoaded;
             dynamoViewModel.NodeViewReady -= ApplyNodeViewCustomization;
         }
