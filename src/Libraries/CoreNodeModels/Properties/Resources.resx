@@ -447,7 +447,7 @@
     <value>Starting accumulated value, to be passed into the first call to the Reductor function.</value>
   </data>
   <data name="ScopeIfDescription" xml:space="preserve">
-    <value>Returns the result of either the True or False input depending on what boolean value is toggled in the test input.</value>
+    <value>Returns the result of either True or False input depending on what boolean value is toggled in the test input. Supports recursion which requires that only a single branch be executed. It's critical that that both True and False branches are isolated and do not interact with each other!</value>
     <comment>Description for Scope If</comment>
   </data>
   <data name="SelectionPortDataResultToolTip" xml:space="preserve">
