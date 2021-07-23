@@ -1358,7 +1358,12 @@ namespace Dynamo.Models
         /// </param>
         internal void LoadNodeLibrary(Assembly assem, bool suppressZeroTouchLibraryLoad = true)
         {
-            if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
+           // don't import assembly if its marked node lib and contains any nodemodels and any nodecustomizations
+           // as a consequence we won't import any ZT nodes from assemblies that contain customziations and are marked node libraries.
+           // We'll only apply the customizations and import NodeModels which are present.
+           // TODO(mjk) draw up matrix of current behaviors which nodeLib flag can control.
+            if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem)
+                && !(NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(assem)))
             {
                 if (suppressZeroTouchLibraryLoad)
                 {
@@ -2854,7 +2859,6 @@ namespace Dynamo.Models
             if (args.PropertyName == "EnablePresetOptions")
                 OnPropertyChanged("EnablePresetOptions");
         }
-
         #endregion
     }
 }
