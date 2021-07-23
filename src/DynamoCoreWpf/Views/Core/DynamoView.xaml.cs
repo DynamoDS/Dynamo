@@ -701,11 +701,6 @@ namespace Dynamo.Controls
         {
             nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(args.Assembly));
         }
-        //TODO rename handler
-        private void Model_RequestLoadNodeViewCustomization(System.Reflection.Assembly customizationAssembly)
-        {
-            nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(customizationAssembly));
-        }
 
         #endregion
 

@@ -44,4 +44,3 @@ using System.Windows;
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("LintingViewExtension")]
 [assembly: InternalsVisibleTo("GraphMetadataViewExtension")]
-[assembly: InternalsVisibleTo("DynamoPackagesWPF")]

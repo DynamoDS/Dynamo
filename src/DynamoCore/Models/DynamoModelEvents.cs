@@ -492,11 +492,6 @@ namespace Dynamo.Models
         public event Action<ReadyParams> DynamoReady;
         private bool dynamoReady;
 
-        internal event Action<Assembly> RequestLoadNodeViewCustomization;
-        internal void OnRequestLoadNodeViewCustomization(Assembly assembly)
-        {
-            RequestLoadNodeViewCustomization?.Invoke(assembly);
-        }
 
         /// <summary>
         /// Event that is raised when Dynamo model requests a particular python engine

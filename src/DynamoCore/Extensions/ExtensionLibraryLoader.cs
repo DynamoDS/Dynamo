@@ -55,11 +55,5 @@ namespace Dynamo.Extensions
             var libraryPaths = assemblies.Select(x => x.Location);
             model.LibraryServices.OnLibrariesImported(new LibraryServices.LibraryLoadedEventArgs(libraryPaths));
         }
-
-        //TBD not clear this should ever be exposed as part of ILibraryLoader interface.
-        internal void LoadNodeViewCustomizationAssembly(Assembly customizationAssembly)
-        {
-            model.OnRequestLoadNodeViewCustomization(customizationAssembly);
-        }
     }
 }

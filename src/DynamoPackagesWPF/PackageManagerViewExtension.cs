@@ -61,7 +61,6 @@ namespace Dynamo.PackageManager.UI
         {
             var packageManager = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             this.packageManager = packageManager;
-            this.librayLoader = viewStartupParams.LibraryLoader as ExtensionLibraryLoader;
 
             //when this extension is started up we should look for all packages,
             //and find the viewExtension manifest files in those packages.
