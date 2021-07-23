@@ -41,11 +41,11 @@
         None="#444"
         Selection="#4192D9" />
 
-    <controls:ConnectionStateToBrushConverter
-        x:Key="ConnectionStateToBrushConverter"
-        ExecutionPreviewBrush="Transparent"
-        NoneBrush="Transparent"
-        SelectionBrush="#6AC0E7" />
+    <controls:ConnectionStateToBrushConverter x:Key="ConnectionStateToBrushConverter"
+                                              ExecutionPreviewBrush="#F2930C"
+                                              SelectionBrush="#4192D9"
+                                              NoneBrush="#444">
+    </controls:ConnectionStateToBrushConverter>
 
     <controls:ConnectionStateToVisibilityCollapsedConverter x:Key="ConnectionStateToVisibilityCollapsedConverter" />
     <controls:AttachmentToPathConverter x:Key="AttachmentToPathConverter" />

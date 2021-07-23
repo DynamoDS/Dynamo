@@ -71,23 +71,12 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsConnected
         {
-            get
-            {
-                switch (PortType)
-                {
-                    case PortType.Input:
-                        if (_port.Owner.InPorts.Count < 1) return false;
-                        return _port.Owner.InPorts[_port.Index].IsConnected;
-                    case PortType.Output:
-                        if (_port.Owner.OutPorts.Count < 1) return false;
-                        return _port.Owner.OutPorts[_port.Index].IsConnected;
-                }
-                return false;
-            }
+            get => _port.IsConnected;
         }
 
         /// <summary>
-        /// Sets the condensed styling on Code Block output ports
+        /// Sets the condensed styling on Code Block output ports.
+        /// This is used to style the output ports on Code Blocks to be smaller.
         /// </summary>
         public bool IsPortCondensed
         {

@@ -462,15 +462,15 @@ namespace Dynamo.ViewModels
             DynamoViewModel.PasteCommand.CanExecuteChanged += CopyPasteChanged;
 
 
-            // sync collections
-            // Note: This was moved above the below 4 lines so that node icons could be retrieved.
-            // Doing this relies on having access to the InCanvasSearchViewModel / SearchViewModel.
 
+            // InCanvasSearchViewModel needs to happen before the nodes are created
+            // as we rely upon it to retrieve node icon images
             InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel)
             {
                 Visible = true
             };
 
+            // sync collections
             foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
             foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
             foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
