@@ -418,7 +418,20 @@ namespace Dynamo.Controls
             CloseExtensionTab(tabitem);
             CloseExtensionWindow(tabName);
         }
- 
+
+        /// <summary>
+        /// Switch to highlight a particular loaded extension
+        /// </summary>
+        /// <param name="viewExtensionName">Name string of target view extension to switch to</param>
+        internal void SwitchToExtension(string viewExtensionName)
+        {
+            TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == viewExtensionName);
+            if (tabitem != null)
+            {
+                tabDynamic.SelectedItem = tabitem;
+            }
+        }
+
         /// <summary>
         /// Event handler for the CloseButton.
         /// This method triggers the close operation on the selected tab.

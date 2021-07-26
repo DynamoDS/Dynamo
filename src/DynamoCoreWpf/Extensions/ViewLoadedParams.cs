@@ -142,6 +142,24 @@ namespace Dynamo.Wpf.Extensions
             dynamoView.CloseExtensionControl(viewExtension);
         }
 
+        /// <summary>
+        /// Switch to highlight a particular loaded extension
+        /// </summary>
+        /// <param name="viewExtension">target view extension to switch to</param>
+        public void SwitchToExtension(IViewExtension viewExtension)
+        {
+            dynamoView.SwitchToExtension(viewExtension.Name);
+        }
+
+        /// <summary>
+        /// Switch to highlight a particular loaded extension
+        /// </summary>
+        /// <param name="viewExtensionName">Name string of target view extension to switch to</param>
+        public void SwitchToExtension(string viewExtensionName)
+        {
+            dynamoView.SwitchToExtension(viewExtensionName);
+        }
+
         public void AddSeparator(MenuBarType type, Separator separatorObj, int index = -1)
         {
             AddItemToMenu(type, separatorObj, index);
