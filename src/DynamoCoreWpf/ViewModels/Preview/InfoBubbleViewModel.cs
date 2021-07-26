@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace Dynamo.ViewModels
@@ -50,56 +51,76 @@ namespace Dynamo.ViewModels
 
         #region Properties
 
-        public DynamoViewModel DynamoViewModel { get; private set; }
-
         private double zIndex;
-        public double ZIndex
-        {
-            get { return zIndex; }
-            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
-        }
         private Style infoBubbleStyle;
-        public Style InfoBubbleStyle
-        {
-            get { return infoBubbleStyle; }
-            set { infoBubbleStyle = value; RaisePropertyChanged("InfoBubbleStyle"); }
-        }
-        public string FullContent;
-
         public Direction connectingDirection;
-        public Direction ConnectingDirection
-        {
-            get { return connectingDirection; }
-            set { connectingDirection = value; RaisePropertyChanged("ConnectingDirection"); }
-        }
-
         private string content;
+        private Uri documentationLink;
+        public Point targetTopLeft;
+        public Point targetBotRight;
+        private Direction limitedDirection;
+        private State infoBubbleState;
+
+        private ObservableCollection<NodeMessage> nodeInfoToDisplay = new ObservableCollection<NodeMessage>();
+        private ObservableCollection<NodeMessage> nodeWarningsToDisplay = new ObservableCollection<NodeMessage>();
+        private ObservableCollection<NodeMessage> nodeErrorsToDisplay = new ObservableCollection<NodeMessage>();
+
+        private bool nodeInfoVisible = true;
+        private bool nodeWarningsVisible = true;
+        private bool nodeErrorsVisible = true;
+
+
         public string Content
         {
             get { return content; }
             set { content = value; RaisePropertyChanged("Content"); }
         }
 
-        private Uri documentationLink;
+        public DynamoViewModel DynamoViewModel { get; private set; }
+
+
+        public double ZIndex
+        {
+            get { return zIndex; }
+            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
+        }
+
+        public Style InfoBubbleStyle
+        {
+            get { return infoBubbleStyle; }
+            set { infoBubbleStyle = value; RaisePropertyChanged("InfoBubbleStyle"); }
+        }
+
+        public string FullContent;
+
+        private NodeInformationStateVisibility nodeInfoVisibilityState = NodeInformationStateVisibility.Icon;
+        private NodeInformationStateVisibility nodeWarningsVisibilityState = NodeInformationStateVisibility.CollapseMessages;
+        private NodeInformationStateVisibility nodeErrorsVisibilityState = NodeInformationStateVisibility.ShowAllMessages;
+
+        public Direction ConnectingDirection
+        {
+            get { return connectingDirection; }
+            set { connectingDirection = value; RaisePropertyChanged("ConnectingDirection"); }
+        }
+
         public Uri DocumentationLink
         {
             get { return documentationLink; }
             set { documentationLink = value; RaisePropertyChanged(nameof(DocumentationLink)); }
         }
 
-        public Point targetTopLeft;
         public Point TargetTopLeft
         {
             get { return targetTopLeft; }
             set { targetTopLeft = value; RaisePropertyChanged("TargetTopLeft"); }
         }
-        public Point targetBotRight;
+
         public Point TargetBotRight
         {
             get { return targetBotRight; }
             set { targetBotRight = value; RaisePropertyChanged("TargetBotRight"); }
         }
-        private Direction limitedDirection;
+
         public Direction LimitedDirection
         {
             get { return limitedDirection; }
@@ -116,14 +137,158 @@ namespace Dynamo.ViewModels
             get { return 0; }
         }
 
-        private State infoBubbleState;
-
         public State InfoBubbleState
         {
             get { return infoBubbleState; }
             set { infoBubbleState = value; RaisePropertyChanged("InfoBubbleState"); }
         }
 
+        /// <summary>
+        /// The formatted, user-visible string relating to the node's information state
+        /// </summary>
+        public ObservableCollection<NodeMessage> NodeInfoToDisplay
+        {
+            get => nodeInfoToDisplay;
+            set
+            {
+                nodeInfoToDisplay = value;
+                RaisePropertyChanged(nameof(NodeInfoToDisplay));
+            }
+        }
+
+        /// <summary>
+        /// The formatted, user-visible string relating to the node's warning state
+        /// </summary>
+        public ObservableCollection<NodeMessage> NodeWarningsToDisplay
+        {
+            get => nodeWarningsToDisplay;
+            set
+            {
+                nodeWarningsToDisplay = value;
+                RaisePropertyChanged(nameof(NodeWarningsToDisplay));
+            }
+        }
+
+        /// <summary>
+        /// The formatted, user-visible string relating to the node's error state
+        /// </summary>
+        public ObservableCollection<NodeMessage> NodeErrorsToDisplay
+        {
+            get => nodeErrorsToDisplay;
+            set
+            {
+                nodeErrorsToDisplay = value;
+                RaisePropertyChanged(nameof(NodeErrorsToDisplay));
+            }
+        }
+
+        /// <summary>
+        /// A collection of strings that are categorised as 'Information' level, the least important kind of message
+        /// </summary>
+        public ObservableCollection<string> NodeInfo { get; set; } = new ObservableCollection<string>();
+
+        /// <summary>
+        /// A collection of strings that are categorised as 'Warning' level, an important but dismissable kind of message
+        /// </summary>
+        public ObservableCollection<string> NodeWarnings { get; set; } = new ObservableCollection<string>();
+
+        /// <summary>
+        /// A collection of strings that are categorised as 'Error' level, the most important kind of message
+        /// </summary>
+        public ObservableCollection<string> NodeErrors { get; set; } = new ObservableCollection<string>();
+
+        /// <summary>
+        /// Used to determine whether the UI container for node Info is visible
+        /// </summary>
+        public bool NodeInfoVisible
+        {
+            get => nodeInfoVisible;
+            set
+            {
+                nodeInfoVisible = value;
+                RaisePropertyChanged(nameof(NodeInfoVisible));
+            }
+        }
+
+        /// <summary>
+        /// Used to determine whether the UI container for node Warnings is visible
+        /// </summary>
+        public bool NodeWarningsVisible
+        {
+            get => nodeWarningsVisible;
+            set
+            {
+                nodeWarningsVisible = value;
+                RaisePropertyChanged(nameof(NodeWarningsVisible));
+            }
+        }
+
+        /// <summary>
+        /// Used to determine whether the UI container for node Errors is visible
+        /// </summary>
+        public bool NodeErrorsVisible
+        {
+            get => nodeErrorsVisible;
+            set
+            {
+                nodeErrorsVisible = value;
+                RaisePropertyChanged(nameof(NodeErrorsVisible));
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the node infos are showing just an icon, a condensed summary of messages or
+        /// displaying each message in turn.
+        /// </summary>
+        public NodeInformationStateVisibility NodeInfoVisibilityState
+        {
+            get => nodeInfoVisibilityState;
+            set
+            {
+                nodeInfoVisibilityState = value;
+                RaisePropertyChanged(nameof(NodeInfoVisibilityState));
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the node warnings are showing just an icon, a condensed summary of messages or
+        /// displaying each message in turn.
+        /// </summary>
+        public NodeInformationStateVisibility NodeWarningsVisibilityState
+        {
+            get => nodeWarningsVisibilityState;
+            set
+            {
+                nodeWarningsVisibilityState = value;
+                RaisePropertyChanged(nameof(NodeWarningsVisibilityState));
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the node errors showing just an icon, a condensed summary of messages or
+        /// displaying each message in turn.
+        /// </summary>
+        public NodeInformationStateVisibility NodeErrorsVisibilityState
+        {
+            get => nodeErrorsVisibilityState;
+            set
+            {
+                nodeErrorsVisibilityState = value;
+                RaisePropertyChanged(nameof(NodeErrorsVisibilityState));
+            }
+        }
+
+        /// <summary>
+        /// Represents whether a node information state (e.g. warnings) are displaying just the
+        /// warning icon, a condensed summary of all messages at this level or fully-displaying each message
+        /// </summary>
+        public enum NodeInformationStateVisibility
+        {
+            Icon,
+            CollapseMessages,
+            ShowAllMessages
+        }
+        
         #endregion
 
         #region Event Handlers
@@ -156,6 +321,28 @@ namespace Dynamo.ViewModels
             ZIndex = 3;
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
+
+            NodeInfo.CollectionChanged += NodeInfo_CollectionChanged;
+            NodeWarnings.CollectionChanged += NodeWarnings_CollectionChanged;
+            NodeErrors.CollectionChanged += NodeErrors_CollectionChanged;
+        }
+
+        private void NodeErrors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            NodeErrorsToDisplay.Clear();
+            FormatNodeMessage(NodeErrors, NodeErrorsToDisplay, NodeErrorsVisibilityState);
+        }
+
+        private void NodeWarnings_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            NodeWarningsToDisplay.Clear();
+            FormatNodeMessage(NodeWarnings, NodeWarningsToDisplay, NodeWarningsVisibilityState);
+        }
+
+        private void NodeInfo_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            NodeInfoToDisplay.Clear();
+            FormatNodeMessage(NodeInfo, NodeInfoToDisplay, NodeInfoVisibilityState);
         }
         #endregion
 
@@ -297,6 +484,73 @@ namespace Dynamo.ViewModels
                     break;
             }
         }
+
+        /// <summary>
+        /// Used for displaying a message to the user alongside a number indicating that message's
+        /// enumerated value e.g. 'Error 1/4'
+        /// </summary>
+        public class NodeMessage
+        {
+            public string Message { get; set; }
+            public string MessageNumber { get; set; }
+        }
+
+        /// <summary>
+        /// Used to generate the user-facing information relating to a node, such as errors or warnings.
+        /// </summary>
+        /// <param name="messages">An ObservableCollection of strings, either info, warnings or errors.</param>
+        /// <param name="nodeInformationStateVisibility">An enum value, determining how each level of NodeInformationState messages is to be displayed.</param>
+        private void FormatNodeMessage
+        (
+            ObservableCollection<string> messages,
+            ObservableCollection<NodeMessage> targetCollection,
+            NodeInformationStateVisibility nodeInformationStateVisibility
+        )
+        {
+            if (messages == null || messages.Count < 1) return;
+
+            switch (nodeInformationStateVisibility)
+            {
+                // The user just sees the icon, no messages.
+                case NodeInformationStateVisibility.Icon:
+                    return;
+                // The user just sees the first message, with a count displaying the total number of collapsed messages at this level.
+                case NodeInformationStateVisibility.CollapseMessages:
+                    // If there is just one message at this level we don't display the iterator
+                    string messageNumber = messages.Count > 1 ? $"1/{messages.Count} " : "";
+                    targetCollection.Add(new NodeMessage
+                    {
+                        Message = messages[0],
+                        MessageNumber = messageNumber
+                    });
+                    break;
+                // The user sees all messages, with an interating counter displayed next to each message.
+                case NodeInformationStateVisibility.ShowAllMessages:
+                    // If there is just one message at this level we don't display the iterator
+                    if (messages.Count < 2)
+                    {
+                        targetCollection.Add(new NodeMessage
+                        {
+                            Message = messages[0],
+                            MessageNumber = ""
+                        });
+                        break;
+                    }
+                    // Otherwise we display the iterator
+                    for (int i = 0; i < messages.Count; i++)
+                    {
+                        targetCollection.Add(new NodeMessage
+                        {
+                            Message = messages[i],
+                            MessageNumber = $"{i+1}/{messages.Count} "
+                        });
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(nodeInformationStateVisibility), nodeInformationStateVisibility, null);
+            }
+        }
+
         #endregion
     }
 
@@ -343,7 +597,7 @@ namespace Dynamo.ViewModels
             if (!text.Contains(externalLinkIdentifier)) return null;
 
             string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
-            
+
             // if we only have 1 substring, it means there wasn't anything after the identifier
             if (split.Length <= 1) return null;
 
@@ -357,6 +611,6 @@ namespace Dynamo.ViewModels
                 return null;
             }
         }
-       
+
     }
 }

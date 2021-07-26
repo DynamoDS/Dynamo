@@ -379,84 +379,82 @@ namespace Dynamo.Controls
             //  The only solution that I can come up for now is clean the StackPanel content and 
             //  then add a new TextBox to it
 
-            ContentContainer.Children.Clear();
+            //ContentContainer.Children.Clear();
 
-            if (ViewModel == null) return;
+            //if (ViewModel == null) return;
+            //if (ViewModel.Content == "...")
+            //{
+            //    #region Draw Icon
+            //    Rectangle r1 = new Rectangle();
+            //    r1.Fill = Brushes.Black;
+            //    r1.Height = 1;
+            //    r1.Width = 16;
+            //    r1.UseLayoutRounding = true;
 
+            //    Rectangle r2 = new Rectangle();
+            //    r2.Fill = Brushes.Black;
+            //    r2.Height = 1;
+            //    r2.Width = 16;
+            //    r2.UseLayoutRounding = true;
 
-            if (ViewModel.Content == "...")
-            {
-                #region Draw Icon
-                Rectangle r1 = new Rectangle();
-                r1.Fill = Brushes.Black;
-                r1.Height = 1;
-                r1.Width = 16;
-                r1.UseLayoutRounding = true;
+            //    Rectangle r3 = new Rectangle();
+            //    r3.Fill = Brushes.Black;
+            //    r3.Height = 1;
+            //    r3.Width = 10;
+            //    r3.UseLayoutRounding = true;
+            //    r3.HorizontalAlignment = HorizontalAlignment.Left;
 
-                Rectangle r2 = new Rectangle();
-                r2.Fill = Brushes.Black;
-                r2.Height = 1;
-                r2.Width = 16;
-                r2.UseLayoutRounding = true;
+            //    Grid myGrid = new Grid();
+            //    myGrid.HorizontalAlignment  = HorizontalAlignment.Stretch;
+            //    myGrid.VerticalAlignment    = VerticalAlignment.Stretch;
+            //    myGrid.Background   = Brushes.Transparent;
+            //    myGrid.Margin       = ContentMargin;
+            //    myGrid.MaxHeight    = ContentMaxHeight;
+            //    myGrid.MaxWidth     = contentMaxWidth;
 
-                Rectangle r3 = new Rectangle();
-                r3.Fill = Brushes.Black;
-                r3.Height = 1;
-                r3.Width = 10;
-                r3.UseLayoutRounding = true;
-                r3.HorizontalAlignment = HorizontalAlignment.Left;
+            //    // Create row definitions.
+            //    RowDefinition rowDefinition1 = new RowDefinition();
+            //    RowDefinition rowDefinition2 = new RowDefinition();
+            //    RowDefinition rowDefinition3 = new RowDefinition();
+            //    rowDefinition1.Height = new GridLength(3);
+            //    rowDefinition2.Height = new GridLength(3);
+            //    rowDefinition3.Height = new GridLength(3);
 
-                Grid myGrid = new Grid();
-                myGrid.HorizontalAlignment  = HorizontalAlignment.Stretch;
-                myGrid.VerticalAlignment    = VerticalAlignment.Stretch;
-                myGrid.Background   = Brushes.Transparent;
-                myGrid.Margin       = ContentMargin;
-                myGrid.MaxHeight    = ContentMaxHeight;
-                myGrid.MaxWidth     = contentMaxWidth;
+            //    myGrid.RowDefinitions.Add(rowDefinition1);
+            //    myGrid.RowDefinitions.Add(rowDefinition2);
+            //    myGrid.RowDefinitions.Add(rowDefinition3);
+            //    myGrid.Children.Add(r1);
+            //    Grid.SetRow(r1, 0);
+            //    myGrid.Children.Add(r2);
+            //    Grid.SetRow(r2, 1);
+            //    myGrid.Children.Add(r3);
+            //    Grid.SetRow(r3, 2);
+            //    myGrid.UseLayoutRounding = true;
 
-                // Create row definitions.
-                RowDefinition rowDefinition1 = new RowDefinition();
-                RowDefinition rowDefinition2 = new RowDefinition();
-                RowDefinition rowDefinition3 = new RowDefinition();
-                rowDefinition1.Height = new GridLength(3);
-                rowDefinition2.Height = new GridLength(3);
-                rowDefinition3.Height = new GridLength(3);
+            //    ContentContainer.Children.Add(myGrid);
+            //    #endregion
+            //}
+            //else
+            //{
+            //    string content = ViewModel.Content;
+            //    if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Warning)
+            //    {
+            //        content = Wpf.Properties.Resources.InfoBubbleWarning + content;
+            //    }
+            //    else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error)
+            //    {
+            //        content = Wpf.Properties.Resources.InfoBubbleError + content;
+            //    }
 
-                myGrid.RowDefinitions.Add(rowDefinition1);
-                myGrid.RowDefinitions.Add(rowDefinition2);
-                myGrid.RowDefinitions.Add(rowDefinition3);
-                myGrid.Children.Add(r1);
-                Grid.SetRow(r1, 0);
-                myGrid.Children.Add(r2);
-                Grid.SetRow(r2, 1);
-                myGrid.Children.Add(r3);
-                Grid.SetRow(r3, 2);
-                myGrid.UseLayoutRounding = true;
+            //    TextBox textBox = GetNewTextBox(content);
+            //    ContentContainer.Children.Add(textBox);
 
-                ContentContainer.Children.Add(myGrid);
-                #endregion
-            }
-            else
-            {
-                string content = ViewModel.Content;
-                if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Warning)
-                {
-                    content = Wpf.Properties.Resources.InfoBubbleWarning + content;
-                }
-                else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error)
-                {
-                    content = Wpf.Properties.Resources.InfoBubbleError + content;
-                }
-
-                TextBox textBox = GetNewTextBox(content);
-                ContentContainer.Children.Add(textBox);
-
-                if (viewModel.DocumentationLink != null)
-                {
-                    TextBlock linkBlock = GetHyperlinkTextBlock();
-                    ContentContainer.Children.Add(linkBlock);
-                }
-            }
+            //    if (viewModel.DocumentationLink != null)
+            //    {
+            //        TextBlock linkBlock = GetHyperlinkTextBlock();
+            //        ContentContainer.Children.Add(linkBlock);
+            //    }
+            //}
         }
 
         private void RequestNavigateToDocumentationLinkHandler(object sender, RequestNavigateEventArgs e)

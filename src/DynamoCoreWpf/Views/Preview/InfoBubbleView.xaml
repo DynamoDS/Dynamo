@@ -1,35 +1,386 @@
-﻿<UserControl x:Class="Dynamo.Controls.InfoBubbleView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:controls="clr-namespace:Dynamo.Controls"
-             xmlns:core="clr-namespace:Dynamo.Core"
-             mc:Ignorable="d"
-             Name="InfoBubbleWindowUserControl"
-             Loaded="InfoBubbleWindowUserControl_Loaded">
+﻿<UserControl
+    x:Class="Dynamo.Controls.InfoBubbleView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Dynamo.Controls"
+    xmlns:core="clr-namespace:Dynamo.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:Dynamo.UI"
+    Name="InfoBubbleWindowUserControl"
+    Loaded="InfoBubbleWindowUserControl_Loaded"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
-            <Storyboard x:Key="fadeInStoryBoard" Name="fadeInStoryBoard" TargetName="mainGrid" Storyboard.TargetProperty="Opacity">
-                <DoubleAnimation Name ="countUpDoubleAnimation" From="0" To="0.95" Duration="0:0:.25" FillBehavior="HoldEnd" Completed="CountUpDoubleAnimation_Completed"/>
+            <Storyboard
+                x:Key="fadeInStoryBoard"
+                Name="fadeInStoryBoard"
+                TargetName="mainGrid"
+                Storyboard.TargetProperty="Opacity">
+                <DoubleAnimation
+                    Name="countUpDoubleAnimation"
+                    Completed="CountUpDoubleAnimation_Completed"
+                    FillBehavior="HoldEnd"
+                    From="0"
+                    To="0.95"
+                    Duration="0:0:.25" />
             </Storyboard>
-            <Storyboard x:Key="fadeOutStoryBoard" Name="fadeOutStoryBoard" TargetName="mainGrid" Storyboard.TargetProperty="Opacity">
-                <DoubleAnimation Name ="countDownDoubleAnimation" From="0.95" To="0" Duration="0:0:.25" FillBehavior="HoldEnd" Completed="CountDownDoubleAnimation_Completed"/>
+            <Storyboard
+                x:Key="fadeOutStoryBoard"
+                Name="fadeOutStoryBoard"
+                TargetName="mainGrid"
+                Storyboard.TargetProperty="Opacity">
+                <DoubleAnimation
+                    Name="countDownDoubleAnimation"
+                    Completed="CountDownDoubleAnimation_Completed"
+                    FillBehavior="HoldEnd"
+                    From="0.95"
+                    To="0"
+                    Duration="0:0:.25" />
             </Storyboard>
         </ResourceDictionary>
-        
+
     </UserControl.Resources>
 
-    <Grid x:Name="mainGrid" Background="Transparent" HorizontalAlignment="Left" VerticalAlignment="Top"
-           MouseLeave="InfoBubble_MouseLeave" MouseMove="MainGrid_MouseMove" MouseWheel="InfoBubble_MouseWheel">
+    <Grid
+        x:Name="mainGrid"
+        Margin="10"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Top"
+        Background="Transparent"
+        MouseLeave="InfoBubble_MouseLeave"
+        MouseMove="MainGrid_MouseMove"
+        MouseWheel="InfoBubble_MouseWheel">
+        <Grid.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                    <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
-        <Polygon Name="backgroundPolygon" Margin="0, 0, 0, 0" 
-                 MouseEnter="InfoBubble_MouseEnter"
-                 RenderOptions.EdgeMode="Aliased">
-        </Polygon>
+        <DockPanel
+            Name="nodeInformationalStateDockPanel"
+            Grid.Row="0"
+            MaxWidth="300"
+            Margin="0,-500,0,4"
+            HorizontalAlignment="Left"
+            Canvas.ZIndex="100"
+            LastChildFill="False">
 
-        <StackPanel Name="ContentContainer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                    MouseEnter="ContentContainer_MouseEnter">
+            <!--  Errors  -->
+            <Border
+                Margin="0,0,0,5"
+                HorizontalAlignment="Left"
+                Background="White"
+                BorderBrush="#666666"
+                BorderThickness="1"
+                CornerRadius="2"
+                DockPanel.Dock="Bottom"
+                Visibility="{Binding NodeErrorsVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                <Grid Margin="10">
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <!--  Error Glyph  -->
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Width="35"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top">
+                            <Path
+                                Width="25"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Data="M0,12.5 l12.5,-12.5 l12.5,12.5 l-12.5,12.5 z"
+                                Fill="#EB5555"
+                                Stroke="#EB5555"
+                                StrokeLineJoin="Round"
+                                StrokeThickness="1" />
+                            <TextBlock
+                                Margin="10,2,0,2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                FontFamily="{StaticResource ArtifaktElementBold}"
+                                FontSize="16"
+                                Foreground="White"
+                                SnapsToDevicePixels="True"
+                                Text="!" />
+                        </Grid>
+                        <ListBox
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            BorderThickness="0"
+                            ItemsSource="{Binding NodeErrorsToDisplay, UpdateSourceTrigger=PropertyChanged}"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock
+                                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                                        FontSize="12px"
+                                        Foreground="Black"
+                                        TextWrapping="Wrap">
+                                        <TextBlock.Inlines>
+                                            <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
+                                            <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
+                                        </TextBlock.Inlines>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <StackPanel Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="0,10,0,0"
+                                    HorizontalAlignment="Right"
+                                    FlowDirection="RightToLeft"
+                                    Orientation="Horizontal">
+                            <Button HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Content="Show all errors"
+                                    Foreground="#0696D7"
+                                    Visibility="{Binding IsErrorInformationalStateExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!--  Warnings  -->
+            <Border
+                Margin="0,0,0,5"
+                HorizontalAlignment="Left"
+                Background="White"
+                BorderBrush="#666666"
+                BorderThickness="1"
+                CornerRadius="2"
+                DockPanel.Dock="Bottom"
+                Visibility="{Binding NodeWarningsVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                <Grid Margin="10">
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <!--  Warning Glyph  -->
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Width="35"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top">
+                            <Path
+                                Width="25"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Data="M1,20 l11.5,-20 l11.5,20 z"
+                                Fill="#FAA21B"
+                                Stroke="#FAA21B"
+                                StrokeLineJoin="Round"
+                                StrokeThickness="1" />
+                            <TextBlock
+                                Margin="10,5,0,3"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                FontFamily="{StaticResource ArtifaktElementBold}"
+                                FontSize="15"
+                                Foreground="White"
+                                SnapsToDevicePixels="True"
+                                Text="!" />
+                        </Grid>
+                        <ListBox
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            BorderThickness="0"
+                            ItemsSource="{Binding NodeWarningsToDisplay, UpdateSourceTrigger=PropertyChanged}"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock
+                                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                                        FontSize="12px"
+                                        Foreground="Black"
+                                        TextWrapping="Wrap">
+                                        <TextBlock.Inlines>
+                                            <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
+                                            <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
+                                        </TextBlock.Inlines>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <StackPanel
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="0,10,0,0"
+                            HorizontalAlignment="Right"
+                            FlowDirection="RightToLeft"
+                            Orientation="Horizontal">
+                            <Button
+                                Margin="0,0,10,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Content="Dismiss"
+                                Foreground="#0696D7"
+                                Visibility="{Binding IsErrorInformationalStateExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                            <Button
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Content="Show all warnings"
+                                Foreground="#0696D7"
+                                Visibility="{Binding IsErrorInformationalStateExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!--  Info  -->
+            <Border
+                Margin="0,0,0,5"
+                HorizontalAlignment="Left"
+                Background="White"
+                BorderBrush="#666666"
+                BorderThickness="1"
+                CornerRadius="2"
+                DockPanel.Dock="Bottom"
+                Visibility="{Binding NodeInfoVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                <Grid Margin="10">
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <!--  Info Glyph  -->
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Width="35"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top">
+                            <Ellipse
+                                Width="25"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Fill="#38ABDF" />
+                            <TextBlock
+                                Margin="10,5,0,2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                FontFamily="{StaticResource ArtifaktElementBold}"
+                                FontSize="16"
+                                Foreground="White"
+                                SnapsToDevicePixels="True"
+                                Text="i" />
+                        </Grid>
+                        <ListBox
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            BorderThickness="0"
+                            ItemsSource="{Binding NodeInfoToDisplay, UpdateSourceTrigger=PropertyChanged}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock
+                                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                                        FontSize="12px"
+                                        Foreground="Black"
+                                        TextWrapping="Wrap">
+                                        <TextBlock.Inlines>
+                                            <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
+                                            <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
+                                        </TextBlock.Inlines>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <StackPanel
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="0,10,0,0"
+                            HorizontalAlignment="Right"
+                            FlowDirection="RightToLeft"
+                            Orientation="Horizontal">
+                            <Button
+                                Margin="0,0,10,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Content="Dismiss"
+                                Foreground="#0696D7"
+                                Visibility="{Binding IsErrorInformationalStateExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                            <Button
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Content="Show all info"
+                                Foreground="#0696D7"
+                                Visibility="{Binding IsErrorInformationalStateExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <DockPanel.Resources>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <ContentPresenter
+                                    Margin="2"
+                                    Content="{TemplateBinding Content}"
+                                    ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DockPanel.Resources>
+        </DockPanel>
+
+        <Polygon
+            Name="backgroundPolygon"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Margin="0,0,0,0"
+            MouseEnter="InfoBubble_MouseEnter"
+            RenderOptions.EdgeMode="Aliased" />
+
+        <StackPanel
+            Name="ContentContainer"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            MouseEnter="ContentContainer_MouseEnter">
             <StackPanel.Resources>
                 <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
                     <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
@@ -39,16 +390,34 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ScrollBar}">
-                                <Grid x:Name="GridRoot" Width="5" Background="{TemplateBinding Background}">
-                                    <Track x:Name="PART_Track" Grid.Row="0" IsDirectionReversed="true" Focusable="false">
+                                <Grid
+                                    x:Name="GridRoot"
+                                    Width="5"
+                                    Background="{TemplateBinding Background}">
+                                    <Track
+                                        x:Name="PART_Track"
+                                        Grid.Row="0"
+                                        Focusable="false"
+                                        IsDirectionReversed="true">
                                         <Track.Thumb>
-                                            <Thumb x:Name="Thumb" Background="{TemplateBinding Foreground}" Style="{DynamicResource ScrollThumbs}" />
+                                            <Thumb
+                                                x:Name="Thumb"
+                                                Background="{TemplateBinding Foreground}"
+                                                Style="{DynamicResource ScrollThumbs}" />
                                         </Track.Thumb>
                                         <Track.IncreaseRepeatButton>
-                                            <RepeatButton x:Name="PageUp" Command="ScrollBar.PageDownCommand" Opacity="0" Focusable="false" />
+                                            <RepeatButton
+                                                x:Name="PageUp"
+                                                Command="ScrollBar.PageDownCommand"
+                                                Focusable="false"
+                                                Opacity="0" />
                                         </Track.IncreaseRepeatButton>
                                         <Track.DecreaseRepeatButton>
-                                            <RepeatButton x:Name="PageDown" Command="ScrollBar.PageUpCommand" Opacity="0" Focusable="false" />
+                                            <RepeatButton
+                                                x:Name="PageDown"
+                                                Command="ScrollBar.PageUpCommand"
+                                                Focusable="false"
+                                                Opacity="0" />
                                         </Track.DecreaseRepeatButton>
                                     </Track>
                                 </Grid>
@@ -61,8 +430,20 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type Thumb}">
                                 <Grid x:Name="Grid">
-                                    <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" Fill="Transparent" />
-                                    <Border x:Name="Rectangle1" CornerRadius="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto"  Background="{TemplateBinding Background}" />
+                                    <Rectangle
+                                        Width="Auto"
+                                        Height="Auto"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Fill="Transparent" />
+                                    <Border
+                                        x:Name="Rectangle1"
+                                        Width="Auto"
+                                        Height="Auto"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Background="{TemplateBinding Background}"
+                                        CornerRadius="5" />
                                 </Grid>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="Tag" Value="Horizontal">

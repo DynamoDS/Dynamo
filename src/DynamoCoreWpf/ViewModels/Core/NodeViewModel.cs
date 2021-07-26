@@ -56,6 +56,7 @@ namespace Dynamo.ViewModels
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
         private bool isRenamed = false;
+        private int numberOfDismissedAlerts = 0;
         #endregion
 
         #region public members
@@ -140,6 +141,12 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// A reference to the NodeModel's InformationalStates collection, which defines warnings, errors etc
+        /// </summary>
+        [JsonIgnore]
+        public ObservableCollection<INodeInformationalState> NodeInformationalStates => NodeModel.NodeInformationalStates;
+        
         [JsonIgnore]
         public bool IsSelected
         {
@@ -250,7 +257,7 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.State; }
         }
-        
+
         /// <summary>
         /// This is a UI placeholder for future functionality relating to Alerts
         /// </summary>
@@ -258,11 +265,47 @@ namespace Dynamo.ViewModels
         public int NumberOfDismissedAlerts
         {
 
-            get => 35;
+            get => numberOfDismissedAlerts;
             set
             {
-                NumberOfDismissedAlerts = value;
+                numberOfDismissedAlerts = value;
                 RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
+            }
+        }
+
+        /// <summary>
+        /// This is a UI placeholder for node information states work
+        /// </summary>
+
+
+        private bool isErrorInformationalStateExpanded;
+
+        [JsonIgnore]
+        public bool IsErrorInformationalStateExpanded
+        {
+            get { return isErrorInformationalStateExpanded; }
+            set
+            {
+                isErrorInformationalStateExpanded = value;
+                RaisePropertyChanged(nameof(IsErrorInformationalStateExpanded));
+            }
+        }
+
+        /// <summary>
+        /// This is a UI placeholder for node information states work
+        /// </summary>
+
+
+        private bool isWarningInformationalStateExpanded;
+
+        [JsonIgnore]
+        public bool IsWarningInformationalStateExpanded
+        {
+            get { return isWarningInformationalStateExpanded; }
+            set
+            {
+                isWarningInformationalStateExpanded = value;
+                RaisePropertyChanged(nameof(IsWarningInformationalStateExpanded));
             }
         }
 
@@ -486,7 +529,7 @@ namespace Dynamo.ViewModels
 
         private bool isNodeNewlyAdded;
         private ImageSource imageSource;
-
+        
         [JsonIgnore]
         public bool IsNodeAddedRecently
         {
@@ -696,6 +739,91 @@ namespace Dynamo.ViewModels
             ++NoteViewModel.StaticZIndex;
 
             if(workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource)) ImageSource = imgSource;
+
+            NodeModel.NodeInformationalStates.CollectionChanged += NodeInformationalStates_CollectionChanged;
+            ///////////////////////////////////////////////////////////////////////////
+            if (ErrorBubble == null) return;
+
+            ErrorBubble.NodeErrors.Clear();
+            ErrorBubble.NodeWarnings.Clear();
+            ErrorBubble.NodeInfo.Clear();
+
+            List<NodeError> nodeErrors = NodeModel.NodeInformationalStates
+                .OfType<NodeError>()
+                .ToList();
+
+            List<NodeWarning> nodeWarnings = NodeModel.NodeInformationalStates
+                .OfType<NodeWarning>()
+                .ToList();
+
+            List<NodeInfo> nodeInfos = NodeModel.NodeInformationalStates
+                .OfType<NodeInfo>()
+                .ToList();
+
+            nodeInfos.Add(new NodeInfo { Message = "Lorem ipsum dolor sit amet, consect etur adipiscing elit." });
+             
+            nodeWarnings.Add(new NodeWarning { Message = "Lorem ipsum dolor sit amet, consect etur adipiscing elit." });
+            nodeWarnings.Add(new NodeWarning { Message = "Lorem ipsum dolor sit amet" });
+            nodeWarnings.Add(new NodeWarning { Message = "Lorem ipsum dolor sit amet etur adipiscing elit." });
+            
+            nodeErrors.Add(new NodeError { Message = "Lorem ipsum dolor sit amet, consect etur adipiscing elit, sed do eiusmod tempor incididunt. " });
+            nodeErrors.Add(new NodeError { Message = "Lorem ipsum dolor sit amet, consect etur adipiscing elit. " });
+
+            ErrorBubble.NodeInfoVisible = true;
+            ErrorBubble.NodeWarningsVisible = true;
+            ErrorBubble.NodeErrorsVisible = true;
+
+            //ErrorBubble.NodeInfoVisible = nodeInfos.Count > 0;
+            //ErrorBubble.NodeWarningsVisible = nodeWarnings.Count > 0;
+            //ErrorBubble.NodeErrorsVisible = nodeErrors.Count > 0;
+
+            for (int i = 0; i < nodeErrors.Count; i++) ErrorBubble.NodeErrors.Add(nodeErrors[i].Message);
+            for (int i = 0; i < nodeWarnings.Count; i++) ErrorBubble.NodeWarnings.Add(nodeWarnings[i].Message);
+            for (int i = 0; i < nodeInfos.Count; i++) ErrorBubble.NodeInfo.Add(nodeInfos[i].Message);
+            ///////////////////////////////////////////////////////////////////////
+        }
+
+        /// <summary>
+        /// A method used to rebuild the ErrorBubble's user-facing information.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NodeInformationalStates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (ErrorBubble == null) return;
+
+            ErrorBubble.NodeErrors.Clear();
+            ErrorBubble.NodeWarnings.Clear();
+            ErrorBubble.NodeInfo.Clear();
+
+            List<NodeError> nodeErrors = NodeModel.NodeInformationalStates
+                .OfType<NodeError>()
+                .ToList();
+
+            List<NodeWarning> nodeWarnings = NodeModel.NodeInformationalStates
+                .OfType<NodeWarning>()
+                .ToList();
+
+            List<NodeInfo> nodeInfos = NodeModel.NodeInformationalStates
+                .OfType<NodeInfo>()
+                .ToList();
+
+            nodeErrors.Add(new NodeError { Message = "Test Error 1" });
+            nodeErrors.Add(new NodeError { Message = "Test Error 2" });
+            nodeWarnings.Add(new NodeWarning { Message = "Test Warning 1" });
+            nodeWarnings.Add(new NodeWarning { Message = "Test Warning 2" });
+
+            ErrorBubble.NodeInfoVisible = true;
+            ErrorBubble.NodeWarningsVisible = true;
+            ErrorBubble.NodeErrorsVisible = true;
+
+            //ErrorBubble.NodeInfoVisible = nodeInfos.Count > 0;
+            //ErrorBubble.NodeWarningsVisible = nodeWarnings.Count > 0;
+            //ErrorBubble.NodeErrorsVisible = nodeErrors.Count > 0;
+
+            for (int i = 0; i < nodeErrors.Count; i++) ErrorBubble.NodeErrors.Add(nodeErrors[i].Message);
+            for (int i = 0; i < nodeWarnings.Count; i++) ErrorBubble.NodeWarnings.Add(nodeWarnings[i].Message);
+            for (int i = 0; i < nodeInfos.Count; i++) ErrorBubble.NodeInfo.Add(nodeInfos[i].Message);
         }
 
         /// <summary>

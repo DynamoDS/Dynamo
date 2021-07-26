@@ -69,7 +69,7 @@ namespace Dynamo.Graph.Nodes
 
         #endregion
 
-        internal const double HeaderHeight = 66;
+        internal const double HeaderHeight = 56;
 
         #region public members
 
@@ -395,6 +395,24 @@ namespace Dynamo.Graph.Nodes
             {
                 outPorts = value;
                 RaisePropertyChanged("OutPorts");
+            }
+        }
+
+        /// <summary>
+        /// A collection of objects that represent user-facing messages on a node.
+        /// These can be one of 3 types: Info, Warning or Error
+        /// Info types represent non-vital information about a node's operation.
+        /// Warning types represent information the user should be made aware of, but may still be dismissed.
+        /// Error types signify a non-dismissable error, which will block the node from executing until it has been addressed.
+        /// </summary>
+        [JsonIgnore]
+        public ObservableCollection<INodeInformationalState> NodeInformationalStates
+        {
+            get => nodeInformationalStates;
+            set
+            {
+                nodeInformationalStates = value;
+                RaisePropertyChanged(nameof(NodeInformationalStates));
             }
         }
 
@@ -2423,6 +2441,9 @@ namespace Dynamo.Graph.Nodes
 
         private ExecutionHints executionHint;
 
+        private ObservableCollection<INodeInformationalState> nodeInformationalStates =
+            new ObservableCollection<INodeInformationalState>();
+
         [JsonIgnore]
         public bool IsModified
         {
@@ -2721,5 +2742,32 @@ namespace Dynamo.Graph.Nodes
         /// Action to call on UI thread.
         /// </summary>
         public Action ActionToDispatch { get; set; }
+    }
+
+    /// <summary>
+    /// A collection of objects for displaying messages about a node's functionality to the user.
+    /// These are categorised as 'Information' level, the least important kind of message.
+    /// </summary>
+    public class NodeInfo : INodeInformationalState
+    {
+        public string Message { get; set; }
+    }
+
+    /// <summary>
+    /// A collection of objects for displaying messages about a node's functionality to the user.
+    /// These are categorised as 'Warning' level, an important but dismissable kind of message.
+    /// </summary>
+    public class NodeWarning : INodeInformationalState
+    {
+        public string Message { get; set; }
+    }
+
+    /// <summary>
+    /// A collection of objects for displaying messages about a node's functionality to the user.
+    /// These are categorised as 'Error' level, the most important kind of message.
+    /// </summary>
+    public class NodeError : INodeInformationalState
+    {
+        public string Message { get; set; }
     }
 }

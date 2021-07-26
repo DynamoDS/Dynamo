@@ -703,5 +703,27 @@ namespace Dynamo.Controls
             grid.ContextMenu.DataContext = viewModel;
             grid.ContextMenu.IsOpen = true;
         }
+
+        private void BorderWarning_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.IsWarningInformationalStateExpanded = true;
+        }
+
+        private void WarningDismissButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.IsWarningInformationalStateExpanded = false;
+            ViewModel.NumberOfDismissedAlerts++;
+        }
+
+        private void ErrorDismissButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.IsErrorInformationalStateExpanded = false;
+            ViewModel.NumberOfDismissedAlerts++;
+        }
+
+        private void BorderError_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.IsErrorInformationalStateExpanded = true;
+        }
     }
 }
