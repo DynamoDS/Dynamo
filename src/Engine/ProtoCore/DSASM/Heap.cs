@@ -275,6 +275,11 @@ namespace ProtoCore.DSASM
         }
     }
 
+
+    // The Garbage Collection strategy employed here is based on the an incremental Tri-Color Snapshot-at-the-Beggining algorithm
+    // Incremental: An incremental collector does small chunks of work and in between allows the mutator (i.e vm execution) to resume.
+    // Tri-Color: 3 colors (white, gray, black) are used to mark all heap elements and denote their GC state.
+    // SatB: GC uses a snapshot of the heap when deciding what heap elements need to be collected.
     public class Heap
     {
         private enum GCState
@@ -287,9 +292,9 @@ namespace ProtoCore.DSASM
 
         public enum GCMark
         {
-            White,
-            Gray,
-            Black
+            White,// Candidates for garbage collection.
+            Gray, // Root objects that haven't had all their references traced yet.
+            Black // Objects that are in use (are not candidates for garbage collection) and have had all their references traced.
         }
 
         private readonly List<int> freeList = new List<int>();
@@ -416,7 +421,21 @@ namespace ProtoCore.DSASM
         private StackValue AllocateStringInternal(string str, bool isConstant)
         {
             int index;
-            if (!stringTable.TryGetPointer(str, out index))
+            if (stringTable.TryGetPointer(str, out index)) {
+                // Any existing heap elements, marked as white, that are in the sweepSet and that are referenced during the sweep cycle will be marked as Black.
+                // This will ensure that no reachable data is mistakenly cleaned up (can cause floating garbage untill next cleanup)
+                if (gcState == GCState.Propagate && (index >= 0 && index < heapElements.Count))
+                {
+                    var he = heapElements[index];
+                    if (he.Mark == GCMark.White && sweepSet.Contains(index))
+                    {
+                        // Set the heap element's Mark as Black so that it will not get cleaned up.
+                        // No need to do a recursive mark on the it since it is just a string and thus cannot have references to other heap elements.
+                        he.Mark = GCMark.Black;
+                    }
+                }
+            } 
+            else 
             {
                 index = AllocateInternal(new StackValue[] {}, PrimitiveType.String);
                 stringTable.AddString(index, str);
@@ -656,6 +675,11 @@ namespace ProtoCore.DSASM
                 StackValue value = ptrs.Dequeue();
                 int rawPtr = (int)value.RawData;
                 var hp = heapElements[rawPtr];
+                if (hp == null)
+                {
+                    throw new NullReferenceException($"Null heap element found at index {rawPtr} during garbage collection");
+                }
+
                 if (hp.Mark == GCMark.Black)
                     continue;
 
@@ -746,6 +770,11 @@ namespace ProtoCore.DSASM
             foreach (var ptr in sweepSet)
             {
                 var hp = heapElements[ptr];
+                if (hp == null)
+                {
+                    throw new NullReferenceException($"Null heap element found at index {ptr} during garbage collection");
+                }
+
                 if (hp.Mark != GCMark.White)
                     continue;
 
@@ -767,6 +796,7 @@ namespace ProtoCore.DSASM
             }
 
             gcDebt = totalAllocated > GC_THRESHOLD ? totalAllocated : GC_THRESHOLD;
+            sweepSet.Clear();
         }
 
         /// <summary>
