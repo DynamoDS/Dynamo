@@ -29,6 +29,8 @@ namespace Dynamo.PackageManager
         {
             get { return Assembly.GetName().Name; }
         }
+
+        internal bool IsNodeViewOnlyLibrary { get; set; }
     }
 
     public class Package : NotificationObject, ILogSource
@@ -156,7 +158,10 @@ namespace Dynamo.PackageManager
         }
 
         [Obsolete("This is a temporary property. Please do not use it")]
-        public string PackageStateText { get {
+        public string PackageStateText
+        {
+            get
+            {
                 if (!DebugModes.IsEnabled("DynamoPackageStates"))
                 {
                     return "DO NOT USE THIS";
@@ -191,7 +196,15 @@ namespace Dynamo.PackageManager
         internal IEnumerable<Assembly> NodeLibraries
         {
             get { return LoadedAssemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly); }
-        } 
+        }
+
+        /// <summary>
+        ///     List the LoadedAssemblies whose IsNodeViewOnlyLibrary attribute is true
+        /// </summary>
+        internal IEnumerable<Assembly> NodeViewLibraries
+        {
+            get { return LoadedAssemblies.Where(x => x.IsNodeViewOnlyLibrary).Select(x => x.Assembly); }
+        }
 
         public String SiteUrl { get; set; }
         public String RepositoryUrl { get; set; }
@@ -261,7 +274,7 @@ namespace Dynamo.PackageManager
                     HostDependencies = body.host_dependencies,
                     Header = body
                 };
-                
+
                 foreach (var dep in body.dependencies)
                     pkg.Dependencies.Add(dep);
 
@@ -297,7 +310,7 @@ namespace Dynamo.PackageManager
 
         public IEnumerable<string> EnumerateAssemblyFilesInBinDirectory()
         {
-            if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) 
+            if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory))
                 return new List<string>();
 
             return Directory.EnumerateFiles(RootDirectory, "*.dll", SearchOption.AllDirectories);
@@ -340,7 +353,24 @@ namespace Dynamo.PackageManager
             // Use the pkg header to determine which assemblies to load and prevent multiple enumeration
             // In earlier packages, this field could be null, which is correctly handled by IsNodeLibrary
             var nodeLibraries = Header.node_libraries;
+            //node view libraries specify entry points which ONLY contain node view customizatons.
+            var nodeViewLibraries = Header.node_view_libraries;
+            nodeViewLibraries = nodeViewLibraries == null ? new string[] { } : nodeViewLibraries;
+
+            if (nodeLibraries != null)
+            {
+                //if an assembly is somhehow listed as both a node_view_library and a node_library - then treat this as a malformed package.
+                foreach (var nvl in nodeViewLibraries)
+                {
+                    if (nodeLibraries.Contains(nvl))
+                    {
+                        throw new LibraryLoadFailedException(BinaryDirectory, $"package header specified {nvl} as both a node_library, and node_view_library");
+                    }
+                }
+            }
             
+            var entryPoints = nodeLibraries.ToList().Concat(nodeViewLibraries);
+
             foreach (var assemFile in (new System.IO.DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
             {
                 Assembly assem;
@@ -348,7 +378,7 @@ namespace Dynamo.PackageManager
                 bool shouldLoadFile = true;
                 if (this.RequiresSignedEntryPoints)
                 {
-                    shouldLoadFile = IsFileSpecifiedInPackageJsonManifest(nodeLibraries, assemFile.Name, BinaryDirectory);
+                    shouldLoadFile = IsFileSpecifiedInPackageJsonManifest(entryPoints, assemFile.Name, BinaryDirectory);
                 }
 
                 if (shouldLoadFile)
@@ -357,13 +387,14 @@ namespace Dynamo.PackageManager
                     var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
                     if (result)
                     {
-                        // IsNodeLibrary may fail, we store the warnings here and then show
+                        // IsNodeLibrary checks below may fail, we store the warnings here and then show
                         IList<ILogMessage> warnings = new List<ILogMessage>();
 
                         assemblies.Add(new PackageAssembly()
                         {
                             Assembly = assem,
-                            IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings)
+                            IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), warnings),
+                            IsNodeViewOnlyLibrary = IsNodeViewLibrary(nodeViewLibraries, assem.GetName(), warnings)
                         });
 
                         warnings.ToList().ForEach(this.Log);
@@ -373,27 +404,27 @@ namespace Dynamo.PackageManager
 
             foreach (var assem in assemblies)
             {
-                LoadedAssemblies.Add( assem );
+                LoadedAssemblies.Add(assem);
             }
 
             return assemblies;
         }
 
         /// <summary>
-        /// Checks if a specific file is specified in the Node Libraries section of the package manifest json.
+        /// Checks if a specific file is specified in the Node Libraries Or Node_View_Libraries section of the package manifest json.
         /// </summary>
-        /// <param name="nodeLibraries">node libraries defined in package manifest json.</param>
+        /// <param name="entryPoints">entry points to check against in the pkg header</param>
         /// <param name="filename">filename of dll file to check</param>
         /// <param name="path">path of the packages</param>
         /// <returns></returns>
-        private static bool IsFileSpecifiedInPackageJsonManifest(IEnumerable<string> nodeLibraries, string filename, string path)
+        private static bool IsFileSpecifiedInPackageJsonManifest(IEnumerable<string> entryPoints, string filename, string path)
         {
-            foreach (var nodeLibraryAssembly in nodeLibraries)
+            foreach (var assembly in entryPoints)
             {
                 try
                 {
-                    var name = new AssemblyName(nodeLibraryAssembly).Name + ".dll";
-                    if (name == filename)
+                    var entrypointName = new AssemblyName(assembly).Name + ".dll";
+                    if (entrypointName == filename)
                     {
                         return true;
                     }
@@ -408,6 +439,29 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Determine if an assembly is in the "node_view_libraries" list for a the pacakge. This method is slightly more strict than the
+        /// Node_Library check as this method never returns true if the assembly is not specified in the pkg header.
+        /// Like Node_Library check, only the assembly name must match -the versions can be different to allow for incrementing versions during development.
+        /// </summary>
+        /// <param name="nodeViews">list of assemblies in header</param>
+        /// <param name="assembly">assembly to check</param>
+        /// <param name="messages">generated error messages, if any.</param>
+        /// <returns></returns>
+        internal static bool IsNodeViewLibrary(IEnumerable<string> nodeViews, AssemblyName name, IList<ILogMessage> messages)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException("Name");
+            }
+            if (nodeViews == null)
+            {
+                return false;
+            }
+            return ContainsAssemblyName(nodeViews, name, messages);
+
+        }
+
+        /// <summary>
         ///     Determine if an assembly is in the "node_libraries" list for the package.
         /// 
         ///     This algorithm accepts assemblies that don't have the same version, but the same name.
@@ -416,7 +470,7 @@ namespace Dynamo.PackageManager
         ///     This algorithm assumes all of the entries in nodeLibraryFullNames are properly formatted
         ///     as returned by the Assembly.FullName property.  If they are not, it ignores the entry.
         /// </summary>
-        internal static bool IsNodeLibrary(IEnumerable<string> nodeLibraryFullNames, AssemblyName name, ref IList<ILogMessage> messages)
+        internal static bool IsNodeLibrary(IEnumerable<string> nodeLibraryFullNames, AssemblyName name, IList<ILogMessage> messages)
         {
             if (name == null)
             {
@@ -427,13 +481,17 @@ namespace Dynamo.PackageManager
             {
                 return true;
             }
+            return ContainsAssemblyName(nodeLibraryFullNames, name, messages);
+        }
 
-            foreach (var n in nodeLibraryFullNames)
+        private static bool ContainsAssemblyName(IEnumerable<string> assemblyFullNames, AssemblyName assemblyNameToCheck, IList<ILogMessage> messages)
+        {
+            foreach (var n in assemblyFullNames)
             {
                 try
                 {
                     // The AssemblyName constructor throws an exception for an improperly formatted string
-                    if (new AssemblyName(n).Name == name.Name)
+                    if (new AssemblyName(n).Name == assemblyNameToCheck.Name)
                     {
                         return true;
                     }
@@ -449,6 +507,8 @@ namespace Dynamo.PackageManager
             }
             return false;
         }
+
+
 
         internal bool ContainsFile(string path)
         {

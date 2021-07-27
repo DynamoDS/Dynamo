@@ -199,22 +199,6 @@ namespace Dynamo.Models
         {
             return assem.GetTypes().Any(IsNodeSubType);
         }
-        internal static bool ContainsNodeViewCustomizationType(Assembly assem)
-        {
-            return GetCustomizationTypesUsingReflection(assem).Any();
-        }
-
-        internal static IEnumerable<Type> GetCustomizationTypesUsingReflection(Assembly assem)
-        {
-
-            var customizerType = Type.GetType("Dynamo.Wpf.INodeViewCustomization`1,DynamoCoreWpf");
-            if(customizerType != null)
-            {
-                var customizerImps = assem.GetTypes().Where(t => !t.IsAbstract && TypeExtensions.ImplementsGeneric(customizerType, t));
-                return customizerImps;
-            }
-            return new Type[] { };
-        }
 
         /// <summary>
         ///     Enumerate the types in an assembly and add them to DynamoController's

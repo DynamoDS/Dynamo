@@ -16,7 +16,7 @@ namespace Dynamo.PackageManager.Tests
         public void IsNodeLibrary_IsTrueForNullArg1()
         {
             IList<ILogMessage> ws = new List<ILogMessage>();
-            Assert.True(Package.IsNodeLibrary(null, assemName, ref ws));
+            Assert.True(Package.IsNodeLibrary(null, assemName, ws));
             Assert.IsEmpty(ws);
         }
 
@@ -24,7 +24,7 @@ namespace Dynamo.PackageManager.Tests
         public void IsNodeLibrary_ThrowsForNullArg2()
         {
             IList<ILogMessage> ws = new List<ILogMessage>();
-            Assert.Throws<ArgumentNullException>(() => Package.IsNodeLibrary(null, null, ref ws));
+            Assert.Throws<ArgumentNullException>(() => Package.IsNodeLibrary(null, null, ws));
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.True(Package.IsNodeLibrary(new List<string>
             {
                 "Neatamo, Version=2013.3.6.0, Culture=neutral, PublicKeyToken=null"
-            }, assemName, ref ws));
+            }, assemName, ws));
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.True(Package.IsNodeLibrary(new List<string>
             {
                 "Neatamo, Version=0.0.0.1, Culture=neutral, PublicKeyToken=null"
-            }, assemName, ref ws));
+            }, assemName, ws));
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.False(Package.IsNodeLibrary(new List<string>
             {
                 "CoolName, Version=0.0.0.1, Culture=neutral, PublicKeyToken=null"
-            }, assemName, ref ws));
+            }, assemName, ws));
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.False(Package.IsNodeLibrary(new List<string>
             {
                 "\\ x x x x x x"
-            }, assemName, ref ws));
+            }, assemName, ws));
             Assert.AreEqual(2, ws.Count());
         }
     }

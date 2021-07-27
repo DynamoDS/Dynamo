@@ -667,21 +667,37 @@ namespace Dynamo.Controls
         {
             nodeViewCustomizationLibrary.Add(new CoreNodeViewCustomizations());
             foreach (var assem in dynamoViewModel.Model.Loader.LoadedAssemblies)
+            {
                 nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(assem));
+               
+            }
+            //add customizations from each NodeViewLibrary in all loaded packages.
+            foreach(var assem in dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader.LocalPackages.SelectMany(x => x.NodeViewLibraries))
+            {
+                nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(assem));
+            }
         }
 
         private void SubscribeNodeViewCustomizationEvents()
         {
+            dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader.PackgeLoaded += PackageLoader_PackgeLoaded;
             dynamoViewModel.Model.Loader.AssemblyLoaded += LoaderOnAssemblyLoaded;
             dynamoViewModel.NodeViewReady += ApplyNodeViewCustomization;
         }
 
-       
+        private void PackageLoader_PackgeLoaded(Package loaddedPackage)
+        {
+           foreach(var customizationAssembly in loaddedPackage.NodeViewLibraries)
+            {
+                nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(customizationAssembly));
+            }
+        }
 
         private void UnsubscribeNodeViewCustomizationEvents()
         {
             if (dynamoViewModel == null) return;
 
+            dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader.PackgeLoaded -= PackageLoader_PackgeLoaded;
             dynamoViewModel.Model.Loader.AssemblyLoaded -= LoaderOnAssemblyLoaded;
             dynamoViewModel.NodeViewReady -= ApplyNodeViewCustomization;
         }
