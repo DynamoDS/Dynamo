@@ -433,7 +433,7 @@ namespace ProtoCore.DSASM
                     {
                         throw new NullReferenceException($"Null heap element found at index {index} during AllocateStringInternal");
                     }
-                    bool isHeapElementMarkedAsWhite = he.Mark == GCMark.White;// Either not processed by Propage step yet or processed and found as garbage.
+                    bool isHeapElementMarkedAsWhite = he.Mark == GCMark.White;// Either not processed by Propagate step yet or processed and found as garbage.
                     bool isHeapElementConsideredForCleanup = sweepSet.Contains(index);
                     if (isHeapElementMarkedAsWhite && isHeapElementConsideredForCleanup)
                     {
