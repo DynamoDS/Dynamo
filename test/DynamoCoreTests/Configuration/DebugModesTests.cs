@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using Dynamo.Configuration;
+using Dynamo.Utilities;
 using NUnit.Framework;
 
 namespace Dynamo.Tests.Configuration

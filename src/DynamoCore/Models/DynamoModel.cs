@@ -92,6 +92,19 @@ namespace Dynamo.Models
     }
 
     /// <summary>
+    /// Host analytics related info
+    /// </summary>
+    public struct HostAnalyticsInfo
+    {
+        /// Dynamo variation identified by host.
+        public string HostName;
+        /// Dynamo host parent id for analytics purpose.
+        public string ParentId;
+        /// Dynamo host session id for analytics purpose.
+        public string SessionId;
+    }
+
+    /// <summary>
     /// This class creates an interface for Engine controller.
     /// </summary>
     public interface IEngineControllerManager
@@ -181,7 +194,13 @@ namespace Dynamo.Models
         /// <summary>
         /// Name of the Host (i.e. DynamoRevit/DynamoStudio)
         /// </summary>
+        [Obsolete("This property will be removed in Dynamo 3.0 - please use HostAnalyticsInfo")]
         public string HostName { get; set; }
+
+        /// <summary>
+        /// Host analytics info
+        /// </summary>
+        public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
         /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
@@ -365,6 +384,18 @@ namespace Dynamo.Models
 
             OnShutdownStarted(); // Notify possible event handlers.
 
+            foreach (var ext in ExtensionManager.Extensions)
+            {
+                try
+                {
+                    ext.Shutdown();
+                }
+                catch (Exception exc)
+                {
+                    Logger.Log($"{ext.Name} :  {exc.Message} during shutdown");
+                }
+            }
+
             PreShutdownCore(shutdownHost);
             ShutDownCore(shutdownHost);
             PostShutdownCore(shutdownHost);
@@ -448,6 +479,12 @@ namespace Dynamo.Models
             /// Disables ADP for the entire process for the lifetime of the process.
             /// </summary>
             public bool DisableADP { get; set; }
+
+            /// <summary>
+            /// Host analytics info
+            /// TODO: Move this to IStartConfiguration in Dynamo 3.0
+            /// </summary>
+            public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
         }
 
         /// <summary>
@@ -473,6 +510,9 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
+        // Token representing the Built-InPackages directory
+        internal static readonly string BuiltInPackagesToken = @"%BuiltInPackages%";
+        [Obsolete("Only used for migration to the new for this directory - BuiltInPackages - do not use for other purposes")]
         // Token representing the standard library directory
         internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
 
@@ -527,11 +567,15 @@ namespace Dynamo.Models
             geometryFactoryPath = config.GeometryFactoryPath;
 
             IPreferences preferences = CreateOrLoadPreferences(config.Preferences);
-            var settings = preferences as PreferenceSettings;
-            if (settings != null)
+            if (preferences is PreferenceSettings settings)
             {
                 PreferenceSettings = settings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+            }
+
+            if (config is DefaultStartConfiguration defaultStartConfiguration)
+            {
+                HostAnalyticsInfo = defaultStartConfiguration.HostAnalyticsInfo;
             }
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
@@ -540,8 +584,9 @@ namespace Dynamo.Models
 
             if (hostUpdateManager != null)
             {
-                HostName = hostUpdateManager.HostName;
-                HostVersion = hostUpdateManager.HostVersion == null ? null : hostUpdateManager.HostVersion.ToString();
+                // For API compatibility now in Dynamo 2.0, integrators can set HostName in both ways
+                HostName = string.IsNullOrEmpty(hostUpdateManager.HostName)? HostAnalyticsInfo.HostName : hostUpdateManager.HostName;
+                HostVersion = hostUpdateManager.HostVersion?.ToString();
             }
             else
             {
@@ -614,11 +659,11 @@ namespace Dynamo.Models
             // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
-                PreferenceSettings.CustomPackageFolders = new List<string> { StandardLibraryToken, pathManager.UserDataDirectory };
+                PreferenceSettings.CustomPackageFolders = new List<string> { BuiltInPackagesToken, pathManager.UserDataDirectory };
 
-            if (!PreferenceSettings.CustomPackageFolders.Contains(StandardLibraryToken))
+            if (!PreferenceSettings.CustomPackageFolders.Contains(BuiltInPackagesToken))
             {
-                PreferenceSettings.CustomPackageFolders.Insert(0, StandardLibraryToken);
+                PreferenceSettings.CustomPackageFolders.Insert(0, BuiltInPackagesToken);
             }
 
             // Make sure that the default package folder is added in the list if custom packages folder.
@@ -675,6 +720,7 @@ namespace Dynamo.Models
             }
 
             pathManager.Preferences = PreferenceSettings;
+            PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
             SearchModel = new NodeSearchModel(Logger);
             SearchModel.ItemProduced +=
@@ -748,7 +794,7 @@ namespace Dynamo.Models
             {
                 var startupParams = new StartupParams(config.AuthProvider,
                     pathManager, new ExtensionLibraryLoader(this), CustomNodeManager,
-                    GetType().Assembly.GetName().Version, PreferenceSettings);
+                    GetType().Assembly.GetName().Version, PreferenceSettings, LinterManager);
 
                 foreach (var ext in extensions)
                 {
@@ -1114,6 +1160,7 @@ namespace Dynamo.Models
             if (PreferenceSettings != null)
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
+                PreferenceSettings.RequestUserDataFolder -= pathManager.GetUserDataFolder;
             }
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
@@ -2319,16 +2366,6 @@ namespace Dynamo.Models
             var notes = ClipBoard.OfType<NoteModel>();
             var annotations = ClipBoard.OfType<AnnotationModel>();
 
-            // Create the new NoteModel's
-            var newNoteModels = new List<NoteModel>();
-            foreach (var note in notes)
-            {
-                var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
-                //Store the old note as Key and newnote as value.
-                modelLookup.Add(note.GUID, noteModel);
-                newNoteModels.Add(noteModel);
-            }
-
             var xmlDoc = new XmlDocument();
 
             // Create the new NodeModel's
@@ -2364,6 +2401,25 @@ namespace Dynamo.Models
                     modelLookup.Add(node.GUID, newNode);
 
                     newNodeModels.Add(newNode);
+                }
+
+                // Create the new NoteModel's
+                var newNoteModels = new List<NoteModel>();
+                foreach (var note in notes)
+                {
+                    var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
+                    if (note.PinnedNode != null)
+                    {
+                        ModelBase pinned;
+                        var pinnedNode =
+                            modelLookup.TryGetValue(note.PinnedNode.GUID, out pinned)
+                            ? pinned as NodeModel
+                            : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == note.PinnedNode.GUID);
+                        noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid(), pinnedNode);
+                    }
+                    //Store the old note as Key and newnote as value.
+                    modelLookup.Add(note.GUID, noteModel);
+                    newNoteModels.Add(noteModel);
                 }
 
                 var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);
@@ -2669,7 +2725,7 @@ namespace Dynamo.Models
             OnRequestTaskDialog(null, args);
         }
 
-        enum ButtonId
+        internal enum ButtonId
         {
             Ok = 43420,
             Cancel,

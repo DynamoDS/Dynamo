@@ -44,5 +44,11 @@ namespace Dynamo.Wpf.Controls
             // Commented this after MAGN - 8423
             // hsvm.ClearWarning();
         }
+
+        private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var viewModel = this.DataContext as DynamoViewModel;
+            viewModel?.OnViewExtensionOpenRequest("Graph Status");
+        }
     }
 }

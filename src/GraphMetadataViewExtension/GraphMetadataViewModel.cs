@@ -5,7 +5,9 @@ using System.Windows.Media.Imaging;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.GraphMetadata.Controls;
+using Dynamo.Linting;
 using Dynamo.UI.Commands;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.GraphMetadata
@@ -15,11 +17,14 @@ namespace Dynamo.GraphMetadata
         private readonly ViewLoadedParams viewLoadedParams;
         private readonly GraphMetadataViewExtension extension;
         private HomeWorkspaceModel currentWorkspace;
+        private LinterManager linterManager;
 
         /// <summary>
         /// Command used to add new custom properties to the CustomProperty collection
         /// </summary>
         public DelegateCommand AddCustomPropertyCommand { get; set; }
+
+        public DelegateCommand OpenGraphStatusCommand { get; set; }
 
         /// <summary>
         /// Description of the current workspace
@@ -29,13 +34,12 @@ namespace Dynamo.GraphMetadata
             get { return currentWorkspace.Description; }
             set
             {
-                if (this.currentWorkspace != null && GraphDescription != value)
+                if (currentWorkspace != null && GraphDescription != value)
                 {
-                    this.currentWorkspace.HasUnsavedChanges = true;
+                    MarkCurrentWorkspaceModified();
+                    currentWorkspace.Description = value;
+                    RaisePropertyChanged(nameof(GraphDescription));
                 }
-
-                currentWorkspace.Description = value;
-                RaisePropertyChanged(nameof(GraphDescription));
             }
         }
 
@@ -47,13 +51,12 @@ namespace Dynamo.GraphMetadata
             get { return currentWorkspace.Author; }
             set 
             {
-                if (this.currentWorkspace != null && GraphAuthor != value)
+                if (currentWorkspace != null && GraphAuthor != value)
                 {
-                    this.currentWorkspace.HasUnsavedChanges = true;
+                    MarkCurrentWorkspaceModified();
+                    currentWorkspace.Author = value;
+                    RaisePropertyChanged(nameof(GraphAuthor));
                 }
-                currentWorkspace.Author = value; 
-                RaisePropertyChanged(nameof(GraphAuthor));
-
             }
         }
 
@@ -65,13 +68,12 @@ namespace Dynamo.GraphMetadata
             get { return currentWorkspace.GraphDocumentationURL; }
             set 
             {
-                if (this.currentWorkspace != null && HelpLink != value)
+                if (currentWorkspace != null && HelpLink != value)
                 {
-                    this.currentWorkspace.HasUnsavedChanges = true;
+                    MarkCurrentWorkspaceModified();
+                    currentWorkspace.GraphDocumentationURL = value;
+                    RaisePropertyChanged(nameof(HelpLink));
                 }
-
-                currentWorkspace.GraphDocumentationURL = value; 
-                RaisePropertyChanged(nameof(HelpLink)); 
             }
         }
 
@@ -88,13 +90,12 @@ namespace Dynamo.GraphMetadata
             set
             {
                 var base64 = value is null ? string.Empty : Base64FromImage(value);
-                if (this.currentWorkspace != null && base64 != currentWorkspace.Thumbnail)
+                if (currentWorkspace != null && base64 != currentWorkspace.Thumbnail)
                 {
-                    this.currentWorkspace.HasUnsavedChanges = true;
+                    MarkCurrentWorkspaceModified();
+                    currentWorkspace.Thumbnail = base64;
+                    RaisePropertyChanged(nameof(Thumbnail));
                 }
-
-                currentWorkspace.Thumbnail = base64;
-                RaisePropertyChanged(nameof(Thumbnail));
             }
         }
 
@@ -103,11 +104,14 @@ namespace Dynamo.GraphMetadata
         /// </summary>
         public ObservableCollection<CustomPropertyControl> CustomProperties { get; set; }
 
+        public LinterExtensionDescriptor CurrentLinter => linterManager.ActiveLinter;
+
         public GraphMetadataViewModel(ViewLoadedParams viewLoadedParams, GraphMetadataViewExtension extension)
         {
             this.viewLoadedParams = viewLoadedParams;
             this.extension = extension;
             this.currentWorkspace = viewLoadedParams.CurrentWorkspaceModel as HomeWorkspaceModel;
+            this.linterManager = viewLoadedParams.StartupParams.LinterManager;
 
             this.viewLoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
             // using this as CurrentWorkspaceChanged wont trigger if you:
@@ -115,6 +119,10 @@ namespace Dynamo.GraphMetadata
             // This means that properties defined in the previous opened workspace will still be showed in the extension.
             // CurrentWorkspaceCleared will trigger everytime a graph is closed which allows us to reset the properties. 
             this.viewLoadedParams.CurrentWorkspaceCleared += OnCurrentWorkspaceChanged;
+            if (linterManager != null)
+            {
+                linterManager.PropertyChanged += OnLinterManagerPropertyChange;
+            }
 
             CustomProperties = new ObservableCollection<CustomPropertyControl>();
             InitializeCommands();
@@ -146,6 +154,14 @@ namespace Dynamo.GraphMetadata
             }
 
             CustomProperties.Clear();
+        }
+
+        private void OnLinterManagerPropertyChange(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(LinterManager.ActiveLinter))
+            {
+                RaisePropertyChanged(nameof(CurrentLinter));
+            }
         }
 
         private static BitmapImage ImageFromBase64(string b64string)
@@ -190,6 +206,12 @@ namespace Dynamo.GraphMetadata
         private void InitializeCommands()
         {
             this.AddCustomPropertyCommand = new DelegateCommand(AddCustomPropertyExecute);
+            this.OpenGraphStatusCommand = new DelegateCommand(OpenGraphStatusExecute);
+        }
+
+        private void OpenGraphStatusExecute(object obj)
+        {
+            viewLoadedParams.OpenViewExtension("Graph Status");
         }
 
         private void AddCustomPropertyExecute(object obj)
@@ -198,7 +220,7 @@ namespace Dynamo.GraphMetadata
             AddCustomProperty(propName, string.Empty);
         }
 
-        internal void AddCustomProperty(string propertyName, string propertyValue)
+        internal void AddCustomProperty(string propertyName, string propertyValue, bool markChange = true)
         {
             var control = new CustomPropertyControl
             {
@@ -207,12 +229,18 @@ namespace Dynamo.GraphMetadata
             };
 
             control.RequestDelete += HandleDeleteRequest;
+            control.PropertyChanged += HandlePropertyChanged;
             CustomProperties.Add(control);
 
-            if (this.currentWorkspace != null)
+            if (markChange)
             {
-                this.currentWorkspace.HasUnsavedChanges = true;
+                MarkCurrentWorkspaceModified();
             }
+        }
+
+        private void HandlePropertyChanged(object sender, EventArgs e)
+        {
+            MarkCurrentWorkspaceModified();
         }
 
         private void HandleDeleteRequest(object sender, EventArgs e)
@@ -220,22 +248,33 @@ namespace Dynamo.GraphMetadata
             if (sender is CustomPropertyControl customProperty)
             {
                 customProperty.RequestDelete -= HandleDeleteRequest;
+                customProperty.PropertyChanged -= HandlePropertyChanged;
                 CustomProperties.Remove(customProperty);
-                if (this.currentWorkspace != null)
-                {
-                    this.currentWorkspace.HasUnsavedChanges = true;
-                }
+                MarkCurrentWorkspaceModified();
             }
         }
 
-       public void Dispose()
-       {
+        private void MarkCurrentWorkspaceModified()
+        { 
+            if (currentWorkspace != null && !string.IsNullOrEmpty(currentWorkspace.FileName))
+            {
+                currentWorkspace.HasUnsavedChanges = true;
+            }
+        }
+
+        public void Dispose()
+        {
             this.viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+            if (linterManager != null)
+            {
+                linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
+            }
 
             foreach (var cp in CustomProperties)
             {
                 cp.RequestDelete -= HandleDeleteRequest;
+                cp.PropertyChanged -= HandlePropertyChanged;
             }
-       }
+        }
     }
 }

@@ -118,6 +118,7 @@ namespace Dynamo.ViewModels
             get { return Model.LoadedAssemblies.Any(); }
         }
 
+        [Obsolete("Do not use. This command will be removed. It does nothing.")]
         public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
         public DelegateCommand GetLatestVersionCommand { get; set; }
         public DelegateCommand PublishNewPackageVersionCommand { get; set; }
@@ -135,7 +136,7 @@ namespace Dynamo.ViewModels
             this.packageManagerClient = pmExtension.PackageManagerClient;
             Model = model;
 
-            ToggleTypesVisibleInManagerCommand = new DelegateCommand(ToggleTypesVisibleInManager, CanToggleTypesVisibleInManager);
+            ToggleTypesVisibleInManagerCommand = new DelegateCommand(() => { }, () => true);
             GetLatestVersionCommand = new DelegateCommand(GetLatestVersion, CanGetLatestVersion);
             PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), CanPublishNewPackageVersion);
             PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), CanPublishNewPackage);
@@ -357,16 +358,6 @@ namespace Dynamo.ViewModels
         private bool CanGetLatestVersion()
         {
             return false;
-        }
-
-        private void ToggleTypesVisibleInManager()
-        {
-            Model.TypesVisibleInManager = !Model.TypesVisibleInManager;
-        }
-
-        private bool CanToggleTypesVisibleInManager()
-        {
-            return true;
         }
     }
 }

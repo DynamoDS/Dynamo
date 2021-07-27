@@ -103,11 +103,13 @@ namespace Dynamo.Logging
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
 #endif
 
-        private IPreferences preferences = null;
+        private readonly IPreferences preferences = null;
 
         public static IDisposable Disposable { get { return new Dummy(); } }
 
-        private ProductInfo product;
+        private readonly ProductInfo product;
+
+        private readonly HostContextInfo hostInfo;
 
         public virtual IAnalyticsSession Session { get; private set; }
 
@@ -178,9 +180,10 @@ namespace Dynamo.Logging
             
             var hostName = string.IsNullOrEmpty(dynamoModel.HostName) ? "Dynamo" : dynamoModel.HostName;
 
-            string buildId = "", releaseId = "";
-            Version version;
-            if (Version.TryParse(dynamoModel.Version, out version))
+            hostInfo = new HostContextInfo() { ParentId = dynamoModel.HostAnalyticsInfo.ParentId, SessionId = dynamoModel.HostAnalyticsInfo.SessionId };
+
+            string buildId = String.Empty, releaseId = String.Empty;
+            if (Version.TryParse(dynamoModel.Version, out Version version))
             {
                 buildId = $"{version.Major}.{version.Minor}.{version.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
                 releaseId = $"{version.Major}.{version.Minor}.0"; // ReleaseId has the following format: major.minor.0; ex: 2.5.0
@@ -232,7 +235,7 @@ namespace Dynamo.Logging
                     RegisterADPTracker(service);
 
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
-                Service.StartUp(product, new UserInfo(Session.UserId), TimeSpan.FromMinutes(30));
+                Service.StartUp(product, new UserInfo(Session.UserId), hostInfo, TimeSpan.FromMinutes(30));
                 TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
                 TrackPreferenceInternal("ReportingADPAnalytics", "", ReportingADPAnalytics ? 1 : 0);
             }

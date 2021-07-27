@@ -38,6 +38,7 @@ using Dynamo.Wpf;
 using Dynamo.Wpf.Authentication;
 using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views;
@@ -47,6 +48,7 @@ using Dynamo.Wpf.Views.PackageManager;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
+using Res = Dynamo.Wpf.Properties.Resources;
 using String = System.String;
 
 namespace Dynamo.Controls
@@ -189,17 +191,6 @@ namespace Dynamo.Controls
                 {
                     Log(ext.Name + ": " + exc.Message);
                 }
-            }
-
-            // Sets the visibility of the preferences option in the Dynamo menu depending on the debug mode being enabled
-            // This will be deleted once the option goes into production
-            if (Dynamo.Configuration.DebugModes.IsEnabled("DynamoPreferencesMenuDebugMode"))
-            {
-                preferencesOption.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                preferencesOption.Visibility = Visibility.Collapsed;
             }
 
             // when an extension is added if dynamoView is loaded, call loaded on
@@ -940,9 +931,7 @@ namespace Dynamo.Controls
             #region Package manager
 
             dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestRequestPackageManagerPublish;
-            dynamoViewModel.RequestManagePackagesDialog += DynamoViewModelRequestShowInstalledPackages;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
-            dynamoViewModel.RequestPackagePathsDialog += DynamoViewModelRequestPackagePaths;
 
             #endregion
 
@@ -1163,43 +1152,6 @@ namespace Dynamo.Controls
 
             _searchPkgsView.Focus();
             _pkgSearchVM.RefreshAndSearchAsync();
-        }
-
-        private void DynamoViewModelRequestPackagePaths(object sender, EventArgs e)
-        {
-            var loadPackagesParams = new LoadPackageParams
-            {
-                Preferences = dynamoViewModel.PreferenceSettings,
-                PathManager = dynamoViewModel.Model.PathManager,
-            };
-            var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
-            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader;
-            var viewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
-            var view = new PackagePathView(viewModel) { Owner = this };
-            view.ShowDialog();
-        }
-
-        private InstalledPackagesView _installedPkgsView;
-
-        private void DynamoViewModelRequestShowInstalledPackages(object s, EventArgs e)
-        {
-            var cmd = Analytics.TrackCommandEvent("ManagePackage");
-            if (_installedPkgsView == null)
-            {
-                var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
-                _installedPkgsView = new InstalledPackagesView(new InstalledPackagesViewModel(dynamoViewModel,
-                    pmExtension.PackageLoader))
-                {
-                    Owner = this,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-
-                _installedPkgsView.Closed += (sender, args) => { _installedPkgsView = null; cmd.Dispose(); };
-                _installedPkgsView.Show();
-
-                if (_installedPkgsView.IsLoaded && IsLoaded) _installedPkgsView.Owner = this;
-            }
-            _installedPkgsView.Focus();
         }
 
         private void ClipBoard_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -1557,9 +1509,7 @@ namespace Dynamo.Controls
 
             //PACKAGE MANAGER
             dynamoViewModel.RequestPackagePublishDialog -= DynamoViewModelRequestRequestPackageManagerPublish;
-            dynamoViewModel.RequestManagePackagesDialog -= DynamoViewModelRequestShowInstalledPackages;
             dynamoViewModel.RequestPackageManagerSearchDialog -= DynamoViewModelRequestShowPackageManagerSearch;
-            dynamoViewModel.RequestPackagePathsDialog -= DynamoViewModelRequestPackagePaths;
 
             //FUNCTION NAME PROMPT
             dynamoViewModel.Model.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
@@ -1834,7 +1784,7 @@ namespace Dynamo.Controls
 
         private void OnPreferencesWindowClick(object sender, RoutedEventArgs e)
         {
-            var preferencesWindow = new PreferencesView(dynamoViewModel);
+            var preferencesWindow = new PreferencesView(this);
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             preferencesWindow.ShowDialog();
         }
@@ -2372,6 +2322,171 @@ namespace Dynamo.Controls
             {
                 HidePopupWhenWindowDeactivated();
             }
+        }
+
+        private void GetStartedMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ShowGetStartedGuidedTour();
+        }
+
+        /// <summary>
+        /// This method probably will be modified or deleted in the future when the GuideManager and Guide class are created
+        /// For now will be used just for testing/demo purposes since the popups will be created probably in the Guide class.
+        /// </summary>
+        private void ShowGetStartedGuidedTour()
+        {
+
+            Step.TotalSteps = 6;
+
+            //Welcome Popup
+            var hostPopupInfo = new HostControlInfo()
+            {
+                HostClass = string.Empty,
+                PopupPlacement = PlacementMode.Center,
+                HostUIElement = WorkspaceTabs,
+                VerticalPopupOffSet = 0,
+                HorizontalPopupOffSet = 0
+            };
+
+            var customWelcome = new Welcome(hostPopupInfo, 480, 180)
+            {
+                Sequence = 0,
+                StepContent = new Content()
+                {
+                    Title = Res.GetStartedGuideWelcomeTitle,
+                    FormattedText = Res.GetStartedGuideWelcomeText
+                }
+            };
+            customWelcome.Show();
+
+            //Library Popup
+            var libraryPopupInfo = new HostControlInfo()
+            {
+                HostClass = string.Empty,
+                PopupPlacement = PlacementMode.Right,
+                HostUIElement = sidebarGrid,
+                VerticalPopupOffSet = 250,
+                HorizontalPopupOffSet = 0
+            };
+
+            var customTooltip = new Tooltip(libraryPopupInfo, 480, 250, Step.PointerDirection.BOTTOM_LEFT)
+            {
+                Sequence = 1,
+                StepContent = new Content()
+                {
+                    Title = Res.GetStartedGuideLibraryTitle,        
+                    FormattedText = Res.GetStartedGuideLibraryText
+                }
+            };
+            customTooltip.Show();
+
+            //Run Status Bar Popup
+            var runStatusPopupInfo = new HostControlInfo()
+            {
+                HostClass = string.Empty,
+                PopupPlacement = PlacementMode.Center,
+                HostUIElement = WorkspaceTabs,
+                VerticalPopupOffSet = 300,
+                HorizontalPopupOffSet = 100
+            };
+            var runStatusTooltip = new Tooltip(runStatusPopupInfo, 480, 250, Step.PointerDirection.BOTTOM_LEFT)
+            {
+                Sequence = 2,
+                StepContent = new Content()
+                {
+                    Title = Res.GetStartedGuideRunStatusBarTitle,
+                    FormattedText = Res.GetStartedGuideRunStatusBarText
+                }
+            };
+            runStatusTooltip.Show();
+
+            //Toolbar Popup
+            var toolbarPopupInfo = new HostControlInfo()
+            {
+                HostClass = string.Empty,
+                PopupPlacement = PlacementMode.Right,
+                HostUIElement = sidebarGrid,
+                VerticalPopupOffSet = 50,
+                HorizontalPopupOffSet = 500
+            };
+            var toolbarTooltip = new Tooltip(toolbarPopupInfo, 480, 250, Step.PointerDirection.TOP_LEFT)
+            {
+                Sequence = 3,
+                StepContent = new Content()
+                {
+                    Title = Res.GetStartedGuideToolbarTitle,
+                    FormattedText = Res.GetStartedGuideToolbarText
+                }
+            };
+            toolbarTooltip.Show();
+
+            //Preferences Popup
+            var preferencesPopupInfo = new HostControlInfo()
+            {
+                HostClass = string.Empty,
+                PopupPlacement = PlacementMode.Right,
+                HostUIElement = dynamoMenu,
+                VerticalPopupOffSet = 0,
+                HorizontalPopupOffSet = 0
+            };
+            var preferencesTooltip = new Tooltip(preferencesPopupInfo, 480, 190, Step.PointerDirection.TOP_LEFT)
+            {
+                Sequence = 4,
+                StepContent = new Content()
+                {
+                    Title = Res.GetStartedGuidePreferencesTitle,
+                    FormattedText = Res.GetStartedGuidePreferencesText
+                }
+            };
+            preferencesTooltip.Show();
+
+            //Resources Popup
+            var resourcesPopupInfo = new HostControlInfo()
+            {
+                HostClass = string.Empty,
+                PopupPlacement = PlacementMode.Right,
+                HostUIElement = ExtensionsMenu,
+                VerticalPopupOffSet = 150,
+                HorizontalPopupOffSet = 750
+            };
+            var resourcesTooltip = new Tooltip(resourcesPopupInfo, 480, 230, Step.PointerDirection.BOTTOM_RIGHT)
+            {
+                Sequence = 5,
+                StepContent = new Content()
+                {
+                    Title = Res.GetStartedGuideResourcesTitle,
+                    FormattedText = Res.GetStartedGuideResourcesText
+                }
+            };
+            resourcesTooltip.Show();
+
+            //Survey Popup (final step)
+            var surveyPopupInfo = new HostControlInfo()
+            {
+                HostClass = string.Empty,
+                PopupPlacement = PlacementMode.Right,
+                HostUIElement = sidebarGrid,
+                VerticalPopupOffSet = 500,
+                HorizontalPopupOffSet = 100
+            };
+            var surveyPopup = new Survey(surveyPopupInfo, 400, 450)
+            {
+                Sequence = 4,
+                ContentWidth = 300,
+                RatingTextTitle = Res.GetStartedGuideRatingTextTitle,
+                StepContent = new Content()
+                {
+                    Title = Res.GetStartedGuideSurveyTitle,
+                    FormattedText = Res.GetStartedGuideSurveyText
+                }
+            };
+            surveyPopup.Show();
+        }
+
+        private void RightExtensionSidebar_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            //Setting the width of right extension after resize to
+            extensionsColumnWidth = RightExtensionsViewColumn.Width;
         }
 
         public void Dispose()

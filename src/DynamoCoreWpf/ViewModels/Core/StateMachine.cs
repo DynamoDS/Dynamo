@@ -798,6 +798,10 @@ namespace Dynamo.ViewModels
 
                 var portModel = portViewModel.PortModel;
 
+                // When the connect command is triggered, set portDisconnectedByConnectCommand flag based on the port connectors.
+                // If the current port has any connectors, then it will be disconnected. Otherwise a new connection will be made. 
+                portViewModel.inputPortDisconnectedByConnectCommand = portViewModel.PortType == PortType.Input && portModel.Connectors.Count > 0;
+
                 var workspaceViewModel = owningWorkspace.DynamoViewModel.CurrentSpaceViewModel;
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...

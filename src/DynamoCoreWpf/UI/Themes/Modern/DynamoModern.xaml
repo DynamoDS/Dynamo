@@ -547,6 +547,8 @@
         </Setter>
     </Style>
 
+
+
     <Style x:Key="SDarkTextBox"
            BasedOn="{StaticResource {x:Type TextBox}}"
            TargetType="{x:Type TextBox}">
@@ -2266,6 +2268,8 @@
     
     <SolidColorBrush x:Key="PreferencesWindowBackgroundColor" 
                              Color="#535353" />
+    <SolidColorBrush x:Key="PreferencesWindowItemDarkerBackgroundColor"
+                     Color="#353535"/>
     <SolidColorBrush x:Key="PreferencesWindowFontColor" 
                              Color="#E5E5E5" />
     <SolidColorBrush x:Key="PreferencesWindowButtonColor" 
@@ -2289,7 +2293,6 @@
     <SolidColorBrush x:Key="SemiTransparent" 
                              Color="#80000000" />
 
-
     <!--Usual button color for the Preferences Window-->
     <Color x:Key="PreferencesToogleCheckedColor" R="6" G="150" B="215" A="255"/>
     
@@ -2299,6 +2302,25 @@
     <!--White Window Color for borders-->
     <Color x:Key="PreferencesToogleBorderColor" R="255" G="255" B="255" A="255"/>
 
+    <Style x:Key="DarkTextBlock"
+           TargetType="TextBlock">
+        <Setter Property="FontSize"
+                Value="12">
+        </Setter>
+        <Setter Property="TextTrimming"
+            Value="CharacterEllipsis">
+        </Setter>
+    </Style>
+
+    <Style x:Key="PreferenceTitleLabelStyle"
+            TargetType="{x:Type Label}">
+        <Setter Property="Foreground"
+                Value="{StaticResource PreferencesWindowFontColor}">
+        </Setter>
+        <Setter Property="FontSize"
+                Value="14">
+        </Setter>
+    </Style>
 
     <Style x:Key="CaptionButtonStyleClose" 
                    TargetType="Button">
@@ -2398,7 +2420,55 @@
         </Setter>
     </Style>
 
-    <ControlTemplate x:Key="ExpanderToggleButton" TargetType="{x:Type ToggleButton}">
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonBackground" Color="#4d4d4d"/>
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonSelectedBackground" Color="#3c3c3c"/>
+
+    <ControlTemplate x:Key="ExpanderCaretToggleButton" TargetType="{x:Type ToggleButton}">
+        <Border Name="Border" 
+                Grid.Row="0" 
+                Background="{StaticResource ExpanderCaretToggleButtonBackground}"
+                BorderThickness="1" 
+                CornerRadius="1" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Image x:Name="Caret"
+                      Grid.Column="0"
+                      Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/Caret_Down.png"
+                      Width="16"
+                      Height="16"
+                      Margin="5,10,0,10"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Center"
+                      >
+                </Image>
+                <ContentPresenter x:Name="HeaderContent" 
+                                    Grid.Column="0" 
+                                    Margin="0,0,0,0" 
+                                    RecognizesAccessKey="True" 
+                                    VerticalAlignment="Center"
+                                    Width="{Binding
+                                        RelativeSource={RelativeSource
+                                        Mode=FindAncestor,
+                                        AncestorType={x:Type Expander}},
+                                        Path=ActualWidth}"/>
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="true">
+                <!--Sets the icon on the expander to caret up (-)-->
+                <Setter Property="Background" TargetName="Border" Value="{StaticResource ExpanderCaretToggleButtonSelectedBackground}"/>
+                <Setter TargetName="Caret" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/Caret_Up.png" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="false">
+                <Setter Property="Background" TargetName="Border" Value="{StaticResource ExpanderCaretToggleButtonBackground}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="ExpanderPlusToggleButton" TargetType="{x:Type ToggleButton}">
         <Border Name="Border" 
                 Grid.Row="0" 
                 Background="{StaticResource SecondaryGray}" 
@@ -2445,10 +2515,17 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+    
+    <DataTemplate x:Key="expanderHeader">
+        <TextBlock
+            Text="{Binding}" 
+            FontSize="14"
+            FontWeight="Medium">
+        </TextBlock>
+    </DataTemplate>
+    
 
-    <Style TargetType="Expander" x:Key="MenuExpanderStyle">
-        <Setter Property="Background" Value="{StaticResource SecondaryGray}"/>
-        <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
+    <Style TargetType="Expander" x:Key="InstalledPackagesExpanderStyle">
         <Setter Property="Template">
             <Setter.Value>
                 <!-- Control template for expander -->
@@ -2459,7 +2536,71 @@
                             <RowDefinition Name="ContentRow" Height="0"/>
                         </Grid.RowDefinitions>
                         <Border Name="Border" Grid.Row="0" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="1" CornerRadius="0,0,0,0">
-                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" OverridesDefaultStyle="True" Template="{StaticResource ExpanderToggleButton}" Background="#FF4682B4">
+                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" Template="{StaticResource ExpanderCaretToggleButton}">
+                                <ToggleButton.Content>
+                                    <ContentPresenter ContentSource="Header" OverridesDefaultStyle="True" RecognizesAccessKey="True" />
+                                </ToggleButton.Content>
+                            </ToggleButton>
+                        </Border>
+                        <Border x:Name="Content" 
+                                Grid.Row="1"
+                                BorderThickness="1,0,1,1"
+                                CornerRadius="0,0,4,4" >
+                            <!--The Margin is necesary so that the Content is perfectly aligned with the Header-->
+                            <ContentPresenter Margin="1,-3,1,0" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ContentRow" Property="Height" Value="{Binding ElementName=Content,Path=Height}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ContextMenu}" x:Key="ContextMenuNoLeftColumnStyle">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+        <Setter Property="HasDropShadow" Value="True" />
+        <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
+        <Setter Property="Background" Value="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border" Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}" BorderThickness="1">
+                        <ItemsPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <StackPanel Margin="-25,0,0,0"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Expander" x:Key="MenuExpanderStyle">
+        <Setter Property="Background" Value="{StaticResource SecondaryGray}"/>
+        <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
+        <Setter Property="HeaderTemplate" Value="{StaticResource expanderHeader}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <!-- Control template for expander -->
+                <ControlTemplate TargetType="Expander" x:Name="exp">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Name="ContentRow" Height="0"/>
+                        </Grid.RowDefinitions>
+                        <Border Name="Border" Grid.Row="0" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="1" CornerRadius="0,0,0,0">
+                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" OverridesDefaultStyle="True" Template="{StaticResource ExpanderPlusToggleButton}" Background="#FF4682B4">
                                 <ToggleButton.Content>
                                     <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
                                 </ToggleButton.Content>
@@ -2470,6 +2611,47 @@
                                 BorderThickness="1,0,1,1"
                                 CornerRadius="0,0,4,4" >
                             <ContentPresenter Margin="12,0,0,15" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ContentRow" Property="Height" Value="{Binding ElementName=Content,Path=Height}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+
+    <!-- This expander style is similar to the MenuExpanderStyle and the only difference is the left-margin spacing -->
+    <Style TargetType="Expander" x:Key="WorkspaceReferencesExpanderStyle">
+        <Setter Property="Background" Value="{StaticResource SecondaryGray}"/>
+        <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
+        <Setter Property="HeaderTemplate" Value="{StaticResource expanderHeader}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <!-- Control template for expander -->
+                <ControlTemplate TargetType="Expander" x:Name="exp">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Name="ContentRow" Height="0"/>
+                        </Grid.RowDefinitions>
+                        <Border Name="Border" Grid.Row="0" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="1" CornerRadius="0,0,0,0">
+                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" OverridesDefaultStyle="True" Template="{StaticResource ExpanderPlusToggleButton}" Background="#FF4682B4">
+                                <ToggleButton.Content>
+                                    <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
+                                </ToggleButton.Content>
+                            </ToggleButton>
+                        </Border>
+                        <Border x:Name="Content" 
+                                Grid.Row="1" 
+                                BorderThickness="1,0,1,1"
+                                CornerRadius="0,0,4,4" >
+                            <ContentPresenter Margin="2,0,0,15" />
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -2501,7 +2683,7 @@
                                             HorizontalAlignment="Stretch" 
                                             VerticalAlignment="Stretch">
                             <Grid Name="TabPanel" 
-                                          Width="150"
+                                          Width="165"
                                           Height="30">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="5" />
@@ -3186,10 +3368,47 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
+    <!--This Style will be used for Note Text block (used when Note is not on edit mode)-->
+    <Style x:Key="NoteTextBoxStyle"
+           TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Trebuchet"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#222"/>
+        <Setter Property="Background" Value="#EEE"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
 
+    <!--This Style will be used for Note Text block (used when Note is on edit mode)-->
+    <Style x:Key="NoteTextBlockStyle"
+           TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Trebuchet"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#222"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <!--This style will be used for setting the style of the Note's user control-->
+    <Style x:Key="NoteUserControlStyle"
+           TargetType="UserControl">
+        <Setter Property="BorderBrush" Value="#549ee7"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect ShadowDepth="0" Color="#222" Opacity="0.25" BlurRadius="9.0" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <!--This Style will be used for the small trash icon button that appears when a new Style is created in the Visual Settings tab-->
-    <Style x:Key="RemoveStyleButtonStyle" 
+    <Style x:Key="FlatIconButtonStyle" 
            TargetType="{x:Type Button}">
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value=".5" />
+            </Trigger>
+        </Style.Triggers>
         <Setter Property="Background" 
                 Value="Transparent"/>
         <Setter Property="Template">
@@ -3280,5 +3499,191 @@
         </Setter>
     </Style>
 
+    <SolidColorBrush x:Key="PopupWhiteColor" 
+                             Color="#FFFFFF" />
 
+    <Color x:Key="PopupTitleBorderColor" 
+                   A="255"
+                   R="128"
+                   G="128"
+                   B="128"/>
+
+    <SolidColorBrush x:Key="PopupRatingControlBackColor" 
+                             Color="#F5F5F5" />
+
+    <SolidColorBrush x:Key="CheckMarkBackColor" 
+                             Color="#87B340" />
+
+    <!--Style for the buttons in a Tooltip part of the Dynamo Guided Tours-->
+    <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Width" Value="5"/>
+        <Setter Property="Height" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="CaretButtonBorder"
+                                Background="{StaticResource PopupWhiteColor}"
+                                BorderThickness="0"
+                                BorderBrush="Transparent">
+                        <Canvas Width="5" Height="10">
+                            <Line x:Name="line1" 
+                                      Stroke="Black" 
+                                      X1="5" 
+                                      Y1="0" 
+                                      X2="0" 
+                                      Y2="5"/>
+                            <Line x:Name="line2" 
+                                      Stroke="Black" 
+                                      X1="0" 
+                                      Y1="5" 
+                                      X2="5" 
+                                      Y2="10"/>
+                        </Canvas>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Tag" 
+                                     Value="Invert">
+                            <Setter TargetName="line1" 
+                                        Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform CenterX="2" 
+                                                         CenterY="5"  
+                                                         Angle="180"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="line2" 
+                                        Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform CenterX="2" 
+                                                         CenterY="5"  
+                                                         Angle="180"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" 
+                                     Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" 
+                                     Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Cursor" 
+                                        Value="Hand"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Style for the close popup button in a Tooltip part of the Dynamo Guided Tours-->
+    <Style x:Key="PopupCloseButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="CloseButtonBorder"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                BorderBrush="Transparent">
+                        <Canvas Margin="0,0,0,0">
+                            <Line x:Name="line1" X1="0" Y1="0" X2="13" Y2="13" Stroke="#808080" StrokeThickness="1"></Line>
+                            <Line x:Name="line2" X1="0" Y1="13" X2="13" Y2="0" Stroke="#808080" StrokeThickness="1"></Line>
+                        </Canvas>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="Red"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="Red"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" 
+                                     Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Cursor" 
+                                        Value="Hand"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PoupButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="MinWidth" Value="80"/>
+        <Setter Property="MaxHeight" Value="36"/>
+        <Setter Property="BorderThickness" Value="36"/>
+        <Setter Property="Foreground" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="Background" Value="{StaticResource PreferencesWindowButtonColor}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="PopupButtonBorder"
+                                    BorderThickness="1"
+                                    CornerRadius="4" 
+                                    Background="{StaticResource PreferencesWindowButtonColor}">
+                        <ContentPresenter Content="{TemplateBinding Content}" 
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PoupTitleLabelStyle" TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="MinHeight" Value="50"/>
+        <Setter Property="Foreground" Value="#535353" />
+    </Style>
+
+    <Style x:Key="PoupPathRectangleStyle" TargetType="{x:Type Path}">
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="Stroke" Value="Black"/>
+    </Style>
+
+    <Style x:Key="PoupPolygonPointerStyle" TargetType="{x:Type Polygon}">
+        <Setter Property="Stroke" Value="Black"/>
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
+    </Style>
+
+    <Style x:Key="CustomRichTextBoxStyle" TargetType="{x:Type RichTextBox}">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="Background" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style x:Key="SurveyTitleLabelStyle" TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="MinHeight" Value="50"/>
+        <Setter Property="Foreground" Value="#3C3C3C"/>
+    </Style>
+
+    <Style x:Key="RatingTitleLabelStyle" TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#3C3C3C"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
 </ResourceDictionary>

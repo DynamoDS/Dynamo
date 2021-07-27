@@ -297,7 +297,6 @@ namespace Dynamo.Wpf.ViewModels
                 case RunType.Manual:                    
                     return;
                 case RunType.Automatic:
-                    dynamoViewModel.ShowRunPreview = false;
                     RunExpressionCommand.Execute(true);
                     return;
                 case RunType.Periodic:

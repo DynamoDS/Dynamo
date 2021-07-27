@@ -25,6 +25,11 @@ namespace Dynamo.GraphMetadata.Controls
         /// </summary>
         public event EventHandler RequestDelete;
 
+        /// <summary>
+        /// This event fires when the Name or Value of the CustomProperty has changed. It signals to the ViewModel so that the owner graph is marked with unsaved changes.
+        /// </summary>
+        public event EventHandler PropertyChanged;
+
         private void OnRequestDelete(EventArgs e)
         {
             RequestDelete?.Invoke(this, e);
@@ -67,6 +72,17 @@ namespace Dynamo.GraphMetadata.Controls
         }
 
         #region DependencyProperties
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+
+            if ((e.Property.Name == nameof(PropertyName) || e.Property.Name == nameof(PropertyValue)) 
+                && e.OldValue != e.NewValue)
+            {
+                PropertyChanged?.Invoke(this, null);
+            }
+        }
 
         public string PropertyName
         {
