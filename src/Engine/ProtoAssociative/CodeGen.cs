@@ -5467,6 +5467,8 @@ namespace ProtoAssociative
                     {
                         if (!CyclicDependencyTest(graphNode, ref cyclicSymbol1, ref cyclicSymbol2))
                         {
+                            //buildStatus.LogSemanticError("cyclic dependency", core.CurrentDSFileName, node.line, node.col, graphNode);
+
                             Validity.Assert(null != cyclicSymbol1);
                             Validity.Assert(null != cyclicSymbol2);
 

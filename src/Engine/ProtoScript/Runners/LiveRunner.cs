@@ -1401,21 +1401,13 @@ namespace ProtoScript.Runners
         private void PostExecution()
         {
             ApplyUpdate();
-            HandleWarnings();
-        }
-
-        /// <summary>
-        /// Handle warnings that will be reported to the frontend
-        /// </summary>
-        private void HandleWarnings()
-        {
-            SuppressResovledUnboundVariableWarnings();
+            SuppressResolvedUnboundVariableWarnings();
         }
 
         /// <summary>
         /// Removes all warnings that were initially unbound variables but were resolved at runtime
         /// </summary>
-        private void SuppressResovledUnboundVariableWarnings()
+        private void SuppressResolvedUnboundVariableWarnings()
         {
             runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runnerCore.DSExecutable.UpdatedSymbols);
 
