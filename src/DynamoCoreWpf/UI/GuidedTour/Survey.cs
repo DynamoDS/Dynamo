@@ -11,6 +11,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         public double ContentWidth { get; set; }
 
+        public bool IsRatingVisible { get; set; }
+
         public Survey(HostControlInfo host, double width, double height)
             : base(host, width, height)
         {

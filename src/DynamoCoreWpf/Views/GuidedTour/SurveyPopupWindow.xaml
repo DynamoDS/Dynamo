@@ -98,7 +98,8 @@
                 <Border Background="{StaticResource PopupRatingControlBackColor}"
                         Grid.Row="3"
                         Width="185"
-                        Height="60">
+                        Height="60"
+                        Visibility="{Binding IsRatingVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
