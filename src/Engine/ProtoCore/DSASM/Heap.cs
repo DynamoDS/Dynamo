@@ -279,7 +279,7 @@ namespace ProtoCore.DSASM
     // The Garbage Collection strategy employed here is based on the an incremental Tri-Color Snapshot-at-the-Beggining algorithm
     // Incremental: An incremental collector does small chunks of work and in between allows the mutator (i.e vm execution) to resume.
     // Tri-Color: 3 colors (white, gray, black) are used to mark all heap elements and denote their GC state.
-    // SatB: GC uses a snapshot of the heap when deciding what heap elements need to be collected.
+    // SatB: GC uses a snapshot of the stack and heap when deciding what heap elements need to be collected.
     public class Heap
     {
         private enum GCState
