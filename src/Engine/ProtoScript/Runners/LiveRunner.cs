@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using ProtoCore;
 using ProtoCore.AssociativeGraph;
@@ -9,6 +10,8 @@ using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using ProtoFFI;
+using Dynamo.Utilities;
+using System.IO;
 
 namespace ProtoScript.Runners
 {
@@ -1028,6 +1031,52 @@ namespace ProtoScript.Runners
 
     public partial class LiveRunner : ILiveRunner, IDisposable
     {
+        internal class DebugByteCodeMode : IDisposable
+        {
+            private TextWriter oldAsmOutput;
+            private bool oldDumpByteCode;
+            private bool oldVerbose;
+            private ExecutionMode oldExecutionMode;
+
+            private Core core;
+
+            internal DebugByteCodeMode(Core core)
+            {
+                // Setup the log file location
+                var logFolder = Path.Combine(Directory.GetCurrentDirectory(), "ByteCodeLogs");
+                Directory.CreateDirectory(logFolder);
+                var newWriter = File.CreateText(Path.Combine(logFolder, DateTime.Now.ToString("yyyy-MM-ddTHH-mm-ss-fff") + ".log"));
+
+                // Store the old values
+                oldAsmOutput = core.AsmOutput;
+                oldDumpByteCode = core.Options.DumpByteCode;
+                oldExecutionMode = core.Options.ExecutionMode;
+                oldVerbose = core.Options.Verbose;
+
+                // Set the overrides that enable byte code logging
+                core.AsmOutput = newWriter;
+                core.Options.DumpByteCode = true;
+                core.Options.Verbose = true;
+                core.Options.ExecutionMode = ExecutionMode.Serial;
+
+                this.core = core;
+            }
+
+            public void Dispose()
+            {
+                // Close the current writer and restore old settings
+                if (core != null)
+                {
+                    core.AsmOutput?.Close();
+
+                    core.AsmOutput = oldAsmOutput;
+                    core.Options.Verbose = oldVerbose;
+                    core.Options.ExecutionMode = oldExecutionMode;
+                    core.Options.DumpByteCode = oldDumpByteCode;
+                }
+            }
+        }
+
         /// <summary>
         /// These are configuration parameters passed by host application to be 
         /// consumed by geometry library and persistent manager implementation. 
@@ -1158,7 +1207,8 @@ namespace ProtoScript.Runners
                 ExecutionMode = ExecutionMode.Serial
             };
 
-            runnerCore = new ProtoCore.Core(coreOptions);
+            runnerCore = new Core(coreOptions);
+
             runnerCore.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(runnerCore));
             runnerCore.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(runnerCore));
 
@@ -1468,20 +1518,23 @@ namespace ProtoScript.Runners
                 return;
             }
 
-            // Get AST list that need to be executed
-            var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
-
-            // Prior to execution, apply state modifications to the VM given the delta AST's
-            bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
-            changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
-            if (finalDeltaAstList.Any() || anyForcedExecutedNodes)
+            using (DebugModes.IsEnabled("DumpByteCode") ? new DebugByteCodeMode(runnerCore) : null)
             {
-                CompileAndExecuteForDeltaExecution(finalDeltaAstList);
-            }
+                // Get AST list that need to be executed
+                var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
 
-            var guids = runtimeCore.ExecutedAstGuids.ToList();
-            executedAstGuids[syncData.SessionID] = guids;
-            runtimeCore.RemoveExecutedAstGuids();
+                // Prior to execution, apply state modifications to the VM given the delta AST's
+                bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
+                changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
+                if (finalDeltaAstList.Any() || anyForcedExecutedNodes)
+                {
+                    CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+                }
+
+                var guids = runtimeCore.ExecutedAstGuids.ToList();
+                executedAstGuids[syncData.SessionID] = guids;
+                runtimeCore.RemoveExecutedAstGuids();
+            }
         }
 
         private void SynchronizeInternal(string code)

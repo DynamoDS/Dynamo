@@ -5,8 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels" 
-             d:DataContext="{d:DesignInstance Type=viewmodels:InstalledPackagesViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
