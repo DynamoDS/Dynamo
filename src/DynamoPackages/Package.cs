@@ -33,14 +33,19 @@ namespace Dynamo.PackageManager
     [Obsolete("This is not final. Please do not use it")]
     public class PackageLoadState
     {
-        internal enum Types
+        internal enum StateTypes
         {
             Loaded, Unloaded, Error
         }
 
-        internal Types Type = Types.Unloaded;// Default to Unloaded type.
+        internal enum ScheduledTypes
+        {
+            None, ScheduledForUnload, ScheduledForLoad, ScheduledForDeletion
+        }
 
-        internal bool MarkedForUninstall;
+        internal StateTypes State = StateTypes.Unloaded;// Default to Unloaded type.
+
+        internal ScheduledTypes ScheduledState = ScheduledTypes.None;
 
         internal string ErrorMessage;// Used when Type == Types.Error
     }
@@ -79,7 +84,7 @@ namespace Dynamo.PackageManager
         [Obsolete("This property will be removed in 3.0. Please use the LoadState property instead.")]
         public bool Loaded { 
             get {
-                return LoadState.Type == PackageLoadState.Types.Loaded;
+                return LoadState.State == PackageLoadState.StateTypes.Loaded;
             }
         }
 
@@ -128,8 +133,12 @@ namespace Dynamo.PackageManager
 
         public bool MarkedForUninstall
         {
-            get { return LoadState.MarkedForUninstall; }
-            internal set { LoadState.MarkedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
+            get { return LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion; }
+            internal set { 
+                LoadState.ScheduledState = value ? PackageLoadState.ScheduledTypes.ScheduledForDeletion : PackageLoadState.ScheduledTypes.None; 
+                RaisePropertyChanged("MarkedForUninstall");
+                RaisePropertyChanged("PackageLoadState.ScheduledStates");
+            }
         }
 
         internal PackageLoadState LoadState = new PackageLoadState();
@@ -417,7 +426,8 @@ namespace Dynamo.PackageManager
 
         internal bool InUse(DynamoModel dynamoModel)
         {
-            return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || IsCustomNodeFromPackageInUse(dynamoModel)) && LoadState.Type == PackageLoadState.Types.Loaded;
+            return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || 
+                IsCustomNodeFromPackageInUse(dynamoModel)) && LoadState.State == PackageLoadState.StateTypes.Loaded;
         }
 
         private bool IsCustomNodeFromPackageInUse(DynamoModel dynamoModel)

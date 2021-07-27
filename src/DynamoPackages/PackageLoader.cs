@@ -277,7 +277,7 @@ namespace Dynamo.PackageManager
                         }
                         catch (LibraryLoadFailedException ex)
                         {
-                            package.LoadState.Type = PackageLoadState.Types.Error;
+                            package.LoadState.State = PackageLoadState.StateTypes.Error;
                             package.LoadState.ErrorMessage = ex.Message;
                             Log(ex.GetType() + ": " + ex.Message);
                         }
@@ -303,7 +303,7 @@ namespace Dynamo.PackageManager
                     requestedExtensions.Add(extension);
                 }
 
-                package.LoadState.Type = PackageLoadState.Types.Loaded;
+                package.LoadState.State = PackageLoadState.StateTypes.Loaded;
                 PackgeLoaded?.Invoke(package);
             }
             catch (CustomNodePackageLoadException e)
@@ -313,12 +313,12 @@ namespace Dynamo.PackageManager
                 OnConflictingPackageLoaded(originalPackage, package);
 
                 package.LoadState.ErrorMessage = e.Message;
-                package.LoadState.Type = PackageLoadState.Types.Error;
+                package.LoadState.State = PackageLoadState.StateTypes.Error;
             }
             catch (Exception e)
             {
                 package.LoadState.ErrorMessage = e.Message;
-                package.LoadState.Type = PackageLoadState.Types.Error;
+                package.LoadState.State = PackageLoadState.StateTypes.Error;
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
             }

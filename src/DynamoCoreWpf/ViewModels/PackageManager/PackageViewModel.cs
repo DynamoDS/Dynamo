@@ -53,16 +53,20 @@ namespace Dynamo.ViewModels
                     return "DO NOT USE THIS";
                 }
 
-                if (Model.MarkedForUninstall)
+                switch (Model.LoadState.ScheduledState)
                 {
-                    return Resources.PackageStatePendingUnload;
+                    case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateUnloaded;
+                    case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateLoaded;
+                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Resources.PackageStateError;
+                    default:
+                        break;
                 }
 
-                switch (Model.LoadState.Type)
+                switch (Model.LoadState.State)
                 {
-                    case PackageLoadState.Types.Unloaded: return Resources.PackageStateUnloaded;
-                    case PackageLoadState.Types.Loaded: return Resources.PackageStateLoaded;
-                    case PackageLoadState.Types.Error: return Resources.PackageStateError;
+                    case PackageLoadState.StateTypes.Unloaded: return Resources.PackageStateUnloaded;
+                    case PackageLoadState.StateTypes.Loaded: return Resources.PackageStateLoaded;
+                    case PackageLoadState.StateTypes.Error: return Resources.PackageStateError;
                     default:
                         return "Unkonwn package state";
                 }
@@ -79,16 +83,20 @@ namespace Dynamo.ViewModels
                     return "DO NOT USE THIS";
                 }
 
-                if (Model.MarkedForUninstall)
+                switch (Model.LoadState.ScheduledState)
                 {
-                    return Resources.PackageStatePendingUnloadTooltip;
+                    case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateUnloadedTooltip;
+                    case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateLoadedTooltip;
+                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return string.Format(Resources.PackageStateErrorTooltip, Model.LoadState.ErrorMessage);
+                    default:
+                        break;
                 }
 
-                switch (Model.LoadState.Type)
+                switch (Model.LoadState.State)
                 {
-                    case PackageLoadState.Types.Unloaded: return Resources.PackageStateUnloadedTooltip;
-                    case PackageLoadState.Types.Loaded: return Resources.PackageStateLoadedTooltip;
-                    case PackageLoadState.Types.Error: return string.Format(Resources.PackageStateErrorTooltip, Model.LoadState.ErrorMessage);
+                    case PackageLoadState.StateTypes.Unloaded: return Resources.PackageStateUnloadedTooltip;
+                    case PackageLoadState.StateTypes.Loaded: return Resources.PackageStateLoadedTooltip;
+                    case PackageLoadState.StateTypes.Error: return string.Format(Resources.PackageStateErrorTooltip, Model.LoadState.ErrorMessage);
                     default:
                         return "Unkonwn package state";
                 }
@@ -245,7 +253,7 @@ namespace Dynamo.ViewModels
         private bool CanUninstall()
         {
             return (!Model.InUse(dynamoViewModel.Model) || Model.LoadedAssemblies.Any()) 
-                && !Model.MarkedForUninstall && (Model.LoadState.Type != PackageLoadState.Types.Unloaded);
+                && (Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForDeletion) && (Model.LoadState.State != PackageLoadState.StateTypes.Unloaded);
         }
 
         private void GoToRootDirectory()
