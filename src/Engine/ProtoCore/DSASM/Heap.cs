@@ -423,11 +423,19 @@ namespace ProtoCore.DSASM
             int index;
             if (stringTable.TryGetPointer(str, out index)) {
                 // Any existing heap elements, marked as white, that are in the sweepSet and that are referenced during the sweep cycle will be marked as Black.
-                // This will ensure that no reachable data is mistakenly cleaned up (can cause floating garbage untill next cleanup)
-                if (gcState == GCState.Propagate && (index >= 0 && index < heapElements.Count))
+                // This will ensure that no reachable data is mistakenly cleaned up.
+                bool isDuringGCPropagateCycle = gcState == GCState.Propagate;
+                bool isValidHeapIndex = index >= 0 && index < heapElements.Count;
+                if (isDuringGCPropagateCycle && isValidHeapIndex)
                 {
                     var he = heapElements[index];
-                    if (he.Mark == GCMark.White && sweepSet.Contains(index))
+                    if (he == null)
+                    {
+                        throw new NullReferenceException($"Null heap element found at index {index} during AllocateStringInternal");
+                    }
+                    bool isHeapElementMarkedAsWhite = he.Mark == GCMark.White;// Either not processed by Propage step yet or processed and found as garbage.
+                    bool isHeapElementConsideredForCleanup = sweepSet.Contains(index);
+                    if (isHeapElementMarkedAsWhite && isHeapElementConsideredForCleanup)
                     {
                         // Set the heap element's Mark as Black so that it will not get cleaned up.
                         // No need to do a recursive mark on the it since it is just a string and thus cannot have references to other heap elements.
@@ -517,7 +525,6 @@ namespace ProtoCore.DSASM
             {
                 index = pointer.StringPointer;
             }
-
 
             if (index >= 0 && index < heapElements.Count)
             {
