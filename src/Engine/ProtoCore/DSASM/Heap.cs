@@ -424,7 +424,8 @@ namespace ProtoCore.DSASM
         private StackValue AllocateStringInternal(string str, bool isConstant)
         {
             int index;
-            if (stringTable.TryGetPointer(str, out index)) {
+            if (stringTable.TryGetPointer(str, out index))
+            {
                 // Any existing heap elements, marked as white, that are in the sweepSet and that are referenced during the sweep cycle will be marked as Black.
                 // This will ensure that no reachable data is mistakenly cleaned up.
                 bool isDuringGCCriticalAsyncCycle = gcState != GCState.Pause;// Between the time the GC takes a snapshot of the stack and heap untill GC cycle is over.
