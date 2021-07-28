@@ -297,8 +297,6 @@ namespace ProtoCore.DSASM
             Black // Objects that are in use (are not candidates for garbage collection) and have had all their references traced.
         }
 
-        private Dictionary<GCState, (Action, Action)> testNotifications;
-
         private readonly List<int> freeList = new List<int>();
         private readonly List<HeapElement> heapElements = new List<HeapElement>();
         private HashSet<int> fixedHeapElements = new HashSet<int>(); 
@@ -740,30 +738,17 @@ namespace ProtoCore.DSASM
         /// </summary>
         private void SingleStep(bool forceGC)
         {
-            // Testing purposes only.
-            (Action start, Action end) fns = (() => {}, () => {});
-            var testCB = testNotifications?.TryGetValue(gcState, out fns) ?? false;
-            // ~Testing purposes only.
-
             switch (gcState)
             {
                 case GCState.Pause:
-                    if (testCB) fns.start();
-  
                     if (gcDebt <= 0 || forceGC)
                         gcState = GCState.WaitingForRoots;
-
-                    if (testCB) fns.end();
                     break;
 
                 case GCState.WaitingForRoots:
-                    if (testCB) fns.start();
-                    if (testCB) fns.end();
                     break;
 
                 case GCState.Propagate:
-                    if (testCB) fns.start();
-
                     if (grayList.Any())
                     {
                         totalTraversed += RecursiveMark(grayList.First());
@@ -773,19 +758,13 @@ namespace ProtoCore.DSASM
                     {
                         gcState = GCState.Sweep;
                     }
-
-                    if (testCB) fns.end();
                     break;
 
                 case GCState.Sweep:
-                    if (testCB) fns.start();
-
                     Sweep();
                     MarkAllWhite();
                     gcState = GCState.Pause;
                     IsGCRunning = false;
-
-                    if (testCB) fns.end();
                     break;
             }
         }
@@ -927,20 +906,42 @@ namespace ProtoCore.DSASM
                 SingleStep(true);
         }
 
+        // Duplicates the public FullGC method for testing purposes
+        internal void FullGCTest(IEnumerable<StackValue> gcroots, Executive exe, 
+            Dictionary<GCState, (Action, Action)> testNotifications)
+        {
+            if (gcroots == null)
+                throw new ArgumentNullException("gcroots");
+
+            if (exe == null)
+                throw new ArgumentNullException("exe");
+
+            while (gcState != GCState.WaitingForRoots)
+            {
+                (Action start, Action end) fns = (() => { }, () => { });
+                var testCB = testNotifications?.TryGetValue(gcState, out fns) ?? false;
+
+                if (testCB) fns.start();
+                SingleStep(true);
+                if (testCB) fns.end();
+            }
+
+            SetRoots(gcroots, exe);
+            while (gcState != GCState.Pause)
+            {
+                (Action start, Action end) fns = (() => { }, () => { });
+                var testCB = testNotifications?.TryGetValue(gcState, out fns) ?? false;
+
+                if (testCB) fns.start();
+                SingleStep(true);
+                if (testCB) fns.end();
+            }
+        }
+
         public void ReportAllocation(int newSize)
         {
             gcDebt -= newSize;
             totalAllocated += newSize;
-        }
-
-        // Used for testing async workflows in GC
-        internal void AddNotifier(GCState gcState, Action start, Action end)
-        {
-            if (testNotifications == null)
-            {
-                testNotifications = new Dictionary<GCState, (Action, Action)>();
-            }
-            testNotifications.Add(gcState, (start, end));
         }
     }
 }

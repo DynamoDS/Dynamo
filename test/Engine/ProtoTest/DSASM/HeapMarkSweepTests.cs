@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using NUnit.Framework;
 using ProtoCore;
@@ -98,13 +99,19 @@ namespace ProtoTest.DSASM
             heap.AllocateString(sseValue);
 
             StackValue someStackValue = StackValue.BuildNull();
-            heap.AddNotifier(Heap.GCState.Sweep, () => {
-                // Simulate a new string (with the same value as existing one on heap) stack element being created while GC is propagating or sweeping
-                someStackValue = heap.AllocateString(sseValue);
-            }, () => { });
 
+            var notifications = new Dictionary<Heap.GCState, (Action, Action)>() {
+                { 
+                    Heap.GCState.Sweep, 
+                    (() => {
+                        // Simulate a new string (with the same value as existing one on heap) stack element being created while GC is propagating or sweeping
+                        someStackValue = heap.AllocateString(sseValue);
+                    }, 
+                    () => { }) 
+                }
+            };
             // Start GC with a random stack value as gcRoot (not the string stack element, because it was pushed out of the stack)
-            heap.FullGC(new List<StackValue>() { StackValue.BuildInt(1) }, testExecutive);
+            heap.FullGCTest(new List<StackValue>() { StackValue.BuildInt(1) }, testExecutive, notifications);
 
             // The stack element that was pushed after GC start should be valid.
             Assert.IsNotNull(heap.ToHeapObject<DSString>(someStackValue));
