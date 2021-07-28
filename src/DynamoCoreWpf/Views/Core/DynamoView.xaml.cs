@@ -2474,6 +2474,7 @@ namespace Dynamo.Controls
                 Sequence = 4,
                 ContentWidth = 300,
                 RatingTextTitle = Res.GetStartedGuideRatingTextTitle,
+                IsRatingVisible = dynamoViewModel.Model.PreferenceSettings.IsADPAnalyticsReportingApproved,
                 StepContent = new Content()
                 {
                     Title = Res.GetStartedGuideSurveyTitle,
