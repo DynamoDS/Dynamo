@@ -1879,7 +1879,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your code goes here.
+        ///   Looks up a localized string similar to Enter code here.
         /// </summary>
         public static string WatermarkLabelText {
             get {

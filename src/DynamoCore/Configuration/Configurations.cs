@@ -109,7 +109,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Generic Constants
         /// </summary>
-        public static readonly double PortHeightInPixels = 26;
+        public static readonly double PortHeightInPixels = 41 ;
 
         /// <summary>
         /// Canvas Control
@@ -244,6 +244,11 @@ namespace Dynamo.Configuration
         ///     Default height of CodeBlock's port
         /// </summary>
         public static readonly double CodeBlockPortHeightInPixels = 17.573333333333336;
+
+        /// <summary>
+        ///     Code Block outputs have a condensed port height
+        /// </summary>
+        public static readonly double CodeBlockOutputPortHeightInPixels = 20;
 
         /// <summary>
         ///     Maximal port name length of CodeBlock
