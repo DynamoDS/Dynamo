@@ -1,0 +1,144 @@
+[
+	{
+		"name": "Get Started",
+		"steps": [
+			{
+				"sequence": 0,
+				"name": "welcome",
+				"type": "welcome",
+				"width": 480,
+				"height": 180,
+				"step_content": {
+					"title": "GetStartedGuideWelcomeTitle",
+					"formatted_text": "GetStartedGuideWelcomeText"
+				},
+				"host_popup_info": {
+					"popup_placement": "center",
+					"host_ui_element_string": "WorkspaceTabs",
+					"vertical_offset": 0,
+					"horizontal_offset": 0,
+					"class_name": ""
+				}
+			},
+			{
+				"sequence": 1,
+				"name": "library",
+				"type": "tooltip",
+				"pointer_direction": "top_left",
+				"width": 480,
+				"height": 250,
+				"step_content": {
+					"title": "GetStartedGuideLibraryTitle",
+					"formatted_text": "GetStartedGuideLibraryText"
+				},
+				"host_popup_info": {
+					"popup_placement": "right",
+					"host_ui_element_string": "sidebarGrid",
+					"vertical_offset": 100,
+					"horizontal_offset": 50,
+					"class_name": ""
+				}
+			},
+			{
+				"sequence": 2,
+				"name": "run status",
+				"type": "tooltip",
+				"pointer_direction": "bottom_left",
+				"width": 480,
+				"height": 220,
+				"step_content": {
+					"title": "GetStartedGuideRunStatusBarTitle",
+					"formatted_text": "GetStartedGuideRunStatusBarText"
+				},
+				"host_popup_info": {
+					"popup_placement": "bottom",
+					"host_ui_element_string": "bottomBarGrid",
+					"vertical_offset": 50,
+					"horizontal_offset": 320,
+					"class_name": ""
+				}
+			},
+			{
+				"sequence": 3,
+				"name": "toolbar",
+				"type": "tooltip",
+				"pointer_direction": "top_left",
+				"width": 480,
+				"height": 230,
+				"step_content": {
+					"title": "GetStartedGuideToolbarTitle",
+					"formatted_text": "GetStartedGuideToolbarText"
+				},
+				"host_popup_info": {
+					"popup_placement": "bottom",
+					"host_ui_element_string": "shortcutsBarGrid",
+					"vertical_offset": -60,
+					"horizontal_offset": 200,
+					"class_name": ""
+				}
+			},
+			{
+				"sequence": 4,
+				"name": "preferences",
+				"type": "tooltip",
+				"pointer_direction": "top_left",
+				"width": 480,
+				"height": 190,
+				"step_content": {
+					"title": "GetStartedGuidePreferencesTitle",
+					"formatted_text": "GetStartedGuidePreferencesText"
+				},
+				"host_popup_info": {
+					"popup_placement": "right",
+					"host_ui_element_string": "dynamoMenu",
+					"vertical_offset": 0,
+					"horizontal_offset": 150,
+					"class_name": ""
+				}
+			},
+			{
+				"sequence": 5,
+				"name": "resources",
+				"type": "tooltip",
+				"pointer_direction": "top_left",
+				"width": 480,
+				"height": 230,
+				"step_content": {
+					"title": "GetStartedGuideResourcesTitle",
+					"formatted_text": "GetStartedGuideResourcesText"
+				},
+				"host_popup_info": {
+					"popup_placement": "right",
+					"host_ui_element_string": "HelpMenu",
+					"vertical_offset": 0,
+					"horizontal_offset": 170,
+					"class_name": ""
+				}
+			},
+			{
+				"sequence": 6,
+				"name": "survey",
+				"type": "survey",
+				"width": 400,
+				"height": 450,
+				"step_content": {
+					"title": "GetStartedGuideSurveyTitle",
+					"formatted_text": "GetStartedGuideSurveyText"
+				},
+				"extra_content": [
+					{
+						"property": "RatingTextTitle",
+						"value": "GetStartedGuideRatingTextTitle"
+					}
+				],
+				"host_popup_info": {
+					"popup_placement": "center",
+					"host_ui_element_string": "WorkspaceTabs",
+					"vertical_offset": 0,
+					"horizontal_offset": 0,
+					"class_name": ""
+				}
+			}
+		]
+	}
+]

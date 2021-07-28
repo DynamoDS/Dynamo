@@ -618,6 +618,7 @@
                     </MenuItem>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
+                              Name="HelpMenu"
                               Focusable="False">
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.StartPageWhatsNew}"

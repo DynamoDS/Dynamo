@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls.Primitives;
+using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -60,13 +61,21 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
+        /// This variable will hold the name of the host (UIElement) in a string representation
+        /// </summary>
+        [JsonProperty("host_ui_element_string")]
+        public string HostUIElementString { get; set; }
+
+        /// <summary>
         /// This property will hold the placement location of the popup, for now we are just using Right, Left, Top and Bottom
         /// </summary>
+        [JsonProperty("popup_placement")]
         public PlacementMode PopupPlacement { get; set; }
 
         /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Vertically (by specifying an offset) 
         /// </summary>
+        [JsonProperty("vertical_offset")]
         public double VerticalPopupOffSet
         {
             get
@@ -82,6 +91,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Horizontally (by specifying an offset) 
         /// </summary>
+        [JsonProperty("horizontal_offset")]
         public double HorizontalPopupOffSet
         {
             get
@@ -90,7 +100,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
             set
             {
-                horizontalPopupOffSet  = value;
+                horizontalPopupOffSet = value;
             }
         }
     }
