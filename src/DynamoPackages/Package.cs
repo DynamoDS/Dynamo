@@ -458,11 +458,7 @@ namespace Dynamo.PackageManager
             MarkedForUninstall = true;
             if (DebugModes.IsEnabled("DynamoPackageStates"))
             {
-                PackageState = PackageStates.PendingUnload;
-            }
-            else
-            {
-                RaisePropertyChanged(nameof(EnableOldMarkedForUnistallState));
+                LoadState.ScheduledState = PackageLoadState.ScheduledTypes.ScheduledForUnload;
             }
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
@@ -477,14 +473,9 @@ namespace Dynamo.PackageManager
 
             if (DebugModes.IsEnabled("DynamoPackageStates"))
             {
-                // Should this be a "Loaded state" or something else ?
-                // Or maybe state should only be set when trying to Load the package...not here.
-                PackageState = PackageStates.Loaded;
+                LoadState.ScheduledState = PackageLoadState.ScheduledTypes.None;
             }
-            else
-            {
-                RaisePropertyChanged(nameof(EnableOldMarkedForUnistallState));
-            }
+  
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }
 
