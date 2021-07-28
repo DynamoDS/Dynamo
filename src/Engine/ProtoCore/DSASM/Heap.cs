@@ -282,7 +282,7 @@ namespace ProtoCore.DSASM
     // SatB: GC uses a snapshot of the stack and heap when deciding what heap elements need to be collected.
     public class Heap
     {
-        private enum GCState
+        internal enum GCState
         {
             Pause,
             WaitingForRoots,
@@ -296,6 +296,8 @@ namespace ProtoCore.DSASM
             Gray, // Root objects that haven't had all their references traced yet.
             Black // Objects that are in use (are not candidates for garbage collection) and have had all their references traced.
         }
+
+        private Dictionary<GCState, (Action, Action)> testNotifications;
 
         private readonly List<int> freeList = new List<int>();
         private readonly List<HeapElement> heapElements = new List<HeapElement>();
@@ -425,16 +427,16 @@ namespace ProtoCore.DSASM
             if (stringTable.TryGetPointer(str, out index)) {
                 // Any existing heap elements, marked as white, that are in the sweepSet and that are referenced during the sweep cycle will be marked as Black.
                 // This will ensure that no reachable data is mistakenly cleaned up.
-                bool isDuringGCPropagateCycle = gcState == GCState.Propagate;
+                bool isDuringGCCriticalAsyncCycle = gcState != GCState.Pause;// Between the time the GC takes a snapshot of the stack and heap untill GC cycle is over.
                 bool isValidHeapIndex = index >= 0 && index < heapElements.Count;
-                if (isDuringGCPropagateCycle && isValidHeapIndex)
+                if (isDuringGCCriticalAsyncCycle && isValidHeapIndex)
                 {
                     var he = heapElements[index];
                     Validity.Assert(he != null, $"Null heap element found at index {index} during AllocateStringInternal");
 
-                    bool isHeapElementMarkedAsWhite = he.Mark == GCMark.White;// Either not processed by Propagate step yet or processed and found as garbage.
-                    bool isHeapElementConsideredForCleanup = sweepSet.Contains(index);
-                    if (isHeapElementMarkedAsWhite && isHeapElementConsideredForCleanup)
+                    // If heap element is marked as white then it is either not processed by Propagate step yet or processed and found as garbage.
+                    // If the sweepSet does not contain the heap element's index then there is no need to mark it black (since cleanup will not even be tried)
+                    if (he.Mark == GCMark.White && sweepSet.Contains(index))
                     {
                         // Set the heap element's Mark as Black so that it will not get cleaned up.
                         // No need to do a recursive mark on the it since it is just a string and thus cannot have references to other heap elements.
@@ -717,7 +719,7 @@ namespace ProtoCore.DSASM
             // We start from a clean sweepSet
             sweepSet.Clear();
 
-            sweepSet.Concat(Enumerable.Range(0, heapElements.Count));
+            sweepSet.UnionWith(Enumerable.Range(0, heapElements.Count));
             sweepSet.ExceptWith(freeList);
             sweepSet.ExceptWith(fixedHeapElements);
 
@@ -737,17 +739,30 @@ namespace ProtoCore.DSASM
         /// </summary>
         private void SingleStep(bool forceGC)
         {
+            // Testing purposes only.
+            (Action start, Action end) fns = (() => {}, () => {});
+            var testCB = testNotifications?.TryGetValue(gcState, out fns) ?? false;
+            // ~Testing purposes only.
+
             switch (gcState)
             {
                 case GCState.Pause:
+                    if (testCB) fns.start();
+  
                     if (gcDebt <= 0 || forceGC)
                         gcState = GCState.WaitingForRoots;
+
+                    if (testCB) fns.end();
                     break;
 
                 case GCState.WaitingForRoots:
+                    if (testCB) fns.start();
+                    if (testCB) fns.end();
                     break;
 
                 case GCState.Propagate:
+                    if (testCB) fns.start();
+
                     if (grayList.Any())
                     {
                         totalTraversed += RecursiveMark(grayList.First());
@@ -757,13 +772,19 @@ namespace ProtoCore.DSASM
                     {
                         gcState = GCState.Sweep;
                     }
+
+                    if (testCB) fns.end();
                     break;
 
                 case GCState.Sweep:
+                    if (testCB) fns.start();
+
                     Sweep();
                     MarkAllWhite();
                     gcState = GCState.Pause;
                     IsGCRunning = false;
+
+                    if (testCB) fns.end();
                     break;
             }
         }
@@ -909,6 +930,16 @@ namespace ProtoCore.DSASM
         {
             gcDebt -= newSize;
             totalAllocated += newSize;
+        }
+
+        // Used for testing async workflows in GC
+        internal void AddNotifier(GCState gcState, Action start, Action end)
+        {
+            if (testNotifications == null)
+            {
+                testNotifications = new Dictionary<GCState, (Action, Action)>();
+            }
+            testNotifications.Add(gcState, (start, end));
         }
     }
 }
