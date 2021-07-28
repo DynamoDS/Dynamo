@@ -301,6 +301,8 @@ namespace ProtoCore.DSASM
         private readonly List<HeapElement> heapElements = new List<HeapElement>();
         private HashSet<int> fixedHeapElements = new HashSet<int>(); 
         private readonly StringTable stringTable = new StringTable();
+        // The expected lifetime of the sweepSet is start of GC to end of GC
+        private HashSet<int> sweepSet = new HashSet<int>();
 
         private const int GC_THRESHOLD = 1024*1024;
         // Totaly allocated StackValues
@@ -309,7 +311,6 @@ namespace ProtoCore.DSASM
         private int gcDebt = GC_THRESHOLD;
 
         private LinkedList<StackValue> grayList;
-        private HashSet<int> sweepSet;
         private List<StackValue> roots;
         private Executive executive;
         private bool isDisposing = false;
@@ -429,10 +430,8 @@ namespace ProtoCore.DSASM
                 if (isDuringGCPropagateCycle && isValidHeapIndex)
                 {
                     var he = heapElements[index];
-                    if (he == null)
-                    {
-                        throw new NullReferenceException($"Null heap element found at index {index} during AllocateStringInternal");
-                    }
+                    Validity.Assert(he != null, $"Null heap element found at index {index} during AllocateStringInternal");
+
                     bool isHeapElementMarkedAsWhite = he.Mark == GCMark.White;// Either not processed by Propagate step yet or processed and found as garbage.
                     bool isHeapElementConsideredForCleanup = sweepSet.Contains(index);
                     if (isHeapElementMarkedAsWhite && isHeapElementConsideredForCleanup)
@@ -682,10 +681,7 @@ namespace ProtoCore.DSASM
                 StackValue value = ptrs.Dequeue();
                 int rawPtr = (int)value.RawData;
                 var hp = heapElements[rawPtr];
-                if (hp == null)
-                {
-                    throw new NullReferenceException($"Null heap element found at index {rawPtr} during garbage collection");
-                }
+                Validity.Assert(hp != null, $"Null heap element found at index {rawPtr} during garbage collection");
 
                 if (hp.Mark == GCMark.Black)
                     continue;
@@ -718,7 +714,10 @@ namespace ProtoCore.DSASM
         /// </summary>
         private void StartCollection()
         {
-            sweepSet = new HashSet<int>(Enumerable.Range(0, heapElements.Count));
+            // We start from a clean sweepSet
+            sweepSet.Clear();
+
+            sweepSet.Concat(Enumerable.Range(0, heapElements.Count));
             sweepSet.ExceptWith(freeList);
             sweepSet.ExceptWith(fixedHeapElements);
 
@@ -777,10 +776,7 @@ namespace ProtoCore.DSASM
             foreach (var ptr in sweepSet)
             {
                 var hp = heapElements[ptr];
-                if (hp == null)
-                {
-                    throw new NullReferenceException($"Null heap element found at index {ptr} during garbage collection");
-                }
+                Validity.Assert(hp != null, $"Null heap element found at index {ptr} during garbage collection");
 
                 if (hp.Mark != GCMark.White)
                     continue;
