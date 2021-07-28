@@ -782,12 +782,7 @@ namespace Dynamo.ViewModels
                 PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
 
-                if (DebugModes.IsEnabled("DynamoPackageStates"))
-                {
-                    // Temporary location for setting the package state.
-                    // Should be moved somewhere with more visibility into possible errors.
-                    dynPkg.LoadState.State = PackageLoadState.StateTypes.Loaded;
-                }
+                dynPkg.LoadState.State = PackageLoadState.StateTypes.Loaded;
             }
             else
             {

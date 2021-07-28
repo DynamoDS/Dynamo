@@ -456,10 +456,7 @@ namespace Dynamo.PackageManager
         internal void MarkForUninstall(IPreferences prefs)
         {
             MarkedForUninstall = true;
-            if (DebugModes.IsEnabled("DynamoPackageStates"))
-            {
-                LoadState.ScheduledState = PackageLoadState.ScheduledTypes.ScheduledForUnload;
-            }
+            LoadState.ScheduledState = PackageLoadState.ScheduledTypes.ScheduledForUnload;
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
             {
@@ -470,12 +467,7 @@ namespace Dynamo.PackageManager
         internal void UnmarkForUninstall(IPreferences prefs)
         {
             MarkedForUninstall = false;
-
-            if (DebugModes.IsEnabled("DynamoPackageStates"))
-            {
-                LoadState.ScheduledState = PackageLoadState.ScheduledTypes.None;
-            }
-  
+            LoadState.ScheduledState = PackageLoadState.ScheduledTypes.None;
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }
 

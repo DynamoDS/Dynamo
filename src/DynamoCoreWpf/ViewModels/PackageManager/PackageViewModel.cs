@@ -32,27 +32,10 @@ namespace Dynamo.ViewModels
         }
 
         [Obsolete("This is a temporary property. Please do not use it")]
-        public bool EnableOldMarkedForUnistallState
-        {
-            get { return !DebugModes.IsEnabled("DynamoPackageStates") && Model.MarkedForUninstall; }
-        }
-
-        [Obsolete("This is a temporary property. Please do not use it")]
-        public bool EnablePackageStates
-        {
-            get { return DebugModes.IsEnabled("DynamoPackageStates"); }
-        }
-
-        [Obsolete("This is a temporary property. Please do not use it")]
         public string PackageLoadStateText
         {
             get
             {
-                if (!DebugModes.IsEnabled("DynamoPackageStates"))
-                {
-                    return "DO NOT USE THIS";
-                }
-
                 switch (Model.LoadState.ScheduledState)
                 {
                     case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateUnloaded;
@@ -78,11 +61,6 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (!DebugModes.IsEnabled("DynamoPackageStates"))
-                {
-                    return "DO NOT USE THIS";
-                }
-
                 switch (Model.LoadState.ScheduledState)
                 {
                     case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateUnloadedTooltip;
@@ -192,15 +170,8 @@ namespace Dynamo.ViewModels
         {
             Model.UnmarkForUninstall( dynamoViewModel.Model.PreferenceSettings );
 
-            if (DebugModes.IsEnabled("DynamoPackageStates"))
-            {
-                RaisePropertyChanged(nameof(PackageLoadStateTooltip));
-                RaisePropertyChanged(nameof(PackageLoadStateText));
-            }
-            else
-            {
-                RaisePropertyChanged("EnableOldMarkedForUnistallState");
-            }
+            RaisePropertyChanged(nameof(PackageLoadStateTooltip));
+            RaisePropertyChanged(nameof(PackageLoadStateText));
         }
 
         private bool CanUnmarkForUninstallation()
@@ -232,15 +203,6 @@ namespace Dynamo.ViewModels
                 var dynModel = dynamoViewModel.Model;
                 var pmExtension = dynModel.GetPackageManagerExtension();
                 Model.UninstallCore(dynModel.CustomNodeManager, pmExtension.PackageLoader, dynModel.PreferenceSettings);
-
-                if (DebugModes.IsEnabled("DynamoPackageStates"))
-                {
-                    RaisePropertyChanged(nameof(PackageLoadStateTooltip));
-                    RaisePropertyChanged(nameof(PackageLoadStateText));
-                } else
-                {
-                    RaisePropertyChanged("EnableOldMarkedForUnistallState");
-                }
             }
             catch (Exception)
             {
@@ -248,6 +210,11 @@ namespace Dynamo.ViewModels
                     dynamoViewModel.BrandingResourceProvider.ProductName),
                     Resources.UninstallFailureMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                RaisePropertyChanged(nameof(PackageLoadStateTooltip));
+                RaisePropertyChanged(nameof(PackageLoadStateText));
             }
         }
 
