@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Dynamo.ViewModels
 {
@@ -65,10 +68,104 @@ namespace Dynamo.ViewModels
         private ObservableCollection<NodeMessage> nodeWarningsToDisplay = new ObservableCollection<NodeMessage>();
         private ObservableCollection<NodeMessage> nodeErrorsToDisplay = new ObservableCollection<NodeMessage>();
 
-        private bool nodeInfoVisible = true;
-        private bool nodeWarningsVisible = true;
-        private bool nodeErrorsVisible = true;
+        // Determines whether or not the row for each information level is visible. 
+        // e.g. The row for warnings might be showing, but errors and info messages are not shown.
+        private bool nodeInfoVisible;
+        private bool nodeWarningsVisible;
+        private bool nodeErrorsVisible;
 
+        // Determines whether the info/warnings/error iterator is shown e.g. (1/4)
+        private bool nodeInfoIteratorVisible;
+        private bool nodeWarningsIteratorVisible;
+        private bool nodeErrorsIteratorVisible;
+
+        // Determines whether or not the body of each information bubble is shown. 
+        // This relates to the message text box, and any buttons used to dismiss/display messages.
+        private bool nodeInfoSectionExpanded;
+        private bool nodeWarningsSectionExpanded;
+        private bool nodeErrorsSectionExpanded;
+
+        /// <summary>
+        /// Determines whether the info, warnings and errors are displaying just an icon, a single error message
+        /// or all messages at once.
+        /// </summary>
+        private NodeMessageVisibility nodeInfoVisibilityState = NodeMessageVisibility.Icon;
+        private NodeMessageVisibility nodeWarningsVisibilityState = NodeMessageVisibility.Icon;
+        private NodeMessageVisibility nodeErrorsVisibilityState = NodeMessageVisibility.Icon;
+
+        /// <summary>
+        /// Determines whether the 'Show More' or 'Show Less' buttons are visible to the user.
+        /// </summary>
+        private bool nodeInfoShowMoreButtonVisible;
+        private bool nodeWarningsShowMoreButtonVisible;
+        private bool nodeErrorsShowMoreButtonVisible;
+        
+        /// <summary>
+        /// Relates to whether the info/warning/error message bodies display a button saying
+        /// 'show more' or 'show less'.
+        /// </summary>
+        private bool nodeInfoShowLessMessageVisible;
+        private bool nodeWarningsShowLessMessageVisible;
+        private bool nodeErrorsShowLessMessageVisible;
+
+        // Determines whether the show more/show less buttons are visible to the user
+        public bool NodeInfoShowMoreButtonVisible
+        {
+            get => nodeInfoShowMoreButtonVisible;
+            set
+            {
+                nodeInfoShowMoreButtonVisible = value;
+                RaisePropertyChanged(nameof(NodeInfoShowMoreButtonVisible));
+            }
+        }
+        public bool NodeWarningsShowMoreButtonVisible
+        {
+            get => nodeWarningsShowMoreButtonVisible;
+            set
+            {
+                nodeWarningsShowMoreButtonVisible = value;
+                RaisePropertyChanged(nameof(NodeWarningsShowMoreButtonVisible));
+            }
+        }
+        public bool NodeErrorsShowMoreButtonVisible
+        {
+            get => nodeErrorsShowMoreButtonVisible;
+            set
+            {
+                nodeErrorsShowMoreButtonVisible = value;
+                RaisePropertyChanged(nameof(NodeErrorsShowMoreButtonVisible));
+            }
+        }
+
+
+        // Determines what the show more/show less buttons say
+        public bool NodeInfoShowLessMessageVisible
+        {
+            get => nodeInfoShowLessMessageVisible;
+            set
+            {
+                nodeInfoShowLessMessageVisible = value;
+                RaisePropertyChanged(nameof(NodeInfoShowLessMessageVisible));
+            }
+        }
+        public bool NodeWarningsShowLessMessageVisible
+        {
+            get => nodeWarningsShowLessMessageVisible;
+            set
+            {
+                nodeWarningsShowLessMessageVisible = value;
+                RaisePropertyChanged(nameof(NodeWarningsShowLessMessageVisible));
+            }
+        }
+        public bool NodeErrorsShowLessMessageVisible
+        {
+            get => nodeErrorsShowLessMessageVisible;
+            set
+            {
+                nodeErrorsShowLessMessageVisible = value;
+                RaisePropertyChanged(nameof(NodeErrorsShowLessMessageVisible));
+            }
+        }
 
         public string Content
         {
@@ -92,10 +189,7 @@ namespace Dynamo.ViewModels
         }
 
         public string FullContent;
-
-        private NodeInformationStateVisibility nodeInfoVisibilityState = NodeInformationStateVisibility.Icon;
-        private NodeInformationStateVisibility nodeWarningsVisibilityState = NodeInformationStateVisibility.CollapseMessages;
-        private NodeInformationStateVisibility nodeErrorsVisibilityState = NodeInformationStateVisibility.ShowAllMessages;
+        
 
         public Direction ConnectingDirection
         {
@@ -198,6 +292,16 @@ namespace Dynamo.ViewModels
         public ObservableCollection<string> NodeErrors { get; set; } = new ObservableCollection<string>();
 
         /// <summary>
+        /// A collection of dismissed info messages for this node
+        /// </summary>
+        public ObservableCollection<string> DismissedNodeInfo { get; set; } = new ObservableCollection<string>();
+
+        /// <summary>
+        /// A collection of dismissed warnings for this node
+        /// </summary>
+        public ObservableCollection<string> DismissedNodeWarnings { get; set; } = new ObservableCollection<string>();
+        
+        /// <summary>
         /// Used to determine whether the UI container for node Info is visible
         /// </summary>
         public bool NodeInfoVisible
@@ -237,44 +341,41 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Determines whether the node infos are showing just an icon, a condensed summary of messages or
-        /// displaying each message in turn.
+        /// Used to determine whether the UI container for node Info is expanded
         /// </summary>
-        public NodeInformationStateVisibility NodeInfoVisibilityState
+        public bool NodeInfoSectionExpanded
         {
-            get => nodeInfoVisibilityState;
+            get => nodeInfoSectionExpanded;
             set
             {
-                nodeInfoVisibilityState = value;
-                RaisePropertyChanged(nameof(NodeInfoVisibilityState));
+                nodeInfoSectionExpanded = value;
+                RaisePropertyChanged(nameof(NodeInfoSectionExpanded));
             }
         }
 
         /// <summary>
-        /// Determines whether the node warnings are showing just an icon, a condensed summary of messages or
-        /// displaying each message in turn.
+        /// Used to determine whether the UI container for node Warnings is expanded
         /// </summary>
-        public NodeInformationStateVisibility NodeWarningsVisibilityState
+        public bool NodeWarningsSectionExpanded
         {
-            get => nodeWarningsVisibilityState;
+            get => nodeWarningsSectionExpanded;
             set
             {
-                nodeWarningsVisibilityState = value;
-                RaisePropertyChanged(nameof(NodeWarningsVisibilityState));
+                nodeWarningsSectionExpanded = value;
+                RaisePropertyChanged(nameof(NodeWarningsSectionExpanded));
             }
         }
 
         /// <summary>
-        /// Determines whether the node errors showing just an icon, a condensed summary of messages or
-        /// displaying each message in turn.
+        /// Used to determine whether the UI container for node Errors is expanded
         /// </summary>
-        public NodeInformationStateVisibility NodeErrorsVisibilityState
+        public bool NodeErrorsSectionExpanded
         {
-            get => nodeErrorsVisibilityState;
+            get => nodeErrorsSectionExpanded;
             set
             {
-                nodeErrorsVisibilityState = value;
-                RaisePropertyChanged(nameof(NodeErrorsVisibilityState));
+                nodeErrorsSectionExpanded = value;
+                RaisePropertyChanged(nameof(NodeErrorsSectionExpanded));
             }
         }
 
@@ -282,13 +383,89 @@ namespace Dynamo.ViewModels
         /// Represents whether a node information state (e.g. warnings) are displaying just the
         /// warning icon, a condensed summary of all messages at this level or fully-displaying each message
         /// </summary>
-        public enum NodeInformationStateVisibility
+        public enum NodeMessageVisibility { Icon, CollapseMessages, ShowAllMessages }
+
+        /// <summary>
+        /// Determines whether the node infos are showing just an icon, a condensed summary of messages or
+        /// displaying each message in turn.
+        /// </summary>
+        public NodeMessageVisibility NodeInfoVisibilityState
         {
-            Icon,
-            CollapseMessages,
-            ShowAllMessages
+            get => nodeInfoVisibilityState;
+            set
+            {
+                nodeInfoVisibilityState = value;
+                RaisePropertyChanged(nameof(NodeInfoVisibilityState));
+                NodeInfoSectionExpanded = nodeInfoVisibilityState != NodeMessageVisibility.Icon;
+                FormatNodeMessages(NodeInfo, NodeInfoToDisplay, NodeInfoVisibilityState, DismissedNodeInfo);
+                if (NodeInfo.Count - DismissedNodeInfo.Count > 1) NodeInfoIteratorVisible = true;
+            }
         }
-        
+
+        /// <summary>
+        /// Determines whether the node warnings are showing just an icon, a condensed summary of messages or
+        /// displaying each message in turn.
+        /// </summary>
+        public NodeMessageVisibility NodeWarningsVisibilityState
+        {
+            get => nodeWarningsVisibilityState;
+            set
+            {
+                nodeWarningsVisibilityState = value;
+                RaisePropertyChanged(nameof(NodeWarningsVisibilityState));
+                NodeWarningsSectionExpanded = nodeWarningsVisibilityState != NodeMessageVisibility.Icon;
+                FormatNodeMessages(NodeWarnings, NodeWarningsToDisplay, NodeWarningsVisibilityState, DismissedNodeWarnings);
+                if (NodeWarnings.Count - DismissedNodeWarnings.Count > 1) NodeWarningsIteratorVisible = true;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the node errors showing just an icon, a condensed summary of messages or
+        /// displaying each message in turn.
+        /// </summary>
+        public NodeMessageVisibility NodeErrorsVisibilityState
+        {
+            get => nodeErrorsVisibilityState;
+            set
+            {
+                nodeErrorsVisibilityState = value;
+                RaisePropertyChanged(nameof(NodeErrorsVisibilityState));
+                NodeErrorsSectionExpanded = NodeErrorsVisibilityState != NodeMessageVisibility.Icon;
+                FormatNodeMessages(NodeErrors, NodeErrorsToDisplay, NodeErrorsVisibilityState);
+                if (NodeErrors.Count > 1) NodeErrorsIteratorVisible = true;
+            }
+        }
+
+        public bool NodeInfoIteratorVisible
+        {
+            get => nodeInfoIteratorVisible;
+            set
+            {
+                nodeInfoIteratorVisible = value;
+                RaisePropertyChanged(nameof(NodeInfoIteratorVisible));
+            }
+        }
+
+        public bool NodeWarningsIteratorVisible
+        {
+            get => nodeWarningsIteratorVisible;
+            set
+            {
+                nodeWarningsIteratorVisible = value;
+                RaisePropertyChanged(nameof(NodeWarningsIteratorVisible));
+            }
+        }
+
+        public bool NodeErrorsIteratorVisible
+        {
+            get => nodeErrorsIteratorVisible;
+            set
+            {
+                nodeErrorsIteratorVisible = value;
+                RaisePropertyChanged(nameof(NodeErrorsIteratorVisible));
+            }
+        }
+
         #endregion
 
         #region Event Handlers
@@ -322,28 +499,53 @@ namespace Dynamo.ViewModels
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
 
-            NodeInfo.CollectionChanged += NodeInfo_CollectionChanged;
-            NodeWarnings.CollectionChanged += NodeWarnings_CollectionChanged;
-            NodeErrors.CollectionChanged += NodeErrors_CollectionChanged;
+            NodeInfo.CollectionChanged += NodeInformation_CollectionChanged;
+            NodeWarnings.CollectionChanged += NodeInformation_CollectionChanged;
+            NodeErrors.CollectionChanged += NodeInformation_CollectionChanged;
+            DismissedNodeInfo.CollectionChanged += NodeInformation_CollectionChanged;
+            DismissedNodeWarnings.CollectionChanged += NodeInformation_CollectionChanged;
+
+            RebuildNodeInformationalStateDisplay();
+        }
+        
+        private void NodeInformation_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            RebuildNodeInformationalStateDisplay();
         }
 
-        private void NodeErrors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        public void RebuildNodeInformationalStateDisplay()
         {
+            // Clears all collections of user-facing messages
             NodeErrorsToDisplay.Clear();
-            FormatNodeMessage(NodeErrors, NodeErrorsToDisplay, NodeErrorsVisibilityState);
-        }
-
-        private void NodeWarnings_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
             NodeWarningsToDisplay.Clear();
-            FormatNodeMessage(NodeWarnings, NodeWarningsToDisplay, NodeWarningsVisibilityState);
+            NodeInfoToDisplay.Clear();
+
+            // Going through all received messages and formatting them according to the visibility state
+            FormatNodeMessages(NodeErrors, NodeErrorsToDisplay, NodeErrorsVisibilityState);
+            FormatNodeMessages(NodeWarnings, NodeWarningsToDisplay, NodeWarningsVisibilityState, DismissedNodeWarnings);
+            FormatNodeMessages(NodeInfo, NodeInfoToDisplay, NodeInfoVisibilityState, DismissedNodeInfo);
+
+            // Determining which warning levels will be displayed to the user
+            NodeInfoVisible = NodeInfoToDisplay.Count > 0;
+            NodeWarningsVisible = NodeWarningsToDisplay.Count > 0;
+            NodeErrorsVisible = NodeErrorsToDisplay.Count > 0;
+
+            // Determining whether the number of non-dismissed messages is greater than 1, in which case
+            // a show more/less button is displayed to the user to help manage the number of visible messages.
+            NodeInfoShowMoreButtonVisible = NodeInfo.Count - DismissedNodeInfo.Count > 1;
+            NodeWarningsShowMoreButtonVisible = NodeWarnings.Count - DismissedNodeWarnings.Count > 1;
+            NodeErrorsShowMoreButtonVisible = NodeErrors.Count > 1;
+
+            // Setting whether iterators (e.g. Error 1/5) are visible for each warning level
+            if (NodeErrorsToDisplay.Select(x => x.MessageNumber).Distinct().Count() > 1) NodeErrorsIteratorVisible = true;
+            if (NodeWarningsToDisplay.Select(x => x.MessageNumber).Distinct().Count() > 1) NodeWarningsIteratorVisible = true;
+            if (NodeInfoToDisplay.Select(x => x.MessageNumber).Distinct().Count() > 1) NodeInfoIteratorVisible = true;
+            
+            NodeInfoSectionExpanded = NodeInfoVisibilityState != NodeMessageVisibility.Icon;
+            NodeWarningsSectionExpanded = NodeWarningsVisibilityState != NodeMessageVisibility.Icon;
+            NodeErrorsSectionExpanded = NodeErrorsVisibilityState != NodeMessageVisibility.Icon;
         }
 
-        private void NodeInfo_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            NodeInfoToDisplay.Clear();
-            FormatNodeMessage(NodeInfo, NodeInfoToDisplay, NodeInfoVisibilityState);
-        }
         #endregion
 
         #region Command Methods
@@ -499,55 +701,62 @@ namespace Dynamo.ViewModels
         /// Used to generate the user-facing information relating to a node, such as errors or warnings.
         /// </summary>
         /// <param name="messages">An ObservableCollection of strings, either info, warnings or errors.</param>
-        /// <param name="nodeInformationStateVisibility">An enum value, determining how each level of NodeInformationState messages is to be displayed.</param>
-        private void FormatNodeMessage
+        /// <param name="targetCollection">An ObservableCollection messages to be updated.</param>
+        /// <param name="nodeMessageVisibility">An enum value, determining how each level of NodeInformationState messages is to be displayed.</param>
+        private void FormatNodeMessages
         (
             ObservableCollection<string> messages,
             ObservableCollection<NodeMessage> targetCollection,
-            NodeInformationStateVisibility nodeInformationStateVisibility
+            NodeMessageVisibility nodeMessageVisibility,
+            ObservableCollection<string> targetDismissedStrings = null
         )
         {
             if (messages == null || messages.Count < 1) return;
+            if (targetDismissedStrings == null) targetDismissedStrings = new ObservableCollection<string>();
 
-            switch (nodeInformationStateVisibility)
+            targetCollection.Clear();
+            
+            int nonDismissedMessageCount = messages
+                .Count(x => !targetDismissedStrings.Contains(x));
+
+            switch (nodeMessageVisibility)
             {
                 // The user just sees the icon, no messages.
-                case NodeInformationStateVisibility.Icon:
-                    return;
-                // The user just sees the first message, with a count displaying the total number of collapsed messages at this level.
-                case NodeInformationStateVisibility.CollapseMessages:
-                    // If there is just one message at this level we don't display the iterator
-                    string messageNumber = messages.Count > 1 ? $"1/{messages.Count} " : "";
+                case NodeMessageVisibility.Icon:
                     targetCollection.Add(new NodeMessage
                     {
                         Message = messages[0],
-                        MessageNumber = messageNumber
+                        MessageNumber = ""
                     });
                     break;
-                // The user sees all messages, with an interating counter displayed next to each message.
-                case NodeInformationStateVisibility.ShowAllMessages:
-                    // If there is just one message at this level we don't display the iterator
-                    if (messages.Count < 2)
-                    {
-                        targetCollection.Add(new NodeMessage
-                        {
-                            Message = messages[0],
-                            MessageNumber = ""
-                        });
-                        break;
-                    }
-                    // Otherwise we display the iterator
+                // The user just sees the first message, with a count displaying the total number of collapsed messages at this level.
+                case NodeMessageVisibility.CollapseMessages:
                     for (int i = 0; i < messages.Count; i++)
                     {
+                        if (targetDismissedStrings.Contains(messages[i])) continue;
                         targetCollection.Add(new NodeMessage
                         {
                             Message = messages[i],
-                            MessageNumber = $"{i+1}/{messages.Count} "
+                            MessageNumber = $"1/{nonDismissedMessageCount} "
+                        });
+                        break;
+                    }
+                    break;
+                // The user sees all messages, with an interating counter displayed next to each message.
+                case NodeMessageVisibility.ShowAllMessages:
+                    // Otherwise we display the iterator
+                    for (int i = 0; i < messages.Count; i++)
+                    {
+                        if (targetDismissedStrings.Contains(messages[i])) continue;
+                        targetCollection.Add(new NodeMessage
+                        {
+                            Message = messages[i],
+                            MessageNumber = $"{i+1}/{nonDismissedMessageCount} "
                         });
                     }
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(nodeInformationStateVisibility), nodeInformationStateVisibility, null);
+                    throw new ArgumentOutOfRangeException(nameof(nodeMessageVisibility), nodeMessageVisibility, null);
             }
         }
 

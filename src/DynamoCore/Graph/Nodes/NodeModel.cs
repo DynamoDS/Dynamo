@@ -4,8 +4,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Net.Mime;
 using System.Reflection;
+using System.Windows;
 using System.Runtime.Serialization;
+using System.Threading;
+using System.Windows.Threading;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
@@ -21,11 +25,13 @@ using Dynamo.Utilities;
 using Dynamo.Visualization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using Type = System.Type;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -400,19 +406,19 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// A collection of objects that represent user-facing messages on a node.
-        /// These can be one of 3 types: Info, Warning or Error
+        /// These can be one of 3 MessageTypes: Info, Warning or Error
         /// Info types represent non-vital information about a node's operation.
         /// Warning types represent information the user should be made aware of, but may still be dismissed.
         /// Error types signify a non-dismissable error, which will block the node from executing until it has been addressed.
         /// </summary>
         [JsonIgnore]
-        public ObservableCollection<INodeInformationalState> NodeInformationalStates
+        public ObservableCollection<OutputMessage> OutputMessages
         {
-            get => nodeInformationalStates;
+            get => outputMessages;
             set
             {
-                nodeInformationalStates = value;
-                RaisePropertyChanged(nameof(NodeInformationalStates));
+                outputMessages = value;
+                RaisePropertyChanged(nameof(OutputMessages));
             }
         }
 
@@ -1672,6 +1678,7 @@ namespace Dynamo.Graph.Nodes
         {
             State = ElementState.Error;
             ToolTipText = p;
+            OutputMessages.Add(new OutputMessage(p) { Type = OutputMessage.MessageType.Error });
         }
 
         /// <summary>
@@ -1698,6 +1705,9 @@ namespace Dynamo.Graph.Nodes
                 ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.Format("{0}\n{1}", persistentWarning, p);
                 ClearPersistentWarning();
             }
+
+            var myItem = new OutputMessage(ToolTipText) {Type = OutputMessage.MessageType.Warning};
+            Dispatcher.CurrentDispatcher.Invoke(new Action(() => this.OutputMessages.Add(myItem)));
         }
 
         /// <summary>
@@ -2441,8 +2451,8 @@ namespace Dynamo.Graph.Nodes
 
         private ExecutionHints executionHint;
 
-        private ObservableCollection<INodeInformationalState> nodeInformationalStates =
-            new ObservableCollection<INodeInformationalState>();
+        private ObservableCollection<OutputMessage> outputMessages =
+            new ObservableCollection<OutputMessage>();
 
         [JsonIgnore]
         public bool IsModified
@@ -2742,32 +2752,5 @@ namespace Dynamo.Graph.Nodes
         /// Action to call on UI thread.
         /// </summary>
         public Action ActionToDispatch { get; set; }
-    }
-
-    /// <summary>
-    /// A collection of objects for displaying messages about a node's functionality to the user.
-    /// These are categorised as 'Information' level, the least important kind of message.
-    /// </summary>
-    public class NodeInfo : INodeInformationalState
-    {
-        public string Message { get; set; }
-    }
-
-    /// <summary>
-    /// A collection of objects for displaying messages about a node's functionality to the user.
-    /// These are categorised as 'Warning' level, an important but dismissable kind of message.
-    /// </summary>
-    public class NodeWarning : INodeInformationalState
-    {
-        public string Message { get; set; }
-    }
-
-    /// <summary>
-    /// A collection of objects for displaying messages about a node's functionality to the user.
-    /// These are categorised as 'Error' level, the most important kind of message.
-    /// </summary>
-    public class NodeError : INodeInformationalState
-    {
-        public string Message { get; set; }
     }
 }

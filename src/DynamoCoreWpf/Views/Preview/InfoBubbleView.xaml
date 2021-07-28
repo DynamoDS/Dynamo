@@ -6,6 +6,7 @@
     xmlns:core="clr-namespace:Dynamo.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
     xmlns:ui="clr-namespace:Dynamo.UI"
     Name="InfoBubbleWindowUserControl"
     Loaded="InfoBubbleWindowUserControl_Loaded"
@@ -76,6 +77,7 @@
 
             <!--  Errors  -->
             <Border
+                Name="ErrorsBorder"
                 Margin="0,0,0,5"
                 HorizontalAlignment="Left"
                 Background="White"
@@ -83,6 +85,7 @@
                 BorderThickness="1"
                 CornerRadius="2"
                 DockPanel.Dock="Bottom"
+                MouseDown="ErrorsBorder_MouseDown"
                 Visibility="{Binding NodeErrorsVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                 <Grid Margin="10">
                     <Grid Grid.Row="0">
@@ -98,7 +101,7 @@
                         <Grid
                             Grid.Row="0"
                             Grid.Column="0"
-                            Width="35"
+                            Width="25"
                             Height="25"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top">
@@ -125,37 +128,73 @@
                         <ListBox
                             Grid.Row="0"
                             Grid.Column="1"
+                            Margin="10,-5,0,0"
                             BorderThickness="0"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            FontSize="12px"
+                            Foreground="Black"
                             ItemsSource="{Binding NodeErrorsToDisplay, UpdateSourceTrigger=PropertyChanged}"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock
-                                        FontFamily="{StaticResource ArtifaktElementRegular}"
-                                        FontSize="12px"
-                                        Foreground="Black"
-                                        TextWrapping="Wrap">
-                                        <TextBlock.Inlines>
-                                            <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
-                                            <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
-                                        </TextBlock.Inlines>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            Visibility="{Binding NodeErrorsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                            <ListBox.Style>
+                                <Style>
+                                    <!--  Because empty runs have a read-only non-zero width, we need to switch out the DataTemplate dynamically  -->
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=NodeErrorsIteratorVisible, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                            <Setter Property="ListBox.ItemTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate>
+                                                        <TextBlock TextWrapping="Wrap">
+                                                            <TextBlock.Inlines>
+                                                                <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
+                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
+                                                            </TextBlock.Inlines>
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Path=NodeErrorsIteratorVisible, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                            <Setter Property="ListBox.ItemTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" />
+                                                    </DataTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.Style>
                         </ListBox>
-                        <StackPanel Grid.Row="1"
-                                    Grid.Column="1"
-                                    Margin="0,10,0,0"
-                                    HorizontalAlignment="Right"
-                                    FlowDirection="RightToLeft"
-                                    Orientation="Horizontal">
-                            <Button HorizontalAlignment="Right"
-                                    VerticalAlignment="Bottom"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Content="Show all errors"
-                                    Foreground="#0696D7"
-                                    Visibility="{Binding IsErrorInformationalStateExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                        <StackPanel
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="0,10,0,0"
+                            HorizontalAlignment="Right"
+                            FlowDirection="RightToLeft"
+                            Orientation="Horizontal"
+                            Visibility="{Binding NodeErrorsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                            <Button
+                                Name="ShowAllErrorsButton"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Click="ShowAllErrorsButton_Click"
+                                Foreground="#0696D7"
+                                Visibility="{Binding NodeErrorsShowMoreButtonVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <Button.Style>
+                                    <Style>
+                                        <Setter Property="Button.Content" Value="{x:Static p:Resources.NodeInformationalStateShowAllErrors}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding NodeErrorsShowLessMessageVisible, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                <Setter Property="Button.Content" Value="{x:Static p:Resources.NodeInformationalStateShowLess}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </Grid>
@@ -163,6 +202,7 @@
 
             <!--  Warnings  -->
             <Border
+                Name="WarningsBorder"
                 Margin="0,0,0,5"
                 HorizontalAlignment="Left"
                 Background="White"
@@ -170,6 +210,7 @@
                 BorderThickness="1"
                 CornerRadius="2"
                 DockPanel.Dock="Bottom"
+                MouseDown="WarningsBorder_MouseDown"
                 Visibility="{Binding NodeWarningsVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                 <Grid Margin="10">
                     <Grid Grid.Row="0">
@@ -185,7 +226,7 @@
                         <Grid
                             Grid.Row="0"
                             Grid.Column="0"
-                            Width="35"
+                            Width="25"
                             Height="25"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top">
@@ -212,48 +253,84 @@
                         <ListBox
                             Grid.Row="0"
                             Grid.Column="1"
+                            Margin="10,-5,0,0"
                             BorderThickness="0"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            FontSize="12px"
+                            Foreground="Black"
                             ItemsSource="{Binding NodeWarningsToDisplay, UpdateSourceTrigger=PropertyChanged}"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock
-                                        FontFamily="{StaticResource ArtifaktElementRegular}"
-                                        FontSize="12px"
-                                        Foreground="Black"
-                                        TextWrapping="Wrap">
-                                        <TextBlock.Inlines>
-                                            <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
-                                            <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
-                                        </TextBlock.Inlines>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            Visibility="{Binding NodeWarningsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                            <ListBox.Style>
+                                <Style>
+                                    <!--  Because empty runs have a read-only non-zero width, we need to switch out the DataTemplate dynamically  -->
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=NodeWarningsIteratorVisible, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                            <Setter Property="ListBox.ItemTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate>
+                                                        <TextBlock TextWrapping="Wrap">
+                                                            <TextBlock.Inlines>
+                                                                <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
+                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
+                                                            </TextBlock.Inlines>
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Path=NodeWarningsIteratorVisible, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                            <Setter Property="ListBox.ItemTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" />
+                                                    </DataTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.Style>
                         </ListBox>
                         <StackPanel
                             Grid.Row="1"
                             Grid.Column="1"
-                            Margin="0,10,0,0"
+                            Margin="10,0,0,0"
                             HorizontalAlignment="Right"
                             FlowDirection="RightToLeft"
-                            Orientation="Horizontal">
+                            Orientation="Horizontal"
+                            Visibility="{Binding NodeWarningsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                             <Button
+                                Name="DismissWarningMessagesButton"
                                 Margin="0,0,10,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
                                 Background="Transparent"
                                 BorderThickness="0"
-                                Content="Dismiss"
-                                Foreground="#0696D7"
-                                Visibility="{Binding IsErrorInformationalStateExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                Click="DismissWarningMessagesButton_Click"
+                                Content="{x:Static p:Resources.NodeInformationalStateDismiss}"
+                                Foreground="#0696D7" />
                             <Button
+                                Name="ShowAllWarningsButton"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
                                 Background="Transparent"
                                 BorderThickness="0"
-                                Content="Show all warnings"
+                                Click="ShowAllWarningsButton_Click"
+                                Content="{x:Static p:Resources.NodeInformationalStateShowAllWarnings}"
                                 Foreground="#0696D7"
-                                Visibility="{Binding IsErrorInformationalStateExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                Visibility="{Binding NodeWarningsShowMoreButtonVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <Button.Style>
+                                    <Style>
+                                        <Setter Property="Button.Content" Value="{x:Static p:Resources.NodeInformationalStateShowAllWarnings}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding NodeWarningsShowLessMessageVisible, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                <Setter Property="Button.Content" Value="{x:Static p:Resources.NodeInformationalStateShowLess}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </Grid>
@@ -261,6 +338,7 @@
 
             <!--  Info  -->
             <Border
+                Name="InfoBorder"
                 Margin="0,0,0,5"
                 HorizontalAlignment="Left"
                 Background="White"
@@ -268,6 +346,7 @@
                 BorderThickness="1"
                 CornerRadius="2"
                 DockPanel.Dock="Bottom"
+                MouseDown="InfoBorder_MouseDown"
                 Visibility="{Binding NodeInfoVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                 <Grid Margin="10">
                     <Grid Grid.Row="0">
@@ -283,7 +362,7 @@
                         <Grid
                             Grid.Row="0"
                             Grid.Column="0"
-                            Width="35"
+                            Width="25"
                             Height="25"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top">
@@ -306,47 +385,84 @@
                         <ListBox
                             Grid.Row="0"
                             Grid.Column="1"
+                            Margin="10,-5,0,0"
                             BorderThickness="0"
-                            ItemsSource="{Binding NodeInfoToDisplay, UpdateSourceTrigger=PropertyChanged}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock
-                                        FontFamily="{StaticResource ArtifaktElementRegular}"
-                                        FontSize="12px"
-                                        Foreground="Black"
-                                        TextWrapping="Wrap">
-                                        <TextBlock.Inlines>
-                                            <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
-                                            <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
-                                        </TextBlock.Inlines>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            FontSize="12px"
+                            Foreground="Black"
+                            ItemsSource="{Binding NodeInfoToDisplay, UpdateSourceTrigger=PropertyChanged}"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            Visibility="{Binding NodeInfoSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                            <ListBox.Style>
+                                <Style>
+                                    <!--  Because empty runs have a read-only non-zero width, we need to switch out the DataTemplate dynamically  -->
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=NodeInfoIteratorVisible, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                            <Setter Property="ListBox.ItemTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate>
+                                                        <TextBlock TextWrapping="Wrap">
+                                                            <TextBlock.Inlines>
+                                                                <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
+                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
+                                                            </TextBlock.Inlines>
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Path=NodeInfoIteratorVisible, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                            <Setter Property="ListBox.ItemTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" />
+                                                    </DataTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.Style>
                         </ListBox>
                         <StackPanel
                             Grid.Row="1"
                             Grid.Column="1"
-                            Margin="0,10,0,0"
+                            Margin="10,-5,0,0"
                             HorizontalAlignment="Right"
                             FlowDirection="RightToLeft"
-                            Orientation="Horizontal">
+                            Orientation="Horizontal"
+                            Visibility="{Binding NodeInfoSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                             <Button
+                                Name="DismissInfoMessagesButton"
                                 Margin="0,0,10,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
                                 Background="Transparent"
                                 BorderThickness="0"
-                                Content="Dismiss"
-                                Foreground="#0696D7"
-                                Visibility="{Binding IsErrorInformationalStateExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                Click="DismissInfoMessagesButton_Click"
+                                Content="{x:Static p:Resources.NodeInformationalStateDismiss}"
+                                Foreground="#0696D7" />
                             <Button
+                                Name="ShowAllInfoButton"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
                                 Background="Transparent"
                                 BorderThickness="0"
-                                Content="Show all info"
+                                Click="ShowAllInfoButton_Click"
+                                Content="{x:Static p:Resources.NodeInformationalStateShowAllInfo}"
                                 Foreground="#0696D7"
-                                Visibility="{Binding IsErrorInformationalStateExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                Visibility="{Binding NodeInfoShowMoreButtonVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <Button.Style>
+                                    <Style>
+                                        <Setter Property="Button.Content" Value="{x:Static p:Resources.NodeInformationalStateShowAllInfo}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding NodeInfoShowLessMessageVisible, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                <Setter Property="Button.Content" Value="{x:Static p:Resources.NodeInformationalStateShowLess}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </Grid>

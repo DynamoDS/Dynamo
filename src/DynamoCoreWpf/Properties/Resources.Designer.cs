@@ -655,6 +655,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pin to node.
+        /// </summary>
+        public static string ContextPinToNode {
+            get {
+                return ResourceManager.GetString("ContextPinToNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downstream.
         /// </summary>
         public static string ContextSelectConnectedDownstream {
@@ -687,15 +696,6 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextSelectConnectedUpstreamDownstream {
             get {
                 return ResourceManager.GetString("ContextSelectConnectedUpstreamDownstream", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pin to node.
-        /// </summary>
-        public static string ContextPinToNode {
-            get {
-                return ResourceManager.GetString("ContextPinToNode", resourceCulture);
             }
         }
         
@@ -3812,6 +3812,51 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeHelpWindowNodeType {
             get {
                 return ResourceManager.GetString("NodeHelpWindowNodeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismiss.
+        /// </summary>
+        public static string NodeInformationalStateDismiss {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateDismiss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all errors.
+        /// </summary>
+        public static string NodeInformationalStateShowAllErrors {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowAllErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all info.
+        /// </summary>
+        public static string NodeInformationalStateShowAllInfo {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowAllInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all warnings.
+        /// </summary>
+        public static string NodeInformationalStateShowAllWarnings {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowAllWarnings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show less.
+        /// </summary>
+        public static string NodeInformationalStateShowLess {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowLess", resourceCulture);
             }
         }
         

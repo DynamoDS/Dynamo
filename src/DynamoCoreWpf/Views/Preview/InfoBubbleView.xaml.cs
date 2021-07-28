@@ -936,7 +936,106 @@ namespace Dynamo.Controls
             if (this.hyperlink != null)
                 this.hyperlink.RequestNavigate -= RequestNavigateToDocumentationLinkHandler;
         }
-
         #endregion
+
+        private void ErrorsBorder_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+            if (ViewModel.NodeErrorsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
+            {
+                ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+            }
+            else
+            {
+                ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
+            }
+            ViewModel.NodeWarningsShowLessMessageVisible = false;
+        }
+        
+        private void WarningsBorder_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+            if (ViewModel.NodeWarningsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
+            {
+                ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+            }
+            else
+            {
+                ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
+            }
+            ViewModel.NodeWarningsShowLessMessageVisible = false;
+        }
+        
+        private void InfoBorder_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+            if (ViewModel.NodeInfoVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
+            {
+                ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+            }
+            else
+            {
+                ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
+            }
+            ViewModel.NodeWarningsShowLessMessageVisible = false;
+        }
+
+        private void ShowAllErrorsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // If we're already expanded, this button collapses the border
+            if (ViewModel.NodeErrorsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
+            {
+                ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                ViewModel.NodeErrorsShowLessMessageVisible = false;
+            }
+            // Otherwise it expands the border
+            else
+            {
+                ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
+                ViewModel.NodeErrorsShowLessMessageVisible = true;
+            }
+        }
+
+        private void ShowAllWarningsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // If we're already expanded, this button collapses the border
+            if (ViewModel.NodeWarningsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
+            {
+                ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                ViewModel.NodeWarningsShowLessMessageVisible = false;
+            }
+            // Otherwise it expands the border
+            else
+            {
+                ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
+                ViewModel.NodeWarningsShowLessMessageVisible = true;
+            }
+        }
+
+        private void ShowAllInfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            // If we're already expanded, this button collapses the border
+            if (ViewModel.NodeInfoVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
+            {
+                ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                ViewModel.NodeInfoShowLessMessageVisible = false;
+            }
+            // Otherwise it expands the border
+            else
+            {
+                ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
+                ViewModel.NodeInfoShowLessMessageVisible = true;
+            }
+        }
+
+        private void DismissInfoMessagesButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.DismissedNodeInfo.AddRange(ViewModel.NodeInfo);
+        }
+
+        private void DismissWarningMessagesButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.DismissedNodeWarnings.AddRange(ViewModel.NodeWarnings);
+        }
     }
 }

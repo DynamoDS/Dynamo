@@ -97,7 +97,7 @@ namespace ProtoCore
             Column = column;
         }
 
-        public MessageType Type { get; private set; }
+        public MessageType Type { get; set; }
         public string FilePath { get; private set; }
         public int Line { get; private set; }
         public int Column { get; private set; }

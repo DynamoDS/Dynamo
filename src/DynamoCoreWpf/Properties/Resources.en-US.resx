@@ -2508,4 +2508,19 @@ Uninstall the following packages: {0}?</value>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
   </data>
+  <data name="NodeInformationalStateDismiss" xml:space="preserve">
+    <value>Dismiss</value>
+  </data>
+  <data name="NodeInformationalStateShowAllInfo" xml:space="preserve">
+    <value>Show all info</value>
+  </data>
+  <data name="NodeInformationalStateShowAllWarnings" xml:space="preserve">
+    <value>Show all warnings</value>
+  </data>
+  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
+    <value>Show all errors</value>
+  </data>
+  <data name="NodeInformationalStateShowLess" xml:space="preserve">
+    <value>Show less</value>
+  </data>
 </root>
