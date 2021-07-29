@@ -224,6 +224,8 @@ namespace ProtoScript.Runners
 
             DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
 
+            ReActivateGraphNodesInCycle(changeSet.RemovedBinaryNodesFromModification);
+
             // Undefine a function that was removed 
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
 
@@ -251,6 +253,35 @@ namespace ProtoScript.Runners
                 {
                     runtimeCore.SetStartPC(firstDirtyNode.updateBlock.startpc);
                 }
+            }
+        }
+
+        private void ReActivateGraphNodesInCycle(List<AssociativeNode> nodeList)
+        {
+            var assocGraph = core.DSExecutable.instrStreamList[0].dependencyGraph;
+            var graphNodes = assocGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kInvalidIndex);
+
+            foreach (var node in nodeList)
+            {
+                var bNode = node as BinaryExpressionNode;
+                if (bNode == null) continue;
+
+                var identifier = bNode.LeftNode as IdentifierNode;
+                if (identifier == null) continue;
+
+                GraphNode rootNode = null;
+                foreach(var gNode in graphNodes)
+                {
+                    if(identifier.Value == gNode.updateNodeRefList[0].nodeList[0].symbol.name)
+                    {
+                        rootNode = gNode;
+                        break;
+                    }
+                }
+                if (rootNode == null) return;
+
+                // walk the dependency graph for the rootNode and clear cycles from dependent graph nodes
+                rootNode.ClearCycles(graphNodes);
             }
         }
 

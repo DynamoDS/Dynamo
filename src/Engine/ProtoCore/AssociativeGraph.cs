@@ -892,8 +892,8 @@ namespace ProtoCore.AssociativeGraph
         ///     a = b.c.d
         ///     
         ///     [0] t0 = b      -> List empty
-        ///     [1] t1 = t0.b   -> List empty
-        ///     [2] t2 = t1.c   -> List empty
+        ///     [1] t1 = t0.c   -> List empty
+        ///     [2] t2 = t1.d   -> List empty
         ///     [3] a = t2      -> This is the last SSA stmt, its graphnode contains a list of graphnodes {t0,t1,t2}
         ///     
         /// </summary>
@@ -959,6 +959,37 @@ namespace ProtoCore.AssociativeGraph
 
             // Set this graphnode to be the parent of the child node
             child.ParentNodes.Add(this);
+        }
+
+        internal void ClearCycles(IEnumerable<GraphNode> graphNodes)
+        {
+            Stack<GraphNode> stack = new Stack<GraphNode>();
+            stack.Push(this);
+
+            var visited = graphNodes.ToDictionary(node => node, node => false);
+
+            while(stack.Any())
+            {
+                var node = stack.Pop();
+                if (!visited[node])
+                {
+                    if (node.isCyclic)
+                    {
+                        node.isCyclic = false;
+                        node.isActive = true;
+                    }
+
+                    visited[node] = true;
+                }
+
+                foreach(var cNode in node.ChildrenNodes)
+                {
+                    if (!visited[cNode])
+                    {
+                        stack.Push(cNode);
+                    }
+                }
+            }
         }
 
         public void PushDependent(GraphNode dependent)
@@ -1447,7 +1478,7 @@ namespace ProtoCore.AssociativeGraph
         private readonly Core core;
         private List<GraphNode> graphList;
 
-        // For quickly get a list of graph nodes at some scope. 
+        // Get a list of graph nodes at some scope. 
         private Dictionary<ulong, List<GraphNode>> graphNodeMap;
 
         public List<GraphNode> GraphList
