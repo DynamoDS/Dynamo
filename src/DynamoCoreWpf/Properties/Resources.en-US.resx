@@ -1124,12 +1124,6 @@ Failed to publish file(s):
   <data name="InstalledPackageViewAdditionalLabel" xml:space="preserve">
     <value>Additional Libraries</value>
   </data>
-  <data name="InstalledPackageViewContextMenuCancelUninstall" xml:space="preserve">
-    <value>Cancel scheduled unload...</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuCancelUninstallTooltip" xml:space="preserve">
-    <value>Remove the scheduled unload status</value>
-  </data>
   <data name="InstalledPackageViewContextMenuDeprecate" xml:space="preserve">
     <value>Deprecate</value>
   </data>
@@ -1165,12 +1159,6 @@ Failed to publish file(s):
   </data>
   <data name="InstalledPackageViewContextMenuShowRootDirTooltip" xml:space="preserve">
     <value>Go to the root folder of this package</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuUninstall" xml:space="preserve">
-    <value>Unload...</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuUninstallTooltip" xml:space="preserve">
-    <value>Unloading this package is only allowed if none of the types are currently in use</value>
   </data>
   <data name="InstalledPackageViewCustomNodesLabel" xml:space="preserve">
     <value>Custom Nodes</value>
@@ -2549,5 +2537,29 @@ This package will be loaded after the next Dynamo restart.</value>
   <data name="PackageStateScheduledForDeletionTooltip" xml:space="preserve">
     <value>Scheduled to be deleted.
 This package will be deleted after the next Dynamo restart.</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageText" xml:space="preserve">
+    <value>Delete...</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageTooltip" xml:space="preserve">
+    <value>Deleting this package is only allowed if none of the types are currently in use</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageText" xml:space="preserve">
+    <value>Unload...</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageTooltip" xml:space="preserve">
+    <value>Unloading this package is only allowed if none of the types are currently in use</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageText" xml:space="preserve">
+    <value>Cancel scheduled delete...</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageTooltip" xml:space="preserve">
+    <value>Remove the scheduled delete status</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageText" xml:space="preserve">
+    <value>Cancel scheduled unload...</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
+    <value>Remove the scheduled unload status</value>
   </data>
 </root>

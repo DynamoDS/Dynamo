@@ -103,13 +103,13 @@
                                                             </MenuItem>
                                                             <MenuItem Name="UninstallButton"
                                                                               Command="{Binding Path=UninstallCommand}"
-                                                                              ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuUninstallTooltip}"
-                                                                              Header="{x:Static p:Resources.InstalledPackageViewContextMenuUninstall}">
+                                                                              Header="{Binding Path=PackageViewContextMenuUninstallText}"
+                                                                              ToolTip="{Binding Path=PackageViewContextMenuUninstallTooltip}">
                                                             </MenuItem>
                                                             <MenuItem Name="UnmarkUninstallButton"
                                                                               Command="{Binding Path=UnmarkForUninstallationCommand}"
-                                                                              ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstallTooltip}"
-                                                                              Header="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstall}">
+                                                                              Header="{Binding Path=PackageViewContextMenuUnmarkUninstallText}"
+                                                                              ToolTip="{Binding Path=PackageViewContextMenuUnmarkUninstallTooltip}">
                                                             </MenuItem>
                                                             <MenuItem Name="MakePackageButton"
                                                                               Command="{Binding Path=PublishNewPackageCommand}"

@@ -63,9 +63,9 @@ namespace Dynamo.ViewModels
             {
                 switch (Model.LoadState.ScheduledState)
                 {
-                    case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateUnloadedTooltip;
-                    case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateLoadedTooltip;
-                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return string.Format(Resources.PackageStateErrorTooltip, Model.LoadState.ErrorMessage);
+                    case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateScheduledForDeletionTooltip;
+                    case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateScheduledForLoadTooltip;
+                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Resources.PackageStateScheduledForUnloadTooltip;
                     default:
                         break;
                 }
@@ -79,6 +79,30 @@ namespace Dynamo.ViewModels
                         return "Unkonwn package state";
                 }
             }
+        }
+
+        [Obsolete("This is a temporary property. Please do not use it")]
+        public string PackageViewContextMenuUninstallText
+        {
+            get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnloadPackageText : Resources.PackageContextMenuDeletePackageText; }
+        }
+
+        [Obsolete("This is a temporary property. Please do not use it")]
+        public string PackageViewContextMenuUninstallTooltip
+        {
+            get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnloadPackageTooltip : Resources.PackageContextMenuDeletePackageTooltip; }
+        }
+
+        [Obsolete("This is a temporary property. Please do not use it")]
+        public string PackageViewContextMenuUnmarkUninstallText
+        {
+            get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnmarkUnloadPackageText : Resources.PackageContextMenuUnmarkDeletePackageText; }
+        }
+
+        [Obsolete("This is a temporary property. Please do not use it")]
+        public string PackageViewContextMenuUnmarkUninstallTooltip
+        {
+            get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnmarkUnloadPackageTooltip : Resources.PackageContextMenuUnmarkDeletePackageTooltip; }
         }
 
         public bool HasNodeLibraries

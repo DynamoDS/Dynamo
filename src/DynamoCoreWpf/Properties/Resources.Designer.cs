@@ -2865,24 +2865,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel scheduled unload....
-        /// </summary>
-        public static string InstalledPackageViewContextMenuCancelUninstall {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuCancelUninstall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remove the scheduled unload status.
-        /// </summary>
-        public static string InstalledPackageViewContextMenuCancelUninstallTooltip {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuCancelUninstallTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Deprecate.
         /// </summary>
         public static string InstalledPackageViewContextMenuDeprecate {
@@ -2987,24 +2969,6 @@ namespace Dynamo.Wpf.Properties {
         public static string InstalledPackageViewContextMenuShowRootDirTooltip {
             get {
                 return ResourceManager.GetString("InstalledPackageViewContextMenuShowRootDirTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unload....
-        /// </summary>
-        public static string InstalledPackageViewContextMenuUninstall {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuUninstall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unloading this package is only allowed if none of the types are currently in use.
-        /// </summary>
-        public static string InstalledPackageViewContextMenuUninstallTooltip {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuUninstallTooltip", resourceCulture);
             }
         }
         
@@ -3922,6 +3886,78 @@ namespace Dynamo.Wpf.Properties {
         public static string OpenDynamoDefinitionDialogTitle {
             get {
                 return ResourceManager.GetString("OpenDynamoDefinitionDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete....
+        /// </summary>
+        public static string PackageContextMenuDeletePackageText {
+            get {
+                return ResourceManager.GetString("PackageContextMenuDeletePackageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleting this package is only allowed if none of the types are currently in use.
+        /// </summary>
+        public static string PackageContextMenuDeletePackageTooltip {
+            get {
+                return ResourceManager.GetString("PackageContextMenuDeletePackageTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unload....
+        /// </summary>
+        public static string PackageContextMenuUnloadPackageText {
+            get {
+                return ResourceManager.GetString("PackageContextMenuUnloadPackageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloading this package is only allowed if none of the types are currently in use.
+        /// </summary>
+        public static string PackageContextMenuUnloadPackageTooltip {
+            get {
+                return ResourceManager.GetString("PackageContextMenuUnloadPackageTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel scheduled delete....
+        /// </summary>
+        public static string PackageContextMenuUnmarkDeletePackageText {
+            get {
+                return ResourceManager.GetString("PackageContextMenuUnmarkDeletePackageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the scheduled delete status.
+        /// </summary>
+        public static string PackageContextMenuUnmarkDeletePackageTooltip {
+            get {
+                return ResourceManager.GetString("PackageContextMenuUnmarkDeletePackageTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel scheduled unload....
+        /// </summary>
+        public static string PackageContextMenuUnmarkUnloadPackageText {
+            get {
+                return ResourceManager.GetString("PackageContextMenuUnmarkUnloadPackageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the scheduled unload status.
+        /// </summary>
+        public static string PackageContextMenuUnmarkUnloadPackageTooltip {
+            get {
+                return ResourceManager.GetString("PackageContextMenuUnmarkUnloadPackageTooltip", resourceCulture);
             }
         }
         
