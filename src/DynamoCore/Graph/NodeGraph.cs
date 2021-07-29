@@ -33,6 +33,8 @@ namespace Dynamo.Graph
         /// </summary>
         public List<NoteModel> Notes { get; private set; }
 
+        public List<ConnectorPinModel> Pins { get; private set; }
+
         /// <summary>
         /// <see cref="AnnotationModel"/> loaded from xml.
         /// </summary>
