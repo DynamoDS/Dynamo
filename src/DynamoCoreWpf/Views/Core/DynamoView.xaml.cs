@@ -2336,7 +2336,7 @@ namespace Dynamo.Controls
         private void ShowGetStartedGuidedTour()
         {
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
-            var testGuide = new GuidesManager(_this);
+            var testGuide = new GuidesManager(_this, dynamoViewModel);
             testGuide.LaunchTour(Res.GetStartedGuide);
         }
 

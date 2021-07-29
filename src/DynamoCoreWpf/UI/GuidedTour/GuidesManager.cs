@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using Dynamo.ViewModels;
 using Newtonsoft.Json;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -25,15 +26,19 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private Guide currentGuide;
         private UIElement mainRootElement;
 
+        private DynamoViewModel dynamoViewModel;
+
         /// <summary>
         /// GuidesManager Constructor that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
         /// </summary>
         /// <param name="root">root item of the main Dynamo Window </param>
-        public GuidesManager(UIElement root)
+        public GuidesManager(UIElement root, DynamoViewModel dynViewModel)
         {
             mainRootElement = root;
+            dynamoViewModel = dynViewModel;
+
             Guides = new List<Guide>();
-            ReadGuides("UI/GuidedTour/dynamo_guides.json");
+            CreateGuideSteps("UI/GuidedTour/dynamo_guides.json");
 
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
             GuideFlowEvents.GuidedTourStart += TourStarted;
@@ -86,20 +91,28 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This method will read all the guides information from a json file located in the same directory than the DynamoSandbox.exe is located.
         /// </summary>
-        /// <param name="jsonFile">Full path of the json file location</param>
-        private void ReadGuides(string jsonFile)
+        /// <param name="jsonFile">Full path of the json file location containing information about the Guides and Steps</param>
+        private static List<Guide> ReadGuides(string jsonFile)
         {
             string jsonString = string.Empty;
             using (StreamReader r = new StreamReader(jsonFile))
             {
                 jsonString = r.ReadToEnd();
             }
-                
+
             //Deserialize all the information read from the json file
-            List<Guide> tempGuidesList = JsonConvert.DeserializeObject<List<Guide>>(jsonString);
+            return JsonConvert.DeserializeObject<List<Guide>>(jsonString);
+        }
+
+        /// <summary>
+        /// This method will create all the Guide and add them to the Guides List based in the deserialized info gotten from the json file passed as parameter
+        /// </summary>
+        /// <param name="jsonFile">Full path of the json file location containing information about the Guides and Steps</param>
+        private void CreateGuideSteps(string jsonFile)
+        { 
             int totalTooltips = 0;
 
-            foreach (Guide guide in tempGuidesList)
+            foreach (Guide guide in GuidesManager.ReadGuides(jsonFile))
             {
                 Guide newGuide = new Guide()
                 {
@@ -110,93 +123,123 @@ namespace Dynamo.Wpf.UI.GuidedTour
                                  where step.StepType == Step.StepTypes.TOOLTIP ||
                                        step.StepType == Step.StepTypes.SURVEY
                                  select step).Count();
+
                 foreach (Step step in guide.GuideSteps)
                 {
-                    var popupInfo = new HostControlInfo()
+                    HostControlInfo hostControlInfo = CreateHostControl(step);               
+                    Step newStep = CreateStep(step, hostControlInfo, totalTooltips);
+                    if(newStep != null)
                     {
-                        PopupPlacement = step.HostPopupInfo.PopupPlacement,
-                        HostUIElementString = step.HostPopupInfo.HostUIElementString,
-                        HostUIElement = mainRootElement,
-                        VerticalPopupOffSet = step.HostPopupInfo.VerticalPopupOffSet,
-                        HorizontalPopupOffSet = step.HostPopupInfo.HorizontalPopupOffSet
-                    };
+                        //The step is added to the new Guide being created
+                        newGuide.GuideSteps.Add(newStep);
 
-                    //The host_ui_element read from the json file need to exists otherwise the host will be null
-                    UIElement hostUIElement = Guide.FindChild(mainRootElement, popupInfo.HostUIElementString);
-                    if (hostUIElement != null)
-                        popupInfo.HostUIElement = hostUIElement;
-
-                    //This section will retrive the strings from the Resources.resx file
-                    var formattedText = Res.ResourceManager.GetString(step.StepContent.FormattedText);
-                    var title = Res.ResourceManager.GetString(step.StepContent.Title);
-
-                    switch (step.StepType)
-                    {
-                        case Step.StepTypes.TOOLTIP:
-                            var tooltip = new Tooltip(popupInfo, step.Width, step.Height, step.TooltipPointerDirection)
-                            {
-                                Name = step.Name,
-                                Sequence = step.Sequence,
-                                TotalTooltips = totalTooltips,
-                                StepContent = new Content()
-                                {
-                                    FormattedText = formattedText,
-                                    Title = title
-                                }
-                            };
-                            newGuide.GuideSteps.Add(tooltip);
-                            tooltip.StepClosed += Popup_StepClosed;
-                            break;
-                        case Step.StepTypes.SURVEY:
-                            var surveyPopup = new Survey(popupInfo, step.Width, step.Height)
-                            {
-                                Sequence = step.Sequence,
-                                ContentWidth = 300,
-                                RatingTextTitle = formattedText.ToString(),
-                                StepContent = new Content()
-                                {
-                                    FormattedText = formattedText,
-                                    Title = title
-                                }
-                            };
-
-                            //Due that the RatingTextTitle property is just for Survey then we need to set the property using reflection
-                            foreach (var extraContent in step.StepExtraContent)
-                            {
-                                // Get the Type object corresponding to Step.
-                                Type myType = typeof(Survey);
-                                // Get the PropertyInfo object by passing the property name.
-                                PropertyInfo myPropInfo = myType.GetProperty(extraContent.Property);
-                                if (myPropInfo != null)
-                                {
-                                    //Retrieve the string value from the Resources.resx file
-                                    var valueStr = Res.ResourceManager.GetString(extraContent.Value);
-                                    myPropInfo.SetValue(surveyPopup, valueStr);
-                                }
-                            }
-
-                            newGuide.GuideSteps.Add(surveyPopup);
-                            surveyPopup.StepClosed += Popup_StepClosed;
-                            break;
-                        case Step.StepTypes.WELCOME:
-                            var customWelcome = new Welcome(popupInfo, step.Width, step.Height)
-                            {
-                                Sequence = step.Sequence,
-                                StepContent = new Content()
-                                {
-                                    FormattedText = formattedText,
-                                    Title = title
-                                }
-                            };
-                            newGuide.GuideSteps.Add(customWelcome);
-                            customWelcome.StepClosed += Popup_StepClosed;
-                            break;
-                        case Step.StepTypes.EXIT_TOUR:
-                            break;
-                    }//StepType
-                }//Steps
+                        //We subscribe the handler to the StepClosed even, so every time the popup is closed then this method will be called.
+                        newStep.StepClosed += Popup_StepClosed;
+                    }
+                }
                 Guides.Add(newGuide);
             }
+        }
+
+        /// <summary>
+        /// This method will return a new HostControlInfo object populated with the information passed as parameter
+        /// Basically this method store the information coming from Step and search the UIElement in the main WPF VisualTree
+        /// </summary>
+        /// <param name="jsonStepInfo">Step that contains all the info deserialized from the Json file</param>
+        /// <returns></returns>
+        private HostControlInfo CreateHostControl(Step jsonStepInfo)
+        {
+            var popupInfo = new HostControlInfo()
+            {
+                PopupPlacement = jsonStepInfo.HostPopupInfo.PopupPlacement,
+                HostUIElementString = jsonStepInfo.HostPopupInfo.HostUIElementString,
+                HostUIElement = mainRootElement,
+                VerticalPopupOffSet = jsonStepInfo.HostPopupInfo.VerticalPopupOffSet,
+                HorizontalPopupOffSet = jsonStepInfo.HostPopupInfo.HorizontalPopupOffSet
+            };
+
+            //The host_ui_element read from the json file need to exists otherwise the host will be null
+            UIElement hostUIElement = Guide.FindChild(mainRootElement, popupInfo.HostUIElementString);
+            if (hostUIElement != null)
+                popupInfo.HostUIElement = hostUIElement;
+
+            return popupInfo;
+        }
+
+        /// <summary>
+        /// Creates a new Step with the information passed as parameter (the only extra-information calculated is the TotalTooltips, the Text for Title and Content and other properties like the Suvey.RatingTextTitle
+        /// </summary>
+        /// <param name="jsonStepInfo">Step that contains all the info deserialized from the Json file</param>
+        /// <param name="hostControlInfo">Information of the host read previously</param>
+        /// <param name="totalTooltips">Total number of tooltips, calculated once we deserialized all the steps from json</param>
+        /// <returns></returns>
+        private Step CreateStep(Step jsonStepInfo, HostControlInfo hostControlInfo, int totalTooltips)
+        {
+            Step newStep = null;
+            //This section will retrive the strings from the Resources.resx file
+            var formattedText = Res.ResourceManager.GetString(jsonStepInfo.StepContent.FormattedText);
+            var title = Res.ResourceManager.GetString(jsonStepInfo.StepContent.Title);
+
+            switch (jsonStepInfo.StepType)
+            {
+                case Step.StepTypes.TOOLTIP:
+                    newStep = new Tooltip(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height, jsonStepInfo.TooltipPointerDirection)
+                    {
+                        Name = jsonStepInfo.Name,
+                        Sequence = jsonStepInfo.Sequence,
+                        TotalTooltips = totalTooltips,
+                        StepContent = new Content()
+                        {
+                            FormattedText = formattedText,
+                            Title = title
+                        }
+                    };                   
+                    break;
+                case Step.StepTypes.SURVEY:
+                    newStep = new Survey(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height)
+                    {
+                        Sequence = jsonStepInfo.Sequence,
+                        ContentWidth = 300,
+                        RatingTextTitle = formattedText.ToString(),
+                        IsRatingVisible = dynamoViewModel.Model.PreferenceSettings.IsADPAnalyticsReportingApproved,
+                        StepContent = new Content()
+                        {
+                            FormattedText = formattedText,
+                            Title = title
+                        }
+                    };
+
+                    //Due that the RatingTextTitle property is just for Survey then we need to set the property using reflection
+                    foreach (var extraContent in jsonStepInfo.StepExtraContent)
+                    {
+                        // Get the Type object corresponding to Step.
+                        Type myType = typeof(Survey);
+                        // Get the PropertyInfo object by passing the property name.
+                        PropertyInfo myPropInfo = myType.GetProperty(extraContent.Property);
+                        if (myPropInfo != null)
+                        {
+                            //Retrieve the string value from the Resources.resx file
+                            var valueStr = Res.ResourceManager.GetString(extraContent.Value);
+                            myPropInfo.SetValue(newStep, valueStr);
+                        }
+                    }
+                    break;
+                case Step.StepTypes.WELCOME:
+                    newStep = new Welcome(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height)
+                    {
+                        Sequence = jsonStepInfo.Sequence,
+                        StepContent = new Content()
+                        {
+                            FormattedText = formattedText,
+                            Title = title
+                        }
+                    };
+                    break;
+                case Step.StepTypes.EXIT_TOUR:
+                    break;
+            }//StepType
+
+            return newStep;
         }
 
         private void Popup_StepClosed(string name, Step.StepTypes stepType)
