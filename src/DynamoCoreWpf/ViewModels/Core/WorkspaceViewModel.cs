@@ -648,13 +648,13 @@ namespace Dynamo.ViewModels
         void Connectors_ConnectorAdded(ConnectorModel c)
         {
             var viewModel = new ConnectorViewModel(this, c);
-            if (Connectors.All(x => x.Model != c))
+            if (Connectors.All(x => x.ConnectorModel != c))
                 Connectors.Add(viewModel);
         }
 
         void Connectors_ConnectorDeleted(ConnectorModel c)
         {
-            var connector = Connectors.FirstOrDefault(x => x.Model == c);
+            var connector = Connectors.FirstOrDefault(x => x.ConnectorModel == c);
             if (connector != null)
             {
                 Connectors.Remove(connector);
