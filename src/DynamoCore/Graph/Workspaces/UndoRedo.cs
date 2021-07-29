@@ -361,6 +361,14 @@ namespace Dynamo.Graph.Workspaces
             else if (model is ConnectorModel)
             {
                 var connector = model as ConnectorModel;
+                if(connector.ConnectorPinModels.Count>0)
+                {
+                    foreach(var pin in connector.ConnectorPinModels)
+                    {
+                        var matchingConnector = Connectors.FirstOrDefault(c => c.GUID == pin.ConnectorId);
+                        matchingConnector.ConnectorPinModels.Remove(pin);
+                    }
+                }
                 connector.Delete();
             }
             else if (model is ConnectorPinModel connectorPin)

@@ -1,0 +1,122 @@
+{
+  "Uuid": "721d1e68-4fe4-46f1-b1da-997763b11e0c",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "ConnectorPinTests",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "1222859441c3403fa8870e9ac61ad120",
+      "Inputs": [
+        {
+          "Id": "1f239fef71794869bac328507bdf750f",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "084c8207c01e4f618094f30a6752e79f",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list out of the given inputs"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..11;",
+      "Id": "5900513c02094018bce2a39213e63a5e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e074a1a2b77d49a2989bb3fe1c51e530",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "e074a1a2b77d49a2989bb3fe1c51e530",
+      "End": "1f239fef71794869bac328507bdf750f",
+      "Id": "b53fb81c42624c75b394a7e7f199d321"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "ExtensionWorkspaceData": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.11.1.4675",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "List Create",
+        "Id": "1222859441c3403fa8870e9ac61ad120",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 423.99999999999989,
+        "Y": 261.33333333333331
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "5900513c02094018bce2a39213e63a5e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 61.0,
+        "Y": 262.0
+      }
+    ],
+    "Annotations": [],
+    "X": 125.33333333333337,
+    "Y": 18.0,
+    "Zoom": 1.0
+  }
+}
