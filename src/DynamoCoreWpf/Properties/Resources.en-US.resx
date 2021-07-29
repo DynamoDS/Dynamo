@@ -2326,6 +2326,18 @@ Uninstall the following packages: {0}?</value>
     <value>_Extensions</value>
     <comment>Extensions menu</comment>
   </data>
+  <data name="ConnectorContextMenuHeaderBreakConnections" xml:space="preserve">
+    <value>Break Connections</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
+    <value>Pin Wire</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderSelectConnected" xml:space="preserve">
+    <value>Select Connected</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderUnpinConnector" xml:space="preserve">
+    <value>Unpin Wire</value>
+  </data>
   <data name="PreferencesViewPython" xml:space="preserve">
     <value>Python</value>
     <comment>Preferences | Features | Python</comment>

@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
@@ -587,9 +588,12 @@ namespace Dynamo.Controls
         private void OnRequestPaste()
         {
             var clipBoard = dynamoViewModel.Model.ClipBoard;
-            var locatableModels = clipBoard.Where(item => item is NoteModel || item is NodeModel);
 
-            var modelBounds = locatableModels.Select(lm =>
+            var locatableModels = clipBoard.Where(item => item is NoteModel || item is NodeModel);
+            var modelsExcludingConnectorPins = locatableModels.Where(model => !(model is ConnectorPinModel));
+            if(modelsExcludingConnectorPins is null || modelsExcludingConnectorPins.Count()<1) { return; }
+
+            var modelBounds = modelsExcludingConnectorPins.Select(lm =>
                 new Rect { X = lm.X, Y = lm.Y, Height = lm.Height, Width = lm.Width });
 
             // Find workspace view.
@@ -617,7 +621,7 @@ namespace Dynamo.Controls
 
             // All nodes are inside of workspace and visible for user.
             // Order them by CenterX and CenterY.
-            var orderedItems = locatableModels.OrderBy(item => item.CenterX + item.CenterY);
+            var orderedItems = modelsExcludingConnectorPins.OrderBy(item => item.CenterX + item.CenterY);
 
             // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
             var rightMostItem = orderedItems.Last();
@@ -643,8 +647,8 @@ namespace Dynamo.Controls
                 return;
             }
 
-            var x = shiftX + locatableModels.Min(m => m.X);
-            var y = shiftY + locatableModels.Min(m => m.Y);
+            var x = shiftX + modelsExcludingConnectorPins.Min(m => m.X);
+            var y = shiftY + modelsExcludingConnectorPins.Min(m => m.Y);
 
             // All copied nodes are inside of workspace.
             // Paste them with little offset.           

@@ -131,6 +131,20 @@ namespace Dynamo.Graph
             return instance;
         }
 
+        /// <summary>
+        /// Method used to reconstruct a pin from xml when it has been deleted (undo/redo operations).
+        /// </summary>
+        /// <param name="pin"></param>
+        /// <returns></returns>
+        internal static ConnectorPinModel LoadPinFromXml(XmlElement pin)
+        {
+            var helper = new XmlElementHelper(pin);
+            var guid = helper.ReadGuid("guid", Guid.NewGuid());
+            var instance = new ConnectorPinModel(0, 0, guid, Guid.Empty);
+            instance.Deserialize(pin as XmlElement, SaveContext.Save);
+            return instance;
+        }
+
         private static IEnumerable<NoteModel> LoadNotesFromXml(XmlDocument xmlDoc)
         {
             XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Notes");

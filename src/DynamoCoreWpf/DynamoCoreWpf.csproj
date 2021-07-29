@@ -75,6 +75,8 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="ProtoGeometry, Version=2.12.0.5595, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5595\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.12.0.5264, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5264\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
@@ -124,6 +126,7 @@
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
       <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Commands\ConnectorPinCommands.cs" />
     <Compile Include="Controls\NodeAutoCompleteSearchControl.xaml.cs">
       <DependentUpon>NodeAutoCompleteSearchControl.xaml</DependentUpon>
     </Compile>
@@ -181,6 +184,7 @@
     <Compile Include="UI\GuidedTour\Tooltip.cs" />
     <Compile Include="UI\GuidedTour\ExitTour.cs" />
     <Compile Include="UI\GuidedTour\Welcome.cs" />
+    <Compile Include="UI\MouseBehaviour.cs" />
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
@@ -303,6 +307,7 @@
     <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\Preview\CompactBubbleViewModel.cs" />
+    <Compile Include="ViewModels\Preview\WatchHoverIconViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
@@ -322,11 +327,15 @@
     <Compile Include="ViewModels\Watch3D\HelixWatch3DViewModel.cs" />
     <Compile Include="ViewModels\Watch3D\DefaultWatch3DViewModel.cs" />
     <Compile Include="ViewModels\Watch3D\IWatch3DViewModel.cs" />
+    <Compile Include="ViewModels\Core\ConnectorPinViewModel.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CodeBlocks\CodeBlockEditor.cs" />
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
+    <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
+      <DependentUpon>ConnectorPinView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Debug\DebugModesWindow.xaml.cs">
       <DependentUpon>DebugModesWindow.xaml</DependentUpon>
     </Compile>
@@ -364,6 +373,9 @@
     </Compile>
     <Compile Include="Views\Preview\Watch3DSettingsControl.xaml.cs">
       <DependentUpon>Watch3DSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Preview\WatchHoverIconView.xaml.cs">
+      <DependentUpon>WatchHoverIconView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\BrowserWindow.xaml.cs">
       <DependentUpon>BrowserWindow.xaml</DependentUpon>
@@ -466,12 +478,17 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GuidedTour\SurveyPopupWindow.xaml">
+    <Page Include="Views\Core\ConnectorPinView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Menu\PreferencesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Preview\WatchHoverIconView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\ExtensionWindow.xaml">
       <SubType>Designer</SubType>
@@ -1271,6 +1288,11 @@
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Libraries\CoreNodeModels\CoreNodeModels.csproj">
+      <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
+      <Name>CoreNodeModels</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
       <Name>DesignScriptBuiltin</Name>
@@ -1341,6 +1363,11 @@
     <Resource Include="UI\Images\PackageManager\down_16_16.png" />
     <Resource Include="UI\Images\PackageManager\folder_16_16.png" />
     <Resource Include="UI\Images\PackageManager\up_16_16.png" />
+    <Resource Include="UI\Images\pin_hidden_16px.png" />
+    <Resource Include="UI\Images\pin_selected_16px.png" />
+    <Resource Include="UI\Images\Pin_16px.png" />
+    <Resource Include="UI\Images\Watch_16px.png" />
+    <Resource Include="UI\Images\Watch_GreyOut_16px.png" />
     <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1348,6 +1375,9 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\add_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="UI\Images\pin.png" />
     <EmbeddedResource Include="ViewModels\PackageManager\Docs\PublishPackageDocumentation.html" />
     <Resource Include="UI\Images\undock_hover.png" />
