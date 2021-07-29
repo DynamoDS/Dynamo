@@ -38,9 +38,9 @@ namespace Dynamo.ViewModels
             {
                 switch (Model.LoadState.ScheduledState)
                 {
-                    case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateUnloaded;
-                    case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateLoaded;
-                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Resources.PackageStateError;
+                    case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateScheduledForDeletion;
+                    case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateScheduledForLoad;
+                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Resources.PackageStateScheduledForUnload;
                     default:
                         break;
                 }

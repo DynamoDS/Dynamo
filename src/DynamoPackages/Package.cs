@@ -33,21 +33,32 @@ namespace Dynamo.PackageManager
     [Obsolete("This is not final. Please do not use it")]
     public class PackageLoadState
     {
-        internal enum StateTypes
+        public enum StateTypes
         {
             Loaded, Unloaded, Error
         }
 
-        internal enum ScheduledTypes
+        public enum ScheduledTypes
         {
             None, ScheduledForUnload, ScheduledForLoad, ScheduledForDeletion
         }
 
-        internal StateTypes State = StateTypes.Unloaded;// Default to Unloaded type.
+        private StateTypes state = StateTypes.Unloaded;// Default to Unloaded type.
+        public StateTypes State
+        {
+            get { return state; }
+            set 
+            {
+                if (value != StateTypes.Error) 
+                {
+                    ErrorMessage = ""; 
+                }
+                state = value;
+            }
+        }
 
-        internal ScheduledTypes ScheduledState = ScheduledTypes.None;
-
-        internal string ErrorMessage;// Used when Type == Types.Error
+        public ScheduledTypes ScheduledState = ScheduledTypes.None;
+        public string ErrorMessage;// Used when Type == Types.Error
     }
 
     public class Package : NotificationObject, ILogSource
@@ -82,7 +93,7 @@ namespace Dynamo.PackageManager
         }
 
         [Obsolete("This property will be removed in 3.0. Please use the LoadState property instead.")]
-        public bool Loaded { 
+        public bool Loaded {
             get {
                 return LoadState.State == PackageLoadState.StateTypes.Loaded;
             }
@@ -131,11 +142,20 @@ namespace Dynamo.PackageManager
         /// </summary>
         public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
 
+        internal bool BuiltInPackage
+        {
+            get { return RootDirectory.Contains(DynamoModel.BuiltInPackagesToken) || RootDirectory.Contains(PathManager.BuiltinPackagesDirectory); }
+        }
+
         public bool MarkedForUninstall
         {
-            get { return LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion; }
+            get { return LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion ||
+                    LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload; }
             internal set { 
-                LoadState.ScheduledState = value ? PackageLoadState.ScheduledTypes.ScheduledForDeletion : PackageLoadState.ScheduledTypes.None; 
+                LoadState.ScheduledState = value == true ? 
+                    BuiltInPackage ? PackageLoadState.ScheduledTypes.ScheduledForUnload : PackageLoadState.ScheduledTypes.ScheduledForDeletion 
+                    : PackageLoadState.ScheduledTypes.None;
+
                 RaisePropertyChanged("MarkedForUninstall");
                 RaisePropertyChanged("PackageLoadState.ScheduledStates");
             }
@@ -456,7 +476,6 @@ namespace Dynamo.PackageManager
         internal void MarkForUninstall(IPreferences prefs)
         {
             MarkedForUninstall = true;
-            LoadState.ScheduledState = PackageLoadState.ScheduledTypes.ScheduledForUnload;
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
             {
@@ -467,7 +486,6 @@ namespace Dynamo.PackageManager
         internal void UnmarkForUninstall(IPreferences prefs)
         {
             MarkedForUninstall = false;
-            LoadState.ScheduledState = PackageLoadState.ScheduledTypes.None;
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }
 

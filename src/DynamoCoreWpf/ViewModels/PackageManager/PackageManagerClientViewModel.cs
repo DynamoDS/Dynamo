@@ -536,8 +536,7 @@ namespace Dynamo.ViewModels
                 {
                     if (localPkg == null) continue;
 
-                    if (DynamoViewModel.Model.PathManager is PathManager pathManager && 
-                        localPkg.RootDirectory.Contains(pathManager.BuiltinPackagesDirectory))
+                    if (localPkg.BuiltInPackage)
                     {
                         builtinPackages.Add(localPkg);
                         continue;

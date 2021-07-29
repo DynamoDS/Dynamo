@@ -104,20 +104,20 @@ namespace Dynamo.Core
         }
 
         private const string builtinPackagesDirName = @"Built-In Packages";
-        private string builtinPackagesDirectory = null;
+        private static string builtinPackagesDirectory = null;
 
         //Todo in Dynamo 3.0, Add this to the IPathManager interface
         /// <summary>
         /// The Built-In Packages directory is located in the same directory as the DynamoCore.dll
         /// Property should only be set during testing.
         /// </summary>
-        internal string BuiltinPackagesDirectory
+        internal static string BuiltinPackagesDirectory
         {
             get
             {
                 if (builtinPackagesDirectory == null)
                 {
-                    builtinPackagesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location), builtinPackagesDirName, @"Packages");
+                    builtinPackagesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(PathManager)).Location), builtinPackagesDirName, @"Packages");
                 }
                 return builtinPackagesDirectory;
             }

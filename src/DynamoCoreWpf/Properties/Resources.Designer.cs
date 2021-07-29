@@ -646,6 +646,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pin to node.
+        /// </summary>
+        public static string ContextPinToNode {
+            get {
+                return ResourceManager.GetString("ContextPinToNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downstream.
         /// </summary>
         public static string ContextSelectConnectedDownstream {
@@ -678,15 +687,6 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextSelectConnectedUpstreamDownstream {
             get {
                 return ResourceManager.GetString("ContextSelectConnectedUpstreamDownstream", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pin to node.
-        /// </summary>
-        public static string ContextPinToNode {
-            get {
-                return ResourceManager.GetString("ContextPinToNode", resourceCulture);
             }
         }
         
@@ -4551,11 +4551,49 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scheduled to be deleted.
+        /// </summary>
+        public static string PackageStateScheduledForDeletion {
+            get {
+                return ResourceManager.GetString("PackageStateScheduledForDeletion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled to be deleted.
+        ///This package will be deleted after the next Dynamo restart..
+        /// </summary>
+        public static string PackageStateScheduledForDeletionTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateScheduledForDeletionTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled to be loaded.
+        /// </summary>
+        public static string PackageStateScheduledForLoad {
+            get {
+                return ResourceManager.GetString("PackageStateScheduledForLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled to be loaded.
+        ///This package will be loaded after the next Dynamo restart..
+        /// </summary>
+        public static string PackageStateScheduledForLoadTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateScheduledForLoadTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Scheduled to be unloaded.
         /// </summary>
-        public static string PackageStatePendingUnload {
+        public static string PackageStateScheduledForUnload {
             get {
-                return ResourceManager.GetString("PackageStatePendingUnload", resourceCulture);
+                return ResourceManager.GetString("PackageStateScheduledForUnload", resourceCulture);
             }
         }
         
@@ -4563,9 +4601,9 @@ namespace Dynamo.Wpf.Properties {
         ///   Looks up a localized string similar to Scheduled to be unloaded.
         ///This package will be unloaded after the next Dynamo restart..
         /// </summary>
-        public static string PackageStatePendingUnloadTooltip {
+        public static string PackageStateScheduledForUnloadTooltip {
             get {
-                return ResourceManager.GetString("PackageStatePendingUnloadTooltip", resourceCulture);
+                return ResourceManager.GetString("PackageStateScheduledForUnloadTooltip", resourceCulture);
             }
         }
         
