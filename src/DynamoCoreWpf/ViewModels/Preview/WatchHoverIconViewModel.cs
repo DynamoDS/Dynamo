@@ -175,8 +175,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void PlaceWatchNode(IEnumerable<Point> connectorPinLocations)
         {
-            NodeModel startNode = ViewModel.Model.Start.Owner;
-            NodeModel endNode = ViewModel.Model.End.Owner;
+            NodeModel startNode = ViewModel.ConnectorModel.Start.Owner;
+            NodeModel endNode = ViewModel.ConnectorModel.End.Owner;
             this.Dispatcher.Invoke(() =>
             {
                 var watchNode = new Watch();

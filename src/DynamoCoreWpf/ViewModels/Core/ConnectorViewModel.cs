@@ -104,7 +104,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Refers to the connector model associated with this connector view model.
         /// </summary>
-        public ConnectorModel Model
+        public ConnectorModel ConnectorModel
         {
             get { return model; }
         }
@@ -572,7 +572,7 @@ namespace Dynamo.ViewModels
         private void BreakConnectionCommandExecute(object parameter)
         {
             this.Dispose();
-            Model.Delete();
+            ConnectorModel.Delete();
         }
         /// <summary>
         /// Toggles wire viz on/off. This can be overwritten when a node is selected in hidden mode.
@@ -603,7 +603,7 @@ namespace Dynamo.ViewModels
             MousePosition = new Point(PanelX, PanelY);
             if (MousePosition == new Point(0, 0)) return;
             var connectorPinModel = new ConnectorPinModel(PanelX, PanelY, Guid.NewGuid(), model.GUID);
-            Model.AddPin(connectorPinModel);
+            ConnectorModel.AddPin(connectorPinModel);
             workspaceViewModel.Model.RecordCreatedModel(connectorPinModel);
         }
 
@@ -806,7 +806,7 @@ namespace Dynamo.ViewModels
 
             workspaceViewModel.Model.RecordAndDeleteModels(
                 new List<ModelBase>() { viewModelSender.Model });
-            Model.ConnectorPinModels.Remove(viewModelSender.Model);
+            ConnectorModel.ConnectorPinModels.Remove(viewModelSender.Model);
         }
 
         private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -972,12 +972,12 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void Redraw()
         {
-            if (this.Model.End != null && ConnectorPinViewCollection.Count > 0)
+            if (this.ConnectorModel.End != null && ConnectorPinViewCollection.Count > 0)
             {
                 RedrawBezierManyPoints();
             }
-            else if (this.Model.End != null)
-                this.Redraw(this.Model.End.Center);
+            else if (this.ConnectorModel.End != null)
+                this.Redraw(this.ConnectorModel.End.Center);
         }
 
        
@@ -1095,7 +1095,7 @@ namespace Dynamo.ViewModels
 
         public void RedrawBezierManyPoints()
         {
-            var parameter = this.Model.End.Center;
+            var parameter = this.ConnectorModel.End.Center;
             var param = parameter as object;
 
             var controlPoints = new List<Point[]>();
