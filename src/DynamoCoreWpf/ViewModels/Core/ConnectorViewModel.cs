@@ -178,7 +178,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-
         private string connectorDataToolTip;
         /// <summary>
         /// Contains up-to-date tooltip corresponding to connector you are hovering over.
@@ -229,16 +228,6 @@ namespace Dynamo.ViewModels
                 mouseHoverOn = value;
                 RaisePropertyChanged(nameof(MouseHoverOn));
             }
-        }
-
-        public double Left
-        {
-            get { return 0; }
-        }
-
-        public double Top
-        {
-            get { return 0; }
         }
 
         //Changed the connectors ZIndex to 2. Groups have ZIndex of 1.
@@ -1224,6 +1213,29 @@ namespace Dynamo.ViewModels
 
             return points;
         }
+
+        public void DiscardAllConnectorPinViewModels()
+        {
+            foreach (var pin in ConnectorPinViewCollection)
+            {
+                //pin.Model.Dispose();
+                pin.Dispose();
+            }
+            ConnectorPinViewCollection.Clear();
+            workspaceViewModel.Pins.Clear();
+        }
+
+        public List<Point> CollectPinLocations()
+        {
+            List<Point> points = new List<Point>();
+            foreach (var connectorPin in ConnectorPinViewCollection)
+            {
+                points.Add(new Point(connectorPin.Left, connectorPin.Top));
+            }
+
+            return points;
+        }
+
 
         private bool CanRedraw(object parameter)
         {
