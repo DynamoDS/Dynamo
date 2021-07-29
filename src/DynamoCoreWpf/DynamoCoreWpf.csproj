@@ -479,6 +479,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GuidedTour\SurveyPopupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Core\ConnectorPinView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

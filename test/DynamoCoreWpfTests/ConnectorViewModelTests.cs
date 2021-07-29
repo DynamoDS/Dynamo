@@ -248,7 +248,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, 1);
 
             /// add connectorpin to selection
-            var connectorPin = connectorViewModel.Model.ConnectorPinModels.First();
+            var connectorPin = connectorViewModel.ConnectorModel.ConnectorPinModels.First();
             DynamoSelection.Instance.Selection.Add(connectorPin);
 
             ///initial x, y position of pin
