@@ -31,16 +31,16 @@ namespace Dynamo.ViewModels
             get { return Model.LoadedAssemblies.Any(x => !x.IsNodeLibrary); }
         }
 
-        [Obsolete("This is a temporary property. Please do not use it")]
+        [Obsolete("This is not final. Please do not use it")]
         public string PackageLoadStateText
         {
             get
             {
                 switch (Model.LoadState.ScheduledState)
                 {
-                    case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateScheduledForDeletion;
                     case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateScheduledForLoad;
-                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Resources.PackageStateScheduledForUnload;
+                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Model.BuiltInPackage ? 
+                            Resources.PackageStateScheduledForUnload : Resources.PackageStateScheduledForDeletion;
                     default:
                         break;
                 }
@@ -56,16 +56,16 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [Obsolete("This is a temporary property. Please do not use it")]
+        [Obsolete("This is not final. Please do not use it")]
         public string PackageLoadStateTooltip
         {
             get
             {
                 switch (Model.LoadState.ScheduledState)
                 {
-                    case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateScheduledForDeletionTooltip;
                     case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateScheduledForLoadTooltip;
-                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Resources.PackageStateScheduledForUnloadTooltip;
+                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Model.BuiltInPackage ? 
+                            Resources.PackageStateScheduledForUnloadTooltip : Resources.PackageStateScheduledForDeletionTooltip;
                     default:
                         break;
                 }
@@ -81,25 +81,25 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [Obsolete("This is a temporary property. Please do not use it")]
+        [Obsolete("This is not final. Please do not use it")]
         public string PackageViewContextMenuUninstallText
         {
             get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnloadPackageText : Resources.PackageContextMenuDeletePackageText; }
         }
 
-        [Obsolete("This is a temporary property. Please do not use it")]
+        [Obsolete("This is not final. Please do not use it")]
         public string PackageViewContextMenuUninstallTooltip
         {
             get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnloadPackageTooltip : Resources.PackageContextMenuDeletePackageTooltip; }
         }
 
-        [Obsolete("This is a temporary property. Please do not use it")]
+        [Obsolete("This is not final. Please do not use it")]
         public string PackageViewContextMenuUnmarkUninstallText
         {
             get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnmarkUnloadPackageText : Resources.PackageContextMenuUnmarkDeletePackageText; }
         }
 
-        [Obsolete("This is a temporary property. Please do not use it")]
+        [Obsolete("This is not final. Please do not use it")]
         public string PackageViewContextMenuUnmarkUninstallTooltip
         {
             get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnmarkUnloadPackageTooltip : Resources.PackageContextMenuUnmarkDeletePackageTooltip; }
@@ -183,7 +183,7 @@ namespace Dynamo.ViewModels
 
         private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (propertyChangedEventArgs.PropertyName == "MarkedForUninstall")
+            if (propertyChangedEventArgs.PropertyName == "LoadState")
             {
                 UnmarkForUninstallationCommand.RaiseCanExecuteChanged();
                 UninstallCommand.RaiseCanExecuteChanged();
@@ -200,7 +200,7 @@ namespace Dynamo.ViewModels
 
         private bool CanUnmarkForUninstallation()
         {
-            return Model.MarkedForUninstall;
+            return Model.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload;
         }
 
         private void Uninstall()
@@ -245,7 +245,7 @@ namespace Dynamo.ViewModels
         private bool CanUninstall()
         {
             return (!Model.InUse(dynamoViewModel.Model) || Model.LoadedAssemblies.Any()) 
-                && (Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForDeletion) && (Model.LoadState.State != PackageLoadState.StateTypes.Unloaded);
+                && (Model.LoadState.State != PackageLoadState.StateTypes.Unloaded);
         }
 
         private void GoToRootDirectory()
