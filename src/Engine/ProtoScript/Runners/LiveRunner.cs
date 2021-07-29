@@ -258,15 +258,16 @@ namespace ProtoScript.Runners
 
         private void ReActivateGraphNodesInCycle(List<AssociativeNode> nodeList)
         {
+            if (nodeList == null || !nodeList.Any()) return;
+
             var assocGraph = core.DSExecutable.instrStreamList[0].dependencyGraph;
             var graphNodes = assocGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kInvalidIndex);
 
             foreach (var node in nodeList)
             {
                 var bNode = node as BinaryExpressionNode;
-                if (bNode == null) continue;
 
-                var identifier = bNode.LeftNode as IdentifierNode;
+                var identifier = bNode?.LeftNode as IdentifierNode;
                 if (identifier == null) continue;
 
                 GraphNode rootNode = null;

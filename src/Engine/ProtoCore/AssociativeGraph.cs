@@ -978,7 +978,6 @@ namespace ProtoCore.AssociativeGraph
                         node.isCyclic = false;
                         node.isActive = true;
                     }
-
                     visited[node] = true;
                 }
 
