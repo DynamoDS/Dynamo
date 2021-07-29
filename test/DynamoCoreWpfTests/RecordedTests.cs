@@ -2030,8 +2030,8 @@ namespace DynamoCoreWpfTests
             ConnectorViewModel secondConnector = connectors[1];
 
             // Find out the corresponding ports they connect to.
-            Point2D firstPoint = firstConnector.ConnectorModel.End.Center;
-            Point2D secondPoint = secondConnector.ConnectorModel.End.Center;
+            Point2D firstPoint = firstConnector.Model.End.Center;
+            Point2D secondPoint = secondConnector.Model.End.Center;
 
             Assert.AreEqual(firstPoint.X, firstConnector.CurvePoint3.X);
             Assert.AreEqual(firstPoint.Y, firstConnector.CurvePoint3.Y);
@@ -4129,8 +4129,8 @@ namespace DynamoCoreWpfTests
             ConnectorViewModel secondConnector = connectors[1];
 
             // Find out the corresponding ports they connect to.
-            Point2D firstPoint = firstConnector.ConnectorModel.End.Center;
-            Point2D secondPoint = secondConnector.ConnectorModel.End.Center;
+            Point2D firstPoint = firstConnector.Model.End.Center;
+            Point2D secondPoint = secondConnector.Model.End.Center;
 
             Assert.AreEqual(firstPoint.X, firstConnector.CurvePoint3.X);
             Assert.AreEqual(firstPoint.Y, firstConnector.CurvePoint3.Y);

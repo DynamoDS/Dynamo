@@ -273,6 +273,10 @@ namespace Dynamo.ViewModels
         // Do not serialize notes, they will be converted to annotations during serialization
         [JsonIgnore]
         public ObservableCollection<NoteViewModel> Notes { get; } = new ObservableCollection<NoteViewModel>();
+
+        [JsonIgnore]
+        public ObservableCollection<ConnectorPinViewModel> Pins { get; } = new ObservableCollection<ConnectorPinViewModel>();
+
         [JsonIgnore]
         public ObservableCollection<InfoBubbleViewModel> Errors { get; } = new ObservableCollection<InfoBubbleViewModel>();
         public ObservableCollection<AnnotationViewModel> Annotations { get; } = new ObservableCollection<AnnotationViewModel>();
@@ -429,6 +433,9 @@ namespace Dynamo.ViewModels
             var notesColl = new CollectionContainer { Collection = Notes };
             WorkspaceElements.Add(notesColl);
 
+            var pinsColl = new CollectionContainer { Collection = Pins };
+            WorkspaceElements.Add(pinsColl);
+
             var errorsColl = new CollectionContainer { Collection = Errors };
             WorkspaceElements.Add(errorsColl);
 
@@ -524,6 +531,7 @@ namespace Dynamo.ViewModels
             Connectors.ToList().ForEach(connectorViewmModel => connectorViewmModel.Dispose());
             Nodes.Clear();
             Notes.Clear();
+            Pins.Clear();
             Connectors.Clear();
             Errors.Clear();
             InCanvasSearchViewModel.Dispose();
@@ -614,19 +622,19 @@ namespace Dynamo.ViewModels
             var viewBlock = obj["View"];
             if (viewBlock == null)
               return null;
-           
-            var settings = new JsonSerializerSettings
-            {
-                Error = (sender, args) =>
-                {
-                    args.ErrorContext.Handled = true;
-                    Console.WriteLine(args.ErrorContext.Error);
-                },
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Newtonsoft.Json.Formatting.Indented,
-                Culture = CultureInfo.InvariantCulture
-            };
+
+           var settings = new JsonSerializerSettings
+           {
+               Error = (sender, args) =>
+               {
+                   args.ErrorContext.Handled = true;
+                   Console.WriteLine(args.ErrorContext.Error);
+               },
+               ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+               TypeNameHandling = TypeNameHandling.Auto,
+               Formatting = Newtonsoft.Json.Formatting.Indented,
+               Culture = CultureInfo.InvariantCulture
+           };
 
             return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
@@ -640,13 +648,13 @@ namespace Dynamo.ViewModels
         void Connectors_ConnectorAdded(ConnectorModel c)
         {
             var viewModel = new ConnectorViewModel(this, c);
-            if (Connectors.All(x => x.ConnectorModel != c))
+            if (Connectors.All(x => x.Model != c))
                 Connectors.Add(viewModel);
         }
 
         void Connectors_ConnectorDeleted(ConnectorModel c)
         {
-            var connector = Connectors.FirstOrDefault(x => x.ConnectorModel == c);
+            var connector = Connectors.FirstOrDefault(x => x.Model == c);
             if (connector != null)
             {
                 Connectors.Remove(connector);
@@ -803,7 +811,6 @@ namespace Dynamo.ViewModels
                     break;
 
             }
-            
         }
 
         void ModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -877,7 +884,9 @@ namespace Dynamo.ViewModels
         {
             var fullyEnclosed = !isCrossSelect;
             var selection = DynamoSelection.Instance.Selection;
-            var childlessModels = Model.Nodes.Concat<ModelBase>(Model.Notes);
+            var childlessModels = Model.Nodes
+                .Concat<ModelBase>(Model.Notes)
+                .Concat<ModelBase>(Pins.Select(c=>c.Model));
 
             foreach (var n in childlessModels)
             {
