@@ -275,9 +275,14 @@ namespace ProtoCore.DSASM
         }
     }
 
+
+    // The Garbage Collection strategy employed here is based on the an incremental Tri-Color Snapshot-at-the-Beggining algorithm
+    // Incremental: An incremental collector does small chunks of work and in between allows the mutator (i.e vm execution) to resume.
+    // Tri-Color: 3 colors (white, gray, black) are used to mark all heap elements and denote their GC state.
+    // SatB: GC uses a snapshot of the stack and heap when deciding what heap elements need to be collected.
     public class Heap
     {
-        private enum GCState
+        internal enum GCState
         {
             Pause,
             WaitingForRoots,
@@ -287,15 +292,17 @@ namespace ProtoCore.DSASM
 
         public enum GCMark
         {
-            White,
-            Gray,
-            Black
+            White,// Candidates for garbage collection.
+            Gray, // Root objects that haven't had all their references traced yet.
+            Black // Objects that are in use (are not candidates for garbage collection) and have had all their references traced.
         }
 
         private readonly List<int> freeList = new List<int>();
         private readonly List<HeapElement> heapElements = new List<HeapElement>();
         private HashSet<int> fixedHeapElements = new HashSet<int>(); 
         private readonly StringTable stringTable = new StringTable();
+        // The expected lifetime of the sweepSet is start of GC to end of GC
+        private HashSet<int> sweepSet = new HashSet<int>();
 
         private const int GC_THRESHOLD = 1024*1024;
         // Totaly allocated StackValues
@@ -304,7 +311,6 @@ namespace ProtoCore.DSASM
         private int gcDebt = GC_THRESHOLD;
 
         private LinkedList<StackValue> grayList;
-        private HashSet<int> sweepSet;
         private List<StackValue> roots;
         private Executive executive;
         private bool isDisposing = false;
@@ -416,7 +422,28 @@ namespace ProtoCore.DSASM
         private StackValue AllocateStringInternal(string str, bool isConstant)
         {
             int index;
-            if (!stringTable.TryGetPointer(str, out index))
+            if (stringTable.TryGetPointer(str, out index))
+            {
+                // Any existing heap elements, marked as white, that are in the sweepSet and that are referenced during the sweep cycle will be marked as Black.
+                // This will ensure that no reachable data is mistakenly cleaned up.
+                bool isDuringGCCriticalAsyncCycle = gcState != GCState.Pause;// Between the time the GC takes a snapshot of the stack and heap untill GC cycle is over.
+                bool isValidHeapIndex = index >= 0 && index < heapElements.Count;
+                if (isDuringGCCriticalAsyncCycle && isValidHeapIndex)
+                {
+                    var he = heapElements[index];
+                    Validity.Assert(he != null, $"Heap element found at index {index} during AllocateStringInternal cannot be null");
+
+                    // If heap element is marked as white then it is either not processed by Propagate step yet or processed and found as garbage.
+                    // If the sweepSet does not contain the heap element's index then there is no need to mark it black (since cleanup will not even be tried)
+                    if (he.Mark == GCMark.White && sweepSet.Contains(index))
+                    {
+                        // Set the heap element's Mark as Black so that it will not get cleaned up.
+                        // No need to do a recursive mark on the it since it is just a string and thus cannot have references to other heap elements.
+                        he.Mark = GCMark.Black;
+                    }
+                }
+            } 
+            else 
             {
                 index = AllocateInternal(new StackValue[] {}, PrimitiveType.String);
                 stringTable.AddString(index, str);
@@ -498,7 +525,6 @@ namespace ProtoCore.DSASM
             {
                 index = pointer.StringPointer;
             }
-
 
             if (index >= 0 && index < heapElements.Count)
             {
@@ -656,6 +682,8 @@ namespace ProtoCore.DSASM
                 StackValue value = ptrs.Dequeue();
                 int rawPtr = (int)value.RawData;
                 var hp = heapElements[rawPtr];
+                Validity.Assert(hp != null, $"Heap element found at index {rawPtr} during RecursiveMark cannot be null");
+
                 if (hp.Mark == GCMark.Black)
                     continue;
 
@@ -687,7 +715,10 @@ namespace ProtoCore.DSASM
         /// </summary>
         private void StartCollection()
         {
-            sweepSet = new HashSet<int>(Enumerable.Range(0, heapElements.Count));
+            // We start from a clean sweepSet
+            sweepSet.Clear();
+
+            sweepSet.UnionWith(Enumerable.Range(0, heapElements.Count));
             sweepSet.ExceptWith(freeList);
             sweepSet.ExceptWith(fixedHeapElements);
 
@@ -746,6 +777,8 @@ namespace ProtoCore.DSASM
             foreach (var ptr in sweepSet)
             {
                 var hp = heapElements[ptr];
+                Validity.Assert(hp != null, $"Heap element found at index {ptr} during GC sweep cannot be null.");
+
                 if (hp.Mark != GCMark.White)
                     continue;
 
@@ -767,6 +800,7 @@ namespace ProtoCore.DSASM
             }
 
             gcDebt = totalAllocated > GC_THRESHOLD ? totalAllocated : GC_THRESHOLD;
+            sweepSet.Clear();
         }
 
         /// <summary>
@@ -870,6 +904,38 @@ namespace ProtoCore.DSASM
             SetRoots(gcroots, exe);
             while (gcState != GCState.Pause)
                 SingleStep(true);
+        }
+
+        // Duplicates the public FullGC method for testing purposes
+        internal void FullGCTest(IEnumerable<StackValue> gcroots, Executive exe, 
+            Dictionary<GCState, (Action, Action)> testNotifications)
+        {
+            if (gcroots == null)
+                throw new ArgumentNullException("gcroots");
+
+            if (exe == null)
+                throw new ArgumentNullException("exe");
+
+            while (gcState != GCState.WaitingForRoots)
+            {
+                (Action start, Action end) fns = (() => { }, () => { });
+                var testCB = testNotifications?.TryGetValue(gcState, out fns) ?? false;
+
+                if (testCB) fns.start();
+                SingleStep(true);
+                if (testCB) fns.end();
+            }
+
+            SetRoots(gcroots, exe);
+            while (gcState != GCState.Pause)
+            {
+                (Action start, Action end) fns = (() => { }, () => { });
+                var testCB = testNotifications?.TryGetValue(gcState, out fns) ?? false;
+
+                if (testCB) fns.start();
+                SingleStep(true);
+                if (testCB) fns.end();
+            }
         }
 
         public void ReportAllocation(int newSize)
