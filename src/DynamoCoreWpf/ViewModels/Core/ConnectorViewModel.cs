@@ -22,13 +22,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Graph;
 using Dynamo.Nodes;
-using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.ViewModels
 {
-    public enum PreviewState{Selection, ExecutionPreview, None}
+    public enum PreviewState { Selection, ExecutionPreview, None }
 
-    public partial class ConnectorViewModel:ViewModelBase
+    public partial class ConnectorViewModel : ViewModelBase
     {
 
         #region Properties
@@ -178,12 +177,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-       
+
         private string connectorDataToolTip;
         /// <summary>
         /// Contains up-to-date tooltip corresponding to connector you are hovering over.
         /// </summary>
-        public string ConnectorDataTooltip 
+        public string ConnectorDataTooltip
         {
             get
             {
@@ -229,16 +228,6 @@ namespace Dynamo.ViewModels
                 mouseHoverOn = value;
                 RaisePropertyChanged(nameof(MouseHoverOn));
             }
-        }
-
-        public double Left
-        {
-            get { return 0; }
-        }
-
-        public double Top
-        {
-            get { return 0; }
         }
 
         //Changed the connectors ZIndex to 2. Groups have ZIndex of 1.
@@ -342,7 +331,7 @@ namespace Dynamo.ViewModels
             {
                 //if (workspaceViewModel.DynamoViewModel.ConnectorType == ConnectorType.BEZIER &&
                 //    workspaceViewModel.DynamoViewModel.IsShowingConnectors)
-                    if (workspaceViewModel.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
+                if (workspaceViewModel.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
                     return true;
                 return false;
             }
@@ -381,19 +370,19 @@ namespace Dynamo.ViewModels
         public PreviewState PreviewState
         {
             get
-            {               
+            {
                 if (model == null)
                 {
                     return PreviewState.None;
                 }
-              
+
                 if (Nodevm.ShowExecutionPreview)
-                {                  
+                {
                     return PreviewState.ExecutionPreview;
                 }
 
                 if (model.Start.Owner.IsSelected ||
-                    model.End.Owner.IsSelected|| AnyPinSelected)
+                    model.End.Owner.IsSelected || AnyPinSelected)
                 {
                     return PreviewState.Selection;
                 }
@@ -423,6 +412,20 @@ namespace Dynamo.ViewModels
         public bool IsFrozen
         {
             get { return model == null ? activeStartPort.Owner.IsFrozen : Nodevm.IsFrozen; }
+        }
+        public Path ComputedBezierPath { get; set; }
+        private PathGeometry _computedPathGeometry;
+        public PathGeometry ComputedBezierPathGeometry
+        {
+            get
+            {
+                return _computedPathGeometry;
+            }
+            set
+            {
+                _computedPathGeometry = value;
+                RaisePropertyChanged(nameof(ComputedBezierPathGeometry));
+            }
         }
 
         #endregion
@@ -612,7 +615,7 @@ namespace Dynamo.ViewModels
         /// pins when a WatchNode is placed in the center of a connector.
         /// </summary>
         /// <param name="point"></param>
-        public void PinConnectorPlacementFromWatchNode(ConnectorModel [] connectors, int connectorWireIndex, Point point)
+        public void PinConnectorPlacementFromWatchNode(ConnectorModel[] connectors, int connectorWireIndex, Point point)
         {
             var connectorPinModel = new ConnectorPinModel(point.X, point.Y, Guid.NewGuid(), model.GUID);
             connectors[connectorWireIndex].AddPin(connectorPinModel);
@@ -635,7 +638,7 @@ namespace Dynamo.ViewModels
 
         private void InitializeCommands()
         {
-            BreakConnectionCommand = new DelegateCommand(BreakConnectionCommandExecute, x=> true);
+            BreakConnectionCommand = new DelegateCommand(BreakConnectionCommandExecute, x => true);
             HideConnectorCommand = new DelegateCommand(HideConnectorCommandExecute, x => true);
             SelectConnectedCommand = new DelegateCommand(SelectConnectedCommandExecute, x => true);
             MouseHoverCommand = new DelegateCommand(MouseHoverCommandExecute, CanRunMouseHover);
@@ -664,7 +667,6 @@ namespace Dynamo.ViewModels
 
             InitializeCommands();
         }
-
 
         /// <summary>
         /// Construct a view and respond to property changes on the model. 
@@ -852,12 +854,12 @@ namespace Dynamo.ViewModels
         /// <param name="e"></param>
         void StartOwner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-           
+
             switch (e.PropertyName)
             {
                 case nameof(NodeModel.IsSelected):
-                   RaisePropertyChanged(nameof(PreviewState));
-                    IsPartlyVisible = model.Start.Owner.IsSelected && IsVisible == false? true : false;
+                    RaisePropertyChanged(nameof(PreviewState));
+                    IsPartlyVisible = model.Start.Owner.IsSelected && IsVisible == false ? true : false;
                     break;
                 case nameof(NodeModel.Position):
                     RaisePropertyChanged(nameof(CurvePoint0));
@@ -885,12 +887,12 @@ namespace Dynamo.ViewModels
         /// <param name="e"></param>
         void EndOwner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            
+
             switch (e.PropertyName)
             {
                 case nameof(NodeModel.IsSelected):
                     RaisePropertyChanged(nameof(PreviewState));
-                    IsPartlyVisible = model.End.Owner.IsSelected && IsVisible == false? true : false;
+                    IsPartlyVisible = model.End.Owner.IsSelected && IsVisible == false ? true : false;
                     break;
                 case nameof(NodeModel.Position):
                     RaisePropertyChanged(nameof(CurvePoint0));
@@ -937,7 +939,7 @@ namespace Dynamo.ViewModels
         }
 
         void ConnectorModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        { 
+        {
             switch (e.PropertyName)
             {
                 case nameof(DynamoViewModel.Model.CurrentWorkspace):
@@ -946,7 +948,7 @@ namespace Dynamo.ViewModels
                     var dynModel = sender as DynamoViewModel;
                     IsVisible = dynModel.IsShowingConnectors;
                     break;
-                default:break;
+                default: break;
             }
         }
 
@@ -967,6 +969,42 @@ namespace Dynamo.ViewModels
             }
         }
 
+
+        /// <summary>
+        /// Removes all connectorPinViewModels. This occurs during 'dispose'
+        /// as well as during the 'PlaceWatchNode' operation, where previous pins
+        /// are discarded and new ones are created.
+        /// </summary>
+        internal void DiscardAllConnectorPinModels()
+        {
+            foreach (var pin in ConnectorPinViewCollection)
+            {
+                pin.Model.Dispose();
+                pin.Dispose();
+            }
+            ConnectorPinViewCollection.Clear();
+            workspaceViewModel.Pins.Clear();
+        }
+
+        /// <summary>
+        /// Collects pin locations of a connector. These are needed to reconstruct
+        /// pins when new connectors are constructed. Specifically when a Watch node is 
+        /// placed on a connector, thereby creating new connectors.
+        /// </summary>
+        /// <returns></returns>
+        internal List<Point> CollectPinLocations()
+        {
+            List<Point> points = new List<Point>();
+            foreach (var connectorPin in ConnectorPinViewCollection)
+            {
+                points.Add(new Point(connectorPin.Left, connectorPin.Top));
+            }
+
+            return points;
+        }
+
+        #region ConnectorRedraw
+
         /// <summary>
         ///     Recalculate the path points using the internal model.
         /// </summary>
@@ -977,10 +1015,10 @@ namespace Dynamo.ViewModels
                 RedrawBezierManyPoints();
             }
             else if (this.ConnectorModel.End != null)
+            {
                 this.Redraw(this.ConnectorModel.End.Center);
+            }
         }
-
-       
 
         /// <summary>
         /// Recalculate the connector's points given the end point
@@ -992,8 +1030,9 @@ namespace Dynamo.ViewModels
 
             if (parameter is Point)
             {
-                p2 = (Point) parameter;
-            } else if (parameter is Point2D)
+                p2 = (Point)parameter;
+            }
+            else if (parameter is Point2D)
             {
                 p2 = ((Point2D)parameter).AsWindowsType();
             }
@@ -1002,7 +1041,7 @@ namespace Dynamo.ViewModels
 
             var offset = 0.0;
             double distance = 0;
-            if ( this.BezVisibility == true)
+            if (this.BezVisibility == true)
             {
                 distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
                 offset = .45 * distance;
@@ -1012,7 +1051,7 @@ namespace Dynamo.ViewModels
                 distance = CurvePoint3.X - CurvePoint0.X;
                 offset = distance / 2;
             }
-            
+
             CurvePoint1 = new Point(CurvePoint0.X + offset, CurvePoint0.Y);
             CurvePoint2 = new Point(p2.X - offset, p2.Y);
 
@@ -1030,7 +1069,7 @@ namespace Dynamo.ViewModels
             //http://stackoverflow.com/questions/4651466/good-way-to-refresh-databinding-on-all-properties-of-a-viewmodel-when-model-chan
             //RaisePropertyChanged(string.Empty);
 
-         
+
             PathFigure pathFigure = new PathFigure();
             pathFigure.StartPoint = CurvePoint0;
 
@@ -1047,21 +1086,7 @@ namespace Dynamo.ViewModels
             ComputedBezierPath.Data = ComputedBezierPathGeometry;
         }
 
-        public Path ComputedBezierPath { get; set; }
-        private PathGeometry _computedPathGeometry;
-        public PathGeometry ComputedBezierPathGeometry { 
-            get
-            {
-                return _computedPathGeometry;
-            }
-            set
-            {
-                _computedPathGeometry = value;
-                RaisePropertyChanged(nameof(ComputedBezierPathGeometry));
-            }
-        }
-
-        public PathFigure DrawSegmentBetweenPointPairs(Point startPt, Point endPt, ref List<Point[]> controlPointList)
+        private PathFigure DrawSegmentBetweenPointPairs(Point startPt, Point endPt, ref List<Point[]> controlPointList)
         {
             var offset = 0.0;
             double distance = 0;
@@ -1088,12 +1113,12 @@ namespace Dynamo.ViewModels
             segmentCollection.Add(segment);
             pathFigure.Segments = segmentCollection;
 
-            controlPointList.Add(new Point[]{startPt, pt1, pt2, endPt});
+            controlPointList.Add(new Point[] { startPt, pt1, pt2, endPt });
 
             return pathFigure;
         }
 
-        public void RedrawBezierManyPoints()
+        private void RedrawBezierManyPoints()
         {
             var parameter = this.ConnectorModel.End.Center;
             var param = parameter as object;
@@ -1140,9 +1165,7 @@ namespace Dynamo.ViewModels
                 dotTop = CurvePoint3.Y - EndDotSize / 2;
                 dotLeft = CurvePoint3.X - EndDotSize / 2;
 
-
                 ///Add chain of points including start/end
-                
                 Point[] points = new Point[ConnectorPinViewCollection.Count];
                 int count = 0;
                 foreach (var wirePin in ConnectorPinViewCollection)
@@ -1197,37 +1220,17 @@ namespace Dynamo.ViewModels
         {
             Point[,] outPointPairs = new Point[points.Count - 1, 2];
 
-            for (int i = 0; i < points.Count-1; i++)
+            for (int i = 0; i < points.Count - 1; i++)
                 for (int j = 0; j < 2; j++)
                     outPointPairs[i, j] = points[i + j];
             return outPointPairs;
-        }
-
-        public void DiscardAllConnectorPinModels()
-        {
-            foreach (var pin in ConnectorPinViewCollection)
-            {
-                pin.Model.Dispose();
-                pin.Dispose();
-            }
-            ConnectorPinViewCollection.Clear();
-            workspaceViewModel.Pins.Clear();
-        }
-
-        public List<Point> CollectPinLocations()
-        {
-            List<Point> points = new List<Point>();
-            foreach (var connectorPin in ConnectorPinViewCollection)
-            {
-                points.Add(new Point(connectorPin.Left, connectorPin.Top));
-            }
-
-            return points;
         }
 
         private bool CanRedraw(object parameter)
         {
             return true;
         }
+
+        #endregion
     }
 }
