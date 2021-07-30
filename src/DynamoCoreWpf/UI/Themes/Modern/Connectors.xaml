@@ -12,8 +12,11 @@
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
-    <DataTemplate DataType="{x:Type viewModels:WatchHoverIconViewModel}">
+    <!--<DataTemplate DataType="{x:Type viewModels:WatchHoverIconViewModel}">
         <views:WatchHoverIconView DataContext="{Binding}" />
+    </DataTemplate>-->
+    <DataTemplate DataType="{x:Type viewModels:ConnectorAnchorViewModel}">
+        <views:ConnectorAnchorView DataContext="{Binding}" />
     </DataTemplate>
     <DataTemplate DataType="{x:Type viewModels:ConnectorPinViewModel}">
         <nodes:ConnectorPinView DataContext="{Binding}" />
@@ -165,7 +168,7 @@
                 </i:Interaction.Triggers>
             </Path>
 
-            <ContentControl Canvas.ZIndex="2"  Content="{Binding WatchHoverViewModel}"
+            <ContentControl Canvas.ZIndex="2"  Content="{Binding ConnectorAnchorViewModel}"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch" />
 

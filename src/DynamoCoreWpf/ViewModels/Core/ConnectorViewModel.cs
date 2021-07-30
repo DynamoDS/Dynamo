@@ -7,21 +7,15 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
 using Dynamo.UI.Commands;
-using Newtonsoft.Json;
 
 using Point = System.Windows.Point;
 using Dynamo.Selection;
-using Dynamo.Engine;
 using System.ComponentModel;
 using System.Text;
-using Dynamo.ViewModels;
 using System.Windows.Threading;
 using System.Windows.Shapes;
-using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Graph;
-using Dynamo.Nodes;
 
 namespace Dynamo.ViewModels
 {
@@ -32,73 +26,104 @@ namespace Dynamo.ViewModels
 
         #region Properties
 
+        private double panelX;
+        private double panelY;
+        private Point mousePosition;
+        private ConnectorAnchorViewModel connectorAnchorViewModel;
+        private readonly WorkspaceViewModel workspaceViewModel;
+        private PortModel activeStartPort;
+        private ConnectorModel model;
+        private bool isConnecting = false;
+        private bool isVisible = true;
+        private bool isPartlyVisible = false;
+        private string connectorDataToolTip;
+        private bool mouseHoverOn;
+        private bool isDataFlowCollection;
+        private bool anyPinSelected;
+        private double dotTop;
+        private double dotLeft;
+        private double endDotSize = 6;
+
+        private Point curvePoint1;
+        private Point curvePoint2;
+        private Point curvePoint3;
+
+        /// <summary>
+        /// Required timer for desired delay prior to ' connector anchor' display.
+        /// </summary>
+        private System.Windows.Threading.DispatcherTimer hoverTimer;
+
         /// <summary>
         /// Collection of ConnectorPinViewModels associated with this connector.
         /// </summary>
         public ObservableCollection<ConnectorPinViewModel> ConnectorPinViewCollection { get; set; }
 
+        /// <summary>
+        /// Used to draw multi-segment bezier curves.
+        /// </summary>
         public List<Point[]> BezierControlPoints { get; set; }
 
-        private double _panelX;
-        private double _panelY;
-
+        /// <summary>
+        /// Property tracks 'X' location from mouse poisition
+        /// </summary>
         public double PanelX
         {
-            get { return _panelX; }
+            get { return panelX; }
             set
             {
-                if (value.Equals(_panelX)) return;
-                _panelX = value;
+                if (value.Equals(panelX)) return;
+                panelX = value;
+                MousePosition = new Point(panelX, PanelY);
                 RaisePropertyChanged(nameof(PanelX));
-            }
-        }
-
-        public double PanelY
-        {
-            get { return _panelY; }
-            set
-            {
-                if (value.Equals(_panelY)) return;
-                _panelY = value;
-                RaisePropertyChanged(nameof(PanelY));
-            }
-        }
-
-        private Point _mousePosition;
-        Point MousePosition
-        {
-            get
-            {
-                return _mousePosition;
-            }
-            set
-            {
-                _mousePosition = value;
                 RaisePropertyChanged(nameof(MousePosition));
             }
         }
 
         /// <summary>
-        /// Required timer for 'watch placement' button desirable behaviour.
+        /// Property tracks 'Y' property of the mouse position
         /// </summary>
-        private System.Windows.Threading.DispatcherTimer timer;
+        public double PanelY
+        {
+            get { return panelY; }
+            set
+            {
+                if (value.Equals(panelY)) return;
+                panelY = value;
+                MousePosition = new Point(PanelX, panelY);
+                RaisePropertyChanged(nameof(PanelY));
+                RaisePropertyChanged(nameof(MousePosition));
+            }
+        }
 
-        private WatchHoverIconViewModel watchHoverViewModel;
+        /// <summary>
+        /// Constructed mouse position (point) for children of this viewmodel to consume.
+        /// </summary>
+        public Point MousePosition
+        {
+            get
+            {
+                return mousePosition;
+            }
+            set
+            {
+                mousePosition = value;
+                RaisePropertyChanged(nameof(MousePosition));
+            }
+        }
+
         /// <summary>
         /// This WatchHoverViewModel controls the visibility and behaviour of the WatchHoverIcon
         /// which appears when you hover over this connector.
         /// </summary>
-        public WatchHoverIconViewModel WatchHoverViewModel
+        public ConnectorAnchorViewModel ConnectorAnchorViewModel
         {
-            get { return watchHoverViewModel; }
-            private set { watchHoverViewModel = value; RaisePropertyChanged(nameof(WatchHoverViewModel)); }
+            get { return connectorAnchorViewModel; }
+            private set { connectorAnchorViewModel = value; RaisePropertyChanged(nameof(ConnectorAnchorViewModel)); }
         }
-
-        private readonly WorkspaceViewModel workspaceViewModel;
-        private PortModel activeStartPort;
+/// <summary>
+/// Used to point to the active start port corresponding to this connector
+/// </summary>
         public PortModel ActiveStartPort { get { return activeStartPort; } internal set { activeStartPort = value; } }
-
-        private ConnectorModel model;
 
         /// <summary>
         /// Refers to the connector model associated with this connector view model.
@@ -107,8 +132,6 @@ namespace Dynamo.ViewModels
         {
             get { return model; }
         }
-
-        private bool isConnecting = false;
 
         /// <summary>
         /// Provides us with the status of this connector with regards to whether it is currently connecting.
@@ -123,7 +146,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool isVisible = true;
         /// <summary>
         /// Controls connector visibility: on/off. When wire is off, additional styling xaml turns off tooltips.
         /// </summary>
@@ -135,6 +157,25 @@ namespace Dynamo.ViewModels
                 isVisible = value;
                 RaisePropertyChanged(nameof(IsVisible));
                 SetVisibilityOfPins(IsVisible);
+                if(connectorAnchorViewModel != null)
+                    connectorAnchorViewModel.IsVisible = isVisible;
+            }
+        }
+
+        /// <summary>
+        /// Property which overrides 'isVisible==false' condition. When this prop is set to true, wires are set to 
+        /// 40% opacity.
+        /// </summary>
+        public bool IsPartlyVisible
+        {
+            get { return isPartlyVisible; }
+            set
+            {
+                isPartlyVisible = value;
+                RaisePropertyChanged(nameof(IsPartlyVisible));
+                SetPartialVisibilityOfPins(isPartlyVisible);
+                if (connectorAnchorViewModel != null)
+                    connectorAnchorViewModel.IsPartlyVisible = isPartlyVisible;
             }
         }
 
@@ -161,24 +202,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool isPartlyVisible = false;
-        /// <summary>
-        /// Property which overrides 'isVisible==false' condition. When this prop is set to true, wires are set to 
-        /// 40% opacity.
-        /// </summary>
-        public bool IsPartlyVisible
-        {
-            get { return isPartlyVisible; }
-            set
-            {
-                isPartlyVisible = value;
-                RaisePropertyChanged(nameof(IsPartlyVisible));
-                SetPartialVisibilityOfPins(isPartlyVisible);
-            }
-        }
-
-
-        private string connectorDataToolTip;
         /// <summary>
         /// Contains up-to-date tooltip corresponding to connector you are hovering over.
         /// </summary>
@@ -195,7 +218,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool isDataFlowCollection;
         /// <summary>
         /// Property to determine whether the data corresponding to this connector holds a collection or a single value.
         /// 'Collection' is defined as 5 or more items in this case.
@@ -213,7 +235,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool mouseHoverOn;
         /// <summary>
         /// Flags whether or not the user is hovering over the current connector.
         /// </summary>
@@ -228,6 +249,21 @@ namespace Dynamo.ViewModels
                 mouseHoverOn = value;
                 RaisePropertyChanged(nameof(MouseHoverOn));
             }
+        }
+        /// <summary>
+        /// Binding property for connector canvas
+        /// </summary>
+        public double Left
+        {
+            get { return 0; }
+        }
+
+        /// <summary>
+        /// Binding property for connector canvas
+        /// </summary>
+        public double Top
+        {
+            get { return 0; }
         }
 
         //Changed the connectors ZIndex to 2. Groups have ZIndex of 1.
@@ -252,43 +288,39 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private Point _curvePoint1;
         public Point CurvePoint1
         {
             get
             {
-                return _curvePoint1;
+                return curvePoint1;
             }
             set
             {
-                _curvePoint1 = value;
+                curvePoint1 = value;
                 RaisePropertyChanged(nameof(CurvePoint1));
             }
         }
 
-        private Point _curvePoint2;
         public Point CurvePoint2
         {
-            get { return _curvePoint2; }
+            get { return curvePoint2; }
             set
             {
-                _curvePoint2 = value;
+                curvePoint2 = value;
                 RaisePropertyChanged(nameof(CurvePoint2));
             }
         }
 
-        private Point _curvePoint3;
         public Point CurvePoint3
         {
-            get { return _curvePoint3; }
+            get { return curvePoint3; }
             set
             {
-                _curvePoint3 = value;
+                curvePoint3 = value;
                 RaisePropertyChanged(nameof(CurvePoint3));
             }
         }
 
-        private double dotTop;
         public double DotTop
         {
             get { return dotTop; }
@@ -299,7 +331,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private double dotLeft;
         public double DotLeft
         {
             get { return dotLeft; }
@@ -310,7 +341,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private double endDotSize = 6;
         public double EndDotSize
         {
             get { return endDotSize; }
@@ -329,8 +359,6 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                //if (workspaceViewModel.DynamoViewModel.ConnectorType == ConnectorType.BEZIER &&
-                //    workspaceViewModel.DynamoViewModel.IsShowingConnectors)
                 if (workspaceViewModel.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
                     return true;
                 return false;
@@ -391,7 +419,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool anyPinSelected;
         /// <summary>
         /// Toggle used to turn Connector PreviewState to the correct state when a pin is selected.
         /// Modelled after connector preview behaviour when a node is selected.
@@ -527,17 +554,17 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         private void MouseHoverCommandExecute(object parameter)
         {
-            var pX = PanelX;
-            var pY = PanelY;
-            if (WatchHoverViewModel == null && isDataFlowCollection && timer == null)
-            {
-                MouseHoverOn = true;
-                WatchHoverViewModel = new WatchHoverIconViewModel(this, workspaceViewModel.DynamoViewModel.Model);
-                WatchHoverViewModel.IsHalftone = !IsVisible;
-                RaisePropertyChanged(nameof(WatchHoverIconViewModel));
-            }
+            MouseHoverOn = true;
+            
+            if (hoverTimer != null)
+                ForceTimerOff(hoverTimer);
 
+            if (ConnectorAnchorViewModel == null && hoverTimer == null)
+            {
+                StartTimer(hoverTimer, new TimeSpan(0, 0, 1));
+            }
         }
+
         /// <summary>
         /// Timer gets triggered when the user 'unhovers' from the connector. This allows enough time for the user
         /// to click on the 'watch' icon.
@@ -545,28 +572,70 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         private void MouseUnhoverCommandExecute(object parameter)
         {
-            if (WatchHoverViewModel != null && timer == null)
-            {
-                timer = new System.Windows.Threading.DispatcherTimer();
-                timer.Interval = new TimeSpan(0, 0, 1);
-                timer.Start();
-                timer.Tick += TimerDone;
-            }
+            MouseHoverOn = false;
+            if (ConnectorAnchorViewModel != null)
+                ConnectorAnchorViewModel.MouseHoverOn = false;
+        }
+        private void FlipOnConnectorAnchor()
+        {
+            ConnectorAnchorViewModel = new ConnectorAnchorViewModel(this, workspaceViewModel.DynamoViewModel.Model);
+            ConnectorAnchorViewModel.MouseHoverOn = true;
+            ConnectorAnchorViewModel.CurrentPosition = MousePosition;
+            ConnectorAnchorViewModel.IsHalftone = !IsVisible;
+            ConnectorAnchorViewModel.IsDataFlowCollection = IsDataFlowCollection;
+            ConnectorAnchorViewModel.RequestDispose += DisposeAnchor;
+        }
+
+        private void DisposeAnchor(object arg1, EventArgs arg2)
+        {
+            ConnectorAnchorViewModel.RequestDispose -= DisposeAnchor;
+            ConnectorAnchorViewModel = null;
         }
 
         /// <summary>
-        /// 'Timer off' event handler associated with unhover command.
+        /// If hover == true, then after the timer is up something will appear.
+        /// IF set to false, the object in question will disappear.
+        /// </summary>
+        /// <param name="timer"></param>
+        /// <param name="timeSpan"></param>
+        /// <param name="hover"></param>
+        private void StartTimer(DispatcherTimer timer, TimeSpan timeSpan)
+        {
+            timer = new DispatcherTimer();
+            timer.Interval = timeSpan;
+            timer.Start();
+            timer.Tick += TimerDoneShow;
+        }
+
+        /// <summary>
+        /// Handles showing ConnectorAnchor when timer is stopped.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TimerDone(object sender, EventArgs e)
+        private void TimerDoneShow(object sender, EventArgs e)
+        {
+            var timer = sender as DispatcherTimer;
+            if (timer is null) { return; }
+            timer.Tick -= TimerDoneShow;
+
+            if (MouseHoverOn == false) return;
+            FlipOnConnectorAnchor();
+
+            timer.Stop();
+            timer = null;
+        }
+
+        /// <summary>
+        /// Stops timer, sets ConnectorAnchorViewModel to null.
+        /// </summary>
+        /// <param name="timer"></param>
+        private void ForceTimerOff(DispatcherTimer timer)
         {
             timer.Stop();
             timer = null;
-            WatchHoverViewModel = null;
-            RaisePropertyChanged(nameof(WatchHoverIconViewModel));
+            ConnectorAnchorViewModel = null;
+            RaisePropertyChanged(nameof(ConnectorAnchorViewModel));
         }
-
 
         /// <summary>
         /// Breaks connections between node models it is connected to.
@@ -604,6 +673,7 @@ namespace Dynamo.ViewModels
         private void PinConnectorCommandExecute(object parameters)
         {
             MousePosition = new Point(PanelX, PanelY);
+            ConnectorAnchorViewModel.CurrentPosition = MousePosition;
             if (MousePosition == new Point(0, 0)) return;
             var connectorPinModel = new ConnectorPinModel(PanelX, PanelY, Guid.NewGuid(), model.GUID);
             ConnectorModel.AddPin(connectorPinModel);

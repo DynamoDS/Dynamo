@@ -1,44 +1,57 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Threading;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.ViewModels;
-using DSCore;
 using CoreNodeModels;
 using Dynamo.UI.Commands;
+using System;
 
 namespace Dynamo.ViewModels
 {
-    /// <summary>
-    /// ViewModel of the 'watch icon', which gets displayed when
-    /// a connector is hovered over.
-    /// </summary>
-    public class WatchHoverIconViewModel: NotificationObject
+    public class ConnectorAnchorViewModel: NotificationObject
     {
+        #region Properties 
+        private Point currentPosition;
+        private bool isHalftone;
+        private bool isVisible;
+        private bool mouseHoverOn;
+        private bool isPartlyVisible = false;
+        private bool isDataFlowCollection;
+        private bool canDisplayIcons = false;
+
         private ConnectorViewModel ViewModel { get; set; }
         private DynamoModel DynamoModel { get; set; }
         private Dispatcher Dispatcher { get; set; }
+
         /// <summary>
         /// The size of the Watch Icon (x & y dimensions).
         /// </summary>
         public double MarkerSize { get; set; } = 30;
+        public double AnchorSize { get; set; } = 15;
 
         /// <summary>
         /// Midpoint of the connector bezier curve.
         /// </summary>
-        public Point MidPoint { get; set; }
+        public Point CurrentPosition
+        {
+            get
+            {
+                return currentPosition;
+            }
+            set
+            {
+                currentPosition = value;
+                RaisePropertyChanged(nameof(CurrentPosition));
+            }
+        }
 
-        private bool isHalftone;
         /// <summary>
-        /// Property used to tell xaml which image to use for the watch icon,
-        /// the normal or the greyed-out. This depends on whether the wire
-        /// is visible or hidden.
+
         /// </summary>
-        public bool IsHalftone 
+        public bool IsHalftone
         {
             get
             {
@@ -50,13 +63,87 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(IsHalftone));
             }
         }
+       
+        public bool IsVisible
+        {
+            get
+            {
+                return isVisible;
+            }
+            set
+            {
+                isVisible = value;
+                RaisePropertyChanged(nameof(IsVisible));
+            }
+        }
+
+        public bool MouseHoverOn
+        {
+            get
+            {
+                return mouseHoverOn;
+            }
+            set
+            {
+                mouseHoverOn = value;
+                RaisePropertyChanged(nameof(MouseHoverOn));
+            }
+        }
+
+        /// <summary>
+        /// Property which overrides 'isVisible==false' condition. When this prop is set to true, wires are set to 
+        /// 40% opacity.
+        /// </summary>
+        public bool IsPartlyVisible
+        {
+            get { return isPartlyVisible; }
+            set
+            {
+                isPartlyVisible = value;
+                RaisePropertyChanged(nameof(IsPartlyVisible));
+            }
+        }
+       
+        public bool IsDataFlowCollection
+        {
+            get { return isDataFlowCollection; }
+            set
+            {
+                isDataFlowCollection = value;
+                RaisePropertyChanged(nameof(IsDataFlowCollection));
+            }
+        }
+        
+        public bool CanDisplayIcons
+        {
+            get { return canDisplayIcons; }
+            set
+            {
+                canDisplayIcons = value;
+                RaisePropertyChanged(nameof(CanDisplayIcons));
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// Raises a 'redraw' event for this ConnectorPinViewModel
+        /// </summary>
+        public event EventHandler RequestDispose;
+        public virtual void OnRequestDispose(Object sender, EventArgs e)
+        {
+            RequestDispose(this, e);
+        }
 
         #region Commands
-        
+
         /// <summary>
         /// Command which places a watch node in the center of the connector.
         /// </summary>
         public DelegateCommand PlaceWatchNodeCommand { get; set; }
+        /// <summary>
+        /// Delegate command to run when 'Pin Wire' item is clicked on this connector ContextMenu.
+        /// </summary>
+        public DelegateCommand PinConnectorCommand { get; set; }
 
         private void PlaceWatchNodeCommandExecute(object param)
         {
@@ -65,13 +152,28 @@ namespace Dynamo.ViewModels
             PlaceWatchNode(pinLocations);
         }
 
+        /// <summary>
+        /// Places pin at the location of mouse (over a connector)
+        /// </summary>
+        /// <param name="parameters"></param>
+        private void PinConnectorCommandExecute(object parameters)
+        {
+            ViewModel.PinConnectorCommand.Execute(null);
+        }
+
         private void InitCommands()
         {
             PlaceWatchNodeCommand = new DelegateCommand(PlaceWatchNodeCommandExecute, x=> true);
+            PinConnectorCommand = new DelegateCommand(PinConnectorCommandExecute, x => true);
         }
         #endregion
 
-        public WatchHoverIconViewModel(ConnectorViewModel connectorViewModel, DynamoModel dynamoModel)
+        internal void DisposeViewModel()
+        {
+            OnRequestDispose(this, EventArgs.Empty);
+        }
+
+        public ConnectorAnchorViewModel(ConnectorViewModel connectorViewModel, DynamoModel dynamoModel)
         {
             ViewModel = connectorViewModel;
             DynamoModel = dynamoModel;
@@ -79,24 +181,8 @@ namespace Dynamo.ViewModels
 
             Dispatcher = Dispatcher.CurrentDispatcher;
 
-            if (ViewModel.ConnectorPinViewCollection.Count == 0 && ViewModel.BezierControlPoints is null)
-            {
-                MidPoint = ConnectorBezierMidpoint(
-                    new Point[]
-                    {
-                        ViewModel.CurvePoint0,
-                        ViewModel.CurvePoint1,
-                        ViewModel.CurvePoint2,
-                        ViewModel.CurvePoint3
-                    });
-            }
-            else
-            {
-                MidPoint = MultiBezierMidpoint();
-            }
-
-            connectorViewModel.PropertyChanged += OnConnectorViewModelPropertyChanged;
             IsHalftone = false;
+            connectorViewModel.PropertyChanged += OnConnectorViewModelPropertyChanged;
         }
 
         private void OnConnectorViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -104,70 +190,6 @@ namespace Dynamo.ViewModels
             if (!(e.PropertyName.Contains("CurvePoint") |
                   e.PropertyName == nameof(ConnectorViewModel.ConnectorPinViewCollection)))
                 return;
-
-            if (ViewModel.ConnectorPinViewCollection.Count > 0 && ViewModel.BezierControlPoints != null)
-            {
-                MidPoint = MultiBezierMidpoint();
-            }
-            else
-            {
-                MidPoint = ConnectorBezierMidpoint(
-                    new Point[]
-                    {
-                            ViewModel.CurvePoint0,
-                            ViewModel.CurvePoint1,
-                            ViewModel.CurvePoint2,
-                            ViewModel.CurvePoint3
-                    });
-            }
-
-            RaisePropertyChanged(nameof(MidPoint));
-
-        }
-
-        private Point ConnectorBezierMidpoint(Point[] points)
-        {
-            // formula to get bezier curve midtpoint
-            // https://stackoverflow.com/questions/5634460/quadratic-b%c3%a9zier-curve-calculate-points?rq=1
-            var parameter = 0.5;
-            var x = ((1 - parameter) * (1 - parameter) * (1 - parameter) *
-                points[0].X + 3 * (1 - parameter) * (1 - parameter)
-                * parameter *
-                points[1].X + 3 * (1 - parameter)
-                                            * parameter * parameter *
-                                            points[2].X + parameter * parameter * parameter *
-                points[3].X) - (MarkerSize / 2);
-
-            var y = ((1 - parameter) * (1 - parameter) * (1 - parameter) *
-                points[0].Y + 3 * (1 - parameter) * (1 - parameter)
-                * parameter *
-                points[1].Y + 3 * (1 - parameter)
-                                * parameter * parameter *
-                                points[2].Y + parameter * parameter * parameter *
-                points[3].Y) - (MarkerSize / 2);
-
-            return new Point(x, y);
-        }
-
-        /// <summary>
-        /// Returns the 'midpoint' of the multi-segment bezier curve.
-        /// </summary>
-        /// <returns></returns>
-        private Point MultiBezierMidpoint()
-        {
-            int bezierMiddleSegmentIndex = -1;
-            if (ViewModel.ComputedBezierPathGeometry.Figures.Count % 2 == 0)
-            {
-                bezierMiddleSegmentIndex = (int) (ViewModel.ComputedBezierPathGeometry.Figures.Count / 2 - 1);
-            }
-            else
-            {
-                bezierMiddleSegmentIndex = (int)(ViewModel.ComputedBezierPathGeometry.Figures.Count / 2);
-            }
-
-            var segmentToCalculateMidpointOn = ViewModel.BezierControlPoints[bezierMiddleSegmentIndex];
-
-            return ConnectorBezierMidpoint(segmentToCalculateMidpointOn);
         }
 
         /// <summary>
@@ -180,8 +202,8 @@ namespace Dynamo.ViewModels
             this.Dispatcher.Invoke(() =>
             {
                 var watchNode = new Watch();
-                var nodeX = MidPoint.X - (watchNode.Width / 2);
-                var nodeY = MidPoint.Y - (watchNode.Height / 2);
+                var nodeX = CurrentPosition.X - (watchNode.Width / 2);
+                var nodeY = CurrentPosition.Y - (watchNode.Height / 2);
                 DynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(watchNode, nodeX, nodeY, false, false));
                 WireNewNode(DynamoModel, startNode, endNode, watchNode, connectorPinLocations);
             });
@@ -228,7 +250,7 @@ namespace Dynamo.ViewModels
             /// Place each pin where required on the newly connected connectors.
             foreach (var connectorPinLocation in connectorPinLocations)
             {
-                int wireIndex = ConnectorSegmentIndex(MidPoint, connectorPinLocation);
+                int wireIndex = ConnectorSegmentIndex(CurrentPosition, connectorPinLocation);
                 ViewModel.PinConnectorPlacementFromWatchNode(connectors, wireIndex, connectorPinLocation);
             }
         }
