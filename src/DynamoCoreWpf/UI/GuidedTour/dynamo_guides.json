@@ -24,7 +24,7 @@
 				"sequence": 1,
 				"name": "library",
 				"type": "tooltip",
-				"tooltip_pointer_direction": "top_left",
+				"TooltipPointerDirection": "top_left",
 				"width": 480,
 				"height": 250,
 				"step_content": {
@@ -43,7 +43,7 @@
 				"sequence": 2,
 				"name": "run status",
 				"type": "tooltip",
-				"tooltip_pointer_direction": "bottom_left",
+				"TooltipPointerDirection": "bottom_left",
 				"width": 480,
 				"height": 220,
 				"step_content": {
@@ -62,7 +62,7 @@
 				"sequence": 3,
 				"name": "toolbar",
 				"type": "tooltip",
-				"tooltip_pointer_direction": "top_left",
+				"TooltipPointerDirection": "top_left",
 				"width": 480,
 				"height": 230,
 				"step_content": {
@@ -81,7 +81,7 @@
 				"sequence": 4,
 				"name": "preferences",
 				"type": "tooltip",
-				"tooltip_pointer_direction": "top_left",
+				"TooltipPointerDirection": "top_left",
 				"width": 480,
 				"height": 190,
 				"step_content": {
@@ -100,7 +100,7 @@
 				"sequence": 5,
 				"name": "resources",
 				"type": "tooltip",
-				"tooltip_pointer_direction": "top_left",
+				"TooltipPointerDirection": "top_left",
 				"width": 480,
 				"height": 230,
 				"step_content": {

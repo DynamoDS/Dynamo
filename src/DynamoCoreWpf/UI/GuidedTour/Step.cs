@@ -96,7 +96,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This property describe which will be the pointing direction of the tooltip (if is a Welcome or Survey popup then is not used)
         /// By default the tooltip pointer will be pointing to the left and will be located at the top
         /// </summary>
-        [JsonProperty("tooltip_pointer_direction")]
+        [JsonProperty("TooltipPointerDirection")]
         public PointerDirection TooltipPointerDirection { get; set; } = PointerDirection.TOP_LEFT;
         #endregion
 
