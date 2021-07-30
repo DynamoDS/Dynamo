@@ -30,44 +30,39 @@ namespace Dynamo.PackageManager
         }
     }
 
-    [Obsolete("This is not final. Please do not use it")]
-    internal class PackageLoadState
+    public class PackageLoadState
     {
         public enum StateTypes
         {
             Loaded, Unloaded, Error
         }
 
-        // ScheduledForUnload state means different things for builtin vs non-built-in packages
-        //       Built-in pacakges will only be skipped at load time.
-        //       Non-built-in packages will actually be removed from disk.
         public enum ScheduledTypes
         {
-            None, ScheduledForUnload, ScheduledForLoad
+            None, ScheduledForUnload, ScheduledForDeletion, ScheduledForLoad
         }
 
+        private string errorMessage;
+        private ScheduledTypes scheduledState = ScheduledTypes.None;
         private StateTypes state = StateTypes.Unloaded;// Default to Unloaded type.
 
+        internal void SetAsLoaded() { state = StateTypes.Loaded; errorMessage = ""; }
+        internal void SetAsError(string msg = "") { state = StateTypes.Error; errorMessage = msg; }
+        internal void SetAsUnloaded() { state = StateTypes.Unloaded; errorMessage = ""; }
+
+        internal void SetScheduledForDeletion() { scheduledState = ScheduledTypes.ScheduledForDeletion; }
+        internal void SetScheduledForUnload() { scheduledState = ScheduledTypes.ScheduledForUnload; }
+        internal void SetScheduledForLoad() { scheduledState = ScheduledTypes.ScheduledForLoad; }
+        internal void ResetScheduledState() { scheduledState = ScheduledTypes.None; }
+
         // The current load state of the Package.
-        public StateTypes State
-        {
-            get { return state; }
-            set 
-            {
-                if (value != StateTypes.Error) 
-                {
-                    // Reset error message when changing the State from Error to something else.
-                    ErrorMessage = ""; 
-                }
-                state = value;
-            }
-        }
+        public StateTypes State { get { return state; } }
 
         // The current scheduled (or desired) state of the Package.
-        public ScheduledTypes ScheduledState = ScheduledTypes.None;
-
+        public ScheduledTypes ScheduledState { get { return scheduledState; } }
+        
         // The error message associated with the current State of the Package. Valid only if the State is of type StateTypes.Error
-        public string ErrorMessage;
+        public string ErrorMessage { get { return errorMessage; } }
     }
 
     public class Package : NotificationObject, ILogSource
@@ -162,7 +157,7 @@ namespace Dynamo.PackageManager
             get { return LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload; }
         }
 
-        internal PackageLoadState LoadState = new PackageLoadState();
+        public PackageLoadState LoadState = new PackageLoadState();
 
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
@@ -476,7 +471,14 @@ namespace Dynamo.PackageManager
 
         internal void MarkForUninstall(IPreferences prefs)
         {
-            LoadState.ScheduledState = PackageLoadState.ScheduledTypes.ScheduledForUnload;
+            if (BuiltInPackage) 
+            { 
+                LoadState.SetScheduledForUnload(); 
+            } 
+            else
+            {
+                LoadState.SetScheduledForDeletion();
+            }
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
             {
@@ -486,7 +488,7 @@ namespace Dynamo.PackageManager
 
         internal void UnmarkForUninstall(IPreferences prefs)
         {
-            LoadState.ScheduledState = PackageLoadState.ScheduledTypes.None;
+            LoadState.ResetScheduledState();
 
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }

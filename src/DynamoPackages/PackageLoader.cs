@@ -292,7 +292,7 @@ namespace Dynamo.PackageManager
                     requestedExtensions.Add(extension);
                 }
 
-                package.LoadState.State = PackageLoadState.StateTypes.Loaded;
+                package.LoadState.SetAsLoaded();
                 PackgeLoaded?.Invoke(package);
             }
             catch (CustomNodePackageLoadException e)
@@ -301,13 +301,11 @@ namespace Dynamo.PackageManager
                     localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.InstalledPath);
                 OnConflictingPackageLoaded(originalPackage, package);
 
-                package.LoadState.ErrorMessage = e.Message;
-                package.LoadState.State = PackageLoadState.StateTypes.Error;
+                package.LoadState.SetAsError(e.Message);
             }
             catch (Exception e)
             {
-                package.LoadState.ErrorMessage = e.Message;
-                package.LoadState.State = PackageLoadState.StateTypes.Error;
+                package.LoadState.SetAsError(e.Message);
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
             }

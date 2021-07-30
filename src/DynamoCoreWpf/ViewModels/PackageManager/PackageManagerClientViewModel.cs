@@ -781,7 +781,7 @@ namespace Dynamo.ViewModels
                 PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
 
-                dynPkg.LoadState.State = PackageLoadState.StateTypes.Loaded;
+                dynPkg.LoadState.SetAsLoaded();
             }
             else
             {
