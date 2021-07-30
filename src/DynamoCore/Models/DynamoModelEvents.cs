@@ -8,7 +8,6 @@ using Dynamo.Graph.Workspaces;
 using System.Collections.Generic;
 using Dynamo.Graph;
 using Dynamo.Extensions;
-using System.Reflection;
 
 namespace Dynamo.Models
 {
@@ -491,8 +490,6 @@ namespace Dynamo.Models
         /// </summary>
         public event Action<ReadyParams> DynamoReady;
         private bool dynamoReady;
-
-
         /// <summary>
         /// Event that is raised when Dynamo model requests a particular python engine
         /// to reset. String parameter is engine name.
