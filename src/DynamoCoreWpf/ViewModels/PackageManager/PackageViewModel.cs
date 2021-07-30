@@ -200,7 +200,9 @@ namespace Dynamo.ViewModels
 
         private bool CanUnmarkForUninstallation()
         {
-            return Model.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload;
+            return Model.BuiltInPackage ?
+                Model.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload :
+                Model.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion;
         }
 
         private void Uninstall()
@@ -244,8 +246,14 @@ namespace Dynamo.ViewModels
 
         private bool CanUninstall()
         {
-            return (!Model.InUse(dynamoViewModel.Model) || Model.LoadedAssemblies.Any()) 
-                && (Model.LoadState.State != PackageLoadState.StateTypes.Unloaded);
+            if (!Model.InUse(dynamoViewModel.Model) || Model.LoadedAssemblies.Any())
+            {
+                return Model.BuiltInPackage ? 
+                    Model.LoadState.State != PackageLoadState.StateTypes.Unloaded &&
+                    Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForUnload :
+                    Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForDeletion;
+            }
+            return false;
         }
 
         private void GoToRootDirectory()
