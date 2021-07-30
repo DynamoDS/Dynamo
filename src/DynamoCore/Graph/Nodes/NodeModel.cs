@@ -150,6 +150,13 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public event Action<NodeModel> NodeExecutionBegin;
 
+        public event Action<NodeModel> NodeMessagesClearing;
+
+        internal void OnNodeMessagesClearing()
+        {
+            NodeMessagesClearing?.Invoke(this);
+        }
+
         internal void OnNodeExecutionBegin()
         {
             NodeExecutionBegin?.Invoke(this);
@@ -401,24 +408,6 @@ namespace Dynamo.Graph.Nodes
             {
                 outPorts = value;
                 RaisePropertyChanged("OutPorts");
-            }
-        }
-
-        /// <summary>
-        /// A collection of objects that represent user-facing messages on a node.
-        /// These can be one of 3 MessageTypes: Info, Warning or Error
-        /// Info types represent non-vital information about a node's operation.
-        /// Warning types represent information the user should be made aware of, but may still be dismissed.
-        /// Error types signify a non-dismissable error, which will block the node from executing until it has been addressed.
-        /// </summary>
-        [JsonIgnore]
-        public ObservableCollection<OutputMessage> OutputMessages
-        {
-            get => outputMessages;
-            set
-            {
-                outputMessages = value;
-                RaisePropertyChanged(nameof(OutputMessages));
             }
         }
 
@@ -1602,6 +1591,7 @@ namespace Dynamo.Graph.Nodes
 
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTooltipText();
+            OnNodeMessagesClearing();
         }
 
         public void SelectNeighbors()
@@ -1678,7 +1668,6 @@ namespace Dynamo.Graph.Nodes
         {
             State = ElementState.Error;
             ToolTipText = p;
-            OutputMessages.Add(new OutputMessage(p) { Type = OutputMessage.MessageType.Error });
         }
 
         /// <summary>
@@ -1705,9 +1694,6 @@ namespace Dynamo.Graph.Nodes
                 ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.Format("{0}\n{1}", persistentWarning, p);
                 ClearPersistentWarning();
             }
-
-            var myItem = new OutputMessage(ToolTipText) {Type = OutputMessage.MessageType.Warning};
-            Dispatcher.CurrentDispatcher.Invoke(new Action(() => this.OutputMessages.Add(myItem)));
         }
 
         /// <summary>

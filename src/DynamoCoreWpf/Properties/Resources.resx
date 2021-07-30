@@ -2449,6 +2449,12 @@ Uninstall the following packages: {0}?</value>
   <data name="NodeInformationalStateDismiss" xml:space="preserve">
     <value>Dismiss</value>
   </data>
+  <data name="NodeInformationalStateDismissAll" xml:space="preserve">
+    <value>Dismiss all</value>
+  </data>
+  <data name="NodeInformationalStateLearnMore" xml:space="preserve">
+    <value>Learn more</value>
+  </data>
   <data name="NodeInformationalStateShowAllInfo" xml:space="preserve">
     <value>Show all info</value>
   </data>

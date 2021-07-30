@@ -829,6 +829,11 @@ namespace Dynamo.Graph.Workspaces
                 // The workspace has been built for the first time
                 silenceNodeModifications = false;
 
+                foreach (NodeModel nodeModel in task.ModifiedNodes)
+                {
+                    nodeModel.OnNodeMessagesClearing();
+                }
+
                 OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
 

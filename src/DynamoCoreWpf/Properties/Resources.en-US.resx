@@ -2523,4 +2523,10 @@ Uninstall the following packages: {0}?</value>
   <data name="NodeInformationalStateShowLess" xml:space="preserve">
     <value>Show less</value>
   </data>
+  <data name="NodeInformationalStateLearnMore" xml:space="preserve">
+    <value>Learn more</value>
+  </data>
+  <data name="NodeInformationalStateDismissAll" xml:space="preserve">
+    <value>Dismiss all</value>
+  </data>
 </root>

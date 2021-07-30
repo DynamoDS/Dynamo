@@ -143,12 +143,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// A reference to the NodeModel's InformationalStates collection, which defines warnings, errors etc
-        /// </summary>
-        [JsonIgnore]
-        public ObservableCollection<OutputMessage> NodeInformationalStates => NodeModel.OutputMessages;
-        
         [JsonIgnore]
         public bool IsSelected
         {
@@ -702,65 +696,25 @@ namespace Dynamo.ViewModels
 
             if(workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource)) ImageSource = imgSource;
 
-            NodeModel.OutputMessages.CollectionChanged += NodeInformationalStates_CollectionChanged;
-            ErrorBubble.DismissedNodeWarnings.CollectionChanged += DismissedNodeWarnings_CollectionChanged;
-            ErrorBubble.DismissedNodeInfo.CollectionChanged += DismissedNodeWarnings_CollectionChanged;
-            ///////////////////////////////////////////////////////////////////////////
-            if (ErrorBubble == null) return;
+            // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
+            ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeWarnings_CollectionChanged;
+            logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
+        }
 
-            ErrorBubble.NodeErrors.Clear();
-            ErrorBubble.NodeWarnings.Clear();
-            ErrorBubble.NodeInfo.Clear();
-
-            List<OutputMessage> nodeErrors = NodeModel.OutputMessages
-                .Where(x => x.Type == OutputMessage.MessageType.Error)
-                .ToList();
-
-            List<OutputMessage> nodeWarnings = NodeModel.OutputMessages
-                .Where(x => x.Type == OutputMessage.MessageType.Warning)
-                .ToList();
-
-            List<OutputMessage> nodeInfos = NodeModel.OutputMessages
-                .Where(x => x.Type == OutputMessage.MessageType.Info)
-                .ToList();
-
-            nodeInfos.Add(new OutputMessage("Lorem ipsum dolor sit amet, consect etur adipiscing elit."));
-            
-            //nodeWarnings.Add(new OutputMessage("Lorem ipsum dolor sit amet."));
-            //nodeWarnings.Add(new OutputMessage("Lorem ipsum dolor sit amet etur adipiscing elit."));
-            
-            nodeErrors.Add(new OutputMessage("Lorem ipsum dolor sit amet, consect etur adipiscing elit, sed do eiusmod tempor incididunt." ));
-            nodeErrors.Add(new OutputMessage("Lorem ipsum dolor sit amet, consect etur adipiscing elit."));
-            nodeErrors.Add(new OutputMessage("Lorem ipsum dolor sit amet."));
-
-            ErrorBubble.NodeInfoVisible = nodeInfos.Count > 0;
-            ErrorBubble.NodeWarningsVisible = nodeWarnings.Count > 0;
-            ErrorBubble.NodeErrorsVisible = nodeErrors.Count > 0;
-
-            for (int i = 0; i < nodeErrors.Count; i++) ErrorBubble.NodeErrors.Add(nodeErrors[i].Message);
-            for (int i = 0; i < nodeWarnings.Count; i++) ErrorBubble.NodeWarnings.Add(nodeWarnings[i].Message);
-            for (int i = 0; i < nodeInfos.Count; i++) ErrorBubble.NodeInfo.Add(nodeInfos[i].Message);
-            ///////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// Clears the existing messages on a node before it executes and re-evalutes its warnings/errors. 
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Logic_NodeMessagesClearing(NodeModel obj)
+        {
+            ErrorBubble.NodeMessages.Clear();
         }
 
         private void DismissedNodeWarnings_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            NumberOfDismissedAlerts = ErrorBubble.DismissedNodeInfo.Count + ErrorBubble.DismissedNodeWarnings.Count;
+            NumberOfDismissedAlerts = ErrorBubble.DismissedMessages.Count;
         }
-
-        /// <summary>
-        /// A method used to rebuild the ErrorBubble's user-facing information.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NodeInformationalStates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            Dispatcher.CurrentDispatcher.Invoke((System.Action)delegate
-            {
-                ErrorBubble.RebuildNodeInformationalStateDisplay();
-            });
-        }
-
+        
         /// <summary>
         /// Dispose function
         /// </summary>
@@ -961,7 +915,7 @@ namespace Dynamo.ViewModels
 
         public void UpdateBubbleContent()
         {
-            if (ErrorBubble == null || DynamoViewModel == null)
+            if (ErrorBubble == null || DynamoViewModel == null || !NodeModel.WasInvolvedInExecution && !NodeModel.IsInErrorState)
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
@@ -986,6 +940,29 @@ namespace Dynamo.ViewModels
                 var data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
 
                 ErrorBubble.UpdateContentCommand.Execute(data);
+
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft,
+                        botRight, content, connectingDirection));
+                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Info, topLeft,
+                    //    botRight, "lorem ipsum dolor sit amet", connectingDirection));
+                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Info, topLeft,
+                    //    botRight, content, connectingDirection));
+                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Warning, topLeft,
+                    //    botRight, "lorem ipsum", connectingDirection));
+                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Warning, topLeft,
+                    //    botRight, "lorem ipsum dolor sit amet", connectingDirection));
+                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Warning, topLeft,
+                    //    botRight, content, connectingDirection));
+                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error, topLeft,
+                    //    botRight, "lorem ipsum", connectingDirection));
+                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error, topLeft,
+                    //    botRight, "lorem ipsum dolor sit amet", connectingDirection));
+                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error, topLeft,
+                    //    botRight, content, connectingDirection));
+                });
+
                 ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
             }
         }

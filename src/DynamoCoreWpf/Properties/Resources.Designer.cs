@@ -3825,6 +3825,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dismiss all.
+        /// </summary>
+        public static string NodeInformationalStateDismissAll {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateDismissAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more.
+        /// </summary>
+        public static string NodeInformationalStateLearnMore {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateLearnMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show all errors.
         /// </summary>
         public static string NodeInformationalStateShowAllErrors {
