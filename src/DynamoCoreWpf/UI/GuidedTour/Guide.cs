@@ -14,13 +14,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This list will contain all the steps per guide read from a json file
         /// </summary>
-        [JsonProperty("steps")]
+        [JsonProperty("GuideSteps")]
         public List<Step> GuideSteps;
 
         /// <summary>
         /// This property represent the name of the Guide, e.g. "Get Started", "Packages"
         /// </summary>
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; }
 
         /// <summary>

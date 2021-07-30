@@ -36,49 +36,49 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// The step type will describe which type of window will be created after reading the json file, it can be  SURVEY, TOOLTIP, WELCOME, EXIT_TOUR
         /// </summary>
-        [JsonProperty("type")]
+        [JsonProperty("Type")]
         public StepTypes StepType { get; set; }
 
         /// <summary>
         /// The step content will contain the title and the popup content (included formatted text)
         /// </summary>
-        [JsonProperty("step_content")]
+        [JsonProperty("StepContent")]
         public Content StepContent { get; set; }
 
         /// <summary>
         /// There are some specific Steps that will contain extra content (like Survey.RatingTextTitle), then this list will store the information
         /// </summary>
-        [JsonProperty("extra_content")]
+        [JsonProperty("ExtraContent")]
         public List<ExtraContent> StepExtraContent { get; set; }
 
         /// <summary>
         /// Step name, it just represent a step identifier
         /// </summary>
-        [JsonProperty("name")]
+        [JsonProperty("Name")]
         public string Name { get; set; }
 
         /// <summary>
         /// When the Step Width property is not provided the default value will be 480
         /// </summary>
-        [JsonProperty("width")]
+        [JsonProperty("Width")]
         public double Width { get; set; } = 480;
 
         /// <summary>
         /// When the Step Height property is not provide the default value will be 190
         /// </summary>
-        [JsonProperty("height")]
+        [JsonProperty("Height")]
         public double Height { get; set; } = 190;
 
         /// <summary>
         /// Represent a sequencial numeric value for each step, when is a multiflow guide this value can be repeated
         /// </summary>
-        [JsonProperty("sequence")]
+        [JsonProperty("Sequence")]
         public int Sequence { get; set; } = 0;
 
         /// <summary>
         /// This property contains the Host information like the host popup element or the popup position
         /// </summary>
-        [JsonProperty("host_popup_info")]
+        [JsonProperty("HostPopupInfo")]
         public HostControlInfo HostPopupInfo { get; set; }
 
         public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT };
@@ -158,13 +158,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Title of the Popup shown at the top-center
         /// </summary>
-        [JsonProperty("title")]
+        [JsonProperty("Title")]
         public string Title { get; set; }
 
         /// <summary>
         /// The content of the Popup using a specific format for showing text, hyperlinks,images, bullet points in a RichTextBox
         /// </summary>
-        [JsonProperty("formatted_text")]
+        [JsonProperty("FormattedText")]
         public string FormattedText
         {
             get
@@ -186,10 +186,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
     /// </summary>
     public class ExtraContent
     {
-        [JsonProperty("property")]
+        [JsonProperty("Property")]
         public string Property { get; set; }
 
-        [JsonProperty("value")]
+        [JsonProperty("Value")]
         public string Value { get; set; }
     }
 }

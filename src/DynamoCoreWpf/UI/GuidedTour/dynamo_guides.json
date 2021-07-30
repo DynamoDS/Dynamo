@@ -1,142 +1,135 @@
 [
 	{
-		"name": "Get Started",
-		"steps": [
+		"Name": "Get Started",
+		"GuideSteps": [
 			{
-				"sequence": 0,
-				"name": "welcome",
-				"type": "welcome",
-				"width": 480,
-				"height": 180,
-				"step_content": {
-					"title": "GetStartedGuideWelcomeTitle",
-					"formatted_text": "GetStartedGuideWelcomeText"
+				"Sequence": 0,
+				"Name": "welcome",
+				"Type": "welcome",
+				"Width": 480,
+				"Height": 180,
+				"StepContent": {
+					"Title": "GetStartedGuideWelcomeTitle",
+					"FormattedText": "GetStartedGuideWelcomeText"
 				},
-				"host_popup_info": {
-					"popup_placement": "center",
-					"host_ui_element_string": "WorkspaceTabs",
-					"vertical_offset": 0,
-					"horizontal_offset": 0,
-					"class_name": ""
+				"HostPopupInfo": {
+					"PopupPlacement": "center",
+					"HostUIElementString": "WorkspaceTabs",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 0
 				}
 			},
 			{
-				"sequence": 1,
-				"name": "library",
-				"type": "tooltip",
+				"Sequence": 1,
+				"Name": "library",
+				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
-				"width": 480,
-				"height": 250,
-				"step_content": {
-					"title": "GetStartedGuideLibraryTitle",
-					"formatted_text": "GetStartedGuideLibraryText"
+				"Width": 480,
+				"Height": 250,
+				"StepContent": {
+					"Title": "GetStartedGuideLibraryTitle",
+					"FormattedText": "GetStartedGuideLibraryText"
 				},
-				"host_popup_info": {
-					"popup_placement": "right",
-					"host_ui_element_string": "sidebarGrid",
-					"vertical_offset": 100,
-					"horizontal_offset": 50,
-					"class_name": ""
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"HostUIElementString": "sidebarGrid",
+					"VerticalPopupOffset": 100,
+					"HorizontalPopupOffset": 50
 				}
 			},
 			{
-				"sequence": 2,
-				"name": "run status",
-				"type": "tooltip",
+				"Sequence": 2,
+				"Name": "run status",
+				"Type": "tooltip",
 				"TooltipPointerDirection": "bottom_left",
-				"width": 480,
-				"height": 220,
-				"step_content": {
-					"title": "GetStartedGuideRunStatusBarTitle",
-					"formatted_text": "GetStartedGuideRunStatusBarText"
+				"Width": 480,
+				"Height": 220,
+				"StepContent": {
+					"Title": "GetStartedGuideRunStatusBarTitle",
+					"FormattedText": "GetStartedGuideRunStatusBarText"
 				},
-				"host_popup_info": {
-					"popup_placement": "bottom",
-					"host_ui_element_string": "bottomBarGrid",
-					"vertical_offset": 50,
-					"horizontal_offset": 320,
-					"class_name": ""
+				"HostPopupInfo": {
+					"PopupPlacement": "bottom",
+					"HostUIElementString": "bottomBarGrid",
+					"VerticalPopupOffset": 50,
+					"HorizontalPopupOffset": 320
 				}
 			},
 			{
-				"sequence": 3,
-				"name": "toolbar",
-				"type": "tooltip",
+				"Sequence": 3,
+				"Name": "toolbar",
+				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
-				"width": 480,
-				"height": 230,
-				"step_content": {
-					"title": "GetStartedGuideToolbarTitle",
-					"formatted_text": "GetStartedGuideToolbarText"
+				"Width": 480,
+				"Height": 230,
+				"StepContent": {
+					"Title": "GetStartedGuideToolbarTitle",
+					"FormattedText": "GetStartedGuideToolbarText"
 				},
-				"host_popup_info": {
-					"popup_placement": "bottom",
-					"host_ui_element_string": "shortcutsBarGrid",
-					"vertical_offset": -60,
-					"horizontal_offset": 200,
-					"class_name": ""
+				"HostPopupInfo": {
+					"PopupPlacement": "bottom",
+					"HostUIElementString": "shortcutsBarGrid",
+					"VerticalPopupOffset": -60,
+					"HorizontalPopupOffset": 200
 				}
 			},
 			{
-				"sequence": 4,
-				"name": "preferences",
-				"type": "tooltip",
+				"Sequence": 4,
+				"Name": "preferences",
+				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
-				"width": 480,
-				"height": 190,
-				"step_content": {
-					"title": "GetStartedGuidePreferencesTitle",
-					"formatted_text": "GetStartedGuidePreferencesText"
+				"Width": 480,
+				"Height": 190,
+				"StepContent": {
+					"Title": "GetStartedGuidePreferencesTitle",
+					"FormattedText": "GetStartedGuidePreferencesText"
 				},
-				"host_popup_info": {
-					"popup_placement": "right",
-					"host_ui_element_string": "dynamoMenu",
-					"vertical_offset": 0,
-					"horizontal_offset": 150,
-					"class_name": ""
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"HostUIElementString": "dynamoMenu",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 150
 				}
 			},
 			{
-				"sequence": 5,
-				"name": "resources",
-				"type": "tooltip",
+				"Sequence": 5,
+				"Name": "resources",
+				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
-				"width": 480,
-				"height": 230,
-				"step_content": {
-					"title": "GetStartedGuideResourcesTitle",
-					"formatted_text": "GetStartedGuideResourcesText"
+				"Width": 480,
+				"Height": 230,
+				"StepContent": {
+					"Title": "GetStartedGuideResourcesTitle",
+					"FormattedText": "GetStartedGuideResourcesText"
 				},
-				"host_popup_info": {
-					"popup_placement": "right",
-					"host_ui_element_string": "HelpMenu",
-					"vertical_offset": 0,
-					"horizontal_offset": 170,
-					"class_name": ""
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"HostUIElementString": "HelpMenu",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 170
 				}
 			},
 			{
-				"sequence": 6,
-				"name": "survey",
-				"type": "survey",
-				"width": 400,
-				"height": 450,
-				"step_content": {
-					"title": "GetStartedGuideSurveyTitle",
-					"formatted_text": "GetStartedGuideSurveyText"
+				"Sequence": 6,
+				"Name": "survey",
+				"Type": "survey",
+				"Width": 400,
+				"Height": 450,
+				"StepContent": {
+					"Title": "GetStartedGuideSurveyTitle",
+					"FormattedText": "GetStartedGuideSurveyText"
 				},
-				"extra_content": [
+				"ExtraContent": [
 					{
-						"property": "RatingTextTitle",
-						"value": "GetStartedGuideRatingTextTitle"
+						"Property": "RatingTextTitle",
+						"Value": "GetStartedGuideRatingTextTitle"
 					}
 				],
-				"host_popup_info": {
-					"popup_placement": "center",
-					"host_ui_element_string": "WorkspaceTabs",
-					"vertical_offset": 0,
-					"horizontal_offset": 0,
-					"class_name": ""
+				"HostPopupInfo": {
+					"PopupPlacement": "center",
+					"HostUIElementString": "WorkspaceTabs",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 0
 				}
 			}
 		]
