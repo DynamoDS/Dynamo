@@ -58,7 +58,7 @@ namespace Dynamo.PackageManager
         // The current load state of the Package.
         public StateTypes State { get { return state; } }
 
-        // The current scheduled (or desired) state of the Package.
+        // The scheduled (or desired) state of the Package.
         public ScheduledTypes ScheduledState { get { return scheduledState; } }
         
         // The error message associated with the current State of the Package. Valid only if the State is of type StateTypes.Error
