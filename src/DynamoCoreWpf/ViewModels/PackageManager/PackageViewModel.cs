@@ -39,8 +39,8 @@ namespace Dynamo.ViewModels
                 switch (Model.LoadState.ScheduledState)
                 {
                     case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateScheduledForLoad;
-                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Model.BuiltInPackage ? 
-                            Resources.PackageStateScheduledForUnload : Resources.PackageStateScheduledForDeletion;
+                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Resources.PackageStateScheduledForUnload;
+                    case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateScheduledForDeletion;
                     default:
                         break;
                 }
@@ -64,8 +64,8 @@ namespace Dynamo.ViewModels
                 switch (Model.LoadState.ScheduledState)
                 {
                     case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateScheduledForLoadTooltip;
-                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Model.BuiltInPackage ? 
-                            Resources.PackageStateScheduledForUnloadTooltip : Resources.PackageStateScheduledForDeletionTooltip;
+                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Resources.PackageStateScheduledForUnloadTooltip;
+                    case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateScheduledForDeletionTooltip;
                     default:
                         break;
                 }
