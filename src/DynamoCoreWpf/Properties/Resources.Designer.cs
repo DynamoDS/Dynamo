@@ -3890,7 +3890,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete....
+        ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string PackageContextMenuDeletePackageText {
             get {
@@ -3908,7 +3908,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unload....
+        ///   Looks up a localized string similar to Unload.
         /// </summary>
         public static string PackageContextMenuUnloadPackageText {
             get {
@@ -3926,7 +3926,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel scheduled delete....
+        ///   Looks up a localized string similar to Cancel Delete.
         /// </summary>
         public static string PackageContextMenuUnmarkDeletePackageText {
             get {
@@ -3944,7 +3944,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel scheduled unload....
+        ///   Looks up a localized string similar to Cancel Unload.
         /// </summary>
         public static string PackageContextMenuUnmarkUnloadPackageText {
             get {
@@ -4587,7 +4587,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scheduled to be deleted.
+        ///   Looks up a localized string similar to Scheduled for Delete.
         /// </summary>
         public static string PackageStateScheduledForDeletion {
             get {
@@ -4596,7 +4596,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scheduled to be deleted.
+        ///   Looks up a localized string similar to Scheduled for Delete.
         ///This package will be deleted after the next Dynamo restart..
         /// </summary>
         public static string PackageStateScheduledForDeletionTooltip {
@@ -4606,7 +4606,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scheduled to be loaded.
+        ///   Looks up a localized string similar to Scheduled for Load.
         /// </summary>
         public static string PackageStateScheduledForLoad {
             get {
@@ -4615,7 +4615,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scheduled to be loaded.
+        ///   Looks up a localized string similar to Scheduled for Load.
         ///This package will be loaded after the next Dynamo restart..
         /// </summary>
         public static string PackageStateScheduledForLoadTooltip {
@@ -4625,7 +4625,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scheduled to be unloaded.
+        ///   Looks up a localized string similar to Scheduled for Unload.
         /// </summary>
         public static string PackageStateScheduledForUnload {
             get {
@@ -4634,7 +4634,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scheduled to be unloaded.
+        ///   Looks up a localized string similar to Scheduled for Unload.
         ///This package will be unloaded after the next Dynamo restart..
         /// </summary>
         public static string PackageStateScheduledForUnloadTooltip {
