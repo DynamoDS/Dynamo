@@ -77,5 +77,14 @@ namespace Dynamo.LintingViewExtension.Properties {
                 return ResourceManager.GetString("MenuItemText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string NoneLinterDescriptorName {
+            get {
+                return ResourceManager.GetString("NoneLinterDescriptorName", resourceCulture);
+            }
+        }
     }
 }
