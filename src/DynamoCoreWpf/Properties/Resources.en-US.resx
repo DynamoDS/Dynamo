@@ -1420,7 +1420,7 @@ Uninstall the following dependent packages: {1}?</value>
     <comment>Context menu item - preview geometry</comment>
   </data>
   <data name="NodeContextMenuRenameNode" xml:space="preserve">
-    <value>Rename Node...</value>
+    <value>Rename</value>
     <comment>Context menu item - rename this node</comment>
   </data>
   <data name="NodeContextMenuShowLabels" xml:space="preserve">
@@ -2491,6 +2491,10 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="GetStartedGuideWelcomeTitle" xml:space="preserve">
     <value>Welcome To Dynamo</value>
+  </data>
+  <data name="ContextMenuGroups" xml:space="preserve">
+    <value>Groups</value>
+    <comment>Context menu for group-based operations</comment>
   </data>
   <data name="ContextPinToNode" xml:space="preserve">
     <value>Pin to node</value>

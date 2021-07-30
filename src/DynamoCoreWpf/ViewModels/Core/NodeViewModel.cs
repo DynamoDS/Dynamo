@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
@@ -18,6 +19,8 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
+using Point = System.Windows.Point;
+using Size = System.Windows.Size;
 
 namespace Dynamo.ViewModels
 {
@@ -247,6 +250,20 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.State; }
         }
+        
+        /// <summary>
+        /// This is a UI placeholder for future functionality relating to Alerts
+        /// </summary>
+        [JsonIgnore]
+        public int NumberOfDismissedAlerts
+        {
+            get => 0;
+            set
+            {
+                NumberOfDismissedAlerts = value;
+                RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
+            }
+        }
 
         [JsonIgnore]
         public string Description
@@ -467,6 +484,8 @@ namespace Dynamo.ViewModels
         }
 
         private bool isNodeNewlyAdded;
+        private ImageSource imageSource;
+
         [JsonIgnore]
         public bool IsNodeAddedRecently
         {
@@ -560,6 +579,16 @@ namespace Dynamo.ViewModels
             set
             {
                 NodeModel.Y = value;
+            }
+        }
+
+        public ImageSource ImageSource
+        {
+            get => imageSource;
+            set
+            {
+                imageSource = value;
+                RaisePropertyChanged(nameof(ImageSource));
             }
         }
 
@@ -664,6 +693,8 @@ namespace Dynamo.ViewModels
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             ZIndex = ++StaticZIndex;
             ++NoteViewModel.StaticZIndex;
+
+            if(workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource)) ImageSource = imgSource;
         }
 
         /// <summary>
@@ -1371,7 +1402,7 @@ namespace Dynamo.ViewModels
                     group.AddGroupAndGroupedNodesToSelection();
             }
         }
-
+        
         #region Private Helper Methods
         private Point GetTopLeft()
         {

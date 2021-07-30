@@ -461,17 +461,21 @@ namespace Dynamo.ViewModels
             DynamoViewModel.CopyCommand.CanExecuteChanged += CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged += CopyPasteChanged;
 
-            // sync collections
 
-            foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
-            foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
-            foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
-            foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
 
+            // InCanvasSearchViewModel needs to happen before the nodes are created
+            // as we rely upon it to retrieve node icon images
             InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel)
             {
                 Visible = true
             };
+
+            // sync collections
+            foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
+            foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
+            foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
+            foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
+            
             NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
             {
                 Visible = true

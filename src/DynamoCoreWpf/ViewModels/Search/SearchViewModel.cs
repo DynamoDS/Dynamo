@@ -1182,6 +1182,21 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Attempts to find the node's icon, which is the same as its type name plus a Postfix, such as '.Small'.
+        /// </summary>
+        /// <returns>An ImageSource object pointing to the icon image for the NodeViewModel</returns>
+        internal bool TryGetNodeIcon(NodeViewModel nodeViewModel, out ImageSource iconSource)
+        {
+            iconSource = null;
+            IconWarehouse currentWarehouse = iconServices.GetForAssembly(nodeViewModel.NodeModel.GetType().Assembly.Location);
+            if (currentWarehouse is null) return false;
+
+            string iconName = nodeViewModel.NodeModel.GetType() + Configurations.SmallIconPostfix;
+            iconSource = currentWarehouse.LoadIconInternal(iconName);
+            return !(iconSource is null);
+        }
+
         #endregion
     }
 }
