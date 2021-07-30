@@ -308,7 +308,7 @@
     <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\Preview\CompactBubbleViewModel.cs" />
-    <Compile Include="ViewModels\Preview\WatchHoverIconViewModel.cs" />
+    <Compile Include="ViewModels\Preview\ConnectorAnchorViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
@@ -333,6 +333,9 @@
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CodeBlocks\CodeBlockEditor.cs" />
+    <Compile Include="Views\Core\ConnectorAnchorView.xaml.cs">
+      <DependentUpon>ConnectorAnchorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
       <DependentUpon>ConnectorPinView.xaml</DependentUpon>
@@ -374,9 +377,6 @@
     </Compile>
     <Compile Include="Views\Preview\Watch3DSettingsControl.xaml.cs">
       <DependentUpon>Watch3DSettingsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Preview\WatchHoverIconView.xaml.cs">
-      <DependentUpon>WatchHoverIconView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\BrowserWindow.xaml.cs">
       <DependentUpon>BrowserWindow.xaml</DependentUpon>
@@ -470,6 +470,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Core\ConnectorAnchorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\GuidedTour\PopupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -489,10 +493,6 @@
     <Page Include="Views\Menu\PreferencesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Preview\WatchHoverIconView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\ExtensionWindow.xaml">
       <SubType>Designer</SubType>
@@ -1358,6 +1358,8 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\wire_anchor_12px.png" />
+    <Resource Include="UI\Images\watch_hidden_16px.png" />
     <Resource Include="UI\Images\alert.png" />
     <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
     <Resource Include="UI\Images\menu_16_16.png" />
@@ -1371,7 +1373,6 @@
     <Resource Include="UI\Images\pin_selected_16px.png" />
     <Resource Include="UI\Images\Pin_16px.png" />
     <Resource Include="UI\Images\Watch_16px.png" />
-    <Resource Include="UI\Images\Watch_GreyOut_16px.png" />
     <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
