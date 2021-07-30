@@ -676,8 +676,6 @@ namespace Dynamo.Controls
             dynamoViewModel.NodeViewReady += ApplyNodeViewCustomization;
         }
 
-       
-
         private void UnsubscribeNodeViewCustomizationEvents()
         {
             if (dynamoViewModel == null) return;
