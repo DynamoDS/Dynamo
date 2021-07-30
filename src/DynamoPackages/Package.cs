@@ -484,7 +484,7 @@ namespace Dynamo.PackageManager
             {
                 prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
             }
-            RaisePropertyChanged("ScheduledState");
+            RaisePropertyChanged(nameof(LoadState.ScheduledState));
         }
 
         internal void UnmarkForUninstall(IPreferences prefs)
@@ -492,7 +492,7 @@ namespace Dynamo.PackageManager
             LoadState.ResetScheduledState();
 
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
-            RaisePropertyChanged("ScheduledState");
+            RaisePropertyChanged(nameof(LoadState.ScheduledState));
         }
 
         internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
