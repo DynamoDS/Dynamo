@@ -86,6 +86,11 @@ namespace Dynamo.Logging
         /// Events Category related to package manager operations
         /// </summary>
         PackageManagerOperations,
+
+        /// <summary>
+        /// Events Category related to Note operations
+        /// </summary>
+        NoteOperations,
     }
 
     /// <summary>
@@ -222,6 +227,15 @@ namespace Dynamo.Logging
         /// Rate event, such as rating guided tour
         /// </summary>
         Rate
+
+        /// Pin event, such as pinning a note to a node
+        /// </summary>
+        Pin,
+
+        /// <summary>
+        /// Unpin event, such as unpinning a note from a node
+        /// </summary>
+        Unpin,
     }
 
     /// <summary>
