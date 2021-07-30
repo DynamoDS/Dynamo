@@ -226,7 +226,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Rate event, such as rating guided tour
         /// </summary>
-        Rate
+        Rate,
 
         /// Pin event, such as pinning a note to a node
         /// </summary>
