@@ -183,7 +183,7 @@ namespace Dynamo.ViewModels
 
         private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (propertyChangedEventArgs.PropertyName == "LoadState")
+            if (propertyChangedEventArgs.PropertyName == "ScheduledState")
             {
                 UnmarkForUninstallationCommand.RaiseCanExecuteChanged();
                 UninstallCommand.RaiseCanExecuteChanged();

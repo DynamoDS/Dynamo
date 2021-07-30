@@ -34,7 +34,7 @@ namespace Dynamo.PackageManager
     {
         public enum StateTypes
         {
-            Loaded, Unloaded, Error
+            None, Loaded, Unloaded, Error
         }
 
         public enum ScheduledTypes
@@ -44,7 +44,7 @@ namespace Dynamo.PackageManager
 
         private string errorMessage;
         private ScheduledTypes scheduledState = ScheduledTypes.None;
-        private StateTypes state = StateTypes.Unloaded;// Default to Unloaded type.
+        private StateTypes state = StateTypes.None;// Default to None type.
 
         internal void SetAsLoaded() { state = StateTypes.Loaded; errorMessage = ""; }
         internal void SetAsError(string msg = "") { state = StateTypes.Error; errorMessage = msg; }
@@ -484,6 +484,7 @@ namespace Dynamo.PackageManager
             {
                 prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
             }
+            RaisePropertyChanged("ScheduledState");
         }
 
         internal void UnmarkForUninstall(IPreferences prefs)
@@ -491,6 +492,7 @@ namespace Dynamo.PackageManager
             LoadState.ResetScheduledState();
 
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
+            RaisePropertyChanged("ScheduledState");
         }
 
         internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
