@@ -108,7 +108,7 @@ namespace Dynamo.Wpf.ViewModels.GuidedTour
         {
             get
             {
-                tourLabelProgress = string.Format("{0} of {1}", Step.Sequence, Step.TotalSteps);
+                tourLabelProgress = string.Format("{0} of {1}", Step.Sequence, Step.TotalTooltips);
                 return tourLabelProgress;
             }
         }
