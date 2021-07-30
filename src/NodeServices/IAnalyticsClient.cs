@@ -217,6 +217,11 @@ namespace Dynamo.Logging
         /// Undock event, such as undocking view extension
         /// </summary>
         Undock,
+
+        /// <summary>
+        /// Rate event, such as rating guided tour
+        /// </summary>
+        Rate
     }
 
     /// <summary>

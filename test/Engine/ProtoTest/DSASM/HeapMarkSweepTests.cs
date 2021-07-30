@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using NUnit.Framework;
 using ProtoCore;
@@ -56,6 +57,64 @@ namespace ProtoTest.DSASM
             heap.FullGC(new List<StackValue>(), testExecutive);
             Assert.IsNull(heap.ToHeapObject<DSArray>(array));
             Assert.IsNull(heap.ToHeapObject<DSArray>(str));
+        }
+
+        /// <summary>
+        /// Test the GC string management when the stack references the same string multiple times.
+        /// </summary>
+        [Test]
+        public void TestGCStringCleanup()
+        {
+            // Simulating the following graph
+            /*
+            def generateString() {
+                return 1+"@" +2;
+            };
+
+            vv = [Imperative]{
+                generateString();
+            // "1@2" will be on the heap
+            // current stack has no reference type elements
+            //  --------------------------------GC kicks in due to mem threshold----------------------------
+            // "1@2" on the heap will be marked as white - since no stack elements have a reference to it
+            //
+            // Async VM execution computes a new generateString() fn Call
+                cc = generateString();
+            //
+            // cc is pushed on the stack and holds a reference to the "1@2" heap element
+            //
+            // GC starts the sweep process in which it deletes "1@2" heap element
+            // ----------------------------------GC is finished---------------------------------------------
+                return cc;
+            };
+            //
+            // vv is still on the stack with a reference to a now null heap element
+            */
+            var heap = new Heap();
+
+            string sseValue = "hello world";
+
+            // Allocate a string on the heap.
+            // Similar to what would happen if a string stack element was pushed on the stack and then popped (due to out of scope).
+            heap.AllocateString(sseValue);
+
+            StackValue someStackValue = StackValue.BuildNull();
+
+            var notifications = new Dictionary<Heap.GCState, (Action, Action)>() {
+                { 
+                    Heap.GCState.Sweep, 
+                    (() => {
+                        // Simulate a new string (with the same value as existing one on heap) stack element being created while GC is propagating or sweeping
+                        someStackValue = heap.AllocateString(sseValue);
+                    }, 
+                    () => { }) 
+                }
+            };
+            // Start GC with a random stack value as gcRoot (not the string stack element, because it was pushed out of the stack)
+            heap.FullGCTest(new List<StackValue>() { StackValue.BuildInt(1) }, testExecutive, notifications);
+
+            // The stack element that was pushed after GC start should be valid.
+            Assert.IsNotNull(heap.ToHeapObject<DSString>(someStackValue));
         }
 
         /// <summary>
