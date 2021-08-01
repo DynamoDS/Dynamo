@@ -348,17 +348,30 @@ namespace Autodesk.DesignScript.Interfaces
     public interface IRenderInstances
     {
         /// <summary>
-        /// A list of mesh vertices ranges that have associated texture maps
+        /// A list of mesh vertices ranges that have associated instance references
         /// </summary>
         Dictionary<Guid,Tuple<int, int>> MeshVerticesRangesAssociatedWithInstancing { get; }
 
         /// <summary>
-        /// Set a color texture map for a specific range of mesh vertices
+        /// Set an instance reference for a specific range of mesh vertices
         /// </summary>
         /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices
         /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices
         /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
         void AddInstanceGuidForMeshVerticesRange(int startIndex, int endIndex, Guid id);
+
+        /// <summary>
+        /// A list of line vertices ranges that have associated instance references
+        /// </summary>
+        Dictionary<Guid, Tuple<int, int>> LineVerticesRangesAssociatedWithInstancing { get; }
+
+        /// <summary>
+        /// Set an instance reference for a specific range of line vertices
+        /// </summary>
+        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with the instance matrices
+        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with the instance matrices
+        /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
+        void AddInstanceGuidForLineVerticesRange(int startIndex, int endIndex, Guid id);
 
         /// <summary>
         /// Set the transform using a series of floats. The resulting transform is applied to all geometry in the renderPackage.

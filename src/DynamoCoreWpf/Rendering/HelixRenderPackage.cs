@@ -52,6 +52,7 @@ namespace Dynamo.Wpf.Rendering
         private List<int> colorStrideList = new List<int>();
         private List<Tuple<int, int>> colorsMeshVerticesRange = new List<Tuple<int, int>>();
         private Dictionary<Guid, Tuple<int, int>> instanceMeshVerticesRange = new Dictionary<Guid, Tuple<int, int>>();
+        private Dictionary<Guid, Tuple<int, int>> instanceLineVerticesRange = new Dictionary<Guid, Tuple<int, int>>();
         internal Dictionary<Guid, List<Matrix>> instances = new Dictionary<Guid, List<Matrix>>();
 
         #endregion
@@ -824,7 +825,7 @@ namespace Dynamo.Wpf.Rendering
         #endregion
 
         /// <summary>
-        /// A list of mesh vertices ranges that have associated texture maps
+        /// A list of mesh vertices ranges that have associated instance references
         /// </summary>
         public Dictionary<Guid, Tuple<int, int>> MeshVerticesRangesAssociatedWithInstancing
         {
@@ -832,7 +833,7 @@ namespace Dynamo.Wpf.Rendering
         }
 
         /// <summary>
-        /// Set a color texture map for a specific range of mesh vertices
+        /// Set an instance reference for a specific range of mesh vertices
         /// </summary>
         /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices
         /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices
@@ -850,6 +851,35 @@ namespace Dynamo.Wpf.Rendering
             }
 
             instanceMeshVerticesRange.Add(id, new Tuple<int, int>(startIndex, endIndex));
+        }
+
+        /// <summary>
+        /// A list of line vertices ranges that have associated instance references
+        /// </summary>
+        public Dictionary<Guid, Tuple<int, int>> LineVerticesRangesAssociatedWithInstancing
+        {
+            get { return instanceLineVerticesRange; }
+        }
+
+        /// <summary>
+        /// Set an instance reference for a specific range of line vertices
+        /// </summary>
+        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with the instance matrices
+        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with the instance matrices
+        /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
+        public void AddInstanceGuidForLineVerticesRange(int startIndex, int endIndex, Guid id)
+        {
+            //if (!MeshRangeHasValidStartEnd(startIndex, endIndex, mesh, out var message))
+            //{
+            //    throw new Exception(message);
+            //}
+
+            if (instanceLineVerticesRange.ContainsKey(id))
+            {
+                throw new Exception("The reference to the line range for this ID already exists.");
+            }
+
+            instanceLineVerticesRange.Add(id, new Tuple<int, int>(startIndex, endIndex));
         }
 
         /// <summary>
@@ -880,7 +910,7 @@ namespace Dynamo.Wpf.Rendering
             float m41, float m42, float m43, float m44, Guid id)
         {
 
-            if (!instanceMeshVerticesRange.ContainsKey(id))
+            if (!instanceMeshVerticesRange.ContainsKey(id) && !instanceLineVerticesRange.ContainsKey(id))
             {
                 throw new Exception("The reference to the mesh range for this ID does not exists.");
             }
