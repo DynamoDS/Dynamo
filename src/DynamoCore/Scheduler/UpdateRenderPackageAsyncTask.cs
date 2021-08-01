@@ -230,7 +230,7 @@ namespace Dynamo.Scheduler
                         instanceableItem.AddBaseTessellation(package, factory.TessellationParameters);
                     }
 
-                    instanceableItem.AddInstance(package);
+                    instanceableItem.AddInstance(package, factory.TessellationParameters);
                 }
                 else
                 {
