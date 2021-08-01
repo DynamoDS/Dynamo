@@ -232,6 +232,9 @@ namespace Dynamo.Scheduler
                     }
 
                     instanceableItem.AddInstance(package, factory.TessellationParameters);
+
+                    //todo add labels here based on transform.
+                    return;
                 }
                 else
                 {
