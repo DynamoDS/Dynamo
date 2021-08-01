@@ -1760,52 +1760,45 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         id = baseId + LinesKey;
 
-                        LineGeometryModel3D lineGeometry3D;
-
-                        if (Element3DDictionary.ContainsKey(id))
+                        //If we are using IRenderInstances data then we need to create a unique Geometry3D object for each instancable item and add instance transforms.
+                        //If we any mesh geometry was not associated with am instance, remove the previously added line data from the render package so the remaining lines can be added to the scene.
+                        if (rp.LineVerticesRangesAssociatedWithInstancing.Any())
                         {
-                            lineGeometry3D = Element3DDictionary[id] as LineGeometryModel3D;
-                        }
-                        else
-                        {
-                            // If the package contains mesh vertices, then the lines represent the 
-                            // edges of meshes. Draw them with a different thickness.
-                            lineGeometry3D = CreateLineGeometryModel3D(rp, rp.MeshVertices.Any()?0.5:1.0);
-                            Element3DDictionary.Add(id, lineGeometry3D);
+                            //For each range of mesh vertices add the mesh data and instances to the scene
+                            var lineVertexCountTotal = 0;
+                            var j = 0;
+                            foreach (var item in rp.LineVerticesRangesAssociatedWithInstancing)
+                            {
+                                var range = item.Value;
+                                var index = range.Item1; //Start line vertex index
+                                var count = range.Item2 - range.Item1 + 1; //Count of line vertices
+                                var uniqueId = baseId + ":" + j + LinesKey;
+
+                                List<Matrix> instances;
+                                if (rp.instances.TryGetValue(item.Key, out instances))
+                                {
+                                    AddLineData(uniqueId, rp, index, count, drawDead, baseId, instances);
+                                }
+
+                                //Track cumulative total of line vertices added.
+                                lineVertexCountTotal += count;
+                                j++;
+                            }
+
+                            //If all the line regions had texture map data then we are done with line data.
+                            if (lineVertexCountTotal == l.Positions.Count  & !rp.Mesh.Positions.Any())
+                            {
+                                continue;
+                            }
+
+                            //Otherwise, clean up the remaining line geometry data in the render package to exclude the regions already generated.
+                            var verticesRange =
+                                new List<Tuple<int, int>>(rp.LineVerticesRangesAssociatedWithInstancing.Values.ToList());
+
+                            RemoveLineGeometryByRange(verticesRange, l);
                         }
 
-                        var lineSet = lineGeometry3D.Geometry == null ? HelixRenderPackage.InitLineGeometry()
-                        : lineGeometry3D.Geometry as LineGeometry3D;
-                        var startIdx = lineSet.Positions.Count;
-
-                        lineSet.Positions.AddRange(l.Positions);
-                        if (drawDead)
-                        {
-                            lineSet.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, l.Positions.Count));
-                        }
-                        else
-                        {
-                            lineSet.Colors.AddRange(l.Colors.Any()
-                             ? l.Colors
-                             : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
-                        }
-
-                        //always update the color cache if we're aggregating render packages.
-                        //(ie updating colors from this method).
-                        colorCache[id] = lineSet.Colors;
-
-                        lineSet.Indices.AddRange(l.Indices.Any()
-                            ? l.Indices.Select(i => i + startIdx)
-                            : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
-
-                        if(lineGeometry3D.Geometry == null)
-                        {
-                            lineGeometry3D.Geometry = lineSet;
-                        }
-                        //while the Name of the geometry is the node which created it
-                        //we tag it with the id of the graphicModel we store in the scene/viewport for fast lookup.
-                        lineGeometry3D.Name = baseId;
-                        lineGeometry3D.Tag = id;
+                        AddLineData(id, rp, 0, l.Positions.Count, drawDead, baseId);
                     }
 
                     var m = rp.Mesh;
@@ -1845,7 +1838,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     }
 
                     //If we are using IRenderInstances data then we need to create a unique Geometry3D object for each instancable item and add instance transforms.  
-                    //If we any mesh geometry was not associated with a texture map, remove the previously added mesh data from the render package so the remaining mesh can be added to the scene.
+                    //If we any mesh geometry was not associated with an instance, remove the previously added mesh data from the render package so the remaining mesh can be added to the scene.
                     if (rp.MeshVerticesRangesAssociatedWithInstancing.Any())
                     {
                         //For each range of mesh vertices add the mesh data and instances to the scene
@@ -1883,7 +1876,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         RemoveMeshGeometryByRange(verticesRange, m);
                     }
 
-
                     AddMeshData(id, rp, 0, m.Positions.Count, drawDead, baseId, rp.Colors, rp.ColorsStride);
                 }
             }
@@ -1911,6 +1903,35 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var newIndices = new IntCollection();
             newIndices.AddRange(sequence);
             m.Indices = newIndices;
+        }
+
+        private static void RemoveLineGeometryByRange(List<Tuple<int, int>> verticesRange, LineGeometry3D l)
+        {
+            //First sort the range data
+            verticesRange.Sort();
+            verticesRange.Reverse();
+
+            //track removed vertices to renumber indices index
+            var totalRemoved = 0;
+            
+            //Remove already generated line geometry from render package
+            foreach (var range in verticesRange)
+            {
+                var i = range.Item1;
+                var c = range.Item2 - range.Item1 + 1;
+                l.Positions.RemoveRange(i, c);
+                l.Colors.RemoveRange(i, c);
+                totalRemoved += c;
+
+                var firstIndicesIndex = l.Indices.IndexOf(range.Item1);
+                var indicesCount = l.Indices.IndexOf(range.Item2) - firstIndicesIndex + 1;
+                l.Indices.RemoveRange(firstIndicesIndex, indicesCount);
+            }
+
+            for (int i = 0; i < l.Indices.Count; i++)
+            {
+                l.Indices[i] -= totalRemoved;
+            }
         }
 
         private void AddMeshData(string id, HelixRenderPackage rp, int index, int count, bool drawDead, string baseId, IEnumerable<byte> colors, int stride, List<Matrix> intances = null)
@@ -1986,13 +2007,84 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             meshGeometry3D.Geometry = mesh;
             meshGeometry3D.Name = baseId;
+            meshGeometry3D.Tag = id;
 
             if (intances != null)
             {
                 meshGeometry3D.Instances = intances;
             }
         }
-            
+
+        private void AddLineData(string id, HelixRenderPackage rp, int index, int count, bool drawDead, string baseId, List<Matrix> intances = null)
+        {
+            FastList<Vector3> lPositions;
+            FastList<Color4> lColors;
+            FastList<int> lIndices;
+
+            var l = rp.Lines;
+            if (index == 0 && count == rp.Lines.Positions.Count)
+            {
+                lPositions = l.Positions;
+                lColors = l.Colors;
+                lIndices = l.Indices;
+            }
+            else
+            {
+                lPositions = l.Positions.GetRange(index, count);
+                lColors = l.Colors.GetRange(index, count);
+                var firstIndicesIndex = l.Indices.IndexOf(index);
+                var indicesCount = l.Indices.IndexOf(index + count - 1) - firstIndicesIndex + 1;
+                lIndices = l.Indices.GetRange(firstIndicesIndex, indicesCount);
+            }
+
+            LineGeometryModel3D lineGeometry3D;
+
+            if (Element3DDictionary.ContainsKey(id))
+            {
+                lineGeometry3D = Element3DDictionary[id] as LineGeometryModel3D;
+            }
+            else
+            {
+                // If the package contains mesh vertices, then the lines represent the 
+                // edges of meshes. Draw them with a different thickness.
+                lineGeometry3D = CreateLineGeometryModel3D(rp, rp.MeshVertices.Any() ? 0.5 : 1.0);
+                Element3DDictionary.Add(id, lineGeometry3D);
+            }
+
+            var lineSet = lineGeometry3D.Geometry == null ? HelixRenderPackage.InitLineGeometry()
+                        : lineGeometry3D.Geometry as LineGeometry3D;
+            var previousPositionCount = lineSet.Positions.Count;
+
+
+            lineSet.Positions.AddRange(lPositions);
+
+
+            if (drawDead)
+            {
+                lineSet.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, lPositions.Count));
+            }
+            else
+            {
+                lineSet.Colors.AddRange(lColors.Any()
+                 ? lColors
+                 : Enumerable.Repeat(defaultLineColor, lColors.Count));
+            }
+
+            //colorCache[id] = lineSet.Colors;
+
+            var adjustment = previousPositionCount - lIndices[0];
+
+            lineSet.Indices.AddRange(lIndices.Select(i => i + adjustment));
+
+            lineGeometry3D.Geometry = lineSet;
+            lineGeometry3D.Name = baseId;
+
+            if (intances != null)
+            {
+                lineGeometry3D.Instances = intances;
+            }
+        }
+
 
         /// <summary>
         /// Filters out packages that are considered invalid by Helix. This includes any package
