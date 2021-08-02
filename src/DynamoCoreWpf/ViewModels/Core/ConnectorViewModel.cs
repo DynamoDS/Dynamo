@@ -38,6 +38,7 @@ namespace Dynamo.ViewModels
         private bool isPartlyVisible = false;
         private string connectorDataToolTip;
         private bool mouseHoverOn;
+        private bool connectorAnchorViewModelExists;
         private bool isDataFlowCollection;
         private bool anyPinSelected;
         private double dotTop;
@@ -248,6 +249,22 @@ namespace Dynamo.ViewModels
             {
                 mouseHoverOn = value;
                 RaisePropertyChanged(nameof(MouseHoverOn));
+            }
+        }
+
+        /// <summary>
+        /// Flags whether or not the user is hovering over the current connector.
+        /// </summary>
+        public bool ConnectorAnchorViewModelExists
+        {
+            get
+            {
+                return connectorAnchorViewModelExists;
+            }
+            set
+            {
+                connectorAnchorViewModelExists = value;
+                RaisePropertyChanged(nameof(ConnectorAnchorViewModelExists));
             }
         }
         /// <summary>
@@ -736,6 +753,18 @@ namespace Dynamo.ViewModels
             Redraw(port.Center);
 
             InitializeCommands();
+            this.PropertyChanged += connectorViewModelPropertyChanged;
+        }
+
+        private void connectorViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch(e.PropertyName)
+            {
+                case nameof(ConnectorAnchorViewModel):
+                    ConnectorAnchorViewModelExists = ConnectorAnchorViewModel is null ? false : true;
+                    break;
+                default: break;
+            }
         }
 
         /// <summary>
@@ -772,6 +801,7 @@ namespace Dynamo.ViewModels
             InitializeCommands();
 
             UpdateConnectorDataToolTip();
+            this.PropertyChanged += connectorViewModelPropertyChanged;
         }
 
         private void ConnectorPinModelCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

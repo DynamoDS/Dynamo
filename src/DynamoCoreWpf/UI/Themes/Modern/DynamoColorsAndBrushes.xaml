@@ -123,4 +123,7 @@
     <!-- Port color -->
     <SolidColorBrush x:Key="KeepListStructureHighlight" Color="#66AAD7"/>
     <SolidColorBrush x:Key="NotKeepListStructureHighlight" Color="White"/>
+    
+    <!--Connector-->
+    <SolidColorBrush x:Key="ConnectorHoverStateOutline" Color="#B6B6B6"/>
 </ResourceDictionary>

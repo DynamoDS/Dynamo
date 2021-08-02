@@ -83,5 +83,25 @@ namespace Dynamo.Controls
             ViewModel.CanDisplayIcons = false;
             ViewModel.DisposeViewModel();
         }
+
+        private void OnWatchIconHover(object sender, MouseEventArgs e)
+        {
+            ViewModel.SwitchWatchPreviewOn();
+        }
+
+        private void OnWatchIconUnhover(object sender, MouseEventArgs e)
+        {
+            ViewModel.SwitchWatchPreviewOff();
+        }
+
+        private void OnPinIconHover(object sender, MouseEventArgs e)
+        {
+            ViewModel.SwitchPinPreviewOn();
+        }
+
+        private void OnPinIconUnhover(object sender, MouseEventArgs e)
+        {
+            ViewModel.SwitchPinPreviewOff();
+        }
     }
 }
