@@ -23,15 +23,18 @@ namespace DynamoCoreWpfTests
             int initialConnectorCount = connectorViewModel.ConnectorPinViewCollection.Count;
 
             ///hard-coded position (1) on wire
-            connectorViewModel.PanelX = 352.666666;
-            connectorViewModel.PanelY = 305.333333;
+            connectorViewModel.PanelX = 319.333333;
+            connectorViewModel.PanelY = 272;
 
+            ///Action triggered when hovering over a connector
+            connectorViewModel.FlipOnConnectorAnchor();
+            ///Pin command
             connectorViewModel.PinConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, initialConnectorCount + 1);
 
             ///hard-coded position (2) on wire
-            connectorViewModel.PanelX = 244;
-            connectorViewModel.PanelY = 303.333333;
+            connectorViewModel.PanelX = 332;
+            connectorViewModel.PanelY = 278;
 
             connectorViewModel.PinConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, initialConnectorCount + 2);
@@ -48,11 +51,13 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
             ///hard-coded position (1) on wire
-            connectorViewModel.PanelX = 352.666666;
-            connectorViewModel.PanelY = 305.333333;
+            connectorViewModel.PanelX = 319.333333;
+            connectorViewModel.PanelY = 272;
 
+            ///Action triggered when hovering over a connector
+            connectorViewModel.FlipOnConnectorAnchor();
+            ///Pin command
             connectorViewModel.PinConnectorCommand.Execute(null);
-
             int connectorCountAfterAddingOne = connectorViewModel.ConnectorPinViewCollection.Count;
 
             ///Request remove pin
@@ -134,10 +139,11 @@ namespace DynamoCoreWpfTests
             int initialConnectorCount = this.ViewModel.CurrentSpaceViewModel.Connectors.Count;
             int initialNodeCount = this.ViewModel.CurrentSpaceViewModel.Nodes.Count;
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
-            //On mouse hover of a connector (required for 'placewatchnode' icon to appear)
-            connectorViewModel.MouseHoverCommand.Execute(null);
+
+            ///Action triggered when hovering over a connector
+            connectorViewModel.FlipOnConnectorAnchor();
             ///Place watch node
-            connectorViewModel.WatchHoverViewModel.PlaceWatchNodeCommand.Execute(null);
+            connectorViewModel.ConnectorAnchorViewModel.PlaceWatchNodeCommand.Execute(null);
             ///Two connectors should result when you place a new (watch) node in between.
             Assert.AreEqual(this.ViewModel.CurrentSpaceViewModel.Connectors.Count, initialConnectorCount + 1);
             ///Three nodes should be the total number of nodes after this operation.
@@ -157,10 +163,14 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
             ///hard-coded position (1) on wire
-            connectorViewModel.PanelX = 352.666666;
-            connectorViewModel.PanelY = 305.333333;
+            connectorViewModel.PanelX = 319.333333;
+            connectorViewModel.PanelY = 272;
 
             int initialPinCount = connectorViewModel.ConnectorPinViewCollection.Count;
+
+            ///Action triggered when hovering over a connector
+            connectorViewModel.FlipOnConnectorAnchor();
+            ///Pin command
             connectorViewModel.PinConnectorCommand.Execute(null);
             ///Should be 1 more than the original count
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, initialPinCount + 1);
@@ -178,9 +188,12 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
             ///hard-coded position (1) on wire
-            connectorViewModel.PanelX = 352.666666;
-            connectorViewModel.PanelY = 305.333333;
+            connectorViewModel.PanelX = 319.333333;
+            connectorViewModel.PanelY = 272;
 
+            ///Action triggered when hovering over a connector
+            connectorViewModel.FlipOnConnectorAnchor();
+            ///Pin command
             connectorViewModel.PinConnectorCommand.Execute(null);
             int initialPinsAfterOneAdded = connectorViewModel.ConnectorPinViewCollection.Count;
 
@@ -204,9 +217,12 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
             ///hard-coded position (1) on wire
-            connectorViewModel.PanelX = 352.666666;
-            connectorViewModel.PanelY = 305.333333;
-            ///Pin connector
+            connectorViewModel.PanelX = 319.333333;
+            connectorViewModel.PanelY = 272;
+
+            ///Action triggered when hovering over a connector
+            connectorViewModel.FlipOnConnectorAnchor();
+            ///Pin command
             connectorViewModel.PinConnectorCommand.Execute(null);
             int initialPinsAfterOneAdded = connectorViewModel.ConnectorPinViewCollection.Count;
 
@@ -230,14 +246,16 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
             ///hard-coded position on wire
-            connectorViewModel.PanelX = 352.666666;
-            connectorViewModel.PanelY = 305.333333;
+            connectorViewModel.PanelX = 319.333333;
+            connectorViewModel.PanelY = 272;
 
             ///deltas to move by
             double xMove = 250;
             double yMove = 150;
 
-            ///add single pin
+            ///Action triggered when hovering over a connector
+            connectorViewModel.FlipOnConnectorAnchor();
+            ///Pin command
             connectorViewModel.PinConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, 1);
 
