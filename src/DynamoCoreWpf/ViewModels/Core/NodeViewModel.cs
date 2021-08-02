@@ -566,6 +566,16 @@ namespace Dynamo.ViewModels
         internal double ActualHeight { get; set; }
         internal double ActualWidth { get; set; }
 
+        /// <summary>
+        /// Node description defined by the user.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string UserDescription
+        {
+            get { return NodeModel.UserDescription; }
+            set { NodeModel.UserDescription = value; }
+        }
+
         #endregion
 
         #region events
@@ -602,6 +612,15 @@ namespace Dynamo.ViewModels
             {
                 RequestsSelection(this, e);
             }
+        }
+
+        /// <summary>
+        /// Event to determine when Node is selected
+        /// </summary>
+        internal event EventHandler Selected;
+        internal void OnSelected(object sender, EventArgs e)
+        {
+            Selected?.Invoke(this, e);
         }
 
         #endregion
@@ -1293,6 +1312,65 @@ namespace Dynamo.ViewModels
             return false;
         }
 
+        
+
+        private void SelectUpstreamNeighbours(object parameters)
+        {
+            NodeModel.SelectUpstreamNeighbours();
+
+            var upstreamNodes = NodeModel
+                .AllUpstreamNodes(new List<NodeModel>())
+                .ToList();
+
+            upstreamNodes.Add(NodeModel);
+
+            SelectRelatedGroupsToNodes(upstreamNodes);
+        }
+        
+        private void SelectDownstreamNeighbours(object parameters)
+        {
+            NodeModel.SelectDownstreamNeighbours();
+
+            var downstreamNodes = NodeModel
+                .AllDownstreamNodes(new List<NodeModel>())
+                .ToList();
+
+            downstreamNodes.Add(NodeModel);
+
+            SelectRelatedGroupsToNodes(downstreamNodes);
+        }
+
+        private void SelectDownstreamAndUpstreamNeighbours(object parameters)
+        {
+            NodeModel.SelectUpstreamAndDownstreamNeighbours();
+            
+            var nodesSelected = NodeModel
+                .AllUpstreamNodes(new List<NodeModel>())
+                .ToList();
+
+            nodesSelected.AddRange(NodeModel
+                .AllDownstreamNodes(new List<NodeModel>())
+                .ToList());
+
+            nodesSelected.Add(NodeModel);
+
+            SelectRelatedGroupsToNodes(nodesSelected);
+
+        }
+
+
+        private void SelectRelatedGroupsToNodes(List<NodeModel> nodes)
+        {
+            var nodesGUIDS = nodes.Select(n => n.GUID);
+            var groups = WorkspaceViewModel.Annotations;
+            foreach (var group in groups)
+            {
+                var groupsNodesGUIDS = group.Nodes.Select(n => n.GUID);
+
+                if (groupsNodesGUIDS.Intersect(nodesGUIDS).Any())
+                    group.AddGroupAndGroupedNodesToSelection();
+            }
+        }
 
         #region Private Helper Methods
         private Point GetTopLeft()

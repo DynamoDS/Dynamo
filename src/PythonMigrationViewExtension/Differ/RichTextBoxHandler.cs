@@ -57,6 +57,8 @@ namespace Dynamo.PythonMigration.Differ
                     case ChangeType.Deleted:
                         paragraphs.Add(ShowSubPieceDiffs(line, true));
                         break;
+                    case ChangeType.Imaginary:
+                        break;
                     case ChangeType.Modified:
                         paragraphs.Add(ShowSubPieceDiffs(line, isBeforePanel));
                         break;

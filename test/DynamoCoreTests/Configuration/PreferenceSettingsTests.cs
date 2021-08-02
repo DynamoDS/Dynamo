@@ -1,4 +1,5 @@
 ﻿using Dynamo.Configuration;
+using Dynamo.Models;
 using NUnit.Framework;
 using System.IO;
 
@@ -56,10 +57,11 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
             Assert.AreEqual(settings.IsIronPythonDialogDisabled, false);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
-            Assert.AreEqual(settings.EnableNodeAutoComplete, false);
+            Assert.AreEqual(settings.EnableNodeAutoComplete, true);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
+            Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
 
             // Save
             settings.Save(tempPath);
@@ -70,10 +72,11 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
             Assert.AreEqual(settings.IsIronPythonDialogDisabled, false);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
-            Assert.AreEqual(settings.EnableNodeAutoComplete, false);
+            Assert.AreEqual(settings.EnableNodeAutoComplete, true);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
+            Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
 
             // Change setting values
             settings.SetIsBackgroundPreviewActive("MyBackgroundPreview", false);
@@ -82,7 +85,8 @@ namespace Dynamo.Tests.Configuration
             settings.ShowTabsAndSpacesInScriptEditor = true;
             settings.DefaultPythonEngine = "CP3";
             settings.MaxNumRecentFiles = 24;
-            settings.EnableNodeAutoComplete = true;
+            settings.EnableNodeAutoComplete = false;
+            settings.DefaultRunType = RunType.Manual;
             settings.ViewExtensionSettings.Add(new ViewExtensionSettings()
             {
                 Name = "MyExtension",
@@ -109,9 +113,10 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, true);
             Assert.AreEqual(settings.DefaultPythonEngine, "CP3");
             Assert.AreEqual(settings.MaxNumRecentFiles, 24);
-            Assert.AreEqual(settings.EnableNodeAutoComplete, true);
+            Assert.AreEqual(settings.EnableNodeAutoComplete, false);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 1);
             var extensionSettings = settings.ViewExtensionSettings[0];
+            Assert.AreEqual(settings.DefaultRunType, RunType.Manual);
             Assert.AreEqual(extensionSettings.Name, "MyExtension");
             Assert.AreEqual(extensionSettings.UniqueId, "1234");
             Assert.AreEqual(extensionSettings.DisplayMode, ViewExtensionDisplayMode.FloatingWindow);
@@ -122,6 +127,22 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(windowSettings.Height, 321);
             Assert.AreEqual(windowSettings.Width, 654);
             Assert.AreEqual(windowSettings.Status, WindowStatus.Maximized);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMigrateStdLibTokenToBuiltInToken()
+        {
+            string settingDirectory = Path.Combine(TestDirectory, "settings");
+            string settingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-stdlibtoken.xml");
+            Assert.IsTrue(File.ReadAllText(settingsFilePath).Contains(DynamoModel.StandardLibraryToken));
+            // Assert files required for test exist
+            Assert.IsTrue(File.Exists(settingsFilePath));
+            var settings = PreferenceSettings.Load(settingsFilePath);
+
+            var token = settings.CustomPackageFolders[1];
+
+            Assert.AreEqual(DynamoModel.BuiltInPackagesToken,token);
         }
     }
 }

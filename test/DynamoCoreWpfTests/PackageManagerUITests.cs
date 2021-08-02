@@ -6,8 +6,17 @@ using System.Threading;
 using System.Windows;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
+using Dynamo.Tests;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
+using Greg;
+using Greg.Requests;
+using Greg.Responses;
+using Moq;
 using NUnit.Framework;
 using SystemTestServices;
+using Dynamo.Wpf.Views;
 
 
 namespace DynamoCoreWpfTests
@@ -15,6 +24,10 @@ namespace DynamoCoreWpfTests
     [TestFixture]
     public class PackageManagerUITests : SystemTestBase
     {
+        public string PackagesDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs"); } }
+        public string PackagesDirectorySigned { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs_signed"); } }
+        internal string BuiltinPackagesTestDir { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "builtinpackages testdir", "Packages"); } }
+
         #region Utility functions
 
         protected void LoadPackage(string packageDirectory)
@@ -111,35 +124,167 @@ namespace DynamoCoreWpfTests
         }
         #endregion
 
-        #region InstalledPackagesView
-
+        #region InstalledPackagesControl
+        
         [Test]
         public void CanOpenManagePackagesDialogAndWindowIsOwned()
         {
-            ViewModel.OnRequestManagePackagesDialog(null, null);
+            var preferencesWindow = new PreferencesView(View)
+            {
+               WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
 
-            AssertWindowOwnedByDynamoView<InstalledPackagesView>();
+            preferencesWindow.Show();
+
+            AssertWindowOwnedByDynamoView<PreferencesView>();
         }
-
-        //[Test, Ignore]
-        //public void CannotCreateDuplicateManagePackagesDialogs()
-        //{
-        //    for (var i = 0; i < 10; i++)
-        //    {
-        //        Vm.OnRequestManagePackagesDialog(null, null);
-        //    }
-
-        //    AssertWindowOwnedByDynamoView<InstalledPackagesView>();
-        //}
 
         [Test]
         public void ManagePackagesDialogClosesWithDynamo()
         {
-            ViewModel.OnRequestManagePackagesDialog(null, null);
+            var preferencesWindow = new PreferencesView(View)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
 
-            AssertWindowOwnedByDynamoView<InstalledPackagesView>();
-            AssertWindowClosedWithDynamoView<InstalledPackagesView>();
+            preferencesWindow.Show();
 
+            AssertWindowOwnedByDynamoView<PreferencesView>();
+            AssertWindowClosedWithDynamoView<PreferencesView>();
+        }
+
+        [Test]
+        [Description("User tries to download packages that might conflict with existing packages in builtIn")]
+        public void PackageManagerConflictsWithbltinpackages()
+        {
+            var pathMgr = ViewModel.Model.PathManager;
+            var pkgLoader = GetPackageLoader();
+            if(pathMgr is Dynamo.Core.PathManager pm)
+                pm.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
+
+            // Load a builtIn package
+            var builtInPackageLocation = Path.Combine(BuiltinPackagesTestDir, "SignedPackage2");
+            pkgLoader.ScanPackageDirectory(builtInPackageLocation);
+
+            var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
+            Assert.IsNotNull(bltInPackage);
+
+            // Simulate the user downloading the same package from PM
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Throws(new Exception("Failed to get your package!"));
+
+            var client = new Dynamo.PackageManager.PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmVm = new PackageManagerClientViewModel(ViewModel, client);
+
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            //
+            // 1. User downloads the exact version of a builtIn package
+            //
+            {
+                var id = "test-123";
+                var deps = new List<Dependency>() { new Dependency() { _id = id, name = bltInPackage.Name } };
+                var depVers = new List<string>() { bltInPackage.VersionName };
+
+                mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+                .Returns(new ResponseWithContentBody<PackageVersion>()
+                {
+                    content = new PackageVersion()
+                    {
+                        version = bltInPackage.VersionName,
+                        engine_version = bltInPackage.EngineVersion,
+                        name = bltInPackage.Name,
+                        id = id,
+                        full_dependency_ids = deps,
+                        full_dependency_versions = depVers
+                    },
+                    success = true
+                });
+
+                var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(bltInPackage.Name, VersionUtilities.PartialParse(bltInPackage.VersionName));
+                pmVm.DownloadAndInstallPackage(pkgInfo);
+
+                // Users should get 2 warnings :
+                // 1. To confirm that they want to download the specified package.
+                // 2. That a package with the same name and version already exists as part of the BuiltinPackages.
+                dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(2));
+                dlgMock.ResetCalls();
+            }
+
+            //
+            // 2. User downloads a different version of a builtIn package
+            //
+            {
+                var id = "test-234";
+                var deps = new List<Dependency>() { new Dependency() { _id = id, name = bltInPackage.Name } };
+                var bltinpackagesPkgVers = VersionUtilities.PartialParse(bltInPackage.VersionName);
+                var newPkgVers = new Version(bltinpackagesPkgVers.Major + 1, bltinpackagesPkgVers.Minor, bltinpackagesPkgVers.Build);
+
+                var depVers = new List<string>() { newPkgVers.ToString() };
+
+                mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+                .Returns(new ResponseWithContentBody<PackageVersion>()
+                {
+                    content = new PackageVersion()
+                    {
+                        version = newPkgVers.ToString(),
+                        engine_version = bltInPackage.EngineVersion,
+                        name = bltInPackage.Name,
+                        id = id,
+                        full_dependency_ids = deps,
+                        full_dependency_versions = depVers
+                    },
+                    success = true
+                });
+                
+                var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(bltInPackage.Name, newPkgVers);
+                pmVm.DownloadAndInstallPackage(pkgInfo);
+
+                // Users should get 2 warnings :
+                // 1. To confirm that they want to download the specified package.
+                // 2. That a package with a different version already exists as part of the BuiltinPackages.
+                dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(2));
+                dlgMock.ResetCalls();
+            }
+
+            //
+            // 3. User downloads a package that is not part of a builtin pkgs.
+            //
+            {
+                var id = "test-345";
+                var deps = new List<Dependency>() { new Dependency() { _id = id, name = "non-builtin-libg" } };
+                var pkgVersion = new Version(1, 0 ,0);
+                var depVers = new List<string>() { pkgVersion.ToString() };
+
+                mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+                .Returns(new ResponseWithContentBody<PackageVersion>()
+                {
+                    content = new PackageVersion()
+                    {
+                        version = pkgVersion.ToString(),
+                        engine_version = bltInPackage.EngineVersion,
+                        name = "non-builtin-libg",
+                        id = id,
+                        full_dependency_ids = deps,
+                        full_dependency_versions = depVers
+                    },
+                    success = true
+                });
+
+                var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo("Non-builtin-package", new Version(1, 0, 0));
+                pmVm.DownloadAndInstallPackage(pkgInfo);
+
+                // Users should get 1 warning :
+                // 1. To confirm that they want to download the specified package.
+                dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
+                dlgMock.ResetCalls();
+            }
         }
 
         #endregion
@@ -272,8 +417,13 @@ namespace DynamoCoreWpfTests
             var packageFound = loader.LocalPackages.Any(x => x.Name == "Autodesk Steel Connections 2020");
             Assert.IsFalse(packageFound);
 
-            ViewModel.OnRequestManagePackagesDialog(null, null);
-            AssertWindowOwnedByDynamoView<InstalledPackagesView>();
+            var preferencesWindow = new PreferencesView(View)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            preferencesWindow.Show();
+
+            AssertWindowOwnedByDynamoView<PreferencesView>();
         }
 
         #endregion

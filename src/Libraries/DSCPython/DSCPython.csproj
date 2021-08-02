@@ -36,11 +36,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Python.Included, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Python.Included, Version=2.5.1.7, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\extern\Python\Python.Included.dll</HintPath>
     </Reference>
-    <Reference Include="Python.Runtime, Version=2.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Python.Runtime, Version=2.5.1.7, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
     </Reference>

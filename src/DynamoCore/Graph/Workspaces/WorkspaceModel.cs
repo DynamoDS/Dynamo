@@ -10,6 +10,7 @@ using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Events;
+using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -18,6 +19,7 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
+using Dynamo.Linting;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Properties;
@@ -60,6 +62,7 @@ namespace Dynamo.Graph.Workspaces
         public bool Excluded;
         public bool IsSetAsInput;
         public bool IsSetAsOutput;
+        public string UserDescription;
     }
 
     /// <summary>
@@ -88,6 +91,7 @@ namespace Dynamo.Graph.Workspaces
         public double FontSize;
         public string Background;
         public string Id;
+        public string PinnedNode;
 
         // TODO, Determine if these are required
         public double Left;
@@ -133,6 +137,39 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public abstract partial class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, IWorkspaceModel
     {
+        #region nested classes
+
+        /// <summary>
+        /// This class enables the delay of graph execution.
+        /// Use instances of this class to specify a code scope in which you want graph execution to be delayed. 
+        /// Class is thread safe, although behavior is not well defined. 
+        /// Nested instance of this class do not have a well defined behavior.
+        /// </summary>
+        internal class DelayedGraphExecution : IDisposable
+        {
+            private readonly WorkspaceModel workspace;
+            private static readonly object stateMutex = new object();
+
+            public DelayedGraphExecution(WorkspaceModel wModel)
+            {
+                workspace = wModel;
+                lock (stateMutex)
+                {
+                    workspace.delayGraphExecutionCounter++;
+                }
+            }
+
+            public virtual void Dispose()
+            {
+                lock (stateMutex)
+                {
+                    workspace.delayGraphExecutionCounter--;
+                }
+                workspace.RequestRun();
+            }
+        }
+        #endregion
+
         #region private/internal members
 
         /// <summary>
@@ -159,6 +196,8 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         internal static readonly int PasteOffsetMax = 60;
 
+        internal readonly LinterManager linterManager;
+
         private string fileName;
         private string name;
         private double height = 100;
@@ -181,6 +220,13 @@ namespace Dynamo.Graph.Workspaces
         private bool hasNodeInSyncWithDefinition;
         protected Guid guid;
         private HashSet<Guid> dependencies = new HashSet<Guid>();
+
+        private int delayGraphExecutionCounter = 0;
+
+        /// <summary>
+        /// Whether or not to delay graph execution.
+        /// </summary>
+        internal protected bool DelayGraphExecution => delayGraphExecutionCounter > 0;
 
         /// <summary>
         /// This is set to true after a workspace is added.
@@ -291,6 +337,15 @@ namespace Dynamo.Graph.Workspaces
 
             if (Saved != null)
                 Saved();
+        }
+
+        /// <summary>
+        /// Event that is fired when the workspace is starting the save process.
+        /// </summary>
+        public event Action<SaveContext> WorkspaceSaving;
+        internal virtual void OnSaving(SaveContext saveContext)
+        {
+            WorkspaceSaving?.Invoke(saveContext);
         }
 
         /// <summary>
@@ -646,7 +701,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
-        
+
 
         /// <summary>
         ///     An author of the workspace
@@ -657,7 +712,7 @@ namespace Dynamo.Graph.Workspaces
             set
             {
                 author = value;
-                RaisePropertyChanged("Author");
+                RaisePropertyChanged(nameof(Author));
             }
         }
 
@@ -1008,7 +1063,6 @@ namespace Dynamo.Graph.Workspaces
 
             this.presets = new List<PresetModel>(presets);
             ElementResolver = resolver;
-
             foreach (var node in this.nodes)
                 RegisterNode(node);
 
@@ -1017,6 +1071,19 @@ namespace Dynamo.Graph.Workspaces
 
             SetModelEventOnAnnotation();
             WorkspaceEvents.WorkspaceAdded += computeUpstreamNodesWhenWorkspaceAdded;
+        }
+
+        protected WorkspaceModel(
+            IEnumerable<NodeModel> nodes,
+            IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> annotations,
+            WorkspaceInfo info,
+            NodeFactory factory,
+            IEnumerable<PresetModel> presets,
+            ElementResolver resolver,
+            LinterManager linterManager) : this(nodes, notes, annotations, info, factory, presets, resolver)
+        {
+            this.linterManager = linterManager;
         }
 
         /// <summary>
@@ -1151,6 +1218,9 @@ namespace Dynamo.Graph.Workspaces
 
             try
             {
+                if (!isBackup)
+                    OnSaving(SaveContext.Save);
+
                 //set the name before serializing model.
                 setNameBasedOnFileName(filePath, isBackup);
 
@@ -1245,6 +1315,9 @@ namespace Dynamo.Graph.Workspaces
             }
 
             OnNodeRemoved(model);
+            // Force this change to address the edge case that user deleting the right edge
+            // node and do not see unsaved changes, e.g. the watch node at end of the graph
+            HasUnsavedChanges = true;
 
             if (dispose)
             {
@@ -1560,7 +1633,7 @@ namespace Dynamo.Graph.Workspaces
                 //write the root element
                 root.AppendChild(elementList);
 
-                foreach (var dynEl in Nodes.Select(el => el.Serialize(xmlDoc, SaveContext.File)))
+                foreach (var dynEl in Nodes.Select(el => el.Serialize(xmlDoc, SaveContext.Save)))
                     elementList.AppendChild(dynEl);
 
                 //write only the output connectors
@@ -1594,7 +1667,7 @@ namespace Dynamo.Graph.Workspaces
                 root.AppendChild(noteList);
                 foreach (var n in Notes)
                 {
-                    var note = n.Serialize(xmlDoc, SaveContext.File);
+                    var note = n.Serialize(xmlDoc, SaveContext.Save);
                     noteList.AppendChild(note);
                 }
 
@@ -1603,7 +1676,7 @@ namespace Dynamo.Graph.Workspaces
                 root.AppendChild(annotationList);
                 foreach (var n in annotations)
                 {
-                    var annotation = n.Serialize(xmlDoc, SaveContext.File);
+                    var annotation = n.Serialize(xmlDoc, SaveContext.Save);
                     annotationList.AppendChild(annotation);
                 }
 
@@ -1612,7 +1685,7 @@ namespace Dynamo.Graph.Workspaces
                 root.AppendChild(presetsElement);
                 foreach (var preset in Presets)
                 {
-                    var presetState = preset.Serialize(xmlDoc, SaveContext.File);
+                    var presetState = preset.Serialize(xmlDoc, SaveContext.Save);
                     presetsElement.AppendChild(presetState);
                 }
 
@@ -1890,6 +1963,43 @@ namespace Dynamo.Graph.Workspaces
             return ws;
         }
 
+        public static WorkspaceModel FromJson(string json, LibraryServices libraryServices,
+            EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
+            bool isTestMode, bool verboseLogging, CustomNodeManager manager, LinterManager linterManager)
+        {
+            var logger = engineController != null ? engineController.AsLogger() : null;
+
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture,
+                Converters = new List<JsonConverter>{
+                        new ConnectorConverter(logger),
+                        new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging, linterManager),
+                        new NodeReadConverter(manager, libraryServices, factory, isTestMode),
+                        new TypedParameterConverter(),
+                        new NodeLibraryDependencyConverter(logger)
+                    },
+                ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
+            };
+
+            var result = SerializationExtensions.ReplaceTypeDeclarations(json, true);
+
+            // TODO: Remove after deprecating "IntegerSlider : SliderBase<int>" 
+            result = SerializationExtensions.DeserializeIntegerSliderTo64BitType(result);
+
+            var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
+
+            return ws;
+        }
+
         /// <summary>
         /// Updates a workspace model with extra view information. When loading a workspace from JSON,
         /// the data is split into two parts, model and view. This method sets the view information.
@@ -1949,6 +2059,7 @@ namespace Dynamo.Graph.Workspaces
                     nodeModel.IsFrozen = nodeViewInfo.Excluded;
                     nodeModel.IsSetAsInput = nodeViewInfo.IsSetAsInput;
                     nodeModel.IsSetAsOutput = nodeViewInfo.IsSetAsOutput;
+                    nodeModel.UserDescription = nodeViewInfo.UserDescription;
 
                     // NOTE: The name needs to be set using UpdateValue to cause the view to update
                     nodeModel.UpdateValue(new UpdateValueParams("Name", nodeViewInfo.Name));
@@ -2004,11 +2115,15 @@ namespace Dynamo.Graph.Workspaces
                 var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
                 var text = annotationViewInfo.Title;
 
+                var pinnedNode = this.Nodes.
+                    FirstOrDefault(x => x.GUID.ToString("N") == annotationViewInfo.PinnedNode);
+
                 var noteModel = new NoteModel(
                     annotationViewInfo.Left, 
                     annotationViewInfo.Top, 
                     text, 
-                    annotationGuidValue);
+                    annotationGuidValue,
+                    pinnedNode);
 
                 //if this note does not exist, add it to the workspace.
                 var matchingNote = this.Notes.FirstOrDefault(x => x.GUID == noteModel.GUID);
@@ -2095,6 +2210,14 @@ namespace Dynamo.Graph.Workspaces
             }
 
             return deterministicGuid;
+        }
+        
+        /// <summary>
+        ///     Returns a DelayedGraphExecution object.
+        /// </summary>
+        internal DelayedGraphExecution BeginDelayedGraphExecution()
+        {
+            return new DelayedGraphExecution(this);
         }
     }
 }

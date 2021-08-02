@@ -10,7 +10,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
-using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
@@ -414,6 +413,9 @@ namespace Dynamo.Controls
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
+
+            viewModel.OnSelected(this, EventArgs.Empty);
+
             if (e.ClickCount == 2)
             {
                 if (ViewModel.GotoWorkspaceCommand.CanExecute(null))

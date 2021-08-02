@@ -57,11 +57,10 @@ namespace Dynamo.ViewModels
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
             GoToDictionaryCommand = new DelegateCommand(GoToDictionary, CanGoToDictionary);
             DisplayStartPageCommand = new DelegateCommand(DisplayStartPage, CanDisplayStartPage);
-            ChangeScaleFactorCommand = new DelegateCommand(p => OnRequestScaleFactorDialog(this, EventArgs.Empty));
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             PublishNewPackageCommand = new DelegateCommand(PackageManagerClientViewModel.PublishNewPackage, PackageManagerClientViewModel.CanPublishNewPackage);
-            ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
-            ManagePackagePathsCommand = new DelegateCommand(ManagePackagePaths, o => true);
+            ShowInstalledPackagesCommand = new DelegateCommand(o => { }, o => true);
+            ManagePackagePathsCommand = new DelegateCommand(o => { }, o => true);
             PublishCurrentWorkspaceCommand = new DelegateCommand(PackageManagerClientViewModel.PublishCurrentWorkspace, PackageManagerClientViewModel.CanPublishCurrentWorkspace);
             PublishSelectedNodesCommand = new DelegateCommand(PackageManagerClientViewModel.PublishSelectedNodes, PackageManagerClientViewModel.CanPublishSelectedNodes);
             PublishCustomNodeCommand = new DelegateCommand<Function>(PackageManagerClientViewModel.PublishCustomNode, PackageManagerClientViewModel.CanPublishCustomNode);
@@ -105,7 +104,9 @@ namespace Dynamo.ViewModels
         public DelegateCommand GraphAutoLayoutCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
+        [Obsolete("Do not use. This command will be removed. It does nothing.")]
         public DelegateCommand ShowInstalledPackagesCommand { get; set; }
+        [Obsolete("Do not use. This command will be removed. It does nothing.")]
         public DelegateCommand ManagePackagePathsCommand { get; set; }
         public DelegateCommand HomeCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
@@ -135,7 +136,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand GoToDictionaryCommand { get; set; }
         public DelegateCommand GoToSourceCodeCommand { get; set; }
         public DelegateCommand DisplayStartPageCommand { get; set; }
-        public DelegateCommand ChangeScaleFactorCommand { get; set; }
         public DelegateCommand ShowHideConnectorsCommand { get; set; }
         public DelegateCommand SelectNeighborsCommand { get; set; }
         public DelegateCommand ClearLogCommand { get; set; }

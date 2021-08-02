@@ -1,5 +1,6 @@
 ﻿using Dynamo.Properties;
 using Dynamo.Utilities;
+using System;
 
 namespace Dynamo.Configuration
 {
@@ -38,11 +39,13 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Maximum width of Watch Node
         /// </summary>
+        [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
         public static readonly double MaxWatchNodeWidth = 280.0;
 
         /// <summary>
         /// Maximum height of Watch Node
         /// </summary>
+        [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
         public static readonly double MaxWatchNodeHeight = 310.0;
 
         #endregion
@@ -281,8 +284,8 @@ namespace Dynamo.Configuration
 
         #region Preview Control Settings
 
-        internal static readonly double MaxExpandedPreviewWidth = MaxWatchNodeWidth;
-        internal static readonly double MaxExpandedPreviewHeight = MaxWatchNodeHeight;
+        internal static readonly double MaxExpandedPreviewWidth = 280.0;
+        internal static readonly double MaxExpandedPreviewHeight = 310.0;
         internal static readonly double MaxCondensedPreviewWidth = 280.0;
         internal static readonly double MaxCondensedPreviewHeight = 64.0;
         internal static readonly double DefCondensedContentWidth = 33.0;

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Extensions;
@@ -16,7 +15,6 @@ using Dynamo.Scheduler;
 using Dynamo.Tests;
 using Dynamo.Updates;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
 using DynamoShapeManager;
 
 using NUnit.Framework;

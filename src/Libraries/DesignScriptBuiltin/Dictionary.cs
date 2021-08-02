@@ -22,9 +22,9 @@ namespace DesignScript
             ///     Produces a Dictionary with the supplied keys and values. The number of entries is 
             ///     the shorter of keys or values.
             /// </summary>
-            /// <param name="keys">The string keys of the Dictionary</param>
-            /// <param name="values">The values of the Dictionary</param>
-            /// <returns name="dictionary">The result Dictionary</returns>
+            /// <param name="keys">Keys of dictionary</param>
+            /// <param name="values">Values of dictionary</param>
+            /// <returns name="dictionary">Dictionary from keys and values</returns>
             /// <search>map,{},table</search>
             public static Dictionary ByKeysValues(IList<string> keys,
                 [KeepReference] [ArbitraryDimensionArrayImport] IList<object> values)
@@ -37,8 +37,8 @@ namespace DesignScript
             /// <summary>
             ///     Produces the components of a Dictionary. The reverse of Dictionary.ByKeysValues.
             /// </summary>
-            /// <returns name="keys">The keys of the Dictionary</returns>
-            /// <returns name="values">The values of the Dictionary</returns>
+            /// <returns name="keys">Keys of the dictionary</returns>
+            /// <returns name="values">Values of the dictionary</returns>
             [MultiReturn(new[] {"keys", "values"})]
             public IDictionary<string, object> Components()
             {
@@ -52,20 +52,20 @@ namespace DesignScript
             /// <summary>
             ///     Produces the keys in a Dictionary.
             /// </summary>
-            /// <returns name="keys">The keys of the Dictionary</returns>
+            /// <returns name="keys">Keys of the Dictionary</returns>
             public IEnumerable<string> Keys => D.Keys;
 
             /// <summary>
             ///     Produces the values in a Dictionary.
             /// </summary>
-            /// <returns name="values">The values of the Dictionary</returns>
+            /// <returns name="values">Values of the dictionary</returns>
             // [AllowRankReduction]
             // TODO: Consider adding this attribute in 3.0 (DYN-1697)
             public IEnumerable<object> Values => D.Values;
 
             /// <summary>
             ///     The number of key value pairs in a Dictionary.
-            /// </summary>
+            /// </summary> 
             public int Count => D.Count;
 
             /// <summary>
@@ -74,7 +74,7 @@ namespace DesignScript
             /// </summary>
             /// <param name="keys">The keys in the Dictionary to set. If the same key already exists, the value at that key will be modified.</param>
             /// <param name="values">The corresponding values to insert.</param>
-            /// <returns name="dictionary">A new Dictionary with the entries inserted.</returns>
+            /// <returns name="dictionary">New dictionary with the entries inserted</returns>
             /// <search>insert,add</search>
             public Dictionary SetValueAtKeys(IList<string> keys,
                 [KeepReference] [ArbitraryDimensionArrayImport] IList<object> values)
@@ -83,12 +83,12 @@ namespace DesignScript
 
                 return new Dictionary(D.SetItems(pairs));
             }
-            
+
             /// <summary>
             ///     Produce a new Dictionary with the given keys removed.
             /// </summary>
             /// <param name="keys">The key in the Dictionary to remove</param>
-            /// <returns name="dictionary">A new Dictionary with the key removed</returns>
+            /// <returns name="dictionary">New dictionary with keys removed</returns>
             /// <search>drop,delete</search>
             public Dictionary RemoveKeys(IList<string> keys)
             {
@@ -98,8 +98,8 @@ namespace DesignScript
             /// <summary>
             ///     Obtain the value at a specified key
             /// </summary>
-            /// <param name="key">The key in the Dictionary to obtain.</param>
-            /// <returns name="value">The value at the specified key or null if it is not set.</returns>
+            /// <param name="key">The key in the Dictionary to obtain value for</param>
+            /// <returns name="value">Value at the specified key or null if it is not set</returns>
             /// <search>lookup,valueatkey,find</search>
             public object ValueAtKey(string key)
             {

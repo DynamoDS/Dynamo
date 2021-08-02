@@ -8,6 +8,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.PackageManager;
 using Dynamo.Tests;
 using NUnit.Framework;
+using Moq;
 
 namespace DynamoCoreWpfTests
 {
@@ -102,7 +103,10 @@ namespace DynamoCoreWpfTests
         {
             string packagesDirectory = Path.Combine(TestDirectory, "pkgs");
 
-            var loader = new PackageLoader(packagesDirectory);
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new List<string> { packagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
             loader.LoadAll(new LoadPackageParams
             {
                 Preferences = ViewModel.Model.PreferenceSettings

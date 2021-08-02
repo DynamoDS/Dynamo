@@ -1,0 +1,137 @@
+﻿<Popup x:Class="Dynamo.Wpf.Views.GuidedTour.SurveyPopupWindow"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+       xmlns:local="clr-namespace:Dynamo.Wpf.Views.GuidedTour"
+       xmlns:ui="clr-namespace:Dynamo.UI"
+       xmlns:customcontrols="clr-namespace:Dynamo.Wpf.Views.GuidedTour"
+       xmlns:localui="clr-namespace:Dynamo.Wpf.UI.GuidedTour"
+       mc:Ignorable="d" 
+       d:DesignHeight="450" 
+       d:DesignWidth="400">
+    <Popup.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Popup.Resources>
+
+    <Border Background="{StaticResource PopupWhiteColor}"
+            BorderThickness="1"
+            BorderBrush="Black">
+        <Grid Width="{Binding Width}"
+              Height="{Binding Height}"
+              DataContext="{Binding Step}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!--Close button-->
+                <Button Name="CloseButton"
+                        Height="15"  
+                        Width="15"
+                        Grid.Row="0"
+                        HorizontalAlignment="Right"
+                        Margin="20,20,20,20"
+                        Click="CloseButton_Click"
+                        HorizontalContentAlignment="Center"  
+                        Style="{StaticResource PopupCloseButtonStyle}">
+                </Button>
+
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--Check Mark Symbol-->
+                    <Canvas HorizontalAlignment="Center"
+                            Grid.Row="0"
+                            Width="30"
+                            Height="30"
+                            Background="Transparent">
+                        <Ellipse x:Name="BackCircle"
+                                 Width="30" 
+                                 Height="30" 
+                                 Fill="{StaticResource CheckMarkBackColor}"/>
+                        <Path Name="Checkmark"
+                              Stroke="{StaticResource PopupWhiteColor}"
+                              StrokeThickness="3"
+                              Fill="Transparent"                             
+                              Data="M 8,17 15,21 23,7"/>
+                    </Canvas>
+                    <!--Title-->
+                    <Label x:Name="TitleLabel"
+                           Content="{Binding StepContent.Title}"
+                           Grid.Row="1"
+                           HorizontalContentAlignment="Center"  
+                           Style="{StaticResource SurveyTitleLabelStyle}"/>
+                </Grid>
+
+                <!--Learn more-->
+                <localui:CustomRichTextBox x:Name="LearnMoreRichTextBox" 
+                                           Margin="0,0,0,10"
+                                           Width="{Binding ContentWidth}"
+                                           IsDocumentEnabled="True"                                       
+                                           Grid.Row="2"
+                                           HorizontalContentAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           CustomText="{Binding StepContent.FormattedText}"
+                                           Style="{StaticResource CustomRichTextBoxStyle}">
+                </localui:CustomRichTextBox>
+
+                <!--Rating-->
+                <Border Background="{StaticResource PopupRatingControlBackColor}"
+                        Grid.Row="3"
+                        Width="185"
+                        Height="60"
+                        Visibility="{Binding IsRatingVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Label x:Name="RatingTitle"
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               Content="{Binding RatingTextTitle}"
+                               Style="{StaticResource RatingTitleLabelStyle}"/>
+                        <customcontrols:RatingControl x:Name="SurveyRatingControl"
+                                                      Grid.Row="1"
+                                                      Margin="0,0,0,15"
+                                                      Height="30" 
+                                                      Width="130"
+                                                      VerticalAlignment="Center"/>
+
+                    </Grid>
+                </Border>
+                <!--Link to Next Guide-->
+                <!--For the first release this RichTextBox will be hidden-->
+                <localui:CustomRichTextBox x:Name="NextGuideRichTextBox" 
+                                           IsDocumentEnabled="True"       
+                                           Visibility="Collapsed"
+                                           Grid.Row="5"
+                                           Width="150"
+                                           HorizontalContentAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           CustomText="{Binding LinkNexGuide}"
+                                           Style="{StaticResource CustomRichTextBoxStyle}">
+                </localui:CustomRichTextBox>
+            </Grid>
+        </Grid>
+    </Border>
+</Popup>

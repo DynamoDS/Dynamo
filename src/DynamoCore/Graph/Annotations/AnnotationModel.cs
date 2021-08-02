@@ -226,6 +226,23 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
+        private NodeModel pinnedNode;
+        
+        /// <summary>
+        /// Optional reference to pinned node
+        /// This reference will be used in note serialization
+        /// as note is deserialized from an annotation model
+        /// </summary>
+        public NodeModel PinnedNode
+        {
+            get { return pinnedNode; }
+            set
+            {
+                pinnedNode = value;
+                RaisePropertyChanged(nameof(PinnedNode));
+            }
+        }
+
         #endregion
 
         /// <summary>

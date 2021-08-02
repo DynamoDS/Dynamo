@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -96,7 +95,7 @@ namespace Dynamo.Applications
                 var geometryFilePath = string.Empty;
 
                 // dll paths we'll import before running a graph 
-                var importPaths = new List<string>() ;
+                var importPaths = new List<string>();
 
                 // Local ASM binaries path
                 var asmPath = string.Empty;
@@ -108,6 +107,10 @@ namespace Dynamo.Applications
 
                 // Allow Dynamo launcher to identify Dynamo variation for log purpose like analytics, e.g. Dynamo Revit
                 var hostname = string.Empty;
+
+                // Allow Dynamo out of process launcher to identify host analytics info
+                var parentId = string.Empty;
+                var sessionId = string.Empty;
 
                 var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
                 .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path," +
@@ -123,6 +126,8 @@ namespace Dynamo.Applications
                 .Add("gp=|GP=|geometrypath=|GeometryPath=", "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.", gp => asmPath = gp)
                 .Add("k|K|keepalive", "Keepalive mode, leave the Dynamo process running until a loaded extension shuts it down.", k => keepAlive = k != null)
                 .Add("hn=|HN=|hostname", "Identify Dynamo variation associated with host", hn => hostname = hn)
+                .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
+                .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
                 ;
                 optionsSet.Parse(args);
 
@@ -147,7 +152,7 @@ namespace Dynamo.Applications
                     ImportedPaths = importPaths,
                     ASMPath = asmPath,
                     KeepAlive = keepAlive,
-                    HostName = hostname,
+                    AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname,  ParentId = parentId, SessionId = sessionId }
                 };
             }
 
@@ -166,7 +171,9 @@ namespace Dynamo.Applications
             public IEnumerable<String> ImportedPaths { get; set; }
             public string ASMPath { get; set; }
             public bool KeepAlive { get; set; }
+            [Obsolete("This property will be removed in Dynamo 3.0 - please use AnalyticsInfo")]
             public string HostName { get; set; }
+            public HostAnalyticsInfo AnalyticsInfo { get; set; } 
         }
 
         /// <summary>
@@ -183,7 +190,6 @@ namespace Dynamo.Applications
             {
                 new Version(227,0,0),
                 new Version(226,0,0), 
-                new Version(225,0,0)
             };
 
             var preloader = new Preloader(rootFolder, versions);
@@ -193,19 +199,14 @@ namespace Dynamo.Applications
         }
 
         /// <summary>
-        /// if we are building a model for CLI mode, then we don't want to start an updateManager
-        /// for now, building an updatemanager instance requires finding Dynamo install location
-        /// which if we are running on mac os or *nix will use different logic then SandboxLookup
+        ///if we are building a model for CLI mode, then we don't want to start an updateManager
+        ///for now, building an updatemanager instance requires finding Dynamo install location
+        ///which if we are running on mac os or *nix will use different logic then SandboxLookup 
         /// </summary>
-        /// <param name="hostName">Dynamo variation identified by host.</param>
-        /// <returns></returns>
-        private static IUpdateManager InitializeUpdateManager(string hostName = "")
+        private static IUpdateManager InitializeUpdateManager()
         {
             var cfg = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
-            var um = new Dynamo.Updates.UpdateManager(cfg)
-            {
-                HostName = hostName
-            };
+            var um = new Dynamo.Updates.UpdateManager(cfg);
             Debug.Assert(cfg.DynamoLookUp != null);
             return um;
         }
@@ -220,8 +221,20 @@ namespace Dynamo.Applications
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", string hostName ="")
         {
             PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, hostName);
+            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, new HostAnalyticsInfo() { HostName = hostName });
+        }
 
+        /// <summary>
+        /// Use this overload to construct a DynamoModel when the location of ASM to use is known and host analytics info is known.
+        /// </summary>
+        /// <param name="CLImode">CLI mode starts the model in test mode and uses a separate path resolver.</param>
+        /// <param name="asmPath">Path to directory containing geometry library binaries</param>
+        /// <param name="info">Host analytics info</param>
+        /// <returns></returns>
+        public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
+        {
+            PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
+            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, info);
         }
 
         /// <summary>
@@ -291,15 +304,16 @@ namespace Dynamo.Applications
             }
         }
 
-        private static DynamoModel StartDynamoWithDefaultConfig(bool CLImode, string geometryFactoryPath, string preloaderLocation, string hostName = "")
+        private static DynamoModel StartDynamoWithDefaultConfig(bool CLImode, string geometryFactoryPath, string preloaderLocation, HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
             var config = new DynamoModel.DefaultStartConfiguration()
             {
                 GeometryFactoryPath = geometryFactoryPath,
-                ProcessMode = TaskProcessMode.Asynchronous
+                ProcessMode = TaskProcessMode.Asynchronous,
+                HostAnalyticsInfo = info
             };
 
-            config.UpdateManager = CLImode ? null : InitializeUpdateManager(hostName);
+            config.UpdateManager = CLImode ? null : InitializeUpdateManager();
             config.StartInTestMode = CLImode ? true : false;
             config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
 
@@ -344,7 +358,7 @@ namespace Dynamo.Applications
         /// <summary>
         /// The white list of dependencies to be ignored.
         /// </summary>
-        private static String[] assemblyNamesToIgnore = { "Newtonsoft.Json", "RevitAPI.dll", "RevitAPIUI.dll" };
+        private static readonly String[] assemblyNamesToIgnore = { "Newtonsoft.Json", "RevitAPI.dll", "RevitAPIUI.dll" };
 
         /// <summary>
         /// Checks that an assembly does not have any dependencies that have already been loaded into the 
@@ -411,8 +425,5 @@ namespace Dynamo.Applications
             }
             return output;
         }
-
-
-
     }
 }

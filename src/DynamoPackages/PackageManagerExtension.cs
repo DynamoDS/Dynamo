@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -130,8 +131,7 @@ namespace Dynamo.PackageManager
                 throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
             }
 
-            //Initialize the PackageLoader with the CommonDataDirectory so that packages found here are checked first for dll's with signed certificates
-            PackageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories, new [] {startupParams.PathManager.CommonDataDirectory});
+            PackageLoader = new PackageLoader(startupParams.PathManager);
             PackageLoader.MessageLogged += OnMessageLogged;
             PackageLoader.PackgeLoaded += OnPackageLoaded;
             PackageLoader.PackageRemoved += OnPackageRemoved;
@@ -161,9 +161,21 @@ namespace Dynamo.PackageManager
             PackageUploadBuilder.SetEngineVersion(startupParams.DynamoVersion);
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 
+            // Align the package upload directory with the package download directory - 
+            // either the one selected by the user or the default directory.
+            string packageUploadDirectory;
+            if (startupParams.Preferences is PreferenceSettings preferences)
+            {
+                packageUploadDirectory = string.IsNullOrEmpty(preferences.SelectedPackagePathForInstall) ? 
+                    startupParams.PathManager.DefaultPackagesDirectory : preferences.SelectedPackagePathForInstall;
+            }
+            else
+            {
+                packageUploadDirectory = startupParams.PathManager.DefaultPackagesDirectory;
+            }
             PackageManagerClient = new PackageManagerClient(
                 new GregClient(startupParams.AuthProvider, url),
-                uploadBuilder, PackageLoader.DefaultPackagesDirectory);
+                uploadBuilder, packageUploadDirectory);
 
             LoadPackages(startupParams.Preferences, startupParams.PathManager);
         }
@@ -185,7 +197,7 @@ namespace Dynamo.PackageManager
 
         public void Shutdown()
         {
-            this.Dispose();
+            //this.Dispose();
         }
 
         #endregion
@@ -199,7 +211,6 @@ namespace Dynamo.PackageManager
             PackageLoader.LoadAll(new LoadPackageParams
             {
                 Preferences = preferences,
-                PathManager = pathManager
             });
         }
 

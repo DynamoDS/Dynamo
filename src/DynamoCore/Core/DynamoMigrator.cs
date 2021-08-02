@@ -168,7 +168,10 @@ namespace Dynamo.Core
             // All preference settings are copied over except for custom package folders
             PreferenceSettings.CustomPackageFolders.Clear();
             PreferenceSettings.CustomPackageFolders.Insert(0, UserDataDirectory);
-            
+            // Also exclude SelectedPackagePathForInstall or it may point to previous 
+            // Dynamo version folders. When set to string.empty or null - will default to UserDataFolder.
+            PreferenceSettings.SelectedPackagePathForInstall = string.Empty;
+
             return this;
         }
 

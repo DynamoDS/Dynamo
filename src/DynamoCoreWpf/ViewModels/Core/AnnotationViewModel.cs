@@ -266,5 +266,15 @@ namespace Dynamo.ViewModels
             //with many nodes selected at the same time - which makes moving the group very slow
             DynamoSelection.Instance.Selection.AddRange(this.AnnotationModel.Nodes);
         }
+
+        internal void AddGroupAndGroupedNodesToSelection()
+        {
+            var guids = this.AnnotationModel.Nodes.Select(n => n.GUID).ToList();
+            guids.Add(this.AnnotationModel.GUID);
+
+            this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                new DynamoModel.SelectModelCommand(guids, Keyboard.Modifiers.AsDynamoType()));
+
+        }
     }
 }

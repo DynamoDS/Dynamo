@@ -173,6 +173,11 @@ namespace Dynamo.Graph.Workspaces
         public string Name => PackageInfo.Name;
 
         /// <summary>
+        /// Package path.
+        /// </summary>
+        public String Path { get; set; }
+
+        /// <summary>
         /// Version of the package
         /// </summary>
         public Version Version
