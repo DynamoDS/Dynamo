@@ -5,6 +5,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Linq;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
@@ -12,6 +13,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
 using TextBox = System.Windows.Controls.TextBox;
+using Dynamo.Wpf.Utilities;
 
 namespace Dynamo.Nodes
 {
@@ -32,7 +34,25 @@ namespace Dynamo.Nodes
 
             InitializeComponent();
             Loaded += AnnotationView_Loaded;
+            this.DataContextChanged += AnnotationView_DataContextChanged;
             this.GroupTextBlock.SizeChanged += GroupTextBlock_SizeChanged;
+
+            // Because the size of the CollapsedAnnotationRectangle doesn't necessarily change 
+            // when going from Visible to collapse (and other way around), we need to also listen
+            // to IsVisibleChanged. Both of these handlers will set the ModelAreaHeight on the ViewModel
+            this.CollapsedAnnotationRectangle.SizeChanged += CollapsedAnnotationRectangle_SizeChanged;
+            this.CollapsedAnnotationRectangle.IsVisibleChanged += CollapsedAnnotationRectangle_IsVisibleChanged;
+        }
+
+        private void AnnotationView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (ViewModel != null ||
+                !(this.DataContext is AnnotationViewModel viewModel))
+            {
+                return;
+            }
+
+            ViewModel = viewModel;
         }
 
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
@@ -316,73 +336,77 @@ namespace Dynamo.Nodes
                 return;
             }
 
-            //Use the DesiredSize and not the Actual height. Because when Textblock is collapsed,
-            //Actual height is same as previous size. used when the Font size changed during zoom
-            var height = GroupDescriptionTextBlock.DesiredSize.Height + GroupTextBlock.DesiredSize.Height;
-            ViewModel.AnnotationModel.TextBlockHeight = height;
+            // The expander contains a header and a content area, the header
+            // is where the header and description text is defined. To get the 
+            // height of this header we need to walk the visual tree until we get 
+            // to the Grid, we can the take the grids actual height and set that
+            // as the TextBlockHeight.
+            var expanderBorder = VisualTreeHelper.GetChild(this.GroupExpander, 0);
+            var headerBorder = VisualTreeHelper.GetChild(expanderBorder, 0);
+            var headerGrid = VisualTreeHelper.GetChild(headerBorder, 0) as Grid;
+            ViewModel.AnnotationModel.TextBlockHeight = headerGrid.ActualHeight;
         }
 
-        /// <summary>
-        /// When the group is expanded we need to trigger a boundary
-        /// update on the Model
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GroupExpander_Expanded(object sender, RoutedEventArgs e)
+        private void CollapsedAnnotationRectangle_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ViewModel?.AnnotationModel.UpdateBoundaryFromSelection();
-            SetTextHeight();
+            SetModelAreaHeight();
         }
 
-        /// <summary>
-        /// When the group is collapsed we set the ModelAreaHeight to (tbc)
-        /// and trigger a boundary update on the Model.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GroupExpander_Collapsed(object sender, RoutedEventArgs e)
+        private void CollapsedAnnotationRectangle_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            ViewModel.ModelAreaHeight = 140;
-            ViewModel?.AnnotationModel.UpdateBoundaryFromSelection();
+            SetModelAreaHeight();
         }
 
-        private void lockUnlock_Click(object sender, RoutedEventArgs e)
+        private void SetModelAreaHeight()
         {
-            ViewModel.IsLocked = !ViewModel.IsLocked;
+            // We only want to change the ModelAreaHeight
+            // if the CollapsedAnnotationRectangle is visible,
+            // as if its not it will be equal to the height of the
+            // contained nodes + the TextBlockHeight
+            if (ViewModel is null || !this.CollapsedAnnotationRectangle.IsVisible) return;
+            ViewModel.ModelAreaHeight = this.CollapsedAnnotationRectangle.ActualHeight;
+            ViewModel.AnnotationModel.UpdateBoundaryFromSelection();
         }
 
         private void contextMenu_Click(object sender, RoutedEventArgs e)
         {
+            ViewModel.Select();
             this.AnnotationGrid.ContextMenu.DataContext = ViewModel;
             this.AnnotationGrid.ContextMenu.IsOpen = true;
         }
 
-        private void ReDrawConnectors()
+        private void AnnotationRectangleThumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
         {
-            var t = this.inputPortControl.ItemContainerGenerator.Items;
-            //foreach (var item in this.inputPortControl.Items.OfType<PortViewModel>())
-            //{
-            //    var newEndPoint = item.TranslatePoint(this.ViewModel.InPorts.First().Center, this.inputPortControl);
-            //    var t = ViewModel.WorkspaceViewModel.Connectors.Where(x => x.ActiveStartPort.GUID == this.ViewModel.InPorts.First().PortModel.GUID).FirstOrDefault();
-            //    //t.Redraw(newEndPoint);
-            //}
+            var xAdjust = (ViewModel.Width) + e.HorizontalChange;
+            var yAdjust = (ViewModel.Height) + e.VerticalChange;
+
+            if (xAdjust >= ViewModel.Width - ViewModel.AnnotationModel.WidthAdjustment)
+            {
+                ViewModel.AnnotationModel.WidthAdjustment += e.HorizontalChange;
+                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            }
+
+            if (yAdjust >= ViewModel.Height - ViewModel.AnnotationModel.HeightAdjustment)
+            {
+                ViewModel.AnnotationModel.HeightAdjustment += e.VerticalChange;
+                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+
+            }
         }
 
-        //private void AnnotationRectangleThumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
-        //{
-        //    var yAdjust = AnnotationRectangle.ActualHeight + e.VerticalChange;
-        //    var xAdjust = AnnotationRectangle.ActualWidth + e.HorizontalChange;
+        private void Thumb_MouseEnter(object sender, MouseEventArgs e)
+        {
+            ViewModel.WorkspaceViewModel.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ResizeDiagonal);
+        }
 
-        //    if (xAdjust >= ViewModel.Width)
-        //    {
-        //        ViewModel.AnnotationRectangleWidth = xAdjust;
-        //    }
+        private void Thumb_MouseLeave(object sender, MouseEventArgs e)
+        {
+            ViewModel.WorkspaceViewModel.CurrentCursor = CursorLibrary.GetCursor(CursorSet.Pointer);
+        }
 
-        //    if (yAdjust >= ViewModel.Height)
-        //    {
-        //        ViewModel.AnnotationRectangleHeight = yAdjust;
-        //    }
-        //}
-
+        private void GroupDescriptionTextBlock_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            SetTextHeight();
+        }
     }
 }

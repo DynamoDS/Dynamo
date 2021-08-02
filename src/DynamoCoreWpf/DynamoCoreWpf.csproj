@@ -1332,6 +1332,7 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\NodeIcon_placeholder.png" />
     <Resource Include="UI\Images\more_vertical_48px.png" />
     <Resource Include="UI\Images\lock_48px.png" />
     <Resource Include="UI\Images\unlock_48px.png" />

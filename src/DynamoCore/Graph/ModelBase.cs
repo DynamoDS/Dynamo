@@ -73,6 +73,7 @@ namespace Dynamo.Graph
 
         private Guid guid;
         private bool isSelected;
+        private bool belongsToGroup;
         private double x;
         private double y;
         private double height = 100;
@@ -210,6 +211,21 @@ namespace Dynamo.Graph
                 RaisePropertyChanged("IsSelected");
             }
         }
+
+        /// <summary>
+        /// If this model belongs to an AnnotationModel
+        /// </summary>
+        [JsonIgnore]
+        public bool BelongsToGroup
+        {
+            get { return belongsToGroup; }
+            set 
+            { 
+                belongsToGroup = value;
+                RaisePropertyChanged(nameof(BelongsToGroup));
+            }
+        }
+
 
         /// <summary>
         /// Unique ID.

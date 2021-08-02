@@ -646,6 +646,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pin to node.
+        /// </summary>
+        public static string ContextPinToNode {
+            get {
+                return ResourceManager.GetString("ContextPinToNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downstream.
         /// </summary>
         public static string ContextSelectConnectedDownstream {
@@ -678,15 +687,6 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextSelectConnectedUpstreamDownstream {
             get {
                 return ResourceManager.GetString("ContextSelectConnectedUpstreamDownstream", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pin to node.
-        /// </summary>
-        public static string ContextPinToNode {
-            get {
-                return ResourceManager.GetString("ContextPinToNode", resourceCulture);
             }
         }
         
@@ -2681,6 +2681,15 @@ namespace Dynamo.Wpf.Properties {
         public static string GraphIssuesOnSave_Title {
             get {
                 return ResourceManager.GetString("GraphIssuesOnSave_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add group to group.
+        /// </summary>
+        public static string GroupContextMenuAddGroupToGroup {
+            get {
+                return ResourceManager.GetString("GroupContextMenuAddGroupToGroup", resourceCulture);
             }
         }
         

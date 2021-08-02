@@ -506,6 +506,31 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
+    /// This currently doesn't do anything other than copy the portmodel it receives.
+    /// Keeping it here for now as we might add to it when a decision about how to 
+    /// move forward has been made.
+    /// </summary>
+    internal class ProxyPortModel : PortModel
+    {
+        //private int index;
+        //private Point2D center;
+
+        public ProxyPortModel(PortModel portModel) : base(portModel.PortType, portModel.Owner, new PortData(portModel.Name, portModel.ToolTip))
+        {
+            //this.index = portModel.Index;
+        }
+
+        //public override int Index { get => index; }
+
+        //public override Point2D Center { get => center; }
+
+        //internal void SetCenterPoint(Point2D point)
+        //{
+        //    center = point;
+        //}
+    }
+
+    /// <summary>
     /// PortData stores information for port. It's used for constructing PortModel.
     /// </summary>
     public class PortData

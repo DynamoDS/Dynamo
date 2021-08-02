@@ -2507,4 +2507,7 @@ Uninstall the following packages: {0}?</value>
   <data name="GroupNameDefaultText" xml:space="preserve">
     <value>&lt;Click here to edit the group title&gt;</value>
   </data>
+  <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
+    <value>Add group to group</value>
+  </data>
 </root>

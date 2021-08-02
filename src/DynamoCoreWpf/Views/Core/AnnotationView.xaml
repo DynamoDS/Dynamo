@@ -9,6 +9,7 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:views="clr-namespace:Dynamo.Views"
              xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
+             xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d"                          
              Height="Auto" Width="Auto"
@@ -173,7 +174,6 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <ContentPresenter Grid.Column="0"
                                                       Margin="4"
@@ -182,45 +182,9 @@
                                                       HorizontalAlignment="Left">
                                     </ContentPresenter>
 
-                                    <!--Lock/Unlock group -->
-                                    <Button x:Name="lockUnlock"
-                                            Grid.Column="1"
-                                            Background="Transparent"
-                                            BorderBrush="Transparent"
-                                            BorderThickness="0"
-                                            Width="16"
-                                            Height="16"
-                                            Margin="2.5"
-                                            VerticalAlignment="Bottom"
-                                            Click="lockUnlock_Click">
-                                        <Button.Style>
-                                            <Style TargetType="Button">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsLocked}"
-                                                                 Value="True">
-                                                        <Setter Property="Content">
-                                                            <Setter.Value>
-                                                                <Image Source="/DynamoCoreWpf;component/UI/Images/lock_48px.png" />
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding IsLocked}"
-                                                                 Value="False">
-                                                        <Setter Property="Content">
-                                                            <Setter.Value>
-                                                                <Image Source="/DynamoCoreWpf;component/UI/Images/unlock_48px.png" />
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                    </Button>
-
-
                                     <!--Expander button-->
                                     <ToggleButton OverridesDefaultStyle="True"
-                                                  Grid.Column="2"
+                                                  Grid.Column="1"
                                                   Margin="0,0,0,2.5"
                                                   Template="{StaticResource GroupExpanderTemplate}"
                                                   IsChecked="{Binding IsExpanded, Mode=TwoWay, 
@@ -229,7 +193,7 @@
 
                                     <!--Group context menu-->
                                     <Button x:Name="contextMenu"
-                                            Grid.Column="3"
+                                            Grid.Column="2"
                                             Background="Transparent"
                                             BorderBrush="Transparent"
                                             BorderThickness="0"
@@ -262,8 +226,64 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="InputOutputNodesListViewTemplate"
+               TargetType="{x:Type ListView}">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center" />
+            <Setter Property="VerticalAlignment"
+                    Value="Center" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Center" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+                    Value="Disabled" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="IsHitTestVisible"
+                    Value="False" />
+        
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Background"
+                                Value="Transparent" />
+                        <Setter Property="BorderBrush"
+                                Value="Transparent" />
+                        <Setter Property="BorderThickness"
+                                Value="0" />
+                        <Setter Property="Margin"
+                                Value="0" />
+                        <Setter Property="Padding"
+                                Value="0" />
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
+                        <Image Width="20"
+                               Source="/DynamoCoreWpf;component/UI/Images/NodeIcon_placeholder.png">
+                            <Image.Clip>
+                                <RectangleGeometry RadiusX="5"
+                                                   RadiusY="5"
+                                                   Rect="0,0,20,20"></RectangleGeometry>
+                            </Image.Clip>
+                        </Image>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
-    
+
     <UserControl.Triggers>
         <EventTrigger  SourceName="GroupNameControl"
                        RoutedEvent="ContentControl.MouseDoubleClick">
@@ -327,6 +347,18 @@
     <Grid Name="AnnotationGrid"
           Height="Auto"
           IsHitTestVisible="True">
+        <Grid.ToolTip>
+            <dynui:DynamoToolTip AttachmentSide="Top"
+                                 Style="{DynamicResource ResourceKey=SLightToolTip}"
+                                 Margin="5,0,0,0"
+                                 Visibility="{Binding IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
+                <StackPanel Orientation="Vertical"
+                            MaxWidth="320">
+                    <TextBlock Text="{Binding AnnotationText}" Margin="0,0,0,10" />
+                    <TextBlock Text="{Binding AnnotationDescriptionText}" TextWrapping="WrapWithOverflow" />
+                </StackPanel>
+            </dynui:DynamoToolTip>
+        </Grid.ToolTip>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -339,12 +371,15 @@
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
                            Name="UngroupAnnotation"
                            Click="OnUngroupAnnotation" />
+                <MenuItem Header="{x:Static p:Resources.ContextUnGroupFromSelection}"
+                          Name="unGroup_cm"
+                          Command="{Binding Path=RemoveGroupFromGroupCommand}" />
+                <MenuItem Header="{x:Static p:Resources.GroupContextMenuAddGroupToGroup}"
+                          Name="AddGroupToGroup"
+                          Command="{Binding AddGroupToGroupCommand}" />
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuGraphLayout}"
                            Name="GraphLayoutAnnotation"
                            Click="OnGraphLayoutAnnotation" />
-                <MenuItem Header="Add to group"
-                          Name="AddToGroup"
-                          Command="{Binding AddGroupToGroupCommand}" />
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuFont}"
                            Name="ChangeSize">
                     <MenuItem Header="14"
@@ -446,31 +481,12 @@
                 BorderThickness="6px"
                 Visibility="{Binding NodeHoveringState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                 Margin="-4px">
-            <!--<Border.BorderBrush>
-                <DrawingBrush Viewport="0,0,15,15"
-                              ViewportUnits="Absolute"
-                              TileMode="Tile">
-                    <DrawingBrush.Drawing>
-                        <DrawingGroup>
-                            <GeometryDrawing Brush="#CCCCCC">
-                                <GeometryDrawing.Geometry>
-                                    <GeometryGroup>
-                                        <RectangleGeometry Rect="0,0,50,50" />
-                                        <RectangleGeometry Rect="50,50,50,50" />
-                                    </GeometryGroup>
-                                </GeometryDrawing.Geometry>
-                            </GeometryDrawing>
-                        </DrawingGroup>
-                    </DrawingBrush.Drawing>
-                </DrawingBrush>
-            </Border.BorderBrush>-->
         </Border>
-                
+
+
         <Expander x:Name="GroupExpander"
                   Width="{Binding Width}" 
                   IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
-                  Expanded="GroupExpander_Expanded"
-                  Collapsed="GroupExpander_Collapsed"
                   Grid.Row="0">
             <Expander.Header>
                 <Grid x:Name="TextBlockGrid"
@@ -527,7 +543,8 @@
                                        FontSize="12"
                                        LineStackingStrategy="BlockLineHeight"
                                        TextWrapping="Wrap"
-                                       Visibility="Visible">
+                                       Visibility="Visible"
+                                       IsVisibleChanged="GroupDescriptionTextBlock_IsVisibleChanged">
                             </TextBlock>
                             <TextBox Name="GroupDescriptionTextBox"
                                      MaxLength="280"
@@ -653,33 +670,61 @@
             </Expander.Header>
 
             <Grid>
-                <Border  Name="AnnotationRectangle"
+                <Canvas  Name="AnnotationRectangle"
                          Width="{Binding Width}"
                          Height="{Binding ModelAreaHeight}"
                          IsHitTestVisible="True"
+                         Background="Transparent"
                          Opacity="0.5">
-                    <Border.Background>
-                        <SolidColorBrush Color="{Binding Background}"></SolidColorBrush>
-                    </Border.Background>
-                </Border>
+                    <Path Stroke="Transparent"
+                          StrokeThickness="0">
+                        <Path.Fill>
+                            <SolidColorBrush Color="{Binding Background}"></SolidColorBrush>
+                        </Path.Fill>
+                        <Path.Data>
+                            <CombinedGeometry GeometryCombineMode="Exclude">
+                                <CombinedGeometry.Geometry1>
+                                    <RectangleGeometry Rect="{Binding ModelAreaRect}" />
+                                </CombinedGeometry.Geometry1>
+                                <CombinedGeometry.Geometry2>
+                                    <GeometryGroup FillRule="EvenOdd"
+                                                   Children="{Binding GroupedGroupsGeometry}" />
+                                </CombinedGeometry.Geometry2>
+                            </CombinedGeometry>
+                        </Path.Data>
+                    </Path>
+                </Canvas>
 
-                <!--<Thumb 
-                       Width="10"
+
+                <Thumb Width="10"
                        Height="10"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Bottom"
-                       Margin="2,2,10,2"
-                       DragDelta="AnnotationRectangleThumb_DragDelta" />-->
+                       DragDelta="AnnotationRectangleThumb_DragDelta"
+                       MouseEnter="Thumb_MouseEnter"
+                       MouseLeave="Thumb_MouseLeave">
+                    <Thumb.Style>
+                        <Style TargetType="{x:Type Thumb}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Thumb}">
+                                        <Border BorderThickness="0" 
+                                                BorderBrush="Transparent" 
+                                                Background="Transparent" />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Thumb.Style>
+                </Thumb>
             </Grid>
         </Expander>
         <Border x:Name="CollapsedAnnotationRectangle"
                 Width="{Binding Width}"
-                Height="{Binding ModelAreaHeight}"
                 Visibility="{Binding ElementName=GroupExpander, Path=IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
-                Opacity="0.5"
                 Grid.Row="1">
             <Border.Background>
-                <SolidColorBrush Color="{Binding Background}"></SolidColorBrush>
+                <SolidColorBrush Color="{Binding Background}" Opacity="0.5"></SolidColorBrush>
             </Border.Background>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -687,10 +732,15 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
                 <!--INPUT PORTS-->
                 <ItemsControl Name="inputPortControl"
                               Grid.Column="0"
+                              Grid.Row="0"
                               Canvas.ZIndex="20"
                               HorizontalContentAlignment="Left"
                               Style="{StaticResource InOutPortControlStyle}"
@@ -698,16 +748,56 @@
                               Margin="0,10">
                 </ItemsControl>
 
-
                 <!--OUTPUT PORTS-->
                 <ItemsControl Name="outputPortControl"
                               Grid.Column="2"
+                              Grid.Row="0"
                               Canvas.ZIndex="20"
                               HorizontalContentAlignment="Right"
                               Style="{StaticResource InOutPortControlStyle}"
                               ItemsSource="{Binding Path=OutPorts}"
                               Margin="0,10">
                 </ItemsControl>
+
+                <!--Group content icons-->
+                <Grid Grid.Column="1"
+                      Grid.Row="1"
+                      Background="Transparent"
+                      HorizontalAlignment="Center"
+                      Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ListView x:Name="InputPortIcons"
+                              Grid.Column="0"
+                              ItemsSource="{Binding InputNodes}"
+                              Style="{StaticResource InputOutputNodesListViewTemplate}">
+                    </ListView>
+
+                    <Border x:Name="AddtionalNodesCount"
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            BorderThickness="0.5"
+                            BorderBrush="#FFFFFF"
+                            Background="#EEEEEE"
+                            CornerRadius="{Binding Path=ActualHeight, ElementName=AddtionalNodesCount}"
+                            Width="{Binding Path=ActualHeight, ElementName=AddtionalNodesCount}"
+                            Height="20"
+                            Padding="0">
+                        <TextBlock Text="{Binding InbetweenNodesCount, Mode=OneWay, StringFormat='+{0}'}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="10" />
+                    </Border>
+
+                    <ListView x:Name="OutputPortIcons"
+                              Grid.Column="2"
+                              ItemsSource="{Binding OutputNodes}"
+                              Style="{StaticResource InputOutputNodesListViewTemplate}">
+                    </ListView>
+                </Grid>
             </Grid>
 
         </Border>
