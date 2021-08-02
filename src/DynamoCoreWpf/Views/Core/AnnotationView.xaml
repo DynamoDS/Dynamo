@@ -128,7 +128,7 @@
                     <Rectangle Fill="Transparent"
                                Grid.ColumnSpan="1" />
                     <Image x:Name="sign"
-                           Source="/DynamoCoreWpf;component/UI/Images/caret_down_48px.png"
+                           Source="/DynamoCoreWpf;component/UI/Images/caret_down_grey_48px.png"
                            Width="16"
                            Height="16" />
                 </Grid>
@@ -139,7 +139,7 @@
                             Value="True">
                     <Setter Property="Source"
                             TargetName="sign"
-                            Value="/DynamoCoreWpf;component/UI/Images/caret_up_48px.png" />
+                            Value="/DynamoCoreWpf;component/UI/Images/caret_up_grey_48px.png" />
                 </Trigger>
 
                 <!--MouseOver, Pressed behaviors-->
@@ -202,7 +202,7 @@
                                             VerticalAlignment="Bottom"
                                             Click="contextMenu_Click">
                                         <Button.Content>
-                                            <Image  Source="/DynamoCoreWpf;component/UI/Images/more_vertical_48px.png" />
+                                            <Image  Source="/DynamoCoreWpf;component/UI/Images/menu_grey_48px.png" />
                                         </Button.Content>
                                     </Button>
                                 </Grid>

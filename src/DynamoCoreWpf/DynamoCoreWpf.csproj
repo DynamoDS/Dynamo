@@ -1332,12 +1332,10 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\menu_grey_48px.png" />
+    <Resource Include="UI\Images\caret_down_grey_48px.png" />
+    <Resource Include="UI\Images\caret_up_grey_48px.png" />
     <Resource Include="UI\Images\NodeIcon_placeholder.png" />
-    <Resource Include="UI\Images\more_vertical_48px.png" />
-    <Resource Include="UI\Images\lock_48px.png" />
-    <Resource Include="UI\Images\unlock_48px.png" />
-    <Resource Include="UI\Images\caret_down_48px.png" />
-    <Resource Include="UI\Images\caret_up_48px.png" />
     <Resource Include="UI\Images\alert.png" />
     <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
     <Resource Include="UI\Images\menu_16_16.png" />
