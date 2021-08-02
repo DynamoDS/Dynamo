@@ -50,7 +50,10 @@ namespace Watch3DNodeModelsWpf
 
         protected override void PortConnectedHandler(PortModel arg1, ConnectorModel arg2)
         {
-            UpdateUpstream();
+            if (arg1.PortType == PortType.Input && watchModel == arg1.Owner)
+            {
+                UpdateUpstream();
+            }
         }
 
         protected internal override void UpdateUpstream()
@@ -112,7 +115,10 @@ namespace Watch3DNodeModelsWpf
 
         protected override void PortDisconnectedHandler(PortModel obj)
         {
-            OnClear();
+            if (obj.PortType == PortType.Input  && watchModel == obj.Owner)
+            {
+                OnClear();
+            }
         }
 
         
