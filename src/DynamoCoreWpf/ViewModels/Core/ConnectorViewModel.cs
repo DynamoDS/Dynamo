@@ -593,7 +593,10 @@ namespace Dynamo.ViewModels
             if (ConnectorAnchorViewModel != null)
                 ConnectorAnchorViewModel.MouseHoverOn = false;
         }
-        private void FlipOnConnectorAnchor()
+        /// <summary>
+        /// Called from outside during unit tests and thus 'internal' as opposed to 'private'.
+        /// </summary>
+        internal void FlipOnConnectorAnchor()
         {
             ConnectorAnchorViewModel = new ConnectorAnchorViewModel(this, workspaceViewModel.DynamoViewModel.Model);
             ConnectorAnchorViewModel.MouseHoverOn = true;
