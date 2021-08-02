@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Xml;
+using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Notes
@@ -10,7 +12,7 @@ namespace Dynamo.Graph.Notes
     public class NoteModel : ModelBase
     {
         private string text;
-      
+
         /// <summary>
         /// Returns the text inside the note.
         /// </summary>
@@ -21,6 +23,25 @@ namespace Dynamo.Graph.Notes
             {
                 text = value;
                 RaisePropertyChanged("Text");
+            }
+        }
+
+        private NodeModel pinnedNode;
+
+        /// <summary>
+        /// NodeModel which this Note is pinned to
+        /// When using the pin to node command  
+        /// note and node become entangled so that 
+        /// if you select and move one the other one 
+        /// moves as well. 
+        /// </summary>
+        public NodeModel PinnedNode
+        {
+            get { return pinnedNode; }
+            set
+            {
+                pinnedNode = value;               
+                RaisePropertyChanged(nameof(PinnedNode));
             }
         }
 
@@ -37,6 +58,24 @@ namespace Dynamo.Graph.Notes
             Y = y;
             Text = text;
             GUID = guid;
+            PinnedNode = pinnedNode;
+        }
+
+        /// <summary>
+        /// Creates NoteModel with a reference to a pinned node.
+        /// </summary>
+        /// <param name="x">X coordinate of note.</param>
+        /// <param name="y">Y coordinate of note.</param>
+        /// <param name="text">Text of note</param>
+        /// <param name="guid">Unique id of note</param>
+        /// <param name="pinnedNode">Pinned NodeModel</param>
+        public NoteModel(double x, double y, string text, Guid guid, NodeModel pinnedNode)
+        {
+            X = x;
+            Y = y;
+            Text = text;
+            GUID = guid;
+            PinnedNode = pinnedNode;
         }
 
         #region Command Framework Supporting Methods

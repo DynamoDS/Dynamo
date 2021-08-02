@@ -76,6 +76,11 @@ namespace Dynamo.PackageManager
             // Format string since it will be displayed
             pkgViewModel.SelectedHostsString = pkgViewModel.SelectedHostsString.Trim().TrimEnd(',');
         }
+
+        private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
+        {
+            pkgViewModel.DynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.PublishPackageMoreInfoFile, UriKind.Relative)));
+        }
     }
 
 }

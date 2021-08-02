@@ -1,0 +1,269 @@
+{
+  "Uuid": "0aff1010-c744-48f6-9b9e-0a39c767c269",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "HiddenProperties_Python",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\nedges_to_inspect = IN[0];\r\n\t\t\t\r\nsv = edges_to_inspect[0].StartVertex;\r\nev = edges_to_inspect[0].EndVertex;\r\n\t\t\t\r\nsi = sv.Index;\r\nei = ev.Index;\r\n\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = [sv.__class__.__name__, ev.__class__.__name__]",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "ad1f2ed763734381aa93df707c5e6339",
+      "Inputs": [
+        {
+          "Id": "bab6f28538be4d9fbe5e20c696966228",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "af20c4ebd378450ba4d2080b22c8dcac",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormal@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,int,int,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,bool",
+      "Id": "7cf56acef7d34347bc8e143737b0d490",
+      "Inputs": [
+        {
+          "Id": "838eaf60f97e42f09efda47ada93f715",
+          "Name": "origin",
+          "Description": "Plane's root point\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7ad76fd4cb6343c7ab8428a9dea9af27",
+          "Name": "normal",
+          "Description": "Plane's normal\n\nVector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5c94255b72764a15b015a86c57f2c93f",
+          "Name": "minCorner",
+          "Description": "2D point of minimum corner in plane's coordinates\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0e19799d86aa450f865462fb045f828f",
+          "Name": "maxCorner",
+          "Description": "2D point of maximum corner in plane's coordinates\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4ec4c081383646e58b6027e0a71ab4f5",
+          "Name": "xSpans",
+          "Description": "Number of spans in width\n\nint\nDefault value : 2",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9744d40ff1404abea6387e1cc04d0139",
+          "Name": "ySpans",
+          "Description": "Number of spans in length\n\nint\nDefault value : 2",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "50eeb8f4e84b4c028294b9ec024135cb",
+          "Name": "symmetry",
+          "Description": "Symmetry options of a T-Spline Surface\n\nTSplineInitialSymmetry\nDefault value : Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByAxial(false, false, false)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8ac89ca7ecc14977a8f2a2f7a0880585",
+          "Name": "inSmoothMode",
+          "Description": "Show T-Spline Surface in box or smooth visualization\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bfc6a4ce79374a91bcf4f7ca50adb38c",
+          "Name": "TSplineSurface",
+          "Description": "Plane T-Spline Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a T-Spline Plane centered at root Point, with input normal Vector.\n\nTSplineSurface.ByPlaneOriginNormal (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), normal: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1), minCorner: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0), maxCorner: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1), xSpans: int = 2, ySpans: int = 2, symmetry: TSplineInitialSymmetry = Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByAxial(false, false, false), inSmoothMode: bool = false): TSplineSurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.DecomposedEdges",
+      "Id": "f2ca38ac75f1431c8700e202a7bc16f2",
+      "Inputs": [
+        {
+          "Id": "4c2ae375f1fe4e2dafc23b18cf44f613",
+          "Name": "tSplineTopology",
+          "Description": "Autodesk.DesignScript.Geometry.TSpline.TSplineTopology",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e450312273fb4f579c37f582a69b78d4",
+          "Name": "all",
+          "Description": "Set of edges",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c45cc05ad31048238e54c772c2f63d7e",
+          "Name": "nonManifold",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a6dfd28b5e9747f5884e79f200f52f03",
+          "Name": "border",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "882cfaaf14c3477f81b0ee1e04d0e3a4",
+          "Name": "inner",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Decomposed Edges differed by type\n\nTSplineTopology.DecomposedEdges ( ): var[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "bfc6a4ce79374a91bcf4f7ca50adb38c",
+      "End": "4c2ae375f1fe4e2dafc23b18cf44f613",
+      "Id": "35f0fab786da4762ad6bb408cc6f8f5c"
+    },
+    {
+      "Start": "e450312273fb4f579c37f582a69b78d4",
+      "End": "bab6f28538be4d9fbe5e20c696966228",
+      "Id": "f49eb0b2c5444a6fba0e05c8d5ee142e"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "ExtensionWorkspaceData": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.11.0.3995",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "ad1f2ed763734381aa93df707c5e6339",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 805.6,
+        "Y": 261.6
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "TSplineSurface.ByPlaneOriginNormal",
+        "Id": "7cf56acef7d34347bc8e143737b0d490",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 43.199999999999932,
+        "Y": 256.80000000000007
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "TSplineTopology.DecomposedEdges",
+        "Id": "f2ca38ac75f1431c8700e202a7bc16f2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 403.20000000000022,
+        "Y": 260.0
+      }
+    ],
+    "Annotations": [],
+    "X": -388.0,
+    "Y": -99.199999999999989,
+    "Zoom": 1.0
+  }
+}

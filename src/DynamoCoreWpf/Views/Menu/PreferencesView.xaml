@@ -1,0 +1,785 @@
+﻿<!--The Preferences Modal Dialog was created folloring the screen design (width, height, colors, styles) located in the next site:
+    https://www.figma.com/file/i2e1g2calbisxZTadS8pOV/DynamoPreferencePalette?node-id=3%3A3353-->
+<Window x:Class="Dynamo.Wpf.Views.PreferencesView"
+        x:Name="DynamoPreferencesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"     
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:Dynamo.Controls"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"   
+        xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:fa="http://schemas.fontawesome.io/icons/" 
+        xmlns:packagemanager="clr-namespace:Dynamo.Wpf.Views.PackageManager"
+        xmlns:wpfControls="clr-namespace:Dynamo.Wpf.Controls"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        mc:Ignorable="d" 
+        Height="474" 
+        Width="665"
+        ResizeMode="NoResize">
+
+    <!--Using the Styles from the SharedResourcesDictionary located in DynamoCoreWpf/UI/Themes/DynamoModern.xaml-->
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <controls:BrushColorToStringConverter x:Key="BrushColorToStringConverter"/>
+            <controls:StringToBrushColorConverter x:Key="StringToBrushColorConverter"/>
+            <controls:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter"/>
+            <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter"/>
+            <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter"/>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+
+
+
+            <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
+            <DataTemplate x:Key="styleViewItemTemplate">
+                <Border Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}"
+                        Margin="5,5,0,0"
+                        Width="160">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="30" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Grid Margin="0,0,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Label Name="groupNameLabel"
+                                        Content="{Binding GroupName}"
+                                        HorizontalAlignment="Left"
+                                        Grid.Row="0"
+                                        Margin="5,0,0,0"
+                                        Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                <StackPanel Orientation="Horizontal" 
+                                            Margin="10,0,0,0"
+                                            Grid.Row="1">
+                                    <Border x:Name="borderColor"
+                                            Background="{Binding HexColorString, Converter={StaticResource StringToBrushColorConverter}}" 
+                                            Width="25" 
+                                            Height="15"/>
+                                    <Label Name="colorHexVal" 
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"
+                                            FontSize="13"
+                                            Content="{Binding Background, ElementName=borderColor, Converter={StaticResource BrushColorToStringConverter}}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Button Name="removeStyle"
+                                    Margin="0,0,8,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Click="RemoveStyle_Click"
+                                    Style="{StaticResource FlatIconButtonStyle}"
+                                    Width="20"
+                                    Height="30">
+                                <fa:ImageAwesome Icon="Trash"          
+                                                 Width="15"
+                                                 Height="25"
+                                                 IsHitTestVisible="False"
+                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!--This is the main row of the Preference Window-->
+    <Grid x:Name="mainGrid"
+    	  Background="{StaticResource PreferencesWindowBackgroundColor}">
+        <Grid.Resources>
+            <sys:Double x:Key="ToggleButtonWidth">40</sys:Double>
+            <sys:Double x:Key="ToggleButtonHeight">20</sys:Double>
+        </Grid.Resources>
+        <!--The Window is divided basically in three rows, TitleBar, Content, and ButtonsBottomSection-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!--Section/Row of the TitleBar it contains a TextBlock for the windows title and the close button-->
+        <!--The CloseButtonStyle and Color Styles are located in the DynamoModer.xaml file-->
+        <Grid x:Name="TitleBar" 
+                Grid.Row="0"  
+                MouseDown="PreferencesPanel_MouseDown"
+                VerticalAlignment="Top" 
+                Margin="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="46" />
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="HeaderTitle" 
+                       Text="{x:Static p:Resources.PreferencesViewTitle}"        
+                       Foreground="{StaticResource PreferencesWindowFontColor}" 
+                       Grid.Column="0" 
+                       Margin="25,10,0,0" 
+                       TextAlignment="Left" 
+                       FontSize="17" 
+                       FontFamily="Helvetica" 
+                       HorizontalAlignment="Left" 
+                       Width="459" />
+            <StackPanel Grid.Column="1" 
+                        VerticalAlignment="Top"  
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right">
+                <Button x:Name="CloseButton"  
+                        Style="{DynamicResource CloseButtonStyle}" 
+                        Click="CloseButton_Click" 
+                        VerticalAlignment="Center"
+                        KeyboardNavigation.IsTabStop="False"
+                        Margin="0,0,4,0"/>
+            </StackPanel>
+        </Grid>
+
+        <!--Section/Row of the Tabs content, it contains all the tabs left side aligned and the controls in the right section for each tab-->
+        <!--The LeftTab Style is located in the DynamoModer.xaml file-->
+        <Grid x:Name="TabsContent" 
+              Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid x:Name="ContentGrid" 
+                  Grid.Column="0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TabControl TabStripPlacement="Left" 
+                            Background="{StaticResource PreferencesWindowBackgroundColor}">
+                    
+                    <!--General Tab-->
+                    <TabItem Header="{x:Static p:Resources.PreferencesViewGeneralTab}"
+                             Style="{StaticResource LeftTab}">
+
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                              Height="Auto">
+                            <!--This Grid contains controls for selecting the Language-->
+                            <Grid x:Name="GeneralTab" 
+                              Margin="4 0 0 0"
+                              HorizontalAlignment="Left">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <!--The first Grid Row will contain the Language label and combobox added in a StackPanel vertical-->
+                                <Grid Grid.Row="0" 
+                                  Margin="4,0,0,20">
+                                    <StackPanel Orientation="Vertical">
+                                        <Label  Content="{x:Static p:Resources.PreferencesViewLanguageLabel}" 
+                                            Margin="-3,0,10,0"
+                                            Grid.Row="0"
+                                            FontWeight="Bold"
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <ComboBox Grid.Row="1" 
+                                              Width="213"
+                                              HorizontalAlignment="Left"
+                                              ItemsSource="{Binding Path=LanguagesList}"
+                                              SelectedItem="{Binding Path=SelectedLanguage}"
+                                              Style="{StaticResource NoBordersComboBoxStyle}"
+                                              IsEnabled="False">
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!--This Grid contains controls for selecting Run Settings options-->
+                                <Grid Grid.Row="1"
+                                  Margin="4,0,0,20">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Label Grid.Row="0"
+                                       Margin="-3,0,10,0"
+                                       FontWeight="Bold"
+                                       Content="{x:Static p:Resources.PreferencesViewRunSettingsLabel}" 
+                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    <Grid Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <RadioButton Grid.Column="0" 
+                                                 MinWidth="80"
+                                                 Margin="2,0,0,0"
+                                                 Style="{StaticResource RunSettingsRadioButtons}"
+                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
+                                                 Content="{x:Static p:Resources.Manual}"/>
+                                        <RadioButton Grid.Column="1" 
+                                                 MinWidth="80"
+                                                 Style="{StaticResource RunSettingsRadioButtons}"
+                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"
+                                                 Content="{x:Static p:Resources.Automatic}"/>
+                                    </Grid>
+                                </Grid>
+
+                                <!--This Grid contains controls for selecting Run Preview options-->
+                                <Grid Grid.Row="2"
+                                  Margin="4,0,0,20">
+                                    <Grid ToolTip="{x:Static p:Resources.PreferencesViewShowRunPreviewTooltip}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ToggleButton Width="{StaticResource ToggleButtonWidth}"
+                                                  Height="{StaticResource ToggleButtonHeight}"
+                                                  VerticalAlignment="Center"
+                                                  Margin="2,0,0,0"
+                                                  Grid.Column="0" 
+                                                  IsEnabled="{Binding Path=RunPreviewEnabled}"
+                                                  IsChecked="{Binding Path=RunPreviewIsChecked}"
+                                                  Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Grid.Column="1"
+                                           Content="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
+                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    </Grid>
+                                </Grid>
+                                
+                                <!--This Grid contains controls for selecting Font Size-->
+                                <Grid Grid.Row="3"
+                                  Margin="4,0,0,20">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Label Name="FontSize"
+                                       Grid.Row="0"
+                                       Margin="-3,0,10,0"
+                                       FontWeight="Bold"
+                                       Content="{x:Static p:Resources.PreferencesViewFontSizeLabel}" 
+                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    <ComboBox Grid.Row="1"
+                                          Width="213"
+                                          HorizontalAlignment="Left"
+                                          Margin="2,0,0,0"
+                                          ItemsSource="{Binding FontSizeList}"
+                                          SelectedItem="{Binding Path=SelectedFontSize}"
+                                          Style="{StaticResource NoBordersComboBoxStyle}"
+                                          IsEnabled="False">
+                                    </ComboBox>
+                                </Grid>
+
+                                <!--This Grid contains controls for selecting Number Format options-->
+                                <Grid Grid.Row="4"
+                                  Margin="4,0,0,20">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Label Grid.Row="0"
+                                       Content="{x:Static p:Resources.DynamoViewSettingMenuNumberFormat}" 
+                                       Margin="-3,0,10,0"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    <ComboBox Name="numberFormatCmb"
+                                          Grid.Row="1" 
+                                          HorizontalAlignment="Left"
+                                          Margin="2,0,0,0"
+                                          SelectedItem="{Binding Path=SelectedNumberFormat, Converter={StaticResource NumberFormatConverter}}"
+                                          ItemsSource="{Binding NumberFormatList}"
+                                          Style="{StaticResource NoBordersComboBoxStyle}"
+                                          Width="213">
+                                    </ComboBox>
+                                </Grid>
+
+                                <!--Geometry Scaling Expander-->
+                                <Grid Grid.Row="5"
+                                  Margin="-3,0,1,20">
+                                    <Expander x:Name="Scale"
+                                      Grid.Row="1" 
+                                      Style="{StaticResource MenuExpanderStyle}"
+                                      IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Scale}"
+                                      Header="{x:Static p:Resources.PreferencesViewVisualSettingsGeoScaling}">
+                                        <StackPanel x:Name="GeometryScalingRadiosPanel"
+                                            DataContext="{Binding OptionsGeometryScale}"
+                                            Width="380"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top">
+                                            <RadioButton x:Name="RadioSmall"
+                                                GroupName="GeometryScaling"
+                                                MinWidth="80"
+                                                Margin="3,10,0,0"
+                                                Checked="Geometry_Scaling_Checked"
+                                                IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Small}}"
+                                                Style="{StaticResource GeometryScaleRadioButtons}"
+                                                Content="{x:Static p:Resources.ScalingSmallButton}"/>
+                                            <TextBlock x:Name="RadioSmallDesc"
+                                                Margin="25,5,0,0"
+                                                Style="{StaticResource GeometryScaleDescTextBox}"
+                                                Visibility="{Binding IsChecked, ElementName=RadioSmall, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            <RadioButton x:Name="RadioMedium"
+                                                 GroupName="GeometryScaling"
+                                                 Margin="3,10,0,0"
+                                                 MinWidth="80"
+                                                 IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Medium}}"
+                                                 Checked="Geometry_Scaling_Checked"
+                                                 Style="{StaticResource GeometryScaleRadioButtons}"
+                                                 Content="{x:Static p:Resources.ScalingMediumButton}"/>
+                                            <TextBlock  x:Name="RadioMediumDesc"
+                                                Margin="25,5,0,0"
+                                                Style="{StaticResource GeometryScaleDescTextBox}"
+                                                Visibility="{Binding IsChecked, ElementName=RadioMedium, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            <RadioButton x:Name="RadioLarge" 
+                                                 GroupName="GeometryScaling"
+                                                 MinWidth="80"
+                                                 Margin="3,10,0,0"
+                                                 Checked="Geometry_Scaling_Checked"
+                                                 IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Large}}"
+                                                 Style="{StaticResource GeometryScaleRadioButtons}"
+                                                 Content="{x:Static p:Resources.ScalingLargeButton}"/>
+                                            <TextBlock  x:Name="RadioLargeDesc"
+                                                Margin="25,5,0,0"
+                                                Style="{StaticResource GeometryScaleDescTextBox}"
+                                                Visibility="{Binding IsChecked, ElementName=RadioLarge, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            <RadioButton x:Name="RadioExtraLarge"
+                                                 GroupName="GeometryScaling"
+                                                 MinWidth="80"
+                                                 Margin="3,10,0,0"
+                                                 Checked="Geometry_Scaling_Checked"
+                                                 IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.ExtraLarge}}"
+                                                 Style="{StaticResource GeometryScaleRadioButtons}"
+                                                 Content="{x:Static p:Resources.ScalingExtraLargeButton}"/>
+                                            <TextBlock  x:Name="RadioExtraLargeDesc"
+                                                Margin="25,5,0,0"
+                                                Style="{StaticResource GeometryScaleDescTextBox}"
+                                                Visibility="{Binding IsChecked, ElementName=RadioExtraLarge, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        </StackPanel>
+                                    </Expander>
+                                </Grid>
+                            </Grid>
+                        </ScrollViewer>
+                    </TabItem>
+                    
+                    <!--Features Tab-->
+                    <TabItem Header="{x:Static p:Resources.PreferencesViewFeaturesTab}"
+                             Style="{StaticResource LeftTab}">
+                        <!--This Grid contains the features tab-->
+                        <Grid x:Name="FeaturesTab" 
+                              Margin="1"
+                              HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!--This Grid row contains the Python section-->
+                            <Expander x:Name="PythonExpander"
+                                        Grid.Row="0"
+                                        Style="{StaticResource MenuExpanderStyle}" 
+                                        IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PythonExpander}"
+                                        Header="{x:Static p:Resources.PreferencesViewPython}">
+                                <StackPanel Orientation="Vertical" Margin="0,6,0,0">
+                                    <Label  Content="{x:Static p:Resources.PreferencesViewDefaultPythonEngine}" 
+                                            Padding="0,5,5,5"
+                                            FontSize="13"
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    <ComboBox Name="PythonEngineSelector" 
+                                                Width="213"
+                                                HorizontalAlignment="Left"
+                                                ItemsSource="{Binding Path=PythonEnginesList}"
+                                                SelectedItem="{Binding Path=SelectedPythonEngine}"
+                                                Style="{StaticResource NoBordersComboBoxStyle}">
+                                    </ComboBox>
+
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
+                                            <ToggleButton Name="IronPythonAlertsToggle"
+                                                            Width="{StaticResource ToggleButtonWidth}"
+                                                            Height="{StaticResource ToggleButtonHeight}"
+                                                            VerticalAlignment="Center"
+                                                            IsChecked="{Binding Path=HideIronPythonAlertsIsChecked}"
+                                                            Style="{StaticResource EllipseToggleButton1}"/>
+                                            <Label Content="{x:Static p:Resources.PreferencesViewIsIronPythonDialogDisabled}" 
+                                                    Margin="10,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
+                                            <ToggleButton Name="ShowWhitespaceToggle"
+                                                            Width="{StaticResource ToggleButtonWidth}"
+                                                            Height="{StaticResource ToggleButtonHeight}"
+                                                            VerticalAlignment="Center"
+                                                            IsChecked="{Binding Path=ShowWhitespaceIsChecked}"
+                                                            Style="{StaticResource EllipseToggleButton1}"/>
+                                            <Label Content="{x:Static p:Resources.PreferencesViewShowWhitespaceInPythonEditor}" 
+                                                    VerticalAlignment="Center"
+                                                    Margin="10,0,0,0"
+                                                    Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <Button x:Name="ReloadCPython"
+                                                Style="{StaticResource FlatButtonStyle}" 
+                                                HorizontalAlignment="Left"                                             
+                                                Height="25"
+                                                MinWidth="100"
+                                                Grid.Row="0"
+                                                Margin="0,10,0,10"
+                                                Click="ReloadCPython_Click"
+                                                Content="{x:Static p:Resources.ResetCPythonButtonText}"
+                                                ToolTip="{x:Static p:Resources.ResetCPythonButtonToolTip}">
+                                    </Button>
+                                    
+                                </StackPanel>
+                            </Expander>
+
+                                <!--This Grid row contains the Experimental section-->
+                            <Expander x:Name="ExperimentalExpander" 
+                                          Style="{StaticResource MenuExpanderStyle}" 
+                                       IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExperimentalExpander}"
+                                          Grid.Row="1"
+                                          Header="{x:Static p:Resources.PreferencesViewExperimentalLabel}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
+                                        <ToggleButton Name="NodeAutocompleteToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=NodeAutocompleteIsChecked}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoComplete}" 
+                                                   Margin="10,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Label HorizontalAlignment="Left" Name="Titleinfo" VerticalAlignment="Center" Height="26" Width="53" Margin="0 3 0 0" MouseLeftButtonUp="OnMoreInfoClicked">
+                                            <Label.Content>
+                                                <fa:ImageAwesome Width="15" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Left" Icon="QuestionCircleOutline" Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </Label.Content>
+                                            <Label.ToolTip>
+                                                <ToolTip>
+                                                    <TextBlock Text="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteTooltipText}" />
+                                                </ToolTip>
+                                            </Label.ToolTip>
+                                        </Label>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
+                                        <ToggleButton Name="EnableTSplineToggle"
+                                                          Width="{StaticResource ToggleButtonWidth}"
+                                                          Height="{StaticResource ToggleButtonHeight}"
+                                                          VerticalAlignment="Center"
+                                                          IsChecked="{Binding Path=EnableTSplineIsChecked}"
+                                                          Style="{StaticResource EllipseToggleButton1}"/>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <Label Content="{x:Static p:Resources.PreferencesViewEnableTSplineNodes}"
+                                                       Padding="5,5,5,0"
+                                                       Margin="10,0,0,0"
+                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            <Label Content="{x:Static p:Resources.PreferencesViewRequiresRelaunchOfDynamo}" 
+                                                       FontSize="10"
+                                                       Margin="10,0,0,0"
+                                                       Padding="5,0,5,5"
+                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+                        </Grid>
+                    </TabItem>
+                    
+                    <!--Visual Settings Tab-->
+                    <TabItem Header="{x:Static p:Resources.PreferencesViewVisualSettingsTab}"
+                             Style="{StaticResource LeftTab}">
+                        <Grid x:Name="VisualSettingsTab" 
+                              Background="{StaticResource PreferencesWindowVisualSettingsBackground}"
+                              HorizontalAlignment="Left"
+                              Margin="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <!--Group Styles Expander-->
+                            <Expander x:Name="Styles"
+                                      Grid.Row="0"
+                                      IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Styles}"
+                                      Header="{x:Static p:Resources.PreferencesViewVisualSettingsGroupStyles}"
+                                      Style="{StaticResource MenuExpanderStyle}"
+                                      Visibility="{Binding PreferencesDebugMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                              Height="220">
+                                    <Grid Margin="8,0,0,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Button x:Name="AddStyleButton"
+                                                Style="{StaticResource FlatButtonStyle}" 
+                                                HorizontalAlignment="Left"                                             
+                                                Width="100"
+                                                Height="25"
+                                                Grid.Row="0"
+                                                Margin="0,10,0,10"
+                                                Click="AddStyleButton_Click"
+                                                Content="{x:Static p:Resources.AddStyleButton}" />
+                                        <Border x:Name="AddStyleBorder"
+                                                Visibility="Collapsed"
+                                                CornerRadius="4" 
+                                                HorizontalAlignment="Left"
+                                                Height="100"
+                                                Width="335"
+                                                Margin="0,0,0,10"
+                                                Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}"
+                                                Grid.Row="1">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"></RowDefinition>
+                                                    <RowDefinition Height="*"></RowDefinition>
+                                                </Grid.RowDefinitions>
+                                                <TextBox  x:Name="groupNameBox"
+                                                          CaretBrush="{StaticResource PreferencesWindowButtonColor}"
+                                                          VerticalAlignment="Center"
+                                                          HorizontalAlignment ="Left"
+                                                          Style="{StaticResource TextBoxWaterMarkStyle}"
+                                                          Grid.Row="0"
+                                                          Margin="10"
+                                                          Height="25"
+                                                          Width="300"
+                                                          Text="{Binding AddStyleControl.GroupName}"
+                                                          Tag="Input"/>
+                                                <Grid Grid.Row="1"
+                                                      Margin="10,0,10,0"
+                                                      Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel Orientation="Horizontal"
+                                                            Height="30"
+                                                            Grid.Column="0">
+                                                        <Button x:Name="buttonColorPicker"
+                                                                Style="{StaticResource ButtonColorPickerStyle}"
+                                                                Background="{Binding AddStyleControl.HexColorString}" 
+                                                                Click="ButtonColorPicker_Click"
+                                                                Width="25" 
+                                                                Height="15"/>
+                                                        <Label x:Name="colorHexVal" 
+                                                                FontSize="13"
+                                                                Content="{Binding Background, ElementName=buttonColorPicker, Converter={StaticResource BrushColorToStringConverter}}"
+                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                    </StackPanel>
+                                                    <Button x:Name="AddStyle_SaveButton" 
+                                                            Style="{StaticResource OutlinedButtonStyle}"
+                                                            Grid.Column="1"
+                                                            Click="AddStyle_SaveButton_Click"
+                                                            Width="50"
+                                                            Height="30">Save</Button>
+                                                    <Button x:Name="AddStyle_CancelButton" 
+                                                            Style="{StaticResource OutlinedButtonStyle}"
+                                                            Grid.Column="2"
+                                                            Click="AddStyle_CancelButton_Click"
+                                                            Width="50"
+                                                            Height="30">Cancel</Button>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                        <ListBox Width="350" 
+                                                 Margin="-5,0,0,0"
+                                                 HorizontalAlignment="Left"
+                                                 Grid.Row="2"
+                                                 Padding="-5,0,0,0"
+                                                 ItemsSource="{Binding StyleItemsList}"
+                                                 ItemTemplate="{StaticResource styleViewItemTemplate}"
+                                                 Background="{StaticResource PreferencesWindowVisualSettingsBackground}"
+                                                 BorderBrush="Transparent"
+                                                 BorderThickness="0,0,0,0"
+                                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                            <ListBox.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ListBox.ItemsPanel>
+                                        </ListBox>
+                                    </Grid>
+                                </ScrollViewer>
+                            </Expander>
+                          
+                            <!--Render Precision Expander-->
+                            <Expander x:Name="Precision"
+                                      Grid.Row="1"
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Precision}"
+                                      Header="{x:Static p:Resources.PreferencesViewVisualSettingsRenderPrecision}">
+                                <StackPanel Orientation="Horizontal" 
+                                            Margin="10"
+                                            Width="Auto">
+                                    <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuLowRenderPrecision}"
+                                               Margin="0,0,10,0"></TextBlock>
+                                    <Slider Width="100"
+                                            Minimum="8"
+                                            Maximum="512"
+                                            Value="{Binding Path=TessellationDivisions, Mode=TwoWay}">
+                                    </Slider>
+                                    <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuHighRenderPrecision}"
+                                               Margin="10,0,0,0"></TextBlock>
+                                </StackPanel>
+                            </Expander>
+                            <Expander x:Name="Display"
+                                      Grid.Row="2"
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Display}"
+                                      Header="{x:Static p:Resources.PreferencesViewVisualSettingsDisplaySettings}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" 
+                                                Margin="0,12,0,0" 
+                                                Grid.Row="0">
+                                        <ToggleButton Name="IsolateSelectedGeoToggle"
+                                                    Width="{StaticResource ToggleButtonWidth}"
+                                                    Height="{StaticResource ToggleButtonHeight}"
+                                                    VerticalAlignment="Center"
+                                                    IsChecked="{Binding Path=IsolateSelectedGeometry}"
+                                                    Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewVisualSettingsIsolateSelectedGeo}" 
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" 
+                                                Margin="0,12,0,0" 
+                                                Grid.Row="1">
+                                        <ToggleButton Name="ShowEdgesToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=ShowEdges}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewVisualSettingShowEdges}" 
+                                               VerticalAlignment="Center"
+                                               Margin="10,0,0,0"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    </StackPanel>
+                                    
+                                    <StackPanel Orientation="Horizontal" 
+                                                Margin="0,12,0,0" 
+                                                Grid.Row="2">
+                                        <ToggleButton Name="CodeBlockNodeLineNumbersToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=ShowCodeBlockLineNumber}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewShowCodeBlockNodeLineNumber}" 
+                                               VerticalAlignment="Center"
+                                               Margin="10,0,0,0"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+                        </Grid>
+                    </TabItem>
+
+                    <!--Package Manager Settings Tab-->
+                    <TabItem Header="{x:Static p:Resources.PreferencesPackageManagerSettingsTab}"
+                             Style="{StaticResource LeftTab}">
+                        <!--This Grid contains the package manager settings tab-->
+                        <Grid x:Name="PackageManagerTab" 
+                              Margin="1"
+                              HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!--This Grid row contains the Node and Package Paths section-->
+                            <Expander x:Name="PackagePathsExpander"
+                                        Grid.Row="0"
+                                        Style="{StaticResource MenuExpanderStyle}" 
+                                        IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PackagePathsExpander}"
+                                        Header="{x:Static p:Resources.PackagePathsExpanderName}">
+                                <StackPanel Orientation="Vertical" Margin="0,6,0,0">
+                                    <Label  Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}" 
+                                            Padding="5,5,5,5"
+                                            FontSize="13"
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"
+                                            ToolTip="{x:Static p:Resources.PreferencesPackageDownloadDirectoryTooltip}"/>
+                                    <ComboBox Grid.Row="1"
+                                              x:Name="PackageDownloadDirectoryComboBox"
+                                              Width="Auto"
+                                              Margin="0,5,0,5"
+                                              HorizontalAlignment="Left"
+                                              ItemsSource="{Binding Path=PackagePathsForInstall}"
+                                              SelectedItem="{Binding Path=SelectedPackagePathForInstall}"
+                                              Style="{StaticResource NoBordersComboBoxStyle}"
+                                              ToolTip="{Binding Path=SelectedPackagePathForInstall}">
+                                    </ComboBox>
+                                    <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
+                                        <packagemanager:PackagePathView x:Name="PackagePathView" DataContext="{Binding PackagePathsViewModel}"/>
+                                    </ScrollViewer>
+                                </StackPanel>
+                            </Expander>
+
+                            <!--This Grid row contains the Installed Packages section-->
+                            <Expander x:Name="InstalledPackagesExpander"
+                                      Expanded="InstalledPackagesExpander_OnExpanded"
+                                      Collapsed="InstalledPackagesExpander_OnCollapsed"
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
+                                      Grid.Row="1"
+                                      Header="{x:Static p:Resources.InstalledPackageViewTitle}">
+                                <StackPanel
+                                    Orientation="Vertical" Margin="0,6,0,0">
+                                    <wpfControls:InstalledPackagesControl Height="Auto"/>
+                                </StackPanel>
+                            </Expander>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Grid>
+        
+        <!--This Section/Row is the bottom one and it contains all the buttons in the window.-->
+        <!--The NormalButtonStyle Style is located in the DynamoModer.xaml file-->
+        <Grid x:Name="ButtonsBottomGrid"
+              Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Name="SavedChanges" 
+                   Grid.Row="1" 
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Center"
+                   Foreground ="{StaticResource PreferencesWindowFontColor}"
+                   Margin="0,0,14,0"
+                   Content="{Binding SavedChangesLabel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                   ToolTip="{Binding SavedChangesTooltip, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+    </Grid>
+</Window>

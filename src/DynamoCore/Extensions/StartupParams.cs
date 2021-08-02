@@ -2,6 +2,7 @@
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Interfaces;
 using Dynamo.Library;
+using Dynamo.Linting;
 using Greg;
 
 namespace Dynamo.Extensions
@@ -48,6 +49,13 @@ namespace Dynamo.Extensions
         public Version DynamoVersion { get { return dynamoVersion; } }
         private readonly Version dynamoVersion;
 
+
+        /// <summary>
+        /// Returns Sessions Linter Manager
+        /// </summary>
+        public LinterManager LinterManager => linterManager;
+        private readonly LinterManager linterManager;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="StartupParams"/> class.
         /// </summary>
@@ -57,6 +65,7 @@ namespace Dynamo.Extensions
         /// <param name="customNodeManager"><see cref="ICustomNodeManager"/> for DynamoModel</param>
         /// <param name="dynamoVersion"><see cref="Version"/> for DynamoModel</param>
         /// <param name="preferences"><see cref="IPreferences"/> for DynamoModel</param>
+        [Obsolete("Use constructor with LinterManager parameter instead")]
         public StartupParams(IAuthProvider provider, IPathManager pathManager,
             ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
             Version dynamoVersion, IPreferences preferences)
@@ -67,6 +76,29 @@ namespace Dynamo.Extensions
             this.customNodeManager = customNodeManager;
             this.dynamoVersion = dynamoVersion;
             this.preferences = preferences;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StartupParams"/> class.
+        /// </summary>
+        /// <param name="provider"><see cref="IAuthProvider"/> for DynamoModel</param>
+        /// <param name="pathManager"><see cref="IPathManager"/> for DynamoModel</param>
+        /// <param name="libraryLoader"><see cref="ILibraryLoader"/> for DynamoModel</param>
+        /// <param name="customNodeManager"><see cref="ICustomNodeManager"/> for DynamoModel</param>
+        /// <param name="dynamoVersion"><see cref="Version"/> for DynamoModel</param>
+        /// <param name="preferences"><see cref="IPreferences"/> for DynamoModel</param>
+        /// <param name="linterManager"><see cref="LinterManager"/> for DynamoModel></param>
+        public StartupParams(IAuthProvider provider, IPathManager pathManager,
+            ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
+            Version dynamoVersion, IPreferences preferences, LinterManager linterManager)
+        {
+            this.authProvider = provider;
+            this.pathManager = pathManager;
+            this.libraryLoader = libraryLoader;
+            this.customNodeManager = customNodeManager;
+            this.dynamoVersion = dynamoVersion;
+            this.preferences = preferences;
+            this.linterManager = linterManager;
         }
     }
 }

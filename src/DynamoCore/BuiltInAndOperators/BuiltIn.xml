@@ -6,21 +6,24 @@
   <members>
     <member name="List.Rank">
       <summary>Returns the deepest depth of the list</summary>
-      <param name="list">list of values</param>
+      <param name="list">List from which to query rank</param>
+      <returns name="int">Deepest depth of the list</returns>
       <search>rank,depth,nesting,ranks</search>
     </member>
     <member name="List.RemoveIfNot">
       <summary>
         Removes the members of the list which are not members of the specified type.
       </summary>
-      <param name="list">list of values</param>
-      <param name="type">type of element</param>
+      <param name="list">List to remove items from</param>
+      <param name="type">Type of element</param>
+      <returns name="list">List with everything removed except a specified type</returns>
       <search>remove,not,ofType,filtertype</search>
     </member>
     <member name="List.Equals">
       <summary>Determines whether two object instances are equal.</summary>
-      <param name="objectA">first object</param>
-      <param name="objectB">second object</param>
+      <param name="object">First object</param>
+      <param name="otherObject">Other object</param>
+      <returns name="bool">Returns true if object instances are equal, false if they are different</returns>
       <search>equals</search>
     </member>
     <member name="List.SortByFunction">
@@ -143,15 +146,17 @@
       <search>group,function</search>
     </member>
     <member name="List.TrueForAll">
-      <summary>Returns true if all items in the list evaluate to true with the given predicate.</summary>
-      <param name="list">list of values</param>
-      <param name="predicate"></param>
+      <summary>Returns true if all items in the list evaluate to true with the given query function</summary>
+      <param name="list">List from which to evaluate items by query function</param>
+      <param name="queryFunction">Function to evaluate list</param>
+      <returns name="bool">Returns true if all items in the list evaluate to true with the given query function</returns>
       <search>true,all</search>
     </member>
     <member name="List.TrueForAny">
-      <summary>Returns true if one or more items in the list evaluate to true with the given predicate.</summary>
-      <param name="list">list of values</param>
-      <param name="predicate"></param>
+      <summary>Returns true if one or more items in the list evaluate to true with the given query function</summary>
+      <param name="list">List from which to evaluate items by query function</param>
+      <param name="queryFunction">Function to evaluate list</param>
+      <returns name="bool">Returns true if any of the items in the list evaluate to true with the query function</returns>
       <search>true,any</search>
     </member>
     <member name="__ForEach">

@@ -15,7 +15,7 @@
         <Setter Property="Height"
                 Value="1" />
         <Setter Property="Margin"
-                Value="25,2,5,1" />
+                Value="10,2,10,1" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Separator">
@@ -147,7 +147,7 @@
                         Height="25">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition Width="15"/>
                             <ColumnDefinition Width="*"
                                               MinWidth="100" />
                             <ColumnDefinition Width="Auto"
@@ -167,7 +167,7 @@
                                           ContentSource="Icon" />
                         <ContentPresenter Name="HeaderHost"
                                           Grid.Column="1"
-                                          Margin="5,0"
+                                          Margin="5,0,60,0"
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Center"
                                           ContentSource="Header"
@@ -252,12 +252,12 @@
                         Height="25" Background="Transparent">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition Width="15"/>
                             <ColumnDefinition Width="*"
                                               MinWidth="100" />
                             <ColumnDefinition Width="Auto"
                                               SharedSizeGroup="Shortcut" />
-                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="10" />
                         </Grid.ColumnDefinitions>
                         <ContentPresenter Name="Icon"
                                           Grid.Column="0"
@@ -278,7 +278,7 @@
                         </Border>
                         <ContentPresenter Name="HeaderHost"
                                           Grid.Column="1"
-                                          Margin="5,0"
+                                          Margin="5,0,60,0"
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Center"
                                           ContentSource="Header"
@@ -402,6 +402,98 @@
             </Style>
         </Style.Resources>
     </Style>
-    
-    
+
+    <!-- Extensions Menu -->
+    <Style x:Key="ExtensionsStyle" 
+           TargetType="{x:Type MenuItem}"
+           BasedOn="{StaticResource MenuItemStyle}">
+        <Style.Resources>
+            <ControlTemplate x:Key="Extensions" 
+                             TargetType="MenuItem">
+                <Border Name="Border"
+                        BorderBrush="Transparent"
+                        BorderThickness="1"
+                        VerticalAlignment="Stretch"
+                        Padding="8,0,8,0"
+                        Margin="6,0,7,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <ContentPresenter Name="Icon"
+                                          Grid.Column="0"
+                                          Margin="0,0,6,0"
+                                          VerticalAlignment="Center"
+                                          ContentSource="Icon" />
+                        <ContentPresenter Name="Content"
+                                          Margin="0"
+                                          Grid.Column="1"
+                                          VerticalAlignment="Center"
+                                          ContentSource="Header"
+                                          RecognizesAccessKey="True" />
+                        <Popup Name="Popup"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               HorizontalOffset="-9"
+                               IsOpen="{TemplateBinding IsSubmenuOpen}"
+                               Placement="Bottom"
+                               PopupAnimation="Fade"
+                               VerticalOffset="0">
+                            <Border Name="SubmenuBorder"
+                                    Margin="0 0 5 5"
+                                    Background="{StaticResource NormalBackgroundBrush}"
+                                    BorderBrush="{StaticResource NormalBorderBrush}"
+                                    BorderThickness="1"
+                                    SnapsToDevicePixels="True">
+                                <StackPanel IsItemsHost="True"
+                                            KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="5"
+                                                      Opacity="0.4"
+                                                      ShadowDepth="3" />
+                                </Border.Effect>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsSuspendingPopupAnimation"
+                             Value="true">
+                        <Setter TargetName="Popup"
+                                Property="PopupAnimation"
+                                Value="None" />
+                    </Trigger>
+                    <Trigger Property="Border.IsMouseOver"
+                             Value="true">
+                        <Setter TargetName="Content"
+                                Property="TextBox.Foreground"
+                                Value="{StaticResource ActiveForegroundBrush}" />
+                    </Trigger>
+                    <Trigger Property="IsSubmenuOpen"
+                             Value="true">
+                        <Setter TargetName="Border"
+                                Property="Background"
+                                Value="{StaticResource HighlightedHeaderBrush}" />
+                        <Setter TargetName="Border"
+                                Property="BorderBrush"
+                                Value="{StaticResource HighlightedHeaderBrush}" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled"
+                             Value="False">
+                        <Setter Property="Foreground"
+                                Value="{StaticResource DisabledForegroundBrush}" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Style.Resources>
+        <Style.Triggers>
+            <Trigger Property="Role"
+                     Value="TopLevelHeader">
+                <Setter Property="Template"
+                        Value="{StaticResource Extensions}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

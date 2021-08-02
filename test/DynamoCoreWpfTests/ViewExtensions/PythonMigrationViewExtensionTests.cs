@@ -35,7 +35,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillDisplayDialogWhenOpeningGraphWithIronPythonNodes()
         {
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             DynamoModel.IsTestMode = false;
 
             // Act
@@ -59,7 +58,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillLogNotificationWhenAddingAnIronPythonNode()
         {
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             // Arrange
             string pythonNodeName = "Python Script";
             raisedEvents = new List<string>();
@@ -95,8 +93,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillOnlyLogNotificationWhenAddingAnIronPythonNodeOnce()
         {
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
-
             // Arrange
             string pythonNodeName = "Python Script";
             raisedEvents = new List<string>();
@@ -127,60 +123,12 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// Adding Python nodes that use IronPython should not generate notifications
-        /// when the Python2ObsoleteMode is disabled.
-        /// </summary>
-        [Test]
-        public void WillNotLogNotificationWhenAddingNodeWhenPython2ObsoleteFlagIsOff()
-        {
-            var debugMode = DebugModes.GetDebugMode("Python2ObsoleteMode");
-            bool shouldReenable = false;
-            if (debugMode != null && debugMode.IsEnabled)
-            {
-                debugMode.IsEnabled = false;
-                shouldReenable = true;
-            }
-
-            // Arrange
-            string pythonNodeName = "Python Script";
-            raisedEvents = new List<string>();
-
-            // Act
-            // open file
-            this.ViewModel.Model.Logger.NotificationLogged += Logger_NotificationLogged;
-
-
-            var nodesCountBeforeNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
-
-            this.ViewModel.ExecuteCommand(new DynamoModel.
-                CreateNodeCommand(Guid.NewGuid().ToString(), pythonNodeName, 0, 0, false, false));
-
-            DispatcherUtil.DoEvents();
-
-            var nodesCountAfterNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
-
-            // Assert
-            Assert.AreEqual(nodesCountBeforeNodeAdded + 1, nodesCountAfterNodeAdded);
-            Assert.AreEqual(raisedEvents.Count, 0);
-            raisedEvents.Clear();
-            this.ViewModel.Model.Logger.NotificationLogged -= Logger_NotificationLogged;
-            DispatcherUtil.DoEvents();
-
-            if (shouldReenable)
-            {
-                debugMode.IsEnabled = true;
-            }
-        }
-
-
-        /// <summary>
         /// This test verifies that the IronPython dialog wont show the second time a graph is opened
         /// even if it contains IronPython nodes
         /// </summary>
         [Test]
         public void WillNotDisplayDialogWhenOpeningGraphWithIronPythonNodesSecondTimeInSameSession()
         {
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             DynamoModel.IsTestMode = false;
             // Arrange
             var examplePathIronPython = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "python.dyn");
@@ -221,7 +169,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillNotDisplayIronPythonDialogAgainWhenDoNotShowAgainSettingIsChecked()
         {
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             DynamoModel.IsTestMode = false;
             // Arrange
             var examplePathIronPython = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "python.dyn");
@@ -269,7 +216,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanOpenDocumentationBrowserWhenMoreInformationIsClicked()
         {
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             DynamoModel.IsTestMode = false;
 
             // Act
@@ -301,7 +247,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillDisplayDialogWhenCustomNodeInsideWorkspaceHasIronPythonNode()
         {
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             DynamoModel.IsTestMode = false;
 
             // open file
@@ -344,7 +289,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillNotDisplayDialogWhenOpeningCustomNodeWithIronPythonNodesSecondTimeInSameSession()
         {
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             DynamoModel.IsTestMode = false;
             // Arrange
             var examplePathIronPython = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "PythonCustomNodeTest.dyf");
@@ -434,6 +378,50 @@ namespace DynamoCoreWpfTests
             var assistantWindow = scriptEditor.GetChildrenWindowsOfType<BaseDiffViewer>().FirstOrDefault();
             assistantWindow.AcceptButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
+            // Assert
+            Assert.That(File.Exists(backupFilePath));
+
+            // Clean up
+            File.Delete(backupFilePath);
+        }
+
+        [Test]
+        public void MigratingPython2CodeThatResultsInImaginaryCaseDoesNotCrash()
+        {
+            // Arrange
+            var dynFileName = "pymigrateimaginarydiff.dyn";
+            var dynBackupFileName = "pymigrateimaginarydiff.Python2.dyn";
+            DynamoModel.IsTestMode = true;
+
+            var python2dynPath = Path.Combine(UnitTestBase.TestDirectory, @"core\python", dynFileName);
+            var backupFilePath = Path.Combine(Model.PathManager.BackupDirectory, dynBackupFileName);
+            if (File.Exists(backupFilePath))
+                File.Delete(backupFilePath);
+
+            Open(python2dynPath);
+            DispatcherUtil.DoEvents();
+
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            Assert.IsNotNull(currentWs, "DynamoView does not have any WorkspaceView");
+
+            var nodeView = currentWs.ChildOfType<NodeView>();
+
+            var editMenuItem = nodeView.MainContextMenu
+                .Items
+                .Cast<MenuItem>()
+                .First(x => x.Header.ToString() == "Edit...");
+
+            editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            DispatcherUtil.DoEvents();
+
+            // Act
+            Assert.DoesNotThrow(() => {
+                var scriptEditor = View.GetChildrenWindowsOfType<ScriptEditorWindow>().FirstOrDefault();
+                scriptEditor.MigrationAssistantBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                DispatcherUtil.DoEvents();
+                var assistantWindow = scriptEditor.GetChildrenWindowsOfType<BaseDiffViewer>().FirstOrDefault();
+                assistantWindow.AcceptButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                });
             // Assert
             Assert.That(File.Exists(backupFilePath));
 

@@ -188,6 +188,9 @@ namespace Dynamo
             CurrentDynamoModel.PreferenceSettings.CustomPackageFolders.Add(packageDirectory);
             var loader = GetPackageLoader();
             var pkg = loader.ScanPackageDirectory(packageDirectory);
+            if (pkg is null)
+                return;
+
             loader.LoadPackages(new List<Package> { pkg });
         }
 

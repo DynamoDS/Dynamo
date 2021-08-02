@@ -2,7 +2,7 @@ Apache license 2.0
 
 ## Dynamo License
 
-Copyright 2013-2020 Autodesk
+Copyright 2013-2021 Autodesk
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -12,6 +12,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 
 ## Third Party Licenses ##
+
+### AngleSharp
+https://github.com/AngleSharp/AngleSharp
+https://github.com/AngleSharp/AngleSharp/blob/master/LICENSE
+  (MIT license)
 
 ### Avalon Edit
 http://avalonedit.net/
@@ -52,6 +57,11 @@ https://github.com/helix-toolkit/helix-toolkit
 https://github.com/helix-toolkit/helix-toolkit/blob/develop/LICENSE
   (MIT license)
 
+### HTMLSanitizer
+https://github.com/mganss/HtmlSanitizer
+https://github.com/mganss/HtmlSanitizer/blob/master/LICENSE.md
+  (MIT license)
+
 ### Immutable (System.Immutable)
 https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
   (MIT License)
@@ -59,6 +69,16 @@ https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
 ### Iron Python, Dynamic Language Runtime
 http://ironpython.net/
 http://opensource.org/licenses/apache2.0.php
+
+### ILMerge
+https://github.com/dotnet/ILMerge
+https://github.com/dotnet/ILMerge/blob/master/LICENSE
+  (MIT License)
+
+### IPython (autoreload.py)
+https://github.com/ipython/ipython/blob/master/IPython/extensions/autoreload.py
+https://github.com/ipython/ipython/blob/master/LICENSE
+  (BSD-3-Clause License)
 
 ### libiconv
 https://www.gnu.org/software/libiconv/
@@ -74,12 +94,11 @@ http://miconvexhull.codeplex.com/
 http://miconvexhull.codeplex.com/license
   (MIT license)
 
-### Microsoft 2013 C Runtime DLLs, msvcp120.dll, msvcr120.dll
-http://msdn.microsoft.com/en-us/vstudio/dn501987
-https://docs.microsoft.com/en-us/visualstudio/productinfo/2013-redistribution-vs
-
 ### Microsoft 2015 C Runtime DLLs, msvcp140.dll, msvcr140.dll
 https://docs.microsoft.com/en-us/visualstudio/productinfo/2015-redistribution-vs
+
+### Microsoft 2019 C Runtime DLLs, msvcp142.dll, msvcr142.dll
+https://visualstudio.microsoft.com/license-terms/mlt031619/
 
 ### Moq
 http://www.nuget.org/packages/Moq/
@@ -107,6 +126,10 @@ http://www.nunit.org/index.php?p=license&r=2.6.2
 ### OpenSans font from Google
 http://www.google.com/fonts/specimen/Open+Sans
 http://www.apache.org/licenses/LICENSE-2.0.html
+
+### Open XML SDK
+https://github.com/OfficeDev/Open-XML-SDK
+https://github.com/OfficeDev/Open-XML-SDK/blob/main/LICENSE
 
 ### Prism
 http://msdn.microsoft.com/en-us/library/gg406140.aspx
@@ -139,7 +162,27 @@ https://unlicense.org/
 https://github.com/DesignEngrLab/StarMath/blob/master/LICENSE
   (MIT license)
 
+### System.Buffers
+https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+  (MIT License)
+
+### System.Memory
+https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+  (MIT License)
+
+### System.Numerics.Vectors
+https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+  (MIT License)
+
+### System.Runtime.CompilerServices.Unsafe
+https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+  (MIT License)
+
+### System.Text.Encoding.CodePages
+https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+  (MIT License)
+
 ### Xceed Extended WPF Toolkit
-https://github.com/xceedsoftware/wpftoolkit/blob/master/license.md
+https://github.com/xceedsoftware/wpftoolkit/blob/0ed4ed84152d6a3e2a627f2ef05f82627fdaf3fc/license.md
   (Microsoft Public License)
 

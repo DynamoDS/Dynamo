@@ -5,7 +5,7 @@
     <!--http://www.colorspire.com/rgb-color-wheel/-->
     
     <!--Universal-->
-    <SolidColorBrush Color="#BBBBBB" x:Key="DynamoStandardLableTextBrush"></SolidColorBrush>
+    <SolidColorBrush Color="#BBBBBB" x:Key="DynamoStandardLabelTextBrush"></SolidColorBrush>
     
     <!--Workspaces-->
     <SolidColorBrush Color="#353535" x:Key="DynamoWindowBrush"/>
@@ -60,6 +60,8 @@
 
     <!-- Node colors in selected state -->
     <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
+
+    <SolidColorBrush x:Key="autocompletionWindow" Color="#4192d9" />
 
     <!-- NodeLabel background color -->
     <SolidColorBrush x:Key="renamedLabelBackground"

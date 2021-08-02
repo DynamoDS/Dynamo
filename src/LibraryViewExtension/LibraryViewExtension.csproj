@@ -40,9 +40,8 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Greg, Version=2.0.7507.22529, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.2.0.7507.22529\lib\net48\Greg.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Greg, Version=2.0.7843.19074, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.2.0.7843.19074\lib\net48\Greg.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
@@ -220,6 +219,9 @@
     <EmbeddedResource Include="web\library\resources\Tessellation.ConvexHull.png" />
     <EmbeddedResource Include="web\library\resources\Tessellation.Delaunay.png" />
     <EmbeddedResource Include="web\library\resources\Tessellation.Voronoi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using CoreNodeModels.Input;
+using Dynamo.Graph.Nodes;
 using NUnit.Framework;
+using ProtoCore.AST.ImperativeAST;
 
 namespace Dynamo.Tests
 {
@@ -75,6 +79,109 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
             AssertPreviewValue("9fe8e82f-760d-43a6-90b2-5f9c252139d7", 42);
             AssertPreviewValue("23a03082-5807-4e44-9a3d-2d1eec4a914c", 42);
+        }
+
+        [Test]
+        [Category("SmokeTest")] 
+        public void TestIfNodeForPreview()
+        {
+            string testFilePath = Path.Combine(testFolder, "testNewIf.dyn");
+            OpenModel(testFilePath);
+            BoolSelector boolSelectorNode = (BoolSelector) this.CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("886a464b-9b2b-4e66-a033-c18d0753c2cf");
+
+            boolSelectorNode.Value = true;
+            AssertPreviewValue("886a464b-9b2b-4e66-a033-c18d0753c2cf", true);
+            AssertPreviewValue("f945529e-62e3-4c7a-b07a-0b18d7449f9b", new object[] { "a1", "b1", "c1" });
+
+            boolSelectorNode.Value = false;
+            AssertPreviewValue("886a464b-9b2b-4e66-a033-c18d0753c2cf", false);
+            AssertPreviewValue("f945529e-62e3-4c7a-b07a-0b18d7449f9b", new object[] { new object[] { "a2" }, "b2" });
+
+            /* Test partially connected 'If' node.
+             * The 'Function Apply' node has the following inputs:
+             *              function: partially connected 'If' node whose truevalue is [1,[2],3] and falsevalue is [4,5].
+             *              argument0: [true,false]
+             *              
+             * This 'Function Apply' node will call the partially connected "If" function 2 times. One for true and the other one for false.
+             * So the output should be [[1,[2],3], [4,5]]
+            */
+            AssertPreviewValue("d38be78d-1d6d-4c4d-a67f-e16208f5feb6", new object[] { new object[] { 1, new object[] { 2 }, 3 }, new object[] { 4, 5 } });
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void TestIfNodeLacingOptions()
+        {
+            string testFilePath = Path.Combine(testFolder, "testNewIf.dyn");
+            OpenModel(testFilePath);
+
+            /* IF node inputs:
+            *   true value: ["a1","b1","c1"];
+            *   false value: [["a2"],"b2"];
+            */
+
+            BoolSelector boolSelectorNode = (BoolSelector)this.CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("886a464b-9b2b-4e66-a033-c18d0753c2cf");
+
+            /* ArgumentLacing: Auto
+             * 
+             * expected output: if test value is true, output will be ["a1","b1","c1"]
+             *                  if test value is false, output will be  [["a2"],"b2"]
+             */
+
+            NodeModel ifNode = this.CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("f945529e-62e3-4c7a-b07a-0b18d7449f9b");
+            Assert.AreEqual(LacingStrategy.Auto, ifNode.ArgumentLacing);
+            boolSelectorNode.Value = true;
+            AssertPreviewValue("f945529e-62e3-4c7a-b07a-0b18d7449f9b", new object[] { "a1", "b1", "c1" });
+            boolSelectorNode.Value = false;
+            AssertPreviewValue("f945529e-62e3-4c7a-b07a-0b18d7449f9b", new object[] { new object[] { "a2" }, "b2" });
+
+            /* ArgumentLacing: Longest
+             * 
+             * expected output: if test value is true, output will be ["a1","b1","c1"]
+             *                  if test value is false, output will be  [["a2"],"b2","b2"]
+             */
+            CurrentDynamoModel.CurrentWorkspace.UpdateModelValue(new List<Guid> { ifNode.GUID }, "ArgumentLacing", "Longest");
+            Assert.AreEqual(LacingStrategy.Longest, ifNode.ArgumentLacing);
+            boolSelectorNode.Value = true;
+            AssertPreviewValue("f945529e-62e3-4c7a-b07a-0b18d7449f9b", new object[] { "a1", "b1", "c1" });
+            boolSelectorNode.Value = false;
+            AssertPreviewValue("f945529e-62e3-4c7a-b07a-0b18d7449f9b", new object[] { new object[] { "a2" }, "b2", "b2"});
+
+
+            /* ArgumentLacing: Shortest
+             * 
+             * expected output: if test value is true, output will be ["a1"]
+             *                  if test value is false, output will be  [["a2"]]
+             */
+            CurrentDynamoModel.CurrentWorkspace.UpdateModelValue(new List<Guid> { ifNode.GUID }, "ArgumentLacing", "Shortest");
+            Assert.AreEqual(LacingStrategy.Shortest, ifNode.ArgumentLacing);
+            boolSelectorNode.Value = true;
+            AssertPreviewValue("f945529e-62e3-4c7a-b07a-0b18d7449f9b", new object[] { "a1" });
+            boolSelectorNode.Value = false;
+            AssertPreviewValue("f945529e-62e3-4c7a-b07a-0b18d7449f9b", new object[] { new object[] { "a2" }});
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void TestIfNodeListAtLevel()
+        {
+            string testFilePath = Path.Combine(testFolder, "testNewIf.dyn");
+            OpenModel(testFilePath);
+            BoolSelector boolSelectorNode = (BoolSelector)this.CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("886a464b-9b2b-4e66-a033-c18d0753c2cf");
+
+            /* IF node inputs:
+             *   true value: [1,[2],3]; List level set at L3
+             *   false value: [4,5];    List level set at L3
+             * 
+             * expected output: if test value is true, output will be [[ 1, [2], 3]]
+             *                  if test value is false, output will be [[[ 4 , 5 ]]]
+             */
+
+            boolSelectorNode.Value = true;
+            AssertPreviewValue("699f9236-9fb0-4b91-a6a3-fb5dd23ed70b", new object[] { new object[] { 1, new object[] { 2 }, 3 } });
+
+            boolSelectorNode.Value = false;
+            AssertPreviewValue("699f9236-9fb0-4b91-a6a3-fb5dd23ed70b", new object[] { new object[] { new object[] { 4, 5 } } });
         }
     }
 }

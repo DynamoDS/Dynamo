@@ -1,0 +1,437 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "testNewIf",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[\"a1\",\"b1\",\"c1\"];\n[[\"a2\"],\"b2\"];\n[1,[2],3];\n[4,5];",
+      "Id": "95224771f8f74d4b97ff0a84447c55fa",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "95a7995f2ecd4f208533dc5b150a648c",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f73d32ffd2e94e8383063af06f67712e",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "38333ca1b5044f94a665ce92fa26006f",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "df20aa41822f4c9a854fb8124ddb4655",
+          "Name": "",
+          "Description": "Value of expression at line 4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "886a464b9b2b4e66a033c18d0753c2cf",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3f90288806474ec2a7184fb87a41c006",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.RefactoredIf, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "f945529e62e34c7ab07a0b18d7449f9b",
+      "Inputs": [
+        {
+          "Id": "c3f9c8e8bf7f45aa9828fa27839450ba",
+          "Name": "test",
+          "Description": "Boolean test",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d210b29dd01e43f78082970c9eed0de3",
+          "Name": "true",
+          "Description": "Returned if test is true",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "41ee33583a374165b80f91057f35b0d0",
+          "Name": "false",
+          "Description": "Returned if test is false",
+          "UsingDefaultValue": false,
+          "Level": 3,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c079523312284208a050bad5d5f63916",
+          "Name": "result",
+          "Description": "Result block produced",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the result of either the True or False input depending on what boolean value is toggled in the test input."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.RefactoredIf, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "699f92369fb04b91a6a3fb5dd23ed70b",
+      "Inputs": [
+        {
+          "Id": "9dd2ab67eb62411d86c0994b75f602d3",
+          "Name": "test",
+          "Description": "Boolean test",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9c598ef3a9104fa2ac626654f284f60c",
+          "Name": "true",
+          "Description": "Returned if test is true",
+          "UsingDefaultValue": false,
+          "Level": 3,
+          "UseLevels": true,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d10d3dd764c44054837264aae8438f30",
+          "Name": "false",
+          "Description": "Returned if test is false",
+          "UsingDefaultValue": false,
+          "Level": 3,
+          "UseLevels": true,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6c494e4e74c745e8a88a9c160c30965a",
+          "Name": "result",
+          "Description": "Result block produced",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the result of either the True or False input depending on what boolean value is toggled in the test input."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.RefactoredIf, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "e163095983384b1a9832248246aef8a0",
+      "Inputs": [
+        {
+          "Id": "5e6245f62649422383512c2431a25c7d",
+          "Name": "test",
+          "Description": "Boolean test",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "dcd3ff62e1e84e05a8137be36b095305",
+          "Name": "true",
+          "Description": "Returned if test is true",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "620ef6832eab4ee59edca1bd19f978fd",
+          "Name": "false",
+          "Description": "Returned if test is false",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "48125a118e0d4abfb1ca533166d6ac60",
+          "Name": "result",
+          "Description": "Result block produced",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the result of either the True or False input depending on what boolean value is toggled in the test input."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.HigherOrder.ApplyFunction, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "d38be78d1d6d4c4da67fe16208f5feb6",
+      "Inputs": [
+        {
+          "Id": "95f063b2f31e4a01a0fffcc09f86e3f4",
+          "Name": "function",
+          "Description": "Function to apply.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4376b937246a41cf8c8544cf4467e010",
+          "Name": "argument0",
+          "Description": "Argument #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b02f8c5b20b74ab6ace112a30280784e",
+          "Name": "result",
+          "Description": "Result of application.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Returns the result of a function with supplied arguments. Ex: arguments of a point and vector are applied to a translate function returning a translated point."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[true,false];",
+      "Id": "8b3c24770f324e38ab1efde87fc223d2",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5f1e9ab0a3dc49318cef16f480068f41",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "95a7995f2ecd4f208533dc5b150a648c",
+      "End": "d210b29dd01e43f78082970c9eed0de3",
+      "Id": "e1757b20bc24444aa8ef71d1f806209a"
+    },
+    {
+      "Start": "f73d32ffd2e94e8383063af06f67712e",
+      "End": "41ee33583a374165b80f91057f35b0d0",
+      "Id": "6dcd8689135e4b03a7bbb503dc2b548c"
+    },
+    {
+      "Start": "38333ca1b5044f94a665ce92fa26006f",
+      "End": "9c598ef3a9104fa2ac626654f284f60c",
+      "Id": "e07d1c06f58b4d7ead58b01599087864"
+    },
+    {
+      "Start": "38333ca1b5044f94a665ce92fa26006f",
+      "End": "dcd3ff62e1e84e05a8137be36b095305",
+      "Id": "408d14c757dd4c499ce197860d4eaaf1"
+    },
+    {
+      "Start": "df20aa41822f4c9a854fb8124ddb4655",
+      "End": "d10d3dd764c44054837264aae8438f30",
+      "Id": "cc861916309a4c658fcca3434e09c035"
+    },
+    {
+      "Start": "df20aa41822f4c9a854fb8124ddb4655",
+      "End": "620ef6832eab4ee59edca1bd19f978fd",
+      "Id": "85ee9536e6274864b3e6c312b8a87b8e"
+    },
+    {
+      "Start": "3f90288806474ec2a7184fb87a41c006",
+      "End": "c3f9c8e8bf7f45aa9828fa27839450ba",
+      "Id": "60c0f8ea833047df9fd76e85a1ad1655"
+    },
+    {
+      "Start": "3f90288806474ec2a7184fb87a41c006",
+      "End": "9dd2ab67eb62411d86c0994b75f602d3",
+      "Id": "91ad2fe63dab4e8b986596dd1b3c2686"
+    },
+    {
+      "Start": "48125a118e0d4abfb1ca533166d6ac60",
+      "End": "95f063b2f31e4a01a0fffcc09f86e3f4",
+      "Id": "88ff4136e0f44bd783d77e0169d00e40"
+    },
+    {
+      "Start": "5f1e9ab0a3dc49318cef16f480068f41",
+      "End": "4376b937246a41cf8c8544cf4467e010",
+      "Id": "2f1e69d4c2ba4b9caa9f658fa63618bf"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [],
+  "Author": "None provided",
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.5196",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "95224771f8f74d4b97ff0a84447c55fa",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 68.0,
+        "Y": 297.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "886a464b9b2b4e66a033c18d0753c2cf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 103.0,
+        "Y": 138.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "If",
+        "Id": "f945529e62e34c7ab07a0b18d7449f9b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 472.0,
+        "Y": 13.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "If",
+        "Id": "699f92369fb04b91a6a3fb5dd23ed70b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 473.0,
+        "Y": 175.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "If",
+        "Id": "e163095983384b1a9832248246aef8a0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 470.0,
+        "Y": 342.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Function Apply",
+        "Id": "d38be78d1d6d4c4da67fe16208f5feb6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 752.0,
+        "Y": 459.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "8b3c24770f324e38ab1efde87fc223d2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 496.0,
+        "Y": 515.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

@@ -4,7 +4,6 @@ using System.Windows.Controls.Primitives;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
-using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
@@ -19,6 +18,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _useLevelsCommand;
         private DelegateCommand _keepListStructureCommand;
         private const double autocompletePopupSpacing = 2.5;
+        internal bool inputPortDisconnectedByConnectCommand = false;
 
         /// <summary>
         /// Port model.
@@ -408,9 +408,16 @@ namespace Dynamo.ViewModels
         private void AutoComplete(object parameter)
         {
             var wsViewModel = _node.WorkspaceViewModel;
-            var svm = wsViewModel.NodeAutoCompleteSearchViewModel;
-            svm.PortViewModel = this;
+            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 
+            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
+            if (this.inputPortDisconnectedByConnectCommand)
+            {
+                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
+            }
+
+            // Bail out from connect state
+            wsViewModel.CancelActiveState();
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
         }
 
@@ -418,7 +425,7 @@ namespace Dynamo.ViewModels
         {
             DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
             // If the feature is enabled from Dynamo experiment setting and if user interaction is on input port.
-            return dynamoViewModel.EnableNodeAutoComplete && this.PortType == PortType.Input;
+            return dynamoViewModel.EnableNodeAutoComplete;
         }
 
         /// <summary>
@@ -427,10 +434,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameter">The parameter.</param>
         private void OnRectangleMouseEnter(object parameter)
         {
-            if (MouseEnter != null)
-            {
-                MouseEnter(parameter, null);
-            }
+            MouseEnter?.Invoke(parameter, null);
         }
 
         /// <summary>
@@ -439,8 +443,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameter">The parameter.</param>
         private void OnRectangleMouseLeave(object parameter)
         {
-            if (MouseLeave != null)
-                MouseLeave(parameter, null);
+            MouseLeave?.Invoke(parameter, null);
         }
 
         /// <summary>
@@ -449,8 +452,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameter">The parameter.</param>
         private void OnRectangleMouseLeftButtonDown(object parameter)
         {
-            if (MouseLeftButtonDown != null)
-                MouseLeftButtonDown(parameter, null);
+            MouseLeftButtonDown?.Invoke(parameter, null);
         }
 
         /// <summary>

@@ -1,0 +1,49 @@
+{
+  "Uuid": "3bd828bf-7d20-469e-a201-c0f1d89c42f2",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Home",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "6274f4dc9b7f4e62a6a6daa0bcdfef6e",
+      "Name": "selectionTestName",
+      "Type": "hostSelection",
+      "Value": "",
+      "Description": "No description available",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "TestUINodes.SelectionConcrete, TestUINodes",
+      "NodeType": "ExtensionNode",
+      "InstanceId": [],
+      "Id": "6274f4dc9b7f4e62a6a6daa0bcdfef6e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "99283df0b29a44de9dc6b55ce686a471",
+          "Name": "Elements",
+          "Description": "The selected elements.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [],
+  "Author": "None provided",
+  "Bindings": []
+}

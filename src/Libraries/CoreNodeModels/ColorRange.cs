@@ -26,7 +26,7 @@ namespace CoreNodeModels
         "ColorRangePortDataIndicesToolTip",
         "ColorRangePortDataValueToolTip")]
     [OutPortNames("color")]
-    [OutPortTypes("Color")]
+    [OutPortTypes("DSCore.Color")]
     [OutPortDescriptions(typeof(Resources),
         "ColorRangePortDataResultToolTip")]
     [AlsoKnownAs("DSCoreNodesUI.ColorRange")]

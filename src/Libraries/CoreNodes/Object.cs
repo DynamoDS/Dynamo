@@ -33,15 +33,15 @@ namespace DSCore
         /// <summary>
         ///     Returns the type of object represented as string.
         /// </summary>
-        /// <param name="obj">An object.</param>
+        /// <param name="object">Object to query type</param>
         /// <returns>Type of object.</returns>
-        public static string Type(object obj)
+        public static string Type(object @object)
         {
-            if (obj == null)
+            if (@object == null)
             {
                 throw new ArgumentException(Resources.ObjectArgumentExceptionMessage, "obj");
             }
-            return obj.GetType().ToString();
+            return @object.GetType().ToString();
         }
     }
 }

@@ -471,18 +471,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void ASM225InstallationsAreValidated()
-        {
-            var incomplete225List = LoadListFromCsv("incomplete225List.csv");
-            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete225List, 225));
-            // Add missing DLLs. Now the the installation should be valid.
-            incomplete225List.Add("tsplines7A.dll");
-            incomplete225List.Add("ASMMATRIX225A.dll");
-            incomplete225List.Add("ASMRB225A.dll");
-            Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete225List, 225));
-        }
-
-        [Test]
         public void UnknownASMVersionInstallationsAreDiscarded()
         {
             Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(new List<string>(), 0));

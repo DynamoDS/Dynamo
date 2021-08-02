@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Extensions;
@@ -11,13 +12,22 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
+using Dynamo.Models;
 
 namespace Dynamo.PackageManager
 {
     public struct LoadPackageParams
     {
         public IPreferences Preferences { get; set; }
+
+        [Obsolete("Do not use. This will be removed in Dynamo 3.0")]
         public IPathManager PathManager { get; set; }
+
+        /// <summary>
+        /// List of new package paths that have been added to the 
+        /// Preferences->Package manager dialog in node and package paths.
+        /// </summary>
+        internal IEnumerable<string> NewPaths { get; set; }
     }
 
     public enum AssemblyLoadingState
@@ -53,6 +63,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public event Action<Package> PackageRemoved;
 
+        private const string builtinPackagesDirName = @"Built-In Packages";
         private readonly List<IExtension> requestedExtensions = new List<IExtension>();
         /// <summary>
         /// Collection of ViewExtensions the ViewExtensionSource requested be loaded.
@@ -68,42 +79,81 @@ namespace Dynamo.PackageManager
         private readonly List<Package> localPackages = new List<Package>();
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
 
-        private readonly List<string> packagesDirectories = new List<string>();
+        /// <summary>
+        /// Returns the default package directory where new packages will be installed
+        /// This is the first non builtin packages directory
+        /// The first entry is the builtin packages.
+        /// </summary>
+        /// <returns>Returns the path to the DefaultPackagesDirectory if found - or null if something has gone wrong.</returns>
+        [Obsolete("This property is redundant, please use the PathManager.DefaultPackagesDirectory property instead.")]
         public string DefaultPackagesDirectory
         {
-            get { return packagesDirectories[0]; }
+            get { return pathManager.DefaultPackagesDirectory; }
+        }
+
+        /// <summary>
+        /// Combines the extension with the root path and returns it if the path exists. 
+        /// If not, the root path is returned unchanged.
+        /// </summary>
+        /// <param name="root">root path to transform</param>
+        /// <param name="userDataFolder"></param>
+        /// <param name="extension">subdirectory or subpath</param>
+        /// <returns>combined root and extension path</returns>
+        private static string TransformPath(string root, string extension)
+        {
+            try
+            {
+                var subFolder = Path.Combine(root, extension);
+                if (Directory.Exists(subFolder))
+                    return subFolder;
+            }
+            catch (IOException) { }
+            catch (ArgumentException) { }
+            catch (UnauthorizedAccessException) { }
+
+            return root;
         }
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
 
-        // The standard library directory is located in the same directory as the DynamoPackages.dll
-        internal string StandardLibraryDirectory =>
-            Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),
-                @"Standard Library", @"Packages");
+        private readonly IPathManager pathManager;
 
+        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
+        /// <summary>
+        /// This constructor is currently being used for testing and these tests should be updated to use 
+        /// another constructor when this is obsoleted.
+        /// </summary>
         public PackageLoader(string overridePackageDirectory)
             : this(new[] { overridePackageDirectory })
         {
         }
 
+        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
+        /// <summary>
+        /// This constructor is currently being used by other constructors that have also been deprecated and by tests,
+        /// which should be updated to use another constructor when this is obsoleted.
+        /// </summary>
         public PackageLoader(IEnumerable<string> packagesDirectories)
         {
-            if (packagesDirectories == null)
-                throw new ArgumentNullException("packagesDirectories");
-
-            this.packagesDirectories.AddRange(packagesDirectories);
-            this.packagesDirectories.Add(StandardLibraryDirectory);
-            
-            var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
-
-            if (error != null)
-                Log(error);
-
-            packagesDirectoriesToVerifyCertificates.Add(StandardLibraryDirectory);
+            InitPackageLoader(packagesDirectories, null);
         }
 
+        internal PackageLoader(IPathManager pathManager)
+        {
+            this.pathManager = pathManager;
+            InitPackageLoader(pathManager.PackagesDirectories, (pathManager as PathManager)?.BuiltinPackagesDirectory);
+
+            if (!string.IsNullOrEmpty(pathManager.CommonDataDirectory))
+            {
+                packagesDirectoriesToVerifyCertificates.Add(pathManager.CommonDataDirectory);
+            }
+        }
+
+        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
         /// <summary>
-        /// Initialize a new instance of PackageLoader class
+        /// Initialize a new instance of PackageLoader class.
+        /// This constructor is currently being used for testing and these tests should be updated to use 
+        /// another constructor when this is obsoleted.
         /// </summary>
         /// <param name="packagesDirectories">Default package directories</param>
         /// <param name="packageDirectoriesToVerify">Default package directories where node library files require certificate verification before loading</param>
@@ -114,6 +164,18 @@ namespace Dynamo.PackageManager
                 throw new ArgumentNullException("packageDirectoriesToVerify");
 
             packagesDirectoriesToVerifyCertificates.AddRange(packageDirectoriesToVerify);
+        }
+
+        private void InitPackageLoader(IEnumerable<string> packagesDirectories, string builtinPackagesDir)
+        {
+            if (packagesDirectories == null)
+            {
+                throw new ArgumentNullException("packagesDirectories");
+            }
+
+            if (builtinPackagesDir == null) return;
+
+            packagesDirectoriesToVerifyCertificates.Add(builtinPackagesDir);
         }
 
         private void OnPackageAdded(Package pkg)
@@ -215,9 +277,10 @@ namespace Dynamo.PackageManager
                 package.LoadedCustomNodes.AddRange(customNodes);
 
                 package.EnumerateAdditionalFiles();
+
                 // If the additional files contained an extension manifest, then request it be loaded.
                 var extensionManifests = package.AdditionalFiles.Where(
-                    file => file.Model.Name.Contains("ExtensionDefinition.xml") && !(file.Model.Name.Contains("ViewExtensionDefinition.xml"))).ToList();
+                    file => file.Model.Name.Contains("ExtensionDefinition.xml") && !file.Model.Name.Contains("ViewExtensionDefinition.xml")).ToList();
                 foreach (var extPath in extensionManifests)
                 {
                     var extension = RequestLoadExtension?.Invoke(extPath.Model.FullName);
@@ -277,7 +340,6 @@ namespace Dynamo.PackageManager
         {
             ScanAllPackageDirectories(loadPackageParams.Preferences);
 
-            var pathManager = loadPackageParams.PathManager;
             if (pathManager != null)
             {
                 foreach (var pkg in LocalPackages)
@@ -302,9 +364,7 @@ namespace Dynamo.PackageManager
         /// <param name="packages"></param>
         public void LoadPackages(IEnumerable<Package> packages)
         {
-            var packageList = packages.ToList();
-
-            foreach (var pkg in packageList)
+            foreach (var pkg in packages)
             {
                 // If the pkg is null, then don't load that package into the Library.
                 if (pkg != null)
@@ -313,31 +373,88 @@ namespace Dynamo.PackageManager
                 }
             }
 
-            var assemblies = packageList
+            var assemblies = packages
                 .SelectMany(p => p.LoadedAssemblies.Where(y => y.IsNodeLibrary))
                 .Select(a => a.Assembly)
                 .ToList();
+
             OnPackagesLoaded(assemblies);
         }
 
-        public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
+        /// <summary>
+        /// Scans and compiles any new packages contained in new package paths that are added.
+        /// Note: This method will still reload ALL packages in the VM even those that are not new.
+        /// </summary>
+        /// <param name="loadPackageParams"></param>
+        private void LoadNewPackages(LoadPackageParams loadPackageParams)
         {
-            foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
+            foreach (var path in loadPackageParams.NewPaths)
             {
-                customNodeManager.AddUninitializedCustomNodesInPath(path, false, false);
-                if (!packagesDirectories.Contains(path))
+                var packagesDirectory = pathManager.PackagesDirectories.Where(x => x.StartsWith(path)).FirstOrDefault();
+                ScanPackageDirectories(packagesDirectory, loadPackageParams.Preferences);
+            }
+
+            if (pathManager != null)
+            {
+                foreach (var pkg in LocalPackages)
                 {
-                    packagesDirectories.Add(path);
+                    if (Directory.Exists(pkg.BinaryDirectory))
+                    {
+                        pathManager.AddResolutionPath(pkg.BinaryDirectory);
+                    }
+
                 }
             }
-            LoadAll(loadPackageParams);
+
+            if (LocalPackages.Any())
+            {
+                LoadPackages(LocalPackages);
+            }
+        }
+
+        /// <summary>
+        /// This method is called when custom nodes and packages need to be reloaded if there are new package paths.
+        /// </summary>
+        /// <param name="loadPackageParams"></param>
+        /// <param name="customNodeManager"></param>
+        public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
+        {
+            var packages = new List<Package>(localPackages);
+            // Clear all existing packages so that they are not duplicated by adding them again when there are new paths in the mix.
+            localPackages.Clear();
+            foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
+            {
+                // Append the definitions subdirectory for custom nodes.
+                var dir = path == DynamoModel.BuiltInPackagesToken ? (pathManager as PathManager).BuiltinPackagesDirectory : path;
+                dir = TransformPath(dir, PathManager.DefinitionsDirectoryName);
+
+                customNodeManager.AddUninitializedCustomNodesInPath(dir, false, false);
+            }
+            LoadNewPackages(loadPackageParams);
+            // Restore the original set of packages that were already existing in order to keep this list current.
+            localPackages.AddRange(packages);
         }
 
         private void ScanAllPackageDirectories(IPreferences preferences)
         {
-            foreach (var packagesDirectory in packagesDirectories)
+            foreach (var packagesDirectory in pathManager.PackagesDirectories)
             {
-                ScanPackageDirectories(packagesDirectory, preferences);
+
+                if (preferences is IDisablePackageLoadingPreferences disablePrefs
+                    &&
+                    //if this directory is the builtin packages location
+                    //and loading from there is disabled, don't scan the directory.
+                    ((disablePrefs.DisableBuiltinPackages && packagesDirectory == (pathManager as PathManager)?.BuiltinPackagesDirectory)
+                    //or if custom package directories are disabled, and this is a custom package directory, don't scan.
+                    || (disablePrefs.DisableCustomPackageLocations && preferences.CustomPackageFolders.Contains(packagesDirectory))))
+                {
+                    Log(string.Format(Resources.PackagesDirectorySkipped,packagesDirectory));
+                    continue;
+                }
+                else
+                {
+                    ScanPackageDirectories(packagesDirectory, preferences);
+                }
             }
         }
 
@@ -367,7 +484,7 @@ namespace Dynamo.PackageManager
                 foreach (var dir in
                     Directory.EnumerateDirectories(root, "*", SearchOption.TopDirectoryOnly))
                 {
-                    
+
                     // verify if the package directory requires certificate verifications
                     // This is done by default for the package directory defined in PathManager common directory location.
                     var checkCertificates = false;
@@ -401,13 +518,13 @@ namespace Dynamo.PackageManager
             {
                 var headerPath = Path.Combine(directory, "pkg.json");
 
-                Package discoveredPkg;
+                Package discoveredPackage;
 
                 // get the package name and the installed version
                 if (PathHelper.IsValidPath(headerPath))
                 {
-                    discoveredPkg = Package.FromJson(headerPath, AsLogger());
-                    if (discoveredPkg == null)
+                    discoveredPackage = Package.FromJson(headerPath, AsLogger());
+                    if (discoveredPackage == null)
                         throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
                 }
                 else
@@ -418,16 +535,49 @@ namespace Dynamo.PackageManager
                 // prevent loading unsigned packages if the certificates are required on package dlls
                 if (checkCertificates)
                 {
-                    CheckPackageNodeLibraryCertificates(directory, discoveredPkg);
+                    CheckPackageNodeLibraryCertificates(directory, discoveredPackage);
                 }
 
-                // prevent duplicates
-                if (LocalPackages.All(pkg => pkg.Name != discoveredPkg.Name))
+                var discoveredVersion = CheckAndGetPackageVersion(discoveredPackage.VersionName, discoveredPackage.Name, discoveredPackage.RootDirectory);
+
+                var existingPackage = LocalPackages.FirstOrDefault(package => package.Name == discoveredPackage.Name);
+
+                // Is this a new package?
+                if (existingPackage == null)
                 {
-                    Add(discoveredPkg);
-                    return discoveredPkg; // success
+                    Add(discoveredPackage);
+                    return discoveredPackage; // success
                 }
-                throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
+
+                var existingVersion = CheckAndGetPackageVersion(existingPackage.VersionName, existingPackage.Name, existingPackage.RootDirectory);
+
+                // Is this a duplicated package?
+                if (existingVersion == discoveredVersion)
+                {
+                    // Duplicated with the same version
+                    throw new LibraryLoadFailedException(directory,
+                        String.Format(Properties.Resources.DulicatedPackage,
+                            discoveredPackage.Name,
+                            discoveredPackage.RootDirectory));
+                } 
+                
+                // Is the existing version newer?
+                if (existingVersion > discoveredVersion)
+                {
+                    // Older version found, show notification
+                    throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DuplicatedOlderPackage,
+                            existingPackage.Name,
+                            discoveredPackage.RootDirectory,
+                            existingVersion.ToString(),
+                            discoveredVersion.ToString()));
+                }
+
+                // Newer version found, show notification.
+                throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DuplicatedNewerPackage,
+                        existingPackage.Name,
+                        discoveredPackage.RootDirectory,
+                        existingVersion.ToString(),
+                        discoveredVersion.ToString()));
             }
             catch (Exception e)
             {
@@ -436,6 +586,25 @@ namespace Dynamo.PackageManager
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Check and get the version from the version string. Throw a library load exception if anything is wrong with the version
+        /// </summary>
+        /// <param name="version">the version string</param>
+        /// <param name="name">name of the package</param>
+        /// <param name="directory">package directory</param>
+        /// <returns>Returns a valid Version</returns>
+        private Version CheckAndGetPackageVersion(string version, string name, string directory)
+        {
+            try
+            {
+                return VersionUtilities.PartialParse(version);
+            }
+            catch (Exception e) when (e is ArgumentException || e is FormatException || e is OverflowException)
+            {
+                throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.InvalidPackageVersion, name, directory, version));
+            }
         }
 
         /// <summary>
@@ -484,7 +653,7 @@ namespace Dynamo.PackageManager
                             Resources.InvalidPackageNodeLibraryIsNotSigned,
                             discoveredPkg.Name, discoveredPkg.RootDirectory, e.Message));
                 }
-                
+
             }
 
             discoveredPkg.RequiresSignedEntryPoints = true;

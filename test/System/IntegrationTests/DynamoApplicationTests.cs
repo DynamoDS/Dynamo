@@ -14,7 +14,6 @@ namespace IntegrationTests
         {
             var versions = new List<Version>(){
 
-                    new Version(225, 0, 0),
                     new Version(226, 0, 0),
                     new Version(227, 0, 0)
             };

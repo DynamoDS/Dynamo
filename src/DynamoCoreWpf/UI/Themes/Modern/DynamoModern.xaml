@@ -547,6 +547,8 @@
         </Setter>
     </Style>
 
+
+
     <Style x:Key="SDarkTextBox"
            BasedOn="{StaticResource {x:Type TextBox}}"
            TargetType="{x:Type TextBox}">
@@ -2263,5 +2265,1425 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <SolidColorBrush x:Key="PreferencesWindowBackgroundColor" 
+                             Color="#535353" />
+    <SolidColorBrush x:Key="PreferencesWindowItemDarkerBackgroundColor"
+                     Color="#353535"/>
+    <SolidColorBrush x:Key="PreferencesWindowFontColor" 
+                             Color="#E5E5E5" />
+    <SolidColorBrush x:Key="PreferencesWindowButtonColor" 
+                             Color="#0696D7" />
+    <SolidColorBrush x:Key="PreferencesWindowTabSelectedColor" 
+                             Color="#ADE4DE" />
+    <SolidColorBrush x:Key="PreferencesWindowButtonPressedColor" 
+                             Color="#0778B0" />
+    <SolidColorBrush x:Key="PreferencesWindowButtonMouseOverFontColor" 
+                             Color="#CDCBCB" />
+    <SolidColorBrush x:Key="CloseButtonMouseOverBackground" 
+                             Color="#E81123" />
+    <SolidColorBrush x:Key="CloseButtonPressed" 
+                             Color="#B70F1B" />
+    <SolidColorBrush x:Key="CloseButtonMouseOverForeground" 
+                             Color="#FFFFFF" />
+    <SolidColorBrush x:Key="TabItemUnSelected" 
+                             Color="DarkGray" />
+    <SolidColorBrush x:Key="SecondaryGray" 
+                             Color="#707070" />
+    <SolidColorBrush x:Key="SemiTransparent" 
+                             Color="#80000000" />
 
+    <!--Usual button color for the Preferences Window-->
+    <Color x:Key="PreferencesToogleCheckedColor" R="6" G="150" B="215" A="255"/>
+    
+    <!--Gray Window Background Color-->
+    <Color x:Key="PreferencesToogleUnCheckedColor" R="229" G="229" B="229" A="229"/>
+
+    <!--White Window Color for borders-->
+    <Color x:Key="PreferencesToogleBorderColor" R="255" G="255" B="255" A="255"/>
+
+    <Style x:Key="DarkTextBlock"
+           TargetType="TextBlock">
+        <Setter Property="FontSize"
+                Value="12">
+        </Setter>
+        <Setter Property="TextTrimming"
+            Value="CharacterEllipsis">
+        </Setter>
+    </Style>
+
+    <Style x:Key="PreferenceTitleLabelStyle"
+            TargetType="{x:Type Label}">
+        <Setter Property="Foreground"
+                Value="{StaticResource PreferencesWindowFontColor}">
+        </Setter>
+        <Setter Property="FontSize"
+                Value="14">
+        </Setter>
+    </Style>
+
+    <Style x:Key="CaptionButtonStyleClose" 
+                   TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="LayoutRoot" 
+                                  Background="Transparent" 
+                                  Width="46" 
+                                  Height="40">
+                        <TextBlock x:Name="txt" 
+                                           Text="{TemplateBinding Content}" 
+                                           FontFamily="Segoe MDL2 Assets" 
+                                           FontSize="14" 
+                                           Foreground="{StaticResource PreferencesWindowFontColor}" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"
+                                           RenderOptions.ClearTypeHint="Auto" 
+                                           TextOptions.TextRenderingMode="Aliased"  
+                                           TextOptions.TextFormattingMode="Display"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" 
+                                         Value="True">
+                            <Setter TargetName="LayoutRoot" 
+                                            Property="Background" 
+                                            Value="{StaticResource CloseButtonMouseOverBackground}"/>
+                            <Setter TargetName="txt" 
+                                            Property="Foreground" 
+                                            Value="{StaticResource CloseButtonMouseOverForeground}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" 
+                                         Value="True">
+                            <Setter TargetName="LayoutRoot" 
+                                            Property="Background" 
+                                            Value="{StaticResource CloseButtonPressed}"/>
+                            <Setter TargetName="txt" 
+                                            Property="Foreground" 
+                                            Value="{StaticResource CloseButtonMouseOverForeground}"/>
+                            <Setter TargetName="txt" 
+                                            Property="FontSize" 
+                                            Value="12"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="CloseButtonStyle" 
+                   TargetType="Button" 
+                   BasedOn="{StaticResource CaptionButtonStyleClose}">
+        <Setter Property="Content" 
+                        Value="&#xE8BB;"/>
+    </Style>
+
+    <Style x:Key="NormalButtonStyle" 
+                   TargetType="Button">
+        <Setter Property="Foreground" 
+                        Value="{StaticResource PreferencesWindowFontColor}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Name="border"
+                                    Background="{StaticResource PreferencesWindowButtonColor}"
+                                    BorderThickness="1"
+                                    Padding="4,2"
+                                    BorderBrush="Transparent"
+                                    CornerRadius="3">
+                        <Grid >
+                            <ContentPresenter HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center" 
+                                                      Name="contentShadow">
+                            </ContentPresenter>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" 
+                                         Value="True">
+                            <Setter TargetName="border" 
+                                            Property="Background" 
+                                            Value="{StaticResource PreferencesWindowButtonPressedColor}" />
+                            <Setter Property="FontSize" 
+                                            Value="11"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" 
+                                         Value="True">
+                            <Setter TargetName="border" 
+                                            Property="Background" 
+                                            Value="{StaticResource PreferencesWindowButtonPressedColor}" />
+                            <Setter Property="Foreground" 
+                                            Value="{StaticResource PreferencesWindowButtonMouseOverFontColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate >
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonBackground" Color="#4d4d4d"/>
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonSelectedBackground" Color="#3c3c3c"/>
+
+    <ControlTemplate x:Key="ExpanderCaretToggleButton" TargetType="{x:Type ToggleButton}">
+        <Border Name="Border" 
+                Grid.Row="0" 
+                Background="{StaticResource ExpanderCaretToggleButtonBackground}"
+                BorderThickness="1" 
+                CornerRadius="1" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Image x:Name="Caret"
+                      Grid.Column="0"
+                      Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/Caret_Down.png"
+                      Width="16"
+                      Height="16"
+                      Margin="5,10,0,10"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Center"
+                      >
+                </Image>
+                <ContentPresenter x:Name="HeaderContent" 
+                                    Grid.Column="0" 
+                                    Margin="0,0,0,0" 
+                                    RecognizesAccessKey="True" 
+                                    VerticalAlignment="Center"
+                                    Width="{Binding
+                                        RelativeSource={RelativeSource
+                                        Mode=FindAncestor,
+                                        AncestorType={x:Type Expander}},
+                                        Path=ActualWidth}"/>
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="true">
+                <!--Sets the icon on the expander to caret up (-)-->
+                <Setter Property="Background" TargetName="Border" Value="{StaticResource ExpanderCaretToggleButtonSelectedBackground}"/>
+                <Setter TargetName="Caret" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/Caret_Up.png" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="false">
+                <Setter Property="Background" TargetName="Border" Value="{StaticResource ExpanderCaretToggleButtonBackground}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="ExpanderPlusToggleButton" TargetType="{x:Type ToggleButton}">
+        <Border Name="Border" 
+                Grid.Row="0" 
+                Background="{StaticResource SecondaryGray}" 
+                BorderThickness="1" 
+                CornerRadius="1" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <!--Draws a plus (+) sign on the expander-->
+                <Path x:Name="Sign"
+                      Grid.Column="1"
+                      Data="M 0,6 H 12 M 6,0 V 12 Z"
+                      Stroke="{StaticResource PreferencesWindowFontColor}"
+                      Width="12"
+                      Height="12"
+                      Margin="0,10,15,10"
+                      StrokeThickness="2"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      >
+                </Path>
+                <ContentPresenter x:Name="HeaderContent" 
+                                    Grid.Column="0" 
+                                    Margin="15,0,0,0"  
+                                    RecognizesAccessKey="True" 
+                                    VerticalAlignment="Center"
+                                    Width="{Binding
+                                        RelativeSource={RelativeSource
+                                        Mode=FindAncestor,
+                                        AncestorType={x:Type Expander}},
+                                        Path=ActualWidth}"/>
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="true">
+                <!--Sets the sign on the expander to a minus (-)-->
+                <Setter TargetName="Sign" Property="Data" Value="M 0,6 H 12 Z" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" TargetName="Border" Value="{x:Null}"/>
+                <Setter Property="BorderBrush" TargetName="Border" Value="{x:Null}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    
+    <DataTemplate x:Key="expanderHeader">
+        <TextBlock
+            Text="{Binding}" 
+            FontSize="14"
+            FontWeight="Medium">
+        </TextBlock>
+    </DataTemplate>
+    
+
+    <Style TargetType="Expander" x:Key="InstalledPackagesExpanderStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <!-- Control template for expander -->
+                <ControlTemplate TargetType="Expander" x:Name="exp">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Name="ContentRow" Height="0"/>
+                        </Grid.RowDefinitions>
+                        <Border Name="Border" Grid.Row="0" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="1" CornerRadius="0,0,0,0">
+                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" Template="{StaticResource ExpanderCaretToggleButton}">
+                                <ToggleButton.Content>
+                                    <ContentPresenter ContentSource="Header" OverridesDefaultStyle="True" RecognizesAccessKey="True" />
+                                </ToggleButton.Content>
+                            </ToggleButton>
+                        </Border>
+                        <Border x:Name="Content" 
+                                Grid.Row="1"
+                                BorderThickness="1,0,1,1"
+                                CornerRadius="0,0,4,4" >
+                            <!--The Margin is necesary so that the Content is perfectly aligned with the Header-->
+                            <ContentPresenter Margin="1,-3,1,0" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ContentRow" Property="Height" Value="{Binding ElementName=Content,Path=Height}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ContextMenu}" x:Key="ContextMenuNoLeftColumnStyle">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+        <Setter Property="HasDropShadow" Value="True" />
+        <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
+        <Setter Property="Background" Value="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border" Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}" BorderThickness="1">
+                        <ItemsPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <StackPanel Margin="-25,0,0,0"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Expander" x:Key="MenuExpanderStyle">
+        <Setter Property="Background" Value="{StaticResource SecondaryGray}"/>
+        <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
+        <Setter Property="HeaderTemplate" Value="{StaticResource expanderHeader}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <!-- Control template for expander -->
+                <ControlTemplate TargetType="Expander" x:Name="exp">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Name="ContentRow" Height="0"/>
+                        </Grid.RowDefinitions>
+                        <Border Name="Border" Grid.Row="0" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="1" CornerRadius="0,0,0,0">
+                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" OverridesDefaultStyle="True" Template="{StaticResource ExpanderPlusToggleButton}" Background="#FF4682B4">
+                                <ToggleButton.Content>
+                                    <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
+                                </ToggleButton.Content>
+                            </ToggleButton>
+                        </Border>
+                        <Border x:Name="Content" 
+                                Grid.Row="1" 
+                                BorderThickness="1,0,1,1"
+                                CornerRadius="0,0,4,4" >
+                            <ContentPresenter Margin="12,0,0,15" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ContentRow" Property="Height" Value="{Binding ElementName=Content,Path=Height}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+
+    <!-- This expander style is similar to the MenuExpanderStyle and the only difference is the left-margin spacing -->
+    <Style TargetType="Expander" x:Key="WorkspaceReferencesExpanderStyle">
+        <Setter Property="Background" Value="{StaticResource SecondaryGray}"/>
+        <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
+        <Setter Property="HeaderTemplate" Value="{StaticResource expanderHeader}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <!-- Control template for expander -->
+                <ControlTemplate TargetType="Expander" x:Name="exp">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Name="ContentRow" Height="0"/>
+                        </Grid.RowDefinitions>
+                        <Border Name="Border" Grid.Row="0" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="1" CornerRadius="0,0,0,0">
+                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" OverridesDefaultStyle="True" Template="{StaticResource ExpanderPlusToggleButton}" Background="#FF4682B4">
+                                <ToggleButton.Content>
+                                    <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
+                                </ToggleButton.Content>
+                            </ToggleButton>
+                        </Border>
+                        <Border x:Name="Content" 
+                                Grid.Row="1" 
+                                BorderThickness="1,0,1,1"
+                                CornerRadius="0,0,4,4" >
+                            <ContentPresenter Margin="2,0,0,15" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ContentRow" Property="Height" Value="{Binding ElementName=Content,Path=Height}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LeftTab" 
+                   TargetType="{x:Type TabItem}">
+        <Setter Property="HorizontalAlignment" 
+                Value="Left"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Border Margin="2" 
+                                    Name="TabBorder" 
+                                    CornerRadius="6" 
+                                    BorderBrush="Transparent" 
+                                    Background="Transparent" 
+                                    BorderThickness="2" 
+                                    HorizontalAlignment="Stretch" 
+                                    VerticalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal" 
+                                            HorizontalAlignment="Stretch" 
+                                            VerticalAlignment="Stretch">
+                            <Grid Name="TabPanel" 
+                                          Width="165"
+                                          Height="30">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label x:Name="SelectedItem" 
+                                               Grid.Column="0"/>
+                                <ContentPresenter x:Name="ContentSection"
+                                                          Grid.Column="1" 
+                                                          ContentSource="Header" 
+                                                          VerticalAlignment="Center" 
+                                                          HorizontalAlignment="Stretch" 
+                                                          Margin="5,0,0,0"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" 
+                                         Value="True">
+                            <Setter TargetName="SelectedItem" 
+                                            Property="Background" 
+                                            Value="{StaticResource PreferencesWindowTabSelectedColor}" />
+                            <Setter Property="Foreground" 
+                                            Value="{StaticResource PreferencesWindowFontColor}" />
+                            <Setter Property="FontWeight" 
+                                            Value="Bold" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" 
+                                         Value="False">
+                            <Setter TargetName="SelectedItem" 
+                                            Property="Background" 
+                                            Value="{StaticResource PreferencesWindowBackgroundColor}" />
+                            <Setter Property="Foreground" 
+                                            Value="{StaticResource TabItemUnSelected}" />
+                            <Setter Property="FontWeight" 
+                                            Value="Regular" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--This is a Toogle button shown in the Preferences Window for the General tab, when is checked shows a Blue button-->
+    <Style x:Key="EllipseToggleButton1"
+           TargetType="{x:Type ToggleButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Grid x:Name="mainGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Name="_borderOn"
+                                Background="Transparent"
+                                Width="{TemplateBinding Width}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Row="0" Grid.RowSpan="1" Grid.Column="1"
+                                        Grid.ColumnSpan="3" Background="{StaticResource PreferencesWindowButtonColor}"
+                                        Panel.ZIndex="1"/>
+                                <Ellipse Name="ButtonBackgroundOn"
+                                         Grid.Row="0" Grid.RowSpan="1" Grid.Column="0"
+                                         Grid.ColumnSpan="2" 
+                                         Fill="{StaticResource PreferencesWindowButtonColor}"
+                                         Width="{TemplateBinding Height}"
+                                         Panel.ZIndex="0"/>
+                                <Ellipse Grid.Row="0" Grid.RowSpan="1"
+                                         Grid.Column="3" Grid.ColumnSpan="2"
+                                         Width="{TemplateBinding Height}"
+                                         Height="{TemplateBinding Height}"
+                                         Fill="{StaticResource CloseButtonMouseOverForeground}"
+                                         Panel.ZIndex="3"
+                                         Stroke="{StaticResource PreferencesWindowButtonColor}"
+                                         StrokeThickness="4"/>
+                            </Grid>
+                        </Border>
+                        
+                        <Border Grid.Column="0" Name="_borderOff"
+                                Background="Transparent"
+                                Width="{TemplateBinding Width}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Row="0" Grid.RowSpan="1" Grid.Column="1"
+                                        Grid.ColumnSpan="3" Background="{StaticResource TabItemUnSelected}"
+                                        Panel.ZIndex="1"/>
+                                <Ellipse Name="ButtonBackgroundOff"
+                                         Grid.Row="0" Grid.RowSpan="1" Grid.Column="3"
+                                         Grid.ColumnSpan="2" 
+                                         Width="{TemplateBinding Height}"
+                                         Height="{TemplateBinding Height}"
+                                         Fill="{StaticResource TabItemUnSelected}"
+                                         Panel.ZIndex="0"/>
+                                <Ellipse Grid.Row="0" Grid.RowSpan="1"
+                                         Grid.Column="0" Grid.ColumnSpan="2"
+                                         Fill="{StaticResource CloseButtonMouseOverForeground}"
+                                         Width="{TemplateBinding Height}"
+                                         Height="{TemplateBinding Height}"
+                                         Panel.ZIndex="3"
+                                         Stroke="{StaticResource TabItemUnSelected}"
+                                         StrokeThickness="4"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- triggers toggle visual appearance -->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="_borderOff" Property="Visibility"
+                                    Value="Collapsed" />
+                            <Setter TargetName="_borderOn" Property="Visibility"
+                                    Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="_borderOff" Property="Visibility"
+                                    Value="Visible" />
+                            <Setter TargetName="_borderOn" Property="Visibility"
+                                    Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="mainGrid" Property="OpacityMask"
+                                    Value="{StaticResource SemiTransparent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Due that the comboboxes in the design show a different button than the usual ones, we need a new style for the toggle button--> 
+    <ControlTemplate x:Key="NoBordersComboBoxToggleButton" 
+                       TargetType="{x:Type ToggleButton}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
+            <Border x:Name="Border" 
+                    Grid.ColumnSpan="2"
+                    CornerRadius="0"
+                    Background="{StaticResource PreferencesWindowBackgroundColor}"
+                    BorderBrush="#FF97A0A5"
+                    BorderThickness="0,0,0,1" />
+            <Border Grid.Column="0"
+                    CornerRadius="0" 
+                    Margin="1" 
+                    Background="{StaticResource PreferencesWindowBackgroundColor}" 
+                    BorderBrush="#FF97A0A5"
+                    BorderThickness="0,0,0,0" />
+            <!--This Path will draw a small triangle symbol inside the toogle button-->
+            <Path x:Name="Arrow"
+                    Grid.Column="1"     
+                    Fill="{StaticResource PreferencesWindowFontColor}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z" />
+        </Grid>
+    </ControlTemplate>
+
+    <!--This ControlTemplate for TextBox is used inside the NoBordersComboBox control-->
+    <ControlTemplate x:Key="NoBordersComboBoxTextBox" 
+                   TargetType="{x:Type TextBox}">
+    <Border x:Name="PART_ContentHost" 
+            Focusable="False" 
+            Background="{TemplateBinding Background}" />
+    </ControlTemplate>
+
+    <!--This is the main Style for the new ComboBox in the Preferences window General tab and using the previous templated declared-->
+    <Style x:Key="NoBordersComboBoxStyle" 
+           TargetType="{x:Type ComboBox}">
+        <Setter Property="SnapsToDevicePixels" 
+                Value="true"/>
+        <Setter Property="OverridesDefaultStyle" 
+                Value="true"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" 
+                Value="Auto"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" 
+                Value="Auto"/>
+        <Setter Property="ScrollViewer.CanContentScroll" 
+                Value="true"/>
+        <Setter Property="Foreground" 
+                Value="{StaticResource PreferencesWindowFontColor}"/>
+        <Setter Property="FontWeight" 
+                Value="Regular"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBox}">
+                    <Grid>
+                        <!--Toogle button that is shown in the right side of the combobox and when is clicked displays a list of all the values-->
+                        <ToggleButton Name="ToggleButton" 
+                                    Template="{StaticResource NoBordersComboBoxToggleButton}" 
+                                    Grid.Column="2" 
+                                    Focusable="false"
+                                    IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}"
+                                    ClickMode="Press">
+                        </ToggleButton>
+                        <ContentPresenter Name="ContentSite" 
+                                        IsHitTestVisible="False"  
+                                        Content="{TemplateBinding SelectionBoxItem}"
+                                        ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                        ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                        Margin="3,3,23,3"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left" />
+                        <!--This TextBox shows the current comboboxitem value selected-->
+                        <TextBox x:Name="PART_EditableTextBox"
+                                    Style="{x:Null}" 
+                                    Template="{StaticResource NoBordersComboBoxTextBox}" 
+                                    HorizontalAlignment="Left" 
+                                    VerticalAlignment="Center" 
+                                    Margin="3,3,23,3"
+                                    Focusable="True" 
+                                    Background="#FF3F3F3F"
+                                    Foreground="{StaticResource PreferencesWindowFontColor}"
+                                    Visibility="Hidden"
+                                    IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                        <!--The Popup is the window with all the comboboxitems displayed when the user clicks the combobox toogle button-->
+                        <Popup Name="Popup"
+                                  Placement="Bottom"
+                                  IsOpen="{TemplateBinding IsDropDownOpen}"
+                                  AllowsTransparency="True" 
+                                  Focusable="False"
+                                  PopupAnimation="Slide">
+
+                            <Grid Name="DropDown"
+                                  SnapsToDevicePixels="True"                
+                                  MinWidth="{TemplateBinding ActualWidth}"
+                                  MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                <Border x:Name="DropDownBorder"
+                                                Background="#FF3F3F3F"
+                                                BorderThickness="1"
+                                                BorderBrush="#888888"/>
+                                <ScrollViewer Margin="4,6,4,6" 
+                                                      SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True" 
+                                                KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems" 
+                                 Value="false">
+                            <Setter TargetName="DropDownBorder" 
+                                    Property="MinHeight" 
+                                    Value="95"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" 
+                                 Value="false">
+                            <Setter Property="Foreground" 
+                                    Value="#888888"/>
+                        </Trigger>
+                        <Trigger Property="IsGrouping" 
+                                 Value="true">
+                            <Setter Property="ScrollViewer.CanContentScroll" 
+                                    Value="false"/>
+                        </Trigger>
+                        <Trigger SourceName="Popup" 
+                                 Property="Popup.AllowsTransparency" 
+                                 Value="true">
+                            <Setter TargetName="DropDownBorder" 
+                                    Property="CornerRadius" Value="0"/>
+                            <Setter TargetName="DropDownBorder" 
+                                    Property="Margin" Value="0,2,0,0"/>
+                        </Trigger>
+                        <Trigger Property="IsEditable"  
+                                 Value="true">
+                            <Setter Property="IsTabStop" 
+                                    Value="false"/>
+                            <Setter TargetName="PART_EditableTextBox" 
+                                    Property="Visibility" 
+                                    Value="Visible"/>
+                            <Setter TargetName="ContentSite" 
+                                    Property="Visibility" 
+                                    Value="Hidden"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Style for the comboboxitems in NoBordersComboBoxStyle due that they need to have the same background color and font color-->
+    <Style x:Key="NoBordersComboItemStyle" 
+           TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="SnapsToDevicePixels" 
+                    Value="true"/>
+        <Setter Property="Foreground" 
+                    Value="White"/>
+        <Setter Property="OverridesDefaultStyle" 
+                    Value="true"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                    <Border Name="Border"
+                              Padding="2"
+                              SnapsToDevicePixels="true">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" 
+                                 Value="true">
+                            <Setter TargetName="Border" 
+                                  Property="Background" 
+                                  Value="#FF4F4F4F"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" 
+                                 Value="false">
+                            <Setter Property="Foreground" 
+                                  Value="#888888"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+ 
+    <!--This radio button style was created for the Preferences window -> General Tab, the font color is white and background color is gray-->
+    <Style x:Key="RunSettingsRadioButtons"
+           TargetType="{x:Type RadioButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <BulletDecorator Background="{StaticResource PreferencesWindowBackgroundColor}" 
+                                     Cursor="Hand">
+                        <BulletDecorator.Bullet>
+                            <Grid Width="18"
+                                  Height="18">
+                                <!--The main white circle filled with White color (see the trigger IsChecked -> True-->
+                                <Ellipse x:Name="MainEllipse"
+                                         StrokeThickness="1"
+                                         Stroke="Black">
+                                </Ellipse>
+                                <!--The black circle inside the MainEllipse which indicates which radio button is checked-->
+                                <Ellipse x:Name="SelectedEllipse"
+                                         Margin="5"
+                                         Visibility="Collapsed"
+                                         Fill="Black">
+                                </Ellipse>
+                            </Grid>
+                        </BulletDecorator.Bullet>
+                        <!--Text element next to each radio button-->
+                        <TextBlock Margin="3,1,0,0" 
+                                   Foreground="{StaticResource PreferencesWindowFontColor}" 
+                                   FontWeight="Regular"
+                                   FontFamily="Calibri" 
+                                   FontSize="12">
+                            <ContentPresenter />
+                        </TextBlock>
+                    </BulletDecorator>
+                    <!--If item is checked, trigger the visibility of the mark-->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" 
+                                 Value="true">
+                            <!--If item is checked, trigger the visibility to Visible of the SelectedEllipse and change the color of the MainEllipse into White for better highlighting-->
+                            <Setter TargetName="SelectedEllipse" 
+                                    Property="Visibility" 
+                                    Value="Visible"/>
+                            <Setter TargetName="MainEllipse" 
+                                    Property="Fill" 
+                                    Value="{StaticResource PreferencesWindowFontColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" 
+                                 Value="false">
+                            <!--If item is checked, trigger the visibility to Collapse of the SelectedEllipse and change the color of the  MainEllipse into White for better highlighting-->
+                            <Setter TargetName="SelectedEllipse" 
+                                    Property="Visibility" 
+                                    Value="Collapsed"/>
+                            <Setter TargetName="MainEllipse" 
+                                    Property="Fill" 
+                                    Value="{StaticResource PreferencesWindowBackgroundColor}"/>
+                            <Setter TargetName="MainEllipse" 
+                                Property="Stroke" 
+                                Value="{StaticResource PreferencesWindowFontColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <SolidColorBrush x:Key="PreferencesWindowVisualSettingsBackground" 
+                     Color="#535353" />
+
+    <SolidColorBrush x:Key="PreferencesWindowVisualSettingsAddStyleBackground" 
+                     Color="#666666" />
+
+    <!--This Style will be used in the radio buttons located in the Preferences -> Visual Settings ->  Geometry Scaling section-->
+    <Style x:Key="GeometryScaleRadioButtons"
+           TargetType="{x:Type RadioButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <BulletDecorator Background="{StaticResource PreferencesWindowBackgroundColor}" 
+                                     Cursor="Hand">
+                        <BulletDecorator.Bullet>
+                            <Grid Width="18"
+                                  Height="18">
+                                <!--The main white circle filled with White color (see the trigger IsChecked -> True-->
+                                <Ellipse x:Name="MainEllipse"
+                                         StrokeThickness="1"
+                                         Stroke="Black">
+                                </Ellipse>
+                                <!--The black circle inside the MainEllipse which indicates which radio button is checked-->
+                                <Ellipse x:Name="SelectedEllipse"
+                                         Margin="5"
+                                         Visibility="Collapsed"
+                                         Fill="Black">
+                                </Ellipse>
+                            </Grid>
+                        </BulletDecorator.Bullet>
+                        <!--Text element next to each radio button-->
+                        <TextBlock x:Name="RadioTextBlock"
+                                   Margin="3,1,0,0" 
+                                   Foreground="{StaticResource PreferencesWindowFontColor}" 
+                                   FontWeight="Regular"
+                                   FontSize="12">
+                            <ContentPresenter />
+                        </TextBlock>
+                    </BulletDecorator>
+                    <!--If item is checked, trigger the visibility of the mark-->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" 
+                                 Value="true">
+                            <!--If item is checked, trigger the visibility to Visible of the SelectedEllipse and change the color of the MainEllipse into White for better highlighting-->
+                            <Setter TargetName="SelectedEllipse" 
+                                    Property="Visibility" 
+                                    Value="Visible"/>
+                            <Setter TargetName="MainEllipse" 
+                                    Property="Fill" 
+                                    Value="{StaticResource PreferencesWindowFontColor}"/>
+                            <Setter TargetName="RadioTextBlock"
+                                    Property="FontWeight"
+                                    Value="Bold"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" 
+                                 Value="false">
+                            <!--If item is checked, trigger the visibility to Collapse of the SelectedEllipse and change the color of the  MainEllipse into White for better highlighting-->
+                            <Setter TargetName="SelectedEllipse" 
+                                    Property="Visibility" 
+                                    Value="Collapsed"/>
+                            <Setter TargetName="MainEllipse" 
+                                    Property="Fill" 
+                                    Value="{StaticResource PreferencesWindowBackgroundColor}"/>
+                            <Setter TargetName="MainEllipse" 
+                                    Property="Stroke" 
+                                    Value="{StaticResource PreferencesWindowFontColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--This Style will be used for some TextBlocks located in "Preferences -> Visual Settings ->  Geometry Scaling section" that have a very specific behavior of showing a descrition below-->
+    <Style x:Key="GeometryScaleDescTextBox"
+                   TargetType="{x:Type TextBlock}">
+        <Setter Property="Background" 
+                Value="#474747"/>
+        <Setter Property="Foreground" 
+                Value="White"/>
+        <Setter Property="TextWrapping" 
+                Value="Wrap"/>
+        <Setter Property="FontSize" 
+                Value="11"/>
+        <Setter Property="FontWeight" 
+                Value="Regular"/>
+    </Style>
+
+    <!--This Style will be used for a TextBox located in "Preferences -> Visual Settings -> Group Styles when adding a new Style
+    The specific behaviour for the TextBox is that doesn't have borders and has some text that is deleted when the user starts typing-->
+    <Style x:Key="TextBoxWaterMarkStyle" 
+           TargetType="{x:Type TextBox}">
+        <Setter Property="Background" 
+                Value="#666666" />
+        <Setter Property="Foreground" 
+                Value="White" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Row="0"
+                                Background="#666666" 
+                                BorderBrush="{StaticResource PreferencesWindowButtonColor}" 
+                                Grid.ColumnSpan="2"
+                                BorderThickness="0,0,0,2"/>
+                        <ScrollViewer x:Name="PART_ContentHost" 
+                                      Margin="5,0,0,0" 
+                                      VerticalAlignment="Center" />
+
+                        <!--This Label will show the WaterMark text that will be deleted once the user starts typing-->
+                        <Label Grid.Row="0"
+                                Margin="5,0,0,0" 
+                                x:Name="WaterMarkLabel" 
+                                Content="{TemplateBinding Tag}" 
+                                VerticalAlignment="Center"
+                                Visibility="Collapsed" 
+                                Foreground="LightGray"/>
+
+                        <!--This is the Canvas for the exclamation mark appearing when the Style that the user is trying to insert already exists-->
+                        <Canvas Grid.Column="1" 
+                                Visibility="{Binding Path=IsWarningEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                ToolTip="{x:Static p:Resources.PreferencesViewStyleWarning}">
+                            <Polygon 
+                                         Points="10,5 18,20 2,20">
+                                <Polygon.Fill>
+                                    <SolidColorBrush Color="#FAA21B" />
+                                </Polygon.Fill>
+                            </Polygon>
+
+                            <Line x:Name="exclamationMark"
+                                    X1="10" Y1="8"
+                                    X2="10" Y2="15"
+                                    Stroke="Black"
+                                    StrokeThickness="2"/>
+                            <Ellipse x:Name="exclamationPoint"
+                                    Height="2"
+                                    Width="2"
+                                    Canvas.Top="17"
+                                    Canvas.Left="9"
+                                    Canvas.Right="10"
+                                    Fill="Black"/>
+                        </Canvas>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <!--When the user delete the text (Text property is empty) typed when we show again the WaterMark text-->
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Text" 
+                                           Value=""/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Visibility" 
+                                    TargetName="WaterMarkLabel" 
+                                    Value="Visible"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" 
+                                 Value="False">
+                            <Setter Property="Foreground" 
+                                    Value="DimGray"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--This Style will be used in the button for adding a Style in the "Group Styles" section-->
+    <Style x:Key="FlatButtonStyle"
+           TargetType="Button">
+        <Setter Property="Foreground"
+                Value="#6DD2FF" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder" 
+                                    CornerRadius="4" 
+                                    BorderBrush="#E0E0E0"
+                                    Background="Transparent">
+                        <TextBlock VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                                <ContentPresenter />
+                        </TextBlock>
+                    </Border>
+                    <!--Following the Autodesk Hig Standards some colors of the button will be changed according to the event-->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" 
+                                 Value="True">
+                            <Setter TargetName="ButtonBorder" 
+                                    Property="BorderThickness" 
+                                    Value="1" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" 
+                                    Property="BorderThickness" 
+                                    Value="2" />
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="ButtonBorder" 
+                                    Property="BorderBrush" 
+                                    Value="#A2D4EB" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <!--When the mouse is over the button the cursor will change to a hand-->
+            <Trigger Property="IsMouseOver"
+                     Value="true">
+                <Setter Property="Cursor" Value="Hand"/>
+            </Trigger>
+            <Trigger Property="IsEnabled"
+                     Value="false">
+                <Setter Property="Foreground"
+                        Value="#BBBBBB" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--This Style will be used for the Buttons that have a border and transparent background like Save and Cancel in the Preferences->Visual Settings tab-->
+    <Style x:Key="OutlinedButtonStyle"
+           TargetType="Button">
+        <Setter Property="Foreground"
+                Value="{StaticResource PreferencesWindowFontColor}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder" 
+                                    CornerRadius="4" 
+                                    BorderBrush="#E0E0E0"
+                                    BorderThickness="0.5"
+                                    Background="Transparent">
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Center">
+                            <ContentPresenter />
+                        </TextBlock>
+                    </Border>
+                    <!--According to the Hig Autodesk standards for Outlined buttons some colors/properties will be changed according to the event generated-->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" 
+                                 Value="True">
+                            <Setter Property="Button.Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="Black" 
+                                                      Direction="320" 
+                                                      ShadowDepth="3" 
+                                                      BlurRadius="5" 
+                                                      Opacity="0.5" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="ButtonBorder" 
+                                    Property="BorderThickness" 
+                                    Value="1" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" 
+                                    Property="BorderThickness" 
+                                    Value="2" />
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="ButtonBorder" 
+                                    Property="BorderBrush" 
+                                    Value="#A2D4EB" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="true">
+                <Setter Property="Cursor" 
+                        Value="Hand"/>
+            </Trigger>
+            <Trigger Property="IsEnabled"
+                     Value="false">
+                <Setter Property="Foreground"
+                        Value="#BBBBBB" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!--This Style will be used for Note Text block (used when Note is not on edit mode)-->
+    <Style x:Key="NoteTextBoxStyle"
+           TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Trebuchet"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#222"/>
+        <Setter Property="Background" Value="#EEE"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <!--This Style will be used for Note Text block (used when Note is on edit mode)-->
+    <Style x:Key="NoteTextBlockStyle"
+           TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Trebuchet"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#222"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <!--This style will be used for setting the style of the Note's user control-->
+    <Style x:Key="NoteUserControlStyle"
+           TargetType="UserControl">
+        <Setter Property="BorderBrush" Value="#549ee7"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect ShadowDepth="0" Color="#222" Opacity="0.25" BlurRadius="9.0" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!--This Style will be used for the small trash icon button that appears when a new Style is created in the Visual Settings tab-->
+    <Style x:Key="FlatIconButtonStyle" 
+           TargetType="{x:Type Button}">
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value=".5" />
+            </Trigger>
+        </Style.Triggers>
+        <Setter Property="Background" 
+                Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="removeStyleBorder" 
+                            Background="{TemplateBinding Background}">
+                        <Grid>
+                            <Rectangle x:Name="backgroundRectangle"
+                                       Fill="{TemplateBinding Background}"/>
+                            <Rectangle x:Name="borderRectangle"
+                                       Fill="Transparent"
+                                       Stroke="Transparent"
+                                       StrokeThickness="2"/>
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <!--According to the Hig Autodesk standards for icon buttons some colors/properties will be changed according to the event generated-->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" 
+                                 Value="True">
+                            <Setter TargetName="backgroundRectangle"
+                                    Property="Fill" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter TargetName="backgroundRectangle" 
+                                    Property="Opacity" 
+                                    Value="0.2"/>
+                            <Setter TargetName="borderRectangle" 
+                                    Property="Stroke" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" 
+                                 Value="True">
+                            <Setter TargetName="backgroundRectangle"
+                                    Property="Fill" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter TargetName="backgroundRectangle" 
+                                    Property="Opacity" 
+                                    Value="0.8"/>
+                            <Setter TargetName="borderRectangle" 
+                                    Property="Stroke" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--This Style will be used for the ColorPicker button that is shown when adding a new Style in the Preferences -> Visual Settings tab-->
+    <Style x:Key="ButtonColorPickerStyle" 
+           TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="removeStyleBorder" 
+                            Background="{TemplateBinding Background}">
+                        <Grid>
+                            <Rectangle x:Name="borderRectangle"
+                                       Fill="Transparent"
+                                       Stroke="Transparent"
+                                       StrokeThickness="2"/>
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <!--According to the Hig Autodesk standards for icon buttons some colors/properties will be changed according to the event generated-->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" 
+                                 Value="True">
+                            <Setter TargetName="borderRectangle" 
+                                    Property="Stroke" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" 
+                                 Value="True">
+                            <Setter TargetName="borderRectangle"
+                                    Property="Fill" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter TargetName="borderRectangle" 
+                                    Property="Stroke" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <SolidColorBrush x:Key="PopupWhiteColor" 
+                             Color="#FFFFFF" />
+
+    <Color x:Key="PopupTitleBorderColor" 
+                   A="255"
+                   R="128"
+                   G="128"
+                   B="128"/>
+
+    <SolidColorBrush x:Key="PopupRatingControlBackColor" 
+                             Color="#F5F5F5" />
+
+    <SolidColorBrush x:Key="CheckMarkBackColor" 
+                             Color="#87B340" />
+
+    <!--Style for the buttons in a Tooltip part of the Dynamo Guided Tours-->
+    <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Width" Value="5"/>
+        <Setter Property="Height" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="CaretButtonBorder"
+                                Background="{StaticResource PopupWhiteColor}"
+                                BorderThickness="0"
+                                BorderBrush="Transparent">
+                        <Canvas Width="5" Height="10">
+                            <Line x:Name="line1" 
+                                      Stroke="Black" 
+                                      X1="5" 
+                                      Y1="0" 
+                                      X2="0" 
+                                      Y2="5"/>
+                            <Line x:Name="line2" 
+                                      Stroke="Black" 
+                                      X1="0" 
+                                      Y1="5" 
+                                      X2="5" 
+                                      Y2="10"/>
+                        </Canvas>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Tag" 
+                                     Value="Invert">
+                            <Setter TargetName="line1" 
+                                        Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform CenterX="2" 
+                                                         CenterY="5"  
+                                                         Angle="180"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="line2" 
+                                        Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform CenterX="2" 
+                                                         CenterY="5"  
+                                                         Angle="180"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" 
+                                     Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" 
+                                     Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Cursor" 
+                                        Value="Hand"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Style for the close popup button in a Tooltip part of the Dynamo Guided Tours-->
+    <Style x:Key="PopupCloseButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="CloseButtonBorder"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                BorderBrush="Transparent">
+                        <Canvas Margin="0,0,0,0">
+                            <Line x:Name="line1" X1="0" Y1="0" X2="13" Y2="13" Stroke="#808080" StrokeThickness="1"></Line>
+                            <Line x:Name="line2" X1="0" Y1="13" X2="13" Y2="0" Stroke="#808080" StrokeThickness="1"></Line>
+                        </Canvas>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="Red"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="Red"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" 
+                                     Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Cursor" 
+                                        Value="Hand"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PoupButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="MinWidth" Value="80"/>
+        <Setter Property="MaxHeight" Value="36"/>
+        <Setter Property="BorderThickness" Value="36"/>
+        <Setter Property="Foreground" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="Background" Value="{StaticResource PreferencesWindowButtonColor}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="PopupButtonBorder"
+                                    BorderThickness="1"
+                                    CornerRadius="4" 
+                                    Background="{StaticResource PreferencesWindowButtonColor}">
+                        <ContentPresenter Content="{TemplateBinding Content}" 
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PoupTitleLabelStyle" TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="MinHeight" Value="50"/>
+        <Setter Property="Foreground" Value="#535353" />
+    </Style>
+
+    <Style x:Key="PoupPathRectangleStyle" TargetType="{x:Type Path}">
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="Stroke" Value="Black"/>
+    </Style>
+
+    <Style x:Key="PoupPolygonPointerStyle" TargetType="{x:Type Polygon}">
+        <Setter Property="Stroke" Value="Black"/>
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
+    </Style>
+
+    <Style x:Key="CustomRichTextBoxStyle" TargetType="{x:Type RichTextBox}">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="Background" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style x:Key="SurveyTitleLabelStyle" TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="MinHeight" Value="50"/>
+        <Setter Property="Foreground" Value="#3C3C3C"/>
+    </Style>
+
+    <Style x:Key="RatingTitleLabelStyle" TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#3C3C3C"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
 </ResourceDictionary>
