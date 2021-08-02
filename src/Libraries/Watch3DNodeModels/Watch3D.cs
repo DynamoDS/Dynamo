@@ -122,8 +122,8 @@ namespace Watch3DNodeModels
             }
         }
 
-        public double WatchWidth { get; private set; }
-        public double WatchHeight { get; private set; }
+        public double WatchWidth { get; set; }
+        public double WatchHeight { get; set; }
         public bool WasExecuted { get; internal set; }
 
         public delegate void VoidHandler();
@@ -134,10 +134,7 @@ namespace Watch3DNodeModels
         private Watch3D(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            WatchWidth = 200;
-            WatchHeight = 200;
             ShouldDisplayPreviewCore = false;
-            Camera = new Watch3DCamera();
         }
 
         public Watch3D()
@@ -211,7 +208,7 @@ namespace Watch3DNodeModels
         public Watch3DCamera Camera
         {
             get;
-            private set;
+            set;
         }
 
         #endregion

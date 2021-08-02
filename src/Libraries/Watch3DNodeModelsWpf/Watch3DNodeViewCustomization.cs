@@ -56,15 +56,26 @@ namespace Watch3DNodeModelsWpf
             watch3DViewModel.Setup(dynamoViewModel,
                 dynamoViewModel.RenderPackageFactoryViewModel.Factory);
 
-            if (model.initialCameraData != null)
+            if (model.Camera != null)
             {
                 try
                 {
-                    // The deserialization logic is unified between the view model and this node model.
-                    // For the node model, we need to supply the deserialization method with the camera node.
-                    var cameraNode = model.initialCameraData.ChildNodes.Cast<XmlNode>().FirstOrDefault(innerNode => innerNode.Name.Equals("camera", StringComparison.OrdinalIgnoreCase));
-                    var cameraData = watch3DViewModel.DeserializeCamera(cameraNode);
-                    watch3DViewModel.SetCameraData(cameraData);
+                    var camera = model.Camera;
+                    var camData = new CameraData
+                    {
+                        Name = camera.Name,
+                        EyeX = camera.EyeX,
+                        EyeY = camera.EyeY,
+                        EyeZ = camera.EyeZ,
+                        LookX = camera.LookX,
+                        LookY = camera.LookY,
+                        LookZ = camera.LookZ,
+                        UpX = camera.UpX,
+                        UpY = camera.UpY,
+                        UpZ = camera.UpZ
+                    };
+
+                    watch3DViewModel.SetCameraData(camData);
                 }
                 catch
                 {
