@@ -140,7 +140,7 @@ namespace Dynamo.WorkspaceDependency
             {
                 Boolean hasPackageMarkedForUninstall = false;
                 // If package is set to uninstall state, update the package info
-                foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.MarkedForUninstall))
+                foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion))
                 {
                     (packageDependencies.FirstOrDefault(x => x.Name == package.Name) as PackageDependencyInfo).State = 
                         PackageDependencyState.RequiresRestart;

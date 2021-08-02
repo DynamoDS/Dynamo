@@ -154,7 +154,10 @@ namespace Dynamo.PackageManager
         [Obsolete("This property will be removed in Dynamo 3.0. Use LoadState.ScheduledState instead")]
         public bool MarkedForUninstall
         {
-            get { return LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload; }
+            get {
+                return BuiltInPackage ? LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload :
+                  LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion;
+            }
         }
 
         public PackageLoadState LoadState = new PackageLoadState();
