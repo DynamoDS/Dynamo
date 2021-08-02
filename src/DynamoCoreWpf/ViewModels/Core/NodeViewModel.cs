@@ -581,10 +581,10 @@ namespace Dynamo.ViewModels
             get => base.IsCollapsed;
             set
             {
-                foreach (var connector in WorkspaceViewModel.GetViewModelsInternal(NodeModel.AllConnectors.Select(x => x.GUID)))
-                {
-                    connector.IsCollapsed = value;
-                }
+                //foreach (var connector in WorkspaceViewModel.GetViewModelsInternal(NodeModel.AllConnectors.Select(x => x.GUID)))
+                //{
+                //    connector.IsCollapsed = value;
+                //}
 
                 base.IsCollapsed = value;
             }

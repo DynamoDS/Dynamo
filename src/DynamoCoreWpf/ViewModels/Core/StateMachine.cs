@@ -698,9 +698,15 @@ namespace Dynamo.ViewModels
 
                     if (dropGroup != null)
                     {
+                        // AddModelsToGroupModelCommand adds models to the selected group
+                        // therefor we add the dropGroup to the selection before calling
+                        // the command.
+                        DynamoSelection.Instance.Selection.AddUnique(dropGroup.AnnotationModel);
                         foreach (var item in DynamoSelection.Instance.Selection.OfType<ModelBase>())
                         {
-                            dropGroup.AnnotationModel.AddToSelectedModels(item);
+                            if (item == dropGroup.AnnotationModel) continue;
+
+                            owningWorkspace.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
                         }
                         dropGroup.NodeHoveringState = false;
                     }
@@ -792,15 +798,15 @@ namespace Dynamo.ViewModels
                     if (DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any()) return false;
 
                     // Here we check if the mouse cursor is inside any Annotation groups
-                    var dropGroup = owningWorkspace.Annotations
-                        .Where(x => x.AnnotationModel.Rect.Contains(mouseCursor.X, mouseCursor.Y))
-                        .FirstOrDefault();
+                    var dropGroups = owningWorkspace.Annotations
+                        .Where(x => x.AnnotationModel.Rect.Contains(mouseCursor.X, mouseCursor.Y));
+
+                    var dropGroup = dropGroups.FirstOrDefault(x => x.AnnotationModel.BelongsToGroup) ?? dropGroups.FirstOrDefault();
 
                     // If the dropGroup is null or any of the selected items is already in the dropGroup,
                     // we disable the drop border by setting NodeHoveringState to false
                     if (dropGroup is null ||
-                        dropGroup.Nodes.Intersect(DynamoSelection.Instance.Selection).Any() ||
-                        owningWorkspace.Annotations.Any(x => x.Nodes.Intersect(DynamoSelection.Instance.Selection).Any()))
+                        DynamoSelection.Instance.Selection.OfType<ModelBase>().Any(x => x.BelongsToGroup))
                     {
                         owningWorkspace.Annotations
                             .Where(x => x.NodeHoveringState)

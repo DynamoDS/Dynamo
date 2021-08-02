@@ -2108,6 +2108,7 @@ namespace Dynamo.Models
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
                             {
+                                model.BelongsToGroup = false;
                                 annotation.Nodes = list;
                                 annotation.UpdateBoundaryFromSelection();
                             }
@@ -2139,6 +2140,21 @@ namespace Dynamo.Models
                 }
             }
 
+        }
+
+        internal void AddGroupToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid)
+        {
+            var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
+            var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
+            if (selectedGroup != null)
+            {
+                foreach (var model in modelsToAdd)
+                {
+                    CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
+                    selectedGroup.AddToSelectedModels(model);
+                }
+
+            }
         }
 
         internal void DumpLibraryToXml(object parameter)

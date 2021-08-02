@@ -203,6 +203,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal NodeViewModel NodeViewModel
+        {
+            get => _node;
+        }
+
         #endregion
 
         #region events
@@ -229,9 +234,9 @@ namespace Dynamo.ViewModels
             _node.WorkspaceViewModel.PropertyChanged -= Workspace_PropertyChanged;
         }
 
-        internal PortViewModel CreateProxyPortViewModel()
+        internal PortViewModel CreateProxyPortViewModel(ProxyPortModel proxyPortModel)
         {
-            return new PortViewModel(_node, _port);
+            return new PortViewModel(_node, proxyPortModel);
         }
 
         /// <summary>

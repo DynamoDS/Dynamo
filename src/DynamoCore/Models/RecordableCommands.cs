@@ -2301,6 +2301,51 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// A command to add a AnnotationModel object to a group.
+        /// </summary>
+        public class AddGroupToGroupCommand : ModelBasedRecordableCommand
+        {
+            public Guid HostGroupGuid { get; set; }
+
+            [JsonConstructor]
+            public AddGroupToGroupCommand(Guid modeGuid, Guid hostModelGuid) : base(new[] { modeGuid }) 
+            {
+                HostGroupGuid = hostModelGuid;
+            }
+
+            /// <summary>
+            /// Creates a command to add a AnnotationModel object to another AnnotationModel.
+            /// </summary>
+            /// <param name="modelGuid"></param>
+            /// <param name="hostModelGuid"></param>
+            public AddGroupToGroupCommand(IEnumerable<Guid> modelGuid, Guid hostModelGuid) : base(modelGuid) 
+            {
+                HostGroupGuid = hostModelGuid;
+            }
+
+            internal static AddGroupToGroupCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                var modelGuids = DeserializeGuid(element, helper);
+                return new AddGroupToGroupCommand(modelGuids, Guid.Empty);
+            }
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.AddGroupToGroupImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                base.SerializeCore(element);
+            }
+
+            #endregion
+        }
+
+        /// <summary>
         /// A command to add a preset.
         /// </summary>
         [DataContract]

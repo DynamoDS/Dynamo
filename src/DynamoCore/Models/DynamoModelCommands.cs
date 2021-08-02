@@ -555,6 +555,17 @@ namespace Dynamo.Models
             AddToGroup(modelsToGroup);
         }
 
+        private void AddGroupToGroupImpl(AddGroupToGroupCommand command)
+        {
+            if (command.ModelGuid == Guid.Empty) return;
+
+            var modelsToGroup = command.ModelGuids
+                .Select(guid => CurrentWorkspace.GetModelInternal(guid))
+                .ToList();
+
+            AddGroupToGroup(modelsToGroup, command.HostGroupGuid);
+        }
+
         private void UndoRedoImpl(UndoRedoCommand command)
         {
             switch (command.CmdOperation)
