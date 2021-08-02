@@ -375,8 +375,11 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public ProcedureNode GetFunctionBySignature(string functionName, List<Type> parameterTypes)
         {
-            GetFunctionBySignature(new ProcedureMatchOptions() { FunctionName = functionName, 
-                ParameterTypes = parameterTypes }, out ProcedureNode output);
+            GetFunctionBySignature(new ProcedureMatchOptions() 
+            { 
+                FunctionName = functionName, 
+                ParameterTypes = parameterTypes 
+            }, out ProcedureNode output);
             return output;
         }
 
