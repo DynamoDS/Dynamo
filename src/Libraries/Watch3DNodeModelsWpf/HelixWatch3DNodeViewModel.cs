@@ -122,8 +122,7 @@ namespace Watch3DNodeModelsWpf
             var updatedNode = dynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == node.GUID);
             if (updatedNode == null) return;
 
-            var visibleUpstream = new List<NodeModel>();
-            watchModel.VisibleUpstreamNodes(visibleUpstream);
+            var visibleUpstream = watchModel.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).ToList();
 
             if (!visibleUpstream.Contains(updatedNode))
             {
