@@ -3804,7 +3804,6 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    // Problem: If funcDef is static and there is a non-static method with the same name and args, then GetFunctionBySignature might make a mistake
                     core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(new ProcedureMatchOptions()
                     {
                         FunctionName = funcDef.Name,
