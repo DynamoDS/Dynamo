@@ -391,7 +391,7 @@ namespace ProtoCore.DSASM
             outputProcNode = null;
 
             // how many default parameters are used
-            int defaultParamNum = int.MaxValue;
+            int smallestDefaultArgNum = int.MaxValue;
             for (int ii = 0; ii < Procedures.Count; ++ii)
             {
                 var f = Procedures[ii];
@@ -407,7 +407,6 @@ namespace ProtoCore.DSASM
                 {
                     var argNum = f.ArgumentTypes.Count;
                     var paramNum = opts.ParameterTypes.Count;
-                    int defaultArgNum = f.ArgumentInfos.Count(X => X.DefaultExpression != null);
 
                     if (opts.ExactMatchWithNumArgs && (argNum != paramNum))
                     {
@@ -425,21 +424,26 @@ namespace ProtoCore.DSASM
                         }
                     }
 
-                    if ((argNum < paramNum) || (defaultArgNum < argNum - paramNum))
+                    int defaultArgs = f.ArgumentInfos.Count(X => X.DefaultExpression != null);
+                    if ((argNum < paramNum) || (defaultArgs < argNum - paramNum))
                     {
+                        // The current procedure has :
+                        // less arguments that we are looking for.
+                        // or
+                        // too many arguments(even with defaults) than we are looking for
                         goto NotMatch;
                     }
 
                     var num = argNum - paramNum;
-                    if (num <= defaultParamNum)
+                    if (num <= smallestDefaultArgNum)
                     {
-                        defaultParamNum = num;
+                        smallestDefaultArgNum = num;
 
                         outputProcNodeIndex = ii;
                         outputProcNode = Procedures[ii];
                     }
 
-                    if (defaultParamNum == 0)
+                    if (smallestDefaultArgNum == 0)
                     {
                         break;
                     }
