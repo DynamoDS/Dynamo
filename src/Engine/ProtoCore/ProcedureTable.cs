@@ -380,16 +380,16 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Get function by its signature.
         /// </summary>
-        /// <param name="functionName"></param>
-        /// <param name="parameterTypes"></param>
-        /// <returns>Index of the ProcedureNode in the Procedures list</returns>
-        internal int GetFunctionBySignatureV2(ProcedureMatchOptions opts, out ProcedureNode procNode)
+        /// <param name="opts">Matching options</param>
+        /// <param name="outputProcNode">Output procedure node. Null if nothing is found</param>
+        /// <returns>Index of the ProcedureNode in the Procedures list. Returns -1 If nothing is found</returns>
+        internal int GetFunctionBySignatureV2(ProcedureMatchOptions opts, out ProcedureNode outputProcNode)
         {
+            int outputProcNodeIndex = Constants.kInvalidIndex;
+            outputProcNode = null;
+
             // how many default parameters are used
             int defaultParamNum = int.MaxValue;
-            int currentProcedure = Constants.kInvalidIndex;
-
-            procNode = null;
             for (int ii = 0; ii < Procedures.Count; ++ii)
             {
                 var f = Procedures[ii];
@@ -431,8 +431,8 @@ namespace ProtoCore.DSASM
                     {
                         defaultParamNum = num;
 
-                        currentProcedure = ii;
-                        procNode = Procedures[ii];
+                        outputProcNodeIndex = ii;
+                        outputProcNode = Procedures[ii];
                     }
 
                     if (defaultParamNum == 0)
@@ -444,7 +444,7 @@ namespace ProtoCore.DSASM
                 NotMatch:
                 ;
             }
-            return currentProcedure;
+            return outputProcNodeIndex;
         }
     }
 }
