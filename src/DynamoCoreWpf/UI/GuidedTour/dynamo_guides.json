@@ -1,0 +1,137 @@
+[
+	{
+		"Name": "Get Started",
+		"GuideSteps": [
+			{
+				"Sequence": 0,
+				"Name": "welcome",
+				"Type": "welcome",
+				"Width": 480,
+				"Height": 180,
+				"StepContent": {
+					"Title": "GetStartedGuideWelcomeTitle",
+					"FormattedText": "GetStartedGuideWelcomeText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "center",
+					"HostUIElementString": "WorkspaceTabs",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 0
+				}
+			},
+			{
+				"Sequence": 1,
+				"Name": "library",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 250,
+				"StepContent": {
+					"Title": "GetStartedGuideLibraryTitle",
+					"FormattedText": "GetStartedGuideLibraryText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"HostUIElementString": "sidebarGrid",
+					"VerticalPopupOffset": 100,
+					"HorizontalPopupOffset": 50
+				}
+			},
+			{
+				"Sequence": 2,
+				"Name": "run status",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "bottom_left",
+				"Width": 480,
+				"Height": 220,
+				"StepContent": {
+					"Title": "GetStartedGuideRunStatusBarTitle",
+					"FormattedText": "GetStartedGuideRunStatusBarText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "bottom",
+					"HostUIElementString": "bottomBarGrid",
+					"VerticalPopupOffset": 50,
+					"HorizontalPopupOffset": 320
+				}
+			},
+			{
+				"Sequence": 3,
+				"Name": "toolbar",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 230,
+				"StepContent": {
+					"Title": "GetStartedGuideToolbarTitle",
+					"FormattedText": "GetStartedGuideToolbarText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "bottom",
+					"HostUIElementString": "shortcutsBarGrid",
+					"VerticalPopupOffset": -60,
+					"HorizontalPopupOffset": 200
+				}
+			},
+			{
+				"Sequence": 4,
+				"Name": "preferences",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 190,
+				"StepContent": {
+					"Title": "GetStartedGuidePreferencesTitle",
+					"FormattedText": "GetStartedGuidePreferencesText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"HostUIElementString": "dynamoMenu",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 150
+				}
+			},
+			{
+				"Sequence": 5,
+				"Name": "resources",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 230,
+				"StepContent": {
+					"Title": "GetStartedGuideResourcesTitle",
+					"FormattedText": "GetStartedGuideResourcesText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"HostUIElementString": "HelpMenu",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 170
+				}
+			},
+			{
+				"Sequence": 6,
+				"Name": "survey",
+				"Type": "survey",
+				"Width": 400,
+				"Height": 450,
+				"StepContent": {
+					"Title": "GetStartedGuideSurveyTitle",
+					"FormattedText": "GetStartedGuideSurveyText"
+				},
+				"ExtraContent": [
+					{
+						"Property": "RatingTextTitle",
+						"Value": "GetStartedGuideRatingTextTitle"
+					}
+				],
+				"HostPopupInfo": {
+					"PopupPlacement": "center",
+					"HostUIElementString": "WorkspaceTabs",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 0
+				}
+			}
+		]
+	}
+]
