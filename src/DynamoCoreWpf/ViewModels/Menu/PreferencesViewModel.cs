@@ -4,13 +4,13 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -773,7 +773,6 @@ namespace Dynamo.ViewModels
             var loadPackagesParams = new LoadPackageParams
             {
                 Preferences = preferenceSettings,
-                PathManager = dynamoViewModel.Model.PathManager,
             };
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            

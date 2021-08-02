@@ -69,7 +69,8 @@
                           Command="{Binding Path=UngroupCommand}" />
                 <MenuItem Name="pinToNode"
                           Header="{x:Static p:Resources.ContextPinToNode}" 
-                          Command="{Binding Path=PinToNodeCommand}"/>
+                          Command="{Binding Path=PinToNodeCommand}"
+                          ToolTip="Select a node to pin to this note" ToolTipService.ShowOnDisabled="True"/>
 
             </ContextMenu>
         </Grid.ContextMenu>
