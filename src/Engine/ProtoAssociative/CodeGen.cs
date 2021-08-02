@@ -3776,13 +3776,22 @@ namespace ProtoAssociative
                 // Get the exisitng procedure that was added on the previous pass
                 if (ProtoCore.DSASM.Constants.kInvalidIndex == globalClassIndex)
                 {
-                    var procNode = codeBlock.procedureTable.GetFunctionBySignature(funcDef.Name, argList);
+                    codeBlock.procedureTable.GetFunctionBySignatureV2(new ProcedureMatchOptions() { 
+                        FunctionName = funcDef.Name, ParameterTypes = argList,
+                        IsStatic = funcDef.IsStatic }, out ProcedureNode procNode);
                     globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
                     localProcedure = codeBlock.procedureTable.Procedures[globalProcIndex];
                 }
                 else
                 {
-                    var procNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(funcDef.Name, argList);
+                    // Problem: If funcDef is static and there is a non-static method with the same name and args, then GetFunctionBySignature might make a mistake
+                    core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignatureV2(new ProcedureMatchOptions()
+                    {
+                        FunctionName = funcDef.Name,
+                        ParameterTypes = argList,
+                        IsStatic = funcDef.IsStatic
+                    }, out ProcedureNode procNode);
+
                     globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
                     localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
                 }
