@@ -57,11 +57,10 @@ namespace Watch3DNodeModelsWpf
         {
             OnClear();
 
-            var gathered = new List<NodeModel>();
-            watchModel.VisibleUpstreamNodes(gathered);
+            var gathered = watchModel.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).ToList();
 
             gathered.ForEach(n => n.WasRenderPackageUpdatedAfterExecution = false);
-            gathered.ForEach(n => n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory));
+            gathered.ForEach(n => n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, false, true));
         }
 
         protected override void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -72,6 +71,43 @@ namespace Watch3DNodeModelsWpf
                     UpdateUpstream();
                     break;
             }
+        }
+
+        protected override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var node = sender as NodeModel;
+            if (node == null)
+            {
+                return;
+            }
+
+            if(e.PropertyName == "CachedValue")
+            {
+                var connected = watchModel.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner));
+                if (!connected.Contains(node))
+                {
+                    return;
+                }
+
+                node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true, true);
+            }
+
+            if (e.PropertyName == "IsFrozen")
+            {
+                var visibleUpstream = new List<NodeModel>();
+                watchModel.VisibleUpstreamNodes(visibleUpstream);
+
+                if (!visibleUpstream.Contains(node))
+                { 
+                    return;
+                }
+
+                HashSet<NodeModel> gathered = new HashSet<NodeModel>();
+                node.GetDownstreamNodes(node, gathered);
+                SetGeometryFrozen(gathered);
+            }
+
+            node.WasRenderPackageUpdatedAfterExecution = false;
         }
 
         protected override void PortDisconnectedHandler(PortModel obj)

@@ -603,6 +603,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // If there is no attached model update for all render packages
             if (watchModel == null)
             {
+                if(node.IsVisible == false)
+                {
+                    return;
+                }
+
                 AddGeometryForRenderPackages(packages);
                 return;
             }
