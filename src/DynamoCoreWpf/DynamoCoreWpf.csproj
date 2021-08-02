@@ -1375,6 +1375,8 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\pin_default_16px.png" />
+    <Resource Include="UI\Images\watch_default_16px.png" />
     <Resource Include="UI\Images\wire_anchor_12px.png" />
     <Resource Include="UI\Images\watch_hidden_16px.png" />
     <Resource Include="UI\Images\alert.png" />

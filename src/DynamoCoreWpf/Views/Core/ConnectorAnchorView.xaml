@@ -58,7 +58,9 @@
                 Canvas.Left="{Binding CurrentPosition.X}"
                 Height="{Binding MarkerSize}"
                 Width="{Binding MarkerSize}"
-                Command="{Binding PlaceWatchNodeCommand}">
+                Command="{Binding PlaceWatchNodeCommand}"
+                MouseEnter="OnWatchIconHover"
+                MouseLeave="OnWatchIconUnhover">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Style.Triggers>
@@ -82,6 +84,9 @@
                                 <DataTrigger Binding="{Binding Path=IsHalftone, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
                                     <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/Watch_16px.png"/>
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=WatchIconPreviewOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/watch_default_16px.png"/>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Image.Style>
@@ -99,7 +104,9 @@
                 Canvas.Left="{Binding CurrentPosition.X}"
                 Height="{Binding MarkerSize}"
                 Width="{Binding MarkerSize}"
-                Command="{Binding PinConnectorCommand}">
+                Command="{Binding PinConnectorCommand}"
+                MouseEnter="OnPinIconHover"
+                MouseLeave="OnPinIconUnhover">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Style.Triggers>
@@ -122,6 +129,9 @@
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=IsHalftone, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
                                     <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/Pin_16px.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=PinIconPreviewOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_default_16px.png"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>

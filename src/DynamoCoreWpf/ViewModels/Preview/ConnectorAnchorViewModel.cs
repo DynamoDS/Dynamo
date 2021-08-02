@@ -22,6 +22,9 @@ namespace Dynamo.ViewModels
         private bool isDataFlowCollection;
         private bool canDisplayIcons = false;
 
+        private bool watchIconPreviewOn = false;
+        private bool pinIconPreviewOn = false;
+
         private ConnectorViewModel ViewModel { get; set; }
         private DynamoModel DynamoModel { get; set; }
         private Dispatcher Dispatcher { get; set; }
@@ -103,7 +106,44 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(IsPartlyVisible));
             }
         }
-       
+
+        public bool PinIconPreviewOn
+        {
+            get
+            {
+                return pinIconPreviewOn;
+            }
+            set
+            {
+                pinIconPreviewOn = value;
+                RaisePropertyChanged(nameof(PinIconPreviewOn));
+            }
+        }
+        public bool WatchIconPreviewOn
+        {
+            get
+            {
+                return watchIconPreviewOn;
+            }
+            set
+            {
+                watchIconPreviewOn = value;
+                RaisePropertyChanged(nameof(WatchIconPreviewOn));
+            }
+        }
+
+
+
+        internal void SwitchWatchPreviewOn()
+        {
+            WatchIconPreviewOn = true;
+        }
+
+        internal void SwitchWatchPreviewOff()
+        {
+            WatchIconPreviewOn = false;
+        }
+
         public bool IsDataFlowCollection
         {
             get { return isDataFlowCollection; }
@@ -113,7 +153,17 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(IsDataFlowCollection));
             }
         }
-        
+
+        internal void SwitchPinPreviewOn()
+        {
+            PinIconPreviewOn = true;
+        }
+
+        internal void SwitchPinPreviewOff()
+        {
+            PinIconPreviewOn = false;
+        }
+
         public bool CanDisplayIcons
         {
             get { return canDisplayIcons; }
