@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -59,6 +60,7 @@ namespace Dynamo.ViewModels
         private bool canToggleFrozen = true;
         private bool isRenamed = false;
         private int numberOfDismissedAlerts = 0;
+        private ObservableCollection<MenuItem> dismissedAlerts = new ObservableCollection<MenuItem>();
         #endregion
 
         #region public members
@@ -605,6 +607,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
+        public ObservableCollection<MenuItem> DismissedAlerts
+        {
+            get => dismissedAlerts;
+            set
+            {
+                dismissedAlerts = value;
+                RaisePropertyChanged(nameof(DismissedAlerts));
+            }
+        }
+
         #endregion
 
         #region events
@@ -676,7 +689,7 @@ namespace Dynamo.ViewModels
 
             ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
             UpdateBubbleContent();
-
+            
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -699,6 +712,7 @@ namespace Dynamo.ViewModels
             // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
             ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeWarnings_CollectionChanged;
             logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
+
         }
 
         /// <summary>
@@ -707,11 +721,76 @@ namespace Dynamo.ViewModels
         /// <param name="obj"></param>
         private void Logic_NodeMessagesClearing(NodeModel obj)
         {
+            if (nodeLogic.State == ElementState.Error) return;
+
             ErrorBubble.NodeMessages.Clear();
+        }
+
+        /// <summary>
+        /// Truncates a long string with ellipses
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="maxLength"></param>
+        /// <returns></returns>
+        public static string Truncate(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value)) { return value; }
+
+            string ellipses = value.Length > maxLength ? "..." : "";
+            return value.Substring(0, Math.Min(value.Length, maxLength)) + ellipses;
         }
 
         private void DismissedNodeWarnings_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (!(sender is ObservableCollection<InfoBubbleDataPacket> observableCollection)) return;
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (InfoBubbleDataPacket infoBubbleDataPacket in observableCollection)
+                    {
+                        List<string> addedMessages = DismissedAlerts
+                            .Select(x => x.Tag.ToString())
+                            .ToList();
+
+                        if (addedMessages.Contains(infoBubbleDataPacket.Message)) continue;
+
+                        DismissedAlerts.Add(new MenuItem
+                        {
+                            Header = Truncate(infoBubbleDataPacket.Message, 30),
+                            Tag = infoBubbleDataPacket.Message,
+                            Command = ErrorBubble.UndismissWarningCommand,
+                            CommandParameter = infoBubbleDataPacket.Message
+                        });
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    DismissedAlerts.Clear(); // Rebuilding the collection
+                    foreach (InfoBubbleDataPacket infoBubbleDataPacket in ErrorBubble.DismissedMessages)
+                    {
+                        List<string> addedMessages = DismissedAlerts
+                            .Select(x => x.Tag.ToString())
+                            .ToList();
+
+                        if (addedMessages.Contains(infoBubbleDataPacket.Message)) continue;
+
+                        DismissedAlerts.Add(new MenuItem
+                        {
+                            Header = Truncate(infoBubbleDataPacket.Message, 30),
+                            Tag = infoBubbleDataPacket.Message,
+                            Command = ErrorBubble.UndismissWarningCommand,
+                            CommandParameter = infoBubbleDataPacket.Message
+                        });
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             NumberOfDismissedAlerts = ErrorBubble.DismissedMessages.Count;
         }
         
@@ -882,6 +961,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "Width":
                     RaisePropertyChanged("Width");
+                    UpdateErrorBubbleWidth();
                     UpdateErrorBubblePosition();
                     break;
                 case "Height":
@@ -911,6 +991,14 @@ namespace Dynamo.ViewModels
                     RaiseFrozenPropertyChanged();
                     break;
             }
+        }
+
+        /// <summary>
+        /// Updates the width of the node's Warning/Error bubbles, in case the width of the node changes.
+        /// </summary>
+        private void UpdateErrorBubbleWidth()
+        {
+            ErrorBubble.BubbleWidth = NodeModel.Width;
         }
 
         public void UpdateBubbleContent()
@@ -943,24 +1031,7 @@ namespace Dynamo.ViewModels
 
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
-                    ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft,
-                        botRight, content, connectingDirection));
-                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Info, topLeft,
-                    //    botRight, "lorem ipsum dolor sit amet", connectingDirection));
-                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Info, topLeft,
-                    //    botRight, content, connectingDirection));
-                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Warning, topLeft,
-                    //    botRight, "lorem ipsum", connectingDirection));
-                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Warning, topLeft,
-                    //    botRight, "lorem ipsum dolor sit amet", connectingDirection));
-                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Warning, topLeft,
-                    //    botRight, content, connectingDirection));
-                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error, topLeft,
-                    //    botRight, "lorem ipsum", connectingDirection));
-                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error, topLeft,
-                    //    botRight, "lorem ipsum dolor sit amet", connectingDirection));
-                    //ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error, topLeft,
-                    //    botRight, content, connectingDirection));
+                    ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
                 });
 
                 ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);

@@ -66,5 +66,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private DelegateCommand undismissCommand;
+        public DelegateCommand UndismissWarningCommand
+        {
+            get
+            {
+                if (undismissCommand == null)
+                {
+                    undismissCommand = new DelegateCommand(UndismissWarning, CanUndismissWarning);
+                }
+                return undismissCommand;
+            }
+        }
     }
 }

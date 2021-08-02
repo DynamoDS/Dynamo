@@ -26,7 +26,12 @@ namespace Dynamo.Controls
     public partial class InfoBubbleView : UserControl
     {
         #region Properties
-        private InfoBubbleViewModel viewModel;
+
+        private bool isResizing = false;
+        private bool isResizeHeight = false;
+        private bool isResizeWidth = false;
+
+        private InfoBubbleViewModel viewModel = null;
 
         public InfoBubbleViewModel ViewModel
         {
@@ -41,25 +46,102 @@ namespace Dynamo.Controls
                 }
             }
         }
-        
+
+        private double contentMaxWidth;
+
+        public double ContentMaxWidth
+        {
+            get { return contentMaxWidth; }
+            set { contentMaxWidth = value; }
+        }
+
+        private double contentMaxHeight;
+
+        public double ContentMaxHeight
+        {
+            get { return contentMaxHeight; }
+            set { contentMaxHeight = value; }
+        }
+
+        private System.Windows.Thickness contentMargin;
+
+        public System.Windows.Thickness ContentMargin
+        {
+            get { return contentMargin; }
+            set { contentMargin = value; }
+        }
+
+        private double contentFontSize;
+
+        public double ContentFontSize
+        {
+            get { return contentFontSize; }
+            set { contentFontSize = value; }
+        }
+
+        private FontWeight contentFontWeight;
+
+        public FontWeight ContentFontWeight
+        {
+            get { return contentFontWeight; }
+            set { contentFontWeight = value; }
+        }
+
+        private SolidColorBrush contentForeground;
+
+        public SolidColorBrush ContentForeground
+        {
+            get { return contentForeground; }
+            set { contentForeground = value; }
+        }
+
+        private double preview_LastMaxWidth;
+        private double preview_LastMaxHeight;
+
         // When a NodeModel is removed, WPF places the NodeView into a "disconnected"
         // state (i.e. NodeView.DataContext becomes "DisconnectedItem") before 
         // eventually removing the view. This is the result of the host canvas being 
         // virtualized. This property is used by InfoBubbleView to determine if it should 
         // still continue to access the InfoBubbleViewModel that it is bound to.
-        private bool IsDisconnected { get { return (this.ViewModel == null); } }
+        private bool IsDisconnected
+        {
+            get { return (this.ViewModel == null); }
+        }
+
+        private Hyperlink hyperlink;
 
         #endregion
-        
+
+        #region Storyboards
+
+        private Storyboard fadeInStoryBoard;
+        private Storyboard fadeOutStoryBoard;
+
+        #endregion
+
         /// <summary>
         /// Used to present useful/important information to user when the node is in Error or Warning state.
         /// </summary>
         public InfoBubbleView()
         {
             InitializeComponent();
+
+            // Make sure to unsubscribe to the event handlers
+            Unloaded += (s, e) =>
+            {
+                Dispose();
+            };
+
+            fadeInStoryBoard = (Storyboard)FindResource("fadeInStoryBoard");
+            fadeOutStoryBoard = (Storyboard)FindResource("fadeOutStoryBoard");
+
+            ContentFontSize = Configurations.PreviewTextFontSize;
+            preview_LastMaxWidth = double.MaxValue;
+            preview_LastMaxHeight = double.MaxValue;
+
             this.DataContextChanged += InfoBubbleView_DataContextChanged;
         }
-        
+
         private void InfoBubbleWindowUserControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
@@ -73,12 +155,32 @@ namespace Dynamo.Controls
                     case InfoBubbleViewModel.State.Pinned:
                         mainGrid.Visibility = Visibility.Visible;
                         mainGrid.Opacity = Configurations.MaxOpacity;
-                       UpdatePosition();
+                        UpdatePosition();
                         break;
                 }
             }
         }
-        
+
+        #region FadeIn FadeOut Event Handling
+
+        private void CountDownDoubleAnimation_Completed(object sender, EventArgs e)
+        {
+            //Console.WriteLine("FadeOut done");
+            fadeInStoryBoard.Stop(this);
+            fadeOutStoryBoard.Stop(this);
+
+            mainGrid.Opacity = 0;
+            mainGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void CountUpDoubleAnimation_Completed(object sender, EventArgs e)
+        {
+            //Console.WriteLine("FadeIn done");
+            mainGrid.Opacity = Configurations.MaxOpacity;
+            mainGrid.Visibility = Visibility.Visible;
+        }
+        #endregion
+
         private void InfoBubbleView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             ViewModel = e.NewValue as InfoBubbleViewModel;
@@ -136,29 +238,482 @@ namespace Dynamo.Controls
                     this.ViewModel.DynamoViewModel.UIDispatcher.BeginInvoke(propertyChanged);
             }
         }
-       
+
+        private void UpdateHyperlink()
+        {
+            // if we have already generated a hyperlink then don't create a new one, but simply update the link uri
+            // this is to avoid losing track of objects that have event handler subscriptions
+            if (this.hyperlink != null)
+            {
+                this.hyperlink.NavigateUri = viewModel.DocumentationLink;
+                return;
+            }
+
+            this.hyperlink = new Hyperlink();
+            this.hyperlink.NavigateUri = viewModel.DocumentationLink;
+            this.hyperlink.RequestNavigate += RequestNavigateToDocumentationLinkHandler;
+            this.hyperlink.Inlines.Add(Wpf.Properties.Resources.InfoBubbleDocumentationLinkText);
+        }
+
+        private TextBlock GetHyperlinkTextBlock()
+        {
+            this.UpdateHyperlink();
+
+            var font = SharedDictionaryManager.DynamoModernDictionary["OpenSansRegular"];
+            TextBlock linkBlock = new TextBlock
+            {
+                TextWrapping = TextWrapping.Wrap,
+
+                Margin = ContentMargin,
+                MaxHeight = ContentMaxHeight,
+                MaxWidth = ContentMaxWidth,
+
+                Foreground = ContentForeground,
+                FontWeight = ContentFontWeight,
+                FontSize = ContentFontSize,
+
+                Background = Brushes.Transparent,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+
+                FontFamily = font as FontFamily
+            };
+
+            linkBlock.Inlines.Add(this.hyperlink);
+
+            return linkBlock;
+        }
+
+        #region Update Shape
+
+        private void UpdateShape()
+        {
+            ContentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            double estimatedHeight = ContentContainer.DesiredSize.Height;
+            double estimatedWidth = ContentContainer.DesiredSize.Width;
+
+            PointCollection framePoints = new PointCollection();
+            switch (ViewModel.InfoBubbleStyle)
+            {
+                case InfoBubbleViewModel.Style.Warning:
+                case InfoBubbleViewModel.Style.WarningCondensed:
+                case InfoBubbleViewModel.Style.Error:
+                case InfoBubbleViewModel.Style.ErrorCondensed:
+                    framePoints = GetFramePoints_Error(estimatedHeight, estimatedWidth);
+                    break;
+                case InfoBubbleViewModel.Style.None:
+                    break;
+            }
+
+            if (framePoints != null)
+                backgroundPolygon.Points = framePoints;
+        }
+
+        private PointCollection GetFramePoints_NodeTooltipConnectBottom(double estimatedHeight, double estimatedWidth)
+        {
+            PointCollection pointCollection = new PointCollection();
+
+            double arrowHeight = Configurations.NodeTooltipArrowHeight_SideConnecting;
+            double arrowWidth = Configurations.NodeTooltipArrowWidth_SideConnecting;
+
+            if (ViewModel.TargetTopLeft.Y - estimatedHeight >= 40)
+            {
+                arrowHeight = Configurations.NodeTooltipArrowHeight_BottomConnecting;
+                arrowWidth = Configurations.NodeTooltipArrowWidth_BottomConnecting;
+
+                ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.None;
+                pointCollection.Add(new Point(estimatedWidth, 0));
+                pointCollection.Add(new Point(0, 0));
+                pointCollection.Add(new Point(0, estimatedHeight - arrowHeight));
+                pointCollection.Add(new Point((estimatedWidth / 2) - arrowWidth / 2, estimatedHeight - arrowHeight));
+                pointCollection.Add(new Point(estimatedWidth / 2, estimatedHeight));
+                pointCollection.Add(new Point((estimatedWidth / 2) + (arrowWidth / 2), estimatedHeight - arrowHeight));
+                pointCollection.Add(new Point(estimatedWidth, estimatedHeight - arrowHeight));
+            }
+            else if (ViewModel.TargetBotRight.X + estimatedWidth <= this.ViewModel.DynamoViewModel.WorkspaceActualWidth)
+            {
+                ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Top;
+                contentMargin = Configurations.NodeTooltipContentMarginLeft.AsWindowsType();
+                //UpdateContent(Content);
+
+                pointCollection.Add(new Point(estimatedWidth, 0));
+                pointCollection.Add(new Point(0, 0));
+                pointCollection.Add(new Point(arrowWidth, arrowHeight / 2));
+                pointCollection.Add(new Point(arrowWidth, estimatedHeight));
+                pointCollection.Add(new Point(estimatedWidth, estimatedHeight));
+            }
+            else
+            {
+                ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.TopRight;
+                contentMargin = Configurations.NodeTooltipContentMarginRight.AsWindowsType();
+                //UpdateContent(Content);
+
+                pointCollection.Add(new Point(estimatedWidth, 0));
+                pointCollection.Add(new Point(0, 0));
+                pointCollection.Add(new Point(0, estimatedHeight));
+                pointCollection.Add(new Point(estimatedWidth - arrowWidth, estimatedHeight));
+                pointCollection.Add(new Point(estimatedWidth - arrowWidth, arrowHeight / 2));
+
+            }
+
+            return pointCollection;
+        }
+
+        private PointCollection GetFramePoints_NodeTooltipConnectLeft(double estimatedHeight, double estimatedWidth)
+        {
+            if (ViewModel.TargetBotRight.X + estimatedWidth > this.ViewModel.DynamoViewModel.WorkspaceActualWidth)
+            {
+                ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Right;
+                contentMargin = Configurations.NodeTooltipContentMarginRight.AsWindowsType();
+
+                return GeneratePointCollection_TooltipConnectRight(estimatedHeight, estimatedWidth);
+            }
+            else
+                return GeneratePointCollection_TooltipConnectLeft(estimatedHeight, estimatedWidth);
+        }
+
+        private PointCollection GetFramePoints_NodeTooltipConnectRight(double estimatedHeight, double estimatedWidth)
+        {
+            if (ViewModel.TargetTopLeft.X - estimatedWidth < 0)
+            {
+                ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Left;
+                contentMargin = Configurations.NodeTooltipContentMarginLeft.AsWindowsType();
+
+                return GeneratePointCollection_TooltipConnectLeft(estimatedHeight, estimatedWidth);
+            }
+            else
+                return GeneratePointCollection_TooltipConnectRight(estimatedHeight, estimatedWidth);
+        }
+
+        private PointCollection GeneratePointCollection_TooltipConnectLeft(double estimatedHeight,
+            double estimatedWidth)
+        {
+            PointCollection pointCollection = new PointCollection();
+
+            double arrowHeight = Configurations.NodeTooltipArrowHeight_SideConnecting;
+            double arrowWidth = Configurations.NodeTooltipArrowWidth_SideConnecting;
+
+            pointCollection.Add(new Point(estimatedWidth, 0));
+            pointCollection.Add(new Point(arrowWidth, 0));
+            pointCollection.Add(new Point(arrowWidth, estimatedHeight / 2 - arrowHeight / 2));
+            pointCollection.Add(new Point(0, estimatedHeight / 2));
+            pointCollection.Add(new Point(arrowWidth, estimatedHeight / 2 + arrowHeight / 2));
+            pointCollection.Add(new Point(arrowWidth, estimatedHeight));
+            pointCollection.Add(new Point(estimatedWidth, estimatedHeight));
+
+            return pointCollection;
+        }
+
+        private PointCollection GeneratePointCollection_TooltipConnectRight(double estimatedHeight,
+            double estimatedWidth)
+        {
+            PointCollection pointCollection = new PointCollection();
+
+            double arrowHeight = Configurations.NodeTooltipArrowHeight_SideConnecting;
+            double arrowWidth = Configurations.NodeTooltipArrowWidth_SideConnecting;
+
+            pointCollection.Add(new Point(estimatedWidth - arrowWidth, 0));
+            pointCollection.Add(new Point(0, 0));
+            pointCollection.Add(new Point(0, estimatedHeight));
+            pointCollection.Add(new Point(estimatedWidth - arrowWidth, estimatedHeight));
+            pointCollection.Add(new Point(estimatedWidth - arrowWidth, estimatedHeight / 2 + arrowHeight / 2));
+            pointCollection.Add(new Point(estimatedWidth, estimatedHeight / 2));
+            pointCollection.Add(new Point(estimatedWidth - arrowWidth, estimatedHeight / 2 - arrowHeight / 2));
+
+            return pointCollection;
+        }
+
+        private PointCollection GetFramePoints_Error(double estimatedHeight, double estimatedWidth)
+        {
+            double arrowHeight = Configurations.ErrorArrowHeight;
+            double arrowWidth = Configurations.ErrorArrowWidth;
+
+            PointCollection pointCollection = new PointCollection();
+            pointCollection.Add(new Point(estimatedWidth, 0));
+            pointCollection.Add(new Point(0, 0));
+            pointCollection.Add(new Point(0, estimatedHeight - arrowHeight));
+            pointCollection.Add(new Point((estimatedWidth / 2) - arrowWidth / 2, estimatedHeight - arrowHeight));
+            pointCollection.Add(new Point(estimatedWidth / 2, estimatedHeight));
+            pointCollection.Add(new Point((estimatedWidth / 2) + arrowWidth / 2, estimatedHeight - arrowHeight));
+            pointCollection.Add(new Point(estimatedWidth, estimatedHeight - arrowHeight));
+            return pointCollection;
+        }
+
+        #endregion
+
+
         #region Update Position
 
         private void UpdatePosition()
         {
-            nodeInformationalStateDockPanel.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            double estimatedHeight = nodeInformationalStateDockPanel.DesiredSize.Height;
-            double estimatedWidth = nodeInformationalStateDockPanel.DesiredSize.Width;
-
-            nodeInformationalStateDockPanel.Margin = GetMargin_Error(estimatedHeight, estimatedWidth);
+            Canvas.SetTop(mainGrid, ViewModel.TargetTopLeft.Y);
+            Canvas.SetLeft(mainGrid, ViewModel.TargetTopLeft.X);
         }
 
         private System.Windows.Thickness GetMargin_Error(double estimatedHeight, double estimatedWidth)
         {
             System.Windows.Thickness margin = new System.Windows.Thickness();
-            double nodeWidth = ViewModel.TargetBotRight.X - ViewModel.TargetTopLeft.X;
-            margin.Top = -(estimatedHeight) + ViewModel.TargetTopLeft.Y;
-            margin.Left = -((estimatedWidth - nodeWidth) / 2) + ViewModel.TargetTopLeft.X;
+            //double nodeWidth = ViewModel.TargetBotRight.X - ViewModel.TargetTopLeft.X;
+
+            Canvas.SetTop(mainGrid, ViewModel.TargetTopLeft.Y);
+            Canvas.SetLeft(mainGrid, ViewModel.TargetTopLeft.X);
+
+            //margin.Top = ViewModel.TargetTopLeft.Y;
+            //margin.Left = ViewModel.TargetTopLeft.X;
+            //margin.Top = -(estimatedHeight) + ViewModel.TargetTopLeft.Y;
+            //margin.Left = -((estimatedWidth - nodeWidth) / 2) + ViewModel.TargetTopLeft.X;
             return margin;
         }
 
         #endregion
-        
+
+        #region Update Content
+
+        private void UpdateContent()
+        {
+            //The reason of changing the content from the code behind like this is due to a bug of WPF
+            //  The bug if when you set the max width of an existing text box and then try to get the 
+            //  expected size of it by using TextBox.Measure(..) method it will return the wrong value.
+            //  The only solution that I can come up for now is clean the StackPanel content and 
+            //  then add a new TextBox to it
+
+            ContentContainer.Children.Clear();
+
+            if (ViewModel == null) return;
+
+
+            if (ViewModel.Content == "...")
+            {
+                #region Draw Icon
+
+                Rectangle r1 = new Rectangle();
+                r1.Fill = Brushes.Black;
+                r1.Height = 1;
+                r1.Width = 16;
+                r1.UseLayoutRounding = true;
+
+                Rectangle r2 = new Rectangle();
+                r2.Fill = Brushes.Black;
+                r2.Height = 1;
+                r2.Width = 16;
+                r2.UseLayoutRounding = true;
+
+                Rectangle r3 = new Rectangle();
+                r3.Fill = Brushes.Black;
+                r3.Height = 1;
+                r3.Width = 10;
+                r3.UseLayoutRounding = true;
+                r3.HorizontalAlignment = HorizontalAlignment.Left;
+
+                Grid myGrid = new Grid();
+                myGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+                myGrid.VerticalAlignment = VerticalAlignment.Stretch;
+                myGrid.Background = Brushes.Transparent;
+                myGrid.Margin = ContentMargin;
+                myGrid.MaxHeight = ContentMaxHeight;
+                myGrid.MaxWidth = contentMaxWidth;
+
+                // Create row definitions.
+                RowDefinition rowDefinition1 = new RowDefinition();
+                RowDefinition rowDefinition2 = new RowDefinition();
+                RowDefinition rowDefinition3 = new RowDefinition();
+                rowDefinition1.Height = new GridLength(3);
+                rowDefinition2.Height = new GridLength(3);
+                rowDefinition3.Height = new GridLength(3);
+
+                myGrid.RowDefinitions.Add(rowDefinition1);
+                myGrid.RowDefinitions.Add(rowDefinition2);
+                myGrid.RowDefinitions.Add(rowDefinition3);
+                myGrid.Children.Add(r1);
+                Grid.SetRow(r1, 0);
+                myGrid.Children.Add(r2);
+                Grid.SetRow(r2, 1);
+                myGrid.Children.Add(r3);
+                Grid.SetRow(r3, 2);
+                myGrid.UseLayoutRounding = true;
+
+                ContentContainer.Children.Add(myGrid);
+
+                #endregion
+            }
+            else
+            {
+                string content = ViewModel.Content;
+                if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Warning)
+                {
+                    content = Wpf.Properties.Resources.InfoBubbleWarning + content;
+                }
+                else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error)
+                {
+                    content = Wpf.Properties.Resources.InfoBubbleError + content;
+                }
+
+                TextBox textBox = GetNewTextBox(content);
+                ContentContainer.Children.Add(textBox);
+
+                if (viewModel.DocumentationLink != null)
+                {
+                    TextBlock linkBlock = GetHyperlinkTextBlock();
+                    ContentContainer.Children.Add(linkBlock);
+                }
+            }
+        }
+
+        private void RequestNavigateToDocumentationLinkHandler(object sender, RequestNavigateEventArgs e)
+        {
+            this.viewModel.OpenDocumentationLinkCommand.Execute(e.Uri);
+        }
+
+        private TextBox GetNewTextBox(string text)
+        {
+            TextBox textBox = new TextBox();
+            textBox.Text = text;
+            textBox.TextWrapping = TextWrapping.Wrap;
+
+            textBox.Margin = ContentMargin;
+            textBox.MaxHeight = ContentMaxHeight;
+            textBox.MaxWidth = ContentMaxWidth;
+
+            textBox.Foreground = ContentForeground;
+            textBox.FontWeight = ContentFontWeight;
+            textBox.FontSize = ContentFontSize;
+
+            var font = SharedDictionaryManager.DynamoModernDictionary["OpenSansRegular"];
+            textBox.FontFamily = font as FontFamily;
+
+            textBox.Background = Brushes.Transparent;
+            textBox.IsReadOnly = true;
+            textBox.BorderThickness = new System.Windows.Thickness(0);
+
+            textBox.HorizontalAlignment = HorizontalAlignment.Center;
+            textBox.VerticalAlignment = VerticalAlignment.Center;
+
+            textBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+
+            return textBox;
+        }
+
+        #region Resize
+
+        private void Resize(object parameter)
+        {
+            Point deltaPoint = (Point) parameter;
+
+            double newMaxWidth = deltaPoint.X;
+            double newMaxHeight = deltaPoint.Y;
+
+            if (deltaPoint.X != double.MaxValue && newMaxWidth >= Configurations.PreviewMinWidth &&
+                newMaxWidth <= Configurations.PreviewMaxWidth)
+            {
+                ContentContainer.MaxWidth = newMaxWidth;
+                contentMaxWidth = newMaxWidth - 10;
+            }
+
+            if (deltaPoint.Y != double.MaxValue && newMaxHeight >= Configurations.PreviewMinHeight)
+            {
+                ContentContainer.MaxHeight = newMaxHeight;
+                contentMaxHeight = newMaxHeight - 17;
+            }
+
+            UpdateContent();
+            UpdateShape();
+            UpdatePosition();
+
+            this.preview_LastMaxWidth = ContentContainer.MaxWidth;
+            this.preview_LastMaxHeight = ContentContainer.MaxHeight;
+        }
+
+        #endregion
+
+        private void ShowErrorBubbleFullContent()
+        {
+            if (this.IsDisconnected)
+                return;
+
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed)
+            {
+                data.Style = InfoBubbleViewModel.Style.Error;
+            }
+            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.WarningCondensed)
+            {
+                data.Style = InfoBubbleViewModel.Style.Warning;
+            }
+
+            data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
+
+            //this.ViewModel.ShowFullContentCommand.Execute(data);
+        }
+
+        private void ShowErrorBubbleCondensedContent()
+        {
+            if (this.IsDisconnected)
+                return;
+
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error)
+            {
+                data.Style = InfoBubbleViewModel.Style.ErrorCondensed;
+            }
+            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Warning)
+            {
+                data.Style = InfoBubbleViewModel.Style.WarningCondensed;
+            }
+
+            data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
+
+            //this.ViewModel.ShowCondensedContentCommand.Execute(data);
+        }
+
+        private void ShowInfoBubble()
+        {
+            if (mainGrid.Visibility == System.Windows.Visibility.Collapsed)
+            {
+                mainGrid.Visibility = Visibility.Visible;
+                // Run animation and skip it to end state i.e. MaxOpacity
+                fadeInStoryBoard.Begin(this);
+                fadeInStoryBoard.SkipToFill(this);
+            }
+        }
+
+        // Hide bubble instantly
+        private void HideInfoBubble()
+        {
+            if (mainGrid.Visibility == System.Windows.Visibility.Visible)
+            {
+                mainGrid.Visibility = Visibility.Collapsed;
+                fadeOutStoryBoard.Begin(this);
+                fadeOutStoryBoard.SkipToFill(this);
+            }
+        }
+
+        private void FadeInInfoBubble()
+        {
+            if (this.IsDisconnected)
+                return;
+
+            if (this.ViewModel.DynamoViewModel.IsMouseDown ||
+                !this.ViewModel.DynamoViewModel.CurrentSpaceViewModel.CanShowInfoBubble)
+                return;
+
+            fadeOutStoryBoard.Stop(this);
+            mainGrid.Visibility = Visibility.Visible;
+            fadeInStoryBoard.Begin(this);
+        }
+
+        private void FadeOutInfoBubble()
+        {
+            if (this.IsDisconnected)
+                return;
+
+            if (this.ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Pinned)
+                return;
+
+            fadeInStoryBoard.Stop(this);
+            fadeOutStoryBoard.Begin(this);
+        }
+
+
         private void InfoBubbleRequestAction(object sender, InfoBubbleEventArgs e)
         {
             switch (e.RequestType)
@@ -188,66 +743,57 @@ namespace Dynamo.Controls
             }
         }
 
-        private void ShowInfoBubble()
-        {
-            if (mainGrid.Visibility == Visibility.Collapsed)
-            {
-                mainGrid.Visibility = Visibility.Visible;
-                // Run animation and skip it to end state i.e. MaxOpacity
-            }
-        }
-
-        // Hide bubble instantly
-        private void HideInfoBubble()
-        {
-            if (mainGrid.Visibility == Visibility.Visible)
-            {
-                mainGrid.Visibility = Visibility.Collapsed;
-            }
-        }
-        
         private void ErrorsBorder_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton != MouseButton.Left) return;
             if (ViewModel.NodeErrorsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
             {
                 ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                ErrorsBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
             }
             else
             {
                 ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
+                ErrorsBorder.HorizontalAlignment = HorizontalAlignment.Left;
             }
+
             ViewModel.NodeWarningsShowLessMessageVisible = false;
         }
-        
+
         private void WarningsBorder_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton != MouseButton.Left) return;
             if (ViewModel.NodeWarningsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
             {
                 ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                WarningsBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
             }
             else
             {
                 ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
+                WarningsBorder.HorizontalAlignment = HorizontalAlignment.Left;
             }
+
             ViewModel.NodeWarningsShowLessMessageVisible = false;
         }
-        
+
         private void InfoBorder_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton != MouseButton.Left) return;
             if (ViewModel.NodeInfoVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
             {
                 ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                InfoBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
             }
             else
             {
                 ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
+                InfoBorder.HorizontalAlignment = HorizontalAlignment.Left;
             }
+
             ViewModel.NodeWarningsShowLessMessageVisible = false;
         }
-        
+
         private void ShowAllErrorsButton_Click(object sender, RoutedEventArgs e)
         {
             // If we're already expanded, this button collapses the border
@@ -295,39 +841,68 @@ namespace Dynamo.Controls
                 ViewModel.NodeInfoShowLessMessageVisible = true;
             }
         }
-        
+
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            ScrollViewer scv = (ScrollViewer)sender;
+            ScrollViewer scv = (ScrollViewer) sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
-        
+
         private void DismissAllInfoButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeInfoToDisplay)
+            foreach (InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeMessages)
             {
+                if (infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.Info || ViewModel.DismissedMessages.Contains(infoBubbleDataPacket)) continue;
                 ViewModel.DismissedMessages.Add(infoBubbleDataPacket);
             }
+
             ViewModel.RefreshNodeInformationalStateDisplay();
         }
 
         private void DismissAllWarningsButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeWarningsToDisplay)
+            foreach (InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeMessages)
             {
+                if
+                (
+                infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.Warning &&
+                infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.WarningCondensed ||
+                ViewModel.DismissedMessages.Contains(infoBubbleDataPacket)
+                ) continue;
+
                 ViewModel.DismissedMessages.Add(infoBubbleDataPacket);
             }
+
             ViewModel.RefreshNodeInformationalStateDisplay();
         }
 
-        private void DismissAllErrorsButton_Click(object sender, RoutedEventArgs e)
+        private void ContentContainer_MouseEnter(object sender, MouseEventArgs e)
         {
-            foreach (InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeErrorsToDisplay)
-            {
-                ViewModel.DismissedMessages.Add(infoBubbleDataPacket);
-            }
-            ViewModel.RefreshNodeInformationalStateDisplay();
+            if (this.IsDisconnected)
+                return;
+
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed ||
+                ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.WarningCondensed)
+                ShowErrorBubbleFullContent();
+
+            ShowInfoBubble();
+
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
-    }
+
+        /// <summary>
+        /// Dispose function adding resubscribe logic
+        /// </summary>
+        public void Dispose()
+        {
+            viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+            viewModel.RequestAction -= InfoBubbleRequestAction;
+
+            // make sure we unsubscribe from handling the hyperlink click event
+            if (this.hyperlink != null)
+                this.hyperlink.RequestNavigate -= RequestNavigateToDocumentationLinkHandler;
+        }
+        #endregion
+    };
 }

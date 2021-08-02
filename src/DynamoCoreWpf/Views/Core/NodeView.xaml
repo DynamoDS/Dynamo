@@ -249,7 +249,10 @@
                         IsCheckable="True"
                         IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CrossProduct, Mode=OneWay}" />
                 </MenuItem>
-                <MenuItem Name="dismissedAlerts" Header="Dismissed Alerts" />
+                <MenuItem
+                    Name="dismissedAlerts"
+                    Header="Dismissed Alerts"
+                    ItemsSource="{Binding DismissedAlerts, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                 <Separator />
                 <MenuItem
                     Name="isInput_cm"
@@ -297,7 +300,7 @@
                 </ContextMenu.Style>
             </ContextMenu>
         </Grid.ContextMenu>
-        
+
         <!--  Graphical Styling of Custom Nodes  -->
         <Border
             Name="customNodeBorder0"
@@ -624,10 +627,10 @@
             <Grid
                 Name="AlertsGlyph"
                 Width="Auto"
-                Height="20"
-                MinWidth="20"
-                Margin="3,0">
-                <Border Background="{StaticResource NodeDismissedWarningsGlyphBackground}" CornerRadius="10">
+                Height="20">
+                <Border
+                    Background="{StaticResource NodeDismissedWarningsGlyphBackground}"
+                    CornerRadius="10">
                     <Label
                         Padding="3,2,3,0"
                         HorizontalAlignment="Center"
@@ -640,6 +643,20 @@
                         Foreground="Black"
                         Style="{StaticResource SZoomFadeLabel}" />
                 </Border>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Setter Property="Grid.MinWidth" Value="20" />
+                        <Setter Property="Grid.Margin" Value="3,0" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding NumberOfDismissedAlerts}" Value="0">
+                                <Setter Property="Grid.MinWidth" Value="0" />
+                                <Setter Property="Grid.Margin" Value="0" />
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
             </Grid>
             <Label
                 x:Name="LacingIconGlyph"

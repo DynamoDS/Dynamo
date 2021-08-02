@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Threading;
-using ProtoCore;
 
 namespace Dynamo.ViewModels
 {
@@ -65,6 +63,7 @@ namespace Dynamo.ViewModels
         public Point targetBotRight;
         private Direction limitedDirection;
         private State infoBubbleState;
+        private double bubbleWidth = 300.0;
 
         private ObservableCollection<InfoBubbleDataPacket> nodeInfoToDisplay = new ObservableCollection<InfoBubbleDataPacket>();
         private ObservableCollection<InfoBubbleDataPacket> nodeWarningsToDisplay = new ObservableCollection<InfoBubbleDataPacket>();
@@ -178,6 +177,16 @@ namespace Dynamo.ViewModels
             set { zIndex = value; RaisePropertyChanged("ZIndex"); }
         }
 
+        public double BubbleWidth
+        {
+            get => bubbleWidth;
+            set
+            {
+                bubbleWidth = value;
+                RaisePropertyChanged(nameof(BubbleWidth));
+            }
+        }
+
         public Style InfoBubbleStyle
         {
             get { return infoBubbleStyle; }
@@ -185,7 +194,6 @@ namespace Dynamo.ViewModels
         }
 
         public string FullContent;
-        
 
         public Direction ConnectingDirection
         {
@@ -276,7 +284,11 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// A collection of InfoBubbleDataPacket objects that are received
         /// </summary>
-        public ObservableCollection<InfoBubbleDataPacket> NodeMessages { get; set; } = new ObservableCollection<InfoBubbleDataPacket>();
+        public ObservableCollection<InfoBubbleDataPacket> NodeMessages
+        {
+            get;
+            set;
+        } = new ObservableCollection<InfoBubbleDataPacket>();
         
         /// <summary>
         /// A collection of dismissed informational state messages for this node
@@ -472,16 +484,20 @@ namespace Dynamo.ViewModels
             ConnectingDirection = Direction.None;
             Content = string.Empty;
             DocumentationLink = null;
-            ZIndex = 3;
+            ZIndex = 40;
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
 
             NodeMessages.CollectionChanged += NodeInformation_CollectionChanged;
-            //DismissedMessages.CollectionChanged += NodeInformation_CollectionChanged;
-
+            
             RefreshNodeInformationalStateDisplay();
         }
         
+        /// <summary>
+        /// Rebuilds the user-facing message collections when the underlying messages coming from the node evaluation change.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NodeInformation_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             RefreshNodeInformationalStateDisplay();
@@ -555,15 +571,18 @@ namespace Dynamo.ViewModels
                 {
                     var targetContent = new OpenDocumentationLinkEventArgs((Uri)link);
                     this.DynamoViewModel.OpenDocumentationLink(targetContent);
+                    return;
                 }
             }
-            
-            //var url = parameter as Uri;
-            //if (url != null)
-            //{
-            //    var targetContent = new OpenDocumentationLinkEventArgs((Uri)parameter);
-            //    this.DynamoViewModel.OpenDocumentationLink(targetContent);
-            //}
+            else
+            {
+                var url = parameter as Uri;
+                if (url != null)
+                {
+                    var targetContent = new OpenDocumentationLinkEventArgs((Uri)parameter);
+                    this.DynamoViewModel.OpenDocumentationLink(targetContent);
+                }
+            }
         }
 
         private bool CanOpenDocumentationLink(object parameter)
@@ -575,10 +594,30 @@ namespace Dynamo.ViewModels
         {
             if (!(parameter is InfoBubbleDataPacket infoBubbleDataPacket)) return;
 
-            DismissedMessages.Add(infoBubbleDataPacket);
+            if (!DismissedMessages.Contains(infoBubbleDataPacket))
+            {
+                DismissedMessages.Add(infoBubbleDataPacket);
+            }
             RefreshNodeInformationalStateDisplay();
         }
         
+        private bool CanUndismissWarning(object parameter)
+        {
+            return true;
+        }
+
+        private void UndismissWarning(object parameter)
+        {
+            if (!(parameter is string value)) return;
+
+            InfoBubbleDataPacket dataPacketToUndismiss = DismissedMessages
+                .FirstOrDefault(x => x.Message == value);
+            
+            DismissedMessages.Remove(dataPacketToUndismiss);
+
+            RefreshNodeInformationalStateDisplay();
+        }
+
         private bool CanDismissWarning(object parameter)
         {
             return true;
@@ -667,7 +706,13 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void RefreshNodeInformationalStateDisplay()
         {
-            if (NodeMessages == null || NodeMessages.Count < 1) return;
+            if (NodeMessages == null || NodeMessages.Count < 1)
+            {
+                NodeInfoVisible = false;
+                NodeWarningsVisible = false;
+                NodeErrorsVisible = false;
+                return;
+            }
 
             ClearUserFacingCollections();
 
@@ -707,12 +752,29 @@ namespace Dynamo.ViewModels
             NodeInfoVisible = NodeInfoToDisplay.Count > 0;
             NodeWarningsVisible = NodeWarningsToDisplay.Count > 0;
             NodeErrorsVisible = NodeErrorsToDisplay.Count > 0;
-
+            
             // We need to show a 'show more/less' button to the user if there is more than one non-dismissed message
             // at each level, and if the node isn't fully-collapsed into an icon.
             int nonDismissedInfoMessageCount = infoMessages.Count - DismissedMessages.Count(x => x.Style == Style.Info);
             int nonDismissedWarningMessageCount = warningMessages.Count - DismissedMessages.Count(x => x.Style == Style.Warning || x.Style == Style.WarningCondensed);
             int errorsCount = NodeMessages.Count(x => x.Style == Style.Error || x.Style == Style.ErrorCondensed);
+
+            // Auto-collapsing sections where necessary
+            if (NodeInfoVisibilityState == NodeMessageVisibility.ShowAllMessages && nonDismissedInfoMessageCount < 2)
+            {
+                NodeInfoVisibilityState = NodeMessageVisibility.CollapseMessages;
+                NodeInfoIteratorVisible = false;
+            }
+            if (NodeWarningsVisibilityState == NodeMessageVisibility.ShowAllMessages && nonDismissedWarningMessageCount < 2)
+            {
+                NodeWarningsVisibilityState = NodeMessageVisibility.CollapseMessages;
+                NodeWarningsIteratorVisible = false;
+            }
+            if (NodeErrorsVisibilityState == NodeMessageVisibility.ShowAllMessages && errorsCount < 2)
+            {
+                NodeErrorsVisibilityState = NodeMessageVisibility.CollapseMessages;
+                NodeErrorsIteratorVisible = false;
+            }
 
             NodeInfoShowMoreButtonVisible = NodeInfoSectionExpanded && nonDismissedInfoMessageCount > 1;
             NodeWarningsShowMoreButtonVisible = NodeWarningsSectionExpanded && nonDismissedWarningMessageCount > 1;
@@ -726,9 +788,9 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Takes in a list of messages and their corresponding NodeMessageVisibility state and returns
-        /// NodeMessage objects for display to the user. 
+        /// NodeMessage objects for display to the user, with an iterating count where necessary.
         /// </summary>
-        /// <param name="messages"></param>
+        /// <param name="infoBubbleDataPackets"></param>
         /// <param name="nodeMessageVisibility"></param>
         /// <returns></returns>
         private List<InfoBubbleDataPacket> GetDisplayMessages(List<InfoBubbleDataPacket> infoBubbleDataPackets, NodeMessageVisibility nodeMessageVisibility)
@@ -737,8 +799,10 @@ namespace Dynamo.ViewModels
             if (infoBubbleDataPackets.Count < 1) return displayMessages;
 
             Style messageStyle = infoBubbleDataPackets.First().Style;
-            Style alternativeStyle;
 
+            // The old API referenced styles such as WarningCondensed and Warning, which we are handling as a single case now.
+            // Hence the need to compound behaviours for Warning/WarningCondensed and Error/ErrorCondensed.
+            Style alternativeStyle;
             switch (messageStyle)
             {
                 case Style.None:
@@ -764,6 +828,7 @@ namespace Dynamo.ViewModels
                     break;
             }
 
+            // Filtering the collection of dismissed messages based on the message type, e.g. Warning
             List<string> dismissedMessageStringsOfType = DismissedMessages
                 .Where(x => x.Style == messageStyle || x.Style == alternativeStyle)
                 .Select(x => x.Text)
@@ -772,6 +837,8 @@ namespace Dynamo.ViewModels
             int nonDismissedMessageCount =
                 NodeMessages.Count(x => x.Style == messageStyle || x.Style == alternativeStyle) - DismissedMessages.Count(x => x.Style == messageStyle || x.Style == alternativeStyle);
 
+            
+            // Formats user-facing information to suit the redesigned Node Informational State design.
             InfoBubbleDataPacket infoBubbleDataPacket;
 
             switch (nodeMessageVisibility)
@@ -794,11 +861,12 @@ namespace Dynamo.ViewModels
                     for (int i = 0; i < infoBubbleDataPackets.Count; i++)
                     {
                         if (dismissedMessageStringsOfType.Contains(infoBubbleDataPackets[i].Text)) continue;
+                        string messageNumber = nonDismissedMessageCount < 2 ? "" : $"1/{nonDismissedMessageCount} ";
                         infoBubbleDataPacket = new InfoBubbleDataPacket
                         {
                             Text = infoBubbleDataPackets[i].Text,
                             Message = infoBubbleDataPackets[i].Text,
-                            MessageNumber = $"1/{nonDismissedMessageCount} ",
+                            MessageNumber = messageNumber,
                             Link = infoBubbleDataPackets[i].Link,
                             Style = infoBubbleDataPackets[i].Style
                         };
