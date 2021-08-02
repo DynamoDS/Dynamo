@@ -280,7 +280,7 @@ namespace ProtoCore.DSASM
 
         public int Append(ProcedureNode node)
         {
-            GetFunctionBySignatureV2(new ProcedureMatchOptions() { 
+            GetFunctionBySignature(new ProcedureMatchOptions() { 
                     FunctionName = node.Name, 
                     ParameterTypes = node.ArgumentTypes, 
                     IsStatic = node.IsStatic }, 
@@ -361,7 +361,7 @@ namespace ProtoCore.DSASM
                 opts.IsStatic = true;
                 opts.IsConstructor = true;
             }
-            return GetFunctionBySignatureV2(opts, out ProcedureNode dummy);
+            return GetFunctionBySignature(opts, out ProcedureNode dummy);
         }
 
         /// <summary>
@@ -372,7 +372,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public ProcedureNode GetFunctionBySignature(string functionName, List<Type> parameterTypes)
         {
-            GetFunctionBySignatureV2(new ProcedureMatchOptions() { FunctionName = functionName, 
+            GetFunctionBySignature(new ProcedureMatchOptions() { FunctionName = functionName, 
                 ParameterTypes = parameterTypes }, out ProcedureNode output);
             return output;
         }
@@ -383,7 +383,7 @@ namespace ProtoCore.DSASM
         /// <param name="opts">Matching options</param>
         /// <param name="outputProcNode">Output procedure node. Null if nothing is found</param>
         /// <returns>Index of the ProcedureNode in the Procedures list. Returns -1 If nothing is found</returns>
-        internal int GetFunctionBySignatureV2(ProcedureMatchOptions opts, out ProcedureNode outputProcNode)
+        internal int GetFunctionBySignature(ProcedureMatchOptions opts, out ProcedureNode outputProcNode)
         {
             int outputProcNodeIndex = Constants.kInvalidIndex;
             outputProcNode = null;
