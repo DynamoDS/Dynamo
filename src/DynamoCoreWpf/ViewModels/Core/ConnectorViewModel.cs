@@ -832,7 +832,7 @@ namespace Dynamo.ViewModels
         /// <param name="connectorPin"></param>
         private void RemoveConnectorPinModelViewModel(ConnectorPinModel connectorPin)
         {
-            var matchingConnectorPinViewModel = this.workspaceViewModel.Pins.FirstOrDefault(x => x.Model == connectorPin);
+            var matchingConnectorPinViewModel = this.workspaceViewModel.Pins.FirstOrDefault(x => x.Model.GUID == connectorPin.GUID);
             if (matchingConnectorPinViewModel is null) return;
             RemoveConnectorPinModelViewModel(matchingConnectorPinViewModel);
         }
@@ -1074,19 +1074,20 @@ namespace Dynamo.ViewModels
 
 
         /// <summary>
-        /// Removes all connectorPinViewModels. This occurs during 'dispose'
-        /// as well as during the 'PlaceWatchNode' operation, where previous pins
-        /// are discarded and new ones are created.
+        /// Removes all connectorPinViewModels/ connectorPinModels. This occurs during 'dispose'
+        /// operation as well as during the 'PlaceWatchNode', where all previous pins corresponding 
+        /// to a connector are cleareed.
         /// </summary>
         internal void DiscardAllConnectorPinModels()
         {
             foreach (var pin in ConnectorPinViewCollection)
             {
+                workspaceViewModel.Pins.Remove(pin);
                 pin.Model.Dispose();
                 pin.Dispose();
             }
+
             ConnectorPinViewCollection.Clear();
-            workspaceViewModel.Pins.Clear();
         }
 
         /// <summary>
