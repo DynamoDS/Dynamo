@@ -281,8 +281,14 @@ namespace ProtoScript.Runners
                 }
                 if (rootNode == null) return;
 
-                // walk the dependency graph for the rootNode and clear cycles from dependent graph nodes
-                rootNode.ClearCycles(graphNodes);
+                // Walk the dependency graph for the rootNode and clear cycles from dependent graph nodes.
+                var guids = rootNode.ClearCycles(graphNodes);
+
+                // Clear warnings for all graphnodes participating in cycle.
+                foreach (var id in guids)
+                {
+                    core.BuildStatus.ClearWarningsForGraph(id);
+                }
             }
         }
 
@@ -777,7 +783,6 @@ namespace ProtoScript.Runners
 
             return deltaAstList;
         }
-
 
         public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData)
         {
@@ -1550,6 +1555,7 @@ namespace ProtoScript.Runners
                 // Prior to execution, apply state modifications to the VM given the delta AST's
                 bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
                 changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
+
                 if (finalDeltaAstList.Any() || anyForcedExecutedNodes)
                 {
                     CompileAndExecuteForDeltaExecution(finalDeltaAstList);

@@ -961,22 +961,31 @@ namespace ProtoCore.AssociativeGraph
             child.ParentNodes.Add(this);
         }
 
-        internal void ClearCycles(IEnumerable<GraphNode> graphNodes)
+        /// <summary>
+        /// Walk dependency graph of this graph node, clear cyclic dependency flag,
+        /// and mark graph nodes active.
+        /// </summary>
+        /// <param name="graphNodes"></param>
+        /// <returns>Collection of graph nodes participating in cycle.</returns>
+        internal IEnumerable<Guid> ClearCycles(IEnumerable<GraphNode> graphNodes)
         {
             Stack<GraphNode> stack = new Stack<GraphNode>();
             stack.Push(this);
 
             var visited = graphNodes.ToDictionary(node => node, node => false);
 
+            var guids = new List<Guid>();
             while(stack.Any())
             {
                 var node = stack.Pop();
                 if (!visited[node])
                 {
+                    guids.Add(node.guid);
                     if (node.isCyclic)
                     {
                         node.isCyclic = false;
                         node.isActive = true;
+
                     }
                     visited[node] = true;
                 }
@@ -989,6 +998,7 @@ namespace ProtoCore.AssociativeGraph
                     }
                 }
             }
+            return guids;
         }
 
         public void PushDependent(GraphNode dependent)
