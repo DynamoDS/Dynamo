@@ -1861,96 +1861,95 @@ namespace ProtoAssociative
         /// AST node
         /// </summary>
         /// <param name="node"></param>
-        /// <returns></returns>
+        /// <returns>Replication guide data</returns>
         private List<AssociativeNode> GetReplicationGuides(AssociativeNode node)
         {
-            
-            if (node is ArrayNameNode)
+            if (node is ArrayNameNode nameNode)
             {
-                var guides = ((ArrayNameNode) node).ReplicationGuides;
-                if (guides == null || guides.Count == 0)
+                var guides = nameNode.ReplicationGuides;
+                if ((guides == null || guides.Count == 0) && nameNode is IdentifierListNode identListNode)
                 {
-                    if (node is IdentifierListNode)
-                    {
-                        var identListNode = node as IdentifierListNode;
-                        return GetReplicationGuides(identListNode.RightNode);
-                    }
+                    return GetReplicationGuides(identListNode.RightNode);
                 }
                 return guides;
             }
             
-            if (node is FunctionDotCallNode)
+            if (node is FunctionDotCallNode dotCallNode)
             {
-                var dotCallNode = node as FunctionDotCallNode;
                 return GetReplicationGuides(dotCallNode.FunctionCall.Function);
             }
 
             return null;
         }
 
+        /// <summary>
+        /// This helper function extracts the at level data from the 
+        /// AST node
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns>At level data</returns>
         private AtLevelNode GetAtLevel(AssociativeNode node)
         {
-            var n2 = node as IdentifierListNode;
-            if (n2 != null)
+            if (node is IdentifierListNode identifierListNode)
             {
-                return GetAtLevel(n2.RightNode);
+                return GetAtLevel(identifierListNode.RightNode);
             }
 
-            var n1 = node as ArrayNameNode;
-            if (n1 != null)
+            if (node is ArrayNameNode arrayNameNode)
             {
-                return n1.AtLevel;
+                return arrayNameNode.AtLevel;
             }
 
-            var n3 = node as FunctionDotCallNode;
-            if (n3 != null)
+            if (node is FunctionDotCallNode functionDotCallNode)
             {
-                return GetAtLevel(n3.FunctionCall.Function);
+                return GetAtLevel(functionDotCallNode.FunctionCall.Function);
             }
 
             return null;
         }
 
+        /// <summary>
+        /// This helper function remove the at level data from the
+        /// AST node
+        /// </summary>
+        /// <param name="node"></param>
         private void RemoveAtLevel(AssociativeNode node)
         {
-            var n2 = node as IdentifierListNode;
-            if (n2 != null)
+            if (node is IdentifierListNode identifierListNode)
             {
-                RemoveAtLevel(n2.RightNode);
+                RemoveAtLevel(identifierListNode.RightNode);
                 return;
             }
 
-            var n1 = node as ArrayNameNode;
-            if (n1 != null)
+            if (node is ArrayNameNode arrayNameNode)
             {
-                n1.AtLevel = null;
+                arrayNameNode.AtLevel = null;
                 return;
             }
 
-            var n3 = node as FunctionDotCallNode;
-            if (n3 != null)
+            if (node is FunctionDotCallNode functionDotCallNode)
             {
-                RemoveAtLevel(n3.FunctionCall.Function);
-                return;
+                RemoveAtLevel(functionDotCallNode.FunctionCall.Function);
             }
         }
 
-        // Remove replication guides
+        /// <summary>
+        /// This helper function removes the replication guide data from the 
+        /// AST node
+        /// </summary>
+        /// <param name="node"></param>
         private void RemoveReplicationGuides(AssociativeNode node)
         {
-            if (node is IdentifierListNode)
+            if (node is IdentifierListNode identListNode)
             {
-                var identListNode = node as IdentifierListNode;
                 RemoveReplicationGuides(identListNode.RightNode);
             }
-            else if (node is ArrayNameNode)
+            else if (node is ArrayNameNode nodeWithReplication)
             {
-                var nodeWithReplication = node as ArrayNameNode;
                 nodeWithReplication.ReplicationGuides = new List<AssociativeNode>();
             }
-            else if (node is FunctionDotCallNode)
+            else if (node is FunctionDotCallNode dotCallNode)
             {
-                var dotCallNode = node as FunctionDotCallNode;
                 RemoveReplicationGuides(dotCallNode.FunctionCall.Function);
             }
         }
