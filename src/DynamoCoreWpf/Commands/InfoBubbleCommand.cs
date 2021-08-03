@@ -6,6 +6,9 @@ namespace Dynamo.ViewModels
     {
         private DelegateCommand updateContentCommand;
         private DelegateCommand updatePositionCommand;
+        private DelegateCommand resizeCommand;
+        private DelegateCommand showFullContentCommand;
+        private DelegateCommand showCondensedContentCommand;
         private DelegateCommand changeInfoBubbleStateCommand;
         private DelegateCommand openDocumentationLinkCommand;
         private DelegateCommand dismissWarningCommand;
@@ -29,7 +32,44 @@ namespace Dynamo.ViewModels
                 return updatePositionCommand;
             }
         }
-        
+        public DelegateCommand ResizeCommand
+        {
+            get
+            {
+                if (resizeCommand == null)
+                {
+                    resizeCommand = new DelegateCommand(Resize, CanResize);
+                }
+                return resizeCommand;
+            }
+        }
+
+        // TODO add new command handler
+        public DelegateCommand ShowFullContentCommand
+        {
+            get
+            {
+                if (showFullContentCommand == null)
+                {
+                    showFullContentCommand = new DelegateCommand(ShowFullContent, CanShowFullContent);
+                }
+                return showFullContentCommand;
+            }
+        }
+
+        // TODO add new command handler
+        public DelegateCommand ShowCondensedContentCommand
+        {
+            get
+            {
+                if (showCondensedContentCommand == null)
+                {
+                    showCondensedContentCommand = new DelegateCommand(ShowCondensedContent, CanShowCondensedContent);
+                }
+                return showCondensedContentCommand;
+            }
+        }
+
         public DelegateCommand ChangeInfoBubbleStateCommand
         {
             get
