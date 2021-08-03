@@ -6,6 +6,7 @@ using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
+using Dynamo.Logging;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
@@ -346,6 +347,10 @@ namespace Dynamo.ViewModels
             // Subscribe to pinnedNode.RequestSelection (fires before node is selected)
             // so that this note is added to the selection
             PinnedNode.Selected += PinnedNodeViewModel_OnPinnedNodeSelected;
+
+            Analytics.TrackEvent(
+                Actions.Pin,
+                Categories.NoteOperations, Model.PinnedNode.Name);
         }
 
         private void UnsuscribeFromPinnedNode()
@@ -355,6 +360,10 @@ namespace Dynamo.ViewModels
             {
                 PinnedNode.PropertyChanged -= PinnedNodeViewModel_PropertyChanged;
                 PinnedNode.RequestsSelection -= PinnedNodeViewModel_OnPinnedNodeSelected;
+
+                Analytics.TrackEvent(
+                    Actions.Unpin,
+                    Categories.NoteOperations, Model.PinnedNode.Name);
             }
         }
 
