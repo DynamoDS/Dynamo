@@ -11,7 +11,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand showCondensedContentCommand;
         private DelegateCommand changeInfoBubbleStateCommand;
         private DelegateCommand openDocumentationLinkCommand;
-        private DelegateCommand dismissWarningCommand;
+        private DelegateCommand dismissMessageCommand;
 
         public DelegateCommand UpdateContentCommand
         {
@@ -94,15 +94,15 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public DelegateCommand DismissWarningCommand
+        public DelegateCommand DismissMessageCommand
         {
             get
             {
-                if (dismissWarningCommand == null)
+                if (dismissMessageCommand == null)
                 {
-                    dismissWarningCommand = new DelegateCommand(DismissWarning, CanDismissWarning);
+                    dismissMessageCommand = new DelegateCommand(DismissMessage, CanDismissMessage);
                 }
-                return dismissWarningCommand;
+                return dismissMessageCommand;
             }
         }
 
@@ -113,7 +113,7 @@ namespace Dynamo.ViewModels
             {
                 if (undismissWarningCommand == null)
                 {
-                    undismissWarningCommand = new DelegateCommand(UndismissWarning, CanUndismissWarning);
+                    undismissWarningCommand = new DelegateCommand(UndismissMessage, CanUndismissMessage);
                 }
                 return undismissWarningCommand;
             }

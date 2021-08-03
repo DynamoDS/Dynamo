@@ -285,11 +285,7 @@ namespace Dynamo.ViewModels
         /// A collection of InfoBubbleDataPacket objects that are received when the node executes
         /// and its state changes to reflect errors or warnings that have been detected.
         /// </summary>
-        public ObservableCollection<InfoBubbleDataPacket> NodeMessages
-        {
-            get;
-            set;
-        } = new ObservableCollection<InfoBubbleDataPacket>();
+        public ObservableCollection<InfoBubbleDataPacket> NodeMessages { get; set; } = new ObservableCollection<InfoBubbleDataPacket>();
         
         /// <summary>
         /// A collection of messages this node has received that have been manually dismissed by the user.
@@ -603,7 +599,7 @@ namespace Dynamo.ViewModels
         /// user-facing messages display from scratch.
         /// </summary>
         /// <param name="parameter"></param>
-        private void DismissWarning(object parameter)
+        private void DismissMessage(object parameter)
         {
             if (!(parameter is InfoBubbleDataPacket infoBubbleDataPacket)) return;
 
@@ -614,7 +610,7 @@ namespace Dynamo.ViewModels
             RefreshNodeInformationalStateDisplay();
         }
         
-        private bool CanUndismissWarning(object parameter)
+        private bool CanUndismissMessage(object parameter)
         {
             return true;
         }
@@ -623,7 +619,7 @@ namespace Dynamo.ViewModels
         /// Accessed via the node's ContextMenu, used to make a user-facing message reappear above the node.
         /// </summary>
         /// <param name="parameter"></param>
-        private void UndismissWarning(object parameter)
+        private void UndismissMessage(object parameter)
         {
             if (!(parameter is string value)) return;
 
@@ -635,7 +631,7 @@ namespace Dynamo.ViewModels
             RefreshNodeInformationalStateDisplay();
         }
 
-        private bool CanDismissWarning(object parameter)
+        private bool CanDismissMessage(object parameter)
         {
             return true;
         }
@@ -854,6 +850,7 @@ namespace Dynamo.ViewModels
             int nonDismissedMessageCount =
                 NodeMessages.Count(x => x.Style == messageStyle || x.Style == alternativeStyle) - DismissedMessages.Count(x => x.Style == messageStyle || x.Style == alternativeStyle);
 
+            if (nonDismissedMessageCount < 1) return new List<InfoBubbleDataPacket>();
             
             // Formats user-facing information to suit the redesigned Node Informational State design.
             InfoBubbleDataPacket infoBubbleDataPacket;

@@ -729,61 +729,43 @@ namespace Dynamo.ViewModels
             ErrorBubble.NodeMessages.Clear();
         }
 
-        /// <summary>
-        /// Truncates a long string with ellipses
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="maxLength"></param>
-        /// <returns></returns>
-        public static string Truncate(string value, int maxLength)
-        {
-            if (string.IsNullOrEmpty(value)) { return value; }
-
-            string ellipses = value.Length > maxLength ? "..." : "";
-            return value.Substring(0, Math.Min(value.Length, maxLength)) + ellipses;
-        }
-
         private void DismissedNodeWarnings_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (!(sender is ObservableCollection<InfoBubbleDataPacket> observableCollection)) return;
+
+            // Local helper method to avoid repeated code
+            void RebuildDismissedWarningsCollection()
+            {
+                foreach (InfoBubbleDataPacket infoBubbleDataPacket in observableCollection)
+                {
+                    List<string> addedMessages = DismissedAlerts
+                        .Select(x => x.Tag.ToString())
+                        .ToList();
+
+                    if (addedMessages.Contains(infoBubbleDataPacket.Message)) continue;
+
+                    // Ellipses to truncate the message if too long
+                    string ellipses = infoBubbleDataPacket.Message.Length > 30 ? "..." : "";
+
+                    DismissedAlerts.Add(new MenuItem
+                    {
+                        Header = infoBubbleDataPacket.Message.Substring(0, Math.Min(infoBubbleDataPacket.Message.Length, 30)) + ellipses,
+                        Tag = infoBubbleDataPacket.Message,
+                        Command = ErrorBubble.UndismissWarningCommand,
+                        CommandParameter = infoBubbleDataPacket.Message
+                    });
+                }
+            }
+
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (InfoBubbleDataPacket infoBubbleDataPacket in observableCollection)
-                    {
-                        List<string> addedMessages = DismissedAlerts
-                            .Select(x => x.Tag.ToString())
-                            .ToList();
-
-                        if (addedMessages.Contains(infoBubbleDataPacket.Message)) continue;
-
-                        DismissedAlerts.Add(new MenuItem
-                        {
-                            Header = Truncate(infoBubbleDataPacket.Message, 30),
-                            Tag = infoBubbleDataPacket.Message,
-                            Command = ErrorBubble.UndismissWarningCommand,
-                            CommandParameter = infoBubbleDataPacket.Message
-                        });
-                    }
+                    RebuildDismissedWarningsCollection();
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    DismissedAlerts.Clear(); // Rebuilding the collection
-                    foreach (InfoBubbleDataPacket infoBubbleDataPacket in ErrorBubble.DismissedMessages)
-                    {
-                        List<string> addedMessages = DismissedAlerts
-                            .Select(x => x.Tag.ToString())
-                            .ToList();
-
-                        if (addedMessages.Contains(infoBubbleDataPacket.Message)) continue;
-
-                        DismissedAlerts.Add(new MenuItem
-                        {
-                            Header = Truncate(infoBubbleDataPacket.Message, 30),
-                            Tag = infoBubbleDataPacket.Message,
-                            Command = ErrorBubble.UndismissWarningCommand,
-                            CommandParameter = infoBubbleDataPacket.Message
-                        });
-                    }
+                    // Clearing, then rebuilding the collection
+                    DismissedAlerts.Clear(); 
+                    RebuildDismissedWarningsCollection();
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     break;
@@ -1038,6 +1020,7 @@ namespace Dynamo.ViewModels
                 });
 
                 ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
+
             }
         }
 

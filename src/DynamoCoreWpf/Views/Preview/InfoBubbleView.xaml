@@ -450,14 +450,14 @@
                                                                             </TextBlock.Inlines>
                                                                         </TextBlock>
                                                                         <Button
-                                                                            Name="DismissWarningButton"
+                                                                            Name="DismissMessageButton"
                                                                             Grid.Column="1"
                                                                             Width="13"
                                                                             Height="13"
                                                                             HorizontalAlignment="Right"
                                                                             VerticalAlignment="Top"
                                                                             BorderThickness="0"
-                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissWarningCommand}"
+                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissMessageCommand}"
                                                                             CommandParameter="{Binding .}"
                                                                             DockPanel.Dock="Right"
                                                                             Style="{StaticResource DismissButtonStyle}">
@@ -524,14 +524,14 @@
                                                                             </TextBlock.Inlines>
                                                                         </TextBlock>
                                                                         <Button
-                                                                            Name="DismissWarningButton"
+                                                                            Name="DismissMessageButton"
                                                                             Grid.Column="1"
                                                                             Width="13"
                                                                             Height="13"
                                                                             HorizontalAlignment="Right"
                                                                             VerticalAlignment="Top"
                                                                             BorderThickness="0"
-                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissWarningCommand}"
+                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissMessageCommand}"
                                                                             CommandParameter="{Binding .}"
                                                                             DockPanel.Dock="Right"
                                                                             Style="{StaticResource DismissButtonStyle}">
@@ -747,14 +747,14 @@
                                                                             </TextBlock.Inlines>
                                                                         </TextBlock>
                                                                         <Button
-                                                                            Name="DismissInfoButton"
+                                                                            Name="DismissMessageButton"
                                                                             Grid.Column="1"
                                                                             Width="13"
                                                                             Height="13"
                                                                             HorizontalAlignment="Right"
                                                                             VerticalAlignment="Top"
                                                                             BorderThickness="0"
-                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissWarningCommand}"
+                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissMessageCommand}"
                                                                             CommandParameter="{Binding .}"
                                                                             DockPanel.Dock="Right"
                                                                             Style="{StaticResource DismissButtonStyle}" />
@@ -817,14 +817,14 @@
                                                                             </TextBlock.Inlines>
                                                                         </TextBlock>
                                                                         <Button
-                                                                            Name="DismissWarningButton"
+                                                                            Name="DismissMessageButton"
                                                                             Grid.Column="1"
                                                                             Width="13"
                                                                             Height="13"
                                                                             HorizontalAlignment="Right"
                                                                             VerticalAlignment="Top"
                                                                             BorderThickness="0"
-                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissWarningCommand}"
+                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissMessageCommand}"
                                                                             CommandParameter="{Binding .}"
                                                                             DockPanel.Dock="Right"
                                                                             Style="{StaticResource DismissButtonStyle}" />
