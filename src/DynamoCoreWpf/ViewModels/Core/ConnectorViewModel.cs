@@ -673,6 +673,15 @@ namespace Dynamo.ViewModels
         private void HideConnectorCommandExecute(object parameter)
         {
             IsVisible = !IsVisible;
+            bool adjacentNodeSelected = model.Start.Owner.IsSelected || model.End.Owner.IsSelected;
+            if (adjacentNodeSelected && isVisible == false)
+            {
+                IsPartlyVisible = true;
+            }
+            else
+            {
+                IsPartlyVisible = false;
+            }
         }
         /// <summary>
         /// Selects nodes connected to this wire.
@@ -794,7 +803,6 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            connectorModel.PropertyChanged += ConnectorModelPropertyChanged;
             connectorModel.Start.Owner.PropertyChanged += StartOwner_PropertyChanged;
             connectorModel.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
 
@@ -920,7 +928,6 @@ namespace Dynamo.ViewModels
         }
         public virtual void Dispose()
         {
-            model.PropertyChanged -= ConnectorModelPropertyChanged;
             model.Start.Owner.PropertyChanged -= StartOwner_PropertyChanged;
             model.End.Owner.PropertyChanged -= EndOwner_PropertyChanged;
             model.ConnectorPinModels.CollectionChanged -= ConnectorPinModelCollectionChanged;
@@ -1032,24 +1039,17 @@ namespace Dynamo.ViewModels
                     Redraw();
                     break;
                 case nameof(DynamoViewModel.IsShowingConnectors):
-                    RaisePropertyChanged(nameof(BezVisibility));
-                    RaisePropertyChanged(nameof(PlineVisibility));
                     var dynModel = sender as DynamoViewModel;
                     IsVisible = dynModel.IsShowingConnectors;
-                    break;
-                default: break;
-            }
-        }
-
-        void ConnectorModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(DynamoViewModel.Model.CurrentWorkspace):
-                    RaisePropertyChanged(nameof(BezVisibility));
-                    RaisePropertyChanged(nameof(PlineVisibility));
-                    var dynModel = sender as DynamoViewModel;
-                    IsVisible = dynModel.IsShowingConnectors;
+                    bool adjacentNodeSelected = model.Start.Owner.IsSelected || model.End.Owner.IsSelected;
+                    if (adjacentNodeSelected && isVisible == false)
+                    {
+                        IsPartlyVisible = true;
+                    }
+                    else
+                    {
+                        IsPartlyVisible = false;
+                    }
                     break;
                 default: break;
             }
@@ -1274,7 +1274,7 @@ namespace Dynamo.ViewModels
                 int count = 0;
                 foreach (var wirePin in ConnectorPinViewCollection)
                 {
-                    points[count] = new Point(wirePin.Left, wirePin.Top);
+                    points[count] = new Point(wirePin.Left+wirePin.Model.Width - (wirePin.HalfWidth * 0.3), wirePin.Top+wirePin.Model.Height - (wirePin.HalfWidth * 0.3));
                     count++;
                 }
 

@@ -829,7 +829,6 @@ namespace GraphLayout
 
             StartNode = OwnerGraph.FindNode(startId);
             if(StartNode is null) { return; }
-            if (StartNode != null)
             StartNode.RightEdges.Add(this);
 
             EndNode = OwnerGraph.FindNode(endId);

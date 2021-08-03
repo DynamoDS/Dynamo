@@ -7,7 +7,12 @@ namespace Dynamo.Graph
 {
     public class ConnectorPinModel : ModelBase
     {
+        private double height = 30;
+        private double width = 30;
         public Guid ConnectorId { get; set; }
+
+        public override double Height { get => height; }
+        public override double Width { get => width; }
         public ConnectorPinModel(double x, double y, Guid id, Guid connectorId)
         {
             X = x;
