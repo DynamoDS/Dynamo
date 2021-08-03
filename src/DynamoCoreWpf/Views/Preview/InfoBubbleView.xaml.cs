@@ -48,7 +48,6 @@ namespace Dynamo.Controls
         }
 
         private double contentMaxWidth;
-
         public double ContentMaxWidth
         {
             get { return contentMaxWidth; }
@@ -56,7 +55,6 @@ namespace Dynamo.Controls
         }
 
         private double contentMaxHeight;
-
         public double ContentMaxHeight
         {
             get { return contentMaxHeight; }
@@ -64,7 +62,6 @@ namespace Dynamo.Controls
         }
 
         private System.Windows.Thickness contentMargin;
-
         public System.Windows.Thickness ContentMargin
         {
             get { return contentMargin; }
@@ -72,7 +69,6 @@ namespace Dynamo.Controls
         }
 
         private double contentFontSize;
-
         public double ContentFontSize
         {
             get { return contentFontSize; }
@@ -80,7 +76,6 @@ namespace Dynamo.Controls
         }
 
         private FontWeight contentFontWeight;
-
         public FontWeight ContentFontWeight
         {
             get { return contentFontWeight; }
@@ -88,7 +83,6 @@ namespace Dynamo.Controls
         }
 
         private SolidColorBrush contentForeground;
-
         public SolidColorBrush ContentForeground
         {
             get { return contentForeground; }
@@ -103,20 +97,15 @@ namespace Dynamo.Controls
         // eventually removing the view. This is the result of the host canvas being 
         // virtualized. This property is used by InfoBubbleView to determine if it should 
         // still continue to access the InfoBubbleViewModel that it is bound to.
-        private bool IsDisconnected
-        {
-            get { return (this.ViewModel == null); }
-        }
+        private bool IsDisconnected { get { return (this.ViewModel == null); } }
 
         private Hyperlink hyperlink;
 
         #endregion
 
         #region Storyboards
-
         private Storyboard fadeInStoryBoard;
         private Storyboard fadeOutStoryBoard;
-
         #endregion
 
         /// <summary>
@@ -155,6 +144,9 @@ namespace Dynamo.Controls
                     case InfoBubbleViewModel.State.Pinned:
                         mainGrid.Visibility = Visibility.Visible;
                         mainGrid.Opacity = Configurations.MaxOpacity;
+                        UpdateStyle();
+                        UpdateContent();
+                        UpdateShape();
                         UpdatePosition();
                         break;
                 }
@@ -184,6 +176,7 @@ namespace Dynamo.Controls
         private void InfoBubbleView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             ViewModel = e.NewValue as InfoBubbleViewModel;
+            UpdateContent();
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -207,6 +200,9 @@ namespace Dynamo.Controls
                 switch (e.PropertyName)
                 {
                     case "Content":
+                        UpdateStyle();
+                        UpdateContent();
+                        UpdateShape();
                         UpdatePosition();
                         break;
 
@@ -216,15 +212,18 @@ namespace Dynamo.Controls
                         break;
 
                     case "ConnectingDirection":
+                        UpdateShape();
                         UpdatePosition();
                         break;
 
                     case "InfoBubbleState":
                         UpdatePosition();
+
                         HandleInfoBubbleStateChanged(ViewModel.InfoBubbleState);
                         break;
 
                     case "InfoBubbleStyle":
+                        UpdateStyle();
                         break;
                 }
             });
@@ -237,6 +236,252 @@ namespace Dynamo.Controls
                 else
                     this.ViewModel.DynamoViewModel.UIDispatcher.BeginInvoke(propertyChanged);
             }
+        }
+
+        private void HandleInfoBubbleStateChanged(InfoBubbleViewModel.State state)
+        {
+            switch (state)
+            {
+                case InfoBubbleViewModel.State.Minimized:
+                    // Changing to Minimized
+                    this.HideInfoBubble();
+                    break;
+
+                case InfoBubbleViewModel.State.Pinned:
+                    // Changing to Pinned
+                    this.ShowInfoBubble();
+                    break;
+            }
+        }
+
+        #region Update Style
+
+        private void UpdateStyle()
+        {
+            InfoBubbleViewModel.Style style = ViewModel.InfoBubbleStyle;
+            ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.None;
+
+            switch (style)
+            {
+                case InfoBubbleViewModel.Style.Warning:
+                    SetStyle_Warning();
+                    break;
+                case InfoBubbleViewModel.Style.WarningCondensed:
+                    SetStyle_WarningCondensed();
+                    break;
+                case InfoBubbleViewModel.Style.Error:
+                    SetStyle_Error();
+                    break;
+                case InfoBubbleViewModel.Style.ErrorCondensed:
+                    SetStyle_ErrorCondensed();
+                    break;
+                case InfoBubbleViewModel.Style.None:
+                    throw new ArgumentException("InfoWindow didn't have a style (456B24E0F400)");
+            }
+        }
+
+        private void SetStyle_Warning()
+        {
+            backgroundPolygon.Fill = FrozenResources.WarningFrameFill;
+            backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
+            backgroundPolygon.Stroke = FrozenResources.WarningFrameStrokeColor;
+
+            ContentContainer.MaxWidth = Configurations.ErrorMaxWidth;
+            ContentContainer.MaxHeight = Configurations.ErrorMaxHeight;
+
+            ContentMargin = Configurations.ErrorContentMargin.AsWindowsType();
+            ContentMaxWidth = Configurations.ErrorContentMaxWidth;
+            ContentMaxHeight = Configurations.ErrorContentMaxHeight;
+
+            ContentFontSize = Configurations.ErrorTextFontSize;
+            ContentForeground = FrozenResources.WarningTextForeground;
+            ContentFontWeight = VisualConfigurations.ErrorTextFontWeight;
+        }
+
+        private void SetStyle_WarningCondensed()
+        {
+            backgroundPolygon.Fill = FrozenResources.WarningFrameFill;
+            backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
+            backgroundPolygon.Stroke = FrozenResources.WarningFrameStrokeColor;
+
+            ContentContainer.MaxWidth = Configurations.ErrorCondensedMaxWidth;
+            ContentContainer.MinWidth = Configurations.ErrorCondensedMinWidth;
+            ContentContainer.MaxHeight = Configurations.ErrorCondensedMaxHeight;
+            ContentContainer.MinHeight = Configurations.ErrorCondensedMinHeight;
+
+            ContentMargin = Configurations.ErrorContentMargin.AsWindowsType();
+            ContentMaxWidth = Configurations.ErrorCondensedContentMaxWidth;
+            ContentMaxHeight = Configurations.ErrorCondensedContentMaxHeight;
+
+            ContentFontSize = Configurations.ErrorTextFontSize;
+            ContentForeground = FrozenResources.WarningTextForeground;
+            ContentFontWeight = VisualConfigurations.ErrorTextFontWeight;
+        }
+
+        private void SetStyle_Error()
+        {
+            backgroundPolygon.Fill = FrozenResources.ErrorFrameFill;
+            backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
+            backgroundPolygon.Stroke = FrozenResources.ErrorFrameStrokeColor;
+
+            ContentContainer.MaxWidth = Configurations.ErrorMaxWidth;
+            ContentContainer.MaxHeight = Configurations.ErrorMaxHeight;
+
+            ContentMargin = Configurations.ErrorContentMargin.AsWindowsType();
+            ContentMaxWidth = Configurations.ErrorContentMaxWidth;
+            ContentMaxHeight = Configurations.ErrorContentMaxHeight;
+
+            ContentFontSize = Configurations.ErrorTextFontSize;
+            ContentForeground = FrozenResources.ErrorTextForeground;
+            ContentFontWeight = VisualConfigurations.ErrorTextFontWeight;
+        }
+
+        private void SetStyle_ErrorCondensed()
+        {
+            backgroundPolygon.Fill = FrozenResources.ErrorFrameFill;
+            backgroundPolygon.StrokeThickness = Configurations.ErrorFrameStrokeThickness;
+            backgroundPolygon.Stroke = FrozenResources.ErrorFrameStrokeColor;
+
+            ContentContainer.MaxWidth = Configurations.ErrorCondensedMaxWidth;
+            ContentContainer.MinWidth = Configurations.ErrorCondensedMinWidth;
+            ContentContainer.MaxHeight = Configurations.ErrorCondensedMaxHeight;
+            ContentContainer.MinHeight = Configurations.ErrorCondensedMinHeight;
+
+            ContentMargin = Configurations.ErrorContentMargin.AsWindowsType();
+            ContentMaxWidth = Configurations.ErrorCondensedContentMaxWidth;
+            ContentMaxHeight = Configurations.ErrorCondensedContentMaxHeight;
+
+            ContentFontSize = Configurations.ErrorTextFontSize;
+            ContentForeground = FrozenResources.ErrorTextForeground;
+            ContentFontWeight = VisualConfigurations.ErrorTextFontWeight;
+        }
+
+        #endregion
+
+        #region Update Content
+
+        private void UpdateContent()
+        {
+            //The reason of changing the content from the code behind like this is due to a bug of WPF
+            //  The bug if when you set the max width of an existing text box and then try to get the 
+            //  expected size of it by using TextBox.Measure(..) method it will return the wrong value.
+            //  The only solution that I can come up for now is clean the StackPanel content and 
+            //  then add a new TextBox to it
+
+            ContentContainer.Children.Clear();
+
+            if (ViewModel == null) return;
+
+
+            if (ViewModel.Content == "...")
+            {
+                #region Draw Icon
+
+                Rectangle r1 = new Rectangle();
+                r1.Fill = Brushes.Black;
+                r1.Height = 1;
+                r1.Width = 16;
+                r1.UseLayoutRounding = true;
+
+                Rectangle r2 = new Rectangle();
+                r2.Fill = Brushes.Black;
+                r2.Height = 1;
+                r2.Width = 16;
+                r2.UseLayoutRounding = true;
+
+                Rectangle r3 = new Rectangle();
+                r3.Fill = Brushes.Black;
+                r3.Height = 1;
+                r3.Width = 10;
+                r3.UseLayoutRounding = true;
+                r3.HorizontalAlignment = HorizontalAlignment.Left;
+
+                Grid myGrid = new Grid();
+                myGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+                myGrid.VerticalAlignment = VerticalAlignment.Stretch;
+                myGrid.Background = Brushes.Transparent;
+                myGrid.Margin = ContentMargin;
+                myGrid.MaxHeight = ContentMaxHeight;
+                myGrid.MaxWidth = contentMaxWidth;
+
+                // Create row definitions.
+                RowDefinition rowDefinition1 = new RowDefinition();
+                RowDefinition rowDefinition2 = new RowDefinition();
+                RowDefinition rowDefinition3 = new RowDefinition();
+                rowDefinition1.Height = new GridLength(3);
+                rowDefinition2.Height = new GridLength(3);
+                rowDefinition3.Height = new GridLength(3);
+
+                myGrid.RowDefinitions.Add(rowDefinition1);
+                myGrid.RowDefinitions.Add(rowDefinition2);
+                myGrid.RowDefinitions.Add(rowDefinition3);
+                myGrid.Children.Add(r1);
+                Grid.SetRow(r1, 0);
+                myGrid.Children.Add(r2);
+                Grid.SetRow(r2, 1);
+                myGrid.Children.Add(r3);
+                Grid.SetRow(r3, 2);
+                myGrid.UseLayoutRounding = true;
+
+                ContentContainer.Children.Add(myGrid);
+
+                #endregion
+            }
+            else
+            {
+                string content = ViewModel.Content;
+                if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Warning)
+                {
+                    content = Wpf.Properties.Resources.InfoBubbleWarning + content;
+                }
+                else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error)
+                {
+                    content = Wpf.Properties.Resources.InfoBubbleError + content;
+                }
+
+                TextBox textBox = GetNewTextBox(content);
+                ContentContainer.Children.Add(textBox);
+
+                if (viewModel.DocumentationLink != null)
+                {
+                    TextBlock linkBlock = GetHyperlinkTextBlock();
+                    ContentContainer.Children.Add(linkBlock);
+                }
+            }
+        }
+
+        private void RequestNavigateToDocumentationLinkHandler(object sender, RequestNavigateEventArgs e)
+        {
+            this.viewModel.OpenDocumentationLinkCommand.Execute(e.Uri);
+        }
+
+        private TextBox GetNewTextBox(string text)
+        {
+            TextBox textBox = new TextBox();
+            textBox.Text = text;
+            textBox.TextWrapping = TextWrapping.Wrap;
+
+            textBox.Margin = ContentMargin;
+            textBox.MaxHeight = ContentMaxHeight;
+            textBox.MaxWidth = ContentMaxWidth;
+
+            textBox.Foreground = ContentForeground;
+            textBox.FontWeight = ContentFontWeight;
+            textBox.FontSize = ContentFontSize;
+
+            var font = SharedDictionaryManager.DynamoModernDictionary["OpenSansRegular"];
+            textBox.FontFamily = font as FontFamily;
+
+            textBox.Background = Brushes.Transparent;
+            textBox.IsReadOnly = true;
+            textBox.BorderThickness = new System.Windows.Thickness(0);
+
+            textBox.HorizontalAlignment = HorizontalAlignment.Center;
+            textBox.VerticalAlignment = VerticalAlignment.Center;
+
+            textBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+
+            return textBox;
         }
 
         private void UpdateHyperlink()
@@ -283,6 +528,7 @@ namespace Dynamo.Controls
 
             return linkBlock;
         }
+        #endregion
 
         #region Update Shape
 
@@ -441,7 +687,6 @@ namespace Dynamo.Controls
 
         #endregion
 
-
         #region Update Position
 
         private void UpdatePosition()
@@ -467,137 +712,11 @@ namespace Dynamo.Controls
 
         #endregion
 
-        #region Update Content
-
-        private void UpdateContent()
-        {
-            //The reason of changing the content from the code behind like this is due to a bug of WPF
-            //  The bug if when you set the max width of an existing text box and then try to get the 
-            //  expected size of it by using TextBox.Measure(..) method it will return the wrong value.
-            //  The only solution that I can come up for now is clean the StackPanel content and 
-            //  then add a new TextBox to it
-
-            ContentContainer.Children.Clear();
-
-            if (ViewModel == null) return;
-
-
-            if (ViewModel.Content == "...")
-            {
-                #region Draw Icon
-
-                Rectangle r1 = new Rectangle();
-                r1.Fill = Brushes.Black;
-                r1.Height = 1;
-                r1.Width = 16;
-                r1.UseLayoutRounding = true;
-
-                Rectangle r2 = new Rectangle();
-                r2.Fill = Brushes.Black;
-                r2.Height = 1;
-                r2.Width = 16;
-                r2.UseLayoutRounding = true;
-
-                Rectangle r3 = new Rectangle();
-                r3.Fill = Brushes.Black;
-                r3.Height = 1;
-                r3.Width = 10;
-                r3.UseLayoutRounding = true;
-                r3.HorizontalAlignment = HorizontalAlignment.Left;
-
-                Grid myGrid = new Grid();
-                myGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
-                myGrid.VerticalAlignment = VerticalAlignment.Stretch;
-                myGrid.Background = Brushes.Transparent;
-                myGrid.Margin = ContentMargin;
-                myGrid.MaxHeight = ContentMaxHeight;
-                myGrid.MaxWidth = contentMaxWidth;
-
-                // Create row definitions.
-                RowDefinition rowDefinition1 = new RowDefinition();
-                RowDefinition rowDefinition2 = new RowDefinition();
-                RowDefinition rowDefinition3 = new RowDefinition();
-                rowDefinition1.Height = new GridLength(3);
-                rowDefinition2.Height = new GridLength(3);
-                rowDefinition3.Height = new GridLength(3);
-
-                myGrid.RowDefinitions.Add(rowDefinition1);
-                myGrid.RowDefinitions.Add(rowDefinition2);
-                myGrid.RowDefinitions.Add(rowDefinition3);
-                myGrid.Children.Add(r1);
-                Grid.SetRow(r1, 0);
-                myGrid.Children.Add(r2);
-                Grid.SetRow(r2, 1);
-                myGrid.Children.Add(r3);
-                Grid.SetRow(r3, 2);
-                myGrid.UseLayoutRounding = true;
-
-                ContentContainer.Children.Add(myGrid);
-
-                #endregion
-            }
-            else
-            {
-                string content = ViewModel.Content;
-                if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Warning)
-                {
-                    content = Wpf.Properties.Resources.InfoBubbleWarning + content;
-                }
-                else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error)
-                {
-                    content = Wpf.Properties.Resources.InfoBubbleError + content;
-                }
-
-                TextBox textBox = GetNewTextBox(content);
-                ContentContainer.Children.Add(textBox);
-
-                if (viewModel.DocumentationLink != null)
-                {
-                    TextBlock linkBlock = GetHyperlinkTextBlock();
-                    ContentContainer.Children.Add(linkBlock);
-                }
-            }
-        }
-
-        private void RequestNavigateToDocumentationLinkHandler(object sender, RequestNavigateEventArgs e)
-        {
-            this.viewModel.OpenDocumentationLinkCommand.Execute(e.Uri);
-        }
-
-        private TextBox GetNewTextBox(string text)
-        {
-            TextBox textBox = new TextBox();
-            textBox.Text = text;
-            textBox.TextWrapping = TextWrapping.Wrap;
-
-            textBox.Margin = ContentMargin;
-            textBox.MaxHeight = ContentMaxHeight;
-            textBox.MaxWidth = ContentMaxWidth;
-
-            textBox.Foreground = ContentForeground;
-            textBox.FontWeight = ContentFontWeight;
-            textBox.FontSize = ContentFontSize;
-
-            var font = SharedDictionaryManager.DynamoModernDictionary["OpenSansRegular"];
-            textBox.FontFamily = font as FontFamily;
-
-            textBox.Background = Brushes.Transparent;
-            textBox.IsReadOnly = true;
-            textBox.BorderThickness = new System.Windows.Thickness(0);
-
-            textBox.HorizontalAlignment = HorizontalAlignment.Center;
-            textBox.VerticalAlignment = VerticalAlignment.Center;
-
-            textBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-
-            return textBox;
-        }
-
         #region Resize
 
         private void Resize(object parameter)
         {
-            Point deltaPoint = (Point) parameter;
+            Point deltaPoint = (Point)parameter;
 
             double newMaxWidth = deltaPoint.X;
             double newMaxHeight = deltaPoint.Y;
@@ -665,6 +784,19 @@ namespace Dynamo.Controls
             //this.ViewModel.ShowCondensedContentCommand.Execute(data);
         }
 
+        private void InfoBubbleRequestAction(object sender, InfoBubbleEventArgs e)
+        {
+            switch (e.RequestType)
+            {
+                case InfoBubbleEventArgs.Request.Show:
+                    ShowInfoBubble();
+                    break;
+                case InfoBubbleEventArgs.Request.Hide:
+                    HideInfoBubble();
+                    break;
+            }
+        }
+
         private void ShowInfoBubble()
         {
             if (mainGrid.Visibility == System.Windows.Visibility.Collapsed)
@@ -713,35 +845,87 @@ namespace Dynamo.Controls
             fadeOutStoryBoard.Begin(this);
         }
 
+        #region Mouse Event Handlers
 
-        private void InfoBubbleRequestAction(object sender, InfoBubbleEventArgs e)
+        private void ContentContainer_MouseEnter(object sender, MouseEventArgs e)
         {
-            switch (e.RequestType)
-            {
-                case InfoBubbleEventArgs.Request.Show:
-                    ShowInfoBubble();
-                    break;
-                case InfoBubbleEventArgs.Request.Hide:
-                    HideInfoBubble();
-                    break;
-            }
+            if (this.IsDisconnected)
+                return;
+
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed ||
+                ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.WarningCondensed)
+                ShowErrorBubbleFullContent();
+
+            ShowInfoBubble();
+
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
 
-        private void HandleInfoBubbleStateChanged(InfoBubbleViewModel.State state)
+        private void InfoBubble_MouseLeave(object sender, MouseEventArgs e)
         {
-            switch (state)
+            // It is possible for MouseLeave message (that was scheduled earlier) to reach
+            // InfoBubbleView when it becomes disconnected from InfoBubbleViewModel (i.e. 
+            // when the NodeModel it belongs is deleted by user). In this case, InfoBubbleView
+            // should simply ignore the message, since the node is no longer valid.
+            if (this.IsDisconnected)
+                return;
+
+            switch (ViewModel.InfoBubbleStyle)
             {
-                case InfoBubbleViewModel.State.Minimized:
-                    // Changing to Minimized
-                    this.HideInfoBubble();
+                case InfoBubbleViewModel.Style.Warning:
+                case InfoBubbleViewModel.Style.Error:
+                    ShowErrorBubbleCondensedContent();
                     break;
 
-                case InfoBubbleViewModel.State.Pinned:
-                    // Changing to Pinned
-                    this.ShowInfoBubble();
+                default:
+                    FadeOutInfoBubble();
                     break;
             }
+
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
+
+        private void InfoBubble_MouseEnter(object sender, MouseEventArgs e)
+        {
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.Condense);
+        }
+
+        private void MainGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (this.IsDisconnected)
+                return;
+
+            if (!isResizing)
+                return;
+
+            Point mouseLocation = Mouse.GetPosition(mainGrid);
+            if (!isResizeHeight)
+                mouseLocation.Y = double.MaxValue;
+            if (!isResizeWidth)
+                mouseLocation.X = double.MaxValue;
+
+            //ViewModel.ResizeCommand.Execute(mouseLocation);
+            Resize(mouseLocation);
+        }
+
+        private void InfoBubble_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// Dispose function adding resubscribe logic
+        /// </summary>
+        public void Dispose()
+        {
+            viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+            viewModel.RequestAction -= InfoBubbleRequestAction;
+
+            // make sure we unsubscribe from handling the hyperlink click event
+            if (this.hyperlink != null)
+                this.hyperlink.RequestNavigate -= RequestNavigateToDocumentationLinkHandler;
+        }
+
 
         private void ErrorsBorder_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -844,7 +1028,7 @@ namespace Dynamo.Controls
 
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            ScrollViewer scv = (ScrollViewer) sender;
+            ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
@@ -876,33 +1060,7 @@ namespace Dynamo.Controls
 
             ViewModel.RefreshNodeInformationalStateDisplay();
         }
-
-        private void ContentContainer_MouseEnter(object sender, MouseEventArgs e)
-        {
-            if (this.IsDisconnected)
-                return;
-
-            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed ||
-                ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.WarningCondensed)
-                ShowErrorBubbleFullContent();
-
-            ShowInfoBubble();
-
-            this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
-        }
-
-        /// <summary>
-        /// Dispose function adding resubscribe logic
-        /// </summary>
-        public void Dispose()
-        {
-            viewModel.PropertyChanged -= ViewModel_PropertyChanged;
-            viewModel.RequestAction -= InfoBubbleRequestAction;
-
-            // make sure we unsubscribe from handling the hyperlink click event
-            if (this.hyperlink != null)
-                this.hyperlink.RequestNavigate -= RequestNavigateToDocumentationLinkHandler;
-        }
+        
         #endregion
     };
 }
