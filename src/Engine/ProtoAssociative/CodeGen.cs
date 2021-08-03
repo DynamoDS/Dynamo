@@ -1890,16 +1890,16 @@ namespace ProtoAssociative
 
         private AtLevelNode GetAtLevel(AssociativeNode node)
         {
-            var n1 = node as ArrayNameNode;
-            if (n1 != null)
-            {
-                return n1.AtLevel;
-            }
-
             var n2 = node as IdentifierListNode;
             if (n2 != null)
             {
                 return GetAtLevel(n2.RightNode);
+            }
+
+            var n1 = node as ArrayNameNode;
+            if (n1 != null)
+            {
+                return n1.AtLevel;
             }
 
             var n3 = node as FunctionDotCallNode;
@@ -1913,17 +1913,17 @@ namespace ProtoAssociative
 
         private void RemoveAtLevel(AssociativeNode node)
         {
-            var n1 = node as ArrayNameNode;
-            if (n1 != null)
-            {
-                n1.AtLevel = null;
-                return;
-            }
-
             var n2 = node as IdentifierListNode;
             if (n2 != null)
             {
                 RemoveAtLevel(n2.RightNode);
+                return;
+            }
+
+            var n1 = node as ArrayNameNode;
+            if (n1 != null)
+            {
+                n1.AtLevel = null;
                 return;
             }
 
@@ -1938,15 +1938,15 @@ namespace ProtoAssociative
         // Remove replication guides
         private void RemoveReplicationGuides(AssociativeNode node)
         {
-            if (node is ArrayNameNode)
-            {
-                var nodeWithReplication = node as ArrayNameNode;
-                nodeWithReplication.ReplicationGuides = new List<AssociativeNode>();
-            }
-            else if (node is IdentifierListNode)
+            if (node is IdentifierListNode)
             {
                 var identListNode = node as IdentifierListNode;
                 RemoveReplicationGuides(identListNode.RightNode);
+            }
+            else if (node is ArrayNameNode)
+            {
+                var nodeWithReplication = node as ArrayNameNode;
+                nodeWithReplication.ReplicationGuides = new List<AssociativeNode>();
             }
             else if (node is FunctionDotCallNode)
             {
