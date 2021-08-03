@@ -57,7 +57,7 @@ namespace ProtoTest.DSASM
                         },
                         new ProtoCore.Type()
                         {
-                            Name = "int",
+                            Name = "double",
                             UID = 12
                         }
                     },
@@ -101,7 +101,12 @@ namespace ProtoTest.DSASM
                         new ProtoCore.Type()
                         {
                             Name = "int",
-                            UID = 12
+                            UID = 13
+                        },
+                        new ProtoCore.Type()
+                        {
+                            Name = "int",
+                            UID = 13
                         }
                     },
                     ArgumentInfos = new List<ArgumentInfo>()
@@ -113,6 +118,11 @@ namespace ProtoTest.DSASM
                         new ArgumentInfo()
                         {
                             Name = "example1",
+                            DefaultExpression = new IdentifierNode(){ }
+                        },
+                        new ArgumentInfo()
+                        {
+                            Name = "example2",
                             DefaultExpression = new IdentifierNode(){ }
                         },
                         new ArgumentInfo()
@@ -147,9 +157,18 @@ namespace ProtoTest.DSASM
                     Name = "Test2",
                     ArgumentTypes = new List<ProtoCore.Type>()
                     {
+                        new ProtoCore.Type()
+                        {
+                            Name = "int",
+                            UID = 10
+                        }
                     },
                     ArgumentInfos = new List<ArgumentInfo>()
                     {
+                        new ArgumentInfo()
+                        {
+                            Name = "example0"
+                        }
                     },
                     IsConstructor = false,
                     IsStatic = false,
@@ -159,7 +178,7 @@ namespace ProtoTest.DSASM
                 {
                     ID = 4,
                     ClassID = 20,
-                    Name = "Test3",
+                    Name = "Test2",
                     ArgumentTypes = new List<ProtoCore.Type>()
                     {
                     },
@@ -191,6 +210,8 @@ namespace ProtoTest.DSASM
             {
                 procedureTable.Append(proc);
             }
+
+            Assert.AreEqual(procedureTable.Procedures.Count, procNodes.Count);
         }
 
         [TearDown]
@@ -292,6 +313,43 @@ namespace ProtoTest.DSASM
 
             Assert.IsNotNull(procNode);
             Assert.AreEqual(procNode.ID, 0);
+        }
+
+        /// <summary>
+        /// Test that we can find a match with exact argument types
+        /// </summary>
+        [Test]
+        public void TestFindFunctionWithExactArgTypes()
+        {
+            procedureTable.GetFunctionBySignature(new ProcedureMatchOptions()
+            {
+                FunctionName = "Test2",
+                ParameterTypes = new List<ProtoCore.Type>()
+                {
+                    new ProtoCore.Type()
+                    {
+                        Name = "int",
+                        UID = 10
+                    }
+                },
+                ExactMatchWithNumArgs = true,
+                ExactMatchWithArgTypes = true
+            }, out ProcedureNode procNode0);
+
+            Assert.IsNotNull(procNode0);
+            Assert.AreEqual(procNode0.ID, 3);
+
+            procedureTable.GetFunctionBySignature(new ProcedureMatchOptions()
+            {
+                FunctionName = "Test2",
+                ParameterTypes = new List<ProtoCore.Type>()
+                {},
+                ExactMatchWithNumArgs = true,
+                ExactMatchWithArgTypes = true
+            }, out ProcedureNode procNode1);
+
+            Assert.IsNotNull(procNode1);
+            Assert.AreEqual(procNode1.ID, 4);
         }
     }
 }
