@@ -38,7 +38,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             dynamoViewModel = dynViewModel;
 
             Guides = new List<Guide>();
-            CreateGuideSteps("UI/GuidedTour/dynamo_guides.json");
+            CreateGuideSteps(@"UI\GuidedTour\dynamo_guides.json");
 
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
             GuideFlowEvents.GuidedTourStart += TourStarted;
