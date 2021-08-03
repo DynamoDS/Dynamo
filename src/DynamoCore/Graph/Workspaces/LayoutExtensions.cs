@@ -120,8 +120,8 @@ namespace Dynamo.Graph.Workspaces
                 foreach (var pin in edge.ConnectorPinModels)
                 {
                     combinedGraph.AddNode(pin.GUID,
-                        30,
-                        30,
+                        pin.Width,
+                        pin.Height,
                         pin.CenterX, 
                         pin.CenterY, 
                         pin.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
@@ -249,7 +249,8 @@ namespace Dynamo.Graph.Workspaces
                 connector.End.Owner.GUID,
                 connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].CenterX, 
                 connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].CenterY, 
-                connector.End.Center.X, connector.End.Center.Y);
+                connector.End.Center.X, 
+                connector.End.Center.Y);
         }
 
         /// <summary>
@@ -513,7 +514,7 @@ namespace Dynamo.Graph.Workspaces
                         double offsetY = graph.OffsetY;
 
                         pin.CenterX = n.X;
-                        pin.CenterY = n.Y + n.NotesHeight + offsetY;
+                        pin.CenterY = n.Y + offsetY;
                         pin.ReportPosition();
                         workspace.HasUnsavedChanges = true;
                     }

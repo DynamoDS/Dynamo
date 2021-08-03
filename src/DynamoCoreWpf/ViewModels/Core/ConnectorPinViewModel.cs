@@ -87,9 +87,21 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(Model));
             }
         }
+        /// <summary>
+        /// In this case width == height for connectorPinModels, 
+        /// so we only need one property that can be used for both.
+        /// </summary>
+        [JsonIgnore]
+        public double HalfWidth
+        {
+            get
+            {
+                return Model.Width * 0.5;
+            }
+        }
 
         /// <summary>
-        /// Element's left position is two-way bound to this value
+        /// Element's center position is two-way bound to this value
         /// </summary>
         public double Left
         {
@@ -102,7 +114,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Element's top position is two-way bound to this value
+        /// Element's center position is two-way bound to this value
         /// </summary>
         public double Top
         {
@@ -214,10 +226,12 @@ namespace Dynamo.ViewModels
             {
                 case nameof(ConnectorPinModel.X):
                     OnRequestRedraw(this, EventArgs.Empty);
+                    //RaisePropertyChanged(nameof(CenterX));
                     RaisePropertyChanged(nameof(Left));
                     break;
                 case nameof(ConnectorPinModel.Y):
                     OnRequestRedraw(this, EventArgs.Empty);
+                    //RaisePropertyChanged(nameof(CenterY));
                     RaisePropertyChanged(nameof(Top));
                     break;
                 case nameof(ConnectorPinModel.IsSelected):
