@@ -255,6 +255,20 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.State; }
         }
+        
+        /// <summary>
+        /// This is a UI placeholder for future functionality relating to Alerts
+        /// </summary>
+        [JsonIgnore]
+        public int NumberOfDismissedAlerts
+        {
+            get => 0;
+            set
+            {
+                NumberOfDismissedAlerts = value;
+                RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
+            }
+        }
 
         [JsonIgnore]
         public string Description

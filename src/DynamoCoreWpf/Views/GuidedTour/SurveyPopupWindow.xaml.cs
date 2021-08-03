@@ -9,8 +9,13 @@ namespace Dynamo.Wpf.Views.GuidedTour
     /// </summary>
     public partial class SurveyPopupWindow : Popup
     {
-        private SurveyPopupViewModel surveyViewModel;
+        private readonly SurveyPopupViewModel surveyViewModel;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <param name="hInfo"></param>
         public SurveyPopupWindow(SurveyPopupViewModel viewModel, HostControlInfo hInfo)
         {
             InitializeComponent();
@@ -31,6 +36,8 @@ namespace Dynamo.Wpf.Views.GuidedTour
         private void CloseButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             IsOpen = false;
+            surveyViewModel.Step.OnStepClosed(surveyViewModel.Step.Name, surveyViewModel.Step.StepType);
+            Logging.Analytics.TrackEvent(Logging.Actions.Rate, Logging.Categories.Command, surveyViewModel.Step.RatingTextTitle, SurveyRatingControl.Value);
         }
     }
 }

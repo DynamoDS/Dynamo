@@ -110,6 +110,7 @@
                     <Button x:Name="BackButton"
                             Margin="0,0,15,0"
                             Grid.Column="0"
+                            Click="BackButton_Click"
                             Style="{StaticResource CaretButtonStyle}">Back
                     </Button>
                     <Label Name="TourProgress"
@@ -124,6 +125,7 @@
                             Margin="15,0,0,0"
                             Grid.Column="2"
                             Tag="Invert"
+                            Click="NextButton_Click"
                             Style="{StaticResource CaretButtonStyle}">Next
                     </Button>
                 </StackPanel>
