@@ -2437,9 +2437,6 @@ namespace Dynamo.Graph.Nodes
 
         private ExecutionHints executionHint;
 
-        private ObservableCollection<OutputMessage> outputMessages =
-            new ObservableCollection<OutputMessage>();
-
         [JsonIgnore]
         public bool IsModified
         {
