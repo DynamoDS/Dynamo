@@ -217,6 +217,7 @@ namespace Dynamo.Controls
                         break;
 
                     case "InfoBubbleState":
+                        UpdateShape();
                         UpdatePosition();
 
                         HandleInfoBubbleStateChanged(ViewModel.InfoBubbleState);
@@ -689,6 +690,9 @@ namespace Dynamo.Controls
 
         #region Update Position
 
+        /// <summary>
+        /// Ensures that the InfoBubbleView moves in tandem with the node it's attached to.
+        /// </summary>
         private void UpdatePosition()
         {
             Canvas.SetTop(mainGrid, ViewModel.TargetTopLeft.Y);
@@ -761,7 +765,7 @@ namespace Dynamo.Controls
 
             data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
 
-            //this.ViewModel.ShowFullContentCommand.Execute(data);
+            this.ViewModel.ShowFullContentCommand.Execute(data);
         }
 
         private void ShowErrorBubbleCondensedContent()
@@ -781,7 +785,7 @@ namespace Dynamo.Controls
 
             data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
 
-            //this.ViewModel.ShowCondensedContentCommand.Execute(data);
+            this.ViewModel.ShowCondensedContentCommand.Execute(data);
         }
 
         private void InfoBubbleRequestAction(object sender, InfoBubbleEventArgs e)
@@ -793,6 +797,12 @@ namespace Dynamo.Controls
                     break;
                 case InfoBubbleEventArgs.Request.Hide:
                     HideInfoBubble();
+                    break;
+                case InfoBubbleEventArgs.Request.FadeIn:
+                    FadeInInfoBubble();
+                    break;
+                case InfoBubbleEventArgs.Request.FadeOut:
+                    FadeOutInfoBubble();
                     break;
             }
         }
@@ -1062,5 +1072,5 @@ namespace Dynamo.Controls
         }
         
         #endregion
-    };
+    }
 }

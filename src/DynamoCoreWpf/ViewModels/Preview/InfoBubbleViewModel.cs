@@ -282,7 +282,8 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// A collection of InfoBubbleDataPacket objects that are received
+        /// A collection of InfoBubbleDataPacket objects that are received when the node executes
+        /// and its state changes to reflect errors or warnings that have been detected.
         /// </summary>
         public ObservableCollection<InfoBubbleDataPacket> NodeMessages
         {
@@ -291,7 +292,7 @@ namespace Dynamo.ViewModels
         } = new ObservableCollection<InfoBubbleDataPacket>();
         
         /// <summary>
-        /// A collection of dismissed informational state messages for this node
+        /// A collection of messages this node has received that have been manually dismissed by the user.
         /// </summary>
         public ObservableCollection<InfoBubbleDataPacket> DismissedMessages { get; set; } = new ObservableCollection<InfoBubbleDataPacket>();
 
@@ -425,6 +426,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Used to switch out the DataTemplate from one that shows an iterator beside each message
+        /// to one which doesn't. This is necessary because empty TextBlock Runs are non zero-width
+        /// and cannot have their Width (or Visibility) set manually.
+        /// </summary>
         public bool NodeInfoIteratorVisible
         {
             get => nodeInfoIteratorVisible;
@@ -484,7 +490,8 @@ namespace Dynamo.ViewModels
             ConnectingDirection = Direction.None;
             Content = string.Empty;
             DocumentationLink = null;
-            ZIndex = 40;
+            // To appear above any NodeView elements
+            ZIndex = 40; 
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
 
@@ -590,6 +597,12 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// Fired by the users to manually 'dismiss' a user-facing message, such as a Warning or an Error.
+        /// Adds the message(s) to the collection of DismissedMessages, then rebuilds the
+        /// user-facing messages display from scratch.
+        /// </summary>
+        /// <param name="parameter"></param>
         private void DismissWarning(object parameter)
         {
             if (!(parameter is InfoBubbleDataPacket infoBubbleDataPacket)) return;
@@ -606,6 +619,10 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// Accessed via the node's ContextMenu, used to make a user-facing message reappear above the node.
+        /// </summary>
+        /// <param name="parameter"></param>
         private void UndismissWarning(object parameter)
         {
             if (!(parameter is string value)) return;
