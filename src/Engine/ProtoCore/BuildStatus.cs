@@ -86,16 +86,6 @@ namespace ProtoCore
             Column = -1;
         }
 
-        // A constructor that takes a string and a type
-        public OutputMessage(string message, MessageType messageType)
-        {
-            Type = messageType;
-            Message = message;
-            FilePath = string.Empty;
-            Line = -1;
-            Column = -1;
-        }
-
         // A constructor for source location related messages.
         public OutputMessage(MessageType type, string message,
             string filePath, int line, int column)
