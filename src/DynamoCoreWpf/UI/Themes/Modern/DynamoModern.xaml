@@ -3442,6 +3442,23 @@
     <SolidColorBrush x:Key="PopupRatingControlBackColor" Color="#F5F5F5" />
 
     <SolidColorBrush x:Key="CheckMarkBackColor" Color="#87B340" />
+    
+    <!-- Style for a self-wrapping ToolTip -->
+    <Style x:Key="ToolTipSelfWrapping" TargetType="ToolTip">
+        <Style.Resources>
+            <Style TargetType="ContentPresenter">
+                <Style.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextWrapping"
+                                Value="Wrap" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </Style.Resources>
+        <Setter Property="MaxWidth"
+                Value="300" />
+    </Style>
+
 
     <!--  Style for the buttons in a Tooltip part of the Dynamo Guided Tours  -->
     <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">

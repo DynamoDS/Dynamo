@@ -262,10 +262,10 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public int NumberOfDismissedAlerts
         {
-            get => 0;
+            get => numberOfDismissedAlerts;
             set
             {
-                NumberOfDismissedAlerts = value;
+                numberOfDismissedAlerts = value;
                 RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
             }
         }
@@ -608,17 +608,6 @@ namespace Dynamo.ViewModels
         {
             get { return NodeModel.UserDescription; }
             set { NodeModel.UserDescription = value; }
-        }
-
-        [JsonIgnore]
-        public int NumberOfDismissedAlerts
-        {
-            get => numberOfDismissedAlerts;
-            set
-            {
-                numberOfDismissedAlerts = value;
-                RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
-            }
         }
 
         [JsonIgnore]

@@ -460,8 +460,11 @@
                                                                             Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissWarningCommand}"
                                                                             CommandParameter="{Binding .}"
                                                                             DockPanel.Dock="Right"
-                                                                            Style="{StaticResource DismissButtonStyle}"
-                                                                            ToolTip="{x:Static p:Resources.NodeInfoDismissButtonToolTip}" />
+                                                                            Style="{StaticResource DismissButtonStyle}">
+                                                                            <Button.ToolTip>
+                                                                                <ToolTip Content="{x:Static p:Resources.NodeInfoDismissButtonToolTip}" Style="{StaticResource ToolTipSelfWrapping}" />
+                                                                            </Button.ToolTip>
+                                                                        </Button>
                                                                     </Grid>
                                                                     <Button
                                                                         Name="LearnMoreWarningsButton"
@@ -531,8 +534,11 @@
                                                                             Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissWarningCommand}"
                                                                             CommandParameter="{Binding .}"
                                                                             DockPanel.Dock="Right"
-                                                                            ToolTip="{x:Static p:Resources.NodeWarningDismissButtonToolTip}"
-                                                                                Style="{StaticResource DismissButtonStyle}" />
+                                                                            Style="{StaticResource DismissButtonStyle}">
+                                                                            <Button.ToolTip>
+                                                                                <ToolTip Content="{x:Static p:Resources.NodeWarningDismissButtonToolTip}" Style="{StaticResource ToolTipSelfWrapping}" />
+                                                                            </Button.ToolTip>
+                                                                        </Button>
                                                                     </Grid>
                                                                     <Button
                                                                         Name="LearnMoreWarningsButton"
