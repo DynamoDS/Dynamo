@@ -751,7 +751,7 @@ namespace Dynamo.ViewModels
                     {
                         Header = infoBubbleDataPacket.Message.Substring(0, Math.Min(infoBubbleDataPacket.Message.Length, 30)) + ellipses,
                         Tag = infoBubbleDataPacket.Message,
-                        Command = ErrorBubble.UndismissWarningCommand,
+                        Command = ErrorBubble.UndismissMessageCommand,
                         CommandParameter = infoBubbleDataPacket.Message
                     });
                 }
