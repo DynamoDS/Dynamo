@@ -7,7 +7,7 @@ using ProtoCore.AST.AssociativeAST;
 namespace ProtoCore.DSASM
 {
     // Option class for tracking down a specific ProcedureNode
-    internal class ProcedureMatchOptions
+    public class ProcedureMatchOptions
     {
         internal string FunctionName; // Find only functions with this name
         internal List<Type> ParameterTypes = null; // Check against parameter types.
@@ -349,7 +349,7 @@ namespace ProtoCore.DSASM
         }
 
         // TODO: To be deleted.
-        [Obsolete("This method will be obsoleted starting with Dynamo 3.0. Please use GetFunctionBySignature instead.")]
+        [Obsolete("This method will be removed in Dynamo 3.0. Please use GetFunctionBySignature with ProcedureMatchOptions instead.")]
         public int IndexOf(string name, List<ProtoCore.Type> argTypeList, bool isStaticOrConstructor = false)
         {
             ProcedureMatchOptions opts = new ProcedureMatchOptions() { 
@@ -373,6 +373,7 @@ namespace ProtoCore.DSASM
         /// <param name="functionName"></param>
         /// <param name="parameterTypes"></param>
         /// <returns></returns>
+        [Obsolete("This method will be removed in Dynamo 3.0. Please use GetFunctionBySignature with ProcedureMatchOptions instead.")]
         public ProcedureNode GetFunctionBySignature(string functionName, List<Type> parameterTypes)
         {
             GetFunctionBySignature(new ProcedureMatchOptions() 
@@ -389,7 +390,7 @@ namespace ProtoCore.DSASM
         /// <param name="opts">Matching options</param>
         /// <param name="outputProcNode">Output procedure node. Null if nothing is found</param>
         /// <returns>Index of the ProcedureNode in the Procedures list. Returns -1 If nothing is found</returns>
-        internal int GetFunctionBySignature(ProcedureMatchOptions opts, out ProcedureNode outputProcNode)
+        public int GetFunctionBySignature(ProcedureMatchOptions opts, out ProcedureNode outputProcNode)
         {
             int outputProcNodeIndex = Constants.kInvalidIndex;
             outputProcNode = null;

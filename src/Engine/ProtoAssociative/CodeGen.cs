@@ -3197,8 +3197,13 @@ namespace ProtoAssociative
                 // Prevent creation of default constructor for static DS class
                 if (!classDecl.IsExternLib && !classDecl.IsStatic)
                 {
-                    ProtoCore.DSASM.ProcedureTable vtable = core.ClassTable.ClassNodes[globalClassIndex].ProcTable;
-                    if (vtable.GetFunctionBySignature(classDecl.ClassName, new List<ProtoCore.Type>()) == null)
+                    core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(new ProcedureMatchOptions()
+                    {
+                        FunctionName = classDecl.ClassName,
+                        ParameterTypes = new List<ProtoCore.Type>(),
+                        IsConstructor = true,
+                    }, out ProcedureNode procNode);
+                    if (procNode == null)
                     {
                         ConstructorDefinitionNode defaultConstructor = new ConstructorDefinitionNode();
                         defaultConstructor.Name = classDecl.ClassName;
@@ -3460,11 +3465,14 @@ namespace ProtoAssociative
                     }
                 }
 
-                var procNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(funcDef.Name, argList);
+                globalProcIndex = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(new ProcedureMatchOptions()
+                {
+                    FunctionName = funcDef.Name,
+                    ParameterTypes = argList
+                    
+                }, out ProcedureNode dummy);
 
-                globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
-
-                Validity.Assert(null == localProcedure);
+                Validity.Assert(globalProcIndex != Constants.kInvalidIndex);
                 localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
 
                 Validity.Assert(null != localProcedure);
@@ -3810,8 +3818,10 @@ namespace ProtoAssociative
                         ParameterTypes = argList,
                         IsStatic = funcDef.IsStatic
                     }, out ProcedureNode procNode);
+                    
+                    Validity.Assert(procNode != null);
+                    globalProcIndex = procNode.ID;
 
-                    globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
                     localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
                 }
 
