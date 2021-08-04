@@ -2508,4 +2508,7 @@ Uninstall the following packages: {0}?</value>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
   </data>
+  <data name="UseDefaultValuePopupMenuItem" xml:space="preserve">
+    <value>Use Default Value</value>
+  </data>
 </root>

@@ -655,6 +655,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pin to node.
+        /// </summary>
+        public static string ContextPinToNode {
+            get {
+                return ResourceManager.GetString("ContextPinToNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downstream.
         /// </summary>
         public static string ContextSelectConnectedDownstream {
@@ -687,15 +696,6 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextSelectConnectedUpstreamDownstream {
             get {
                 return ResourceManager.GetString("ContextSelectConnectedUpstreamDownstream", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pin to node.
-        /// </summary>
-        public static string ContextPinToNode {
-            get {
-                return ResourceManager.GetString("ContextPinToNode", resourceCulture);
             }
         }
         
@@ -6215,6 +6215,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UsageReportPromptDialogTitle {
             get {
                 return ResourceManager.GetString("UsageReportPromptDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Default Value.
+        /// </summary>
+        public static string UseDefaultValuePopupMenuItem {
+            get {
+                return ResourceManager.GetString("UseDefaultValuePopupMenuItem", resourceCulture);
             }
         }
         

@@ -36,18 +36,15 @@
     </ResourceDictionary.MergedDictionaries>
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
         <!--  Grid that contains the entire port  -->
-        <Grid Name="mainGrid"
-              HorizontalAlignment="Stretch">
+        <Grid Name="mainGrid" HorizontalAlignment="Stretch">
             <!--
                 The main border shows rounded edges and changes color according to multiple conditions
                 This logic is defined in the ViewModel. None of the elements in this Border are interactive, so they
                 can live in the lowest level of Z-Order
             -->
-            <Border x:Name="mainBorder"
-                    UseLayoutRounding="true">
+            <Border x:Name="mainBorder" UseLayoutRounding="true">
                 <!--  DockPanel that positions the visible port name and the UseLevelArrow  -->
-                <DockPanel x:Name="mainDockPanel"
-                           FlowDirection="LeftToRight">
+                <DockPanel x:Name="mainDockPanel" FlowDirection="LeftToRight">
                     <Grid Name="portNameGrid"
                           DockPanel.Dock="Left"
                           IsEnabled="{Binding Path=IsEnabled}"
@@ -58,22 +55,18 @@
                                    SnapsToDevicePixels="True">
                             <interactivity:Interaction.Triggers>
                                 <views:HandlingEventTrigger EventName="MouseEnter">
-                                    <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}"
-                                                                       CommandParameter="{Binding}" />
+                                    <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
                                 </views:HandlingEventTrigger>
                                 <views:HandlingEventTrigger EventName="MouseLeave">
-                                    <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}"
-                                                                       CommandParameter="{Binding}" />
+                                    <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
                                 </views:HandlingEventTrigger>
                                 <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
-                                    <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}"
-                                                                       CommandParameter="{Binding}" />
+                                    <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}" CommandParameter="{Binding}" />
                                 </views:HandlingEventTrigger>
                             </interactivity:Interaction.Triggers>
                             <Rectangle.Margin>
                                 <MultiBinding Converter="{StaticResource SnapRegionMarginConverter}">
-                                    <Binding ElementName="portNameTb"
-                                             Path="ActualWidth" />
+                                    <Binding ElementName="portNameTb" Path="ActualWidth" />
                                     <Binding Path="PortModel" />
                                 </MultiBinding>
                             </Rectangle.Margin>
@@ -90,13 +83,10 @@
                                    Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter}}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Margin"
-                                            Value="13,0,13,7" />
+                                    <Setter Property="Margin" Value="13,0,13,7" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=IsPortCondensed}"
-                                                     Value="True">
-                                            <Setter Property="Margin"
-                                                    Value="3,0,0,0" />
+                                        <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
+                                            <Setter Property="Margin" Value="3,0,0,0" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -104,17 +94,12 @@
                         </TextBlock>
                         <Grid.Style>
                             <Style>
-                                <Setter Property="Grid.Height"
-                                        Value="{Binding Path=Height}" />
-                                <Setter Property="Grid.Margin"
-                                        Value="{Binding Path=MarginThickness}" />
+                                <Setter Property="Grid.Height" Value="{Binding Path=Height}" />
+                                <Setter Property="Grid.Margin" Value="{Binding Path=MarginThickness}" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=IsPortCondensed}"
-                                                 Value="True">
-                                        <Setter Property="Grid.Height"
-                                                Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
-                                        <Setter Property="Grid.Margin"
-                                                Value="0" />
+                                    <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
+                                        <Setter Property="Grid.Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
+                                        <Setter Property="Grid.Margin" Value="0" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -142,17 +127,12 @@
                                Style="{StaticResource SZoomFadeLabel}" />
                         <Grid.Style>
                             <Style>
-                                <Setter Property="Grid.Height"
-                                        Value="{Binding Path=Height}" />
-                                <Setter Property="Grid.Margin"
-                                        Value="10,0,10,0" />
+                                <Setter Property="Grid.Height" Value="{Binding Path=Height}" />
+                                <Setter Property="Grid.Margin" Value="10,0,10,0" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=IsPortCondensed}"
-                                                 Value="True">
-                                        <Setter Property="Grid.Height"
-                                                Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
-                                        <Setter Property="Grid.Margin"
-                                                Value="0" />
+                                    <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
+                                        <Setter Property="Grid.Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
+                                        <Setter Property="Grid.Margin" Value="0" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -162,66 +142,48 @@
                 <!--  Inputs and outputs have different corner radius and border conditions  -->
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="Background"
-                                Value="{Binding PortBackgroundColor, UpdateSourceTrigger=PropertyChanged}" />
-                        <Setter Property="Height"
-                                Value="35px" />
-                        <Setter Property="BorderBrush"
-                                Value="{Binding PortBorderBrushColor, UpdateSourceTrigger=PropertyChanged}" />
+                        <Setter Property="Background" Value="{Binding PortBackgroundColor, UpdateSourceTrigger=PropertyChanged}" />
+                        <Setter Property="Height" Value="35px" />
+                        <Setter Property="BorderBrush" Value="{Binding PortBorderBrushColor, UpdateSourceTrigger=PropertyChanged}" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=PortType}"
-                                         Value="{x:Static nodes:PortType.Input}">
-                                <Setter Property="CornerRadius"
-                                        Value="0,11,11,0" />
-                                <Setter Property="BorderThickness"
-                                        Value="0,2,2,2" />
+                            <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Input}">
+                                <Setter Property="CornerRadius" Value="0,11,11,0" />
+                                <Setter Property="BorderThickness" Value="0,2,2,2" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=PortType}"
-                                         Value="{x:Static nodes:PortType.Output}">
-                                <Setter Property="CornerRadius"
-                                        Value="11,0,0,11" />
-                                <Setter Property="BorderThickness"
-                                        Value="2,2,0,2" />
+                            <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
+                                <Setter Property="CornerRadius" Value="11,0,0,11" />
+                                <Setter Property="BorderThickness" Value="2,2,0,2" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=IsPortCondensed}"
-                                         Value="True">
-                                <Setter Property="CornerRadius"
-                                        Value="0" />
-                                <Setter Property="BorderThickness"
-                                        Value="0" />
-                                <Setter Property="Height"
-                                        Value="16px" />
-                                <Setter Property="Width"
-                                        Value="16px" />
+                            <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
+                                <Setter Property="CornerRadius" Value="0" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Height" Value="16px" />
+                                <Setter Property="Width" Value="16px" />
                             </DataTrigger>
+                            <!--  Used for styling output ports when they are 'condensed' i.e. on a code block  -->
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=IsPortCondensed}"
-                                               Value="True" />
-                                    <Condition Binding="{Binding Path=IsConnected}"
-                                               Value="True" />
+                                    <Condition Binding="{Binding Path=IsPortCondensed}" Value="True" />
+                                    <Condition Binding="{Binding Path=IsConnected}" Value="True" />
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
-                                    <Setter Property="Background"
-                                            Value="{Binding PortBackgroundColor}" />
+                                    <Setter Property="Background" Value="{Binding PortBackgroundColor}" />
                                 </MultiDataTrigger.Setters>
                             </MultiDataTrigger>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=IsPortCondensed}"
-                                               Value="True" />
-                                    <Condition Binding="{Binding Path=IsConnected}"
-                                               Value="False" />
+                                    <Condition Binding="{Binding Path=IsPortCondensed}" Value="True" />
+                                    <Condition Binding="{Binding Path=IsConnected}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
-                                    <Setter Property="Background"
-                                            Value="#666666" />
+                                    <Setter Property="Background" Value="#666666" />
                                 </MultiDataTrigger.Setters>
                             </MultiDataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
             </Border>
+            <!--  Blue marker that appears to the left side of an input port, indicating it's using its default value.  -->
             <Rectangle x:Name="usingDefaultValueMarker"
                        Width="6px"
                        Height="35px"
@@ -241,41 +203,26 @@
                     UseLayoutRounding="true">
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="Height"
-                                Value="31px" />
+                        <Setter Property="Height" Value="31px" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=PortType}"
-                                         Value="{x:Static nodes:PortType.Input}">
-                                <Setter Property="CornerRadius"
-                                        Value="0,11,11,0" />
+                            <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Input}">
+                                <Setter Property="CornerRadius" Value="0,11,11,0" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=PortType}"
-                                         Value="{x:Static nodes:PortType.Output}">
-                                <Setter Property="CornerRadius"
-                                        Value="11,0,0,11" />
+                            <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
+                                <Setter Property="CornerRadius" Value="11,0,0,11" />
                             </DataTrigger>
-                            <Trigger Property="IsMouseOver"
-                                     Value="True">
-                                <Setter Property="Background"
-                                        Value="White" />
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="White" />
                             </Trigger>
-                            <Trigger Property="IsMouseOver"
-                                     Value="False">
-                                <Setter Property="Background"
-                                        Value="Transparent" />
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="Background" Value="Transparent" />
                             </Trigger>
-                            <DataTrigger Binding="{Binding Path=IsPortCondensed}"
-                                         Value="True">
-                                <Setter Property="CornerRadius"
-                                        Value="0" />
-                                <Setter Property="BorderThickness"
-                                        Value="0" />
-                                <Setter Property="Height"
-                                        Value="16px" />
-                                <Setter Property="Margin"
-                                        Value="0" />
-                                <Setter Property="Width"
-                                        Value="16px" />
+                            <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
+                                <Setter Property="CornerRadius" Value="0" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Height" Value="16px" />
+                                <Setter Property="Margin" Value="0" />
+                                <Setter Property="Width" Value="16px" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -297,8 +244,7 @@
                 </Border.ContextMenu>
 
                 <Border.ToolTip>
-                    <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}"
-                                         Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}" Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>
                             <TextBlock MaxWidth="320"
                                        Text="{Binding Path=ToolTipContent}"
@@ -309,8 +255,7 @@
 
                 <!--  Bind NodeAutoComplete to double left click  -->
                 <Border.InputBindings>
-                    <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}"
-                                  MouseAction="LeftDoubleClick" />
+                    <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
                 </Border.InputBindings>
 
                 <!--
@@ -349,26 +294,19 @@
                            Visibility="{Binding Path=UseLevelVisibility}">
                     <interactivity:Interaction.Triggers>
                         <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
-                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnLevelCommand}"
-                                                               CommandParameter="{Binding}" />
+                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnLevelCommand}" CommandParameter="{Binding}" />
                         </views:HandlingEventTrigger>
                     </interactivity:Interaction.Triggers>
                     <Rectangle.Style>
                         <Style TargetType="{x:Type Rectangle}">
                             <Style.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter Property="Fill"
-                                            Value="White" />
-                                    <Setter Property="Opacity"
-                                            Value="0.3" />
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Fill" Value="White" />
+                                    <Setter Property="Opacity" Value="0.3" />
                                 </Trigger>
-                                <Trigger Property="IsMouseOver"
-                                         Value="False">
-                                    <Setter Property="Fill"
-                                            Value="White" />
-                                    <Setter Property="Opacity"
-                                            Value="0.0" />
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter Property="Fill" Value="White" />
+                                    <Setter Property="Opacity" Value="0.0" />
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -406,14 +344,10 @@
                         <Grid.Resources>
                             <ResourceDictionary>
                                 <Style TargetType="CheckBox">
-                                    <Setter Property="FontFamily"
-                                            Value="{StaticResource ArtifaktElementRegular}" />
-                                    <Setter Property="Foreground"
-                                            Value="{StaticResource DarkGreyBrush}" />
-                                    <Setter Property="Margin"
-                                            Value="0" />
-                                    <Setter Property="FontSize"
-                                            Value="14px" />
+                                    <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                                    <Setter Property="Foreground" Value="{StaticResource DarkGreyBrush}" />
+                                    <Setter Property="Margin" Value="0" />
+                                    <Setter Property="FontSize" Value="14px" />
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type CheckBox}">
@@ -452,38 +386,20 @@
                                                                       TextBlock.Foreground="{StaticResource DarkGreyBrush}" />
                                                 </Grid>
                                                 <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver"
-                                                             Value="True">
-                                                        <Setter TargetName="highlightRectangle"
-                                                                Property="Fill"
-                                                                Value="LightGray" />
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="highlightRectangle" Property="Fill" Value="LightGray" />
                                                     </Trigger>
-                                                    <Trigger Property="IsChecked"
-                                                             Value="True">
-                                                        <Setter TargetName="outerRectangle"
-                                                                Property="Fill"
-                                                                Value="{StaticResource PortUseLevelsCheckBoxColor}" />
-                                                        <Setter TargetName="tick"
-                                                                Property="Opacity"
-                                                                Value="1.0" />
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter TargetName="outerRectangle" Property="Fill" Value="{StaticResource PortUseLevelsCheckBoxColor}" />
+                                                        <Setter TargetName="tick" Property="Opacity" Value="1.0" />
                                                     </Trigger>
-                                                    <Trigger Property="IsChecked"
-                                                             Value="False">
-                                                        <Setter TargetName="outerRectangle"
-                                                                Property="Fill"
-                                                                Value="Transparent" />
-                                                        <Setter TargetName="tick"
-                                                                Property="Opacity"
-                                                                Value="0.0" />
+                                                    <Trigger Property="IsChecked" Value="False">
+                                                        <Setter TargetName="outerRectangle" Property="Fill" Value="Transparent" />
+                                                        <Setter TargetName="tick" Property="Opacity" Value="0.0" />
                                                     </Trigger>
-                                                    <Trigger Property="IsEnabled"
-                                                             Value="False">
-                                                        <Setter TargetName="highlightRectangle"
-                                                                Property="Stroke"
-                                                                Value="LightGray" />
-                                                        <Setter TargetName="content"
-                                                                Property="TextBlock.Foreground"
-                                                                Value="LightGray" />
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter TargetName="highlightRectangle" Property="Stroke" Value="LightGray" />
+                                                        <Setter TargetName="content" Property="TextBlock.Foreground" Value="LightGray" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -522,6 +438,10 @@
                                           Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
                                           IsChecked="{Binding Path=ShouldKeepListStructure, Mode=OneWay}"
                                           IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}" />
+                                <CheckBox Margin="5,7,5,0"
+                                          HorizontalAlignment="Left"
+                                          Content="{x:Static p:Resources.UseDefaultValuePopupMenuItem}"
+                                          IsChecked="{Binding Path=UsingDefaultValue, Mode=OneWay}" />
                             </StackPanel>
                         </Border>
                         <Path Grid.Column="1"
@@ -533,13 +453,10 @@
             </DockPanel>
             <Grid.Style>
                 <Style>
-                    <Setter Property="Grid.Height"
-                            Value="41px" />
+                    <Setter Property="Grid.Height" Value="41px" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=IsPortCondensed}"
-                                     Value="True">
-                            <Setter Property="Grid.Height"
-                                    Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
+                        <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
+                            <Setter Property="Grid.Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>

@@ -1245,7 +1245,7 @@ namespace Dynamo.Controls
         {
             string originalName = value.ToString();
             if (originalName == "Code Block") return new Thickness(0, 19, 0, 0);
-            return new Thickness(0, 8, 0, 0);
+            return new Thickness(0, 8, 0, 8);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
