@@ -50,6 +50,7 @@ using HelixToolkit.Wpf.SharpDX;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Res = Dynamo.Wpf.Properties.Resources;
 using String = System.String;
+using Dynamo.Wpf.Views.GuidedTour;
 
 namespace Dynamo.Controls
 {
@@ -2335,8 +2336,10 @@ namespace Dynamo.Controls
         /// </summary>
         private void ShowGetStartedGuidedTour()
         {
+            GuideBackground guideBackground = this.FindName("GuidesBackground") as GuideBackground;
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
-            var testGuide = new GuidesManager(_this, dynamoViewModel);
+            //Also passing the guideBackground element to be able to controll clickable areas for each step
+            var testGuide = new GuidesManager(_this, dynamoViewModel, guideBackground);
             testGuide.LaunchTour(Res.GetStartedGuide);
         }
 

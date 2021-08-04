@@ -1830,7 +1830,7 @@
 
         <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>
         <guides:GuideBackground x:Name ="GuidesBackground"
-                                Visibility="Visible"
+                                Visibility="Hidden"
                                 CanvasWidth="{Binding ElementName=mainGrid, Path=ActualWidth}"
                                 CanvasHeight="{Binding ElementName=mainGrid, Path=ActualHeight}"
                                 HorizontalAlignment="Left" 
