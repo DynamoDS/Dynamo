@@ -206,14 +206,26 @@ namespace Dynamo.Models
 
         internal static IEnumerable<Type> GetCustomizationTypesUsingReflection(Assembly assem)
         {
-
-            var customizerType = Type.GetType("Dynamo.Wpf.INodeViewCustomization`1,DynamoCoreWpf");
-            if(customizerType != null)
-            {
-                var customizerImps = assem.GetTypes().Where(t => !t.IsAbstract && TypeExtensions.ImplementsGeneric(customizerType, t));
-                return customizerImps;
+            IEnumerable<Type> output = new Type[] { };
+            //to avoid changing when we load DynamoCoreWpf bail out if it's not yet loaded.
+            if (AppDomain.CurrentDomain.GetAssemblies().All(x => !x.FullName.StartsWith("DynamoCoreWpf"))){
+                return output;
             }
-            return new Type[] { };
+            try
+            {
+                var customizerType = Type.GetType("Dynamo.Wpf.INodeViewCustomization`1,DynamoCoreWpf");
+                if (customizerType != null)
+                {
+                    output = assem.GetTypes().Where(t => !t.IsAbstract && TypeExtensions.ImplementsGeneric(customizerType, t));
+                    return output;
+                }
+            }
+            catch
+            {   
+                return output;
+            }
+           
+            return output;
         }
 
         /// <summary>
