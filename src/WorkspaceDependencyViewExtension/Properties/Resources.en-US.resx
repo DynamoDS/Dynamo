@@ -144,8 +144,14 @@
   <data name="KeepLocalButtonText" xml:space="preserve">
     <value>Keep Installed Version</value>
   </data>
+  <data name="LocalDefinitionsHeaderText" xml:space="preserve">
+    <value>Local Definitions</value>
+  </data>
   <data name="MenuItemString" xml:space="preserve">
     <value>Show Workspace References</value>
+  </data>
+  <data name="NameHeader" xml:space="preserve">
+    <value>Name</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="NodeLibraryDependency_Loaded" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -362,13 +368,10 @@
         jDoyqebiAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="PackageHeaderName" xml:space="preserve">
-    <value>Name</value>
-  </data>
   <data name="PackageHeaderText" xml:space="preserve">
     <value>Packages</value>
   </data>
-  <data name="PackagePathText" xml:space="preserve">
+  <data name="PathHeader" xml:space="preserve">
     <value>Path</value>
   </data>
   <data name="ProvideFeedbackButton" xml:space="preserve">
@@ -383,7 +386,10 @@
   <data name="RestartBannerMessage" xml:space="preserve">
     <value>An installed package is marked for uninstall. To complete the uninstall, please restart Dynamo.</value>
   </data>
-  <data name="VersionHeaderText" xml:space="preserve">
+  <data name="SizeHeader" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="VersionHeader" xml:space="preserve">
     <value>Version</value>
   </data>
 </root>
