@@ -2146,14 +2146,12 @@ namespace Dynamo.Models
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
             var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
-            if (selectedGroup != null)
-            {
-                foreach (var model in modelsToAdd)
-                {
-                    CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
-                    selectedGroup.AddToSelectedModels(model);
-                }
+            if (selectedGroup is null) return;
 
+            foreach (var model in modelsToAdd)
+            {
+                CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
+                selectedGroup.AddToSelectedModels(model);
             }
         }
 
