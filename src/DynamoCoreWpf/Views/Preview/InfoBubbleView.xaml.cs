@@ -996,14 +996,11 @@ namespace Dynamo.Controls
                 ViewModel.NodeWarningsVisibilityState =
                     InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
                 ViewModel.NodeWarningsShowLessMessageVisible = false;
+                return;
             }
-            // Otherwise it expands the border
-            else
-            {
-                ViewModel.NodeWarningsVisibilityState =
-                    InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
+            ViewModel.NodeWarningsVisibilityState =
+                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
                 ViewModel.NodeWarningsShowLessMessageVisible = true;
-            }
         }
 
         private void ShowAllInfoButton_Click(object sender, RoutedEventArgs e)
