@@ -2542,13 +2542,13 @@ This package will be deleted after the next Dynamo restart.</value>
     <value>Delete</value>
   </data>
   <data name="PackageContextMenuDeletePackageTooltip" xml:space="preserve">
-    <value>Deleting this package is only allowed if none of the types are currently in use</value>
+    <value>Delete this package from the Dynamo package locations. Once deleted, it will not be visible in Dynamo anymore</value>
   </data>
   <data name="PackageContextMenuUnloadPackageText" xml:space="preserve">
     <value>Unload</value>
   </data>
   <data name="PackageContextMenuUnloadPackageTooltip" xml:space="preserve">
-    <value>Unloading this package is only allowed if none of the types are currently in use</value>
+    <value>Unload this package so that it will not be visible in Dynamo anymore. The package will still exist in the Dynamo packages locations</value>
   </data>
   <data name="PackageContextMenuUnmarkDeletePackageText" xml:space="preserve">
     <value>Cancel Delete</value>
