@@ -1890,11 +1890,13 @@ namespace ProtoAssociative
         /// <returns>At level data</returns>
         private AtLevelNode GetAtLevel(AssociativeNode node)
         {
+            // Check classes derived from ArrayNameNode first
             if (node is IdentifierListNode identifierListNode)
             {
                 return GetAtLevel(identifierListNode.RightNode);
             }
 
+            // Then check the base class
             if (node is ArrayNameNode arrayNameNode)
             {
                 return arrayNameNode.AtLevel;
@@ -1915,12 +1917,14 @@ namespace ProtoAssociative
         /// <param name="node"></param>
         private void RemoveAtLevel(AssociativeNode node)
         {
+            // Check classes derived from ArrayNameNode first
             if (node is IdentifierListNode identifierListNode)
             {
                 RemoveAtLevel(identifierListNode.RightNode);
                 return;
             }
 
+            // Then check the base class
             if (node is ArrayNameNode arrayNameNode)
             {
                 arrayNameNode.AtLevel = null;
@@ -1940,10 +1944,12 @@ namespace ProtoAssociative
         /// <param name="node"></param>
         private void RemoveReplicationGuides(AssociativeNode node)
         {
+            // Check classes derived from ArrayNameNode first
             if (node is IdentifierListNode identListNode)
             {
                 RemoveReplicationGuides(identListNode.RightNode);
             }
+            // Then check the base class
             else if (node is ArrayNameNode nodeWithReplication)
             {
                 nodeWithReplication.ReplicationGuides = new List<AssociativeNode>();
