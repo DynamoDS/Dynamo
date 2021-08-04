@@ -351,7 +351,7 @@ namespace ProtoCore.DSASM
             }).OrderBy(p => p.ArgumentTypes.Count - argumentNumber);
         }
 
-        [Obsolete("This method will be removed in Dynamo 3.0. Please use GetFunctionBySignature instead.")]
+        [Obsolete("This method will be removed in Dynamo 3.0.")]
         public int IndexOf(string name, List<ProtoCore.Type> argTypeList, bool isStaticOrConstructor = false)
         {
             ProcedureMatchOptions opts = new ProcedureMatchOptions() {
@@ -371,6 +371,7 @@ namespace ProtoCore.DSASM
         /// <param name="functionName"></param>
         /// <param name="parameterTypes"></param>
         /// <returns></returns>
+        [Obsolete("This method will be removed in Dynamo 3.0.")]
         public ProcedureNode GetFunctionBySignature(string functionName, List<Type> parameterTypes)
         {
             GetFunctionBySignature(new ProcedureMatchOptions() 
