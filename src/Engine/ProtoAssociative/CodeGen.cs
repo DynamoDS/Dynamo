@@ -3318,7 +3318,7 @@ namespace ProtoAssociative
                 int bidx = core.ClassTable.ClassNodes[globalClassIndex].Base;
                 if (bidx != Constants.kInvalidIndex )
                 {
-                    int cidx = core.ClassTable.ClassNodes[bidx].ProcTable.
+                    int pidx = core.ClassTable.ClassNodes[bidx].ProcTable.
                         GetFunctionBySignature(new ProcedureMatchOptions()
                         {
                             FunctionName = baseConstructorName,
@@ -3330,7 +3330,7 @@ namespace ProtoAssociative
                         }, out ProcedureNode procNode);
                     if (procNode != null)
                     {
-                        ctorIndex = cidx;
+                        ctorIndex = pidx;
                         baseIndex = bidx;
                     }
                 }
@@ -3343,7 +3343,7 @@ namespace ProtoAssociative
                 if (bidx != Constants.kInvalidIndex)
                 {
                     baseConstructorName = core.ClassTable.ClassNodes[bidx].Name;
-                    int cidx = core.ClassTable.ClassNodes[bidx].ProcTable.GetFunctionBySignature(new ProcedureMatchOptions()
+                    int pidx = core.ClassTable.ClassNodes[bidx].ProcTable.GetFunctionBySignature(new ProcedureMatchOptions()
                     {
                         FunctionName = baseConstructorName,
                         ParameterTypes = argTypeList,
@@ -3351,15 +3351,15 @@ namespace ProtoAssociative
                         IsConstructor = true,
                         ExactMatchWithNumArgs = false,
                         ExactMatchWithArgTypes = false
-                    }, out ProcedureNode dummy);
+                    }, out ProcedureNode _);
                     // If the base class is a FFI class, it may not contain a 
                     // default constructor, so only assert for design script 
                     // class for which we always generate a default constructor.
                     if (!core.ClassTable.ClassNodes[bidx].IsImportedClass)
                     { 
-                        Validity.Assert(cidx != ProtoCore.DSASM.Constants.kInvalidIndex);
+                        Validity.Assert(pidx != Constants.kInvalidIndex);
                     }
-                    ctorIndex = cidx;
+                    ctorIndex = pidx;
                     baseIndex = bidx;
                 }
             }
@@ -3470,7 +3470,7 @@ namespace ProtoAssociative
                     FunctionName = funcDef.Name,
                     ParameterTypes = argList
                     
-                }, out ProcedureNode dummy);
+                }, out ProcedureNode _);
 
                 Validity.Assert(globalProcIndex != Constants.kInvalidIndex);
                 localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
@@ -3798,34 +3798,16 @@ namespace ProtoAssociative
                 }
 
                 // Get the exisitng procedure that was added on the previous pass
-                if (ProtoCore.DSASM.Constants.kInvalidIndex == globalClassIndex)
+                ProcedureTable procTable = Constants.kInvalidIndex == globalClassIndex ? codeBlock.procedureTable : core.ClassTable.ClassNodes[globalClassIndex].ProcTable;
+                globalProcIndex = procTable.GetFunctionBySignature(new ProcedureMatchOptions()
                 {
-                    codeBlock.procedureTable.GetFunctionBySignature(new ProcedureMatchOptions() 
-                    { 
-                        FunctionName = funcDef.Name, 
-                        ParameterTypes = argList,
-                        IsStatic = funcDef.IsStatic 
-                    }, out ProcedureNode procNode);
+                    FunctionName = funcDef.Name,
+                    ParameterTypes = argList,
+                    IsStatic = funcDef.IsStatic
+                }, out ProcedureNode procNode);
 
-                    globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
-                    localProcedure = codeBlock.procedureTable.Procedures[globalProcIndex];
-                }
-                else
-                {
-                    core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(new ProcedureMatchOptions()
-                    {
-                        FunctionName = funcDef.Name,
-                        ParameterTypes = argList,
-                        IsStatic = funcDef.IsStatic
-                    }, out ProcedureNode procNode);
-                    
-                    Validity.Assert(procNode != null);
-                    globalProcIndex = procNode.ID;
-
-                    localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
-                }
-
-                Validity.Assert(null != localProcedure);
+                Validity.Assert(procNode != null);
+                localProcedure = procNode;
 
                 // code gen the attribute 
                 // Its only on the parse body pass where the real pc is determined. Update this procedures' pc
