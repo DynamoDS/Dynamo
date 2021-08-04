@@ -2305,6 +2305,10 @@ namespace Dynamo.Models
         /// </summary>
         public class AddGroupToGroupCommand : ModelBasedRecordableCommand
         {
+            /// <summary>
+            /// Id of the the group that should host
+            /// the other group.
+            /// </summary>
             public Guid HostGroupGuid { get; set; }
 
             [JsonConstructor]

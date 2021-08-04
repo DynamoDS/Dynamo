@@ -413,8 +413,8 @@ namespace Dynamo.Graph.Annotations
                 var regionX = groupModels.Min(x => x.X) - ExtendSize;
                 //Increase the Y value by 10. This provides the extra space between
                 // a model and textbox. Otherwise there will be some overlap
-                var regionY = groupModels.Min(y => y.Y) - ExtendSize - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
-                //var regionY = groupModels.Min(y => y.Y) - ExtendSize;
+                var regionY = groupModels.Min(y => y.Y) - 
+                    ExtendSize - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
               
                 //calculates the distance between the nodes
                 var xDistance = groupModels.Max(x => (x.X + x.Width)) - regionX;

@@ -321,12 +321,12 @@ namespace Dynamo.Nodes
 
         private void GroupDescriptionTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (ViewModel != null)
-            {
-                SetTextMaxWidth();
-                SetTextHeight();
-                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
-            }
+            if (ViewModel is null) return;
+
+            SetTextMaxWidth();
+            SetTextHeight();
+            ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+
         }
 
         private void SetTextHeight()
