@@ -456,6 +456,13 @@ namespace ProtoCore.DSASM
                     {
                         break;
                     }
+                } 
+                else
+                {
+                    outputProcNodeIndex = ii;
+                    outputProcNode = Procedures[ii];
+
+                    break;
                 }
 
                 NotMatch:
