@@ -22,8 +22,10 @@ namespace Dynamo.Models
         #region Properties/Fields
 
         /// <summary>
-        /// Loaded Assemblies.
+        /// Used at startup to avoid reloading NodeModels from assemblies that have already been loaded.
+        /// Is NOT kept in sync with latest loaded assemblies - use LoadedAssemblies Property for that.
         /// </summary>
+        [Obsolete("Will be made internal, please use LoadedAssemblies Property.")]
         public readonly HashSet<string> LoadedAssemblyNames = new HashSet<string>();
         private readonly HashSet<Assembly> loadedAssemblies = new HashSet<Assembly>();
 
