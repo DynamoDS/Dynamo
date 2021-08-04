@@ -208,7 +208,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_node.ArgumentLacing != LacingStrategy.Disabled && PortType == PortType.Input)
+                if (_node.ArgumentLacing != LacingStrategy.Disabled)
                 {
                     return Visibility.Visible;
                 }

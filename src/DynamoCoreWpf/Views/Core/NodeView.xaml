@@ -352,7 +352,7 @@
             Grid.Row="1"
             Grid.Column="0"
             Grid.ColumnSpan="3"
-            Height="47px"
+            Height="46px"
             Background="{StaticResource DarkMidGreyBrush}"
             Canvas.ZIndex="12"
             CornerRadius="8,8,0,0">
@@ -449,8 +449,9 @@
             Name="nodeHeaderContent"
             Grid.Row="1"
             Grid.ColumnSpan="3"
-            Margin="10,8,10,6"
+            Margin="7,7,10,0"
             HorizontalAlignment="Stretch"
+            VerticalAlignment="Top"
             Panel.ZIndex="12"
             FlowDirection="LeftToRight">
             <Ellipse Width="30" Height="30">
@@ -461,7 +462,7 @@
 
             <TextBlock
                 Name="NameBlock"
-                Margin="10,0,20,0"
+                Margin="6,4,20,0"
                 VerticalAlignment="Center"
                 Background="{x:Null}"
                 FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -508,8 +509,9 @@
             Name="inputPortControl"
             Grid.Row="2"
             Grid.Column="0"
-            Margin="0,8,0,8"
+            Margin="0,8,0,0"
             HorizontalContentAlignment="Stretch"
+            VerticalAlignment="Top"
             Canvas.ZIndex="20"
             ItemsSource="{Binding Path=InPorts}"
             Style="{StaticResource InOutPortControlStyle}" />
@@ -521,15 +523,17 @@
             Grid.Column="2"
             Margin="{Binding OriginalName, Converter={StaticResource NodeOriginalNameToMarginConverter}}"
             HorizontalContentAlignment="Stretch"
+            VerticalAlignment="Top"
             Canvas.ZIndex="20"
             ItemsSource="{Binding Path=OutPorts}"
             Style="{StaticResource InOutPortControlStyle}" />
 
         <Grid
             Name="centralGrid"
+            VerticalAlignment="Top"
             Grid.Row="2"
             Grid.Column="1"
-            Margin="10,0,10,10"
+            Margin="10,0,10,0"
             Canvas.ZIndex="20">
 
             <Grid.RowDefinitions>
@@ -557,7 +561,7 @@
             Grid.Row="3"
             Grid.Column="0"
             Grid.ColumnSpan="3"
-            Margin="0,0,9,14"
+            Margin="0,0,6,6"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Canvas.ZIndex="43"

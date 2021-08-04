@@ -27,10 +27,10 @@
         <Begin>'</Begin>
         <End>'</End>
       </Span>      
-      <Span name="LineComment" stopateol="true" color="#309130">
+      <Span name="LineComment" stopateol="true" color="#B7D78C">
         <Begin>//</Begin>
       </Span>
-      <Span name="MultiLineComment" stopateol="false" color="#309130">
+      <Span name="MultiLineComment" stopateol="false" color="#B7D78C">
         <Begin>/*</Begin>
         <End>*/</End>
       </Span>

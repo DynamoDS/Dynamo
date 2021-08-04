@@ -14,6 +14,7 @@ namespace Dynamo.Wpf
         public void CustomizeView(CodeBlockNodeModel model, NodeView nodeView)
         {
             cbe = new CodeBlockEditor(nodeView);
+            cbe.Margin = new System.Windows.Thickness(0,0,0,5);
 
             nodeView.inputGrid.Children.Add(cbe);
             Grid.SetColumn(cbe, 0);
