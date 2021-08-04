@@ -977,14 +977,11 @@ namespace Dynamo.Controls
                 ViewModel.NodeErrorsVisibilityState = 
                     InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
                 ViewModel.NodeErrorsShowLessMessageVisible = false;
+                return;
             }
-            // Otherwise it expands the border
-            else
-            {
-                ViewModel.NodeErrorsVisibilityState = 
-                    InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
-                ViewModel.NodeErrorsShowLessMessageVisible = true;
-            }
+            ViewModel.NodeErrorsVisibilityState =
+                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
+            ViewModel.NodeErrorsShowLessMessageVisible = true;
         }
 
         private void ShowAllWarningsButton_Click(object sender, RoutedEventArgs e)
@@ -1000,7 +997,7 @@ namespace Dynamo.Controls
             }
             ViewModel.NodeWarningsVisibilityState =
                 InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
-                ViewModel.NodeWarningsShowLessMessageVisible = true;
+            ViewModel.NodeWarningsShowLessMessageVisible = true;
         }
 
         private void ShowAllInfoButton_Click(object sender, RoutedEventArgs e)
@@ -1012,14 +1009,11 @@ namespace Dynamo.Controls
                 ViewModel.NodeInfoVisibilityState = 
                     InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
                 ViewModel.NodeInfoShowLessMessageVisible = false;
+                return;
             }
-            // Otherwise it expands the border
-            else
-            {
-                ViewModel.NodeInfoVisibilityState = 
-                    InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
-                ViewModel.NodeInfoShowLessMessageVisible = true;
-            }
+            ViewModel.NodeInfoVisibilityState =
+                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
+            ViewModel.NodeInfoShowLessMessageVisible = true;
         }
 
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
