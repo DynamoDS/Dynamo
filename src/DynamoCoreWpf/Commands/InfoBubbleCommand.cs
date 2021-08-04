@@ -105,7 +105,7 @@ namespace Dynamo.ViewModels
             {
                 if (dismissMessageCommand == null)
                 {
-                    dismissMessageCommand = new DelegateCommand(DismissMessage, null);
+                    dismissMessageCommand = new DelegateCommand(DismissMessage);
                 }
                 return dismissMessageCommand;
             }
@@ -121,7 +121,7 @@ namespace Dynamo.ViewModels
             {
                 if (undismissMessageCommand == null)
                 {
-                    undismissMessageCommand = new DelegateCommand(UndismissMessage, null);
+                    undismissMessageCommand = new DelegateCommand(UndismissMessage);
                 }
                 return undismissMessageCommand;
             }

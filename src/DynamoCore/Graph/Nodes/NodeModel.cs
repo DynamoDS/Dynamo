@@ -145,8 +145,14 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public event Action<NodeModel> NodeExecutionBegin;
 
+        /// <summary>
+        /// Event triggered whenever the node re-executes to clear its warnings and errors.
+        /// </summary>
         public event Action<NodeModel> NodeMessagesClearing;
 
+        /// <summary>
+        /// Fires on each node that is modified when the graph executes.
+        /// </summary>
         internal void OnNodeMessagesClearing()
         {
             NodeMessagesClearing?.Invoke(this);

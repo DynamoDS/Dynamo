@@ -80,13 +80,13 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanAddUserFacingMessagesToNode()
         {
+            // Arrange
             OpenModel(@"core\Home.dyn");
 
             var info1 = "Info 1";
             var warning1 = "Warning 1";
             var error1 = "Error 1";
-            
-            // Arrange
+
             var dummyNode = new DummyNode();
             DynamoModel model = GetModel();
             model.ExecuteCommand(new DynamoModel.CreateNodeCommand(dummyNode, 0, 0, true, true));
@@ -110,6 +110,14 @@ namespace DynamoCoreWpfTests
             ObservableCollection<InfoBubbleDataPacket> userFacingErrors = infoBubbleViewModel.NodeErrorsToDisplay;
 
             // Act
+            Assert.AreEqual(0, userFacingInfo.Count);
+            Assert.AreEqual(0, userFacingWarnings.Count);
+            Assert.AreEqual(0, userFacingErrors.Count);
+
+            Assert.IsFalse(infoBubbleViewModel.NodeInfoVisible);
+            Assert.IsFalse(infoBubbleViewModel.NodeWarningsVisible);
+            Assert.IsFalse(infoBubbleViewModel.NodeErrorsVisible);
+
             nodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Info, topLeft, botRight, info1, InfoBubbleViewModel.Direction.Top));
             nodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Warning, topLeft, botRight, warning1, InfoBubbleViewModel.Direction.Top));
             nodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error, topLeft, botRight, error1, InfoBubbleViewModel.Direction.Top));
@@ -167,15 +175,69 @@ namespace DynamoCoreWpfTests
             // Act
             InfoBubbleDataPacket infoBubbleDataPacket = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Info, topLeft, botRight, info1, InfoBubbleViewModel.Direction.Top);
             nodeMessages.Add(infoBubbleDataPacket);
+
+            Assert.AreEqual(1, infoBubbleViewModel.NodeInfoToDisplay.Count);
+            Assert.AreEqual(0, dummyNodeViewModel.NumberOfDismissedAlerts);
+            Assert.IsTrue(infoBubbleViewModel.NodeInfoVisible);
+
             infoBubbleViewModel.DismissMessageCommand.Execute(infoBubbleDataPacket);
 
             // Assert
             Assert.AreEqual(0, infoBubbleViewModel.NodeInfoToDisplay.Count);
-            Assert.AreEqual(1, infoBubbleViewModel.DismissedMessages.Count);
-            Assert.IsFalse(infoBubbleViewModel.NodeInfoVisible);
-
             Assert.AreEqual(1, dummyNodeViewModel.NumberOfDismissedAlerts);
+            Assert.IsFalse(infoBubbleViewModel.NodeInfoVisible);
             Assert.AreEqual(info1, infoBubbleViewModel.DismissedMessages.First().Message);
+        }
+
+        /// <summary>
+        /// Used to check whether the node body displays an interating count beside each message when it contains multiple messages.
+        /// </summary>
+        [Test]
+        public void IteratorsDisplayWhenMoreThanOneMessage()
+        {
+            // Arrange
+            OpenModel(@"core\Home.dyn");
+
+            var info1 = "Info 1";
+            var info2 = "Info 2";
+
+            var dummyNode = new DummyNode();
+            DynamoModel model = GetModel();
+            model.ExecuteCommand(new DynamoModel.CreateNodeCommand(dummyNode, 0, 0, true, true));
+
+            NodeViewModel dummyNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
+                .FirstOrDefault(x => x.NodeModel.GUID == dummyNode.GUID);
+
+            NodeModel dummyNodeModel = dummyNodeViewModel.NodeModel;
+
+            var topLeft = new Point(dummyNodeModel.X, dummyNodeModel.Y);
+            var botRight = new Point(dummyNodeModel.X + dummyNodeModel.Width, dummyNodeModel.Y + dummyNodeModel.Height);
+
+            InfoBubbleViewModel infoBubbleViewModel = dummyNodeViewModel.ErrorBubble;
+
+            // The collection of messages the node receives
+            ObservableCollection<InfoBubbleDataPacket> nodeMessages = infoBubbleViewModel.NodeMessages;
+
+            // Act
+            Assert.IsFalse(infoBubbleViewModel.NodeInfoIteratorVisible);
+            
+            InfoBubbleDataPacket infoBubbleDataPacket1 = 
+                new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Info, topLeft, botRight, info1, InfoBubbleViewModel.Direction.Top);
+
+            nodeMessages.Add(infoBubbleDataPacket1);
+            
+            Assert.IsFalse(infoBubbleViewModel.NodeInfoIteratorVisible);
+
+            InfoBubbleDataPacket infoBubbleDataPacket2 =
+                new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Info, topLeft, botRight, info2, InfoBubbleViewModel.Direction.Top);
+            
+            nodeMessages.Add(infoBubbleDataPacket2);
+            
+            Assert.IsTrue(infoBubbleViewModel.NodeInfoIteratorVisible);
+
+            infoBubbleViewModel.DismissMessageCommand.Execute(infoBubbleDataPacket1);
+
+            Assert.IsFalse(infoBubbleViewModel.NodeInfoIteratorVisible);
         }
 
         #region Helpers

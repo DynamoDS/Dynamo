@@ -57,7 +57,6 @@ namespace Dynamo.ViewModels
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
         private bool isRenamed = false;
-        private int numberOfDismissedAlerts = 0;
         private ObservableCollection<MenuItem> dismissedAlerts = new ObservableCollection<MenuItem>();
         #endregion
 
