@@ -385,16 +385,8 @@ namespace Dynamo.ViewModels
         /// to one which doesn't. This is necessary because empty TextBlock Runs are non zero-width
         /// and cannot have their Width (or Visibility) set manually.
         /// </summary>
-        public bool NodeErrorsIteratorVisible
-        {
-            get => nodeErrorsIteratorVisible;
-            set
-            {
-                nodeErrorsIteratorVisible = value;
-                RaisePropertyChanged(nameof(NodeErrorsIteratorVisible));
-            }
-        }
-
+        public bool NodeErrorsIteratorVisible => GetMessagesOfStyle(NodeMessages, Style.Error).Count > 1;
+        
         #endregion
 
         #region Event Handlers
