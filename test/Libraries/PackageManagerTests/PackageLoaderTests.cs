@@ -1162,6 +1162,44 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
+        public void PackageContainingNodeViewOnlyCustomization_AddsCorrectAssembliesToNodeModelLoader()
+        {
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new[] { PackagesDirectory });
+            pathManager.SetupGet(x => x.CommonDataDirectory).Returns(() => string.Empty);
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+
+            };
+            loader.LoadAll(loadPackageParams);
+            //verify the UI assembly was imported from the correct package.
+            var testPackage = loader.LocalPackages.FirstOrDefault(x => x.Name == "NodeViewCustomizationTestPackage");
+            var uiassembly = testPackage.LoadedAssemblies.FirstOrDefault(a => a.Name == "NodeViewCustomizationAssembly");
+            Assert.IsNotNull(uiassembly);
+            //verify is marked as nodelib
+            Assert.IsTrue(uiassembly.IsNodeLibrary);
+            //verify that no zero touch method in that assembly was imported.
+            var importedFunctionGroups = CurrentDynamoModel.LibraryServices.ImportedFunctionGroups.ToList();
+            var searchEntries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+
+            Assert.IsTrue(importedFunctionGroups.Count(x => x.QualifiedName.Contains("NodeModelAssembly.TestClass.TestFunc")) == 0);
+            Assert.IsTrue(importedFunctionGroups.Count(x => x.QualifiedName.Contains("NodeViewCustomizationAssembly.TestClass2.TestFunc2")) == 0);
+            //verify that the nodemodel is imported!
+            Assert.IsTrue(searchEntries.Count(x => x.FullName.Contains("NodeModelAssembly.NodeModelDerivedClass")) == 1);
+
+            //verify customization assembly was added to nodeModelAssemblyLoader
+            Assert.IsTrue(CurrentDynamoModel.Loader.LoadedAssemblies.Select(x=>x.FullName.Contains("NodeViewCustomizationAssembly")).Any());
+            Assert.IsTrue(CurrentDynamoModel.Loader.LoadedAssemblies.Select(x => x.FullName.Contains("NodeModelAssembly")).Any());
+        }
+
+        [Test]
         public void IsUnderPackageControlIsCorrectForValidFunctionDefinition()
         {
             Assert.Inconclusive("Finish me");
