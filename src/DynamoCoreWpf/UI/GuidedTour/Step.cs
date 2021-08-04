@@ -1,50 +1,87 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
     /// <summary>
     /// This abstract class include several properties that will be used for childs like Survey, Welcome, Tooltip, ExitTour ....
     /// </summary>
-    public abstract class Step
+    public class Step
     {
+        #region Events
+        //This event will be raised when a popup (Step) is closed by the user pressing the close button (PopupWindow.xaml).
+        public delegate void StepClosedEventHandler(string name, StepTypes stepType);
+
+        public event StepClosedEventHandler StepClosed;
+        internal void OnStepClosed(string name, StepTypes stepType)
+        {
+            if (StepClosed != null)
+                StepClosed(name, stepType);
+        }
+
+        #endregion
+
         #region Public Properties
+
+        /// <summary>
+        /// This static variable represents the total number of steps that the guide has.
+        /// </summary>
+        public int TotalTooltips { get; set; }
+
+        public enum StepTypes{ SURVEY, TOOLTIP, WELCOME, EXIT_TOUR };
+
+        /// <summary>
+        /// The step type will describe which type of window will be created after reading the json file, it can be  SURVEY, TOOLTIP, WELCOME, EXIT_TOUR
+        /// </summary>
+        [JsonProperty("Type")]
+        public StepTypes StepType { get; set; }
+
         /// <summary>
         /// The step content will contain the title and the popup content (included formatted text)
         /// </summary>
+        [JsonProperty("StepContent")]
         public Content StepContent { get; set; }
+
+        /// <summary>
+        /// There are some specific Steps that will contain extra content (like Survey.RatingTextTitle), then this list will store the information
+        /// </summary>
+        [JsonProperty("ExtraContent")]
+        public List<ExtraContent> StepExtraContent { get; set; }
 
         /// <summary>
         /// Step name, it just represent a step identifier
         /// </summary>
+        [JsonProperty("Name")]
         public string Name { get; set; }
 
         /// <summary>
         /// When the Step Width property is not provided the default value will be 480
         /// </summary>
+        [JsonProperty("Width")]
         public double Width { get; set; } = 480;
 
         /// <summary>
         /// When the Step Height property is not provide the default value will be 190
         /// </summary>
+        [JsonProperty("Height")]
         public double Height { get; set; } = 190;
 
         /// <summary>
         /// Represent a sequencial numeric value for each step, when is a multiflow guide this value can be repeated
         /// </summary>
+        [JsonProperty("Sequence")]
         public int Sequence { get; set; } = 0;
-
-        /// <summary>
-        /// This static variable will be shared by all the steps and represent the total number of steps that the guide has.
-        /// </summary>
-        public static int TotalSteps { get; set; } = 8;
 
         /// <summary>
         /// This property contains the Host information like the host popup element or the popup position
         /// </summary>
+        [JsonProperty("HostPopupInfo")]
         public HostControlInfo HostPopupInfo { get; set; }
-        public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT };     
+
+        public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT };
 
         /// <summary>
         /// This will contains the 3 points needed for drawing the Tooltip pointer direction
@@ -59,7 +96,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This property describe which will be the pointing direction of the tooltip (if is a Welcome or Survey popup then is not used)
         /// By default the tooltip pointer will be pointing to the left and will be located at the top
         /// </summary>
-        protected PointerDirection TooltipPointerDirection { get; set; } = PointerDirection.TOP_LEFT;
+        [JsonProperty("TooltipPointerDirection")]
+        public PointerDirection TooltipPointerDirection { get; set; } = PointerDirection.TOP_LEFT;
         #endregion
 
         #region Public Methods
@@ -104,9 +142,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This abstract method need to be overriden by the childs and creates the Popup
+        /// This virtual method should be overriden by the childs and creates the Popup (SURVEY, TOOLTIP, WELCOME, EXIT_TOUR)
         /// </summary>
-        protected abstract void CreatePopup();
+        protected virtual void CreatePopup() { }
         #endregion
     }
 
@@ -120,13 +158,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Title of the Popup shown at the top-center
         /// </summary>
+        [JsonProperty("Title")]
         public string Title { get; set; }
 
         /// <summary>
         /// The content of the Popup using a specific format for showing text, hyperlinks,images, bullet points in a RichTextBox
         /// </summary>
-        public string FormattedText 
-        { 
+        [JsonProperty("FormattedText")]
+        public string FormattedText
+        {
             get
             {
                 return formattedText;
@@ -134,9 +174,22 @@ namespace Dynamo.Wpf.UI.GuidedTour
             set
             {
                 //Because we are reading the value from a Resource, the \n is converted to char escaped and we need to replace it by the special char
-                formattedText = value.Replace("\\n", Environment.NewLine);
+                if(value != null)
+                    formattedText = value.Replace("\\n", Environment.NewLine);
             }
         }
         #endregion
+    }
+
+    /// <summary>
+    /// This class will be used in some specific cases in which the Popup needs extra information to be displayed in the UI
+    /// </summary>
+    public class ExtraContent
+    {
+        [JsonProperty("Property")]
+        public string Property { get; set; }
+
+        [JsonProperty("Value")]
+        public string Value { get; set; }
     }
 }

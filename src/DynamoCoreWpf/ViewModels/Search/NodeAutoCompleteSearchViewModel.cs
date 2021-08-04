@@ -187,8 +187,15 @@ namespace Dynamo.ViewModels
             var core = dynamoViewModel.Model.LibraryServices.LibraryManagementCore;
 
             //if inputPortType is an array, use just the typename
-            var parseResult = ParserUtils.ParseWithCore($"dummyName:{ portType};", core);
-            var ast = parseResult.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
+            ParseResult parseResult = null;
+            try
+            {
+                parseResult = ParserUtils.ParseWithCore($"dummyName:{ portType};", core);
+            }
+            catch(ProtoCore.BuildHaltException)
+            { }
+
+            var ast = parseResult?.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
             //if parsing the type failed, revert to original string.
             portType = ast != null ? ast.datatype.Name : portType;
 
