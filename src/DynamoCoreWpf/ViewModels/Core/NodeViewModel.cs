@@ -10,7 +10,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
@@ -21,7 +20,6 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
-using ProtoCore;
 using Point = System.Windows.Point;
 using Size = System.Windows.Size;
 

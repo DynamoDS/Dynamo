@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -15,7 +13,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.Utilities;
-using ProtoCore;
 using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
 
 namespace Dynamo.Controls
