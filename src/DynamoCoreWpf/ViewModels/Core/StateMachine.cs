@@ -702,6 +702,20 @@ namespace Dynamo.ViewModels
                         // therefor we add the dropGroup to the selection before calling
                         // the command.
                         DynamoSelection.Instance.Selection.AddUnique(dropGroup.AnnotationModel);
+
+                        // If the dropgroup has nested groups they will be marked as 
+                        // IsSelected when adding the dropgroup to the selection.
+                        // We need to unselect all nested groups before we try and add
+                        // the dragged node this group, if we dont do this we might
+                        // add the node to the wrong group.
+                        if (dropGroup.AnnotationModel.HasNestedGroups)
+                        {
+                            dropGroup.Nodes
+                                .OfType<AnnotationModel>()
+                                .ToList()
+                                .ForEach(x => x.Deselect());
+                        }
+
                         foreach (var item in DynamoSelection.Instance.Selection.OfType<ModelBase>())
                         {
                             if (item == dropGroup.AnnotationModel) continue;
