@@ -632,8 +632,7 @@ namespace Dynamo.Controls
                 return GeneratePointCollection_TooltipConnectRight(estimatedHeight, estimatedWidth);
         }
 
-        private PointCollection GeneratePointCollection_TooltipConnectLeft(double estimatedHeight,
-            double estimatedWidth)
+        private PointCollection GeneratePointCollection_TooltipConnectLeft(double estimatedHeight, double estimatedWidth)
         {
             PointCollection pointCollection = new PointCollection();
 
@@ -651,8 +650,7 @@ namespace Dynamo.Controls
             return pointCollection;
         }
 
-        private PointCollection GeneratePointCollection_TooltipConnectRight(double estimatedHeight,
-            double estimatedWidth)
+        private PointCollection GeneratePointCollection_TooltipConnectRight(double estimatedHeight, double estimatedWidth)
         {
             PointCollection pointCollection = new PointCollection();
 
@@ -698,22 +696,7 @@ namespace Dynamo.Controls
             Canvas.SetTop(mainGrid, ViewModel.TargetTopLeft.Y);
             Canvas.SetLeft(mainGrid, ViewModel.TargetTopLeft.X);
         }
-
-        private System.Windows.Thickness GetMargin_Error(double estimatedHeight, double estimatedWidth)
-        {
-            System.Windows.Thickness margin = new System.Windows.Thickness();
-            //double nodeWidth = ViewModel.TargetBotRight.X - ViewModel.TargetTopLeft.X;
-
-            Canvas.SetTop(mainGrid, ViewModel.TargetTopLeft.Y);
-            Canvas.SetLeft(mainGrid, ViewModel.TargetTopLeft.X);
-
-            //margin.Top = ViewModel.TargetTopLeft.Y;
-            //margin.Left = ViewModel.TargetTopLeft.X;
-            //margin.Top = -(estimatedHeight) + ViewModel.TargetTopLeft.Y;
-            //margin.Left = -((estimatedWidth - nodeWidth) / 2) + ViewModel.TargetTopLeft.X;
-            return margin;
-        }
-
+        
         #endregion
 
         #region Resize
@@ -991,15 +974,18 @@ namespace Dynamo.Controls
         private void ShowAllErrorsButton_Click(object sender, RoutedEventArgs e)
         {
             // If we're already expanded, this button collapses the border
-            if (ViewModel.NodeErrorsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
+            if (ViewModel.NodeErrorsVisibilityState == 
+                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
             {
-                ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                ViewModel.NodeErrorsVisibilityState = 
+                    InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
                 ViewModel.NodeErrorsShowLessMessageVisible = false;
             }
             // Otherwise it expands the border
             else
             {
-                ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
+                ViewModel.NodeErrorsVisibilityState = 
+                    InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
                 ViewModel.NodeErrorsShowLessMessageVisible = true;
             }
         }
@@ -1007,15 +993,18 @@ namespace Dynamo.Controls
         private void ShowAllWarningsButton_Click(object sender, RoutedEventArgs e)
         {
             // If we're already expanded, this button collapses the border
-            if (ViewModel.NodeWarningsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
+            if (ViewModel.NodeWarningsVisibilityState ==
+                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
             {
-                ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                ViewModel.NodeWarningsVisibilityState =
+                    InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
                 ViewModel.NodeWarningsShowLessMessageVisible = false;
             }
             // Otherwise it expands the border
             else
             {
-                ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
+                ViewModel.NodeWarningsVisibilityState =
+                    InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
                 ViewModel.NodeWarningsShowLessMessageVisible = true;
             }
         }
@@ -1023,15 +1012,18 @@ namespace Dynamo.Controls
         private void ShowAllInfoButton_Click(object sender, RoutedEventArgs e)
         {
             // If we're already expanded, this button collapses the border
-            if (ViewModel.NodeInfoVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
+            if (ViewModel.NodeInfoVisibilityState ==
+                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
             {
-                ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                ViewModel.NodeInfoVisibilityState = 
+                    InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
                 ViewModel.NodeInfoShowLessMessageVisible = false;
             }
             // Otherwise it expands the border
             else
             {
-                ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
+                ViewModel.NodeInfoVisibilityState = 
+                    InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
                 ViewModel.NodeInfoShowLessMessageVisible = true;
             }
         }
@@ -1047,7 +1039,12 @@ namespace Dynamo.Controls
         {
             foreach (InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeMessages)
             {
-                if (infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.Info || ViewModel.DismissedMessages.Contains(infoBubbleDataPacket)) continue;
+                if (infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.Info ||
+                    ViewModel.DismissedMessages.Contains(infoBubbleDataPacket))
+                {
+                    continue;
+                }
+
                 ViewModel.DismissedMessages.Add(infoBubbleDataPacket);
             }
 
@@ -1058,12 +1055,12 @@ namespace Dynamo.Controls
         {
             foreach (InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeMessages)
             {
-                if
-                (
-                infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.Warning &&
-                infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.WarningCondensed ||
-                ViewModel.DismissedMessages.Contains(infoBubbleDataPacket)
-                ) continue;
+                if (infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.Warning &&
+                    infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.WarningCondensed ||
+                    ViewModel.DismissedMessages.Contains(infoBubbleDataPacket))
+                {
+                    continue;
+                }
 
                 ViewModel.DismissedMessages.Add(infoBubbleDataPacket);
             }

@@ -257,17 +257,13 @@ namespace Dynamo.ViewModels
         }
         
         /// <summary>
-        /// This is a UI placeholder for future functionality relating to Alerts
+        /// The total number of info/warnings/errors dismissed by the user on this node.
+        /// This is displayed on the node by a little icon beside the Context Menu button.
         /// </summary>
         [JsonIgnore]
         public int NumberOfDismissedAlerts
         {
-            get => numberOfDismissedAlerts;
-            set
-            {
-                numberOfDismissedAlerts = value;
-                RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
-            }
+            get => DismissedAlerts.Count;
         }
 
         [JsonIgnore]
@@ -610,6 +606,9 @@ namespace Dynamo.ViewModels
             set { NodeModel.UserDescription = value; }
         }
 
+        /// <summary>
+        /// A collection of MenuItems used by the node's Context Menu, since errors/warnings are undismissed via a sub-menu.
+        /// </summary>
         [JsonIgnore]
         public ObservableCollection<MenuItem> DismissedAlerts
         {
@@ -724,6 +723,8 @@ namespace Dynamo.ViewModels
         /// <param name="obj"></param>
         private void Logic_NodeMessagesClearing(NodeModel obj)
         {
+            // Because errors are evaluated before the graph/node executes, we need to ensure 
+            // errors aren't being dismissed when the graph runs.
             if (nodeLogic.State == ElementState.Error) return;
 
             ErrorBubble.NodeMessages.Clear();
@@ -776,7 +777,7 @@ namespace Dynamo.ViewModels
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            NumberOfDismissedAlerts = ErrorBubble.DismissedMessages.Count;
+            RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
         }
         
         /// <summary>

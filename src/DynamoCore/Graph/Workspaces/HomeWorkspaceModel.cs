@@ -829,6 +829,9 @@ namespace Dynamo.Graph.Workspaces
                 // The workspace has been built for the first time
                 silenceNodeModifications = false;
 
+                // An event handler we can listen to on the NodeViewModel, to update the 
+                // node's informational state. This is required because Errors and Warnings 
+                // currently fire differently from one another. 
                 foreach (NodeModel nodeModel in task.ModifiedNodes)
                 {
                     nodeModel.OnNodeMessagesClearing();

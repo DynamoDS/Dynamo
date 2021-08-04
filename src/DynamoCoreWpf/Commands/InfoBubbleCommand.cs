@@ -12,6 +12,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand changeInfoBubbleStateCommand;
         private DelegateCommand openDocumentationLinkCommand;
         private DelegateCommand dismissMessageCommand;
+        private DelegateCommand undismissMessageCommand;
 
         public DelegateCommand UpdateContentCommand
         {
@@ -94,26 +95,33 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Fires when the user manually dismisses a message by clicking the little 'X' button next to it.
+        /// Users can only dismiss Info Messages and Warnings - not Errors.
+        /// </summary>
         public DelegateCommand DismissMessageCommand
         {
             get
             {
                 if (dismissMessageCommand == null)
                 {
-                    dismissMessageCommand = new DelegateCommand(DismissMessage, CanDismissMessage);
+                    dismissMessageCommand = new DelegateCommand(DismissMessage, null);
                 }
                 return dismissMessageCommand;
             }
         }
-
-        private DelegateCommand undismissMessageCommand;
+        
+        /// <summary>
+        /// Fires when the user manually selects a previously-dismissed message from the node's ContextMenu.
+        /// This un-dismisses the message and causes it to reappear above the node again.
+        /// </summary>
         public DelegateCommand UndismissMessageCommand
         {
             get
             {
                 if (undismissMessageCommand == null)
                 {
-                    undismissMessageCommand = new DelegateCommand(UndismissMessage, CanUndismissMessage);
+                    undismissMessageCommand = new DelegateCommand(UndismissMessage, null);
                 }
                 return undismissMessageCommand;
             }
