@@ -723,9 +723,6 @@
                 Width="{Binding Width}"
                 Visibility="{Binding ElementName=GroupExpander, Path=IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
                 Grid.Row="1">
-            <Border.Background>
-                <SolidColorBrush Color="{Binding Background}" Opacity="0.5"></SolidColorBrush>
-            </Border.Background>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />

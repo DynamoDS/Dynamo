@@ -527,7 +527,7 @@ namespace Dynamo.Graph.Annotations
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
-            this.BelongsToGroup = helper.ReadBoolean(nameof(BelongsToGroup));
+            this.BelongsToGroup = helper.ReadBoolean(nameof(BelongsToGroup), false);
             //Deserialize Selected models
             if (element.HasChildNodes)
             {

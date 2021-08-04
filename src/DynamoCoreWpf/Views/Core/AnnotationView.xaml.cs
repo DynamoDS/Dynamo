@@ -336,15 +336,11 @@ namespace Dynamo.Nodes
                 return;
             }
 
-            // The expander contains a header and a content area, the header
-            // is where the header and description text is defined. To get the 
-            // height of this header we need to walk the visual tree until we get 
-            // to the Grid, we can the take the grids actual height and set that
-            // as the TextBlockHeight.
-            var expanderBorder = VisualTreeHelper.GetChild(this.GroupExpander, 0);
-            var headerBorder = VisualTreeHelper.GetChild(expanderBorder, 0);
-            var headerGrid = VisualTreeHelper.GetChild(headerBorder, 0) as Grid;
-            ViewModel.AnnotationModel.TextBlockHeight = headerGrid.ActualHeight;
+            // Use the DesiredSize and not the Actual height. Because when Textblock is collapsed,
+            // Actual height is same as previous size.
+            ViewModel.AnnotationModel.TextBlockHeight = 
+                this.GroupDescriptionControls.DesiredSize.Height + 
+                this.GroupNameControl.DesiredSize.Height;
         }
 
         private void CollapsedAnnotationRectangle_SizeChanged(object sender, SizeChangedEventArgs e)
