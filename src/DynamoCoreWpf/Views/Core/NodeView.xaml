@@ -249,7 +249,10 @@
                         IsCheckable="True"
                         IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CrossProduct, Mode=OneWay}" />
                 </MenuItem>
-                <MenuItem Name="dismissedAlerts" Header="Dismissed Alerts" />
+                <MenuItem
+                    Name="dismissedAlerts"
+                    Header="Dismissed Alerts"
+                    ItemsSource="{Binding DismissedAlerts, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                 <Separator />
                 <MenuItem
                     Name="isInput_cm"
@@ -343,7 +346,7 @@
             Grid.RowSpan="3"
             Grid.ColumnSpan="3"
             Background="{StaticResource DarkerGreyBrush}"
-            Canvas.ZIndex="10"
+            Canvas.ZIndex="3"
             CornerRadius="8,8,0,0" />
 
         <!--  Node Header Background  -->
@@ -354,7 +357,7 @@
             Grid.ColumnSpan="3"
             Height="47px"
             Background="{StaticResource DarkMidGreyBrush}"
-            Canvas.ZIndex="12"
+            Canvas.ZIndex="4"
             CornerRadius="8,8,0,0">
             <Rectangle
                 Fill="Transparent"
@@ -410,7 +413,7 @@
             Grid.Row="1"
             Grid.ColumnSpan="3"
             Margin="1,1,1,1"
-            Canvas.ZIndex="12"
+            Canvas.ZIndex="4"
             MouseDown="NameBlock_OnMouseDown"
             Opacity=".4"
             Style="{StaticResource SZoomFadePreview}"
@@ -449,9 +452,9 @@
             Name="nodeHeaderContent"
             Grid.Row="1"
             Grid.ColumnSpan="3"
-            Margin="10,8,10,6"
+            Margin="10,8,10,4"
             HorizontalAlignment="Stretch"
-            Panel.ZIndex="12"
+            Panel.ZIndex="4"
             FlowDirection="LeftToRight">
             <Ellipse Width="30" Height="30">
                 <Ellipse.Fill>
@@ -476,7 +479,7 @@
             <Grid
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Panel.ZIndex="100"
+                Panel.ZIndex="5"
                 Background="Transparent"
                 DockPanel.Dock="Right">
                 <Ellipse
@@ -510,7 +513,7 @@
             Grid.Column="0"
             Margin="0,8,0,8"
             HorizontalContentAlignment="Stretch"
-            Canvas.ZIndex="20"
+            Canvas.ZIndex="4"
             ItemsSource="{Binding Path=InPorts}"
             Style="{StaticResource InOutPortControlStyle}" />
 
@@ -521,7 +524,7 @@
             Grid.Column="2"
             Margin="{Binding OriginalName, Converter={StaticResource NodeOriginalNameToMarginConverter}}"
             HorizontalContentAlignment="Stretch"
-            Canvas.ZIndex="20"
+            Canvas.ZIndex="4"
             ItemsSource="{Binding Path=OutPorts}"
             Style="{StaticResource InOutPortControlStyle}" />
 
@@ -530,7 +533,7 @@
             Grid.Row="2"
             Grid.Column="1"
             Margin="10,0,10,10"
-            Canvas.ZIndex="20">
+            Canvas.ZIndex="4">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -547,7 +550,7 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 x:FieldModifier="public"
-                Canvas.ZIndex="21"
+                Canvas.ZIndex="5"
                 IsEnabled="{Binding Path=IsInteractionEnabled}" />
 
         </Grid>
@@ -560,7 +563,7 @@
             Margin="0,0,9,14"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            Canvas.ZIndex="43"
+            Canvas.ZIndex="4"
             FlowDirection="RightToLeft"
             Orientation="Horizontal"
             Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
@@ -627,8 +630,7 @@
                 Height="20">
                 <Border
                     Background="{StaticResource NodeDismissedWarningsGlyphBackground}"
-                    CornerRadius="10"
-                    Visibility="Collapsed">
+                    CornerRadius="10">
                     <Label
                         Padding="3,2,3,0"
                         HorizontalAlignment="Center"
@@ -642,13 +644,15 @@
                         Style="{StaticResource SZoomFadeLabel}" />
                 </Border>
                 <Grid.Style>
-                    <Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Visible"/>
                         <Setter Property="Grid.MinWidth" Value="20" />
                         <Setter Property="Grid.Margin" Value="3,0" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding NumberOfDismissedAlerts}" Value="0">
                                 <Setter Property="Grid.MinWidth" Value="0" />
                                 <Setter Property="Grid.Margin" Value="0" />
+                                <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -730,7 +734,7 @@
             Grid.Row="1"
             Grid.RowSpan="3"
             Grid.ColumnSpan="3"
-            Canvas.ZIndex="40"
+            Canvas.ZIndex="0"
             Fill="Transparent"
             IsHitTestVisible="False" />
 
@@ -756,7 +760,7 @@
             Background="Transparent"
             BorderBrush="{StaticResource Blue300Brush}"
             BorderThickness="4"
-            Canvas.ZIndex="41"
+            Canvas.ZIndex="6"
             CornerRadius="7,7,0,0"
             IsHitTestVisible="False">
             <Border.Visibility>
