@@ -861,7 +861,7 @@ namespace Dynamo.PackageManager.Tests
                builtinPackRootDirName, PathManager.PackagesDirectoryName);
 
             // Act
-            var builtinpackageLocation = pathManager.BuiltinPackagesDirectory;
+            var builtinpackageLocation = PathManager.BuiltinPackagesDirectory;
             var defaultDirectory = pathManager.DefaultPackagesDirectory;
 
             // Assert
@@ -873,7 +873,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void PackageInBuiltinPackageLocationIsLoaded()
         {
-            (CurrentDynamoModel.PathManager as PathManager).BuiltinPackagesDirectory = BuiltInPackagesTestDir;
+            PathManager.BuiltinPackagesDirectory = BuiltInPackagesTestDir;
             //setup clean loader
             var loader = new PackageLoader(CurrentDynamoModel.PathManager);
             var settings = new PreferenceSettings();
@@ -897,7 +897,7 @@ namespace Dynamo.PackageManager.Tests
         {
 
             //setup clean loader
-            (CurrentDynamoModel.PathManager as PathManager).BuiltinPackagesDirectory = BuiltInPackagesTestDir;
+            PathManager.BuiltinPackagesDirectory = BuiltInPackagesTestDir;
             var loader = new PackageLoader(CurrentDynamoModel.PathManager);
             var settings = new PreferenceSettings();
             settings.DisableBuiltinPackages = true;
@@ -946,7 +946,7 @@ namespace Dynamo.PackageManager.Tests
         public void DisablingCustomPackagePathsCorrectlyDisablesLoading()
         {
             //setup clean loader where builtIn packages is a custom package path
-            (CurrentDynamoModel.PathManager as PathManager).BuiltinPackagesDirectory = BuiltInPackagesTestDir;
+            PathManager.BuiltinPackagesDirectory = BuiltInPackagesTestDir;
             var loader = new PackageLoader(CurrentDynamoModel.PathManager);
             var settings = new PreferenceSettings();
             //disable custom package paths
@@ -1079,11 +1079,11 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreNotEqual(ExpectedToken, defaultPackageDirectory);
             Assert.AreEqual(3, packageDirectories.Count());
             Assert.IsFalse(packageDirectories.Contains(ExpectedToken));
-            Assert.IsTrue(packageDirectories.Contains((pathManager as PathManager).BuiltinPackagesDirectory));
+            Assert.IsTrue(packageDirectories.Contains(PathManager.BuiltinPackagesDirectory));
             Assert.AreNotEqual(ExpectedToken, defaultUserDefinitions);
             Assert.AreEqual(3, userDefinitions.Count());
             Assert.IsFalse(userDefinitions.Contains(ExpectedToken));
-            Assert.IsTrue(userDefinitions.Contains((pathManager as PathManager).BuiltinPackagesDirectory));
+            Assert.IsTrue(userDefinitions.Contains(PathManager.BuiltinPackagesDirectory));
         }
 
         [Test]

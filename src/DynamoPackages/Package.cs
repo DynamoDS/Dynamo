@@ -15,7 +15,6 @@ using Dynamo.Properties;
 using Dynamo.Utilities;
 using Greg.Requests;
 using Newtonsoft.Json;
-using Dynamo.Configuration;// Used for DebugModes
 using String = System.String;
 
 namespace Dynamo.PackageManager
@@ -29,6 +28,80 @@ namespace Dynamo.PackageManager
         {
             get { return Assembly.GetName().Name; }
         }
+    }
+
+    /// <summary>
+    /// Describes a package's load state
+    /// </summary>
+    public class PackageLoadState
+    {
+        /// <summary>
+        /// The current load state of a package
+        /// </summary>
+        public enum StateTypes
+        {
+            /// <summary>
+            /// Invalid state. The initial state for every package, before it is interpreted by Dynamo
+            /// </summary>
+            None,
+            /// <summary>
+            /// The package is fully loaded and is ready to be used
+            /// </summary>
+            Loaded,
+            /// <summary>
+            /// The package is not loaded in Dynamo and not deleted from package locations
+            /// </summary>
+            Unloaded,
+            /// <summary>
+            /// The package was not loaded in Dynamo because of an error. See the Error property for more information
+            /// </summary>
+            Error
+        }
+
+        /// <summary>
+        /// The scheduled load state of a package
+        /// </summary>
+        public enum ScheduledTypes
+        {
+            /// <summary>
+            /// Invalid scheduled state. The initial state for every package, before it is interpreted by Dynamo
+            /// </summary>
+            None,
+            /// <summary>
+            /// The package is scheduled to be unloaded. After the next Dynamo restart, the package will be in an Unloaded state
+            /// </summary>
+            ScheduledForUnload,
+            /// <summary>
+            /// The package is scheduled to be deleted. After the next Dynamo restart, the package will deleted from the package locations
+            /// </summary>
+            ScheduledForDeletion,
+            /// <summary>
+            /// The package is scheduled to be loaded. After the next Dynamo restart, the package will be loaded in Dynamo
+            /// </summary>
+            ScheduledForLoad
+        }
+
+        private string errorMessage;
+        private ScheduledTypes scheduledState = ScheduledTypes.None;
+        private StateTypes state = StateTypes.None;// Default to None type.
+
+        internal void SetAsLoaded() { state = StateTypes.Loaded; errorMessage = ""; }
+        internal void SetAsError(string msg = "") { state = StateTypes.Error; errorMessage = msg; }
+        internal void SetAsUnloaded() { state = StateTypes.Unloaded; errorMessage = ""; }
+
+        internal void SetScheduledForDeletion() { scheduledState = ScheduledTypes.ScheduledForDeletion; }
+        internal void SetScheduledForUnload() { scheduledState = ScheduledTypes.ScheduledForUnload; }
+        internal void SetScheduledForLoad() { scheduledState = ScheduledTypes.ScheduledForLoad; }
+        internal void ResetScheduledState() { scheduledState = ScheduledTypes.None; }
+
+        // The current load state of the Package.
+        public StateTypes State { get { return state; } }
+
+        // The scheduled (or desired) state of the Package.
+        public ScheduledTypes ScheduledState { get { return scheduledState; } }
+        
+        // The error message associated with the current State of the Package. Valid only if the State is of type StateTypes.Error
+        public string ErrorMessage { get { return errorMessage; } }
     }
 
     public class Package : NotificationObject, ILogSource
@@ -62,7 +135,12 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(RootDirectory, "doc"); }
         }
 
-        public bool Loaded { get; internal set; }
+        [Obsolete("This property will be removed in 3.0. Please use the LoadState property instead.")]
+        public bool Loaded {
+            get {
+                return LoadState.State == PackageLoadState.StateTypes.Loaded;
+            }
+        }
 
         private bool typesVisibleInManager;
         public bool TypesVisibleInManager
@@ -107,71 +185,21 @@ namespace Dynamo.PackageManager
         /// </summary>
         public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
 
-        private bool markedForUninstall;
+        internal bool BuiltInPackage
+        {
+            get { return RootDirectory.StartsWith(PathManager.BuiltinPackagesDirectory); }
+        }
 
+        [Obsolete("This property will be removed in Dynamo 3.0. Use LoadState.ScheduledState instead")]
         public bool MarkedForUninstall
         {
-            get { return markedForUninstall; }
-            internal set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
-        }
-
-        [Obsolete("This is a temporary property. Please do not use it")]
-        public bool EnableOldMarkedForUnistallState
-        {
-            get { return !DebugModes.IsEnabled("DynamoPackageStates") && MarkedForUninstall; }
-        }
-
-        [Obsolete("This is a temporary property. Please do not use it")]
-        public bool EnablePackageStates
-        {
-            get { return DebugModes.IsEnabled("DynamoPackageStates"); }
-        }
-
-        internal enum PackageStates
-        {
-            Loaded, Unloaded, PendingUnload, Error
-        }
-
-        internal PackageStates PackageState;
-
-        [Obsolete("This is a temporary property. Please do not use it")]
-        public string PackageStateTooltip
-        {
-            get
-            {
-                if (!DebugModes.IsEnabled("DynamoPackageStates"))
-                {
-                    return "DO NOT USE THIS";
-                }
-
-                switch (PackageState)
-                {
-                    case PackageStates.PendingUnload: return Resources.PackageStatePendingUnloadTooltip;
-                    case PackageStates.Unloaded: return Resources.PackageStateUnloadedTooltip;
-                    case PackageStates.Loaded: return Resources.PackageStateLoadedTooltip;
-                    case PackageStates.Error: return Resources.PackageStateErrorTooltip;
-                    default: return "Unkonwn package state";
-                }
+            get {
+                return BuiltInPackage ? LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload :
+                  LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion;
             }
         }
 
-        [Obsolete("This is a temporary property. Please do not use it")]
-        public string PackageStateText { get {
-                if (!DebugModes.IsEnabled("DynamoPackageStates"))
-                {
-                    return "DO NOT USE THIS";
-                }
-
-                switch (PackageState)
-                {
-                    case PackageStates.PendingUnload: return Resources.PackageStatePendingUnload;
-                    case PackageStates.Unloaded: return Resources.PackageStateUnloaded;
-                    case PackageStates.Loaded: return Resources.PackageStateLoaded;
-                    case PackageStates.Error: return Resources.PackageStateError;
-                    default: return "Unkonwn package state";
-                }
-            }
-        }
+        public PackageLoadState LoadState = new PackageLoadState();
 
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
@@ -456,7 +484,8 @@ namespace Dynamo.PackageManager
 
         internal bool InUse(DynamoModel dynamoModel)
         {
-            return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || IsCustomNodeFromPackageInUse(dynamoModel)) && Loaded;
+            return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || 
+                IsCustomNodeFromPackageInUse(dynamoModel)) && LoadState.State == PackageLoadState.StateTypes.Loaded;
         }
 
         private bool IsCustomNodeFromPackageInUse(DynamoModel dynamoModel)
@@ -484,36 +513,28 @@ namespace Dynamo.PackageManager
 
         internal void MarkForUninstall(IPreferences prefs)
         {
-            MarkedForUninstall = true;
-            if (DebugModes.IsEnabled("DynamoPackageStates"))
-            {
-                PackageState = PackageStates.PendingUnload;
-            }
+            if (BuiltInPackage) 
+            { 
+                LoadState.SetScheduledForUnload(); 
+            } 
             else
             {
-                RaisePropertyChanged(nameof(EnableOldMarkedForUnistallState));
+                LoadState.SetScheduledForDeletion();
             }
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
             {
                 prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
             }
+            RaisePropertyChanged(nameof(LoadState.ScheduledState));
         }
 
         internal void UnmarkForUninstall(IPreferences prefs)
         {
-            MarkedForUninstall = false;
-            if (DebugModes.IsEnabled("DynamoPackageStates"))
-            {
-                // Should this be a "Loaded state" or something else ?
-                // Or maybe state should only be set when trying to Load the package...not here.
-                PackageState = PackageStates.Loaded;
-            }
-            else
-            {
-                RaisePropertyChanged(nameof(EnableOldMarkedForUnistallState));
-            }
+            LoadState.ResetScheduledState();
+
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
+            RaisePropertyChanged(nameof(LoadState.ScheduledState));
         }
 
         internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)

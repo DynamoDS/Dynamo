@@ -141,7 +141,7 @@ namespace Dynamo.PackageManager
         internal PackageLoader(IPathManager pathManager)
         {
             this.pathManager = pathManager;
-            InitPackageLoader(pathManager.PackagesDirectories, (pathManager as PathManager)?.BuiltinPackagesDirectory);
+            InitPackageLoader(pathManager.PackagesDirectories, PathManager.BuiltinPackagesDirectory);
 
             if (!string.IsNullOrEmpty(pathManager.CommonDataDirectory))
             {
@@ -252,7 +252,7 @@ namespace Dynamo.PackageManager
             Add(package);
 
             // Prevent duplicate loads
-            if (package.Loaded) return;
+            if (package.LoadState.State == PackageLoadState.StateTypes.Loaded) return;
 
             try
             {
@@ -271,6 +271,7 @@ namespace Dynamo.PackageManager
                         }
                     }
                 }
+
                 // load custom nodes
                 var packageInfo = new Graph.Workspaces.PackageInfo(package.Name, new Version(package.VersionName));
                 var customNodes = OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory, packageInfo);
@@ -291,7 +292,7 @@ namespace Dynamo.PackageManager
                     requestedExtensions.Add(extension);
                 }
 
-                package.Loaded = true;
+                package.LoadState.SetAsLoaded();
                 PackgeLoaded?.Invoke(package);
             }
             catch (CustomNodePackageLoadException e)
@@ -299,9 +300,12 @@ namespace Dynamo.PackageManager
                 Package originalPackage =
                     localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.InstalledPath);
                 OnConflictingPackageLoaded(originalPackage, package);
+
+                package.LoadState.SetAsError(e.Message);
             }
             catch (Exception e)
             {
+                package.LoadState.SetAsError(e.Message);
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
             }
@@ -425,7 +429,7 @@ namespace Dynamo.PackageManager
             foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
             {
                 // Append the definitions subdirectory for custom nodes.
-                var dir = path == DynamoModel.BuiltInPackagesToken ? (pathManager as PathManager).BuiltinPackagesDirectory : path;
+                var dir = path == DynamoModel.BuiltInPackagesToken ? PathManager.BuiltinPackagesDirectory : path;
                 dir = TransformPath(dir, PathManager.DefinitionsDirectoryName);
 
                 customNodeManager.AddUninitializedCustomNodesInPath(dir, false, false);
@@ -444,7 +448,7 @@ namespace Dynamo.PackageManager
                     &&
                     //if this directory is the builtin packages location
                     //and loading from there is disabled, don't scan the directory.
-                    ((disablePrefs.DisableBuiltinPackages && packagesDirectory == (pathManager as PathManager)?.BuiltinPackagesDirectory)
+                    ((disablePrefs.DisableBuiltinPackages && packagesDirectory == PathManager.BuiltinPackagesDirectory)
                     //or if custom package directories are disabled, and this is a custom package directory, don't scan.
                     || (disablePrefs.DisableCustomPackageLocations && preferences.CustomPackageFolders.Contains(packagesDirectory))))
                 {
