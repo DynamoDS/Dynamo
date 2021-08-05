@@ -17,11 +17,44 @@ using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using SystemTestServices;
 using Moq;
+using System.Collections.Generic;
+using Dynamo.Extensions;
+using System;
 
 namespace DynamoCoreWpfTests
 {
     public class PackagePathTests : SystemTestBase
     {
+        private static string executingDirectory;
+        protected static string ExecutingDirectory
+        {
+            get
+            {
+                if (executingDirectory == null)
+                {
+                    executingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                }
+                return executingDirectory;
+            }
+        }
+
+        private static string testDirectory;
+        internal static string TestDirectory
+        {
+            get
+            {
+                if (testDirectory == null)
+                {
+                    var directory = new DirectoryInfo(ExecutingDirectory);
+                    testDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
+                }
+                return testDirectory;
+            }
+        }
+        internal string PackagesDirectory { get { return Path.Combine(TestDirectory, "pkgs"); } }
+
+        internal string BuiltInPackagesTestDir { get { return Path.Combine(TestDirectory, "builtinpackages testdir", "Packages"); } }
+
         #region PackagePathViewModelTests
         [Test]
         public void CannotDeletePathIfThereIsOnlyOne()
@@ -179,6 +212,45 @@ namespace DynamoCoreWpfTests
             vm.SaveSettingCommand.Execute(null);
             Model.ExecuteCommand(new DynamoModel.OpenFileCommand(dynFilePath));
             Assert.AreEqual(1,GetPreviewValue("07d62dd8-b2f3-40a8-a761-013d93300444"));
+        }
+
+        [Test]
+        public void InstalledPackagesContainsCorrectNumberOfPackages()
+        {
+            var pathManager = new Mock<IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(ViewModel.Model);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            var packagesLoaded = false;
+
+            Action<IEnumerable<Assembly>> pkgsLoadedDelegate = (x) => { packagesLoaded = true; };
+            loader.PackagesLoaded += pkgsLoadedDelegate;
+
+            ViewModel.Model.PreferenceSettings.CustomPackageFolders = new List<string>();
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = ViewModel.Model.PreferenceSettings,
+
+            };
+            loader.LoadAll(loadPackageParams);
+            Assert.AreEqual(18, loader.LocalPackages.Count());
+            Assert.AreEqual(true, packagesLoaded);
+
+            var installedPackagesViewModel = new InstalledPackagesViewModel(ViewModel, loader);
+            Assert.AreEqual(18, installedPackagesViewModel.LocalPackages.Count);
+
+            var installedPackagesView = new Dynamo.Wpf.Controls.InstalledPackagesControl();
+            installedPackagesView.DataContext = installedPackagesViewModel;
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(18, installedPackagesView.SearchResultsListBox.Items.Count);
+
         }
 
         [Test]

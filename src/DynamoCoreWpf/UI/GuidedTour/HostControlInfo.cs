@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls.Primitives;
+using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -30,21 +31,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// Host Class, this property will contain the class of the host control located in the TreeView
-        /// </summary>
-        public string HostClass
-        {
-            get
-            {
-                return hostClass;
-            }
-            set
-            {
-                hostClass = value;
-            }
-        }
-
-        /// <summary>
         /// This property will hold the UI Element over which the popup will be shown (it should be any item in the TreeView) 
         /// </summary>
         public UIElement HostUIElement
@@ -60,13 +46,21 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
+        /// This variable will hold the name of the host (UIElement) in a string representation
+        /// </summary>
+        [JsonProperty("HostUIElementString")]
+        public string HostUIElementString { get; set; }
+
+        /// <summary>
         /// This property will hold the placement location of the popup, for now we are just using Right, Left, Top and Bottom
         /// </summary>
+        [JsonProperty("PopupPlacement")]
         public PlacementMode PopupPlacement { get; set; }
 
         /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Vertically (by specifying an offset) 
         /// </summary>
+        [JsonProperty("VerticalPopupOffset")]
         public double VerticalPopupOffSet
         {
             get
@@ -82,6 +76,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Horizontally (by specifying an offset) 
         /// </summary>
+        [JsonProperty("HorizontalPopupOffset")]
         public double HorizontalPopupOffSet
         {
             get
@@ -90,7 +85,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
             set
             {
-                horizontalPopupOffSet  = value;
+                horizontalPopupOffSet = value;
             }
         }
     }

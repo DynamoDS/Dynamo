@@ -175,6 +175,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
+    <Compile Include="UI\GuidedTour\Guide.cs" />
+    <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
+    <Compile Include="UI\GuidedTour\GuidesManager.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
     <Compile Include="UI\GuidedTour\Step.cs" />
     <Compile Include="UI\GuidedTour\Survey.cs" />
@@ -562,6 +565,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="UI\Fonts\OpenSans-SemiboldItalic.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\GuidedTour\dynamo_guides.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />

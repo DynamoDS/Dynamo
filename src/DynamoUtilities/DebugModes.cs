@@ -48,7 +48,6 @@ namespace Dynamo.Utilities
         {
             // Register app wide new debug modes here.
             AddDebugMode("DynamoPreferencesMenuDebugMode", "Enable/Disable the Preferences Panel new features in the Dynamo menu.", false);
-            AddDebugMode("DynamoPackageStates", "Enable/Disable package states in the InstalledPackages UI.", false);
             AddDebugMode("DumpByteCode", "Dumps bytecode to a log file in a folder called ByteCodeLogs located in the current working dirrectory.", false);
         }
 
