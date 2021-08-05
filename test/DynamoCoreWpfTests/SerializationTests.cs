@@ -8,6 +8,7 @@ using CoreNodeModels.Input;
 using Dynamo.Engine;
 using Dynamo.Events;
 using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -1107,7 +1108,8 @@ namespace DynamoCoreWpfTests
                         Width = annotation.Width,
                         Height = annotation.Height,
                         InitialTop = annotation.AnnotationModel.InitialTop,
-                        TextBlockHeight = annotation.AnnotationModel.TextBlockHeight
+                        TextBlockHeight = annotation.AnnotationModel.TextBlockHeight,
+                        Groups = annotation.Nodes.OfType<AnnotationModel>().Select(x => x.GUID.ToString())
                     });
                 }
 
