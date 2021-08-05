@@ -206,16 +206,14 @@
     <p>
         <b>Add File:</b><br />
         Select and add all the files that are related to your package; generally the bin folder, binaries and dependencies are added.
-    </p>
-    <p>
+        <p>
         <b>Select Node Libraries:</b><br />
     <p>
-        Specify which of the files you added to the package are the node libraries. Node libraries contain the types and methods that Dynamo will import as nodes.
+        Specify which of the files you added to the package are the node libraries. Node libraries contain the types and methods that Dynamo will import as nodes. In general you should mark any assembly as a node library which contains types you wish to import into Dynamo. ZeroTouch, NodeModel, or NodeViewCustomization assemblies should be marked as node library.
     </p>
     <p>
-        It's also valid to mark an assembly which only contains UI NodeCustomization classes as a Node Library.
-        Currently, for assemblies marked as Node Library that contain NodeModel or NodeCustomization types, all other types will be ignored. For this reason It is important to separate NodeModel/NodeViewCustomization types from types you wish to import using ZeroTouch import.
-    </p>
+        To load UI NodeViewCustomizations they should be either defined in the same assembly that contains the corresponding NodeModel definitions OR defined in a separate assembly. In either case, the assembly must be tagged as a node library.
+        Currently, for assemblies marked as node library that contain NodeModel or NodeCustomization types, all other types will be ignored. For this reason It is important to separate NodeModel/NodeViewCustomization types from types you wish to import using ZeroTouch import.
     </p>
     <p>
         <b>Publish Step:</b><br />
