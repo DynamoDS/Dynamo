@@ -50,7 +50,7 @@ namespace Dynamo.ViewModels
                     case PackageLoadState.StateTypes.Loaded: return Resources.PackageStateLoaded;
                     case PackageLoadState.StateTypes.Error: return Resources.PackageStateError;
                     default:
-                        return "Unkonwn package state";
+                        return "Unknown package state";
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace Dynamo.ViewModels
                     case PackageLoadState.StateTypes.Loaded: return Resources.PackageStateLoadedTooltip;
                     case PackageLoadState.StateTypes.Error: return string.Format(Resources.PackageStateErrorTooltip, Model.LoadState.ErrorMessage);
                     default:
-                        return "Unkonwn package state";
+                        return "Unknown package state";
                 }
             }
         }
