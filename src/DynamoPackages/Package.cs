@@ -30,16 +30,55 @@ namespace Dynamo.PackageManager
         }
     }
 
+    /// <summary>
+    /// Describes a package's load state
+    /// </summary>
     public class PackageLoadState
     {
+        /// <summary>
+        /// The current load state of a package
+        /// </summary>
         public enum StateTypes
         {
-            None, Loaded, Unloaded, Error
+            /// <summary>
+            /// Invalid state. The initial state for every package, before it is interpreted by Dynamo
+            /// </summary>
+            None,
+            /// <summary>
+            /// The package is fully loaded and is ready to be used
+            /// </summary>
+            Loaded,
+            /// <summary>
+            /// The package is not loaded in Dynamo and not deleted from package locations
+            /// </summary>
+            Unloaded,
+            /// <summary>
+            /// The package was not loaded in Dynamo because of an error. See the Error property for more information
+            /// </summary>
+            Error
         }
 
+        /// <summary>
+        /// The scheduled load state of a package
+        /// </summary>
         public enum ScheduledTypes
         {
-            None, ScheduledForUnload, ScheduledForDeletion, ScheduledForLoad
+            /// <summary>
+            /// Invalid scheduled state. The initial state for every package, before it is interpreted by Dynamo
+            /// </summary>
+            None,
+            /// <summary>
+            /// The package is scheduled to be unloaded. After the next Dynamo restart, the package will be in an Unloaded state
+            /// </summary>
+            ScheduledForUnload,
+            /// <summary>
+            /// The package is scheduled to be deleted. After the next Dynamo restart, the package will deleted from the package locations
+            /// </summary>
+            ScheduledForDeletion,
+            /// <summary>
+            /// The package is scheduled to be loaded. After the next Dynamo restart, the package will be loaded in Dynamo
+            /// </summary>
+            ScheduledForLoad
         }
 
         private string errorMessage;
@@ -148,7 +187,7 @@ namespace Dynamo.PackageManager
 
         internal bool BuiltInPackage
         {
-            get { return RootDirectory.Contains(PathManager.BuiltinPackagesDirectory); }
+            get { return RootDirectory.StartsWith(PathManager.BuiltinPackagesDirectory); }
         }
 
         [Obsolete("This property will be removed in Dynamo 3.0. Use LoadState.ScheduledState instead")]

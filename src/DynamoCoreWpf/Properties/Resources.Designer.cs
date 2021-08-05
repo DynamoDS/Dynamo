@@ -3899,7 +3899,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete this package from the Dynamo package locations. Once deleted, it will not be visible in Dynamo anymore.
+        ///   Looks up a localized string similar to Delete this package from the Dynamo package locations. Once deleted, it will not be loaded into Dynamo anymore until it is re-installed.
         /// </summary>
         public static string PackageContextMenuDeletePackageTooltip {
             get {
@@ -3917,7 +3917,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unload this package so that it will not be visible in Dynamo anymore. The package will still exist in the Dynamo packages locations.
+        ///   Looks up a localized string similar to Unload this package so that it will not be loaded into Dynamo. The package will not be deleted from the Dynamo package locations.
         /// </summary>
         public static string PackageContextMenuUnloadPackageTooltip {
             get {
