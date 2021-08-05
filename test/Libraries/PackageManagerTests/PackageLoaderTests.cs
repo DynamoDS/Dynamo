@@ -186,7 +186,7 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = CurrentDynamoModel.PreferenceSettings,
             };
             loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(20, loader.LocalPackages.Count());
+            Assert.AreEqual(19, loader.LocalPackages.Count());
             Assert.AreEqual(true, packagesLoaded);
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();

@@ -262,13 +262,13 @@ namespace DynamoCoreWpfTests
             vm.SaveSettingCommand.Execute(null);
 
             //should have loaded something.
-            Assert.AreEqual(8, count);
+            Assert.AreEqual(10, count);
 
             //commit the paths again. 
             vm.SaveSettingCommand.Execute(null);
 
             //should not have loaded anything.
-            Assert.AreEqual(8, count);
+            Assert.AreEqual(10, count);
 
             void Loader_PackagesLoaded(System.Collections.Generic.IEnumerable<Assembly> obj)
             {
