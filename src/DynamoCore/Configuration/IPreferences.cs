@@ -109,7 +109,7 @@ namespace Dynamo.Interfaces
 
         /// <summary>
         /// Returns list of packages used by the Package Manager to determine
-        /// which packages are marked for deletion.
+        /// which packages are scheduled to be deleted or scheduled to be unloaded.
         /// </summary>
         List<string> PackageDirectoriesToUninstall { get; set; }
 

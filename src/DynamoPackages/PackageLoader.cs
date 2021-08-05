@@ -254,6 +254,9 @@ namespace Dynamo.PackageManager
             // Prevent duplicate loads
             if (package.LoadState.State == PackageLoadState.StateTypes.Loaded) return;
 
+            // Prevent loading packages that have been specifically marked as unloaded
+            if (package.LoadState.State == PackageLoadState.StateTypes.Unloaded) return;
+
             try
             {
                 // load node libraries
@@ -503,7 +506,18 @@ namespace Dynamo.PackageManager
 
                     var pkg = ScanPackageDirectory(dir, checkCertificates);
                     if (pkg != null && preferences.PackageDirectoriesToUninstall.Contains(dir))
-                        pkg.MarkForUninstall(preferences);
+                    {
+                        if (pkg.BuiltInPackage)
+                        {
+                            // If the discovered package is built-in and marked to be unloaded then we set it directly to Unloaded state.
+                            pkg.LoadState.SetAsUnloaded();
+                        } 
+                        else
+                        {
+                            pkg.LoadState.SetScheduledForDeletion();
+                        }
+                    }
+                    
                 }
             }
             catch (UnauthorizedAccessException ex) { }
@@ -544,13 +558,24 @@ namespace Dynamo.PackageManager
 
                 var discoveredVersion = CheckAndGetPackageVersion(discoveredPackage.VersionName, discoveredPackage.Name, discoveredPackage.RootDirectory);
 
-                var existingPackage = LocalPackages.FirstOrDefault(package => package.Name == discoveredPackage.Name);
+                var existingPackage = LocalPackages.FirstOrDefault(package => (package.Name == discoveredPackage.Name) && (package.LoadState.State != PackageLoadState.StateTypes.Unloaded));
+
+                // Do we want to notify the user when we encounter unloaded packages ?
+                //
 
                 // Is this a new package?
                 if (existingPackage == null)
                 {
                     Add(discoveredPackage);
                     return discoveredPackage; // success
+                }
+
+                // The discovered built-in package is in conflict with an existing package
+                if (discoveredPackage.BuiltInPackage)
+                {
+                    // We still show the built in package but we mark it as unloaded.
+                    discoveredPackage.LoadState.SetAsUnloaded();
+                    Add(discoveredPackage);
                 }
 
                 var existingVersion = CheckAndGetPackageVersion(existingPackage.VersionName, existingPackage.Name, existingPackage.RootDirectory);
@@ -750,7 +775,7 @@ namespace Dynamo.PackageManager
 
         private static bool hasAttemptedUninstall;
 
-        internal void DoCachedPackageUninstalls(IPreferences preferences)
+        internal void DoCachedPackageDeletions(IPreferences preferences)
         {
             // this can only be run once per app run
             if (hasAttemptedUninstall) return;
@@ -759,8 +784,23 @@ namespace Dynamo.PackageManager
             var pkgDirsRemoved = new HashSet<string>();
             foreach (var pkgNameDirTup in preferences.PackageDirectoriesToUninstall)
             {
+                if (pkgNameDirTup.StartsWith(PathManager.BuiltinPackagesDirectory))
+                {
+                    // do not delete packages from the built in dir
+                    continue;
+                }
+                
                 try
                 {
+                    if (pkgNameDirTup.StartsWith(PathManager.BuiltinPackagesDirectory))
+                    {
+                        Log(String.Format(
+                           "Cannot delete package directory at \"{0}\" because it is part of the Dynamo built-in directory.",
+                           pkgNameDirTup), WarningLevel.Moderate);
+                        pkgDirsRemoved.Add(pkgNameDirTup);
+                        continue;
+                    }
+
                     Directory.Delete(pkgNameDirTup, true);
                     pkgDirsRemoved.Add(pkgNameDirTup);
                     Log(String.Format("Successfully uninstalled package from \"{0}\"", pkgNameDirTup));

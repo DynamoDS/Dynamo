@@ -50,7 +50,7 @@
                                               IsExpanded="{Binding Path=Model.TypesVisibleInManager}"
                                               Style="{StaticResource InstalledPackagesExpanderStyle}">
                                 <Expander.Header>
-                                    <Grid x:Name="PackageGrid"  >
+                                    <Grid x:Name="PackageGrid" >
                                         <DockPanel HorizontalAlignment="Stretch"
                                                        >
                                             <StackPanel HorizontalAlignment="Left"
@@ -264,6 +264,11 @@
                                 </Grid>
                             </Expander>
                         </Border>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Path=Unloaded}" Value="true">
+                                <Setter TargetName="PackageGrid" Property="Opacity" Value="0.5" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
                     </DataTemplate>
 
                 </ItemsControl.ItemTemplate>

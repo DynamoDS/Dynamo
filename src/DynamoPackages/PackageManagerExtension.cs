@@ -207,7 +207,7 @@ namespace Dynamo.PackageManager
         private void LoadPackages(IPreferences preferences, IPathManager pathManager)
         {
             // Load Packages
-            PackageLoader.DoCachedPackageUninstalls(preferences);
+            PackageLoader.DoCachedPackageDeletions(preferences);
             PackageLoader.LoadAll(new LoadPackageParams
             {
                 Preferences = preferences,

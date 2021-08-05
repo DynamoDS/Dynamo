@@ -514,8 +514,8 @@ namespace Dynamo.PackageManager
         internal void MarkForUninstall(IPreferences prefs)
         {
             if (BuiltInPackage) 
-            { 
-                LoadState.SetScheduledForUnload(); 
+            {
+                LoadState.SetScheduledForUnload();
             } 
             else
             {
@@ -548,8 +548,12 @@ namespace Dynamo.PackageManager
             try
             {
                 LoadedCustomNodes.ToList().ForEach(x => customNodeManager.Remove(x.FunctionId));
-                packageLoader.Remove(this);
-                Directory.Delete(RootDirectory, true);
+                if (!BuiltInPackage)
+                {
+                    packageLoader.Remove(this);
+                    Directory.Delete(RootDirectory, true);
+                }
+
             }
             catch (Exception e)
             {

@@ -31,6 +31,14 @@ namespace Dynamo.ViewModels
             get { return Model.LoadedAssemblies.Any(x => !x.IsNodeLibrary); }
         }
 
+        public bool Unloaded
+        {
+            get
+            {
+                return Model.LoadState.State == PackageLoadState.StateTypes.Unloaded;
+            }
+        }
+
         public string PackageLoadStateText
         {
             get
