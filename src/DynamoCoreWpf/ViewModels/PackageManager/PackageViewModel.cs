@@ -31,7 +31,6 @@ namespace Dynamo.ViewModels
             get { return Model.LoadedAssemblies.Any(x => !x.IsNodeLibrary); }
         }
 
-        [Obsolete("This is not final. Please do not use it")]
         public string PackageLoadStateText
         {
             get
@@ -56,7 +55,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [Obsolete("This is not final. Please do not use it")]
         public string PackageLoadStateTooltip
         {
             get
@@ -81,25 +79,21 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [Obsolete("This is not final. Please do not use it")]
         public string PackageViewContextMenuUninstallText
         {
             get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnloadPackageText : Resources.PackageContextMenuDeletePackageText; }
         }
 
-        [Obsolete("This is not final. Please do not use it")]
         public string PackageViewContextMenuUninstallTooltip
         {
             get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnloadPackageTooltip : Resources.PackageContextMenuDeletePackageTooltip; }
         }
 
-        [Obsolete("This is not final. Please do not use it")]
         public string PackageViewContextMenuUnmarkUninstallText
         {
             get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnmarkUnloadPackageText : Resources.PackageContextMenuUnmarkDeletePackageText; }
         }
 
-        [Obsolete("This is not final. Please do not use it")]
         public string PackageViewContextMenuUnmarkUninstallTooltip
         {
             get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnmarkUnloadPackageTooltip : Resources.PackageContextMenuUnmarkDeletePackageTooltip; }
