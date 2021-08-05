@@ -134,8 +134,8 @@ namespace Dynamo.Graph
         /// <summary>
         /// Method used to reconstruct a pin from xml when it has been deleted (undo/redo operations).
         /// </summary>
-        /// <param name="pin"></param>
-        /// <returns></returns>
+        /// <param name="pin">The xml representation of a ConnectorPinModel</param>
+        /// <returns>A reconstructed instance of type ConnectorPinModel</returns>
         internal static ConnectorPinModel LoadPinFromXml(XmlElement pin)
         {
             var helper = new XmlElementHelper(pin);
