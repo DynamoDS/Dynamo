@@ -483,6 +483,8 @@ namespace Dynamo.ViewModels
 
             ///if model is null or enginecontroller is disposed, return
             if (model is null ||
+                model.Start is null ||
+                model.Start.Owner is null||
                 workspaceViewModel.DynamoViewModel.EngineController.IsDisposed == true)
             { return; }
 
@@ -530,8 +532,9 @@ namespace Dynamo.ViewModels
                 }
                 isDataFlowCollection = isCollectionofFiveorMore;
             }
-            catch ///the odd case of model.Start.Owner value not being available. 
+            catch (Exception ex)///the odd case of model.Start.Owner value not being available. 
             {
+                string m = ex.Message;
             }
         }
 
