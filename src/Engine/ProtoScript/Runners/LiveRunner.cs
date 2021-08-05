@@ -270,24 +270,26 @@ namespace ProtoScript.Runners
                 var identifier = bNode?.LeftNode as IdentifierNode;
                 if (identifier == null) continue;
 
-                GraphNode rootNode = null;
+                var rootNodes = new List<GraphNode>();
                 foreach(var gNode in graphNodes)
                 {
                     if(identifier.Value == gNode.updateNodeRefList[0].nodeList[0].symbol.name)
                     {
-                        rootNode = gNode;
-                        break;
+                        rootNodes.Add(gNode);
                     }
                 }
-                if (rootNode == null) return;
+                if (!rootNodes.Any()) return;
 
-                // Walk the dependency graph for the rootNode and clear cycles from dependent graph nodes.
-                var guids = rootNode.ClearCycles(graphNodes);
-
-                // Clear warnings for all graphnodes participating in cycle.
-                foreach (var id in guids)
+                foreach (var rootNode in rootNodes)
                 {
-                    core.BuildStatus.ClearWarningsForGraph(id);
+                    // Walk the dependency graph for the rootNode and clear cycles from dependent graph nodes.
+                    var guids = rootNode.ClearCycles(graphNodes);
+
+                    // Clear warnings for all graphnodes participating in cycle.
+                    foreach (var id in guids)
+                    {
+                        core.BuildStatus.ClearWarningsForGraph(id);
+                    }
                 }
             }
         }
