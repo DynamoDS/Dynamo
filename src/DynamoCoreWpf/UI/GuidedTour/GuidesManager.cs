@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
 using Newtonsoft.Json;
 using Res = Dynamo.Wpf.Properties.Resources;
@@ -188,6 +189,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         Name = jsonStepInfo.Name,
                         Sequence = jsonStepInfo.Sequence,
                         TotalTooltips = totalTooltips,
+                        StepType = Step.StepTypes.TOOLTIP,
                         StepContent = new Content()
                         {
                             FormattedText = formattedText,
@@ -201,6 +203,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         Sequence = jsonStepInfo.Sequence,
                         ContentWidth = 300,
                         RatingTextTitle = formattedText.ToString(),
+                        StepType = Step.StepTypes.SURVEY,
                         IsRatingVisible = dynamoViewModel.Model.PreferenceSettings.IsADPAnalyticsReportingApproved,
                         StepContent = new Content()
                         {
@@ -228,14 +231,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     newStep = new Welcome(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height)
                     {
                         Sequence = jsonStepInfo.Sequence,
+                        StepType = Step.StepTypes.WELCOME,
                         StepContent = new Content()
                         {
                             FormattedText = formattedText,
                             Title = title
                         }
                     };
-                    break;
-                case Step.StepTypes.EXIT_TOUR:
                     break;
             }//StepType
 
@@ -245,6 +247,28 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private void Popup_StepClosed(string name, Step.StepTypes stepType)
         {
             GuideFlowEvents.OnGuidedTourFinish(currentGuide.Name);
+
+            //The exit tour popup will be shown only when a popup (doesn't apply for survey) is closed or when the tour is closed. 
+            if(stepType != Step.StepTypes.SURVEY)
+                CreateExitTourWindow();
+        }
+
+        private void CreateExitTourWindow()
+        {
+            var exitInfo = new HostControlInfo()
+            {
+                PopupPlacement = PlacementMode.Center,
+                HostUIElement = mainRootElement,
+                VerticalPopupOffSet = 30,
+                HorizontalPopupOffSet = 0
+            };
+
+            UIElement hostUIElement = Guide.FindChild(mainRootElement, "statusBarPanel");
+            if (hostUIElement != null)
+                exitInfo.HostUIElement = hostUIElement;
+
+            var exitTour = new ExitTour(exitInfo, 340, 67);
+            exitTour.Show();
         }
     }
 }

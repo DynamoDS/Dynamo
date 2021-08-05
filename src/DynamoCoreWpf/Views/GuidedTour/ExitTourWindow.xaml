@@ -5,65 +5,27 @@
        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
        xmlns:local="clr-namespace:Dynamo.Wpf.Views.GuidedTour"
        xmlns:ui="clr-namespace:Dynamo.UI"
+       xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf" 
        mc:Ignorable="d" 
        AllowsTransparency="True"
        Opacity="0.5"
-       Width="340"
-       Height="67"
-       d:DesignHeight="450" 
-       d:DesignWidth="800">
+       Width="{Binding Width}"
+       MinWidth="340"
+       Height="{Binding Height}"
+       d:DesignHeight="67" 
+       d:DesignWidth="340">
     <Popup.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            <!--Style for the close popup button in a Tooltip part of the Dynamo Guided Tours-->
-            <Style x:Key="ExitTourCloseButtonStyle" TargetType="{x:Type Button}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Button}">
-                            <Border x:Name="CloseButtonBorder"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                BorderBrush="Transparent">
-                                <Canvas Margin="0,0,0,0">
-                                    <Line x:Name="line1" X1="0" Y1="0" X2="13" Y2="13" Stroke="#D9D9D9" StrokeThickness="1"></Line>
-                                    <Line x:Name="line2" X1="0" Y1="13" X2="13" Y2="0" Stroke="#D9D9D9" StrokeThickness="1"></Line>
-                                </Canvas>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter Property="Stroke" 
-                                        TargetName="line1" 
-                                        Value="Red"/>
-                                    <Setter Property="Stroke" 
-                                        TargetName="line2" 
-                                        Value="Red"/>
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" 
-                                     Value="True">
-                                    <Setter Property="Stroke" 
-                                        TargetName="line1" 
-                                        Value="#0696D7"/>
-                                    <Setter Property="Stroke" 
-                                        TargetName="line2" 
-                                        Value="#0696D7"/>
-                                    <Setter Property="Cursor" 
-                                        Value="Hand"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
         </ResourceDictionary>
     </Popup.Resources>
-    <Border BorderBrush="#535353" 
-            Background="#535353"
+    <Border BorderBrush="{StaticResource ExitTourWindowBackgroundColor}" 
+            Background="{StaticResource ExitTourWindowBackgroundColor}"
             BorderThickness="1" 
-            CornerRadius="4">
+            CornerRadius="2">
         <Grid Background="Transparent">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="10"/>
@@ -71,32 +33,55 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Line X1="2" 
+            <Line X1="1" 
                   Y1="1"
-                  X2="2" 
-                  Y2="65"
-                  Stroke="#38ABDF"
+                  X2="1" 
+                  Y2="63"
+                  Stroke="{StaticResource ExitTourWindowInfIconColor}"
                   StrokeThickness="3"
+                  StrokeStartLineCap="Round"
+                  StrokeEndLineCap="Round"
                   Grid.Column="0"/>
-            <Ellipse Width="30"
-                 Height="30"
-                 Grid.Column="1"
-                 Margin="30,0,30,0"
-                 Fill="Transparent"
-                 Stroke="#38ABDF" />
-            <TextBlock Text="You can return to this tutorial later from the Help menu."
-                   TextWrapping="WrapWithOverflow"
-                   VerticalAlignment="Center"
-                   MaxWidth="200"
-                   Foreground="White"
-                   Grid.Column="2"/>
+            <Canvas Height="67"
+                    Width="20"
+                    Margin="30,0,30,0"
+                    Grid.Column="1">
+                <Ellipse Width="20"
+                         Height="20"
+                         Canvas.Left="0"
+                         Canvas.Top="15"
+                         Fill="Transparent"
+                         Stroke="{StaticResource ExitTourWindowInfIconColor}" />
+                <Ellipse Width="2"
+                         Height="2"
+                         Canvas.Left="9"
+                         Canvas.Top="19"
+                         Fill="{StaticResource ExitTourWindowInfIconColor}"/>
+                <Line X1="10" 
+                      Y1="10"
+                      X2="10" 
+                      Y2="18"
+                      Canvas.Left="0"
+                      Canvas.Top="13"
+                      Stroke="{StaticResource ExitTourWindowInfIconColor}"
+                      StrokeThickness="2"
+                      Grid.Column="0"/>
+            </Canvas>
+            <TextBlock Text="{x:Static p:Resources.ExitTourWindowContent}"
+                       FontFamily="Artifakt Element"
+                       FontSize="12"
+                       TextWrapping="WrapWithOverflow"
+                       VerticalAlignment="Center"
+                       MaxWidth="200"
+                       Foreground="White"
+                       Grid.Column="2"/>
             <Button Name="CloseButton"
-                Height="25"  
-                Width="25"
-                HorizontalAlignment="Center"
-                Grid.Column="3"
-                Style="{StaticResource ExitTourCloseButtonStyle}"
-                Click="CloseButton_Click">
+                    Height="25"  
+                    Width="25"
+                    HorizontalAlignment="Right"
+                    Grid.Column="3"
+                    Style="{StaticResource ExitTourCloseButtonStyle}"
+                    Click="CloseButton_Click">
             </Button>
         </Grid>
     </Border>

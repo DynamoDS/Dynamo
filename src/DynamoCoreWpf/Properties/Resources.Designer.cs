@@ -646,6 +646,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pin to node.
+        /// </summary>
+        public static string ContextPinToNode {
+            get {
+                return ResourceManager.GetString("ContextPinToNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downstream.
         /// </summary>
         public static string ContextSelectConnectedDownstream {
@@ -678,15 +687,6 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextSelectConnectedUpstreamDownstream {
             get {
                 return ResourceManager.GetString("ContextSelectConnectedUpstreamDownstream", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pin to node.
-        /// </summary>
-        public static string ContextPinToNode {
-            get {
-                return ResourceManager.GetString("ContextPinToNode", resourceCulture);
             }
         }
         
@@ -2264,6 +2264,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ErrorLoadingIcon {
             get {
                 return ResourceManager.GetString("ErrorLoadingIcon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can return to this tutorial later from the Help menu..
+        /// </summary>
+        public static string ExitTourWindowContent {
+            get {
+                return ResourceManager.GetString("ExitTourWindowContent", resourceCulture);
             }
         }
         

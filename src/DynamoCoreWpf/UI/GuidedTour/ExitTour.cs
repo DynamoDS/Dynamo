@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls.Primitives;
-using Dynamo.Wpf.ViewModels.GuidedTour;
-using Dynamo.Wpf.Views.GuidedTour;
+﻿using Dynamo.Wpf.Views.GuidedTour;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -18,7 +15,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         protected override void CreatePopup()
         {
-            //In this place will go the code for creating a ExitTourWindow window (Notification Toast)
+            //The Popup Viewmodel and Host is passed as parameters to the PopupWindow so it will create the popup with the needed values (width, height)
+            stepUIPopup = new ExitTourWindow(this, HostPopupInfo);
         }
     }
 }
