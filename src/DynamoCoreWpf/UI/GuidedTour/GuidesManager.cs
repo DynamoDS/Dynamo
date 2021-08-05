@@ -34,11 +34,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// GuidesManager Constructor that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
         /// </summary>
         /// <param name="root">root item of the main Dynamo Window </param>
-        public GuidesManager(UIElement root, DynamoViewModel dynViewModel, GuideBackground guideBackground)
+        public GuidesManager(UIElement root, DynamoViewModel dynViewModel)
         {
             mainRootElement = root;
             dynamoViewModel = dynViewModel;
-            guideBackgroundElement = guideBackground;
+            guideBackgroundElement = Guide.FindChild(root, "GuidesBackground") as GuideBackground;
 
             Guides = new List<Guide>();
             CreateGuideSteps(@"UI\GuidedTour\dynamo_guides.json");

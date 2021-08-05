@@ -1829,6 +1829,8 @@
         </Grid>
 
         <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>
+        
+        <!--This is the background overlay utilized for the interactive guides-->
         <guides:GuideBackground x:Name ="GuidesBackground"
                                 Visibility="Hidden"
                                 CanvasWidth="{Binding ElementName=mainGrid, Path=ActualWidth}"
