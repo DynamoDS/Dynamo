@@ -50,7 +50,6 @@ using HelixToolkit.Wpf.SharpDX;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Res = Dynamo.Wpf.Properties.Resources;
 using String = System.String;
-using Dynamo.Wpf.Views.GuidedTour;
 
 namespace Dynamo.Controls
 {
