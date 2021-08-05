@@ -17,7 +17,7 @@ using Moq;
 using NUnit.Framework;
 using SystemTestServices;
 using Dynamo.Wpf.Views;
-
+using Dynamo.Core;
 
 namespace DynamoCoreWpfTests
 {
@@ -159,8 +159,7 @@ namespace DynamoCoreWpfTests
         {
             var pathMgr = ViewModel.Model.PathManager;
             var pkgLoader = GetPackageLoader();
-            if(pathMgr is Dynamo.Core.PathManager pm)
-                pm.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
+            PathManager.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
 
             // Load a builtIn package
             var builtInPackageLocation = Path.Combine(BuiltinPackagesTestDir, "SignedPackage2");

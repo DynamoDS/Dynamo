@@ -1117,12 +1117,6 @@ You will get a chance to save your work.</value>
   <data name="InstalledPackageViewAdditionalLabel" xml:space="preserve">
     <value>Additional Libraries</value>
   </data>
-  <data name="InstalledPackageViewContextMenuCancelUninstall" xml:space="preserve">
-    <value>Cancel pending uninstall...</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuCancelUninstallTooltip" xml:space="preserve">
-    <value>Remove the pending uninstall status</value>
-  </data>
   <data name="InstalledPackageViewContextMenuDeprecate" xml:space="preserve">
     <value>Deprecate</value>
   </data>
@@ -1158,12 +1152,6 @@ You will get a chance to save your work.</value>
   </data>
   <data name="InstalledPackageViewContextMenuShowRootDirTooltip" xml:space="preserve">
     <value>Go to the root folder of this package</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuUninstall" xml:space="preserve">
-    <value>Uninstall...</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuUninstallTooltip" xml:space="preserve">
-    <value>Uninstall this package, only allowed if none of the types are currently in use</value>
   </data>
   <data name="InstalledPackageViewCustomNodesLabel" xml:space="preserve">
     <value>Custom Nodes</value>
@@ -2503,5 +2491,72 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
+  </data>
+  <data name="PackageStateError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="PackageStateLoaded" xml:space="preserve">
+    <value>Loaded</value>
+  </data>
+  <data name="PackageStateUnloaded" xml:space="preserve">
+    <value>Unloaded</value>
+  </data>
+  <data name="PackageStateScheduledForDeletion" xml:space="preserve">
+    <value>Scheduled for Delete</value>
+  </data>
+  <data name="PackageStateScheduledForUnload" xml:space="preserve">
+    <value>Scheduled for Unload</value>
+  </data>
+  <data name="PackageStateScheduledForLoad" xml:space="preserve">
+    <value>Scheduled for Load</value>
+  </data>
+  <data name="PackageStateErrorTooltip" xml:space="preserve">
+    <value>Error.
+This package has not been loaded due to the following error:
+{0}.</value>
+  </data>
+  <data name="PackageStateLoadedTooltip" xml:space="preserve">
+    <value>Loaded.
+This package is loaded and ready to be used.</value>
+  </data>
+  <data name="PackageStateUnloadedTooltip" xml:space="preserve">
+    <value>Unloaded.
+This package has not been loaded because another conflicting package was loaded before it.</value>
+  </data>
+  <data name="PackageStateScheduledForUnloadTooltip" xml:space="preserve">
+    <value>Scheduled for Unload.
+This package will be unloaded after the next Dynamo restart.</value>
+  </data>
+  <data name="PackageStateScheduledForLoadTooltip" xml:space="preserve">
+    <value>Scheduled for Load.
+This package will be loaded after the next Dynamo restart.</value>
+  </data>
+  <data name="PackageStateScheduledForDeletionTooltip" xml:space="preserve">
+    <value>Scheduled for Delete.
+This package will be deleted after the next Dynamo restart.</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageTooltip" xml:space="preserve">
+    <value>Delete this package from the Dynamo package locations. Once deleted, it will not be loaded into Dynamo anymore until it is re-installed</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageText" xml:space="preserve">
+    <value>Unload</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageTooltip" xml:space="preserve">
+    <value>Unload this package so that it will not be loaded into Dynamo. The package will not be deleted from the Dynamo package locations</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageText" xml:space="preserve">
+    <value>Cancel Delete</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageTooltip" xml:space="preserve">
+    <value>Remove the scheduled delete status</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageText" xml:space="preserve">
+    <value>Cancel Unload</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
+    <value>Remove the scheduled unload status</value>
   </data>
 </root>
