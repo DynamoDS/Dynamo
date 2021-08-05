@@ -455,7 +455,7 @@ namespace Dynamo.Graph.Workspaces
                     OnConnectorAdded(connector); // Update view-model and view.
                 }
             }
-            else if (typeName.Contains("ConnectorPinModel"))
+            else if (typeName.Contains(nameof(ConnectorPinModel)))
             {
                 var connectorPin = NodeGraph.LoadPinFromXml(modelData);
                 var matchingConnector = Connectors.FirstOrDefault(c => c.GUID == connectorPin.ConnectorId);

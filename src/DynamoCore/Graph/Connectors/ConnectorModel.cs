@@ -53,13 +53,20 @@ namespace Dynamo.Graph.Connectors
         /// This function is called after deserializing and is responsible for reconstructing the pins corresponding
         /// to each connector.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="x">'x' location on the canvas where this new pin will be added.</param>
+        /// <param name="y">'y' location on the canvas where this new pin will be added.</param>
         internal void AddPin(double x, double y)
         {
             ConnectorPinModels.Add(new ConnectorPinModel(x, y, Guid.NewGuid(),this.GUID));
         }
-
+        /// <summary>
+        /// Handles adding a new ConnectorPin to the collection of ConnectorPins associated with this connector.
+        /// This function is called after placing a new watch node in a connector and preserving pin locations during 
+        /// the re-wire of affected connectors. It is also called during undo/redo operations.
+        /// to each connector.
+        /// </summary>
+        /// <param name="connectorPinModel"> Previous ConnectorPinModel to be re-added to the collection of pins corresponding
+        /// to a connector. </param>
         internal void AddPin(ConnectorPinModel connectorPinModel)
         {
             ConnectorPinModels.Add(connectorPinModel);

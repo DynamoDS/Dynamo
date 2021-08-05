@@ -224,8 +224,11 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="connector"></param>
         private static void AddConnectorPinEdges(GraphLayout.Graph combinedGraph, ConnectorModel connector)
         {
+            ///Bail if there are no connectorPins
             if (connector.ConnectorPinModels.Count < 1) return;
 
+            ///Add an edge between the left-most (start) node 
+            ///(its corresponding port) to which this connector connects, and the first connectorPin.
             combinedGraph.AddEdge(connector.Start.Owner.GUID, 
                 connector.ConnectorPinModels[0].GUID,
                 connector.Start.Center.X, 
@@ -233,6 +236,8 @@ namespace Dynamo.Graph.Workspaces
                 connector.ConnectorPinModels[0].CenterX, 
                 connector.ConnectorPinModels[0].CenterY);
 
+            ///Add an edge between all other connectorPins that follow, 
+            ///from left to right (except for last one)
             for (int i = 0; i < connector.ConnectorPinModels.Count; i++)
             {
                 if (i != connector.ConnectorPinModels.Count - 1)
@@ -245,6 +250,9 @@ namespace Dynamo.Graph.Workspaces
                         connector.ConnectorPinModels[i + 1].CenterY);
                 }
             }
+
+            ///Add an edge between the last connectorPin and the right-most (end) node
+            ///(its corresponding port) to which this connector connects.
             combinedGraph.AddEdge(connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].GUID, 
                 connector.End.Owner.GUID,
                 connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].CenterX, 
