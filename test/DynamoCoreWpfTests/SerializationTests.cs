@@ -465,8 +465,13 @@ namespace DynamoCoreWpfTests
             // Ignoring the ExtensionWorkspaceData property as this is added after the re-save,
             // this will cause a difference between jobject1 and jobject2 if it is not ignored.
             // Same thing goes for the Linting property...
+            // We also need to ignore the new IsCollapsed property on ViewModelBase
             jobject2.Remove(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
             jobject2.Remove(LinterManagerConverter.LINTER_START_OBJECT_NAME);
+            foreach(JObject item in jobject2["View"]["NodeViews"])
+            {
+                item.Remove(nameof(ViewModelBase.IsCollapsed));
+            }
 
             var jsonText2 = jobject2.ToString();
 
