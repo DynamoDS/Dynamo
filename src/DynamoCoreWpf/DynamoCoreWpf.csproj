@@ -341,6 +341,7 @@
     </Compile>
     <Compile Include="Views\GuidedTour\RealTimeInfoWindow.xaml.cs">
       <DependentUpon>RealTimeInfoWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GuidedTour\GuideBackground.xaml.cs">
       <DependentUpon>GuideBackground.xaml</DependentUpon>
     </Compile>
@@ -466,6 +467,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\GuidedTour\RealTimeInfoWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\GuidedTour\GuideBackground.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
