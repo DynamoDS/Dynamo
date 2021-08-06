@@ -179,7 +179,7 @@ namespace Dynamo.Graph.Nodes
                             // Special case because code block outputs are smaller than regular outputs.
                             // This ensures the output port of the first code block output aligns with
                             // the first input port of any node.
-                            return new Point2D(Owner.X + Owner.Width, y + 12.5);
+                            return new Point2D(Owner.X + Owner.Width, y + 12.7);
                         }
                         return new Point2D(Owner.X + Owner.Width, y);
                 }

@@ -316,11 +316,13 @@
                                     <Setter Property="Margin" Value="0,0,8,0" />
                                 </DataTrigger>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Fill" Value="White" />
+                                    <Setter Property="Fill"
+                                            Value="#E5E2DE" />
                                     <Setter Property="Opacity" Value="0.3" />
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="False">
-                                    <Setter Property="Fill" Value="White" />
+                                    <Setter Property="Fill"
+                                            Value="#E5E2DE" />
                                     <Setter Property="Opacity" Value="0.0" />
                                 </Trigger>
                             </Style.Triggers>
@@ -429,10 +431,10 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Path Grid.Column="0"
-                              Margin="1,0,0,0"
-                              Data="M 0,10 L 12,5 12,15 Z"
+                              Stroke="#999999"
                               Fill="White"
-                              Stroke="#999999" />
+                              Margin="1,0,0,0"
+                              Data="M 0,10 L 12,5 12,15 Z" />
                         <Border Grid.Column="1"
                                 Padding="5"
                                 Background="White"
@@ -483,8 +485,8 @@
                         </Border>
                         <Path Grid.Column="1"
                               Data="M 0,7.5 L 1,7.5 L 1,12.5 L0,12.5 Z"
-                              Fill="#E5E2DE"
-                              Stroke="#E5E2DE" />
+                              Fill="White"
+                              Stroke="White" />
                     </Grid>
                 </dynui:UseLevelPopup>
             </DockPanel>
