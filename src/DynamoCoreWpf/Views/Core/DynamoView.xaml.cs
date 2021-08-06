@@ -63,8 +63,8 @@ namespace Dynamo.Controls
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
-
-        private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
+        // internal for testing.
+        internal readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
         private readonly Stopwatch _timer;
         private StartPageViewModel startPage;

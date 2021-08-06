@@ -10,6 +10,7 @@
         xmlns:uictrls="clr-namespace:Dynamo.UI.Controls"
         xmlns:service="clr-namespace:Dynamo.Services"
         xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
+        xmlns:guides ="clr-namespace:Dynamo.Wpf.Views.GuidedTour"
         xmlns:views="clr-namespace:Dynamo.Views"
         xmlns:controls1="clr-namespace:Dynamo.Wpf.Controls"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
@@ -1828,6 +1829,15 @@
         </Grid>
 
         <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>
+        
+        <!--This is the background overlay utilized for the interactive guides-->
+        <guides:GuideBackground x:Name ="GuidesBackground"
+                                Visibility="Hidden"
+                                CanvasWidth="{Binding ElementName=mainGrid, Path=ActualWidth}"
+                                CanvasHeight="{Binding ElementName=mainGrid, Path=ActualHeight}"
+                                HorizontalAlignment="Left" 
+                                VerticalAlignment="Top" 
+                                Grid.RowSpan="6" 
+                                Grid.ColumnSpan="5"/>
     </Grid>
-
 </Window>
