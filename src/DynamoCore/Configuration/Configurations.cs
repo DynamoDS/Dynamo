@@ -248,7 +248,8 @@ namespace Dynamo.Configuration
         /// <summary>
         ///     Code Block outputs have a condensed port height
         /// </summary>
-        public static readonly double CodeBlockOutputPortHeightInPixels = 20;
+        //public static readonly double CodeBlockOutputPortHeightInPixels = 20;
+        public static readonly double CodeBlockOutputPortHeightInPixels = 15.75;
 
         /// <summary>
         ///     Maximal port name length of CodeBlock

@@ -86,7 +86,7 @@
         <Key word="char" />
         <Key word="void" />
       </KeyWords>
-      <KeyWords name="Constants" color="#8C5EAA">
+      <KeyWords name="Constants" color="#F9F9A5">
         <Key word="true" />
         <Key word="false" />
         <Key word="null" />

@@ -543,6 +543,9 @@
     <None Include="UI\Fonts\Artifakt-Element-Regular.otf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="UI\Fonts\CourierPrime-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="UI\Fonts\OpenSans-Bold.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1344,6 +1347,12 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\default-node-icon.png" />
+    <Resource Include="UI\Images\error.png" />
+    <Resource Include="UI\Images\hidden.png" />
+    <Resource Include="UI\Images\info.png" />
+    <Resource Include="UI\Images\more-vertical.png" />
+    <Resource Include="UI\Images\warning.png" />
     <Resource Include="UI\Images\alert.png" />
     <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
     <Resource Include="UI\Images\menu_16_16.png" />

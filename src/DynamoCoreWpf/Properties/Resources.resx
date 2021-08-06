@@ -2078,6 +2078,15 @@ Next assemblies were loaded several times:
   <data name="UseLevelPopupMenuItem" xml:space="preserve">
     <value>Use Levels</value>
   </data>
+  <data name="BreakConnectionPopupMenuItem" xml:space="preserve">
+    <value>Break Connection</value>
+  </data>
+  <data name="HideWiresPopupMenuItem" xml:space="preserve">
+    <value>Hide Wires</value>
+  </data>
+  <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
+    <value>Unhide Wires</value>
+  </data>
   <data name="UseDefaultValuePopupMenuItem" xml:space="preserve">
     <value>Use Default Value</value>
   </data>

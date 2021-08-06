@@ -106,6 +106,7 @@ namespace Dynamo.Nodes
             Pending = false;
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SZoomFadeTextBox"];
             MinHeight = 29;
+            MinWidth = 100;
         }
 
         public void BindToProperty(Binding binding)

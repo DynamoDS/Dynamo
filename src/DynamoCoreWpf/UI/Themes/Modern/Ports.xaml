@@ -80,14 +80,29 @@
                                    FontWeight="Medium"
                                    Foreground="White"
                                    IsHitTestVisible="False"
-                                   Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter}}">
+                                   Text="{Binding Path=PortName}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Margin" Value="13,0,13,7" />
+                                    <Setter Property="Margin" Value="13,0,10,7" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
-                                            <Setter Property="Margin" Value="3,0,0,0" />
-                                        </DataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding Path=IsPortCondensed}" Value="True" />
+                                                <Condition Binding="{Binding Path=IsConnected}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="Margin" Value="3,0,0,0" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding Path=IsPortCondensed}" Value="True" />
+                                                <Condition Binding="{Binding Path=IsConnected}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="Margin" Value="2,-6,0,0" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
@@ -99,7 +114,7 @@
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                                         <Setter Property="Grid.Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
-                                        <Setter Property="Grid.Margin" Value="0" />
+                                        <Setter Property="Grid.Margin" Value="0,0,0,1" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -128,7 +143,7 @@
                         <Grid.Style>
                             <Style>
                                 <Setter Property="Grid.Height" Value="{Binding Path=Height}" />
-                                <Setter Property="Grid.Margin" Value="10,0,10,0" />
+                                <Setter Property="Grid.Margin" Value="0,0,10,0" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                                         <Setter Property="Grid.Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
@@ -168,6 +183,8 @@
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
                                     <Setter Property="Background" Value="{Binding PortBackgroundColor}" />
+                                    <Setter Property="BorderBrush" Value="{Binding PortBorderBrushColor}" />
+                                    <Setter Property="BorderThickness" Value="2,2,0,2" />
                                 </MultiDataTrigger.Setters>
                             </MultiDataTrigger>
                             <MultiDataTrigger>
@@ -190,7 +207,7 @@
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        Fill="{StaticResource PortUsingDefaultValueMarkerColor}"
-                       Visibility="{Binding UsingDefaultValue, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                       Visibility="{Binding UsingDefaultValueMarkerVisibile, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <!--
                 Interactive overlay for the port, highlights the port on MouseOver and
                 contains MouseClick event handling and ToolTip logic. Since the overlay is interactive, it needs to
@@ -198,18 +215,20 @@
                 MouseClick events to fire.
             -->
             <Border x:Name="mainBorderHighlightOverlay"
-                    BorderThickness="0"
+                    BorderBrush="Transparent"
                     Opacity="0.2"
                     UseLayoutRounding="true">
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="Height" Value="31px" />
+                        <Setter Property="Height" Value="35px" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Input}">
                                 <Setter Property="CornerRadius" Value="0,11,11,0" />
+                                <Setter Property="BorderThickness" Value="0,2,2,2" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
                                 <Setter Property="CornerRadius" Value="11,0,0,11" />
+                                <Setter Property="BorderThickness" Value="2,2,0,2" />
                             </DataTrigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="White" />
@@ -233,15 +252,6 @@
                         <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
                     </views:HandlingEventTrigger>
                 </interactivity:Interaction.Triggers>
-
-                <Border.ContextMenu>
-                    <ContextMenu Visibility="{Binding Path=DefaultValueEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <MenuItem Header="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}"
-                                  IsEnabled="{Binding Path=DefaultValueEnabled, Mode=OneWay}" />
-                    </ContextMenu>
-                </Border.ContextMenu>
 
                 <Border.ToolTip>
                     <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}" Style="{DynamicResource ResourceKey=SLightToolTip}">
@@ -287,7 +297,6 @@
                 <Rectangle x:Name="useLevelArrowHighlightOverlay"
                            Width="15"
                            Height="31px"
-                           Margin="10,0,10,0"
                            HorizontalAlignment="Right"
                            DockPanel.Dock="Right"
                            IsHitTestVisible="True"
@@ -300,6 +309,12 @@
                     <Rectangle.Style>
                         <Style TargetType="{x:Type Rectangle}">
                             <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Input}">
+                                    <Setter Property="Margin" Value="0,0,10,0" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
+                                    <Setter Property="Margin" Value="0,0,8,0" />
+                                </DataTrigger>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="Fill" Value="White" />
                                     <Setter Property="Opacity" Value="0.3" />
@@ -314,7 +329,7 @@
                 </Rectangle>
                 <TextBlock Name="fakePortNameTb"
                            Width="Auto"
-                           Margin="13,0,13,7"
+                           Margin="13,0,10,7"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Center"
                            DockPanel.Dock="Left"
@@ -325,16 +340,17 @@
                            IsHitTestVisible="False"
                            Opacity="0.4"
                            Style="{StaticResource SZoomFadeText}"
-                           Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter}}" />
+                           Text="{Binding Path=PortName}" />
                 <dynui:UseLevelSpinner x:Name="useLevelControl"
-                                       Width="60"
+                                       Width="50"
                                        Height="20"
+                                       Margin="-3,0,0,0"
                                        HorizontalAlignment="Right"
                                        VerticalAlignment="Center"
                                        DockPanel.Dock="Right"
                                        KeepListStructure="{Binding Path=ShouldKeepListStructure}"
                                        Level="{Binding Path=Level, Mode=TwoWay}"
-                                       Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
+                                       Visibility="{Binding UseLevelSpinnerVisible, UpdateSourceTrigger=PropertyChanged}" />
                 <dynui:UseLevelPopup x:Name="UseLevelPopup"
                                      AllowsTransparency="True"
                                      IsOpen="{Binding Path=ShowUseLevelMenu}"
@@ -425,23 +441,44 @@
                                 CornerRadius="2">
                             <StackPanel>
                                 <CheckBox Name="UseLevel"
-                                          Margin="5,7,5,0"
+                                          Margin="0,3,5,3"
                                           HorizontalAlignment="Left"
                                           Command="{Binding Path=UseLevelsCommand}"
                                           CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                           Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
-                                          IsChecked="{Binding Path=UseLevels, Mode=OneWay}" />
-                                <CheckBox Margin="5,7,5,0"
+                                          IsChecked="{Binding Path=UseLevels, Mode=OneWay}"
+                                          Visibility="{Binding UseLevelCheckBoxVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                <CheckBox Margin="0,3,5,3"
                                           HorizontalAlignment="Left"
                                           Command="{Binding Path=KeepListStructureCommand}"
                                           CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                           Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
                                           IsChecked="{Binding Path=ShouldKeepListStructure, Mode=OneWay}"
-                                          IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}" />
-                                <CheckBox Margin="5,7,5,0"
+                                          IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"
+                                          Visibility="{Binding UseLevelCheckBoxVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                <CheckBox Margin="0,3,5,3"
                                           HorizontalAlignment="Left"
                                           Content="{x:Static p:Resources.UseDefaultValuePopupMenuItem}"
-                                          IsChecked="{Binding Path=UsingDefaultValue, Mode=OneWay}" />
+                                          IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}"
+                                          Visibility="{Binding UseDefaultValueCheckBoxVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                <Button Margin="0,3"
+                                        HorizontalAlignment="Left"
+                                        Content="{x:Static p:Resources.BreakConnectionPopupMenuItem}"
+                                        IsEnabled="{Binding OutputPortBreakConnectionsButtonEnabled}"
+                                        Style="{StaticResource PopupButtonStyle}"
+                                        Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                <Button Margin="0,3"
+                                        HorizontalAlignment="Left"
+                                        Content="{x:Static p:Resources.HideWiresPopupMenuItem}"
+                                        IsEnabled="{Binding HideWiresButtonEnabled}"
+                                        Style="{StaticResource PopupButtonStyle}"
+                                        Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                <Button Margin="0,3"
+                                        HorizontalAlignment="Left"
+                                        Content="{x:Static p:Resources.UnhideWiresPopupMenuItem}"
+                                        IsEnabled="{Binding UnhideWiresButtonEnabled}"
+                                        Style="{StaticResource PopupButtonStyle}"
+                                        Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                             </StackPanel>
                         </Border>
                         <Path Grid.Column="1"

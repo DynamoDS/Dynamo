@@ -214,6 +214,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Break Connection.
+        /// </summary>
+        public static string BreakConnectionPopupMenuItem {
+            get {
+                return ResourceManager.GetString("BreakConnectionPopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browse....
         /// </summary>
         public static string BrowserNodeButtonLabel {
@@ -2753,6 +2762,15 @@ namespace Dynamo.Wpf.Properties {
         public static string HideClassicNodeLibrary {
             get {
                 return ResourceManager.GetString("HideClassicNodeLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide Wires.
+        /// </summary>
+        public static string HideWiresPopupMenuItem {
+            get {
+                return ResourceManager.GetString("HideWiresPopupMenuItem", resourceCulture);
             }
         }
         
@@ -5943,6 +5961,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UndeprecatingPackageMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UndeprecatingPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unhide Wires.
+        /// </summary>
+        public static string UnhideWiresPopupMenuItem {
+            get {
+                return ResourceManager.GetString("UnhideWiresPopupMenuItem", resourceCulture);
             }
         }
         

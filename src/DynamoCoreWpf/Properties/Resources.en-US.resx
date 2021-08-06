@@ -2511,4 +2511,13 @@ Uninstall the following packages: {0}?</value>
   <data name="UseDefaultValuePopupMenuItem" xml:space="preserve">
     <value>Use Default Value</value>
   </data>
+  <data name="BreakConnectionPopupMenuItem" xml:space="preserve">
+    <value>Break Connection</value>
+  </data>
+  <data name="HideWiresPopupMenuItem" xml:space="preserve">
+    <value>Hide Wires</value>
+  </data>
+  <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
+    <value>Unhide Wires</value>
+  </data>
 </root>
