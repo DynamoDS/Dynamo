@@ -18,7 +18,7 @@
     </UserControl.Resources>
     <Grid>
         <Border
-            Padding="2,8,2,6"
+            Padding="2,11,2,6"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             BorderBrush="#959595"
@@ -28,7 +28,7 @@
             <avalonedit:TextEditor
                 x:Name="InnerTextEditor"
                 MaxWidth="677"
-                Padding="8,3"
+                Padding="8,0"
                 Background="#3A3B3B"
                 FontFamily="{StaticResource CourierPrime}"
                 FontSize="14px"

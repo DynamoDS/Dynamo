@@ -91,7 +91,7 @@
                                                 <Condition Binding="{Binding Path=IsConnected}" Value="False" />
                                             </MultiDataTrigger.Conditions>
                                             <MultiDataTrigger.Setters>
-                                                <Setter Property="Margin" Value="3,0,0,0" />
+                                                <Setter Property="Margin" Value="3,2,0,0" />
                                             </MultiDataTrigger.Setters>
                                         </MultiDataTrigger>
                                         <MultiDataTrigger>
@@ -100,7 +100,7 @@
                                                 <Condition Binding="{Binding Path=IsConnected}" Value="True" />
                                             </MultiDataTrigger.Conditions>
                                             <MultiDataTrigger.Setters>
-                                                <Setter Property="Margin" Value="2,-6,0,0" />
+                                                <Setter Property="Margin" Value="2,-2,0,0" />
                                             </MultiDataTrigger.Setters>
                                         </MultiDataTrigger>
                                     </Style.Triggers>
@@ -172,7 +172,7 @@
                             <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                                 <Setter Property="CornerRadius" Value="0" />
                                 <Setter Property="BorderThickness" Value="0" />
-                                <Setter Property="Height" Value="16px" />
+                                <Setter Property="Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
                                 <Setter Property="Width" Value="16px" />
                             </DataTrigger>
                             <!--  Used for styling output ports when they are 'condensed' i.e. on a code block  -->
@@ -239,7 +239,7 @@
                             <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                                 <Setter Property="CornerRadius" Value="0" />
                                 <Setter Property="BorderThickness" Value="0" />
-                                <Setter Property="Height" Value="16px" />
+                                <Setter Property="Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
                                 <Setter Property="Margin" Value="0" />
                                 <Setter Property="Width" Value="16px" />
                             </DataTrigger>
