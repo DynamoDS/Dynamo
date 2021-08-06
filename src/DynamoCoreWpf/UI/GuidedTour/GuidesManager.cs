@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -250,25 +251,22 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             //The exit tour popup will be shown only when a popup (doesn't apply for survey) is closed or when the tour is closed. 
             if(stepType != Step.StepTypes.SURVEY)
-                CreateExitTourWindow();
+                CreateRealTimeInfoWindow();
         }
 
-        private void CreateExitTourWindow()
+        private void CreateRealTimeInfoWindow()
         {
-            var exitInfo = new HostControlInfo()
-            {
-                PopupPlacement = PlacementMode.Center,
-                HostUIElement = mainRootElement,
-                VerticalPopupOffSet = 30,
-                HorizontalPopupOffSet = 0
-            };
-
+            //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
             UIElement hostUIElement = Guide.FindChild(mainRootElement, "statusBarPanel");
-            if (hostUIElement != null)
-                exitInfo.HostUIElement = hostUIElement;
 
-            var exitTour = new ExitTour(exitInfo, 340, 67);
-            exitTour.Show();
+            //Creates the RealTimeInfoWindow popup and set up all the needed values to show the popup over the Dynamo workspace
+            var exitTourPopup = new RealTimeInfoWindow();
+            exitTourPopup.VerticalOffset = 30;
+            if (hostUIElement != null)
+                exitTourPopup.PlacementTarget = hostUIElement;
+            exitTourPopup.Placement = PlacementMode.Center;
+            exitTourPopup.TextContent = Res.ExitTourWindowContent;
+            exitTourPopup.IsOpen = true;
         }
     }
 }

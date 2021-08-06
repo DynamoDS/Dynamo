@@ -182,7 +182,6 @@
     <Compile Include="UI\GuidedTour\Step.cs" />
     <Compile Include="UI\GuidedTour\Survey.cs" />
     <Compile Include="UI\GuidedTour\Tooltip.cs" />
-    <Compile Include="UI\GuidedTour\ExitTour.cs" />
     <Compile Include="UI\GuidedTour\Welcome.cs" />
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
@@ -339,8 +338,8 @@
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\GuidedTour\ExitTourWindow.xaml.cs">
-      <DependentUpon>ExitTourWindow.xaml</DependentUpon>
+    <Compile Include="Views\GuidedTour\RealTimeInfoWindow.xaml.cs">
+      <DependentUpon>RealTimeInfoWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GuidedTour\PopupWindow.xaml.cs">
       <DependentUpon>PopupWindow.xaml</DependentUpon>
@@ -463,7 +462,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\GuidedTour\ExitTourWindow.xaml">
+    <Page Include="Views\GuidedTour\RealTimeInfoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

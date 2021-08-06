@@ -3688,7 +3688,7 @@
     </Style>
 
     <!--Style for the Exit Tour popup, that will appear when a tooltip is closed before the tour completion-->
-    <Style x:Key="ExitTourCloseButtonStyle" TargetType="{x:Type Button}">
+    <Style x:Key="RealTimeInfoCloseButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -3733,8 +3733,8 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <SolidColorBrush x:Key="ExitTourWindowInfIconColor" 
+    <SolidColorBrush x:Key="RealTimeInfoWindowIconColor" 
                      Color="#38ABDF" />
-    <SolidColorBrush x:Key="ExitTourWindowBackgroundColor" 
+    <SolidColorBrush x:Key="RealTimeInfoWindowBackgroundColor" 
                      Color="#535353" />
 </ResourceDictionary>
