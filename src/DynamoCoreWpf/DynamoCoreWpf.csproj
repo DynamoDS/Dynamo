@@ -1345,6 +1345,9 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\error.png" />
+    <Resource Include="UI\Images\info.png" />
+    <Resource Include="UI\Images\warning.png" />
     <Resource Include="UI\Images\alert.png" />
     <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
     <Resource Include="UI\Images\menu_16_16.png" />

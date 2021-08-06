@@ -110,25 +110,7 @@
                                     Height="25"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top">
-                                    <Path
-                                        Width="25"
-                                        Height="25"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        Data="M0,12.5 l12.5,-12.5 l12.5,12.5 l-12.5,12.5 z"
-                                        Fill="#EB5555"
-                                        Stroke="#EB5555"
-                                        StrokeLineJoin="Round"
-                                        StrokeThickness="1" />
-                                    <TextBlock
-                                        Margin="10,2,0,2"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        FontFamily="{StaticResource ArtifaktElementBold}"
-                                        FontSize="16"
-                                        Foreground="White"
-                                        SnapsToDevicePixels="True"
-                                        Text="!" />
+                                    <Image Source="/DynamoCoreWpf;component/UI/Images/Error.png" />
                                 </Grid>
                                 <!--  Error Header Message  -->
                                 <TextBlock
@@ -366,28 +348,10 @@
                                     Grid.Row="0"
                                     Grid.Column="0"
                                     Width="25"
-                                    Height="20"
+                                    Height="26"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center">
-                                    <Path
-                                        Width="25"
-                                        Height="20"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        Data="M1,20 l11.5,-20 l11.5,20 z"
-                                        Fill="#FAA21B"
-                                        Stroke="#FAA21B"
-                                        StrokeLineJoin="Round"
-                                        StrokeThickness="1" />
-                                    <TextBlock
-                                        Margin="10,7,0,0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        FontFamily="{StaticResource ArtifaktElementBold}"
-                                        FontSize="15"
-                                        Foreground="White"
-                                        SnapsToDevicePixels="True"
-                                        Text="!" />
+                                    <Image Source="/DynamoCoreWpf;component/UI/Images/Warning.png" />
                                 </Grid>
                                 <!--  Warning Header Message  -->
                                 <TextBlock
@@ -669,24 +633,13 @@
                                     Grid.Row="0"
                                     Grid.Column="0"
                                     Width="25"
-                                    Height="25"
+                                    Height="26"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top">
-                                    <Ellipse
-                                        Width="25"
-                                        Height="25"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        Fill="#38ABDF" />
-                                    <TextBlock
-                                        Margin="10,5,0,2"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        FontFamily="{StaticResource ArtifaktElementBold}"
-                                        FontSize="16"
-                                        Foreground="White"
-                                        SnapsToDevicePixels="True"
-                                        Text="i" />
+                                    <Image Width="25"
+                                           Height="25"
+                                           Stretch="UniformToFill"
+                                           Source="/DynamoCoreWpf;component/UI/Images/Info.png" />
                                 </Grid>
                                 <!--  Info Header Message  -->
                                 <TextBlock
