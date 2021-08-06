@@ -1,13 +1,5 @@
 ﻿<!--
-    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
-    codebase and one that is part of the Dynamo codebase, used for displaying additional
-    error information in the Dynamo side panel.
-
-    These files need to kept in sync manually: if making edits to one version of the file,
-    make sure to update the other version as well.
-
     Dynamo: https://github.com/DynamoDS/Dynamo
-    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
 -->
 <!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
 
@@ -160,11 +152,11 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
     <h3>Publishing Dynamo Packages</h3>
     <p>
-        Dynamo offers a vast number of features out of the box and also maintains an extensive package library, to which the community can contribute, that can significantly extend Dynamo's capability. 
+        Dynamo offers a vast number of features out of the box and also maintains an extensive package library, to which the community can contribute, that can significantly extend Dynamo's capability.
         This documentation describes how a user can publish a package from Dynamo.
     </p>
     <p>
-        The menu option to publish a package can be found at: "Packages > Publish New Package...". 
+        The menu option to publish a package can be found at: "Packages > Publish New Package...".
         Clicking this menu item will open a dialog box that will ask for all the information related to the package the user wants to publish.
     </p>
     <h4>Package Name:</h4>
@@ -173,13 +165,13 @@
     </p>
     <p>
         <b>Description:</b><br />
-        The description is a great place to add more details about your package, including listing any exceptions and pre-requisites. 
+        The description is a great place to add more details about your package, including listing any exceptions and pre-requisites.
         It can also be used to educate users on what the package does and how it can be utilised into their workspaces.
     </p>
     <p>
         <b>Version:</b><br />
-        The version field is split into three sections, major, minor and build, which allows you as a package author to upload new versions of your 
-        package that follow versioning semantics - Users may want to publish more versions for their packages with new and improved features, 
+        The version field is split into three sections, major, minor and build, which allows you as a package author to upload new versions of your
+        package that follow versioning semantics - Users may want to publish more versions for their packages with new and improved features,
         polish some corners which were left out in the first version, or fix a bug.
     </p>
     <p>
@@ -188,7 +180,7 @@
     </p>
     <p>
         <b>External Dependency (optional):</b><br />
-        Your package may depend on a host or its API as Dynamo can be integrated with a bunch of different optional 
+        Your package may depend on a host or its API as Dynamo can be integrated with a bunch of different optional
         hosts such as Revit or Civil 3D, so this field can be used to specify which other host(s) your package depends upon.
     </p>
     <p>
@@ -214,13 +206,20 @@
     <p>
         <b>Add File:</b><br />
         Select and add all the files that are related to your package; generally the bin folder, binaries and dependencies are added.
-    </p>
-    <p>
+        <p>
         <b>Select Node Libraries:</b><br />
-        Select the node libraries/DLLs from the list of added files.
+    <p>
+        Specify which of the files you added to the package are the node libraries. Node libraries contain the types and methods that Dynamo will import as nodes. In general you should mark any assembly as a node library which contains types you wish to import into Dynamo. ZeroTouch, NodeModel, or NodeViewCustomization assemblies should be marked as node library.
     </p>
     <p>
-        After filling in all the required details user can publish the package locally or online.
+        To load UI NodeViewCustomizations they should be either defined in the same assembly that contains the corresponding NodeModel definitions OR defined in a separate assembly. In either case, the assembly must be tagged as a node library.
+        Currently, for assemblies marked as node library that contain NodeModel or NodeCustomization types, all other types will be ignored. For this reason It is important to separate NodeModel/NodeViewCustomization types from types you wish to import using ZeroTouch import.
+    </p>
+    <p>
+        <b>Publish Step:</b><br />
+    </p>
+    <p>
+        After filling in all the required details you can publish the package locally or online.
         When publishing locally the package will be published in the local root directory,
         whereas while publishing online the package will be uploaded to the package manager.
     </p>

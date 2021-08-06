@@ -27,6 +27,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         private Guide currentGuide;
         private UIElement mainRootElement;
+        private GuideBackground guideBackgroundElement;
 
         private DynamoViewModel dynamoViewModel;
 
@@ -38,9 +39,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             mainRootElement = root;
             dynamoViewModel = dynViewModel;
+            guideBackgroundElement = Guide.FindChild(root, "GuidesBackground") as GuideBackground;
 
             Guides = new List<Guide>();
-            CreateGuideSteps("UI/GuidedTour/dynamo_guides.json");
+            CreateGuideSteps(@"UI\GuidedTour\dynamo_guides.json");
 
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
             GuideFlowEvents.GuidedTourStart += TourStarted;
@@ -65,6 +67,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             currentGuide = (from guide in Guides where guide.Name.Equals(args.GuideName) select guide).FirstOrDefault();
             if (currentGuide != null)
             {
+                //Show background overlay
+                guideBackgroundElement.Visibility = Visibility.Visible;
                 currentGuide.Initialize();
                 currentGuide.Play();
             }
@@ -86,6 +90,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 currentGuide.ClearGuide();
                 GuideFlowEvents.GuidedTourStart -= TourStarted;
                 GuideFlowEvents.GuidedTourFinish -= TourFinished;
+
+                //Hide guide background overlay
+                guideBackgroundElement.Visibility = Visibility.Hidden;
+
             }
 
         }

@@ -1,0 +1,23 @@
+﻿{
+	"license": "",
+	"file_hash": null,
+	"name": "NodeViewCustomizationTestPackage",
+	"version": "1.0.0",
+	"description": "package containg both a node model and a seperate node view customization assembly",
+	"group": "",
+	"keywords": null,
+	"dependencies": [
+
+	],
+	"contents": "",
+	"engine_version": "2.13.0",
+	"engine": "dynamo",
+	"engine_metadata": "",
+	"site_url": "",
+	"repository_url": "",
+	"contains_binaries": true,
+	"node_libraries": [
+		"NodeModelAssembly, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+		"NodeViewCustomizationAssembly, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+	]
+}

@@ -48,10 +48,10 @@ namespace Dynamo.PackageManager.UI
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-           // Do nothing for now
+            // Do nothing for now
         }
 
-        public void Shutdown()
+            public void Shutdown()
         {
             // Do nothing for now
         }
@@ -69,11 +69,12 @@ namespace Dynamo.PackageManager.UI
                 //attach event which we can use to watch when new packages are fully loaded.
                 packageManager.PackageLoader.PackgeLoaded += packageLoadedHandler;
                 var packagesToCheck = packageManager.PackageLoader.LocalPackages;
-                requestLoadViewExtensionsForLoadedPackages(packagesToCheck);
+                RequestLoadViewExtensionsForLoadedPackages(packagesToCheck);
             }
         }
 
-        private void requestLoadViewExtensionsForLoadedPackages(IEnumerable<Package> packages)
+
+        private void RequestLoadViewExtensionsForLoadedPackages(IEnumerable<Package> packages)
         {
             foreach (var package in packages)
             {
@@ -97,7 +98,7 @@ namespace Dynamo.PackageManager.UI
         private void packageLoadedHandler(Package package)
         {
             //when a package is loaded with packageManager, this extension should inspect it for viewExtensions.
-            this.requestLoadViewExtensionsForLoadedPackages(new List<Package>() { package });
+            this.RequestLoadViewExtensionsForLoadedPackages(new List<Package>() { package });
         }
     }
 }
