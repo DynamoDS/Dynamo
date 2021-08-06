@@ -241,14 +241,8 @@ namespace Dynamo.Configuration
         #region CodeBlockNode
 
         /// <summary>
-        ///     Default height of CodeBlock's port
-        /// </summary>
-        public static readonly double CodeBlockPortHeightInPixels = 17.573333333333336;
-
-        /// <summary>
         ///     Code Block outputs have a condensed port height
         /// </summary>
-        //public static readonly double CodeBlockOutputPortHeightInPixels = 20;
         public static readonly double CodeBlockOutputPortHeightInPixels = 15.72;
 
         /// <summary>
