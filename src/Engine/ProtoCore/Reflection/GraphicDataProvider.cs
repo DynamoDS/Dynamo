@@ -176,6 +176,12 @@ namespace ProtoCore.Mirror
                 return null;
             }
         }
+
+        internal static void ClearMarshaller()
+        {
+            interpreter = null;
+            marshaler = null;
+        }
     }
 
     /// <summary>
