@@ -493,7 +493,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void ClearCyclicDependency_ExecutesGraph_ClearsWarnings1()
         {
             var dynFilePath = Path.Combine(TestDirectory, @"core\DynamoDefects\simplified_circular_dep1.dyn");
