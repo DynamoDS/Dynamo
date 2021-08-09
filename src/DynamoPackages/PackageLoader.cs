@@ -389,16 +389,28 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Scans and compiles any new packages contained in new package paths that are added.
-        /// Note: This method will still reload ALL packages in the VM even those that are not new.
+        /// This method is called when custom nodes and packages need to be reloaded if there are new package paths.
         /// </summary>
         /// <param name="loadPackageParams"></param>
-        private void LoadNewPackages(LoadPackageParams loadPackageParams)
+        /// <param name="customNodeManager"></param>
+        public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
+            foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
+            {
+                // Append the definitions subdirectory for custom nodes.
+                var dir = path == DynamoModel.BuiltInPackagesToken ? PathManager.BuiltinPackagesDirectory : path;
+                dir = TransformPath(dir, PathManager.DefinitionsDirectoryName);
+
+                customNodeManager.AddUninitializedCustomNodesInPath(dir, false, false);
+            }
+
             foreach (var path in loadPackageParams.NewPaths)
             {
-                var packagesDirectory = pathManager.PackagesDirectories.Where(x => x.StartsWith(path)).FirstOrDefault();
-                ScanPackageDirectories(packagesDirectory, loadPackageParams.Preferences);
+                var packageDirs = pathManager.PackagesDirectories.Where(x => x.StartsWith(path));
+                if (packageDirs.Any())
+                {
+                    ScanPackageDirectories(packageDirs.First(), loadPackageParams.Preferences);
+                }
             }
 
             if (pathManager != null)
@@ -415,31 +427,8 @@ namespace Dynamo.PackageManager
 
             if (LocalPackages.Any())
             {
-                LoadPackages(LocalPackages);
+                LoadPackages(LocalPackages.Where(x => loadPackageParams.NewPaths.Any(y => x.RootDirectory.Contains(y))));
             }
-        }
-
-        /// <summary>
-        /// This method is called when custom nodes and packages need to be reloaded if there are new package paths.
-        /// </summary>
-        /// <param name="loadPackageParams"></param>
-        /// <param name="customNodeManager"></param>
-        public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
-        {
-            var packages = new List<Package>(localPackages);
-            // Clear all existing packages so that they are not duplicated by adding them again when there are new paths in the mix.
-            localPackages.Clear();
-            foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
-            {
-                // Append the definitions subdirectory for custom nodes.
-                var dir = path == DynamoModel.BuiltInPackagesToken ? PathManager.BuiltinPackagesDirectory : path;
-                dir = TransformPath(dir, PathManager.DefinitionsDirectoryName);
-
-                customNodeManager.AddUninitializedCustomNodesInPath(dir, false, false);
-            }
-            LoadNewPackages(loadPackageParams);
-            // Restore the original set of packages that were already existing in order to keep this list current.
-            localPackages.AddRange(packages);
         }
 
         private void ScanAllPackageDirectories(IPreferences preferences)
