@@ -624,6 +624,7 @@ namespace ProtoCore.DSASM
             }
         }
 
+        //cache ClassIndex and ProcdureNode for repeated calls of the same type object.
         private int previousClassIndex;
         private ProcedureNode pn;
 

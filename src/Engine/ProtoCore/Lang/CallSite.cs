@@ -1528,22 +1528,14 @@ namespace ProtoCore
             return ret;
         }
 
+        //Pre-initialize array for repeated calls.  The StackValue is inserted vs making a new array for every call.
         private static List<StackValue> disposeArguments = new List<StackValue>() { StackValue.Null };
+        //Cache final function endpoint for repeated calls;
         private FunctionEndPoint finalFep;
 
         public StackValue DispatchDispose(
             StackValue stackValue, RuntimeCore runtimeCore)
         {
-
-            // if the last dispatched callsite is this callsite then we are repeatedly making calls
-            // to this same callsite (for example replicating over an outer function that contains this callsite)
-            // and should not reset the invoke count.
-            //if (runtimeCore.LastDispatchedCallSite != this)
-            //{
-            //    UpdateCallsiteExecutionState(null, runtimeCore);
-            //}
-            //runtimeCore.LastDispatchedCallSite = this;
-
             if (finalFep == null)
             {
                 var funcGroup = FirstFunctionGroupInInheritanceChain(runtimeCore, classScope);
