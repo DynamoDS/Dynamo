@@ -31,6 +31,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private DynamoViewModel dynamoViewModel;
 
+        private const double ExitTourVerticalOffset = 30;
+        private const double ExitTourHorizontalOffset = 0;
+
         /// <summary>
         /// GuidesManager Constructor that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
         /// </summary>
@@ -268,12 +271,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
             UIElement hostUIElement = Guide.FindChild(mainRootElement, "statusBarPanel");
 
             //Creates the RealTimeInfoWindow popup and set up all the needed values to show the popup over the Dynamo workspace
-            var exitTourPopup = new RealTimeInfoWindow();
-            exitTourPopup.VerticalOffset = 30;
+            var exitTourPopup = new RealTimeInfoWindow()
+            {
+                VerticalOffset = ExitTourVerticalOffset,
+                HorizontalOffset = ExitTourHorizontalOffset,
+                Placement = PlacementMode.Center,
+                TextContent = Res.ExitTourWindowContent
+            };
+
             if (hostUIElement != null)
                 exitTourPopup.PlacementTarget = hostUIElement;
-            exitTourPopup.Placement = PlacementMode.Center;
-            exitTourPopup.TextContent = Res.ExitTourWindowContent;
             exitTourPopup.IsOpen = true;
         }
     }

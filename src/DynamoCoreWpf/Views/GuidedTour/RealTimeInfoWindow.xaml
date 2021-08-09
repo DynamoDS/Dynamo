@@ -33,6 +33,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+            <!--This blue line is a decoration in the RealTimeInfoWindow shown at the left side of the screen, see the Figma design for more detail-->
             <Line X1="1" 
                   Y1="1"
                   X2="1" 
@@ -42,6 +43,7 @@
                   StrokeStartLineCap="Round"
                   StrokeEndLineCap="Round"
                   Grid.Column="0"/>
+            <!--This Canvas contains two elipses and one line that draw the information symbol in the RealTimeInfo Window-->
             <Canvas Height="67"
                     Width="20"
                     Margin="30,0,30,0"
@@ -67,6 +69,7 @@
                       StrokeThickness="2"
                       Grid.Column="0"/>
             </Canvas>
+            <!--This Text block will contain the text that is shown to the user in the RealTimeInfoWindow-->
             <TextBlock Text="{Binding TextContent}"
                        FontFamily="Artifakt Element"
                        FontSize="12"
