@@ -225,13 +225,11 @@
                     </Style>
                 </Path.Style>
             </Path>
-            <!--At the moment the Z index of the pop-up icons on connector hover are set to match that of nodes,
-            we can change that if required.-->
-            <ContentControl Canvas.ZIndex="100" Content="{Binding ConnectorAnchorViewModel}"
+            <ContentControl Content="{Binding ConnectorAnchorViewModel}"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"/>
 
-            <ContentControl Canvas.ZIndex="100" Content="{Binding ConnectorPinViewCollection}"
+            <ContentControl Content="{Binding ConnectorPinViewCollection}"
                             ContentTemplate="{StaticResource ShowPinCollection}"/>
         </Grid>
         <DataTemplate.Triggers>
