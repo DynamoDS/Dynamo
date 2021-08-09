@@ -5,8 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels" 
-             d:DataContext="{d:DesignInstance Type=viewmodels:InstalledPackagesViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -69,13 +67,24 @@
                                                                MinWidth="50"
                                                                FontSize="11"
                                                                Foreground="{StaticResource PreferencesWindowFontColor}"></TextBlock>
-                                                <TextBlock Text="{x:Static p:Resources.InstalledPackageViewPendingInstallButton}"
-                                                               Visibility="{Binding Path=Model.EnableOldMarkedForUnistallState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-                                                               FontSize="11"
-                                                               FontStyle="Italic"
-                                                               MinWidth="160"
-                                                               TextAlignment="Center"
-                                                               Foreground="Red"></TextBlock>
+                                                <Grid Height="18"
+                                                    MaxWidth="150">
+                                                    <Border Background="DimGray"
+                                                        HorizontalAlignment="Stretch"
+                                                        CornerRadius="5"
+                                                        ToolTip="{Binding Path=PackageLoadStateTooltip}"
+                                                        Margin="5,0,0,0"
+                                                        Padding="5,0,5,0">
+                                                        <TextBlock Text="{Binding Path=PackageLoadStateText}"
+                                                                TextTrimming="CharacterEllipsis"
+                                                                FontSize="10"
+                                                                FontFamily="Artifakt Element"
+                                                                TextAlignment="Left"
+                                                                HorizontalAlignment="Center"
+                                                                Margin="0,3,0,0"
+                                                                Foreground="#EEEEEE"/>
+                                                    </Border>
+                                                </Grid>
                                             </StackPanel>
                                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
                                                 <Button Name="MoreButton"
@@ -94,13 +103,13 @@
                                                             </MenuItem>
                                                             <MenuItem Name="UninstallButton"
                                                                               Command="{Binding Path=UninstallCommand}"
-                                                                              ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuUninstallTooltip}"
-                                                                              Header="{x:Static p:Resources.InstalledPackageViewContextMenuUninstall}">
+                                                                              Header="{Binding Path=PackageViewContextMenuUninstallText}"
+                                                                              ToolTip="{Binding Path=PackageViewContextMenuUninstallTooltip}">
                                                             </MenuItem>
                                                             <MenuItem Name="UnmarkUninstallButton"
                                                                               Command="{Binding Path=UnmarkForUninstallationCommand}"
-                                                                              ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstallTooltip}"
-                                                                              Header="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstall}">
+                                                                              Header="{Binding Path=PackageViewContextMenuUnmarkUninstallText}"
+                                                                              ToolTip="{Binding Path=PackageViewContextMenuUnmarkUninstallTooltip}">
                                                             </MenuItem>
                                                             <MenuItem Name="MakePackageButton"
                                                                               Command="{Binding Path=PublishNewPackageCommand}"

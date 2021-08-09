@@ -17,3 +17,5 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("ProtoImperative")]
 [assembly: InternalsVisibleTo("ProtoScript")]
 [assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]
+[assembly: InternalsVisibleTo("ProtoAssociative")]
+

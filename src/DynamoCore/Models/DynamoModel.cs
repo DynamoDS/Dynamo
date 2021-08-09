@@ -92,6 +92,19 @@ namespace Dynamo.Models
     }
 
     /// <summary>
+    /// Host analytics related info
+    /// </summary>
+    public struct HostAnalyticsInfo
+    {
+        /// Dynamo variation identified by host.
+        public string HostName;
+        /// Dynamo host parent id for analytics purpose.
+        public string ParentId;
+        /// Dynamo host session id for analytics purpose.
+        public string SessionId;
+    }
+
+    /// <summary>
     /// This class creates an interface for Engine controller.
     /// </summary>
     public interface IEngineControllerManager
@@ -181,7 +194,13 @@ namespace Dynamo.Models
         /// <summary>
         /// Name of the Host (i.e. DynamoRevit/DynamoStudio)
         /// </summary>
+        [Obsolete("This property will be removed in Dynamo 3.0 - please use HostAnalyticsInfo")]
         public string HostName { get; set; }
+
+        /// <summary>
+        /// Host analytics info
+        /// </summary>
+        public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
         /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
@@ -460,6 +479,12 @@ namespace Dynamo.Models
             /// Disables ADP for the entire process for the lifetime of the process.
             /// </summary>
             public bool DisableADP { get; set; }
+
+            /// <summary>
+            /// Host analytics info
+            /// TODO: Move this to IStartConfiguration in Dynamo 3.0
+            /// </summary>
+            public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
         }
 
         /// <summary>
@@ -542,11 +567,15 @@ namespace Dynamo.Models
             geometryFactoryPath = config.GeometryFactoryPath;
 
             IPreferences preferences = CreateOrLoadPreferences(config.Preferences);
-            var settings = preferences as PreferenceSettings;
-            if (settings != null)
+            if (preferences is PreferenceSettings settings)
             {
                 PreferenceSettings = settings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+            }
+
+            if (config is DefaultStartConfiguration defaultStartConfiguration)
+            {
+                HostAnalyticsInfo = defaultStartConfiguration.HostAnalyticsInfo;
             }
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
@@ -555,8 +584,9 @@ namespace Dynamo.Models
 
             if (hostUpdateManager != null)
             {
-                HostName = hostUpdateManager.HostName;
-                HostVersion = hostUpdateManager.HostVersion == null ? null : hostUpdateManager.HostVersion.ToString();
+                // For API compatibility now in Dynamo 2.0, integrators can set HostName in both ways
+                HostName = string.IsNullOrEmpty(hostUpdateManager.HostName)? HostAnalyticsInfo.HostName : hostUpdateManager.HostName;
+                HostVersion = hostUpdateManager.HostVersion?.ToString();
             }
             else
             {
@@ -1328,7 +1358,15 @@ namespace Dynamo.Models
         /// </param>
         internal void LoadNodeLibrary(Assembly assem, bool suppressZeroTouchLibraryLoad = true)
         {
-            if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
+           // don't import assembly if its marked node lib and contains any nodemodels and any nodecustomizations
+           // as a consequence we won't import any ZT nodes from assemblies that contain customziations and are marked node libraries.
+           // We'll only apply the customizations and import NodeModels which are present.
+           // I think this is consistent with the current behavior - IE today - if a nodeModel exists in an assembly, the rest of the assembly 
+           // is not imported as ZT - the same will be true if the assembly contains a NodeViewCustomization.
+
+           // TODO(mjk) draw up matrix of current behaviors which nodeLib flag can control.
+            if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem)
+                && !(NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(assem)))
             {
                 if (suppressZeroTouchLibraryLoad)
                 {
@@ -2336,16 +2374,6 @@ namespace Dynamo.Models
             var notes = ClipBoard.OfType<NoteModel>();
             var annotations = ClipBoard.OfType<AnnotationModel>();
 
-            // Create the new NoteModel's
-            var newNoteModels = new List<NoteModel>();
-            foreach (var note in notes)
-            {
-                var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
-                //Store the old note as Key and newnote as value.
-                modelLookup.Add(note.GUID, noteModel);
-                newNoteModels.Add(noteModel);
-            }
-
             var xmlDoc = new XmlDocument();
 
             // Create the new NodeModel's
@@ -2381,6 +2409,25 @@ namespace Dynamo.Models
                     modelLookup.Add(node.GUID, newNode);
 
                     newNodeModels.Add(newNode);
+                }
+
+                // Create the new NoteModel's
+                var newNoteModels = new List<NoteModel>();
+                foreach (var note in notes)
+                {
+                    var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
+                    if (note.PinnedNode != null)
+                    {
+                        ModelBase pinned;
+                        var pinnedNode =
+                            modelLookup.TryGetValue(note.PinnedNode.GUID, out pinned)
+                            ? pinned as NodeModel
+                            : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == note.PinnedNode.GUID);
+                        noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid(), pinnedNode);
+                    }
+                    //Store the old note as Key and newnote as value.
+                    modelLookup.Add(note.GUID, noteModel);
+                    newNoteModels.Add(noteModel);
                 }
 
                 var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);
@@ -2815,7 +2862,6 @@ namespace Dynamo.Models
             if (args.PropertyName == "EnablePresetOptions")
                 OnPropertyChanged("EnablePresetOptions");
         }
-
         #endregion
     }
 }

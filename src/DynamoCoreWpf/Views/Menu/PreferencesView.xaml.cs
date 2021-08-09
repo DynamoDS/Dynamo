@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -21,6 +22,7 @@ namespace Dynamo.Wpf.Views
     {
         private readonly PreferencesViewModel viewModel;
         private readonly DynamoViewModel dynViewModel;
+        private int scaleValue = 0;
 
         // Used for tracking the manage package command event
         // This is not a command any more but we keep it
@@ -37,8 +39,7 @@ namespace Dynamo.Wpf.Views
             SetupPreferencesViewModel(dynViewModel);
 
             DataContext = dynViewModel.PreferencesViewModel;
-
-            
+ 
             InitializeComponent();
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
@@ -49,20 +50,26 @@ namespace Dynamo.Wpf.Views
             {
                 viewModel = viewModelTemp;
             }
-            
-            InitRadioButtonsDescription();
-        }
 
+            InitRadioButtonsDescription();
+
+            //We need to store the ScaleFactor value in a temporary variable always when the Preferences dialog is created.
+            scaleValue = dynViewModel.ScaleFactorLog;
+        }
 
         /// <summary>
         ///Given that the PreferencesViewModel persists through the Dynamo session, 
-        ///this method will setup all the necesary properties for when the Preferences window is opened.
+        ///this method will setup all the necessary properties for when the Preferences window is opened.
         /// </summary>
         private void SetupPreferencesViewModel(DynamoViewModel dynamoViewModel)
         {
             //Clear the Saved Changes label and its corresponding tooltip when the Preferences Modal is opened
             dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
             dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
+            dynamoViewModel.PreferencesViewModel.PackagePathsViewModel?.InitializeRootLocations();
+
+            // Init package paths for install 
+            dynamoViewModel.PreferencesViewModel.InitPackagePathsForInstall();
         }
 
         /// <summary>
@@ -92,8 +99,40 @@ namespace Dynamo.Wpf.Views
                 Actions.Close,
                 Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
+
+            RunGraphWhenScaleFactorUpdated();
+
             Close();
+        }
+
+        /// <summary>
+        /// This method will run the graph only if the Geometry Scaling was updated otherwise will not be executed
+        /// </summary>
+        private void RunGraphWhenScaleFactorUpdated()
+        {
+            //If the new radio button selected (ScaleValue) is different than the current one in Dynamo, we update the current one
+            if (dynViewModel.ScaleFactorLog != scaleValue)
+            {
+                dynViewModel.ScaleFactorLog = scaleValue;
+                dynViewModel.CurrentSpace.HasUnsavedChanges = true;
+
+                //Due that binding are done before the contructor of this class we need to execute the Log only if the viewModel was assigned previously
+                if (viewModel != null)
+                {
+                    Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
+                    viewModel.ScaleRange.Item1, viewModel.ScaleRange.Item2, viewModel.ScaleRange.Item3));
+                    viewModel.UpdateSavedChangesLabel();
+                    Dynamo.Logging.Analytics.TrackEvent(
+                        Actions.Switch,
+                        Categories.Preferences,
+                        Res.PreferencesViewVisualSettingsGeoScaling);
+                }
+
+                var allNodes = dynViewModel.HomeSpace.Nodes;
+                dynViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
+            }
         }
 
         /// <summary>
@@ -186,6 +225,7 @@ namespace Dynamo.Wpf.Views
 
         /// <summary>
         /// This event is generated every time the user clicks a Radio Button in the Geometry Scaling section
+        /// The method just get the Radio Button clicked and saves the ScaleValue selected
         /// This are the values used for the scales:
         /// - 2 - Small
         ///   0 - Medium (Default)
@@ -199,8 +239,7 @@ namespace Dynamo.Wpf.Views
             RadioButton selectedScaling = sender as RadioButton;
             var radioButtons = GeometryScalingRadiosPanel.Children.OfType<RadioButton>();
 
-            int index = 0;
-            int scaleValue = 0;
+            int index = 0;      
 
             //We need to loop all the radiobuttons in the GeometryScaling section in order to find the index of the selected one
             foreach (var radio in radioButtons)
@@ -211,28 +250,6 @@ namespace Dynamo.Wpf.Views
                     break;
                 }
                 index++;
-            }
-
-            //If the new radio button selected (ScaleValue) is different than the current one in Dynamo, we update the current one
-            if (dynViewModel.ScaleFactorLog != scaleValue)
-            {
-                dynViewModel.ScaleFactorLog = scaleValue;
-                dynViewModel.CurrentSpace.HasUnsavedChanges = true;
-
-                //Due that binding are done before the contructor of this class we need to execute the Log only if the viewModel was assigned previously
-                if (viewModel != null)
-                {
-                    Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
-                    viewModel.ScaleRange.Item1, viewModel.ScaleRange.Item2, viewModel.ScaleRange.Item3));
-                    viewModel.UpdateSavedChangesLabel();
-                    Dynamo.Logging.Analytics.TrackEvent(
-                        Actions.Switch,
-                        Categories.Preferences,
-                        Res.PreferencesViewVisualSettingsGeoScaling);
-                }                 
-
-                var allNodes = dynViewModel.HomeSpace.Nodes;
-                dynViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
             }
         }
 

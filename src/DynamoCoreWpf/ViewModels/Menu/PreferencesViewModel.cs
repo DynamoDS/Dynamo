@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Dynamo.Configuration;
+﻿using Dynamo.Configuration;
+using Dynamo.Events;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core.Converters;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -64,6 +66,7 @@ namespace Dynamo.ViewModels
         private GeometryScalingOptions optionsGeometryScale = null;
 
         private InstalledPackagesViewModel installedPackagesViewModel;
+        private string selectedPackagePathForInstall;
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -277,23 +280,20 @@ namespace Dynamo.ViewModels
         {
             get
             {
+                var allowedFileExtensions = new string[] { ".dll", ".ds" };
                 if (packagePathsForInstall == null || !packagePathsForInstall.Any())
                 {
                     var programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                     // Filter Builtin Packages and ProgramData paths from list of paths for download
                     var customPaths = preferenceSettings.CustomPackageFolders.Where(
                         x => x != DynamoModel.BuiltInPackagesToken && !x.StartsWith(programDataPath));
+                    //filter out paths that have extensions ending in .dll or .ds
+                    var directoryPaths = customPaths.Where(path => !(Path.HasExtension(path) && allowedFileExtensions.Contains(Path.GetExtension(path).ToLower())));
 
                     packagePathsForInstall = new ObservableCollection<string>();
-                    foreach (var path in customPaths)
+                    foreach (var path in directoryPaths)
                     {
-                        var attr = File.GetAttributes(path);
-
-                        // Add only directory paths
-                        if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-                        {
                             packagePathsForInstall.Add(path);
-                        }
                     }
                 }
                 return packagePathsForInstall;
@@ -312,13 +312,13 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return preferenceSettings.SelectedPackagePathForInstall;
+                return selectedPackagePathForInstall;
             }
             set
             {
-                if (preferenceSettings.SelectedPackagePathForInstall != value)
+                if (selectedPackagePathForInstall != value)
                 {
-                    preferenceSettings.SelectedPackagePathForInstall = value;
+                    selectedPackagePathForInstall = value;
                     RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
                 }
             }
@@ -715,8 +715,6 @@ namespace Dynamo.ViewModels
                 SelectedPythonEngine = Res.DefaultPythonEngineNone : 
                 SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
 
-            SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
-
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
             SelectedLanguage = languages.Split(',').First();
@@ -750,8 +748,7 @@ namespace Dynamo.ViewModels
             //This piece of code will populate all the description text for the RadioButtons in the Geometry Scaling section.
             optionsGeometryScale = new GeometryScalingOptions();
 
-            //This will set the default option for the Geometry Scaling Radio Buttons, the value is comming from the DynamoViewModel
-            optionsGeometryScale.EnumProperty = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(dynamoViewModel.ScaleFactorLog);
+            UpdateGeoScaleRadioButtonSelected(dynamoViewModel.ScaleFactorLog);
 
             optionsGeometryScale.DescriptionScaleRange = new ObservableCollection<string>();
             optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Small].Item2,
@@ -776,13 +773,107 @@ namespace Dynamo.ViewModels
             var loadPackagesParams = new LoadPackageParams
             {
                 Preferences = preferenceSettings,
-                PathManager = dynamoViewModel.Model.PathManager,
             };
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
 
-            this.PropertyChanged += Model_PropertyChanged;
+            WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
+
+            PropertyChanged += Model_PropertyChanged;
+        }
+
+        /// <summary>
+        /// This method will be executed everytime the WorkspaceModel.ScaleFactor value is updated.
+        /// </summary>
+        /// <param name="args"></param>
+        private void PreferencesViewModel_WorkspaceSettingsChanged(WorkspacesSettingsChangedEventArgs args)
+        {
+            //The WorkspaceSettingsChanged event is refering to the double ScaleFactor, then we need to make the conversion to Logarithm scale factor ScaleFactorLog       
+            UpdateGeoScaleRadioButtonSelected(Convert.ToInt32(Math.Log10(args.ScaleFactor)));
+        }
+
+        /// <summary>
+        /// This method will update the currently selected Radio Button in the Geometry Scaling section.
+        /// </summary>
+        /// <param name="scaleFactor"></param>
+        private void UpdateGeoScaleRadioButtonSelected(int scaleFactor)
+        {
+            optionsGeometryScale.EnumProperty = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
+        }
+
+        /// <summary>
+        /// Called from DynamoViewModel::UnsubscribeAllEvents()
+        /// </summary>
+        internal virtual void UnsubscribeAllEvents()
+        {
+            PropertyChanged -= Model_PropertyChanged;
+            WorkspaceEvents.WorkspaceSettingsChanged -= PreferencesViewModel_WorkspaceSettingsChanged;
+        }
+
+
+        /// <summary>
+        /// Listen for changes to the custom package paths and update package paths for install accordingly
+        /// </summary>
+        private void PackagePathsViewModel_RootLocations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    // New path was added
+                    var newPath = e.NewItems[0] as string;
+                    PackagePathsForInstall.Add(newPath);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    // Path was removed
+                    var removedPath = e.OldItems[0] as string;
+                    var updateSelection = SelectedPackagePathForInstall == removedPath;
+                    if (PackagePathsForInstall.Remove(removedPath) && updateSelection && PackagePathsForInstall.Count > 0)
+                    {
+                        // Path selected was removed
+                        // Select first path in list
+                        SelectedPackagePathForInstall = PackagePathsForInstall[0];
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    // Path was updated
+                    newPath = e.NewItems[0] as string;
+                    removedPath = e.OldItems[0] as string;
+                    updateSelection = SelectedPackagePathForInstall == removedPath;
+                    var index = PackagePathsForInstall.IndexOf(removedPath);
+                    if (index != -1)
+                    {
+                        PackagePathsForInstall[index] = newPath;
+                    }
+
+                    if (updateSelection)
+                    {
+                        // Update selection of the updated path was selected
+                        SelectedPackagePathForInstall = newPath;
+                    }
+                    break;
+                default:
+                    throw new NotSupportedException("Operation not supported");
+            }
+        }
+
+        /// <summary>
+        /// Store selection to preferences
+        /// </summary>
+        internal void CommitPackagePathsForInstall()
+        {
+            PackagePathsViewModel.RootLocations.CollectionChanged -= PackagePathsViewModel_RootLocations_CollectionChanged;
+            preferenceSettings.SelectedPackagePathForInstall = SelectedPackagePathForInstall;
+        }
+
+        /// <summary>
+        /// Force reload of paths and get current selection from preferences
+        /// </summary>
+        internal void InitPackagePathsForInstall()
+        {
+            PackagePathsForInstall = null;
+            SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
+            PackagePathsViewModel.RootLocations.CollectionChanged += PackagePathsViewModel_RootLocations_CollectionChanged;
         }
 
         /// <summary>

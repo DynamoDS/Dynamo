@@ -63,8 +63,8 @@ namespace Dynamo.Controls
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
-
-        private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
+        // internal for testing.
+        internal readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
         private readonly Stopwatch _timer;
         private StartPageViewModel startPage;
@@ -2335,130 +2335,15 @@ namespace Dynamo.Controls
         /// </summary>
         private void ShowGetStartedGuidedTour()
         {
+            //We pass the root UIElement to the GuidesManager so we can found other child UIElements
+            var testGuide = new GuidesManager(_this, dynamoViewModel);
+            testGuide.LaunchTour(Res.GetStartedGuide);
+        }
 
-            Step.TotalSteps = 6;
-
-            //Welcome Popup
-            var hostPopupInfo = new HostControlInfo()
-            {
-                HostClass = string.Empty,
-                PopupPlacement = PlacementMode.Center,
-                HostUIElement = WorkspaceTabs,
-                VerticalPopupOffSet = 0,
-                HorizontalPopupOffSet = 0
-            };
-
-            var customWelcome = new Welcome(hostPopupInfo, 480, 180)
-            {
-                Sequence = 0,
-                StepContent = new Content()
-                {
-                    Title = Res.GetStartedGuideWelcomeTitle,
-                    FormattedText = Res.GetStartedGuideWelcomeText
-                }
-            };
-            customWelcome.Show();
-
-            //Library Popup
-            var libraryPopupInfo = new HostControlInfo()
-            {
-                HostClass = string.Empty,
-                PopupPlacement = PlacementMode.Right,
-                HostUIElement = sidebarGrid,
-                VerticalPopupOffSet = 250,
-                HorizontalPopupOffSet = 0
-            };
-
-            var customTooltip = new Tooltip(libraryPopupInfo, 480, 250, Step.PointerDirection.BOTTOM_LEFT)
-            {
-                Sequence = 1,
-                StepContent = new Content()
-                {
-                    Title = Res.GetStartedGuideLibraryTitle,        
-                    FormattedText = Res.GetStartedGuideLibraryText
-                }
-            };
-            customTooltip.Show();
-
-            //Run Status Bar Popup
-            var runStatusPopupInfo = new HostControlInfo()
-            {
-                HostClass = string.Empty,
-                PopupPlacement = PlacementMode.Center,
-                HostUIElement = WorkspaceTabs,
-                VerticalPopupOffSet = 300,
-                HorizontalPopupOffSet = 100
-            };
-            var runStatusTooltip = new Tooltip(runStatusPopupInfo, 480, 250, Step.PointerDirection.BOTTOM_LEFT)
-            {
-                Sequence = 2,
-                StepContent = new Content()
-                {
-                    Title = Res.GetStartedGuideRunStatusBarTitle,
-                    FormattedText = Res.GetStartedGuideRunStatusBarText
-                }
-            };
-            runStatusTooltip.Show();
-
-            //Toolbar Popup
-            var toolbarPopupInfo = new HostControlInfo()
-            {
-                HostClass = string.Empty,
-                PopupPlacement = PlacementMode.Right,
-                HostUIElement = sidebarGrid,
-                VerticalPopupOffSet = 50,
-                HorizontalPopupOffSet = 500
-            };
-            var toolbarTooltip = new Tooltip(toolbarPopupInfo, 480, 250, Step.PointerDirection.TOP_LEFT)
-            {
-                Sequence = 3,
-                StepContent = new Content()
-                {
-                    Title = Res.GetStartedGuideToolbarTitle,
-                    FormattedText = Res.GetStartedGuideToolbarText
-                }
-            };
-            toolbarTooltip.Show();
-
-            //Preferences Popup
-            var preferencesPopupInfo = new HostControlInfo()
-            {
-                HostClass = string.Empty,
-                PopupPlacement = PlacementMode.Right,
-                HostUIElement = dynamoMenu,
-                VerticalPopupOffSet = 0,
-                HorizontalPopupOffSet = 0
-            };
-            var preferencesTooltip = new Tooltip(preferencesPopupInfo, 480, 190, Step.PointerDirection.TOP_LEFT)
-            {
-                Sequence = 4,
-                StepContent = new Content()
-                {
-                    Title = Res.GetStartedGuidePreferencesTitle,
-                    FormattedText = Res.GetStartedGuidePreferencesText
-                }
-            };
-            preferencesTooltip.Show();
-
-            //Resources Popup
-            var resourcesPopupInfo = new HostControlInfo()
-            {
-                HostClass = string.Empty,
-                PopupPlacement = PlacementMode.Right,
-                HostUIElement = ExtensionsMenu,
-                VerticalPopupOffSet = 150,
-                HorizontalPopupOffSet = 750
-            };
-            var resourcesTooltip = new Tooltip(resourcesPopupInfo, 480, 230, Step.PointerDirection.BOTTOM_RIGHT)
-            {
-                Sequence = 5,
-                StepContent = new Content()
-                {
-                    Title = Res.GetStartedGuideResourcesTitle,
-                    FormattedText = Res.GetStartedGuideResourcesText
-                }
-            };
-            resourcesTooltip.Show();
+        private void RightExtensionSidebar_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            //Setting the width of right extension after resize to
+            extensionsColumnWidth = RightExtensionsViewColumn.Width;
         }
 
         public void Dispose()
