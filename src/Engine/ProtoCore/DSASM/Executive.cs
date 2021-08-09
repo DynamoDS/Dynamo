@@ -817,44 +817,32 @@ namespace ProtoCore.DSASM
             return sv;
         }
 
+        // cached values for repeated calls of the same object type and dispose function.
+        private int previousClassIndex;
+        private string previousProcedureName;
+        private CallSite callsite;
+
         public StackValue CallDipose(ProcedureNode fNode,
                                 StackValue svThisPtr,
                                 int classIndex,
                                 ref bool explicitCall)
         {
-            Runtime.Context runtimeContext = new Runtime.Context();
-
-            //Todo Maybe pass runtime class index?
-            if (svThisPtr.IsPointer &&
-                svThisPtr.Pointer != Constants.kInvalidIndex &&
-                svThisPtr.metaData.type != Constants.kInvalidIndex)
-            {
-                int runtimeClassIndex = svThisPtr.metaData.type;
-                ClassNode runtimeClass = exe.classTable.ClassNodes[runtimeClassIndex];
-                if (runtimeClass.IsMyBase(classIndex))
-                {
-                    classIndex = runtimeClassIndex;
-                }
-            }
-
             if (null != Properties.executingGraphNode)
             {
                 exe.ExecutingGraphnode = Properties.executingGraphNode;
             }
 
-            // Get the cached callsite, creates a new one for a first-time call
-            //Todo use cached callsites based on classIndex and fnode name
-            CallSite callsite = new CallSite(classIndex, fNode.Name, exe.FunctionTable, runtimeCore.Options.ExecutionMode);
-      
+            if (callsite == null || classIndex != previousClassIndex || previousProcedureName != fNode.Name)
+            {
+                previousClassIndex = classIndex;
+                previousProcedureName = fNode.Name;
+                callsite = new CallSite(classIndex, fNode.Name, exe.FunctionTable, runtimeCore.Options.ExecutionMode);
+            }
+
             Validity.Assert(null != callsite);
 
             StackValue sv = StackValue.Null;
-
-            //Dispatch without recursion tracking 
-            explicitCall = false;
-            IsExplicitCall = explicitCall;
-
-            sv = callsite.DispatchDispose(runtimeContext, svThisPtr, runtimeCore);
+            sv = callsite.DispatchDispose(svThisPtr, runtimeCore);
             
             return sv;
         }
