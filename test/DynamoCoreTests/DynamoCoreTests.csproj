@@ -45,9 +45,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=2.0.7507.22529, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.2.0.7507.22529\lib\net48\Greg.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Greg, Version=2.0.7843.19074, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\src\packages\Greg.2.0.7843.19074\lib\net48\Greg.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Moq, Version=4.2.1507.118, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
@@ -84,6 +83,7 @@
     <Compile Include="Core\NotificationObjectTests.cs" />
     <Compile Include="Core\CrashPromptArgsTests.cs" />
     <Compile Include="DefaultPythonEngineTests.cs" />
+    <Compile Include="DelayedGraphExecutionTests.cs" />
     <Compile Include="DSCoreDataTests.cs" />
     <Compile Include="Engine\CodeCompletion\CodeCompletionServicesTest.cs" />
     <Compile Include="Engine\CodeGeneration\CompilingEventArgsTest.cs" />
@@ -111,6 +111,7 @@
     <Compile Include="InheritanceTests.cs" />
     <Compile Include="InputOutputDataTests.cs" />
     <Compile Include="libGPreloaderTests.cs" />
+    <Compile Include="Linting\LinterManagerTests.cs" />
     <Compile Include="ListAtLevelTests.cs" />
     <Compile Include="Logging\AnalyticsServiceTest.cs" />
     <Compile Include="Logging\DynamoLoggerTest.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Search\SearchElements\SearchElementBaseTest.cs" />
     <Compile Include="Search\SearchLibraryTest.cs" />
     <Compile Include="SerializationTests.cs" />
+    <Compile Include="StorageExtensionTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
@@ -306,9 +308,17 @@
       <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
       <Name>TestServices</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TestUINodes\TestUINodes.csproj">
+      <Project>{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}</Project>
+      <Name>TestUINodes</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

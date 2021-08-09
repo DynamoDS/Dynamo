@@ -593,6 +593,12 @@ value : bool = false</value>
   <data name="SearchTextBlockText" xml:space="preserve">
     <value>Search</value>
   </data>
+  <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
+    <value>Search Autocomplete Results</value>
+  </data>
+  <data name="Autocomplete" xml:space="preserve">
+    <value>Autocomplete</value>
+  </data>
   <data name="WatermarkLabelText" xml:space="preserve">
     <value>Your code goes here</value>
   </data>
@@ -734,5 +740,45 @@ Parameter name: {0}</value>
   <data name="PackageManagerUserIsNotAMaintainer" xml:space="preserve">
     <value>The current user, '{0}', is not a maintainer of the package '{1}'.</value>
     <comment>{0} = user name (i.e. 'DynamoTeam'), {1} = package name (i.e. 'Clockwork for Dynamo 1.x')</comment>
+  </data>
+  <data name="DuplicatedOlderPackage" xml:space="preserve">
+    <value>An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored.</value>
+  </data>
+  <data name="InvalidPackageVersion" xml:space="preserve">
+    <value>The version of the package called {0} found at {1} is invalid (version: "{2}"). Ignoring it.</value>
+  </data>
+  <data name="DuplicatedNewerPackage" xml:space="preserve">
+    <value>A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored.</value>
+  </data>
+  <data name="NoneLinterDescriptorName" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="PackageStatePendingUnload" xml:space="preserve">
+    <value>Scheduled to be unloaded</value>
+  </data>
+    <data name="PackageStateError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+    <data name="PackageStateLoaded" xml:space="preserve">
+    <value>Loaded</value>
+  </data>
+  <data name="PackageStateUnloaded" xml:space="preserve">
+    <value>Unloaded</value>
+  </data>
+  <data name="PackageStatePendingUnloadTooltip" xml:space="preserve">
+    <value>Scheduled to be unloaded.
+This package will be unloaded after the next Dynamo restart.</value>
+  </data>
+    <data name="PackageStateErrorTooltip" xml:space="preserve">
+    <value>Unloaded.
+This package has not been loaded due to an unexpected error.</value>
+  </data>
+    <data name="PackageStateLoadedTooltip" xml:space="preserve">
+    <value>Loaded.
+This package is loaded and ready to be used.</value>
+  </data>
+    <data name="PackageStateUnloadedTooltip" xml:space="preserve">
+    <value>Unloaded.
+This package has not been loaded because another conflicting package was loaded before it.</value>
   </data>
 </root>

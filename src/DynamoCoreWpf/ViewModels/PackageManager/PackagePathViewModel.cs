@@ -4,10 +4,41 @@ using System.Collections.ObjectModel;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.PackageManager;
+using Dynamo.Wpf.Properties;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
+using Dynamo.Models;
+using System.Windows.Data;
+using System.Globalization;
+using System.Linq;
+using Dynamo.Configuration;
 
 namespace Dynamo.ViewModels
 {
+    /// <summary>
+    /// A converter that returns true if a path is currently disabled as specified in the 
+    /// PreferenceSettings. Value[0] should be the PackgagePathViewModel.
+    /// Value[1] should be the path to check as a string.
+    /// Returns false by default.
+    /// </summary>
+    public sealed class PathEnabledConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {   if(values != null && values.Length > 1)
+            {
+                if(values[0] is PackagePathViewModel vm && values[1] is string stringPath)
+                {
+                    return vm?.IsPathCurrentlyDisabled(stringPath);
+                }
+            }
+            return false;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class PackagePathEventArgs : EventArgs
     {
         /// <summary>
@@ -24,21 +55,9 @@ namespace Dynamo.ViewModels
     public class PackagePathViewModel : ViewModelBase
     {
         public ObservableCollection<string> RootLocations { get; private set; }
-        private int selectedIndex;
-        public int SelectedIndex
-        {
-            get
-            {
-                return selectedIndex;
-            }
-            set
-            {
-                selectedIndex = value;
-                RaisePropertyChanged("SelectedIndex");
-                RaiseCanExecuteChanged();
-            }
-        }
-
+        [Obsolete("SelectedIndex is no longer referenced, do not use.")]
+        public int SelectedIndex { get; set; }
+       
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
         {
@@ -53,7 +72,7 @@ namespace Dynamo.ViewModels
             get { return loadPackageParams.Preferences; }
         }
         private readonly PackageLoader packageLoader;
-        private readonly LoadPackageParams loadPackageParams;
+        private LoadPackageParams loadPackageParams;
         private readonly CustomNodeManager customNodeManager;
 
         public DelegateCommand AddPathCommand { get; private set; }
@@ -68,36 +87,38 @@ namespace Dynamo.ViewModels
             this.packageLoader = loader;
             this.loadPackageParams = loadParams;
             this.customNodeManager = customNodeManager;
-            RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
-
-            AddPathCommand = new DelegateCommand(p => InsertPath());
-            DeletePathCommand = new DelegateCommand(p => RemovePathAt((int) p), CanDelete);
-            MovePathUpCommand = new DelegateCommand(p => SwapPath((int) p, ((int) p) - 1), CanMoveUp);
-            MovePathDownCommand = new DelegateCommand(p => SwapPath((int) p, ((int) p) + 1), CanMoveDown);
-            UpdatePathCommand = new DelegateCommand(p => UpdatePathAt((int) p));
-            SaveSettingCommand = new DelegateCommand(CommitChanges);
-
-            SelectedIndex = 0;
+            InitializeRootLocations();
+            InitializeComands();
         }
+
+        private void InitializeComands()
+        {
+            AddPathCommand = new DelegateCommand(p => InsertPath());
+            DeletePathCommand = new DelegateCommand(p => RemovePathAt(ConvertPathToIndex(p)), p => CanDelete(ConvertPathToIndex(p)));
+            MovePathUpCommand = new DelegateCommand(p => SwapPath(ConvertPathToIndex(p), ConvertPathToIndex(p) - 1), p => CanMoveUp(ConvertPathToIndex(p)));
+            MovePathDownCommand = new DelegateCommand(p => SwapPath(ConvertPathToIndex(p), ConvertPathToIndex(p) + 1), p => CanMoveDown(ConvertPathToIndex(p)));
+            UpdatePathCommand = new DelegateCommand(p => UpdatePathAt(ConvertPathToIndex(p)), p => CanUpdate(ConvertPathToIndex(p)));
+            SaveSettingCommand = new DelegateCommand(CommitChanges);
+        }
+
         /// <summary>
         /// This constructor overload has been added for backwards comptability.
         /// </summary>
         /// <param name="setting"></param>
         public PackagePathViewModel(IPreferences setting)
         {
-
-            RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
-
-            AddPathCommand = new DelegateCommand(p => InsertPath());
-            DeletePathCommand = new DelegateCommand(p => RemovePathAt((int)p), CanDelete);
-            MovePathUpCommand = new DelegateCommand(p => SwapPath((int)p, ((int)p) - 1), CanMoveUp);
-            MovePathDownCommand = new DelegateCommand(p => SwapPath((int)p, ((int)p) + 1), CanMoveDown);
-            UpdatePathCommand = new DelegateCommand(p => UpdatePathAt((int)p));
-            SaveSettingCommand = new DelegateCommand(CommitChanges);
-
-            SelectedIndex = 0;
+            InitializeRootLocations();
+            InitializeComands();
         }
 
+        private int ConvertPathToIndex(object path)
+        {
+            if(path is int pint)
+            {
+                return pint;
+            }
+            return RootLocations.IndexOf(path as string);
+        }
 
         private void RaiseCanExecuteChanged()
         {
@@ -105,21 +126,60 @@ namespace Dynamo.ViewModels
             MovePathUpCommand.RaiseCanExecuteChanged();
             AddPathCommand.RaiseCanExecuteChanged();
             DeletePathCommand.RaiseCanExecuteChanged();
+            UpdatePathCommand.RaiseCanExecuteChanged();
         }
 
-        private bool CanDelete(object param)
+        private bool CanDelete(int param)
         {
-            return RootLocations.Count > 1;
+            var programDataPackagePathIndex = GetIndexOfProgramDataPackagePath();
+            var appDataPackagePathIndex = GetIndexOfDefaultAppDataPackagePath();
+            if (RootLocations.IndexOf(Resources.PackagePathViewModel_BuiltInPackages) == param ||
+                    programDataPackagePathIndex == param || appDataPackagePathIndex == param)
+            {
+                return false;
+            }
+
+                return RootLocations.Count > 1;
         }
 
-        private bool CanMoveUp(object param)
+        private bool CanMoveUp(int param)
         {
-            return SelectedIndex > 0;
+            return param > 0;
         }
 
-        private bool CanMoveDown(object param)
+        private bool CanMoveDown(int param)
         {
-            return SelectedIndex < RootLocations.Count - 1;
+            return param < RootLocations.Count - 1;
+        }
+
+        private bool CanUpdate(int param)
+        {
+            var programDataPackagePathIndex = GetIndexOfProgramDataPackagePath();
+            var appDataPackagePathIndex = GetIndexOfDefaultAppDataPackagePath();
+
+            //editing builtin packages or programData package paths is not allowed.
+            return RootLocations.IndexOf(Resources.PackagePathViewModel_BuiltInPackages) != param &&
+                programDataPackagePathIndex != param && appDataPackagePathIndex != param;
+        }
+
+        private int GetIndexOfProgramDataPackagePath()
+        {
+            var programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            var programDataPackagePath = RootLocations.Where(x => x.StartsWith(programDataPath)).FirstOrDefault();
+            var programDataPackagePathIndex = RootLocations.IndexOf(programDataPackagePath);
+            return programDataPackagePathIndex;
+        }
+
+        private int GetIndexOfDefaultAppDataPackagePath()
+        {
+            var index = -1;
+            if (setting is PreferenceSettings preferenceSettings)
+            {
+                var appDataPath = preferenceSettings.OnRequestUserDataFolder();
+                index = RootLocations.IndexOf(appDataPath);
+            }
+
+            return index;
         }
 
         // The position of the selected entry must always be the first parameter.
@@ -132,7 +192,7 @@ namespace Dynamo.ViewModels
             RootLocations[x] = RootLocations[y];
             RootLocations[y] = tempPath;
 
-            SelectedIndex = y;
+            RaiseCanExecuteChanged();
         }
 
         private void InsertPath()
@@ -161,7 +221,7 @@ namespace Dynamo.ViewModels
         {
             var args = new PackagePathEventArgs
             {
-                Path = RootLocations[SelectedIndex]
+                Path = RootLocations[index]
             };
 
             ShowFileDialog(args);
@@ -175,21 +235,67 @@ namespace Dynamo.ViewModels
         private void RemovePathAt(int index)
         {
             RootLocations.RemoveAt(index);
-
-            if (index <= SelectedIndex && SelectedIndex > 0)
-                SelectedIndex--;
-
             RaiseCanExecuteChanged();
         }
 
         private void CommitChanges(object param)
         {
-            setting.CustomPackageFolders = new List<string>(RootLocations);
-            if (this.packageLoader != null)
+            var newpaths = CommitRootLocations();
+            //if paths are modified, reload packages and update prefs.
+            if (!setting.CustomPackageFolders.SequenceEqual(newpaths))
             {
-                this.packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+                loadPackageParams.NewPaths = newpaths.Except(setting.CustomPackageFolders);
+                setting.CustomPackageFolders = newpaths;
+                if (packageLoader != null)
+                {
+                    packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+                }
             }
         }
+
+        internal void InitializeRootLocations()
+        {
+            RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
+            var index = RootLocations.IndexOf(DynamoModel.BuiltInPackagesToken);
+
+            if (index != -1)
+            {
+                RootLocations[index] = Resources.PackagePathViewModel_BuiltInPackages;
+            }
+        }
+
+        private List<string> CommitRootLocations()
+        {
+            var rootLocations = new List<string>(RootLocations);
+            var index = rootLocations.IndexOf(Resources.PackagePathViewModel_BuiltInPackages);
+
+            if (index != -1)
+            {
+                rootLocations[index] = DynamoModel.BuiltInPackagesToken;
+            }
+
+            return rootLocations;
+        }
+
+        internal bool IsPathCurrentlyDisabled(string path)
+        {
+            if(setting is IDisablePackageLoadingPreferences disablePrefs)
+            {
+                //disabled if builtinpackages disabled and path is builtinpackages
+                if ((disablePrefs.DisableBuiltinPackages && path == Resources.PackagePathViewModel_BuiltInPackages)
+                    //or if custompaths disabled and path is custom path
+                    || (disablePrefs.DisableCustomPackageLocations && setting.CustomPackageFolders.Contains(path))
+                    //or if custompaths disabled and path is known path that is not builtinpackages - needed because new paths that are not commited
+                    //will not be added to customPackagePaths yet.
+                    || (disablePrefs.DisableCustomPackageLocations && RootLocations.Contains(path) && path != Resources.PackagePathViewModel_BuiltInPackages)) 
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
 
     }
 }

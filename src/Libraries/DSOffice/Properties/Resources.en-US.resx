@@ -129,4 +129,11 @@
   <data name="ReadObsolete" xml:space="preserve">
     <value>Use File.FromPath -&gt; Excel.ReadFromFile node instead.</value>
   </data>
+  <data name="WorkbookNotFound" xml:space="preserve">
+    <value>A workbook was not found in the provided path.</value>
+  </data>
+  <data name="WorksheetNotFound" xml:space="preserve">
+    <value>A worksheet with the provided name '{0}' was not found in the workbook.</value>
+    <comment>{0} = name of the worksheet, for example 'Sheet1'.</comment>
+  </data>
 </root>

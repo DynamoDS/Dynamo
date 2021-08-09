@@ -29,7 +29,7 @@
         {
           "Id": "893da7592d6e49a1857de969eaea3088",
           "Name": "list",
-          "Description": "A list",
+          "Description": "Bad Description. This value should not be read.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,

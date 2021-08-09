@@ -20,6 +20,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
@@ -546,7 +547,7 @@ namespace Dynamo.ViewModels
         /// <param name="filePath"></param>
         /// <param name="engine"></param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
-        internal void Save(string filePath, bool isBackup = false, EngineController engine = null)
+        internal void Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
         {
             if (String.IsNullOrEmpty(filePath))
             {
@@ -555,6 +556,11 @@ namespace Dynamo.ViewModels
 
             try
             {
+                if (!isBackup)
+                {
+                    Model.OnSaving(saveContext);
+                }
+
                 //set the name before serializing model.
                 this.Model.setNameBasedOnFileName(filePath, isBackup);
                 // Stage 1: Serialize the workspace.

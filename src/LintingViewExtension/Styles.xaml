@@ -1,0 +1,110 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:local="clr-namespace:Dynamo.LintingViewExtension"
+                    xmlns:core="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore"
+                    xmlns:converter="clr-namespace:Dynamo.LintingViewExtension.Converters"
+                    xmlns:controls="clr-namespace:Dynamo.LintingViewExtension.Controls">
+
+    <converter:ToStringConverter x:Key="ToString" />
+
+    <SolidColorBrush Color="#444444"
+                     x:Key="ExpanderBackground" />
+    <SolidColorBrush Color="#F5F5F5"
+                     x:Key="HeaderFontColor" />
+    
+    <!--#region Styles -->
+    <Style x:Key="ListViewStyle" TargetType="{x:Type ListView}">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="BorderBrush"
+                Value="Transparent" />
+    </Style>
+
+    <Style x:Key="ListViewItemStyle"
+           TargetType="{x:Type ListViewItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                    <ContentPresenter />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="NodeNameButtonStyle"
+           TargetType="{x:Type Button}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Cursor"
+                        Value="Hand" />
+            </Trigger>
+        </Style.Triggers>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <TextBlock Text="{TemplateBinding Content}"
+                               TextWrapping="WrapWithOverflow"
+                               TextDecorations="Underline"
+                               Foreground="{StaticResource HeaderFontColor}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--#endregion-->
+
+    <!--#region Templates -->
+
+    <DataTemplate x:Key="NodeIssuesItemTemplate"
+                  DataType="{x:Type core:NodeModel}">
+        <Button Style="{StaticResource NodeNameButtonStyle}"
+                Background="Transparent"
+                Content="{Binding Name }"
+                Command="{Binding Path=DataContext.SelectIssueNodeCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LinterView}}}"
+                CommandParameter="{Binding GUID, Converter={StaticResource ToString}}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="GraphIssuesItemTemplate"
+                  DataType="{x:Type sys:String}">
+    </DataTemplate>
+
+    <DataTemplate x:Key="NodeIssueGroupsItemTemplate"
+                  DataType="{x:Type controls:NodeRuleIssue}">
+        <controls:IssueGroup Description="{Binding Rule.Description}"
+                             CallToAction="{Binding Rule.CallToAction}"
+                             IssueNodes="{Binding AffectedNodes }"
+                             SeverityCode="{Binding Rule.SeverityCode}"
+                             Margin="5">
+            <ListView ItemTemplate="{StaticResource NodeIssuesItemTemplate}"
+                      ItemsSource="{Binding AffectedNodes}"
+                      Style="{DynamicResource ListViewStyle}"
+                      ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                      Grid.Row="1"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      Margin="0, 5" />
+
+        </controls:IssueGroup>
+    </DataTemplate>
+
+    <DataTemplate x:Key="GraphIssueGroupsItemTemplate"
+                  DataType="{x:Type controls:GraphRuleIssue}">
+        <controls:IssueGroup Description="{Binding Rule.Description}"
+                             CallToAction="{Binding Rule.CallToAction}"
+                             IssueNodes="{Binding AffectedNodes}"
+                             SeverityCode="{Binding Rule.SeverityCode}"
+                             Margin="5">
+            <ListView ItemTemplate="{StaticResource NodeIssuesItemTemplate}"
+                      ItemsSource="{Binding AffectedNodes}"
+                      Style="{DynamicResource ListViewStyle}"
+                      ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                      Grid.Row="1"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      Margin="0, 5" />
+        </controls:IssueGroup>
+    </DataTemplate>
+
+    <!--#endregion-->
+
+</ResourceDictionary>

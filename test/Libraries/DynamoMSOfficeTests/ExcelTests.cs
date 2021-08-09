@@ -882,7 +882,7 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("ExcelTest")]
-        public void CanWriteNullValuesToExcel()
+        public void CanWriteNullValueToExcel()
         {
             string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNullValuesToExcel.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -905,7 +905,7 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("ExcelTest")]
-        public void CanWriteNullValuesToExcel1()
+        public void CanWriteNullValueInListToExcel()
         {
             string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNullValuesToExcel1.dyn");
             ViewModel.OpenCommand.Execute(openPath);

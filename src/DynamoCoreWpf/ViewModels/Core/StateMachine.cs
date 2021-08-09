@@ -117,11 +117,6 @@ namespace Dynamo.ViewModels
             stateMachine.CancelActiveState();
         }
 
-        internal DateTime GetLastStateTimestamp()
-        {
-            return stateMachine.Timestamp;
-        }
-
         internal void BeginDragSelection(Point2D mouseCursor)
         {
             // This represents the first mouse-move event after the mouse-down
@@ -444,11 +439,6 @@ namespace Dynamo.ViewModels
             #endregion
 
             #region Public Class Properties
-            /// <summary>
-            /// Optionally record the last time a particular state is updated.
-            /// Currently only used for Node AutoComplete feature.
-            /// </summary>
-            internal DateTime Timestamp { get; set; }
 
             internal bool IsInIdleState
             {
@@ -808,21 +798,14 @@ namespace Dynamo.ViewModels
 
                 var portModel = portViewModel.PortModel;
 
+                // When the connect command is triggered, set portDisconnectedByConnectCommand flag based on the port connectors.
+                // If the current port has any connectors, then it will be disconnected. Otherwise a new connection will be made. 
+                portViewModel.inputPortDisconnectedByConnectCommand = portViewModel.PortType == PortType.Input && portModel.Connectors.Count > 0;
+
                 var workspaceViewModel = owningWorkspace.DynamoViewModel.CurrentSpaceViewModel;
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...
                 {
-                    if (Keyboard.Modifiers == ModifierKeys.Alt &&
-                        portViewModel.NodeAutoCompleteCommand.CanExecute(portViewModel))
-                    {
-                        portViewModel.NodeAutoCompleteCommand.Execute(portViewModel);
-                        this.currentState = State.Connection;
-                        owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
-                        owningWorkspace.IsCursorForced = false;
-                        Timestamp = DateTime.Now;
-                        return true;
-                    }
-
                     Guid nodeId = portModel.Owner.GUID;
                     int portIndex = portModel.Index;
 

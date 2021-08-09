@@ -42,23 +42,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Cyotek.Drawing.BitmapFont, Version=1.0.0.0, Culture=neutral, PublicKeyToken=58daa28b0b2de221, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cyotek.Drawing.BitmapFont.1.3.4\lib\net47\Cyotek.Drawing.BitmapFont.dll</HintPath>
+      <HintPath>..\packages\Cyotek.Drawing.BitmapFont.2.0.0\lib\net48\Cyotek.Drawing.BitmapFont.dll</HintPath>
     </Reference>
     <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=2.0.7507.22529, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Greg, Version=2.0.7843.19074, Culture=neutral, processorArchitecture=MSIL">
       <Private>True</Private>
-      <HintPath>..\packages\Greg.2.0.7507.22529\lib\net48\Greg.dll</HintPath>
+      <HintPath>..\packages\Greg.2.0.7843.19074\lib\net48\Greg.dll</HintPath>
     </Reference>
-    <Reference Include="HelixToolkit, Version=2.11.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.2.11.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>
+    <Reference Include="HelixToolkit, Version=2.17.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.2.17.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="HelixToolkit.Wpf, Version=2.11.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.Wpf.2.11.0\lib\net45\HelixToolkit.Wpf.dll</HintPath>
+    <Reference Include="HelixToolkit.Wpf, Version=2.17.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.Wpf.2.17.0\lib\net45\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2.11.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.Wpf.SharpDX.2.11.0\lib\net45\HelixToolkit.Wpf.SharpDX.dll</HintPath>
+    <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2.17.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.Wpf.SharpDX.2.17.0\lib\net45\HelixToolkit.Wpf.SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=4.3.1.9429, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.4.3.1.9430\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -73,8 +73,8 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoGeometry, Version=2.9.0.3355, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.3355\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.12.0.5595, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5595\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
@@ -121,6 +121,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
+      <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\NodeAutoCompleteSearchControl.xaml.cs">
       <DependentUpon>NodeAutoCompleteSearchControl.xaml</DependentUpon>
     </Compile>
@@ -171,6 +174,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
+    <Compile Include="UI\GuidedTour\Guide.cs" />
+    <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
+    <Compile Include="UI\GuidedTour\GuidesManager.cs" />
+    <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
+    <Compile Include="UI\GuidedTour\Step.cs" />
+    <Compile Include="UI\GuidedTour\Survey.cs" />
+    <Compile Include="UI\GuidedTour\Tooltip.cs" />
+    <Compile Include="UI\GuidedTour\ExitTour.cs" />
+    <Compile Include="UI\GuidedTour\Welcome.cs" />
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
@@ -204,6 +217,7 @@
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\CrashUtilities.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
+    <Compile Include="Utilities\MessageBoxUtilities.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
@@ -273,14 +287,8 @@
     <Compile Include="UI\Prompts\GenericTaskDialog.xaml.cs">
       <DependentUpon>GenericTaskDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Prompts\NodeHelpPrompt.xaml.cs">
-      <DependentUpon>NodeHelpPrompt.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Prompts\UsageReportingAgreementPrompt.xaml.cs">
       <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Prompts\ChangeScaleFactorPrompt.xaml.cs">
-      <DependentUpon>ChangeScaleFactorPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="ViewModels\Core\AnnotationExtension.cs" />
@@ -292,6 +300,9 @@
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
+    <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
+    <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
+    <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\Preview\CompactBubbleViewModel.cs" />
@@ -328,6 +339,15 @@
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\GuidedTour\PopupWindow.xaml.cs">
+      <DependentUpon>PopupWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\RatingControl.xaml.cs">
+      <DependentUpon>RatingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\SurveyPopupWindow.xaml.cs">
+      <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
     <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
@@ -338,6 +358,9 @@
     </Compile>
     <Compile Include="ViewModels\Watch3D\AttachedProperties.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoEffectsManager.cs" />
+    <Compile Include="Views\Menu\PreferencesView.xaml.cs">
+      <DependentUpon>PreferencesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Preview\CameraExtensions.cs" />
     <Compile Include="Views\Preview\PreviewCompactView.xaml.cs">
       <DependentUpon>PreviewCompactView.xaml</DependentUpon>
@@ -359,9 +382,6 @@
     </Compile>
     <Compile Include="Views\Preview\InfoBubbleView.xaml.cs">
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PackageManager\InstalledPackagesView.xaml.cs">
-      <DependentUpon>InstalledPackagesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Search\LibraryView.xaml.cs">
       <DependentUpon>LibraryView.xaml</DependentUpon>
@@ -428,11 +448,31 @@
     <Compile Include="Windows\ModelessChildWindow.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\InstalledPackagesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\NodeAutoCompleteSearchControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GuidedTour\PopupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GuidedTour\RatingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GuidedTour\SurveyPopupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Menu\PreferencesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -525,6 +565,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="UI\Fonts\OpenSans-SemiboldItalic.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\GuidedTour\dynamo_guides.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
@@ -659,6 +702,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\closetab_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\whiteclosetab.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\whiteinfotab.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\closewindow_hover.png" />
@@ -1006,10 +1055,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Prompts\ChangeScaleFactorPrompt.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="UI\Prompts\FunctionNamePrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1017,12 +1062,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\Prompts\GenericTaskDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="UI\Prompts\NodeHelpPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1163,12 +1202,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\PackageManager\InstalledPackagesView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="Views\Search\LibraryView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1256,6 +1289,11 @@
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
+      <Project>{8872CA17-C10D-43B9-8393-5C5A57065EB0}</Project>
+      <Name>PythonNodeModels</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
       <Name>VMDataBridge</Name>
@@ -1300,12 +1338,24 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\alert.png" />
+    <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
+    <Resource Include="UI\Images\menu_16_16.png" />
+    <Resource Include="UI\Images\caret_down.png" />
+    <Resource Include="UI\Images\caret_up.png" />
+    <Resource Include="UI\Images\PackageManager\close_16_16.png" />
+    <Resource Include="UI\Images\PackageManager\down_16_16.png" />
+    <Resource Include="UI\Images\PackageManager\folder_16_16.png" />
+    <Resource Include="UI\Images\PackageManager\up_16_16.png" />
+    <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\pin.png" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\PublishPackageDocumentation.html" />
     <Resource Include="UI\Images\undock_hover.png" />
     <Resource Include="UI\Images\undock_normal.png" />
     <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\Common.hlsl" />
@@ -1320,6 +1370,7 @@
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />

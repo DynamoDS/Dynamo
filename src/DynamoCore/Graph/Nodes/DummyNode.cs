@@ -361,7 +361,9 @@ namespace Dynamo.Graph.Nodes
                 }
             }
 
-            if (context == SaveContext.File)
+            if (context == SaveContext.File || 
+                context == SaveContext.Save || 
+                context == SaveContext.SaveAs)
             {
                 //When save files, only save the original node's content, 
                 //instead of saving the dummy node.
@@ -399,7 +401,8 @@ namespace Dynamo.Graph.Nodes
         {
             XmlElement originalElement = OriginalXmlNodeContent;
 
-            if (context == SaveContext.File && originalElement != null)
+            if ((context == SaveContext.File || context == SaveContext.Save || context == SaveContext.SaveAs) &&
+                originalElement != null)
             {
                 XmlElement originalNode = xmlDocument.CreateElement(originalElement.Name);
                 return originalNode;

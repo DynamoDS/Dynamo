@@ -74,17 +74,16 @@ limitations under the License.
     <Reference Include="Analytics.NET.Google">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=2.0.7507.22529, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.2.0.7507.22529\lib\net48\Greg.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Greg, Version=2.0.7843.19074, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.2.0.7843.19074\lib\net48\Greg.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ProtoGeometry, Version=2.9.0.3355, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.3355\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.12.0.5595, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5595\lib\net48\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
@@ -118,6 +117,9 @@ limitations under the License.
     <Compile Include="Engine\ShortestQualifiedNameReplacer.cs" />
     <Compile Include="Exceptions\CustomNodePackageLoadException.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
+    <Compile Include="Extensions\ExtensionData.cs" />
+    <Compile Include="Extensions\IExtensionStorageAccess.cs" />
+    <Compile Include="Extensions\LinterExtensionBase.cs" />
     <Compile Include="Graph\Workspaces\PackageDependencyInfo.cs" />
     <Compile Include="Graph\Nodes\NodeOutputData.cs" />
     <Compile Include="Graph\Nodes\NodeInputData.cs" />
@@ -128,6 +130,16 @@ limitations under the License.
     <Compile Include="Graph\Workspaces\SerializationExtensions.cs" />
     <Compile Include="Graph\Workspaces\UndoRedo.cs" />
     <Compile Include="Extensions\IServiceManager.cs" />
+    <Compile Include="Linting\Interfaces\RuleEvaluationStatusEnum.cs" />
+    <Compile Include="Linting\Interfaces\IRuleEvaluationResult.cs" />
+    <Compile Include="Linting\Interfaces\SeverityCodesEnum.cs" />
+    <Compile Include="Linting\LinterExtensionDescriptor.cs" />
+    <Compile Include="Linting\LinterManager.cs" />
+    <Compile Include="Linting\Rules\GraphLinterRule.cs" />
+    <Compile Include="Linting\Rules\GraphRuleEvaluationResult.cs" />
+    <Compile Include="Linting\Rules\LinterRule.cs" />
+    <Compile Include="Linting\Rules\NodeLinterRule.cs" />
+    <Compile Include="Linting\Rules\NodeRuleEvaluationResult.cs" />
     <Compile Include="Logging\AnalyticsService.cs" />
     <Compile Include="Logging\DynamoAnalyticsClient.cs" />
     <Compile Include="Logging\IAnalyticsSession.cs" />
@@ -146,7 +158,6 @@ limitations under the License.
     <Compile Include="Interfaces\IDynamoModel.cs" />
     <Compile Include="Library\ILibraryLoader.cs" />
     <Compile Include="Graph\Workspaces\ICustomNodeWorkspaceModel.cs" />
-    <Compile Include="Configuration\DebugModes.cs" />
     <Compile Include="Visualization\DefaultGraphicPrimitives.cs" />
     <Compile Include="Visualization\GeometryHolder.cs" />
     <Compile Include="Visualization\IRenderPackageSource.cs" />

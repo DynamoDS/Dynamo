@@ -80,7 +80,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         {
             if (!isPythonInstalled)
             {
-                Installer.SetupPython().Wait();
+                Python.Included.Installer.SetupPythonSync();
                 isPythonInstalled = true;
             }
         }

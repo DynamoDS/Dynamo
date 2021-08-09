@@ -80,6 +80,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autocomplete.
+        /// </summary>
+        public static string Autocomplete {
+            get {
+                return ResourceManager.GetString("Autocomplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search Autocomplete Results.
+        /// </summary>
+        public static string AutocompleteSearchTextBlockText {
+            get {
+                return ResourceManager.GetString("AutocompleteSearchTextBlockText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Original file &apos;{0}&apos; gets backed up at &apos;{1}&apos;.
         /// </summary>
         public static string BackUpOriginalFileMessage {
@@ -447,6 +465,24 @@ namespace Dynamo.Properties {
         public static string DuplicatedModelGuidError {
             get {
                 return ResourceManager.GetString("DuplicatedModelGuidError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored..
+        /// </summary>
+        public static string DuplicatedNewerPackage {
+            get {
+                return ResourceManager.GetString("DuplicatedNewerPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored..
+        /// </summary>
+        public static string DuplicatedOlderPackage {
+            get {
+                return ResourceManager.GetString("DuplicatedOlderPackage", resourceCulture);
             }
         }
         
@@ -837,6 +873,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The version of the package called {0} found at {1} is invalid (version: &quot;{2}&quot;). Ignoring it..
+        /// </summary>
+        public static string InvalidPackageVersion {
+            get {
+                return ResourceManager.GetString("InvalidPackageVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The start or end of a range is greater than the number of available elements in the list..
         /// </summary>
         public static string InvalidStartOrEndOfRange {
@@ -1002,6 +1047,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string NoneLinterDescriptorName {
+            get {
+                return ResourceManager.GetString("NoneLinterDescriptorName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to none.
         /// </summary>
         public static string NoneString {
@@ -1124,6 +1178,82 @@ namespace Dynamo.Properties {
         public static string PackageManagerUserIsNotAMaintainer {
             get {
                 return ResourceManager.GetString("PackageManagerUserIsNotAMaintainer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string PackageStateError {
+            get {
+                return ResourceManager.GetString("PackageStateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        ///This package has not been loaded due to an unexpected error..
+        /// </summary>
+        public static string PackageStateErrorTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateErrorTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded.
+        /// </summary>
+        public static string PackageStateLoaded {
+            get {
+                return ResourceManager.GetString("PackageStateLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded.
+        ///This package is loaded and ready to be used..
+        /// </summary>
+        public static string PackageStateLoadedTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateLoadedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled to be unloaded.
+        /// </summary>
+        public static string PackageStatePendingUnload {
+            get {
+                return ResourceManager.GetString("PackageStatePendingUnload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled to be unloaded.
+        ///This package will be unloaded after the next Dynamo restart..
+        /// </summary>
+        public static string PackageStatePendingUnloadTooltip {
+            get {
+                return ResourceManager.GetString("PackageStatePendingUnloadTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        /// </summary>
+        public static string PackageStateUnloaded {
+            get {
+                return ResourceManager.GetString("PackageStateUnloaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        ///This package has not been loaded because another conflicting package was loaded before it..
+        /// </summary>
+        public static string PackageStateUnloadedTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateUnloadedTooltip", resourceCulture);
             }
         }
         

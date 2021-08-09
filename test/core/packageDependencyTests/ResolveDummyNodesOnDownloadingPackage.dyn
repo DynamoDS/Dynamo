@@ -17,13 +17,13 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Examples.NEWBasicExample.Awesome",
+      "FunctionSignature": "Examples.BasicExample.Awesome",
       "Id": "a1aba50a873443f2bfb88480a89e3f36",
       "Inputs": [
         {
           "Id": "76813b8b37204695a1d9606bb9422758",
-          "Name": "nEWBasicExample",
-          "Description": "Examples.NEWBasicExample",
+          "Name": "BasicExample",
+          "Description": "Examples.BasicExample",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -42,12 +42,12 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "NEWBasicExample.Awesome: double"
+      "Description": "BasicExample.Awesome: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Examples.NEWBasicExample.Create@double,double,double",
+      "FunctionSignature": "Examples.BasicExample.Create@double,double,double",
       "Id": "e7fb4b2363ac4a7c8d4baac9c8b8c5df",
       "Inputs": [
         {
@@ -81,8 +81,8 @@
       "Outputs": [
         {
           "Id": "ddd56fbfbc3a4bef9f4f284678abb5f1",
-          "Name": "NEWBasicExample",
-          "Description": "NEWBasicExample",
+          "Name": "BasicExample",
+          "Description": "BasicExample",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -90,7 +90,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "NEWBasicExample.Create (x: double = 42, y: double = 42, z: double = 42): NEWBasicExample"
+      "Description": "BasicExample.Create (x: double = 42, y: double = 42, z: double = 42): BasicExample"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -162,7 +162,7 @@
     "NodeViews": [
       {
         "ShowGeometry": true,
-        "Name": "NEWBasicExample.Awesome",
+        "Name": "BasicExample.Awesome",
         "Id": "a1aba50a873443f2bfb88480a89e3f36",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -172,7 +172,7 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "NEWBasicExample.Create",
+        "Name": "BasicExample.Create",
         "Id": "e7fb4b2363ac4a7c8d4baac9c8b8c5df",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,

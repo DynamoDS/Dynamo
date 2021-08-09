@@ -6,6 +6,7 @@ using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -15,6 +16,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Library;
+using Dynamo.Linting;
 using Dynamo.Logging;
 using Dynamo.Properties;
 using Dynamo.Scheduler;
@@ -446,6 +448,7 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class WorkspaceReadConverter : JsonConverter
     {
+        LinterManager linterManager;
         DynamoScheduler scheduler;
         EngineController engine;
         NodeFactory factory;
@@ -453,6 +456,8 @@ namespace Dynamo.Graph.Workspaces
         bool verboseLogging;
 
         internal readonly static string NodeLibraryDependenciesPropString = "NodeLibraryDependencies";
+        internal const string EXTENSION_WORKSPACE_DATA = "ExtensionWorkspaceData";
+        internal const string LINTING_PROP_STRING = "Linting";
 
         public WorkspaceReadConverter(EngineController engine, 
             DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
@@ -462,6 +467,13 @@ namespace Dynamo.Graph.Workspaces
             this.factory = factory;
             this.isTestMode = isTestMode;
             this.verboseLogging = verboseLogging;
+        }
+
+        public WorkspaceReadConverter(EngineController engine,
+            DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging, LinterManager linterManager) : 
+            this(engine, scheduler, factory, isTestMode, verboseLogging)
+        {
+            this.linterManager = linterManager;
         }
 
         public override bool CanConvert(Type objectType)
@@ -524,6 +536,7 @@ namespace Dynamo.Graph.Workspaces
                     }
                 }
             }
+          
 
             #region Setting Inputs based on view layer info
             // TODO: It is currently duplicating the effort with Input Block parsing which should be cleaned up once
@@ -585,7 +598,7 @@ namespace Dynamo.Graph.Workspaces
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
 
             // IsVisibleInDynamoLibrary and Category should be set explicitly for custom node workspace
-            if (obj["View"] != null && obj["View"]["Dynamo"] !=null && obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"] != null)
+            if (obj["View"] != null && obj["View"]["Dynamo"] != null && obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"] != null)
             {
                 info.IsVisibleInDynamoLibrary = obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"].Value<bool>();
             }
@@ -633,21 +646,85 @@ namespace Dynamo.Graph.Workspaces
             WorkspaceModel ws;
             if (isCustomNode)
             {
-                ws = new CustomNodeWorkspaceModel(factory, nodes, notes, annotations, 
+                ws = new CustomNodeWorkspaceModel(factory, nodes, notes, annotations,
                     Enumerable.Empty<PresetModel>(), elementResolver, info);
             }
             else
             {
-                ws = new HomeWorkspaceModel(guid, engine, scheduler, factory,
-                    loadedTraceData, nodes, notes, annotations, 
-                    Enumerable.Empty<PresetModel>(), elementResolver, 
-                    info, verboseLogging, isTestMode);
+                var homeWorkspace = new HomeWorkspaceModel(guid, engine, scheduler, factory,
+                    loadedTraceData, nodes, notes, annotations,
+                    Enumerable.Empty<PresetModel>(), elementResolver,
+                    info, verboseLogging, isTestMode, linterManager);
+
+                // Thumbnail
+                if (obj.TryGetValue(nameof(HomeWorkspaceModel.Thumbnail), StringComparison.OrdinalIgnoreCase, out JToken thumbnail))
+                    homeWorkspace.Thumbnail = thumbnail.ToString();
+
+                // GraphDocumentaionLink
+                if (obj.TryGetValue(nameof(HomeWorkspaceModel.GraphDocumentationURL), StringComparison.OrdinalIgnoreCase, out JToken helpLink))
+                {
+                    if (Uri.TryCreate(helpLink.ToString(), UriKind.Absolute, out Uri uri))
+                        homeWorkspace.GraphDocumentationURL = uri;
+                }
+
+                // ExtensionData
+                homeWorkspace.ExtensionData = GetExtensionData(serializer, obj);
+
+                // If there is a active linter serialized in the graph we set it to the active linter else set the default None.
+                SetActiveLinter(obj);
+
+                ws = homeWorkspace;
             }
 
             ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
 
+            if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
+                ws.Author = author.ToString();
+
             return ws;
         }
+
+        private void SetActiveLinter(JObject obj)
+        {
+            while (true)
+            {
+
+                if (linterManager is null ||
+                    !obj.TryGetValue(LINTING_PROP_STRING, StringComparison.OrdinalIgnoreCase, out JToken linter))
+                    break;
+
+                if (!linter.HasValues)
+                    break;
+
+                var activeLinterId = linter.Value<string>(LinterManagerConverter.ACTIVE_LINTER_ID_OBJECT_NAME);
+
+                if (activeLinterId is null)
+                    break;
+
+                var linterDescriptor = linterManager.AvailableLinters
+                    .Where(x => x.Id == activeLinterId)
+                    .FirstOrDefault();
+
+                if (linterDescriptor is null)
+                    break;
+
+                linterManager.SetActiveLinter(linterDescriptor, false);
+                return;
+            }
+
+            linterManager?.SetDefaultLinter();
+        }
+
+        private static List<ExtensionData> GetExtensionData(JsonSerializer serializer, JObject obj)
+        {
+            if (!obj.TryGetValue(EXTENSION_WORKSPACE_DATA, StringComparison.OrdinalIgnoreCase, out JToken extensionData))
+                return new List<ExtensionData>();
+            if (!(extensionData is JArray array))
+                return new List<ExtensionData>();
+
+            return array.ToObject<List<ExtensionData>>(serializer);
+        }
+
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
@@ -751,6 +828,32 @@ namespace Dynamo.Graph.Workspaces
             // NodeLibraryDependencies
             writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
             serializer.Serialize(writer, ws.NodeLibraryDependencies);
+            
+            if (!isCustomNode && ws is HomeWorkspaceModel hws)
+            {
+                // Thumbnail
+                writer.WritePropertyName(nameof(HomeWorkspaceModel.Thumbnail));
+                writer.WriteValue(hws.Thumbnail);
+
+                // GraphDocumentaionLink
+                writer.WritePropertyName(nameof(HomeWorkspaceModel.GraphDocumentationURL));
+                writer.WriteValue(hws.GraphDocumentationURL);
+
+                // ExtensionData
+                writer.WritePropertyName(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
+                serializer.Serialize(writer, hws.ExtensionData);
+            }
+
+            // Graph Author
+            writer.WritePropertyName(nameof(WorkspaceModel.Author));
+            writer.WriteValue(ws.Author);
+
+            // Linter
+            if(!(ws.linterManager is null))
+            {
+                serializer.Serialize(writer, ws.linterManager);
+            }
+
 
             if (engine != null)
             {
@@ -799,6 +902,69 @@ namespace Dynamo.Graph.Workspaces
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class LinterManagerConverter : JsonConverter
+    {
+        private ILogger logger;
+        internal const string LINTER_START_OBJECT_NAME = "Linting";
+        internal const string ACTIVE_LINTER_OBJECT_NAME = "activeLinter";
+        internal const string ACTIVE_LINTER_ID_OBJECT_NAME = "activeLinterId";
+        internal const string LINTER_WARNING_COUNT = "warningCount";
+        internal const string LINTER_ERROR_COUNT = "errorCount";
+
+        public LinterManagerConverter(Logging.ILogger logger)
+        {
+            this.logger = logger;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(LinterManager);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            if (!(value is LinterManager linterManager))
+            {
+                logger.LogWarning("Unnsuccessful attempt to serialize a LinterManager object.", Logging.WarningLevel.Moderate);
+                return;
+            }
+
+            if (linterManager.ActiveLinter is null)
+            {
+                //logger.LogWarning("Unnsuccessful attempt to serialize a LinterManager object as there is no linter selected.", Logging.WarningLevel.Moderate);
+                return;
+            }
+
+            writer.WritePropertyName(WorkspaceReadConverter.LINTING_PROP_STRING);
+            writer.WriteStartObject();
+            writer.WritePropertyName(ACTIVE_LINTER_OBJECT_NAME);
+            writer.WriteValue(linterManager.ActiveLinter.Name);
+            writer.WritePropertyName(ACTIVE_LINTER_ID_OBJECT_NAME);
+            writer.WriteValue(linterManager.ActiveLinter.Id);
+            writer.WritePropertyName(LINTER_WARNING_COUNT);
+            writer.WriteValue(GetIssueCount(linterManager, Linting.Interfaces.SeverityCodesEnum.Warning));
+            writer.WritePropertyName(LINTER_ERROR_COUNT);
+            writer.WriteValue(GetIssueCount(linterManager, Linting.Interfaces.SeverityCodesEnum.Error));
+            writer.WriteEndObject();
+        }
+
+        private int GetIssueCount(LinterManager linterManager, Linting.Interfaces.SeverityCodesEnum severity)
+        {
+            if (linterManager.RuleEvaluationResults.Count() == 0) return 0;
+
+            var issueCount = linterManager.RuleEvaluationResults
+                .Where(x => x.SeverityCode == severity)
+                .Count();
+
+            return issueCount;
         }
     }
 
