@@ -111,6 +111,18 @@
                                                                               Header="{Binding Path=PackageViewContextMenuUnmarkUninstallText}"
                                                                               ToolTip="{Binding Path=PackageViewContextMenuUnmarkUninstallTooltip}">
                                                             </MenuItem>
+                                                            <MenuItem Name="InstallButton"
+                                                                              Visibility="{Binding Path=CanInstall}"
+                                                                              Command="{Binding Path=InstallCommand}"
+                                                                              Header="{x:Static p:Resources.PackageViewContextMenuInstallText}"
+                                                                              ToolTip="{x:Static p:Resources.PackageViewContextMenuInstallTooltip}">
+                                                            </MenuItem>
+                                                            <MenuItem Name="UnmarkForInstallButton"
+                                                                              Visibility="{Binding Path=CanUnmarkForInstall}"
+                                                                              Command="{Binding Path=UnmarkForInstallCommand}"
+                                                                              Header="{x:Static p:Resources.PackageViewContextMenuUnmarkForInstallText}"
+                                                                              ToolTip="{x:Static p:Resources.PackageViewContextMenuUnmarkForInstallTooltip}">
+                                                            </MenuItem>
                                                             <MenuItem Name="MakePackageButton"
                                                                               Command="{Binding Path=PublishNewPackageCommand}"
                                                                               ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishTooltip}"

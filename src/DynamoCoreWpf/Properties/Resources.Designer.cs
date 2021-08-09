@@ -4753,6 +4753,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Load.
+        /// </summary>
+        public static string PackageViewContextMenuInstallText {
+            get {
+                return ResourceManager.GetString("PackageViewContextMenuInstallText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load this package into Dynamo. Other packages with the same name will be automatically deleted.
+        /// </summary>
+        public static string PackageViewContextMenuInstallTooltip {
+            get {
+                return ResourceManager.GetString("PackageViewContextMenuInstallTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel Load.
+        /// </summary>
+        public static string PackageViewContextMenuUnmarkForInstallText {
+            get {
+                return ResourceManager.GetString("PackageViewContextMenuUnmarkForInstallText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove scheduled load status and all schduled for delete statuses from all conflicting packages.
+        /// </summary>
+        public static string PackageViewContextMenuUnmarkForInstallTooltip {
+            get {
+                return ResourceManager.GetString("PackageViewContextMenuUnmarkForInstallTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Warning.
         /// </summary>
         public static string PackageWarningMessageBoxTitle {

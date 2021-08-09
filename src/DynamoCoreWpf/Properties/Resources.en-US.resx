@@ -2562,4 +2562,16 @@ This package will be deleted after the next Dynamo restart.</value>
   <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
     <value>Remove the scheduled unload status</value>
   </data>
+  <data name="PackageViewContextMenuInstallText">
+    <value>Load</value>
+  </data>
+  <data name="PackageViewContextMenuInstallTooltip">
+    <value>Load this package into Dynamo. Other packages with the same name will be automatically deleted</value>
+  </data>
+  <data name="PackageViewContextMenuUnmarkForInstallText">
+     <value>Cancel Load</value>
+  </data>
+  <data name="PackageViewContextMenuUnmarkForInstallTooltip">
+     <value>Remove scheduled load status and all schduled for delete statuses from all conflicting packages</value>
+  </data>
 </root>

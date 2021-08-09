@@ -526,7 +526,7 @@ namespace Dynamo.PackageManager
             {
                 prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
             }
-            RaisePropertyChanged(nameof(LoadState.ScheduledState));
+            RaisePropertyChanged(nameof(LoadState));
         }
 
         internal void UnmarkForUninstall(IPreferences prefs)
@@ -534,7 +534,37 @@ namespace Dynamo.PackageManager
             LoadState.ResetScheduledState();
 
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
-            RaisePropertyChanged(nameof(LoadState.ScheduledState));
+            RaisePropertyChanged(nameof(LoadState));
+        }
+
+        internal void MarkForInstall(IPreferences prefs)
+        {
+            if (BuiltInPackage)
+            {
+                LoadState.SetScheduledForLoad();
+
+                if (prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
+                {
+                    prefs.PackageDirectoriesToUninstall.Remove(RootDirectory);
+                }
+                RaisePropertyChanged(nameof(LoadState));
+            }
+        }
+
+        internal void UnmarkForInstall(IPreferences prefs)
+        {
+            if (BuiltInPackage && 
+                LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForLoad && 
+                LoadState.State == PackageLoadState.StateTypes.Unloaded)
+            {
+                LoadState.ResetScheduledState();
+                if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
+                {
+                    prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
+                }
+                RaisePropertyChanged(nameof(LoadState));
+            }
+
         }
 
         internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
@@ -548,12 +578,21 @@ namespace Dynamo.PackageManager
             try
             {
                 LoadedCustomNodes.ToList().ForEach(x => customNodeManager.Remove(x.FunctionId));
-                if (!BuiltInPackage)
+                if (BuiltInPackage)
+                {
+                    LoadState.SetAsUnloaded();
+                    RaisePropertyChanged(nameof(LoadState));
+
+                    if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
+                    {
+                        prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
+                    }
+                }
+                else
                 {
                     packageLoader.Remove(this);
                     Directory.Delete(RootDirectory, true);
                 }
-
             }
             catch (Exception e)
             {
