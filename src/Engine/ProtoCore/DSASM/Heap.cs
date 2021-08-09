@@ -624,23 +624,31 @@ namespace ProtoCore.DSASM
             }
         }
 
+        private int previousClassIndex;
+        private ProcedureNode pn;
+
         private void GCDisposeObject(StackValue svPtr, Executive exe)
         {
             int classIndex = svPtr.metaData.type;
-            ClassNode cn = exe.exe.classTable.ClassNodes[classIndex];
 
-            ProcedureNode pn = cn.GetDisposeMethod();
-            while (pn == null)
+            if (this.pn == null || classIndex != previousClassIndex)
             {
-                if (cn.Base != Constants.kInvalidIndex)
+                previousClassIndex = classIndex;
+                ClassNode cn = exe.exe.classTable.ClassNodes[classIndex];
+
+                pn = cn.GetDisposeMethod();
+                while (pn == null)
                 {
-                    classIndex = cn.Base;
-                    cn = exe.exe.classTable.ClassNodes[classIndex];
-                    pn = cn.GetDisposeMethod();
-                }
-                else
-                {
-                    break;
+                    if (cn.Base != Constants.kInvalidIndex)
+                    {
+                        classIndex = cn.Base;
+                        cn = exe.exe.classTable.ClassNodes[classIndex];
+                        pn = cn.GetDisposeMethod();
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
 
