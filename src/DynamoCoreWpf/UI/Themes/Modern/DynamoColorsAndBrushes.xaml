@@ -144,4 +144,6 @@
     <SolidColorBrush x:Key="PortUsingDefaultValueMarkerColor" Color="#9BD5EF" />
     <SolidColorBrush x:Key="PortUseLevelsCheckBoxColor" Color="#808080" />
 
+    <!--Connector-->
+    <SolidColorBrush x:Key="ConnectorHoverStateOutline" Color="#B6B6B6"/>
 </ResourceDictionary>
