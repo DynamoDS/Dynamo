@@ -427,6 +427,7 @@ namespace Dynamo.PackageManager
 
             if (LocalPackages.Any())
             {
+                // Load only those recently addeed local packages (that are located in any of the new paths)
                 LoadPackages(LocalPackages.Where(x => loadPackageParams.NewPaths.Any(y => x.RootDirectory.Contains(y))));
             }
         }
@@ -559,10 +560,10 @@ namespace Dynamo.PackageManager
                     return discoveredPackage; // success
                 }
 
-                // The discovered built-in package is in conflict with an existing package
-                if (discoveredPackage.BuiltInPackage)
+                // Conflict invloving a built-in package
+                if (discoveredPackage.BuiltInPackage || existingPackage.BuiltInPackage)
                 {
-                    // We still show the built in package but we mark it as unloaded.
+                    // We show both packages but we mark the new one as unloaded.
                     discoveredPackage.LoadState.SetAsUnloaded();
                     Add(discoveredPackage);
                 }
