@@ -1528,26 +1528,32 @@ namespace ProtoCore
             return ret;
         }
 
+        private static List<StackValue> disposeArguments = new List<StackValue>() { StackValue.Null };
+        private FunctionEndPoint finalFep;
+
         public StackValue DispatchDispose(
-           Context context,
-           StackValue stackValue, RuntimeCore runtimeCore)
+            StackValue stackValue, RuntimeCore runtimeCore)
         {
 
             // if the last dispatched callsite is this callsite then we are repeatedly making calls
             // to this same callsite (for example replicating over an outer function that contains this callsite)
             // and should not reset the invoke count.
-            if (runtimeCore.LastDispatchedCallSite != this)
+            //if (runtimeCore.LastDispatchedCallSite != this)
+            //{
+            //    UpdateCallsiteExecutionState(null, runtimeCore);
+            //}
+            //runtimeCore.LastDispatchedCallSite = this;
+
+            if (finalFep == null)
             {
-                UpdateCallsiteExecutionState(null, runtimeCore);
+                var funcGroup = FirstFunctionGroupInInheritanceChain(runtimeCore, classScope);
+                finalFep = funcGroup.FunctionEndPoints[0];
             }
-            runtimeCore.LastDispatchedCallSite = this;
-
-            FunctionGroup funcGroup = FirstFunctionGroupInInheritanceChain(runtimeCore, classScope);
-            var arguments = new List<StackValue>{stackValue};
-            var finalFep = funcGroup.FunctionEndPoints[0];
-
+            
+            disposeArguments[0] = stackValue;
+            
             //EXECUTE
-            StackValue ret = finalFep.Execute(context, arguments, null, runtimeCore);
+            StackValue ret = finalFep.Execute(null, disposeArguments, null, runtimeCore);
 
             return ret;
         }
