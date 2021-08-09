@@ -775,7 +775,7 @@ namespace Dynamo.PackageManager
 
         private static bool hasAttemptedUninstall;
 
-        internal void DoCachedPackageDeletions(IPreferences preferences)
+        internal void DoCachedPackageUninstalls(IPreferences preferences)
         {
             // this can only be run once per app run
             if (hasAttemptedUninstall) return;
@@ -787,20 +787,12 @@ namespace Dynamo.PackageManager
                 if (pkgNameDirTup.StartsWith(PathManager.BuiltinPackagesDirectory))
                 {
                     // do not delete packages from the built in dir
+                    pkgDirsRemoved.Add(pkgNameDirTup);
                     continue;
                 }
                 
                 try
                 {
-                    if (pkgNameDirTup.StartsWith(PathManager.BuiltinPackagesDirectory))
-                    {
-                        Log(String.Format(
-                           "Cannot delete package directory at \"{0}\" because it is part of the Dynamo built-in directory.",
-                           pkgNameDirTup), WarningLevel.Moderate);
-                        pkgDirsRemoved.Add(pkgNameDirTup);
-                        continue;
-                    }
-
                     Directory.Delete(pkgNameDirTup, true);
                     pkgDirsRemoved.Add(pkgNameDirTup);
                     Log(String.Format("Successfully uninstalled package from \"{0}\"", pkgNameDirTup));
