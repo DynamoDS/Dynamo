@@ -279,7 +279,6 @@ namespace ProtoScript.Runners
                         rootNodes.Add(gNode);
                     }
                 }
-                if (!rootNodes.Any()) return;
 
                 foreach (var rootNode in rootNodes)
                 {
