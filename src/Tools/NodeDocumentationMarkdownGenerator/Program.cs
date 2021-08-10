@@ -45,11 +45,6 @@ namespace NodeDocumentationMarkdownGenerator
         internal static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             var requestedAssembly = new AssemblyName(args.Name);
-            if (args.Name.Contains(".resources, "))
-            {
-                requestedAssembly = new AssemblyName(args.Name.Replace(".resources, ", ", "));
-            }
-
             var requestedAssemblyLocation = Program.DynamoDirectoryAssemblyPaths
                 .Where(x => Path.GetFileNameWithoutExtension(x.FullName) == requestedAssembly.Name)
                 .FirstOrDefault();
