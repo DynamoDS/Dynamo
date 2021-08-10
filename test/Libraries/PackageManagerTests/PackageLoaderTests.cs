@@ -377,8 +377,10 @@ namespace Dynamo.PackageManager.Tests
 
             // This test needs the "isTestMode" flag to be turned off as an exception to be able 
             // to test duplicate custom node def loading.
-            Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> reqLoadCNDelegate = (dir, pkgInfo) =>
-            CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode: false, packageInfo: pkgInfo);
+            Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> reqLoadCNDelegate = (dir, pkgInfo) => {
+                Console.WriteLine($"packageInfo reqLoadCNDelegate :pkginfo");
+                return CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode: false, packageInfo: pkgInfo);
+                };
             loader.RequestLoadCustomNodeDirectory += reqLoadCNDelegate;
 
             loader.LoadAll(new LoadPackageParams
@@ -387,7 +389,15 @@ namespace Dynamo.PackageManager.Tests
             });
 
             var packageInfo = new PackageInfo("EvenOdd", new System.Version(1,0,0));
-            var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo.Equals(packageInfo)).ToList();
+
+            //this test fails randomly - log some info to help debug it.
+            Console.WriteLine($"pathmanager.PackagesDirectories{String.Join(",",pathManager.Object.PackagesDirectories)}");
+            var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x =>
+            {
+                Console.WriteLine($"val{x.Value}, name{x.Value.Name}, pkginfo{x.Value.PackageInfo}, packagemember{x.Value.IsPackageMember}");
+                return x.Value.PackageInfo.Equals(packageInfo);
+            }
+            ).ToList();
             //the node should have the correct package info and should be marked a packageMember.
             Assert.AreEqual(1, matchingNodes.Count);
             Assert.IsTrue(matchingNodes.All(x=>x.Value.IsPackageMember == true));
@@ -412,7 +422,14 @@ namespace Dynamo.PackageManager.Tests
 
 
             var packageInfo = new PackageInfo("EvenOdd", new System.Version(1, 0, 0));
-            var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo.Equals(packageInfo)).ToList();
+            //this test fails randomly - log some info to help debug it.
+            Console.WriteLine($"pathmanager.PackagesDirectories{String.Join(",", CurrentDynamoModel.PathManager.PackagesDirectories)}");
+            var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x =>
+            {
+                Console.WriteLine($"val{x.Value}, name{x.Value.Name}, pkginfo{x.Value.PackageInfo}, packagemember{x.Value.IsPackageMember}");
+                return x.Value.PackageInfo.Equals(packageInfo);
+            }
+            ).ToList();
             //the node should have the correct package info and should be marked a packageMember.
             Assert.AreEqual(1, matchingNodes.Count);
             Assert.IsTrue(matchingNodes.All(x => x.Value.IsPackageMember == true));
