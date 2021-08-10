@@ -378,7 +378,7 @@ namespace Dynamo.PackageManager.Tests
             // This test needs the "isTestMode" flag to be turned off as an exception to be able 
             // to test duplicate custom node def loading.
             Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> reqLoadCNDelegate = (dir, pkgInfo) => {
-                Console.WriteLine($"packageInfo reqLoadCNDelegate :pkginfo");
+                Console.WriteLine($"packageInfo reqLoadCNDelegate :{pkgInfo}");
                 return CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode: false, packageInfo: pkgInfo);
                 };
             loader.RequestLoadCustomNodeDirectory += reqLoadCNDelegate;
@@ -394,7 +394,7 @@ namespace Dynamo.PackageManager.Tests
             Console.WriteLine($"pathmanager.PackagesDirectories{String.Join(",",pathManager.Object.PackagesDirectories)}");
             var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x =>
             {
-                Console.WriteLine($"val{x.Value}, name{x.Value.Name}, pkginfo{x.Value.PackageInfo}, packagemember{x.Value.IsPackageMember}");
+                Console.WriteLine($"val {x.Value}, name {x.Value.Name}, pkginfo {x.Value.PackageInfo}, packagemember {x.Value.IsPackageMember}");
                 return x.Value.PackageInfo.Equals(packageInfo);
             }
             ).ToList();
