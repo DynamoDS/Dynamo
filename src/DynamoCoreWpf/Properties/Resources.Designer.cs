@@ -2313,6 +2313,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can return to this tutorial later from the Help menu..
+        /// </summary>
+        public static string ExitTourWindowContent {
+            get {
+                return ResourceManager.GetString("ExitTourWindowContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extension tab added to the extensions side bar..
         /// </summary>
         public static string ExtensionAdded {
