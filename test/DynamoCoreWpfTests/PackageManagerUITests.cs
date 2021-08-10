@@ -298,7 +298,6 @@ namespace DynamoCoreWpfTests
             var loader = new PackageLoader(pathManager.Object);
             var libraryLoader = new ExtensionLibraryLoader(dynamoModel);
 
-            loader.PackagesLoaded += libraryLoader.LoadPackages;
             loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
             var loadPackageParams = new LoadPackageParams
             {
@@ -316,6 +315,8 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(uiassembly.IsNodeLibrary);
             //verify that the customization was added to the customization library
             Assert.IsTrue(View.nodeViewCustomizationLibrary.ContainsCustomizationForNodeModel(nodeModelAssembly.Assembly.GetType("NodeModelAssembly.NodeModelDerivedClass")));
+
+            loader.RequestLoadNodeLibrary -= libraryLoader.LoadNodeLibrary;
 
         }
 
