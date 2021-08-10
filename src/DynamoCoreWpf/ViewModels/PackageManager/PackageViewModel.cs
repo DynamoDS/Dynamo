@@ -114,6 +114,11 @@ namespace Dynamo.ViewModels
             get { return Model.LoadedAssemblies.Any(); }
         }
 
+        public bool CanPublish
+        {
+            get { return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider; }
+        }
+
         [Obsolete("Do not use. This command will be removed. It does nothing.")]
         public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
         public DelegateCommand GetLatestVersionCommand { get; set; }
