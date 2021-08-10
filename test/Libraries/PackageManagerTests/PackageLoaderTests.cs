@@ -1203,6 +1203,9 @@ namespace Dynamo.PackageManager.Tests
             //verify customization assembly was added to nodeModelAssemblyLoader
             Assert.IsTrue(CurrentDynamoModel.Loader.LoadedAssemblies.Select(x=>x.FullName.Contains("NodeViewCustomizationAssembly")).Any());
             Assert.IsTrue(CurrentDynamoModel.Loader.LoadedAssemblies.Select(x => x.FullName.Contains("NodeModelAssembly")).Any());
+
+            loader.PackagesLoaded -= libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary -= libraryLoader.LoadNodeLibrary;
         }
 
         [Test]
