@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Dynamo.Graph.Nodes;
-
+using Dynamo.Models;
 using NUnit.Framework;
+using ProtoFFI.Reflection;
 
 namespace Dynamo
 {
@@ -107,6 +111,97 @@ namespace Dynamo
 
             Assert.AreEqual("foo", typeLoadData.OutputParameters.ElementAt(0));
             Assert.AreEqual("bla", typeLoadData.OutputParameters.ElementAt(1));
+        }
+
+
+        [Test]
+        public void CanCreateTypeLoadDataFromReflectionOnlyLoadedType()
+        {
+            // Arrange
+            var coreDirectory = new DirectoryInfo(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
+            var coreNodeModelsDll = coreDirectory.GetFiles("CoreNodeModels.dll", SearchOption.AllDirectories).FirstOrDefault();
+
+            // Act
+            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += CurrentDomain_ReflectionOnlyAssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve; ;
+            var loadedAssembly = Assembly.LoadFrom(coreNodeModelsDll.FullName);
+            var reflectionAssembly = Assembly.ReflectionOnlyLoadFrom(coreNodeModelsDll.FullName);
+
+            System.Type[] reflectionTypes;
+            try
+            {
+                reflectionTypes = reflectionAssembly.GetTypes();
+            }
+            // see https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assembly.gettypes?view=netframework-4.8#remarks
+            catch (ReflectionTypeLoadException ex)
+            {
+                reflectionTypes = ex.Types;
+            }
+
+            var nodeModelAssemblyName = typeof(NodeModel).Assembly.GetName();
+            var dynamoCoreAsm = AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies()
+                .Where(x => x.GetName().Name == nodeModelAssemblyName.Name)
+                .FirstOrDefault();
+            var nodeModelType = dynamoCoreAsm.GetType("Dynamo.Graph.Nodes.NodeModel");
+
+            var typeLoadDatasFromReflection = new List<TypeLoadData>();
+            foreach (var type in reflectionTypes)
+            {
+                if (!NodeModelAssemblyLoader.IsNodeSubTypeReflectionLoaded(type, nodeModelType))
+                {
+                    continue;
+                }
+                typeLoadDatasFromReflection.Add(new TypeLoadData(type, type.GetAttributesFromReflectionContext().ToArray()));
+            }
+
+            var loadedTypes = loadedAssembly.GetTypes();
+            var typeLoadDatas = new List<TypeLoadData>();
+            foreach (var type in loadedTypes)
+            {
+                if (!NodeModelAssemblyLoader.IsNodeSubType(type)) continue;
+                typeLoadDatas.Add(new TypeLoadData(type));
+            }
+
+            // Assert
+            Assert.AreEqual(typeLoadDatas, typeLoadDatasFromReflection);
+
+        }
+
+        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            var requestedAssembly = new AssemblyName(args.Name);
+
+            Assembly assembly = null;
+            AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
+            try
+            {
+                assembly = Assembly.Load(requestedAssembly.FullName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            return assembly;
+        }
+
+        internal static Assembly CurrentDomain_ReflectionOnlyAssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            var requestedAssembly = new AssemblyName(args.Name);
+
+            Assembly assembly = null;
+
+            try
+            {
+                assembly = Assembly.ReflectionOnlyLoad(requestedAssembly.FullName);
+            }
+            catch (Exception e)
+            {
+
+                var t = e;
+            }
+            
+            return assembly;
         }
     }
 }

@@ -821,6 +821,8 @@ namespace ProtoFFI
             FFIMethodAttributes mattrs = new FFIMethodAttributes(method, mGetterAttributes, IsReflectionContext);
             bool isOperator = isOverloadedOperator(method);
 
+            var mName = method.Name;
+
             // GetProtoCoreType and isPropertyAccessor might break in ReflectionMode.
             // Generally we are trying to get return types a few places here, we cannot guarantee that these types are available in reflection.
             // If it breaks we continue with an empty ProtoCore Type as we aren't interested in the return type for the NodeDocumentationGenerator

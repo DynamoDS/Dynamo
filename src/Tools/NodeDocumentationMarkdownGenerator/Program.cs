@@ -10,15 +10,26 @@ namespace NodeDocumentationMarkdownGenerator
 {
     class Program
     {
-        internal static IEnumerable<FileInfo> DynamoDirectoryAssemblyPaths;
-        static void Main(string[] args)
+        private static IEnumerable<FileInfo> dynamoDirectoryAssemblyPaths;
+        internal static IEnumerable<FileInfo> DynamoDirectoryAssemblyPaths
         {
-            Program.DynamoDirectoryAssemblyPaths = new DirectoryInfo(
-                Path.GetFullPath(
-                    Path.Combine(
-                        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\bin\AnyCPU\Debug")))
-                .EnumerateFiles("*.dll", SearchOption.TopDirectoryOnly);
+            get
+            {
+                if (dynamoDirectoryAssemblyPaths is null)
+                {
+                    dynamoDirectoryAssemblyPaths = new DirectoryInfo(
+                        Path.GetFullPath(
+                            Path.Combine(
+                                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\bin\AnyCPU\Debug")))
+                        .EnumerateFiles("*.dll", SearchOption.TopDirectoryOnly);
+                }
 
+                return dynamoDirectoryAssemblyPaths;
+            }
+        }
+
+        internal static void Main(string[] args)
+        {
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
             ShowWelcomeMessages();
@@ -31,9 +42,14 @@ namespace NodeDocumentationMarkdownGenerator
                     err => "1");
         }
 
-        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        internal static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             var requestedAssembly = new AssemblyName(args.Name);
+            if (args.Name.Contains(".resources, "))
+            {
+                requestedAssembly = new AssemblyName(args.Name.Replace(".resources, ", ", "));
+            }
+
             var requestedAssemblyLocation = Program.DynamoDirectoryAssemblyPaths
                 .Where(x => Path.GetFileNameWithoutExtension(x.FullName) == requestedAssembly.Name)
                 .FirstOrDefault();
@@ -48,6 +64,7 @@ namespace NodeDocumentationMarkdownGenerator
             {
                 CommandHandler.LogExceptionToConsole(ex);
             }
+
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             return assembly;
         }
