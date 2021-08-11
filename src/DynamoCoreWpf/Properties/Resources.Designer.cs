@@ -1080,7 +1080,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _About....
+        ///   Looks up a localized string similar to _About.
         /// </summary>
         public static string DynamoViewDynamoMenuAbout {
             get {
@@ -1413,7 +1413,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Home Workspace....
+        ///   Looks up a localized string similar to _Home Workspace.
         /// </summary>
         public static string DynamoViewFileMenuNewHomeWorkSpace {
             get {
@@ -1431,7 +1431,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Open Recent Files....
+        ///   Looks up a localized string similar to _Open Recent Files.
         /// </summary>
         public static string DynamoViewFileMenuRecentFiles {
             get {
