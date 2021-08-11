@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using CoreNodeModels.Input;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using NUnit.Framework;
@@ -490,6 +491,128 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
             Assert.IsTrue(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+        }
+
+        [Test]
+        public void ClearCyclicDependency_ExecutesGraph_ClearsWarnings1()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\DynamoDefects\simplified_circular_dep1.dyn");
+            RunModel(dynFilePath);
+
+            // check for number of Nodes and Connectors
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("91a7cf31-f4d2-4084-b570-113cca9d1c9f");
+            var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("7a29dbea-76fa-4a03-b403-c8d6572f84b1");
+
+            Assert.IsTrue(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsTrue(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+
+            var node3 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("73485bcb-bfa9-4899-98f9-06b8d193f05b");
+            
+            // Clear cycle.
+            ConnectorModel.Make(node3, node1, 0, 0);
+            RunCurrentModel();
+            AssertPreviewValue(node1.GUID.ToString(), 2);
+            AssertPreviewValue(node2.GUID.ToString(), 2);
+
+            Assert.IsFalse(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsFalse(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+        }
+
+        [Test]
+        public void ClearCyclicDependency_ExecutesGraph_ClearsWarnings2()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\DynamoDefects\simplified_circular_dep2.dyn");
+            RunModel(dynFilePath);
+
+            // check for number of Nodes and Connectors
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("f98c67f3-6670-4ade-bd01-3210a342c10b");
+            var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("ab7171e7-e60f-48f2-9743-0cd21b6864e3");
+            var node3 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("c52afcc9-d9b4-45ba-b4f6-ba636ecc1d0f");
+
+            Assert.IsTrue(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsTrue(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsTrue(node3.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+
+            var node4 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("e0fd9547-edf7-4922-829b-329c436136c0");
+
+            // Clear cycle.
+            ConnectorModel.Make(node4, node1, 0, 0);
+            RunCurrentModel();
+            AssertPreviewValue(node1.GUID.ToString(), 5);
+            AssertPreviewValue(node2.GUID.ToString(), 5);
+            AssertPreviewValue(node3.GUID.ToString(), 5);
+
+            Assert.IsFalse(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsFalse(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsFalse(node3.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+        }
+
+        [Test]
+        public void ClearCyclicDependency_ExecutesGraph_ClearsWarnings3()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\DynamoDefects\simplified_circular_dep3.dyn");
+            RunModel(dynFilePath);
+
+            // check for number of Nodes and Connectors
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("f98c67f3-6670-4ade-bd01-3210a342c10b");
+            var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("64f35283-99a5-4cf8-9459-a684e4fa798a");
+
+            Assert.IsTrue(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsTrue(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+
+            var node3 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("e0fd9547-edf7-4922-829b-329c436136c0");
+
+            // Clear cycle.
+            ConnectorModel.Make(node3, node1, 1, 1);
+            RunCurrentModel();
+            AssertPreviewValue(node1.GUID.ToString(), 5);
+            AssertPreviewValue(node2.GUID.ToString(), 2);
+
+            AssertPreviewValue("7f9c12b4-7579-431d-9af3-8c808e1cfc57", 10);
+
+            Assert.IsFalse(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsFalse(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+        }
+
+        [Test]
+        public void ClearCyclicDependency_ExecutesGraph_ClearsWarnings4()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\DynamoDefects\simplified_circular_dep4.dyn");
+            RunModel(dynFilePath);
+
+            // check for number of Nodes and Connectors
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("f98c67f3-6670-4ade-bd01-3210a342c10b");
+            var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("64f35283-99a5-4cf8-9459-a684e4fa798a");
+            var node3 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("7f9c12b4-7579-431d-9af3-8c808e1cfc57");
+
+            Assert.IsTrue(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsTrue(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsTrue(node3.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+
+            var node4 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("e0fd9547-edf7-4922-829b-329c436136c0");
+
+            // Clear cycle.
+            ConnectorModel.Make(node4, node1, 0, 0);
+            RunCurrentModel();
+            AssertPreviewValue(node1.GUID.ToString(), 5);
+            AssertPreviewValue(node2.GUID.ToString(), 2);
+            AssertPreviewValue(node3.GUID.ToString(), 10);
+
+            Assert.IsFalse(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsFalse(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
+            Assert.IsFalse(node3.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
         }
     }
 }
