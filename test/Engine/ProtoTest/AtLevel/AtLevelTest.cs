@@ -476,5 +476,17 @@ l = DSCore.Object.IsNull([""test"", 1..3]@L1);
             thisTest.RunScriptSource(code);
             thisTest.Verify("l", new object[] { false, false, false });
         }
+
+        [Test]
+        public void TestFunctionCallAtLevel1()
+        {
+            string code = @"
+import(""DSCoreNodes.dll"");
+result = DSCore.List.RemoveItemAtIndex([[5,6],[7,8]],DSCore.List.Cycle([[1,2],[3,4]], 1)@L1<1>);
+";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("result", new[] { new[] { new[] { 5, 6 } }, new[] { new[] { 5, 6 }, new[] { 7, 8 } }, new[] { new[] { 5, 6 }, new[] { 7, 8 } }, new[] { new[] { 5, 6 }, new[] { 7, 8 } } });
+        }
     }
 }

@@ -529,6 +529,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Groups.
+        /// </summary>
+        public static string ContextMenuGroups {
+            get {
+                return ResourceManager.GetString("ContextMenuGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide all geometry preview.
         /// </summary>
         public static string ContextMenuHideAllGeometry {
@@ -682,6 +691,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pin to node.
+        /// </summary>
+        public static string ContextPinToNode {
+            get {
+                return ResourceManager.GetString("ContextPinToNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downstream.
         /// </summary>
         public static string ContextSelectConnectedDownstream {
@@ -714,15 +732,6 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextSelectConnectedUpstreamDownstream {
             get {
                 return ResourceManager.GetString("ContextSelectConnectedUpstreamDownstream", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pin to node.
-        /// </summary>
-        public static string ContextPinToNode {
-            get {
-                return ResourceManager.GetString("ContextPinToNode", resourceCulture);
             }
         }
         
@@ -2304,6 +2313,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can return to this tutorial later from the Help menu..
+        /// </summary>
+        public static string ExitTourWindowContent {
+            get {
+                return ResourceManager.GetString("ExitTourWindowContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extension tab added to the extensions side bar..
         /// </summary>
         public static string ExtensionAdded {
@@ -2901,24 +2919,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel pending uninstall....
-        /// </summary>
-        public static string InstalledPackageViewContextMenuCancelUninstall {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuCancelUninstall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remove the pending uninstall status.
-        /// </summary>
-        public static string InstalledPackageViewContextMenuCancelUninstallTooltip {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuCancelUninstallTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Deprecate.
         /// </summary>
         public static string InstalledPackageViewContextMenuDeprecate {
@@ -3023,24 +3023,6 @@ namespace Dynamo.Wpf.Properties {
         public static string InstalledPackageViewContextMenuShowRootDirTooltip {
             get {
                 return ResourceManager.GetString("InstalledPackageViewContextMenuShowRootDirTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Uninstall....
-        /// </summary>
-        public static string InstalledPackageViewContextMenuUninstall {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuUninstall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Uninstall this package, only allowed if none of the types are currently in use.
-        /// </summary>
-        public static string InstalledPackageViewContextMenuUninstallTooltip {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuUninstallTooltip", resourceCulture);
             }
         }
         
@@ -3744,7 +3726,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Help....
+        ///   Looks up a localized string similar to Help.
         /// </summary>
         public static string NodeContextMenuHelp {
             get {
@@ -3780,7 +3762,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rename Node....
+        ///   Looks up a localized string similar to Rename.
         /// </summary>
         public static string NodeContextMenuRenameNode {
             get {
@@ -3958,6 +3940,78 @@ namespace Dynamo.Wpf.Properties {
         public static string OpenDynamoDefinitionDialogTitle {
             get {
                 return ResourceManager.GetString("OpenDynamoDefinitionDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string PackageContextMenuDeletePackageText {
+            get {
+                return ResourceManager.GetString("PackageContextMenuDeletePackageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete this package from the Dynamo package locations. Once deleted, it will not be loaded into Dynamo anymore until it is re-installed.
+        /// </summary>
+        public static string PackageContextMenuDeletePackageTooltip {
+            get {
+                return ResourceManager.GetString("PackageContextMenuDeletePackageTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unload.
+        /// </summary>
+        public static string PackageContextMenuUnloadPackageText {
+            get {
+                return ResourceManager.GetString("PackageContextMenuUnloadPackageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unload this package so that it will not be loaded into Dynamo. The package will not be deleted from the Dynamo package locations.
+        /// </summary>
+        public static string PackageContextMenuUnloadPackageTooltip {
+            get {
+                return ResourceManager.GetString("PackageContextMenuUnloadPackageTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel Delete.
+        /// </summary>
+        public static string PackageContextMenuUnmarkDeletePackageText {
+            get {
+                return ResourceManager.GetString("PackageContextMenuUnmarkDeletePackageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the scheduled delete status.
+        /// </summary>
+        public static string PackageContextMenuUnmarkDeletePackageTooltip {
+            get {
+                return ResourceManager.GetString("PackageContextMenuUnmarkDeletePackageTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel Unload.
+        /// </summary>
+        public static string PackageContextMenuUnmarkUnloadPackageText {
+            get {
+                return ResourceManager.GetString("PackageContextMenuUnmarkUnloadPackageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the scheduled unload status.
+        /// </summary>
+        public static string PackageContextMenuUnmarkUnloadPackageTooltip {
+            get {
+                return ResourceManager.GetString("PackageContextMenuUnmarkUnloadPackageTooltip", resourceCulture);
             }
         }
         
@@ -4548,11 +4602,126 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string PackageStateError {
+            get {
+                return ResourceManager.GetString("PackageStateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        ///This package has not been loaded due to the following error:
+        ///{0}..
+        /// </summary>
+        public static string PackageStateErrorTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateErrorTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded.
+        /// </summary>
+        public static string PackageStateLoaded {
+            get {
+                return ResourceManager.GetString("PackageStateLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded.
+        ///This package is loaded and ready to be used..
+        /// </summary>
+        public static string PackageStateLoadedTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateLoadedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled for Delete.
+        /// </summary>
+        public static string PackageStateScheduledForDeletion {
+            get {
+                return ResourceManager.GetString("PackageStateScheduledForDeletion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled for Delete.
+        ///This package will be deleted after the next Dynamo restart..
+        /// </summary>
+        public static string PackageStateScheduledForDeletionTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateScheduledForDeletionTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled for Load.
+        /// </summary>
+        public static string PackageStateScheduledForLoad {
+            get {
+                return ResourceManager.GetString("PackageStateScheduledForLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled for Load.
+        ///This package will be loaded after the next Dynamo restart..
+        /// </summary>
+        public static string PackageStateScheduledForLoadTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateScheduledForLoadTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled for Unload.
+        /// </summary>
+        public static string PackageStateScheduledForUnload {
+            get {
+                return ResourceManager.GetString("PackageStateScheduledForUnload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled for Unload.
+        ///This package will be unloaded after the next Dynamo restart..
+        /// </summary>
+        public static string PackageStateScheduledForUnloadTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateScheduledForUnloadTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown.
         /// </summary>
         public static string PackageStateUnknown {
             get {
                 return ResourceManager.GetString("PackageStateUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        /// </summary>
+        public static string PackageStateUnloaded {
+            get {
+                return ResourceManager.GetString("PackageStateUnloaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        ///This package has not been loaded because another conflicting package was loaded before it..
+        /// </summary>
+        public static string PackageStateUnloadedTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateUnloadedTooltip", resourceCulture);
             }
         }
         

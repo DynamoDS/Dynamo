@@ -397,7 +397,7 @@ namespace Dynamo.Graph.Nodes
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
                 {
                     LineIndex = line, // Logical line index.
-                    Height = Configurations.CodeBlockPortHeightInPixels
+                    Height = Configurations.CodeBlockOutputPortHeightInPixels
                 }));
             }
 
@@ -821,12 +821,12 @@ namespace Dynamo.Graph.Nodes
             {
                 foreach (var outputPortIndex in outputPortIndexes)
                 {
-                    var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, outputPortIndex);
-                    OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
-                    {
-                        LineIndex = outputPortIndex, // Logical line index.
-                        Height = Configurations.CodeBlockPortHeightInPixels
-                    }));
+                  var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, outputPortIndex);
+                  OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
+                  {
+                    LineIndex = outputPortIndex, // Logical line index.
+                    Height = Configurations.CodeBlockOutputPortHeightInPixels
+                  }));
                 }
             }
 
@@ -863,7 +863,7 @@ namespace Dynamo.Graph.Nodes
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
                 {
                     LineIndex = def.Value - 1, // Logical line index.
-                    Height = Configurations.CodeBlockPortHeightInPixels
+                    Height = Configurations.CodeBlockOutputPortHeightInPixels,
                 }));
             }
         }

@@ -81,7 +81,7 @@ namespace DynamoCoreWpfTests
             var rectangle = WpfUtilities.ChildrenOfType<Rectangle>(matchingNodeView).Where(x => x.Name == "highlightOverlay").FirstOrDefault();
             Assert.NotNull(rectangle);
 
-            var trueColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["KeepListStructureHighlight"] as SolidColorBrush;
+            var trueColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortKeepListStructureBackground"] as SolidColorBrush;
 
             Assert.AreEqual(trueColor.Color, (rectangle.Fill as SolidColorBrush).Color);
 
