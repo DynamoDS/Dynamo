@@ -3407,6 +3407,32 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading the built-in package {1} conflicts with one or more packages that are already loadeded. 
+        ///To load the built-in package {1}, Dynamo needs to first delete {0}. 
+        ///
+        ///Delete the following packages: {0}?.
+        /// </summary>
+        public static string MessageLoadBuiltInPackage {
+            get {
+                return ResourceManager.GetString("MessageLoadBuiltInPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The built in package {1} cannot be loaded.
+        ///Loading it would conflict with one or more packages that are already loaded. 
+        ///To load {1}, Dynamo needs to first delete {0}. 
+        ///Restart Dynamo to complete the install.
+        ///
+        ///Uninstall the following packages: {0}?.
+        /// </summary>
+        public static string MessageLoadBuiltInPackageWithRestart {
+            get {
+                return ResourceManager.GetString("MessageLoadBuiltInPackageWithRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} elapsed for loading {1} main window..
         /// </summary>
         public static string MessageLoadingTime {

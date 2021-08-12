@@ -147,11 +147,11 @@ namespace Dynamo.ViewModels
             PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), CanPublishNewPackageVersion);
             PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), CanPublishNewPackage);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
-            InstallCommand = new DelegateCommand(Install, () => { return CanInstall; });
-            UnmarkForInstallCommand = new DelegateCommand(UnmarkForInstall, () => { return CanUnmarkForInstall; });
+            UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
+            InstallCommand = new DelegateCommand(Install, CanInstall);
+            UnmarkForInstallCommand = new DelegateCommand(UnmarkForInstall, CanUnmarkForInstall);
             DeprecateCommand = new DelegateCommand(Deprecate, CanDeprecate);
             UndeprecateCommand = new DelegateCommand(Undeprecate, CanUndeprecate);
-            UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
             GoToRootDirectoryCommand = new DelegateCommand(GoToRootDirectory, CanGoToRootDirectory);
 
             Model.LoadedAssemblies.CollectionChanged += LoadedAssembliesOnCollectionChanged;
@@ -187,6 +187,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("HasNodeLibraries");
         }
 
+        // Calls RaisePropertyChanged for all PackageLoadState related properties
         internal void NotifyLoadStatePropertyChanged()
         {
             UninstallCommand.RaiseCanExecuteChanged();
@@ -216,7 +217,7 @@ namespace Dynamo.ViewModels
             NotifyLoadStatePropertyChanged();
         }
 
-        private bool CanUnmarkForUninstallation()
+        public bool CanUnmarkForUninstallation()
         {
             return Model.BuiltInPackage ?
                 Model.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload :
@@ -262,11 +263,11 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanUninstall()
+        public bool CanUninstall()
         {
             if (!Model.InUse(dynamoViewModel.Model) || Model.LoadedAssemblies.Any())
             {
-                return Model.BuiltInPackage ? 
+                return Model.BuiltInPackage ?
                     Model.LoadState.State != PackageLoadState.StateTypes.Unloaded &&
                     Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForUnload :
                     Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForDeletion;
@@ -287,13 +288,13 @@ namespace Dynamo.ViewModels
                 if (hasConflictsWithLoadedAssemblies)
                 {
                     var installed = conflicts.First();
-                    message = string.Format(Resources.MessageUninstallCustomNodeToContinue,
+                    message = string.Format(Resources.MessageLoadBuiltInPackageWithRestart,
                         installed.Name + " " + installed.VersionName, Model.Name + " " + Model.VersionName);
                 }
                 else
                 {
                     var installed = conflicts.First();
-                    message = string.Format(Resources.MessageUninstallCustomNodeToContinue,
+                    message = string.Format(Resources.MessageLoadBuiltInPackage,
                         installed.Name + " " + installed.VersionName, Model.Name + " " + Model.VersionName);
                 }
 
@@ -366,25 +367,20 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool CanUnmarkForInstall
+        public bool CanUnmarkForInstall()
         {
-            get
-            {
-                return Model.BuiltInPackage &&
-                    (Model.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForLoad);
-            }
+            return Model.BuiltInPackage &&
+                (Model.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForLoad);
         }
 
-        public bool CanInstall
+        public bool CanInstall()
         {
-            get {
-                return Model.BuiltInPackage && 
-                    (Model.LoadState.State == PackageLoadState.StateTypes.Unloaded) && 
-                    (Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForLoad);
-            }
+            return Model.BuiltInPackage && 
+                (Model.LoadState.State == PackageLoadState.StateTypes.Unloaded) && 
+                (Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForLoad);
         }
 
-        private void GoToRootDirectory()
+    private void GoToRootDirectory()
         {
             // Check for the existance of RootDirectory
             if (Directory.Exists(Model.RootDirectory))
