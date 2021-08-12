@@ -2914,7 +2914,7 @@ namespace ProtoCore.DSASM
         public void ReturnSiteGC(int blockId, int classIndex, int functionIndex)
         {
             bool found = exe.CompleteCodeBlockDict.TryGetValue(blockId, out CodeBlock codeBlock);
-            Validity.Assert(found, $"Could find code block with codeBlockId {blockId}");
+            Validity.Assert(found, "Could find code block with codeBlockId provided");
 
             foreach (CodeBlock cb in codeBlock.children)
             {
