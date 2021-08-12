@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Wpf.Properties
-{
-
-
+namespace Dynamo.Wpf.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -66,6 +66,33 @@ namespace Dynamo.Wpf.Properties
         public static string DateTimeInputToolTip {
             get {
                 return ResourceManager.GetString("DateTimeInputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string LblAdd {
+            get {
+                return ResourceManager.GetString("LblAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display.
+        /// </summary>
+        public static string LblDisplay {
+            get {
+                return ResourceManager.GetString("LblDisplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value.
+        /// </summary>
+        public static string LblValue {
+            get {
+                return ResourceManager.GetString("LblValue", resourceCulture);
             }
         }
     }

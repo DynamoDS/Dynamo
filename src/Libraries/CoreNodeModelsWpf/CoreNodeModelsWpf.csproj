@@ -68,6 +68,9 @@
     <Compile Include="Controls\ColorPalette.xaml.cs">
       <DependentUpon>ColorPalette.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CustomSelectionControl.xaml.cs">
+      <DependentUpon>CustomSelectionControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DateTimeInputControl.xaml.cs">
       <DependentUpon>DateTimeInputControl.xaml</DependentUpon>
     </Compile>
@@ -82,6 +85,7 @@
     <Compile Include="ConverterViewModel.cs" />
     <Compile Include="NodeViewCustomizations\ColorPalette.cs" />
     <Compile Include="NodeViewCustomizations\ConverterNodeViewCustomization.cs" />
+    <Compile Include="NodeViewCustomizations\CustomSelectionNodeModelNodeViewCustomization.cs" />
     <Compile Include="NodeViewCustomizations\DateTime.cs" />
     <Compile Include="NodeViewCustomizations\DoubleInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -167,6 +171,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\ColorPalette.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\CustomSelectionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

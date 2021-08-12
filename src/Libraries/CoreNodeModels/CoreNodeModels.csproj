@@ -45,6 +45,7 @@
       <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -53,8 +54,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomSelectionItem.cs" />
     <Compile Include="Equals.cs" />
     <Compile Include="Input\ColorPalette.cs" />
+    <Compile Include="Input\CustomSelection.cs" />
     <Compile Include="Input\DateTime.cs" />
     <Compile Include="DynamoConvert.cs" />
     <Compile Include="Input\SliderBase.cs" />
@@ -93,6 +96,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.en-US.resx</DependentUpon>
     </Compile>
+    <Compile Include="RelayCommand.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Watch.cs" />
     <Compile Include="WatchImageCore.cs" />
