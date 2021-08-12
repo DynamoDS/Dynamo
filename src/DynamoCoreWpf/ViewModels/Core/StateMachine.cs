@@ -896,12 +896,13 @@ namespace Dynamo.ViewModels
 
             private void CancelWindowSelection()
             {
-                // visualization unpause
-                owningWorkspace.OnDragSelectionEnded(this, EventArgs.Empty);
-
-                SelectionBoxUpdateArgs args = null;
-                args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
-                this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+                if (owningWorkspace != null)
+                {
+                    // visualization unpause
+                    owningWorkspace.OnDragSelectionEnded(this, EventArgs.Empty);
+                    SelectionBoxUpdateArgs args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
+                    this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+                }
             }
 
             #endregion
@@ -912,8 +913,7 @@ namespace Dynamo.ViewModels
             {
                 foreach (var selectable in DynamoSelection.Instance.Selection)
                 {
-                    var locatable = selectable as ILocatable;
-                    if (locatable == null || (!locatable.Rect.Contains(point.AsDynamoType())))
+                    if (!(selectable is ILocatable locatable) || (!locatable.Rect.Contains(point.AsDynamoType())))
                         continue;
 
                     return selectable;
