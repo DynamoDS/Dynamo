@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using Newtonsoft.Json;
 
@@ -106,12 +107,25 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 nextStep = (from step in GuideSteps where step.Sequence == args.StepSequence + 1 select step).FirstOrDefault();
                 if (nextStep != null)
+                {
                     nextStep.Show();
+                    if (nextStep.UIAutomation != null)
+                    {
+                        ExecuteUIAutomationStep(nextStep.UIAutomation, true);
+                    }
+                }
+
             }
 
             CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
             if (CurrentStep != null)
+            {
                 CurrentStep.Hide();
+                if (CurrentStep.UIAutomation != null)
+                {
+                    ExecuteUIAutomationStep(CurrentStep.UIAutomation, false);
+                }
+            }             
         }
 
 
@@ -127,12 +141,24 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 prevStep = (from step in GuideSteps where step.Sequence == args.StepSequence - 1 select step).FirstOrDefault();
                 if (prevStep != null)
+                {
                     prevStep.Show();
+                    if (prevStep.UIAutomation != null)
+                    {
+                        ExecuteUIAutomationStep(prevStep.UIAutomation, true);
+                    }
+                }                   
             }
 
             CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
             if (CurrentStep != null)
+            {
                 CurrentStep.Hide();
+                if (CurrentStep.UIAutomation != null)
+                {
+                    ExecuteUIAutomationStep(CurrentStep.UIAutomation, false);
+                }
+            }             
         }
 
         /// <summary>
@@ -183,6 +209,21 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
 
             return foundChild;
+        }
+
+        public void ExecuteUIAutomationStep(StepUIAutomation uiAutomationData, bool enableUIAutomation)
+        {
+            switch (uiAutomationData.ControlType)
+            {
+                case "MenuItem":
+                    if (uiAutomationData.UIElementAutomation != null)
+                    {
+                        MenuItem menuEntry = uiAutomationData.UIElementAutomation as MenuItem;
+                        menuEntry.IsSubmenuOpen = enableUIAutomation;
+                        menuEntry.StaysOpenOnClick = enableUIAutomation;
+                    }                      
+                    break;
+            }
         }
     }
 }

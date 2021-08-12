@@ -81,6 +81,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         [JsonProperty("HostPopupInfo")]
         public HostControlInfo HostPopupInfo { get; set; }
 
+        [JsonProperty("UIAutomation")]
+        public StepUIAutomation UIAutomation { get; set; }
+
         public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT };
 
         /// <summary>

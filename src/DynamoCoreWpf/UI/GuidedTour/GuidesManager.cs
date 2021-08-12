@@ -141,7 +141,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     HostControlInfo hostControlInfo = CreateHostControl(step);               
                     Step newStep = CreateStep(step, hostControlInfo, totalTooltips);
-                    if(newStep != null)
+                    if (step.UIAutomation != null)
+                        newStep.UIAutomation = CreateStepUIAutomationInfo(step.UIAutomation);
+
+                    if (newStep != null)
                     {
                         //The step is added to the new Guide being created
                         newGuide.GuideSteps.Add(newStep);
@@ -177,6 +180,24 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 popupInfo.HostUIElement = hostUIElement;
 
             return popupInfo;
+        }
+
+
+        private StepUIAutomation CreateStepUIAutomationInfo(StepUIAutomation jsonUIAutomation)
+        {
+            var uiAutomationInfo = new StepUIAutomation()
+            {
+                Sequence = jsonUIAutomation.Sequence,
+                ControlType = jsonUIAutomation.ControlType,
+                Name = jsonUIAutomation.Name,
+                Action = jsonUIAutomation.Action
+            };
+
+            UIElement automationUIElement = Guide.FindChild(mainRootElement, jsonUIAutomation.Name);
+            if (automationUIElement != null)
+                uiAutomationInfo.UIElementAutomation = automationUIElement;
+
+            return uiAutomationInfo;
         }
 
         /// <summary>
