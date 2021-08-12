@@ -339,7 +339,7 @@ namespace Dynamo.ViewModels
         {
             var dynModel = dynamoViewModel.Model;
             var packageLoader = dynModel.GetPackageManagerExtension().PackageLoader;
-            var conflicts = packageLoader.LocalPackages.Where(x => x.Name == Model.Name);
+            var conflicts = packageLoader.LocalPackages.ToList().Where(x => x.Name == Model.Name && x != Model);
 
             foreach (var package in conflicts)
             {
