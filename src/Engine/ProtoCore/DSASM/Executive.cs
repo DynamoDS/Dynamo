@@ -101,8 +101,8 @@ namespace ProtoCore.DSASM
             int fi = Constants.kInvalidIndex;
             if (!IsGlobalScope())
             {
-                ci = rmem.CurrentStackFrame.ClassScope;
-                fi = rmem.CurrentStackFrame.FunctionScope;
+                ci = rmem.CurrentStackFrameClassScope;
+                fi = rmem.CurrentStackFrameFunctionScope;
             }
             graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
         }
@@ -171,8 +171,8 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         private bool IsGlobalScope()
         {
-            return rmem.CurrentStackFrame == null || 
-                (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex);
+            return rmem.IsCurrentStackFrameNull || 
+                (rmem.CurrentStackFrameClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrameFunctionScope == Constants.kInvalidIndex);
         }
 
         private void BounceExplicit(int exeblock, int entry, Language language, StackFrame frame, List<Instruction> breakpoints)
@@ -416,8 +416,8 @@ namespace ProtoCore.DSASM
             int fi = Constants.kInvalidIndex;
             if (!IsGlobalScope())
             {
-                ci = rmem.CurrentStackFrame.ClassScope;
-                fi = rmem.CurrentStackFrame.FunctionScope;
+                ci = rmem.CurrentStackFrameClassScope;
+                fi = rmem.CurrentStackFrameFunctionScope;
             }
 
             //  Entering a nested block requires all the nodes of that block to be executed
@@ -686,13 +686,13 @@ namespace ProtoCore.DSASM
                 {
                     // A member function
                     // Get the this pointer as this class instance would have already been cosntructed
-                    svThisPtr = rmem.CurrentStackFrame.ThisPtr;
+                    svThisPtr = rmem.CurrentStackFrameThisPtr;
                 }
                 else if (fNode.Name.Equals(Constants.kInlineConditionalMethodName))
                 {
                     // The built-in inlinecondition function is global but it is treated as a conditional execution rather than a normal function call
                     // This is why the class scope  needs to be preserved such that the auto-generated language blocks in an inline conditional can still refer to member functions and properties
-                    svThisPtr = rmem.CurrentStackFrame.ThisPtr;
+                    svThisPtr = rmem.CurrentStackFrameThisPtr;
                 }
                 else
                 {
@@ -2338,7 +2338,7 @@ namespace ProtoCore.DSASM
                     break;
 
                 case AddressType.ThisPtr:
-                    data = rmem.CurrentStackFrame.ThisPtr;
+                    data = rmem.CurrentStackFrameThisPtr;
                     break;
 
                 default:
@@ -3399,7 +3399,7 @@ namespace ProtoCore.DSASM
             //  2. If pointing to a class, just point to the class directly, do not allocate a new pointer
             //==================================================
 
-            StackValue svThis = rmem.CurrentStackFrame.ThisPtr;
+            StackValue svThis = rmem.CurrentStackFrameThisPtr;
             var thisObject = rmem.Heap.ToHeapObject<DSObject>(svThis);
             StackValue svProperty = thisObject.GetValueFromIndex(stackIndex, runtimeCore);
 
@@ -3485,7 +3485,7 @@ namespace ProtoCore.DSASM
             //  2. If pointing to a class, just point to the class directly, do not allocate a new pointer
             //==================================================
 
-            StackValue svThis = rmem.CurrentStackFrame.ThisPtr;
+            StackValue svThis = rmem.CurrentStackFrameThisPtr;
             var thisObject = rmem.Heap.ToHeapObject<DSObject>(svThis);
             StackValue svProperty = thisObject.GetValueFromIndex(stackIndex, runtimeCore);
 
@@ -4072,13 +4072,13 @@ namespace ProtoCore.DSASM
             }
 
             StackValue svThisPtr;
-            if (rmem.CurrentStackFrame == null)
+            if (rmem.IsCurrentStackFrameNull)
             {
                 svThisPtr = StackValue.BuildPointer(Constants.kInvalidPointer);
             }
             else
             {
-                svThisPtr = rmem.CurrentStackFrame.ThisPtr;
+                svThisPtr = rmem.CurrentStackFrameThisPtr;
             }
             int returnAddr = pc + 1;
 
