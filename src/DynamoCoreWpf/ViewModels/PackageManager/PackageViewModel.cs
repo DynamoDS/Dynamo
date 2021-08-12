@@ -196,10 +196,6 @@ namespace Dynamo.ViewModels
             UnmarkForInstallCommand.RaiseCanExecuteChanged();
             RaisePropertyChanged(nameof(PackageLoadStateTooltip));
             RaisePropertyChanged(nameof(PackageLoadStateText));
-            RaisePropertyChanged(nameof(CanInstall));
-            RaisePropertyChanged(nameof(CanUnmarkForInstall));
-            RaisePropertyChanged(nameof(CanUninstall));
-            RaisePropertyChanged(nameof(CanUnmarkForUninstallation));
             RaisePropertyChanged(nameof(Unloaded));
         }
 
