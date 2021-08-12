@@ -909,8 +909,8 @@ Would you like to save your changes?</value>
 
 Would you like to save your changes?</value>
   </data>
-  <data name="MessageConfirmToUninstallPackage" xml:space="preserve">
-    <value>Are you sure you want to uninstall {0} ?  This will delete the packages root directory.
+  <data name="MessageConfirmToDeletePackage" xml:space="preserve">
+    <value>Are you sure you want to delete {0} ?  This will delete the packages root directory.
 
 You can always redownload the package.</value>
   </data>
@@ -934,8 +934,8 @@ You can always redownload the package.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Failed to load an invalid package.</value>
   </data>
-  <data name="MessageFailedToUninstall" xml:space="preserve">
-    <value>{0} failed to uninstall the package.  You may need to delete the package's root directory manually.</value>
+  <data name="MessageFailedToDelete" xml:space="preserve">
+    <value>{0} failed to delete the package.  You may need to delete the package's root directory manually.</value>
   </data>
   <data name="MessageFailToUninstallPackage" xml:space="preserve">
     <value>{0} failed to uninstall the package: {1}.  The package may need to be reinstalled manually.</value>
@@ -949,8 +949,8 @@ You can always redownload the package.</value>
     <value>There was a problem getting the node from the workspace.</value>
     <comment>Message box content</comment>
   </data>
-  <data name="MessageNeedToRestart" xml:space="preserve">
-    <value>{0} and its host application must restart before uninstall takes effect.</value>
+  <data name="MessageNeedToRestartAfterDelete" xml:space="preserve">
+    <value>{0} and its host application must restart before delete takes effect.</value>
   </data>
   <data name="MessagePackageContainPythonScript" xml:space="preserve">
     <value>The package or one of its dependencies contains Python scripts or binaries. Do you want to continue?</value>
@@ -1030,11 +1030,11 @@ Uninstall the following dependent packages: {1}?</value>
   <data name="UndeprecatingPackageMessageBoxTitle" xml:space="preserve">
     <value>Removing Package Deprecation</value>
   </data>
-  <data name="UninstallFailureMessageBoxTitle" xml:space="preserve">
-    <value>Uninstall Failure</value>
+  <data name="DeleteFailureMessageBoxTitle" xml:space="preserve">
+    <value>Delete Failure</value>
   </data>
-  <data name="UninstallingPackageMessageBoxTitle" xml:space="preserve">
-    <value>Uninstalling Package</value>
+  <data name="MessageNeedToRestartAfterDeleteTitle" xml:space="preserve">
+    <value>Deleting Package</value>
   </data>
   <data name="ContinueButton" xml:space="preserve">
     <value>Continue</value>
@@ -2561,5 +2561,17 @@ This package will be deleted after the next Dynamo restart.</value>
   </data>
   <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
     <value>Remove the scheduled unload status</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnload" xml:space="preserve">
+    <value>{0} and its host application must restart before unload takes effect.</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnloadTitle" xml:space="preserve">
+    <value>Unloading Package</value>
+  </data>
+  <data name="MessageFailedToUnload" xml:space="preserve">
+    <value>{0} failed to unload the package.</value>
+  </data>
+  <data name="UnloadFailureMessageBoxTitle" xml:space="preserve">
+    <value>Unload Failure</value>
   </data>
 </root>

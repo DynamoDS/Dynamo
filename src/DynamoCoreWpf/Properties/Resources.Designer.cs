@@ -918,6 +918,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete Failure.
+        /// </summary>
+        public static string DeleteFailureMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("DeleteFailureMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deprecating Package.
         /// </summary>
         public static string DeprecatingPackageMessageBoxTitle {
@@ -3191,6 +3200,17 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete {0} ?  This will delete the packages root directory.
+        ///
+        ///You can always redownload the package..
+        /// </summary>
+        public static string MessageConfirmToDeletePackage {
+            get {
+                return ResourceManager.GetString("MessageConfirmToDeletePackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to install {0} {1} ?.
         /// </summary>
         public static string MessageConfirmToInstallPackage {
@@ -3247,17 +3267,6 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageConfirmToSaveReadOnlyCustomNode {
             get {
                 return ResourceManager.GetString("MessageConfirmToSaveReadOnlyCustomNode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to uninstall {0} ?  This will delete the packages root directory.
-        ///
-        ///You can always redownload the package..
-        /// </summary>
-        public static string MessageConfirmToUninstallPackage {
-            get {
-                return ResourceManager.GetString("MessageConfirmToUninstallPackage", resourceCulture);
             }
         }
         
@@ -3335,6 +3344,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} failed to delete the package.  You may need to delete the package&apos;s root directory manually..
+        /// </summary>
+        public static string MessageFailedToDelete {
+            get {
+                return ResourceManager.GetString("MessageFailedToDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems..
         /// </summary>
         public static string MessageFailedToDownloadPackage {
@@ -3380,11 +3398,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} failed to uninstall the package.  You may need to delete the package&apos;s root directory manually..
+        ///   Looks up a localized string similar to {0} failed to unload the package..
         /// </summary>
-        public static string MessageFailedToUninstall {
+        public static string MessageFailedToUnload {
             get {
-                return ResourceManager.GetString("MessageFailedToUninstall", resourceCulture);
+                return ResourceManager.GetString("MessageFailedToUnload", resourceCulture);
             }
         }
         
@@ -3425,11 +3443,38 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} and its host application must restart before uninstall takes effect..
+        ///   Looks up a localized string similar to {0} and its host application must restart before delete takes effect..
         /// </summary>
-        public static string MessageNeedToRestart {
+        public static string MessageNeedToRestartAfterDelete {
             get {
-                return ResourceManager.GetString("MessageNeedToRestart", resourceCulture);
+                return ResourceManager.GetString("MessageNeedToRestartAfterDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleting Package.
+        /// </summary>
+        public static string MessageNeedToRestartAfterDeleteTitle {
+            get {
+                return ResourceManager.GetString("MessageNeedToRestartAfterDeleteTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} and its host application must restart before unload takes effect..
+        /// </summary>
+        public static string MessageNeedToRestartAfterUnload {
+            get {
+                return ResourceManager.GetString("MessageNeedToRestartAfterUnload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloading Package.
+        /// </summary>
+        public static string MessageNeedToRestartAfterUnloadTitle {
+            get {
+                return ResourceManager.GetString("MessageNeedToRestartAfterUnloadTitle", resourceCulture);
             }
         }
         
@@ -6098,24 +6143,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uninstall Failure.
-        /// </summary>
-        public static string UninstallFailureMessageBoxTitle {
-            get {
-                return ResourceManager.GetString("UninstallFailureMessageBoxTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Uninstalling Package.
-        /// </summary>
-        public static string UninstallingPackageMessageBoxTitle {
-            get {
-                return ResourceManager.GetString("UninstallingPackageMessageBoxTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Acres.
         /// </summary>
         public static string UnitAcres {
@@ -6346,6 +6373,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UnknowDateFormat {
             get {
                 return ResourceManager.GetString("UnknowDateFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unload Failure.
+        /// </summary>
+        public static string UnloadFailureMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("UnloadFailureMessageBoxTitle", resourceCulture);
             }
         }
         

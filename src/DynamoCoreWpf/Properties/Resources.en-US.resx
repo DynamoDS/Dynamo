@@ -1258,8 +1258,8 @@ Would you like to save your changes?</value>
     <value>We can't save "{0}" because the file is read-only or contains unresolved or invalid nodes. To keep changes, would you like to "Save As..." with a different name or path?</value>
     <comment>Message box content</comment>
   </data>
-  <data name="MessageConfirmToUninstallPackage" xml:space="preserve">
-    <value>Are you sure you want to uninstall {0} ?  This will delete the packages root directory.
+  <data name="MessageConfirmToDeletePackage" xml:space="preserve">
+    <value>Are you sure you want to delete {0} ?  This will delete the packages root directory.
 
 You can always redownload the package.</value>
   </data>
@@ -1307,8 +1307,8 @@ You can always redownload the package.</value>
   <data name="MessageFailedToSaveAsImage" xml:space="preserve">
     <value>Failed to save the Workspace as image.</value>
   </data>
-  <data name="MessageFailedToUninstall" xml:space="preserve">
-    <value>{0} failed to uninstall the package.  You may need to delete the package's root directory manually.</value>
+  <data name="MessageFailedToDelete" xml:space="preserve">
+    <value>{0} failed to delete the package.  You may need to delete the package's root directory manually.</value>
   </data>
   <data name="MessageFailToUninstallPackage" xml:space="preserve">
     <value>{0} failed to uninstall the package: {1}.  The package may need to be reinstalled manually.</value>
@@ -1321,8 +1321,8 @@ You can always redownload the package.</value>
   <data name="MessageLoadingTime" xml:space="preserve">
     <value>{0} elapsed for loading {1} main window.</value>
   </data>
-  <data name="MessageNeedToRestart" xml:space="preserve">
-    <value>{0} and its host application must restart before uninstall takes effect.</value>
+  <data name="MessageNeedToRestartAfterDelete" xml:space="preserve">
+    <value>{0} and its host application must restart before delete takes effect.</value>
   </data>
   <data name="MessageNodeWithNullFunction" xml:space="preserve">
     <value>There is a null function definition for this node.</value>
@@ -2004,11 +2004,11 @@ Want to publish a different package?</value>
   <data name="UndeprecatingPackageMessageBoxTitle" xml:space="preserve">
     <value>Removing Package Deprecation</value>
   </data>
-  <data name="UninstallFailureMessageBoxTitle" xml:space="preserve">
-    <value>Uninstall Failure</value>
+  <data name="DeleteFailureMessageBoxTitle" xml:space="preserve">
+    <value>Delete Failure</value>
   </data>
-  <data name="UninstallingPackageMessageBoxTitle" xml:space="preserve">
-    <value>Uninstalling Package</value>
+  <data name="MessageNeedToRestartAfterDeleteTitle" xml:space="preserve">
+    <value>Deleting Package</value>
   </data>
   <data name="UnitAcres" xml:space="preserve">
     <value>Acres</value>
@@ -2564,5 +2564,17 @@ This package will be deleted after the next Dynamo restart.</value>
   </data>
   <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
     <value>Remove the scheduled unload status</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnload" xml:space="preserve">
+    <value>{0} and its host application must restart before unload takes effect.</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnloadTitle" xml:space="preserve">
+    <value>Unloading Package</value>
+  </data>
+  <data name="MessageFailedToUnload" xml:space="preserve">
+    <value>{0} failed to unload the package.</value>
+  </data>
+  <data name="UnloadFailureMessageBoxTitle" xml:space="preserve">
+    <value>Unload Failure</value>
   </data>
 </root>

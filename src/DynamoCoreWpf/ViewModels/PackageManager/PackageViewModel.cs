@@ -204,24 +204,36 @@ namespace Dynamo.ViewModels
                 Model.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion;
         }
 
+        private string MessageNeedToRestart => Model.BuiltInPackage ? Resources.MessageNeedToRestartAfterUnload : Resources.MessageNeedToRestartAfterDelete;
+
+        private string MessageNeedToRestartTitle => Model.BuiltInPackage ? Resources.MessageNeedToRestartAfterUnloadTitle : Resources.MessageNeedToRestartAfterDeleteTitle;
+
+        private string MessageFailedToDeleteOrUnload => Model.BuiltInPackage ? Resources.MessageFailedToUnload : Resources.MessageFailedToDelete;
+
+        private string MessageFailedToDeleteOrUnloadTitle => Model.BuiltInPackage ? Resources.UnloadFailureMessageBoxTitle : Resources.DeleteFailureMessageBoxTitle;
+
         private void Uninstall()
         {
             if (Model.LoadedAssemblies.Any())
             {
                 var resAssem =
-                    MessageBox.Show(string.Format(Resources.MessageNeedToRestart,
+                    MessageBox.Show(string.Format(MessageNeedToRestart,
                         dynamoViewModel.BrandingResourceProvider.ProductName),
-                        Resources.UninstallingPackageMessageBoxTitle,
+                        MessageNeedToRestartTitle,
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Exclamation);
                 if (resAssem == MessageBoxResult.Cancel) return;
             }
 
-            var res = MessageBox.Show(String.Format(Resources.MessageConfirmToUninstallPackage, this.Model.Name),
-                                      Resources.UninstallingPackageMessageBoxTitle,
-                                      MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (!Model.BuiltInPackage)
+            {
+                var res = MessageBox.Show(String.Format(Resources.MessageConfirmToDeletePackage, this.Model.Name),
+                    Resources.MessageNeedToRestartAfterDeleteTitle,
+                    MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            if (res == MessageBoxResult.No) return;
+                if (res == MessageBoxResult.No) return;
+            }
+
 
             try
             {
@@ -231,9 +243,9 @@ namespace Dynamo.ViewModels
             }
             catch (Exception)
             {
-                MessageBox.Show(string.Format(Resources.MessageFailedToUninstall,
+                MessageBox.Show(string.Format(MessageFailedToDeleteOrUnload,
                     dynamoViewModel.BrandingResourceProvider.ProductName),
-                    Resources.UninstallFailureMessageBoxTitle,
+                    MessageFailedToDeleteOrUnloadTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
