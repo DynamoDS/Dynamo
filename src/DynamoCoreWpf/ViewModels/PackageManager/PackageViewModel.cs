@@ -114,13 +114,11 @@ namespace Dynamo.ViewModels
             get { return Model.LoadedAssemblies.Any(); }
         }
 
-        public bool CanPublish
-        {
-            get { return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider; }
-        }
+        public bool CanPublish => dynamoViewModel.Model.AuthenticationManager.HasAuthProvider;
 
         [Obsolete("Do not use. This command will be removed. It does nothing.")]
         public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
+        [Obsolete("Do not use. This command will be removed. It does nothing.")]
         public DelegateCommand GetLatestVersionCommand { get; set; }
         public DelegateCommand PublishNewPackageVersionCommand { get; set; }
         public DelegateCommand UninstallCommand { get; set; }
@@ -138,14 +136,14 @@ namespace Dynamo.ViewModels
             Model = model;
 
             ToggleTypesVisibleInManagerCommand = new DelegateCommand(() => { }, () => true);
-            GetLatestVersionCommand = new DelegateCommand(GetLatestVersion, CanGetLatestVersion);
-            PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), CanPublishNewPackageVersion);
-            PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), CanPublishNewPackage);
+            GetLatestVersionCommand = new DelegateCommand(() => { }, () => false);
+            PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), () => CanPublish);
+            PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), () => CanPublish);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             DeprecateCommand = new DelegateCommand(Deprecate, CanDeprecate);
             UndeprecateCommand = new DelegateCommand(Undeprecate, CanUndeprecate);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
-            GoToRootDirectoryCommand = new DelegateCommand(GoToRootDirectory, CanGoToRootDirectory);
+            GoToRootDirectoryCommand = new DelegateCommand(GoToRootDirectory, () => true);
 
             Model.LoadedAssemblies.CollectionChanged += LoadedAssembliesOnCollectionChanged;
             Model.PropertyChanged += ModelOnPropertyChanged;
@@ -280,11 +278,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanGoToRootDirectory()
-        {
-            return true;
-        }
-
         private void Deprecate()
         {
             var res = MessageBox.Show(String.Format(Resources.MessageToDeprecatePackage, this.Model.Name),
@@ -297,7 +290,7 @@ namespace Dynamo.ViewModels
 
         private bool CanDeprecate()
         {
-            if (!dynamoViewModel.Model.AuthenticationManager.HasAuthProvider) return false;
+            if (!CanPublish) return false;
             return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoViewModel.Model.AuthenticationManager.Username);
         }
 
@@ -312,7 +305,7 @@ namespace Dynamo.ViewModels
 
         private bool CanUndeprecate()
         {
-            if (!dynamoViewModel.Model.AuthenticationManager.HasAuthProvider) return false;
+            if (!CanPublish) return false;
             return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoViewModel.Model.AuthenticationManager.Username);
         }
 
@@ -323,11 +316,6 @@ namespace Dynamo.ViewModels
             vm.IsNewVersion = true;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
-        }
-
-        private bool CanPublishNewPackageVersion()
-        {
-            return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider;
         }
 
         private void PublishNewPackage()
@@ -353,21 +341,6 @@ namespace Dynamo.ViewModels
             });
 
             termsOfUseCheck.Execute(false);
-        }
-
-        private bool CanPublishNewPackage()
-        {
-            return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider;
-        }
-
-        private void GetLatestVersion()
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool CanGetLatestVersion()
-        {
-            return false;
         }
     }
 }
