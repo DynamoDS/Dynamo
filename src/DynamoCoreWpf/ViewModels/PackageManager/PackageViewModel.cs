@@ -213,7 +213,7 @@ namespace Dynamo.ViewModels
             NotifyLoadStatePropertyChanged();
         }
 
-        public bool CanUnmarkForUninstallation()
+        private bool CanUnmarkForUninstallation()
         {
             return Model.BuiltInPackage ?
                 Model.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload :
@@ -259,7 +259,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool CanUninstall()
+        private bool CanUninstall()
         {
             if (!Model.InUse(dynamoViewModel.Model) || Model.LoadedAssemblies.Any())
             {
@@ -363,13 +363,13 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool CanUnmarkForInstall()
+        private bool CanUnmarkForInstall()
         {
             return Model.BuiltInPackage &&
                 (Model.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForLoad);
         }
 
-        public bool CanInstall()
+        private bool CanInstall()
         {
             return Model.BuiltInPackage && 
                 (Model.LoadState.State == PackageLoadState.StateTypes.Unloaded) && 
