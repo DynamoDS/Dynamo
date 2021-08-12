@@ -3408,7 +3408,7 @@ namespace Dynamo.Wpf.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Loading the built-in package {1} conflicts with one or more packages that are already loadeded. 
-        ///To load the built-in package {1}, Dynamo needs to first delete {0}. 
+        ///To load the built-in package {1}, Dynamo needs to first delete the conflicting packages. 
         ///
         ///Delete the following packages: {0}?.
         /// </summary>
@@ -3421,7 +3421,7 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The built in package {1} cannot be loaded.
         ///Loading it would conflict with one or more packages that are already loaded. 
-        ///To load {1}, Dynamo needs to first delete {0}. 
+        ///To load {1}, Dynamo needs to first delete the conflicting packages. 
         ///Restart Dynamo to complete the install.
         ///
         ///Uninstall the following packages: {0}?.

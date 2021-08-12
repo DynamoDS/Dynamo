@@ -2577,14 +2577,14 @@ This package will be deleted after the next Dynamo restart.</value>
   <data name="MessageLoadBuiltInPackageWithRestart" xml:space="preserve">
     <value>The built in package {1} cannot be loaded.
 Loading it would conflict with one or more packages that are already loaded. 
-To load {1}, Dynamo needs to first delete {0}. 
+To load {1}, Dynamo needs to first delete the conflicting packages. 
 Restart Dynamo to complete the install.
 
 Uninstall the following packages: {0}?</value>
   </data>
   <data name="MessageLoadBuiltInPackage" xml:space="preserve">
     <value>Loading the built-in package {1} conflicts with one or more packages that are already loadeded. 
-To load the built-in package {1}, Dynamo needs to first delete {0}. 
+To load the built-in package {1}, Dynamo needs to first delete the conflicting packages. 
 
 Delete the following packages: {0}?</value>
   </data>

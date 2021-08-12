@@ -280,19 +280,14 @@ namespace Dynamo.ViewModels
 
             if (conflicts.Any())
             {
-                string message = "";
-                if (hasConflictsWithLoadedAssemblies)
-                {
-                    var installed = conflicts.First();
-                    message = string.Format(Resources.MessageLoadBuiltInPackageWithRestart,
-                        installed.Name + " " + installed.VersionName, Model.Name + " " + Model.VersionName);
-                }
-                else
-                {
-                    var installed = conflicts.First();
-                    message = string.Format(Resources.MessageLoadBuiltInPackage,
-                        installed.Name + " " + installed.VersionName, Model.Name + " " + Model.VersionName);
-                }
+                string conflictsMsg = string.Join(",", conflicts.Select(x => x.Name + " " + x.VersionName));
+
+                string message = hasConflictsWithLoadedAssemblies ? 
+                        string.Format(Resources.MessageLoadBuiltInPackageWithRestart,
+                        conflictsMsg, Model.Name + " " + Model.VersionName) 
+                        :
+                        string.Format(Resources.MessageLoadBuiltInPackage,
+                        conflictsMsg, Model.Name + " " + Model.VersionName);
 
                 var dialogResult = MessageBox.Show(message,
                     Resources.CannotDownloadPackageMessageBoxTitle,
