@@ -1348,9 +1348,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\default-node-icon.png" />
-    <Resource Include="UI\Images\error.png" />
-    <Resource Include="UI\Images\hidden.png" />
-    <Resource Include="UI\Images\info.png" />
     <Resource Include="UI\Images\more-vertical.png" />
     <Resource Include="UI\Images\warning.png" />
     <Resource Include="UI\Images\alert.png" />
