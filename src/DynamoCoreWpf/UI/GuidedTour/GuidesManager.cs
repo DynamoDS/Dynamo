@@ -45,7 +45,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
             guideBackgroundElement = Guide.FindChild(root, "GuidesBackground") as GuideBackground;
 
             Guides = new List<Guide>();
-            CreateGuideSteps(@"UI\GuidedTour\dynamo_guides.json");
+            string binPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string guidesJsonPath = Path.Combine(binPath, @"UI\GuidedTour\dynamo_guides.json");
+            CreateGuideSteps(guidesJsonPath);
 
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
             GuideFlowEvents.GuidedTourStart += TourStarted;
