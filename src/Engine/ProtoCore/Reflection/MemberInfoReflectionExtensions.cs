@@ -147,7 +147,7 @@ namespace ProtoFFI.Reflection
                             var valueColl = item.Value as ICollection;
                             var argsArray = new object[valueColl.Count];
                             var idx = 0;
-                            foreach (var e in item.Value as ICollection)
+                            foreach (var e in valueColl)
                             {
                                 if (e is CustomAttributeTypedArgument cs)
                                     argsArray[idx] = cs.Value.CreateInstanceFromObject(cs.ArgumentType);

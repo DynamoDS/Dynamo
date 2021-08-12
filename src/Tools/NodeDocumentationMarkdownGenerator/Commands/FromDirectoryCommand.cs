@@ -55,7 +55,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
                     .Distinct()
                     .ToList());
 
-            if (filter.Count() != 0)
+            if (filter.Any())
             {
                 // Filters the assemblies specified in the filter from allAssembliesFromInputFolder,
                 // the assembly paths left after this filter is the ones that will be scanned.
@@ -74,7 +74,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
                 // If there are any paths specified in the referencePaths we need to add them
                 // to addtionalPathsToLoad as the PathAssemblyResolver will need them to resolve types
-                if (referenceDllPaths.Count() > 0)
+                if (referenceDllPaths.Any())
                 {
                     addtionalPathsToLoad.AddRange(referenceDllPaths);
                 }

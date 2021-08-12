@@ -20,7 +20,6 @@ namespace NodeDocumentationMarkdownGenerator
         /// <param name="fileInfos">Collection of files to create</param>
         /// <param name="outputDir">Folder path where files should be created</param>
         /// <param name="overWrite">if true, files in outputDir will be overwritten</param>
-        /// <param name="logger">logger instance</param>
         /// <param name="compressImages">if true images matched from dictionary will be compressed (if possible)</param>
         /// <param name="dictionaryPath">path to dictionary json file</param>
         /// <param name="layoutSpec">path to layout spec json</param>
@@ -143,9 +142,10 @@ namespace NodeDocumentationMarkdownGenerator
             // Sometimes the dictionary specifies an image file without it actually existing
             // so we check both if the directory and the file exist
             string imageString = string.Empty;
+            var imageFile = entry.ImageFile.FirstOrDefault();
             if (imgDir.Exists &&
-                imgDir.GetFiles($"{entry.ImageFile.FirstOrDefault()}.*").Length > 0 &&
-                !TrySaveImage(imgDir, entry.ImageFile.FirstOrDefault(), optimizer, fileInfo, out imageString))
+                imgDir.GetFiles($"{imageFile}.*").Length > 0 &&
+                !TrySaveImage(imgDir, imageFile, optimizer, fileInfo, out imageString))
             {
                 missingFields.Add("Image");
             }

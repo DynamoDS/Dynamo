@@ -53,7 +53,6 @@ namespace Dynamo.Search.SearchElements
 
                 Parameters = parameters.ToString();
             }
-
             FullCategoryName = functionDescriptor.Category;
             Description = functionDescriptor.Description;
             Assembly = functionDescriptor.Assembly;

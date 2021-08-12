@@ -117,9 +117,9 @@ namespace NodeDocumentationMarkdownGenerator
                     }
                 }
 
-                if (functionGroups.Count > 0)
+                if (functionGroups.Any())
                 {
-                    AddZeroTouchNodesToSearch(functionGroups.Values.SelectMany(x => x.Values.Select(g => g)), nodeSearchModel);
+                    AddFunctionGroupsToSearch(functionGroups.Values.SelectMany(x => x.Values.Select(g => g)), nodeSearchModel);
                 }
 
                 fileInfos.AddRange(FileInfosFromSearchModel(nodeSearchModel));
@@ -153,10 +153,11 @@ namespace NodeDocumentationMarkdownGenerator
                 {
                     var className = t.ClassNode.ClassName;
                     var externalLib = t.ClassNode.ExternLibName;
+                    var classIsHidden = t.ClassNode.ClassAttributes?.HiddenInLibrary ?? false;
 
                     // For some reason mscorelib sometimes gets pass to here, so filtering it away.
                     if (t.CLRType.Assembly.GetName().Name == objectAsmName ||
-                        t.ClassNode.ClassAttributes.HiddenInLibrary)
+                        classIsHidden)
                     {
                         continue;
                     }
@@ -230,11 +231,11 @@ namespace NodeDocumentationMarkdownGenerator
             return descriptors;
         }
 
-        private static void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups, NodeSearchModel nodeSearchModel)
+        private static void AddFunctionGroupsToSearch(IEnumerable<FunctionGroup> functionGroups, NodeSearchModel nodeSearchModel)
         {
             foreach (var funcGroup in functionGroups)
             {
-                AddZeroTouchNodeToSearch(funcGroup, nodeSearchModel);
+                AddFunctionGroupToSearch(funcGroup, nodeSearchModel);
             }
         }
 
@@ -244,7 +245,7 @@ namespace NodeDocumentationMarkdownGenerator
         /// </summary>
         /// <param name="funcGroup"></param>
         /// <param name="nodeSearchModel"></param>
-        private static void AddZeroTouchNodeToSearch(FunctionGroup funcGroup, NodeSearchModel nodeSearchModel)
+        private static void AddFunctionGroupToSearch(FunctionGroup funcGroup, NodeSearchModel nodeSearchModel)
         {
             foreach (var functionDescriptor in funcGroup.Functions)
             {
@@ -257,7 +258,7 @@ namespace NodeDocumentationMarkdownGenerator
 
         /// <summary>
         /// As we rely on search when generating markdown files and matching them with content from the DynamoDictionary
-        /// we need to add all ZT nodes to the SearchModel.
+        /// we need to add all NodeModels nodes to the SearchModel.
         /// </summary>
         /// <param name="asm"></param>
         /// <param name="nodeModelType"></param>
