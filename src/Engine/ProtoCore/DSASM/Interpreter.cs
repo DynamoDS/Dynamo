@@ -10,7 +10,12 @@ namespace ProtoCore.DSASM
         {
             runtime = runtimeCore.ExecutiveProvider.CreateExecutive(runtimeCore, isFEP);
         }
-        
+
+        public void ResetInterpreter(RuntimeCore runtimeCore, bool isFEP = false)
+        {
+            runtime.ResetExecutive(runtimeCore, isFEP);
+        }
+
         public void Push(StackValue val)
         {
             runtime.rmem.Push(val);

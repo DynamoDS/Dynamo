@@ -12,10 +12,10 @@ namespace ProtoCore.DSASM
 {
     public class Executive : IExecutive
     {
-        private readonly bool enableLogging = true;
+        private bool enableLogging = true;
 
 
-        private readonly RuntimeCore runtimeCore;
+        private RuntimeCore runtimeCore;
         public RuntimeCore RuntimeCore
         {
             get
@@ -49,7 +49,7 @@ namespace ProtoCore.DSASM
         }
 
         // Execute DS Release build
-        private readonly int debugFlags = (int)DebugFlags.NONE;
+        private int debugFlags = (int)DebugFlags.NONE;
 
         private Stack<bool> fepRunStack = new Stack<bool>();
 
@@ -91,6 +91,48 @@ namespace ProtoCore.DSASM
 
             deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
         }
+
+        public void ResetExecutive(RuntimeCore runtimeCore, bool isFep = false)
+        {
+            Validity.Assert(runtimeCore != null);
+
+            this.runtimeCore = runtimeCore;
+            enableLogging = runtimeCore.Options.Verbose;
+
+            exe = runtimeCore.DSExecutable;
+
+            executingLanguage = Language.Associative;
+
+            pc = Constants.kInvalidPC;
+
+            fepRun = isFep;
+            terminate = false;
+
+            istream = null;
+            rmem = runtimeCore.RuntimeMemory;
+
+            RX = new StackValue();
+            TX = new StackValue();
+
+            Properties.Reset();
+            Properties.DominantStructure = null;
+
+            // Execute DS View VM Log
+            //
+            debugFlags = (int)DebugFlags.ENABLE_LOG;
+
+            fepRunStack = new Stack<bool>(); //.Clear();
+
+            executingBlock = Constants.kInvalidIndex;
+
+            IsExplicitCall = false;
+
+            bounceType = CallingConvention.BounceType.Implicit;
+
+            deferedGraphNodes.Clear();
+            graphNodesInProgramScope = null;
+        }
+
 
         /// <summary>
         /// Cache the graphnodes in scope
