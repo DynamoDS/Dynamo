@@ -171,9 +171,7 @@ namespace Dynamo.ViewModels
         {
             bool isInPort = portType == PortType.Input;
 
-            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
-            if (node == null)
-                return;
+            if (!(Model.GetModelInternal(nodeId) is NodeModel node)) return;
             PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
 
             // Test if port already has a connection, if so grab it and begin connecting 
@@ -204,9 +202,7 @@ namespace Dynamo.ViewModels
         internal void BeginShiftReconnections(Guid nodeId, int portIndex, PortType portType)
         {
             if (portType == PortType.Input) return;
-
-            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
-            if (node == null) return;
+            if (!(Model.GetModelInternal(nodeId) is NodeModel node)) return;
 
             PortModel portModel = node.OutPorts[portIndex];
             if (portModel.Connectors.Count <= 0) return;
@@ -243,9 +239,7 @@ namespace Dynamo.ViewModels
             this.SetActiveConnectors(null); // End the current connection
 
             // Then, start a new connection
-            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
-            if (node == null)
-                return;
+            if (!(Model.GetModelInternal(nodeId) is NodeModel)) return;
             try
             {
                 // Create an array containing a connector view model to begin drawing
