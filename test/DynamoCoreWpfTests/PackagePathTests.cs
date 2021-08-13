@@ -239,17 +239,17 @@ namespace DynamoCoreWpfTests
 
             };
             loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(18, loader.LocalPackages.Count());
+            Assert.AreEqual(19, loader.LocalPackages.Count());
             Assert.AreEqual(true, packagesLoaded);
 
             var installedPackagesViewModel = new InstalledPackagesViewModel(ViewModel, loader);
-            Assert.AreEqual(18, installedPackagesViewModel.LocalPackages.Count);
+            Assert.AreEqual(19, installedPackagesViewModel.LocalPackages.Count);
 
             var installedPackagesView = new Dynamo.Wpf.Controls.InstalledPackagesControl();
             installedPackagesView.DataContext = installedPackagesViewModel;
             DispatcherUtil.DoEvents();
 
-            Assert.AreEqual(18, installedPackagesView.SearchResultsListBox.Items.Count);
+            Assert.AreEqual(19, installedPackagesView.SearchResultsListBox.Items.Count);
 
         }
 
@@ -334,13 +334,13 @@ namespace DynamoCoreWpfTests
             vm.SaveSettingCommand.Execute(null);
 
             //should have loaded something.
-            Assert.AreEqual(8, count);
+            Assert.AreEqual(10, count);
 
             //commit the paths again. 
             vm.SaveSettingCommand.Execute(null);
 
             //should not have loaded anything.
-            Assert.AreEqual(8, count);
+            Assert.AreEqual(10, count);
 
             void Loader_PackagesLoaded(System.Collections.Generic.IEnumerable<Assembly> obj)
             {
