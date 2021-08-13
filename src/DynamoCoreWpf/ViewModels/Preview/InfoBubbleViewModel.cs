@@ -29,11 +29,13 @@ namespace Dynamo.ViewModels
         {
             None, 
             Warning,
-            WarningCondensed, 
+            WarningCondensed, // Obsolete
             Error,
-            ErrorCondensed, 
+            ErrorCondensed, // Obsolete
             Info,
         }
+
+        [Obsolete]
         public enum Direction
         {
             None,
@@ -46,6 +48,8 @@ namespace Dynamo.ViewModels
             BottomLeft,
             BottomRight
         }
+
+        [Obsolete]
         public enum State
         {
             Minimized,
@@ -56,50 +60,62 @@ namespace Dynamo.ViewModels
 
         private double zIndex;
         private Style infoBubbleStyle;
+        
+        [Obsolete]
         public Direction connectingDirection;
+        
+        [Obsolete]
         private string content;
         private Uri documentationLink;
+        
+        [Obsolete]
         public Point targetTopLeft;
+        
+        [Obsolete]
         public Point targetBotRight;
+        
+        [Obsolete]
         private Direction limitedDirection;
+        
+        [Obsolete]
         private State infoBubbleState;
         private double bubbleWidth = 300.0;
-        
+
         // Determines whether the info/warnings/error iterator is shown e.g. (1/4)
         private bool nodeInfoIteratorVisible;
         private bool nodeWarningsIteratorVisible;
         private bool nodeErrorsIteratorVisible;
-
+        
         // Determines whether or not the body of each information bubble is shown. 
         // This relates to the message text box, and any buttons used to dismiss/display messages.
         private bool nodeInfoSectionExpanded;
         private bool nodeWarningsSectionExpanded;
         private bool nodeErrorsSectionExpanded;
 
-        // Determines whether the info, warnings and errors are displaying just an icon, a single error message
+        // Determines whether the info, warnings and errors are displaying just an icon, a single error message.
         // or all messages at once.
         private NodeMessageVisibility nodeInfoVisibilityState = NodeMessageVisibility.Icon;
         private NodeMessageVisibility nodeWarningsVisibilityState = NodeMessageVisibility.Icon;
         private NodeMessageVisibility nodeErrorsVisibilityState = NodeMessageVisibility.Icon;
         
-        // Relates to whether the info/warning/error message bodies display a button saying
+        // Relates to whether the info/warning/error message bodies display a button saying.
         // 'show more' or 'show less'.
         private bool nodeInfoShowLessMessageVisible;
         private bool nodeWarningsShowLessMessageVisible;
         private bool nodeErrorsShowLessMessageVisible;
 
         /// <summary>
-        /// Determines whether the show more/show less buttons are visible to the user at the Info Message level
+        /// Determines whether the show more/show less buttons are visible to the user at the Info Message level.
         /// </summary>
         public bool NodeInfoShowMoreButtonVisible => NodeInfoSectionExpanded && NodeInfoIteratorVisible;
 
         /// <summary>
-        /// Determines whether the show more/show less buttons are visible to the user at the Warning level
+        /// Determines whether the show more/show less buttons are visible to the user at the Warning level.
         /// </summary>
         public bool NodeWarningsShowMoreButtonVisible => NodeWarningsSectionExpanded && NodeWarningsIteratorVisible;
         
         /// <summary>
-        /// Determines whether the show more/show less buttons are visible to the user at the Error level
+        /// Determines whether the show more/show less buttons are visible to the user at the Error level.
         /// </summary>
         public bool NodeErrorsShowMoreButtonVisible => NodeErrorsSectionExpanded && NodeErrorsIteratorVisible;
 
@@ -145,6 +161,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [Obsolete]
         public string Content
         {
             get { return content; }
@@ -157,7 +174,7 @@ namespace Dynamo.ViewModels
         public double ZIndex
         {
             get { return zIndex; }
-            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
+            set { zIndex = value; RaisePropertyChanged(nameof(ZIndex)); }
         }
 
         /// <summary>
@@ -179,8 +196,10 @@ namespace Dynamo.ViewModels
             set { infoBubbleStyle = value; RaisePropertyChanged("InfoBubbleStyle"); }
         }
 
+        [Obsolete]
         public string FullContent;
 
+        [Obsolete]
         public Direction ConnectingDirection
         {
             get { return connectingDirection; }
@@ -193,34 +212,40 @@ namespace Dynamo.ViewModels
             set { documentationLink = value; RaisePropertyChanged(nameof(DocumentationLink)); }
         }
 
+        [Obsolete]
         public Point TargetTopLeft
         {
             get { return targetTopLeft; }
             set { targetTopLeft = value; RaisePropertyChanged("TargetTopLeft"); }
         }
-
+        
+        [Obsolete]
         public Point TargetBotRight
         {
             get { return targetBotRight; }
             set { targetBotRight = value; RaisePropertyChanged("TargetBotRight"); }
         }
 
+        [Obsolete]
         public Direction LimitedDirection
         {
             get { return limitedDirection; }
             set { limitedDirection = value; RaisePropertyChanged("LimitedDirection"); }
         }
 
+        [Obsolete]
         public double Left
         {
             get { return 0; }
         }
 
+        [Obsolete]
         public double Top
         {
             get { return 0; }
         }
 
+        [Obsolete]
         public State InfoBubbleState
         {
             get { return infoBubbleState; }
@@ -231,29 +256,28 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// A collection of formatted, user-visible strings relating to the node's information state
         /// </summary>
-        public ObservableCollection<InfoBubbleDataPacket> NodeInfoToDisplay { get; set; } = new ObservableCollection<InfoBubbleDataPacket>();
+        public ObservableCollection<InfoBubbleDataPacket> NodeInfoToDisplay { get; } = new ObservableCollection<InfoBubbleDataPacket>();
 
         /// <summary>
         /// A collection of formatted, user-visible strings relating to the node's warning state
         /// </summary>
-        public ObservableCollection<InfoBubbleDataPacket> NodeWarningsToDisplay { get; set; } = new ObservableCollection<InfoBubbleDataPacket>();
+        public ObservableCollection<InfoBubbleDataPacket> NodeWarningsToDisplay { get; } = new ObservableCollection<InfoBubbleDataPacket>();
 
         /// <summary>
         /// A collection of formatted, user-visible strings relating to the node's error state
         /// </summary>
-        public ObservableCollection<InfoBubbleDataPacket> NodeErrorsToDisplay { get; set; } = new ObservableCollection<InfoBubbleDataPacket>();
+        public ObservableCollection<InfoBubbleDataPacket> NodeErrorsToDisplay { get; } = new ObservableCollection<InfoBubbleDataPacket>();
         
-
         /// <summary>
         /// A collection of InfoBubbleDataPacket objects that are received when the node executes
         /// and its state changes to reflect errors or warnings that have been detected.
         /// </summary>
-        public ObservableCollection<InfoBubbleDataPacket> NodeMessages { get; set; } = new ObservableCollection<InfoBubbleDataPacket>();
+        public ObservableCollection<InfoBubbleDataPacket> NodeMessages { get; } = new ObservableCollection<InfoBubbleDataPacket>();
         
         /// <summary>
         /// A collection of messages this node has received that have been manually dismissed by the user.
         /// </summary>
-        public ObservableCollection<InfoBubbleDataPacket> DismissedMessages { get; set; } = new ObservableCollection<InfoBubbleDataPacket>();
+        public ObservableCollection<InfoBubbleDataPacket> DismissedMessages { get; } = new ObservableCollection<InfoBubbleDataPacket>();
 
         /// <summary>
         /// Used to determine whether the UI container for node Info is visible
@@ -436,9 +460,10 @@ namespace Dynamo.ViewModels
         {
             RefreshNodeInformationalStateDisplay();
         }
-        
+
         #region Command Methods
 
+        [Obsolete]
         private void UpdateInfoBubbleContent(object parameter)
         {
             InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
@@ -451,6 +476,7 @@ namespace Dynamo.ViewModels
             DocumentationLink = data.Link;
         }
 
+        [Obsolete]
         private bool CanUpdateInfoBubbleCommand(object parameter)
         {
             return true;
@@ -464,21 +490,25 @@ namespace Dynamo.ViewModels
             TargetBotRight = data.BotRight;
         }
 
+        [Obsolete]
         private bool CanUpdatePosition(object parameter)
         {
             return true;
         }
 
+        [Obsolete]
         private void Resize(object parameter)
         {
             UpdateContent(FullContent);
         }
 
+        [Obsolete]
         private bool CanResize(object parameter)
         {
             return true;
         }
 
+        [Obsolete]
         private void ChangeInfoBubbleState(object parameter)
         {
             if (parameter is InfoBubbleViewModel.State)
@@ -489,6 +519,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [Obsolete]
         private bool CanChangeInfoBubbleState(object parameter)
         {
             return true;
@@ -557,8 +588,9 @@ namespace Dynamo.ViewModels
 
             RefreshNodeInformationalStateDisplay();
         }
-        
-        
+
+
+        [Obsolete]
         // TODO:Kahheng Refactor away these
         #region TODO:Kahheng Refactor away these
         private void ShowFullContent(object parameter)
@@ -574,11 +606,13 @@ namespace Dynamo.ViewModels
             ZIndex = 5;
         }
 
+        [Obsolete]
         private bool CanShowFullContent(object parameter)
         {
             return true;
         }
 
+        [Obsolete]
         private void ShowCondensedContent(object parameter)
         {
             if (parameter != null && parameter is InfoBubbleDataPacket)
@@ -593,6 +627,7 @@ namespace Dynamo.ViewModels
             ZIndex = 3;
         }
 
+        [Obsolete]
         private bool CanShowCondensedContent(object parameter)
         {
             return true;
@@ -602,6 +637,7 @@ namespace Dynamo.ViewModels
 
         #region Private Helper Method
 
+        [Obsolete]
         private void UpdateContent(string text)
         {
             FullContent = text;
@@ -610,6 +646,7 @@ namespace Dynamo.ViewModels
             GenerateContent();
         }
 
+        [Obsolete]
         private void GenerateContent()
         {
             switch (InfoBubbleStyle)
@@ -690,6 +727,10 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged(nameof(NodeErrorsShowMoreButtonVisible));
         }
 
+        /// <summary>
+        /// Triggers an update to the visibility of the iterators beside messages when there is
+        /// more than one message per level, (e.g. 5 Warnings, showing 1/5, 2/5, etc).
+        /// </summary>
         private void UpdateNodeMessageIteratorsVisibility()
         {
             RaisePropertyChanged(nameof(NodeInfoIteratorVisible));
