@@ -781,4 +781,12 @@ This package is loaded and ready to be used.</value>
     <value>Unloaded.
 This package has not been loaded because another conflicting package was loaded before it.</value>
   </data>
+  <data name="OutputPortAlternativeName" xml:space="preserve">
+    <value>output</value>
+    <comment>Used when an output port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+  </data>
+  <data name="InputPortAlternativeName" xml:space="preserve">
+    <value>input</value>
+    <comment>Used when an input port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+  </data>
 </root>

@@ -343,26 +343,7 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
-
-    public class PortNameConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter,
-          CultureInfo culture)
-        {
-            if (value is string && !string.IsNullOrEmpty(value as string))
-            {
-                return value as string;
-            }
-            return ">";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter,
-          CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
+    
     public class SnapRegionMarginConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter,
@@ -1244,8 +1225,8 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             string originalName = value.ToString();
-            if (originalName == "Code Block") return new Thickness(0, 19, 0, 0);
-            return new Thickness(0, 8, 0, 0);
+            if (originalName == "Code Block") return new Thickness(0, 22, 0, 0);
+            return new Thickness(0, 8, 0, 8);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

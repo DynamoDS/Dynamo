@@ -342,7 +342,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             var inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(6, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(9, inputPortControl.ChildrenOfType<TextBlock>().Count());
 
             nodeView = NodeViewWithGuid("2f031397-539e-4df4-bfca-d94d0bd02bc1"); // String.Concat node
 
@@ -350,7 +350,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(4, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(6, inputPortControl.ChildrenOfType<TextBlock>().Count());
 
             nodeView = NodeViewWithGuid("0cb04cce-1b05-47e0-a73f-ee81af4b7f43"); // List.Join node
 
@@ -358,7 +358,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(4, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(6, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]
@@ -493,6 +493,19 @@ namespace DynamoCoreWpfTests
                 if (item != null && item.Header.ToString() == Dynamo.Wpf.Properties.Resources.ContextMenuEditCustomNodeProperty)
                     Assert.IsFalse(item.IsEnabled);
             }
+        }
+
+        [Test]
+        public void INodeViewCustomizationCheckUsingReflectionIsCorrect()
+        {
+            var dyncorewpfAssem = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name == "DynamoCoreWpf").FirstOrDefault();
+            var dyncoreAssem = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name == "DynamoCore").FirstOrDefault();
+            Assert.IsNotNull(dyncorewpfAssem);
+            Assert.IsNotNull(dyncoreAssem);
+            //this assembly contains some builtin nodeviewcustomizations and this methd should return true.
+            Assert.IsTrue(NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(dyncorewpfAssem));
+            //this assembly contains some builtin nodeviewcustomizations and this methd should return true.
+            Assert.IsFalse(NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(dyncoreAssem));
         }
     }
 

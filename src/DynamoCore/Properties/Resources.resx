@@ -610,6 +610,14 @@ value : bool = false</value>
     <value>(disabled)</value>
     <comment>Default value is disabled</comment>
   </data>
+  <data name="InputPortAlternativeName" xml:space="preserve">
+    <value>input</value>
+    <comment>Used when an input port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+  </data>
+  <data name="OutputPortAlternativeName" xml:space="preserve">
+    <value>output</value>
+    <comment>Used when an output port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+  </data>
   <data name="SymbolSearchTags" xml:space="preserve">
     <value>variable;argument;parameter</value>
     <comment>Search tags for Symbol/Input node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>

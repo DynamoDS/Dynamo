@@ -802,6 +802,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to input.
+        /// </summary>
+        public static string InputPortAlternativeName {
+            get {
+                return ResourceManager.GetString("InputPortAlternativeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The folder &apos;{0}&apos; does not exist.
         /// </summary>
         public static string InvalidCustomNodeFolderWarning {
@@ -1164,6 +1173,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to output.
+        /// </summary>
+        public static string OutputPortAlternativeName {
+            get {
+                return ResourceManager.GetString("OutputPortAlternativeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The package was found to be empty and was not installed..
         /// </summary>
         public static string PackageEmpty {
@@ -1187,82 +1205,6 @@ namespace Dynamo.Properties {
         public static string PackageManagerUserIsNotAMaintainer {
             get {
                 return ResourceManager.GetString("PackageManagerUserIsNotAMaintainer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error.
-        /// </summary>
-        public static string PackageStateError {
-            get {
-                return ResourceManager.GetString("PackageStateError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unloaded.
-        ///This package has not been loaded due to an unexpected error..
-        /// </summary>
-        public static string PackageStateErrorTooltip {
-            get {
-                return ResourceManager.GetString("PackageStateErrorTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Loaded.
-        /// </summary>
-        public static string PackageStateLoaded {
-            get {
-                return ResourceManager.GetString("PackageStateLoaded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Loaded.
-        ///This package is loaded and ready to be used..
-        /// </summary>
-        public static string PackageStateLoadedTooltip {
-            get {
-                return ResourceManager.GetString("PackageStateLoadedTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scheduled to be unloaded.
-        /// </summary>
-        public static string PackageStatePendingUnload {
-            get {
-                return ResourceManager.GetString("PackageStatePendingUnload", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scheduled to be unloaded.
-        ///This package will be unloaded after the next Dynamo restart..
-        /// </summary>
-        public static string PackageStatePendingUnloadTooltip {
-            get {
-                return ResourceManager.GetString("PackageStatePendingUnloadTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unloaded.
-        /// </summary>
-        public static string PackageStateUnloaded {
-            get {
-                return ResourceManager.GetString("PackageStateUnloaded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unloaded.
-        ///This package has not been loaded because another conflicting package was loaded before it..
-        /// </summary>
-        public static string PackageStateUnloadedTooltip {
-            get {
-                return ResourceManager.GetString("PackageStateUnloadedTooltip", resourceCulture);
             }
         }
         
