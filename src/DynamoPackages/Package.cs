@@ -537,7 +537,7 @@ namespace Dynamo.PackageManager
             RaisePropertyChanged(nameof(LoadState));
         }
 
-        internal void MarkForInstall(IPreferences prefs)
+        internal void MarkForLoad(IPreferences prefs)
         {
             if (BuiltInPackage)
             {
@@ -551,7 +551,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        internal void UnmarkForInstall(IPreferences prefs)
+        internal void UnmarkForLoad(IPreferences prefs)
         {
             if (BuiltInPackage && 
                 LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForLoad && 

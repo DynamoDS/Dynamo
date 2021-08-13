@@ -314,12 +314,12 @@ namespace Dynamo.ViewModels
                     } 
                     catch 
                     {
-                        Model.LoadState.SetScheduledForLoad();
+                        Model.MarkForLoad(dynModel.PreferenceSettings);
                     }
                 }
                 else
                 {
-                    Model.LoadState.SetScheduledForLoad();
+                    Model.MarkForLoad(dynModel.PreferenceSettings);
                 }
             }
             catch (Exception e) 
@@ -350,7 +350,7 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            Model.UnmarkForInstall(dynModel.PreferenceSettings);
+            Model.UnmarkForLoad(dynModel.PreferenceSettings);
 
             NotifyLoadStatePropertyChanged();
             foreach (var package in dynamoViewModel.PreferencesViewModel.LocalPackages.Where(x => conflicts.Contains(x.Model)))
