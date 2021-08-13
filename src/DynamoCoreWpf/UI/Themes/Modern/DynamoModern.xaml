@@ -97,7 +97,6 @@
         Link: http://www.google.com/fonts/specimen/Open+Sans
     -->
     <FontFamily x:Key="Inconsolata">../../Fonts/#Inconsolata</FontFamily>
-    <FontFamily x:Key="CourierPrime">../../Fonts/#Courier Prime Regular</FontFamily>
     <FontFamily x:Key="OpenSansRegular">../../Fonts/#Open Sans</FontFamily>
     <FontFamily x:Key="OpenSansItalic">../../Fonts/#Open Sans Italic</FontFamily>
     <FontFamily x:Key="OpenSansLight">../../Fonts/#Open Sans Light</FontFamily>
@@ -108,6 +107,7 @@
     <FontFamily x:Key="OpenSansBoldItalic">../../Fonts/#Open Sans Bold Italic</FontFamily>
     <FontFamily x:Key="ArtifaktElementRegular">../../Fonts/#Artifakt Element Regular</FontFamily>
     <FontFamily x:Key="ArtifaktElementBold">../../Fonts/#Artifakt Element Bold</FontFamily>
+    <FontFamily x:Key="CourierPrime">../../Fonts/#Courier Prime Regular</FontFamily>
 
     <!--  Window Common Styling  -->
     <Style x:Key="DynamoWindowStyle" TargetType="{x:Type Window}">

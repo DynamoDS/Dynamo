@@ -461,7 +461,7 @@
                                           Visibility="{Binding UseLevelCheckBoxVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                                 <CheckBox Margin="0,3,5,3"
                                           HorizontalAlignment="Left"
-                                          Content="{x:Static p:Resources.UseDefaultValuePopupMenuItem}"
+                                          Content="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
                                           IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}"
                                           Visibility="{Binding UseDefaultValueCheckBoxVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                                 <Button Margin="0,3"

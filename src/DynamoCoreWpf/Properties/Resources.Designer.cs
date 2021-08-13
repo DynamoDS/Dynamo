@@ -6442,15 +6442,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Default Value.
-        /// </summary>
-        public static string UseDefaultValuePopupMenuItem {
-            get {
-                return ResourceManager.GetString("UseDefaultValuePopupMenuItem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Keep 1 input list&apos;s nesting.
         /// </summary>
         public static string UseLevelKeepListStructureHint {

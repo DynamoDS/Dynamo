@@ -2075,9 +2075,6 @@ Next assemblies were loaded several times:
   <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
     <value>Unhide Wires</value>
   </data>
-  <data name="UseDefaultValuePopupMenuItem" xml:space="preserve">
-    <value>Use Default Value</value>
-  </data>
   <data name="DirectoryNotFound" xml:space="preserve">
     <value>Directory Not Found</value>
   </data>
