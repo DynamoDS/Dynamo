@@ -18,8 +18,6 @@ using NUnit.Framework;
 using SystemTestServices;
 using Dynamo.Wpf.Views;
 using Dynamo.Core;
-using Dynamo.Extensions;
-using System.Reflection;
 
 namespace DynamoCoreWpfTests
 {
