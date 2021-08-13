@@ -127,12 +127,12 @@ namespace Dynamo.ViewModels
         public DelegateCommand GetLatestVersionCommand { get; set; }
         public DelegateCommand PublishNewPackageVersionCommand { get; set; }
         public DelegateCommand UninstallCommand { get; set; }
-        public DelegateCommand InstallCommand { get; set; }
-        public DelegateCommand UnmarkForInstallCommand { get; set; }
+        public DelegateCommand UnmarkForUninstallationCommand { get; set; }
+        public DelegateCommand LoadCommand { get; set; }
+        public DelegateCommand UnmarkForLoadCommand { get; set; }
         public DelegateCommand PublishNewPackageCommand { get; set; }
         public DelegateCommand DeprecateCommand { get; set; }
         public DelegateCommand UndeprecateCommand { get; set; }
-        public DelegateCommand UnmarkForUninstallationCommand { get; set; }
         public DelegateCommand GoToRootDirectoryCommand { get; set; }
 
         public PackageViewModel(DynamoViewModel dynamoViewModel, Package model)
@@ -148,8 +148,8 @@ namespace Dynamo.ViewModels
             PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), CanPublishNewPackage);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
-            InstallCommand = new DelegateCommand(Install, CanInstall);
-            UnmarkForInstallCommand = new DelegateCommand(UnmarkForInstall, CanUnmarkForInstall);
+            LoadCommand = new DelegateCommand(Load, CanLoad);
+            UnmarkForLoadCommand = new DelegateCommand(UnmarkForLoad, CanUnmarkForLoad);
             DeprecateCommand = new DelegateCommand(Deprecate, CanDeprecate);
             UndeprecateCommand = new DelegateCommand(Undeprecate, CanUndeprecate);
             GoToRootDirectoryCommand = new DelegateCommand(GoToRootDirectory, CanGoToRootDirectory);
@@ -192,8 +192,8 @@ namespace Dynamo.ViewModels
         {
             UninstallCommand.RaiseCanExecuteChanged();
             UnmarkForUninstallationCommand.RaiseCanExecuteChanged();
-            InstallCommand.RaiseCanExecuteChanged();
-            UnmarkForInstallCommand.RaiseCanExecuteChanged();
+            LoadCommand.RaiseCanExecuteChanged();
+            UnmarkForLoadCommand.RaiseCanExecuteChanged();
             RaisePropertyChanged(nameof(PackageLoadStateTooltip));
             RaisePropertyChanged(nameof(PackageLoadStateText));
             RaisePropertyChanged(nameof(Unloaded));
@@ -271,7 +271,7 @@ namespace Dynamo.ViewModels
             return false;
         }
 
-        private void Install()
+        private void Load()
         {
             var dynModel = dynamoViewModel.Model;
             var packageLoader = dynModel.GetPackageManagerExtension().PackageLoader;
@@ -335,7 +335,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void UnmarkForInstall()
+        private void UnmarkForLoad()
         {
             var dynModel = dynamoViewModel.Model;
             var packageLoader = dynModel.GetPackageManagerExtension().PackageLoader;
@@ -358,13 +358,13 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanUnmarkForInstall()
+        private bool CanUnmarkForLoad()
         {
             return Model.BuiltInPackage &&
                 (Model.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForLoad);
         }
 
-        private bool CanInstall()
+        private bool CanLoad()
         {
             return Model.BuiltInPackage && 
                 (Model.LoadState.State == PackageLoadState.StateTypes.Unloaded) && 

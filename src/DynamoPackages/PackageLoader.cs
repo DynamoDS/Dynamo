@@ -428,7 +428,11 @@ namespace Dynamo.PackageManager
             if (LocalPackages.Any())
             {
                 // Load only those recently addeed local packages (that are located in any of the new paths)
-                LoadPackages(LocalPackages.Where(x => loadPackageParams.NewPaths.Any(y => x.RootDirectory.Contains(y))));
+                var newPackages = LocalPackages.Where(x => loadPackageParams.NewPaths.Any(y => x.RootDirectory.Contains(y)));
+                if (newPackages.Any())
+                {
+                    LoadPackages(newPackages);
+                }
             }
         }
 

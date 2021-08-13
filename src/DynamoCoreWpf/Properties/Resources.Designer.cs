@@ -4781,36 +4781,36 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Load.
         /// </summary>
-        public static string PackageViewContextMenuInstallText {
+        public static string PackageViewContextMenuLoadText {
             get {
-                return ResourceManager.GetString("PackageViewContextMenuInstallText", resourceCulture);
+                return ResourceManager.GetString("PackageViewContextMenuLoadText", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Load this package into Dynamo. Other packages with the same name will be automatically deleted.
         /// </summary>
-        public static string PackageViewContextMenuInstallTooltip {
+        public static string PackageViewContextMenuLoadTooltip {
             get {
-                return ResourceManager.GetString("PackageViewContextMenuInstallTooltip", resourceCulture);
+                return ResourceManager.GetString("PackageViewContextMenuLoadTooltip", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Cancel Load.
         /// </summary>
-        public static string PackageViewContextMenuUnmarkForInstallText {
+        public static string PackageViewContextMenuUnmarkForLoadText {
             get {
-                return ResourceManager.GetString("PackageViewContextMenuUnmarkForInstallText", resourceCulture);
+                return ResourceManager.GetString("PackageViewContextMenuUnmarkForLoadText", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Remove scheduled load status and all schduled for delete statuses from all conflicting packages.
         /// </summary>
-        public static string PackageViewContextMenuUnmarkForInstallTooltip {
+        public static string PackageViewContextMenuUnmarkForLoadTooltip {
             get {
-                return ResourceManager.GetString("PackageViewContextMenuUnmarkForInstallTooltip", resourceCulture);
+                return ResourceManager.GetString("PackageViewContextMenuUnmarkForLoadTooltip", resourceCulture);
             }
         }
         
