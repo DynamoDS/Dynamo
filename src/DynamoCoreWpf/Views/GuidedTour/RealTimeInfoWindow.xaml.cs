@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls.Primitives;
+using Dynamo.Wpf.UI.GuidedTour;
 
 namespace Dynamo.Wpf.Views.GuidedTour
 {
@@ -17,12 +18,32 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             InitializeComponent();
 
-            DataContext = this;       
+            DataContext = this;
+
+            GuideFlowEvents.GuidedTourFinish += GuideFlowEvents_GuidedTourFinish;
+            GuideFlowEvents.GuidedTourStart += GuideFlowEvents_GuidedTourStart;
+        }
+
+        private void CleanRealTimeInfoWindow()
+        {
+            IsOpen = false;
+            GuideFlowEvents.GuidedTourFinish -= GuideFlowEvents_GuidedTourFinish;
+            GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
+        }
+
+        private void GuideFlowEvents_GuidedTourStart(GuidedTourStateEventArgs args)
+        {
+            CleanRealTimeInfoWindow();
+        }
+
+        private void GuideFlowEvents_GuidedTourFinish(GuidedTourStateEventArgs args)
+        {
+            CleanRealTimeInfoWindow();
         }
 
         private void CloseButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            IsOpen = false;
+            CleanRealTimeInfoWindow();
         }
     }
 }
