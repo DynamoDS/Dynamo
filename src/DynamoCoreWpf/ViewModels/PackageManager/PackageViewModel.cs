@@ -10,6 +10,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.Utilities;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -289,7 +290,7 @@ namespace Dynamo.ViewModels
                         string.Format(Resources.MessageLoadBuiltInPackage,
                         conflictsMsg, Model.Name + " " + Model.VersionName);
 
-                var dialogResult = MessageBox.Show(message,
+                var dialogResult = MessageBoxService.Show(message,
                     Resources.CannotDownloadPackageMessageBoxTitle,
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Exclamation);

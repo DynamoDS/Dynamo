@@ -165,7 +165,7 @@ namespace Dynamo.PackageManager.Tests
 
         [Test]
         public void NoPackageNodeDuplicatesOnAddingNewPackagePath()
-        {
+        { 
             var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
             pathManager.SetupGet(x => x.PackagesDirectories).Returns(
                 () => new List<string> { PackagesDirectory });
@@ -209,6 +209,56 @@ namespace Dynamo.PackageManager.Tests
             loader.PackagesLoaded -= libraryLoader.LoadPackages;
             loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
             loader.PackagesLoaded -= pkgsLoadedDelegate;
+        }
+
+        [Test]
+        public void BuiltInPackageUnloadedWhenDuplicateAlreadyLoaded()
+        {
+            PathManager.BuiltinPackagesDirectory = BuiltInPackagesTestDir;
+
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectorySigned });
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            CurrentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>();
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+            };
+            CurrentDynamoModel.SearchModel.ClearAllEntries();
+
+            loader.LoadAll(loadPackageParams);
+            Assert.AreEqual(3, loader.LocalPackages.Count());
+            Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
+
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectory, BuiltInPackagesTestDir });
+            loadPackageParams.NewPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
+            // This function is called upon addition of new package paths in the UI.
+            loader.LoadCustomNodesAndPackages(loadPackageParams, CurrentDynamoModel.CustomNodeManager);
+            Assert.AreEqual(4, loader.LocalPackages.Count());
+
+            Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 2);
+
+            var nonBuitlIn = loader.LocalPackages.FirstOrDefault(x => !x.BuiltInPackage);
+            Assert.IsNotNull(nonBuitlIn);
+            Assert.AreEqual(nonBuitlIn.LoadState.State, PackageLoadState.StateTypes.Loaded);
+
+            var buitlIn = loader.LocalPackages.FirstOrDefault(x => x.BuiltInPackage);
+            Assert.IsNotNull(buitlIn);
+            Assert.AreEqual(buitlIn.LoadState.State, PackageLoadState.StateTypes.Unloaded);
+
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+            Assert.AreEqual(entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"), 1);
+
+            loader.PackagesLoaded -= libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
         }
 
         [Test]
@@ -273,13 +323,14 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = CurrentDynamoModel.PreferenceSettings,
 
             };
+
+            CurrentDynamoModel.SearchModel.ClearAllEntries();
             loader.LoadAll(loadPackageParams);
 
             Assert.AreEqual(1, loader.LocalPackages.Count());
             Assert.AreEqual(true, packagesLoaded);
 
-            var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
-            Assert.IsTrue(entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
+            Assert.IsTrue(CurrentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
         }
 
         [Test]

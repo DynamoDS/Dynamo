@@ -18,15 +18,19 @@ using NUnit.Framework;
 using SystemTestServices;
 using Dynamo.Wpf.Views;
 using Dynamo.Core;
+using Dynamo.Extensions;
+using System.Reflection;
 
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class PackageManagerUITests : SystemTestBase
     {
-        public string PackagesDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs"); } }
-        public string PackagesDirectorySigned { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs_signed"); } }
-        internal string BuiltinPackagesTestDir { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "builtinpackages testdir", "Packages"); } }
+        internal string TestDirectory { get { return GetTestDirectory(ExecutingDirectory); } }
+        public string PackagesDirectory { get { return Path.Combine(TestDirectory, "pkgs"); } }
+        public string PackagesDirectorySigned { get { return Path.Combine(TestDirectory, "pkgs_signed"); } }
+        
+        internal string BuiltinPackagesTestDir { get { return Path.Combine(TestDirectory, "builtinpackages testdir", "Packages"); } }
 
         #region Utility functions
 
@@ -286,6 +290,67 @@ namespace DynamoCoreWpfTests
             }
         }
 
+        [Test]
+        [Description("User tries to load an unloaded built-in package")]
+        public void PackageManagerLoadBuiltIn()
+        {
+            var currentDynamoModel = ViewModel.Model;
+            PathManager.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
+
+            currentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>() { PackagesDirectorySigned };
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = currentDynamoModel.PreferenceSettings,
+            };
+            var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
+
+            foreach (var pkg in loader.LocalPackages.ToList())
+            {
+                loader.Remove(pkg);
+            }
+
+            loader.LoadAll(loadPackageParams);
+            Assert.AreEqual(3, loader.LocalPackages.Count());
+            Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
+
+            currentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>() { PackagesDirectorySigned, BuiltinPackagesTestDir };
+
+            loadPackageParams.NewPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
+            // This function is called upon addition of new package paths in the UI.
+            loader.LoadCustomNodesAndPackages(loadPackageParams, currentDynamoModel.CustomNodeManager);
+            Assert.AreEqual(4, loader.LocalPackages.Count());
+
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            var builtInPkgViewModel = ViewModel.PreferencesViewModel.LocalPackages.Where(x => x.Model.BuiltInPackage).FirstOrDefault();
+            Assert.IsNotNull(builtInPkgViewModel);
+            Assert.AreEqual(builtInPkgViewModel.Model.LoadState.State, PackageLoadState.StateTypes.Unloaded);
+            Assert.AreEqual(builtInPkgViewModel.Model.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.None);
+
+            var conflictingPkg = loader.LocalPackages.FirstOrDefault(x => x.Name == "SignedPackage" && !x.BuiltInPackage);
+            Assert.IsNotNull(conflictingPkg);
+            Assert.AreEqual(conflictingPkg.LoadState.State, PackageLoadState.StateTypes.Loaded);
+            Assert.AreEqual(conflictingPkg.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.None);
+
+            builtInPkgViewModel.LoadCommand.Execute();
+
+            Assert.AreEqual(builtInPkgViewModel.Model.LoadState.State, PackageLoadState.StateTypes.Unloaded);
+            Assert.AreEqual(builtInPkgViewModel.Model.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.ScheduledForLoad);
+
+            Assert.AreEqual(conflictingPkg.LoadState.State, PackageLoadState.StateTypes.Loaded);
+            Assert.AreEqual(conflictingPkg.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.ScheduledForDeletion);
+
+            builtInPkgViewModel.UnmarkForLoadCommand.Execute();
+
+            Assert.AreEqual(builtInPkgViewModel.Model.LoadState.State, PackageLoadState.StateTypes.Unloaded);
+            Assert.AreEqual(builtInPkgViewModel.Model.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.None);
+
+            Assert.AreEqual(conflictingPkg.LoadState.State, PackageLoadState.StateTypes.Loaded);
+            Assert.AreEqual(conflictingPkg.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.None);
+        }
         #endregion
 
         #region PackageManagerSearchView
