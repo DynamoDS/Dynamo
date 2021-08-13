@@ -272,6 +272,7 @@ namespace Dynamo.ViewModels
             return false;
         }
 
+        // Loads a built-in package that was previously set as Unloaded
         private void Load()
         {
             var dynModel = dynamoViewModel.Model;
@@ -336,6 +337,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        // Cancels the ScheduledForLoad status on a built-in package
         private void UnmarkForLoad()
         {
             var dynModel = dynamoViewModel.Model;
