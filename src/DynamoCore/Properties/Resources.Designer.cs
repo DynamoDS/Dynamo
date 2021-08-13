@@ -802,6 +802,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to input.
+        /// </summary>
+        public static string InputPortAlternativeName {
+            get {
+                return ResourceManager.GetString("InputPortAlternativeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The folder &apos;{0}&apos; does not exist.
         /// </summary>
         public static string InvalidCustomNodeFolderWarning {
@@ -1151,6 +1160,15 @@ namespace Dynamo.Properties {
         public static string OutputNodeDescription {
             get {
                 return ResourceManager.GetString("OutputNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to output.
+        /// </summary>
+        public static string OutputPortAlternativeName {
+            get {
+                return ResourceManager.GetString("OutputPortAlternativeName", resourceCulture);
             }
         }
         

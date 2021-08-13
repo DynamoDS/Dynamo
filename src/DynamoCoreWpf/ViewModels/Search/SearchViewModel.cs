@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -1188,11 +1191,33 @@ namespace Dynamo.ViewModels
         /// <returns>An ImageSource object pointing to the icon image for the NodeViewModel</returns>
         internal bool TryGetNodeIcon(NodeViewModel nodeViewModel, out ImageSource iconSource)
         {
+            string nodeTypeName;
+            string assemblyLocation;
+
+            switch (nodeViewModel.NodeModel)
+            {
+                // For ZeroTouch nodes
+                case DSFunction dsFunction:
+                    nodeTypeName = dsFunction.Controller.Definition.QualifiedName;
+                    assemblyLocation = dsFunction.Controller.Definition.Assembly;
+                    break;
+                // For NodeModel nodes
+                case NodeModel nodeModel:
+                    nodeTypeName = nodeModel.GetType().FullName;
+                    assemblyLocation = nodeModel.GetType().Assembly.Location;
+                    break;
+                default:
+                    nodeTypeName = "";
+                    assemblyLocation = "";
+                    break;
+            }
+
             iconSource = null;
-            IconWarehouse currentWarehouse = iconServices.GetForAssembly(nodeViewModel.NodeModel.GetType().Assembly.Location);
+
+            IconWarehouse currentWarehouse = iconServices.GetForAssembly(assemblyLocation);
             if (currentWarehouse is null) return false;
 
-            string iconName = nodeViewModel.NodeModel.GetType() + Configurations.SmallIconPostfix;
+            string iconName = nodeTypeName + Configurations.SmallIconPostfix;
             iconSource = currentWarehouse.LoadIconInternal(iconName);
             return !(iconSource is null);
         }

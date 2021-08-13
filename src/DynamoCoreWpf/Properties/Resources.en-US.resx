@@ -2508,6 +2508,15 @@ Uninstall the following packages: {0}?</value>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
   </data>
+  <data name="BreakConnectionPopupMenuItem" xml:space="preserve">
+    <value>Break Connection</value>
+  </data>
+  <data name="HideWiresPopupMenuItem" xml:space="preserve">
+    <value>Hide Wires</value>
+  </data>
+  <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
+    <value>Unhide Wires</value>
+  </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this tutorial later from the Help menu.</value>
   </data>

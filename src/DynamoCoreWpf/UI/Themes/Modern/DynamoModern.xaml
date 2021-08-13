@@ -1,14 +1,13 @@
-﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
-    xmlns:clr="clr-namespace:System;assembly=mscorlib"
-    xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCoreWpf"
-    xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
-    xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
-    xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCore"
-    xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
+                    xmlns:clr="clr-namespace:System;assembly=mscorlib"
+                    xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCoreWpf"
+                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
+                    xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
+                    xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCore"
+                    xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -108,6 +107,7 @@
     <FontFamily x:Key="OpenSansBoldItalic">../../Fonts/#Open Sans Bold Italic</FontFamily>
     <FontFamily x:Key="ArtifaktElementRegular">../../Fonts/#Artifakt Element Regular</FontFamily>
     <FontFamily x:Key="ArtifaktElementBold">../../Fonts/#Artifakt Element Bold</FontFamily>
+    <FontFamily x:Key="CourierPrime">../../Fonts/#Courier Prime Regular</FontFamily>
 
     <!--  Window Common Styling  -->
     <Style x:Key="DynamoWindowStyle" TargetType="{x:Type Window}">
@@ -120,18 +120,16 @@
 
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
         <Grid>
-            <Border
-                x:Name="Border"
-                Background="#2c2c2c"
-                BorderBrush="#444444"
-                BorderThickness="1" />
-            <Path
-                x:Name="Arrow"
-                Margin="0,0,10,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Data="M 0 0 L 4 4 L 8 0 Z"
-                Fill="#999" />
+            <Border x:Name="Border"
+                    Background="#2c2c2c"
+                    BorderBrush="#444444"
+                    BorderThickness="1" />
+            <Path x:Name="Arrow"
+                  Margin="0,0,10,0"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Center"
+                  Data="M 0 0 L 4 4 L 8 0 Z"
+                  Fill="#999" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="ToggleButton.IsMouseOver" Value="true">
@@ -162,53 +160,47 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
                     <Grid>
-                        <ToggleButton
-                            Name="ToggleButton"
-                            Grid.Column="2"
-                            ClickMode="Press"
-                            Focusable="false"
-                            IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                            Template="{StaticResource ComboBoxToggleButton}" />
-                        <ContentPresenter
-                            Name="ContentSite"
-                            Margin="9,3,23,3"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Content="{TemplateBinding SelectionBoxItem}"
-                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                            IsHitTestVisible="False" />
-                        <TextBox
-                            x:Name="PART_EditableTextBox"
-                            Margin="3,3,23,3"
-                            Padding="10"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Background="#666666"
-                            CaretBrush="#bbbbbb"
-                            Focusable="True"
-                            Foreground="#bbbbbb"
-                            IsReadOnly="{TemplateBinding IsReadOnly}"
-                            Style="{x:Null}"
-                            Template="{StaticResource ComboBoxTextBox}"
-                            Visibility="Hidden" />
-                        <Popup
-                            Name="Popup"
-                            AllowsTransparency="True"
-                            Focusable="False"
-                            IsOpen="{TemplateBinding IsDropDownOpen}"
-                            Placement="Bottom"
-                            PopupAnimation="Slide">
-                            <Grid
-                                Name="DropDown"
-                                MinWidth="{TemplateBinding ActualWidth}"
-                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                                SnapsToDevicePixels="True">
-                                <Border
-                                    x:Name="DropDownBorder"
-                                    Background="#2c2c2c"
-                                    BorderBrush="#444444"
-                                    BorderThickness="1,0,1,1" />
+                        <ToggleButton Name="ToggleButton"
+                                      Grid.Column="2"
+                                      ClickMode="Press"
+                                      Focusable="false"
+                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Template="{StaticResource ComboBoxToggleButton}" />
+                        <ContentPresenter Name="ContentSite"
+                                          Margin="9,3,23,3"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                          IsHitTestVisible="False" />
+                        <TextBox x:Name="PART_EditableTextBox"
+                                 Margin="3,3,23,3"
+                                 Padding="10"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Background="#666666"
+                                 CaretBrush="#bbbbbb"
+                                 Focusable="True"
+                                 Foreground="#bbbbbb"
+                                 IsReadOnly="{TemplateBinding IsReadOnly}"
+                                 Style="{x:Null}"
+                                 Template="{StaticResource ComboBoxTextBox}"
+                                 Visibility="Hidden" />
+                        <Popup Name="Popup"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               Placement="Bottom"
+                               PopupAnimation="Slide">
+                            <Grid Name="DropDown"
+                                  MinWidth="{TemplateBinding ActualWidth}"
+                                  MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                  SnapsToDevicePixels="True">
+                                <Border x:Name="DropDownBorder"
+                                        Background="#2c2c2c"
+                                        BorderBrush="#444444"
+                                        BorderThickness="1,0,1,1" />
                                 <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
                                     <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                                 </ScrollViewer>
@@ -246,11 +238,10 @@
                     <Grid x:Name="container" Background="Transparent">
                         <Grid x:Name="inner" Background="#333">
 
-                            <Image
-                                x:Name="display"
-                                Width="24"
-                                Height="24"
-                                Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}" />
+                            <Image x:Name="display"
+                                   Width="24"
+                                   Height="24"
+                                   Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}" />
 
                         </Grid>
                     </Grid>
@@ -279,20 +270,18 @@
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation
-                                Storyboard.TargetProperty="Opacity"
-                                To="1.0"
-                                Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="1.0"
+                                             Duration="0:0:0.2" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.EnterActions>
                 <DataTrigger.ExitActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation
-                                Storyboard.TargetProperty="Opacity"
-                                To="0.0"
-                                Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.0"
+                                             Duration="0:0:0.2" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.ExitActions>
@@ -307,20 +296,18 @@
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation
-                                Storyboard.TargetProperty="Opacity"
-                                To="1.0"
-                                Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="1.0"
+                                             Duration="0:0:0.2" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.EnterActions>
                 <DataTrigger.ExitActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation
-                                Storyboard.TargetProperty="Opacity"
-                                To="0.0"
-                                Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.0"
+                                             Duration="0:0:0.2" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.ExitActions>
@@ -335,20 +322,18 @@
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation
-                                Storyboard.TargetProperty="Opacity"
-                                To="0.4"
-                                Duration="0:0:0.5" />
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.4"
+                                             Duration="0:0:0.5" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.EnterActions>
                 <DataTrigger.ExitActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation
-                                Storyboard.TargetProperty="Opacity"
-                                To="0.7"
-                                Duration="0:0:0.5" />
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.7"
+                                             Duration="0:0:0.5" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.ExitActions>
@@ -364,20 +349,18 @@
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation
-                                Storyboard.TargetProperty="Opacity"
-                                To="1.0"
-                                Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="1.0"
+                                             Duration="0:0:0.2" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.EnterActions>
                 <DataTrigger.ExitActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation
-                                Storyboard.TargetProperty="Opacity"
-                                To="0.0"
-                                Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.0"
+                                             Duration="0:0:0.2" />
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.ExitActions>
@@ -403,11 +386,10 @@
                     <Grid x:Name="container" Background="Transparent">
                         <Grid x:Name="inner" Background="{StaticResource ButtonGradientBackground}">
 
-                            <Image
-                                x:Name="display"
-                                Width="24"
-                                Height="24"
-                                Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}" />
+                            <Image x:Name="display"
+                                   Width="24"
+                                   Height="24"
+                                   Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}" />
 
                         </Grid>
                     </Grid>
@@ -431,19 +413,17 @@
                 <ControlTemplate>
 
                     <Border x:Name="container" Background="Transparent">
-                        <Border
-                            x:Name="inner"
-                            Margin="3"
-                            Background="#55000000"
-                            CornerRadius="2">
-                            <TextBlock
-                                x:Name="text"
+                        <Border x:Name="inner"
                                 Margin="3"
-                                HorizontalAlignment="Center"
-                                FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}"
-                                FontWeight="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontWeight}"
-                                Foreground="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Foreground}"
-                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                                Background="#55000000"
+                                CornerRadius="2">
+                            <TextBlock x:Name="text"
+                                       Margin="3"
+                                       HorizontalAlignment="Center"
+                                       FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}"
+                                       FontWeight="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontWeight}"
+                                       Foreground="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Foreground}"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Border>
                     </Border>
 
@@ -470,20 +450,18 @@
                 <ControlTemplate>
 
                     <Border x:Name="container" Background="Transparent">
-                        <Border
-                            x:Name="inner"
-                            Margin="3"
-                            Background="#55000000"
-                            CornerRadius="2">
-                            <TextBlock
-                                x:Name="text"
+                        <Border x:Name="inner"
                                 Margin="3"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="11"
-                                FontWeight="Bold"
-                                Foreground="#BBB"
-                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                                Background="#55000000"
+                                CornerRadius="2">
+                            <TextBlock x:Name="text"
+                                       Margin="3"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="11"
+                                       FontWeight="Bold"
+                                       Foreground="#BBB"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Border>
                     </Border>
 
@@ -506,10 +484,9 @@
 
 
 
-    <Style
-        x:Key="SDarkTextBox"
-        BasedOn="{StaticResource {x:Type TextBox}}"
-        TargetType="{x:Type TextBox}">
+    <Style x:Key="SDarkTextBox"
+           BasedOn="{StaticResource {x:Type TextBox}}"
+           TargetType="{x:Type TextBox}">
         <Setter Property="Foreground" Value="#bbbbbb" />
         <Setter Property="CaretBrush" Value="White" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -518,26 +495,23 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
-                    <Border
-                        Name="borderText"
-                        Background="#2c2c2c"
-                        BorderBrush="#444"
-                        BorderThickness="1px">
+                    <Border Name="borderText"
+                            Background="#2c2c2c"
+                            BorderBrush="#444"
+                            BorderThickness="1px">
                         <Grid>
-                            <ScrollViewer
-                                x:Name="PART_ContentHost"
-                                Margin="5,5,0,0"
-                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                Style="{DynamicResource ResourceKey=SDarkScrollViewer}" />
-                            <TextBlock
-                                x:Name="previewText"
-                                Margin="5,5,0,0"
-                                Padding="{TemplateBinding Padding}"
-                                FontSize="{TemplateBinding FontSize}"
-                                Foreground="#555555"
-                                IsHitTestVisible="False"
-                                Text="{TemplateBinding Tag}"
-                                Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="5,5,0,0"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          Style="{DynamicResource ResourceKey=SDarkScrollViewer}" />
+                            <TextBlock x:Name="previewText"
+                                       Margin="5,5,0,0"
+                                       Padding="{TemplateBinding Padding}"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       Foreground="#555555"
+                                       IsHitTestVisible="False"
+                                       Text="{TemplateBinding Tag}"
+                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -564,21 +538,19 @@
             <Setter.Value>
                 <ControlTemplate>
 
-                    <Border
-                        x:Name="container"
-                        Background="Transparent"
-                        BorderBrush="#3c3c3c"
-                        BorderThickness="1">
+                    <Border x:Name="container"
+                            Background="Transparent"
+                            BorderBrush="#3c3c3c"
+                            BorderThickness="1">
                         <Grid x:Name="inner" Background="#373737">
 
-                            <TextBlock
-                                x:Name="text"
-                                Margin="10,10,10,10"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="14px"
-                                Foreground="#bbbbbb"
-                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                            <TextBlock x:Name="text"
+                                       Margin="10,10,10,10"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="14px"
+                                       Foreground="#bbbbbb"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Grid>
                     </Border>
 
@@ -615,20 +587,18 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Border
-                        x:Name="container"
-                        Background="Transparent"
-                        BorderBrush="#3c3c3c"
-                        BorderThickness="1">
+                    <Border x:Name="container"
+                            Background="Transparent"
+                            BorderBrush="#3c3c3c"
+                            BorderThickness="1">
                         <Grid x:Name="inner" Background="#373737">
-                            <TextBlock
-                                x:Name="text"
-                                Margin="5,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="10px"
-                                Foreground="#bbbbbb"
-                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                            <TextBlock x:Name="text"
+                                       Margin="5,0"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="10px"
+                                       Foreground="#bbbbbb"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -659,23 +629,21 @@
             <Setter.Value>
                 <ControlTemplate>
 
-                    <Border
-                        x:Name="container"
-                        Background="Transparent"
-                        BorderBrush="#3c3c3c"
-                        BorderThickness="1">
+                    <Border x:Name="container"
+                            Background="Transparent"
+                            BorderBrush="#3c3c3c"
+                            BorderThickness="1">
                         <Grid x:Name="inner" Background="#373737">
 
                             <StackPanel Orientation="Horizontal">
                                 <ContentControl Content="{DynamicResource ResourceKey=Shape}" />
-                                <TextBlock
-                                    x:Name="text"
-                                    Margin="10,10,10,10"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontSize="14px"
-                                    Foreground="#bbbbbb"
-                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                                <TextBlock x:Name="text"
+                                           Margin="10,10,10,10"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           FontSize="14px"
+                                           Foreground="#bbbbbb"
+                                           Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -709,8 +677,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="SButtonWithShapeIcon"
-           TargetType="{x:Type Button}">
+    <Style x:Key="SButtonWithShapeIcon" TargetType="{x:Type Button}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -719,8 +686,7 @@
                             Background="Transparent"
                             BorderBrush="#3c3c3c"
                             BorderThickness="1">
-                        <Grid x:Name="inner"
-                              Background="#373737">
+                        <Grid x:Name="inner" Background="#373737">
 
                             <StackPanel Orientation="Horizontal">
                                 <ContentControl Content="{DynamicResource ResourceKey=Shape}" />
@@ -730,34 +696,19 @@
 
                     <ControlTemplate.Triggers>
 
-                        <Trigger Property="Button.IsMouseOver"
-                                 Value="true">
-                            <Setter TargetName="container"
-                                    Property="BorderBrush"
-                                    Value="#656565" />
-                            <Setter TargetName="inner"
-                                    Property="Background"
-                                    Value="#373737" />
+                        <Trigger Property="Button.IsMouseOver" Value="true">
+                            <Setter TargetName="container" Property="BorderBrush" Value="#656565" />
+                            <Setter TargetName="inner" Property="Background" Value="#373737" />
                         </Trigger>
 
-                        <Trigger Property="Button.IsPressed"
-                                 Value="true">
-                            <Setter TargetName="container"
-                                    Property="BorderBrush"
-                                    Value="#656565" />
-                            <Setter TargetName="inner"
-                                    Property="Background"
-                                    Value="#272727" />
+                        <Trigger Property="Button.IsPressed" Value="true">
+                            <Setter TargetName="container" Property="BorderBrush" Value="#656565" />
+                            <Setter TargetName="inner" Property="Background" Value="#272727" />
                         </Trigger>
 
-                        <Trigger Property="IsEnabled"
-                                 Value="false">
-                            <Setter TargetName="container"
-                                    Property="BorderBrush"
-                                    Value="Transparent" />
-                            <Setter TargetName="inner"
-                                    Property="Background"
-                                    Value="#373737" />
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="container" Property="BorderBrush" Value="Transparent" />
+                            <Setter TargetName="inner" Property="Background" Value="#373737" />
                         </Trigger>
 
                     </ControlTemplate.Triggers>
@@ -773,21 +724,19 @@
             <Setter.Value>
                 <ControlTemplate>
 
-                    <Border
-                        x:Name="container"
-                        Background="Transparent"
-                        BorderBrush="#3F3F3F"
-                        BorderThickness="2">
+                    <Border x:Name="container"
+                            Background="Transparent"
+                            BorderBrush="#3F3F3F"
+                            BorderThickness="2">
                         <Grid x:Name="inner" Background="#CCCCCC">
 
-                            <TextBlock
-                                x:Name="text"
-                                Margin="10,10,10,10"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="17px"
-                                Foreground="#3F3F3F"
-                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                            <TextBlock x:Name="text"
+                                       Margin="10,10,10,10"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="17px"
+                                       Foreground="#3F3F3F"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Grid>
                     </Border>
 
@@ -830,10 +779,9 @@
                 <ControlTemplate>
 
                     <Grid x:Name="container" Background="Transparent">
-                        <Border
-                            x:Name="inner"
-                            BorderBrush="#bd362f"
-                            BorderThickness="1">
+                        <Border x:Name="inner"
+                                BorderBrush="#bd362f"
+                                BorderThickness="1">
 
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
@@ -842,13 +790,12 @@
                                 </LinearGradientBrush>
                             </Border.Background>
 
-                            <TextBlock
-                                x:Name="text"
-                                Margin="7,10,7,7"
-                                HorizontalAlignment="Center"
-                                FontSize="14"
-                                Foreground="WhiteSmoke"
-                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                            <TextBlock x:Name="text"
+                                       Margin="7,10,7,7"
+                                       HorizontalAlignment="Center"
+                                       FontSize="14"
+                                       Foreground="WhiteSmoke"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Border>
                     </Grid>
 
@@ -880,24 +827,22 @@
             <Setter.Value>
                 <ControlTemplate>
                     <Grid x:Name="container" Background="Transparent">
-                        <Border
-                            x:Name="roundedBorder"
-                            HorizontalAlignment="Stretch"
-                            Background="#4D4D4D"
-                            CornerRadius="4">
+                        <Border x:Name="roundedBorder"
+                                HorizontalAlignment="Stretch"
+                                Background="#4D4D4D"
+                                CornerRadius="4">
                             <Grid x:Name="inner">
-                                <Label
-                                    x:Name="text"
-                                    Margin="0,1,0,0"
-                                    Padding="0"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    HorizontalContentAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
-                                    FontSize="17px"
-                                    FontWeight="Bold"
-                                    Style="{StaticResource SZoomFadeLabel}" />
+                                <Label x:Name="text"
+                                       Margin="0,1,0,0"
+                                       Padding="0"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       HorizontalContentAlignment="Center"
+                                       VerticalContentAlignment="Center"
+                                       Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
+                                       FontSize="17px"
+                                       FontWeight="Bold"
+                                       Style="{StaticResource SZoomFadeLabel}" />
                             </Grid>
                         </Border>
                     </Grid>
@@ -936,51 +881,46 @@
                 <ControlTemplate TargetType="{x:Type RadioButton}">
                     <BulletDecorator Background="Transparent" Cursor="Hand">
                         <BulletDecorator.Bullet>
-                            <Grid
-                                Width="18"
-                                Height="18"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center">
+                            <Grid Width="18"
+                                  Height="18"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center">
                                 <!--  Define size of the Bullet  -->
                                 <!--  The two borders  -->
-                                <Ellipse
-                                    Name="RadioOuter"
-                                    Width="12px"
-                                    Height="12px"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Fill="Transparent"
-                                    Stroke="#C0C0C0"
-                                    StrokeThickness="1" />
-                                <Ellipse
-                                    Name="RadioMark"
-                                    Width="12px"
-                                    Height="12px"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Fill="Transparent"
-                                    Stroke="#EEEEEE"
-                                    StrokeThickness="3 "
-                                    Visibility="Hidden" />
-                                <Ellipse
-                                    Name="RadioHover"
-                                    Width="16px"
-                                    Height="16px"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Fill="Transparent"
-                                    Opacity="0.2"
-                                    Stroke="White"
-                                    StrokeThickness="2"
-                                    Visibility="Hidden" />
+                                <Ellipse Name="RadioOuter"
+                                         Width="12px"
+                                         Height="12px"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Fill="Transparent"
+                                         Stroke="#C0C0C0"
+                                         StrokeThickness="1" />
+                                <Ellipse Name="RadioMark"
+                                         Width="12px"
+                                         Height="12px"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Fill="Transparent"
+                                         Stroke="#EEEEEE"
+                                         StrokeThickness="3 "
+                                         Visibility="Hidden" />
+                                <Ellipse Name="RadioHover"
+                                         Width="16px"
+                                         Height="16px"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Fill="Transparent"
+                                         Opacity="0.2"
+                                         Stroke="White"
+                                         StrokeThickness="2"
+                                         Visibility="Hidden" />
                             </Grid>
                         </BulletDecorator.Bullet>
                         <!--  Text element  -->
-                        <TextBlock
-                            Margin="3,1,6,0"
-                            FontFamily="{StaticResource ArtifaktElementRegular}"
-                            FontSize="16px"
-                            Foreground="#EEEEEE">
+                        <TextBlock Margin="3,1,6,0"
+                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                   FontSize="16px"
+                                   Foreground="#EEEEEE">
                             <ContentPresenter />
                         </TextBlock>
                     </BulletDecorator>
@@ -1004,37 +944,32 @@
     </Style>
 
     <ControlTemplate x:Key="RefreshComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
-        <Grid
-            Height="35px"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Top">
+        <Grid Height="35px"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="20" />
             </Grid.ColumnDefinitions>
-            <Border
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Background="#666666" />
+            <Border Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Background="#666666" />
             <Border x:Name="Border" Grid.Column="1" />
-            <Border
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                BorderBrush="#4A4A4A"
-                BorderThickness="0,1,1,1" />
-            <Rectangle
-                x:Name="BlueUnderline"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Height="1px"
-                VerticalAlignment="Bottom" />
-            <Path
-                x:Name="Arrow"
-                Grid.Column="1"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
-                Fill="White" />
+            <Border Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    BorderBrush="#4A4A4A"
+                    BorderThickness="0,1,1,1" />
+            <Rectangle x:Name="BlueUnderline"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="2"
+                       Height="1px"
+                       VerticalAlignment="Bottom" />
+            <Path x:Name="Arrow"
+                  Grid.Column="1"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
+                  Fill="White" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="ToggleButton.IsMouseOver" Value="true">
@@ -1068,51 +1003,45 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBox}">
                     <Grid>
-                        <ToggleButton
-                            Name="ToggleButton"
-                            Grid.Column="2"
-                            ClickMode="Press"
-                            Focusable="false"
-                            IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                            Template="{StaticResource RefreshComboBoxToggleButton}" />
-                        <ContentPresenter
-                            Name="ContentSite"
-                            Margin="10,0,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Content="{TemplateBinding SelectionBoxItem}"
-                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                            IsHitTestVisible="False" />
-                        <TextBox
-                            x:Name="PART_EditableTextBox"
-                            Margin="0,0,25,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Focusable="True"
-                            FontFamily="{StaticResource ArtifaktElementRegular}"
-                            FontSize="18px"
-                            Foreground="#F5F5F5"
-                            IsReadOnly="{TemplateBinding IsReadOnly}"
-                            Visibility="Hidden" />
-                        <Popup
-                            Name="Popup"
-                            AllowsTransparency="True"
-                            Focusable="False"
-                            IsOpen="{TemplateBinding IsDropDownOpen}"
-                            Placement="Bottom"
-                            PopupAnimation="Slide"
-                            VerticalOffset="-6">
-                            <Grid
-                                Name="DropDown"
-                                MinWidth="{TemplateBinding ActualWidth}"
-                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                                SnapsToDevicePixels="True">
+                        <ToggleButton Name="ToggleButton"
+                                      Grid.Column="2"
+                                      ClickMode="Press"
+                                      Focusable="false"
+                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Template="{StaticResource RefreshComboBoxToggleButton}" />
+                        <ContentPresenter Name="ContentSite"
+                                          Margin="10,0,0,0"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                          IsHitTestVisible="False" />
+                        <TextBox x:Name="PART_EditableTextBox"
+                                 Margin="0,0,25,0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Focusable="True"
+                                 FontFamily="{StaticResource ArtifaktElementRegular}"
+                                 FontSize="18px"
+                                 Foreground="#F5F5F5"
+                                 IsReadOnly="{TemplateBinding IsReadOnly}"
+                                 Visibility="Hidden" />
+                        <Popup Name="Popup"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               Placement="Bottom"
+                               PopupAnimation="Slide"
+                               VerticalOffset="-6">
+                            <Grid Name="DropDown"
+                                  MinWidth="{TemplateBinding ActualWidth}"
+                                  MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                  SnapsToDevicePixels="True">
                                 <Border x:Name="DropDownBorder" Background="#666666" />
-                                <ScrollViewer
-                                    Margin="0"
-                                    SnapsToDevicePixels="True"
-                                    VerticalScrollBarVisibility="Visible">
+                                <ScrollViewer Margin="0"
+                                              SnapsToDevicePixels="True"
+                                              VerticalScrollBarVisibility="Visible">
                                     <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                                 </ScrollViewer>
                             </Grid>
@@ -1151,10 +1080,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBoxItem}">
-                    <Border
-                        Name="Border"
-                        Padding="10,5"
-                        SnapsToDevicePixels="true">
+                    <Border Name="Border"
+                            Padding="10,5"
+                            SnapsToDevicePixels="true">
                         <ContentPresenter />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -1178,31 +1106,28 @@
                 <ControlTemplate TargetType="CheckBox">
                     <BulletDecorator VerticalAlignment="Center" Background="Transparent">
                         <BulletDecorator.Bullet>
-                            <Border
-                                x:Name="Border"
-                                Width="13"
-                                Height="13"
-                                Background="#373737"
-                                BorderBrush="#666666"
-                                BorderThickness="1">
-                                <Image
-                                    x:Name="CheckBoxTick"
-                                    Width="7"
-                                    Height="7"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/tick_selected.png"
-                                    Visibility="Hidden" />
+                            <Border x:Name="Border"
+                                    Width="13"
+                                    Height="13"
+                                    Background="#373737"
+                                    BorderBrush="#666666"
+                                    BorderThickness="1">
+                                <Image x:Name="CheckBoxTick"
+                                       Width="7"
+                                       Height="7"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/tick_selected.png"
+                                       Visibility="Hidden" />
                             </Border>
                         </BulletDecorator.Bullet>
 
-                        <ContentPresenter
-                            x:Name="contentPresent"
-                            Margin="5,0,5,0"
-                            Content="{TemplateBinding Content}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}"
-                            TextBlock.FontSize="14px"
-                            TextBlock.Foreground="#bbbbbb" />
+                        <ContentPresenter x:Name="contentPresent"
+                                          Margin="5,0,5,0"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          TextBlock.FontSize="14px"
+                                          TextBlock.Foreground="#bbbbbb" />
                     </BulletDecorator>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="true">
@@ -1228,11 +1153,10 @@
                     <Grid x:Name="container" Background="Transparent">
                         <Grid x:Name="inner" Background="#333">
 
-                            <Image
-                                x:Name="display"
-                                Width="24"
-                                Height="24"
-                                Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}" />
+                            <Image x:Name="display"
+                                   Width="24"
+                                   Height="24"
+                                   Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}" />
 
                         </Grid>
                     </Grid>
@@ -1258,12 +1182,11 @@
                 <ControlTemplate TargetType="{x:Type ScrollViewer}">
                     <Grid>
                         <Grid Background="{TemplateBinding Background}">
-                            <ScrollContentPresenter
-                                x:Name="PART_ScrollContentPresenter"
-                                Margin="{TemplateBinding Padding}"
-                                CanContentScroll="{TemplateBinding CanContentScroll}"
-                                Content="{TemplateBinding Content}"
-                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                                    Margin="{TemplateBinding Padding}"
+                                                    CanContentScroll="{TemplateBinding CanContentScroll}"
+                                                    Content="{TemplateBinding Content}"
+                                                    ContentTemplate="{TemplateBinding ContentTemplate}" />
                         </Grid>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -1274,27 +1197,25 @@
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <ScrollBar
-                                x:Name="PART_VerticalScrollBar"
-                                Grid.Column="1"
-                                AutomationProperties.AutomationId="VerticalScrollBar"
-                                Cursor="Arrow"
-                                Maximum="{TemplateBinding ScrollableHeight}"
-                                Minimum="0.0"
-                                ViewportSize="{TemplateBinding ViewportHeight}"
-                                Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
-                                Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=VerticalOffset, Mode=OneWay}" />
-                            <ScrollBar
-                                x:Name="PART_HorizontalScrollBar"
-                                Grid.Row="1"
-                                AutomationProperties.AutomationId="HorizontalScrollBar"
-                                Cursor="Arrow"
-                                Maximum="{TemplateBinding ScrollableWidth}"
-                                Minimum="0.0"
-                                Orientation="Horizontal"
-                                ViewportSize="{TemplateBinding ViewportWidth}"
-                                Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
-                                Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HorizontalOffset, Mode=OneWay}" />
+                            <ScrollBar x:Name="PART_VerticalScrollBar"
+                                       Grid.Column="1"
+                                       AutomationProperties.AutomationId="VerticalScrollBar"
+                                       Cursor="Arrow"
+                                       Maximum="{TemplateBinding ScrollableHeight}"
+                                       Minimum="0.0"
+                                       ViewportSize="{TemplateBinding ViewportHeight}"
+                                       Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                       Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=VerticalOffset, Mode=OneWay}" />
+                            <ScrollBar x:Name="PART_HorizontalScrollBar"
+                                       Grid.Row="1"
+                                       AutomationProperties.AutomationId="HorizontalScrollBar"
+                                       Cursor="Arrow"
+                                       Maximum="{TemplateBinding ScrollableWidth}"
+                                       Minimum="0.0"
+                                       Orientation="Horizontal"
+                                       ViewportSize="{TemplateBinding ViewportWidth}"
+                                       Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+                                       Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HorizontalOffset, Mode=OneWay}" />
                         </Grid>
                     </Grid>
                 </ControlTemplate>
@@ -1317,20 +1238,18 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Thumb}">
                     <Grid x:Name="Grid">
-                        <Rectangle
-                            Width="Auto"
-                            Height="Auto"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            Fill="Transparent" />
-                        <Border
-                            x:Name="Rectangle1"
-                            Width="Auto"
-                            Height="Auto"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="3" />
+                        <Rectangle Width="Auto"
+                                   Height="Auto"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Fill="Transparent" />
+                        <Border x:Name="Rectangle1"
+                                Width="Auto"
+                                Height="Auto"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="3" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Tag" Value="Horizontal">
@@ -1352,38 +1271,33 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
-                    <Grid
-                        x:Name="GridRoot"
-                        Width="6"
-                        Background="{TemplateBinding Background}">
+                    <Grid x:Name="GridRoot"
+                          Width="6"
+                          Background="{TemplateBinding Background}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="0.00001*" />
                         </Grid.RowDefinitions>
 
-                        <Track
-                            x:Name="PART_Track"
-                            Grid.Row="0"
-                            Focusable="false"
-                            IsDirectionReversed="true">
+                        <Track x:Name="PART_Track"
+                               Grid.Row="0"
+                               Focusable="false"
+                               IsDirectionReversed="true">
                             <Track.Thumb>
-                                <Thumb
-                                    x:Name="Thumb"
-                                    Background="{TemplateBinding Foreground}"
-                                    Style="{DynamicResource SScrollThumbs}" />
+                                <Thumb x:Name="Thumb"
+                                       Background="{TemplateBinding Foreground}"
+                                       Style="{DynamicResource SScrollThumbs}" />
                             </Track.Thumb>
                             <Track.IncreaseRepeatButton>
-                                <RepeatButton
-                                    x:Name="PageUp"
-                                    Command="ScrollBar.PageDownCommand"
-                                    Focusable="false"
-                                    Opacity="0" />
+                                <RepeatButton x:Name="PageUp"
+                                              Command="ScrollBar.PageDownCommand"
+                                              Focusable="false"
+                                              Opacity="0" />
                             </Track.IncreaseRepeatButton>
                             <Track.DecreaseRepeatButton>
-                                <RepeatButton
-                                    x:Name="PageDown"
-                                    Command="ScrollBar.PageUpCommand"
-                                    Focusable="false"
-                                    Opacity="0" />
+                                <RepeatButton x:Name="PageDown"
+                                              Command="ScrollBar.PageUpCommand"
+                                              Focusable="false"
+                                              Opacity="0" />
                             </Track.DecreaseRepeatButton>
                         </Track>
                     </Grid>
@@ -1448,59 +1362,53 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition MinHeight="1" />
                         </Grid.RowDefinitions>
-                        <Border
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Margin="-1"
-                            Background="{StaticResource InfoBubbleBackNormalBrush}"
-                            BorderBrush="{StaticResource InfoBubbleEdgeNormalBrush}"
-                            BorderThickness="2"
-                            CornerRadius="4" />
-                        <Path
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Fill="{StaticResource InfoBubbleBackNormalBrush}"
-                            Stroke="{StaticResource InfoBubbleEdgeNormalBrush}"
-                            StrokeThickness="1">
+                        <Border Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="-1"
+                                Background="{StaticResource InfoBubbleBackNormalBrush}"
+                                BorderBrush="{StaticResource InfoBubbleEdgeNormalBrush}"
+                                BorderThickness="1"
+                                CornerRadius="2" />
+                        <Path HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Fill="{StaticResource InfoBubbleBackNormalBrush}"
+                              Stroke="{StaticResource InfoBubbleEdgeNormalBrush}"
+                              StrokeThickness="1">
                             <Grid.Row>
-                                <Binding
-                                    Converter="{StaticResource AttachmentToRowColumnConverter}"
-                                    ConverterParameter="Row"
-                                    RelativeSource="{RelativeSource TemplatedParent}" />
+                                <Binding Converter="{StaticResource AttachmentToRowColumnConverter}"
+                                         ConverterParameter="Row"
+                                         RelativeSource="{RelativeSource TemplatedParent}" />
                             </Grid.Row>
                             <Grid.Column>
-                                <Binding
-                                    Converter="{StaticResource AttachmentToRowColumnConverter}"
-                                    ConverterParameter="Column"
-                                    RelativeSource="{RelativeSource TemplatedParent}" />
+                                <Binding Converter="{StaticResource AttachmentToRowColumnConverter}"
+                                         ConverterParameter="Column"
+                                         RelativeSource="{RelativeSource TemplatedParent}" />
                             </Grid.Column>
                             <Path.Data>
                                 <PathGeometry>
                                     <PathFigure IsClosed="False">
                                         <PathFigure.StartPoint>
-                                            <Binding
-                                                Converter="{StaticResource AttachmentToPathConverter}"
-                                                ConverterParameter="Start"
-                                                RelativeSource="{RelativeSource TemplatedParent}" />
+                                            <Binding Converter="{StaticResource AttachmentToPathConverter}"
+                                                     ConverterParameter="Start"
+                                                     RelativeSource="{RelativeSource TemplatedParent}" />
                                         </PathFigure.StartPoint>
                                         <PolyLineSegment>
                                             <PolyLineSegment.Points>
-                                                <Binding
-                                                    Converter="{StaticResource AttachmentToPathConverter}"
-                                                    ConverterParameter="Points"
-                                                    RelativeSource="{RelativeSource TemplatedParent}" />
+                                                <Binding Converter="{StaticResource AttachmentToPathConverter}"
+                                                         ConverterParameter="Points"
+                                                         RelativeSource="{RelativeSource TemplatedParent}" />
                                             </PolyLineSegment.Points>
                                         </PolyLineSegment>
                                     </PathFigure>
                                 </PathGeometry>
                             </Path.Data>
                         </Path>
-                        <ContentPresenter
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Margin="4"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top" />
+                        <ContentPresenter Grid.Row="1"
+                                          Grid.Column="1"
+                                          Margin="4"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Top"
+                                          TextBlock.FontSize="14" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -1532,24 +1440,21 @@
                             <Binding Path="ToolTip" />
                         </Grid.ToolTip>
                         <StackPanel Orientation="Horizontal">
-                            <Image
-                                Width="31"
-                                Margin="5,0,14,0"
-                                Source="{Binding Icon}"
-                                Visibility="{Binding IconVisibility}" />
-                            <TextBlock
-                                Margin="6,7,0,8"
-                                VerticalAlignment="Center"
-                                FontFamily="{StaticResource OpenSansRegular}"
-                                FontSize="14"
-                                Text="{Binding Caption}" />
-                            <TextBlock
-                                Margin="16,0,0,0"
-                                VerticalAlignment="Center"
-                                FontFamily="{StaticResource OpenSansRegular}"
-                                FontSize="10"
-                                Foreground="#888"
-                                Text="{Binding SubScript}" />
+                            <Image Width="31"
+                                   Margin="5,0,14,0"
+                                   Source="{Binding Icon}"
+                                   Visibility="{Binding IconVisibility}" />
+                            <TextBlock Margin="6,7,0,8"
+                                       VerticalAlignment="Center"
+                                       FontFamily="{StaticResource OpenSansRegular}"
+                                       FontSize="14"
+                                       Text="{Binding Caption}" />
+                            <TextBlock Margin="16,0,0,0"
+                                       VerticalAlignment="Center"
+                                       FontFamily="{StaticResource OpenSansRegular}"
+                                       FontSize="10"
+                                       Foreground="#888"
+                                       Text="{Binding SubScript}" />
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
@@ -1563,10 +1468,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Border
-                        x:Name="Border"
-                        Padding="2"
-                        SnapsToDevicePixels="true">
+                    <Border x:Name="Border"
+                            Padding="2"
+                            SnapsToDevicePixels="true">
                         <Border.Background>
                             <SolidColorBrush Color="Transparent" />
                         </Border.Background>
@@ -1602,12 +1506,11 @@
                     <Border x:Name="border" Background="Transparent">
                         <StackPanel Orientation="Horizontal">
                             <ContentControl />
-                            <Label
-                                x:Name="label"
-                                Content="{TemplateBinding Content}"
-                                FontFamily="{StaticResource OpenSansRegular}"
-                                FontSize="12"
-                                Foreground="#888888" />
+                            <Label x:Name="label"
+                                   Content="{TemplateBinding Content}"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="12"
+                                   Foreground="#888888" />
                         </StackPanel>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -1629,20 +1532,18 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TreeView">
-                    <Border
-                        Name="Border"
-                        BorderThickness="1"
-                        CornerRadius="1">
+                    <Border Name="Border"
+                            BorderThickness="1"
+                            CornerRadius="1">
                         <Border.BorderBrush>
                             <SolidColorBrush Color="{DynamicResource BorderMediumColor}" />
                         </Border.BorderBrush>
                         <Border.Background>
                             <SolidColorBrush Color="{DynamicResource ControlLightColor}" />
                         </Border.Background>
-                        <ScrollViewer
-                            Padding="4"
-                            CanContentScroll="False"
-                            Focusable="False">
+                        <ScrollViewer Padding="4"
+                                      CanContentScroll="False"
+                                      Focusable="False">
                             <ItemsPresenter />
                         </ScrollViewer>
                     </Border>
@@ -1656,27 +1557,24 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Grid
-                        Width="15"
-                        Height="13"
-                        Background="Transparent">
-                        <Path
-                            x:Name="Collapsed"
-                            Margin="1,1,1,1"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Data="M 4 0 L 8 4 L 4 8 Z">
+                    <Grid Width="15"
+                          Height="13"
+                          Background="Transparent">
+                        <Path x:Name="Collapsed"
+                              Margin="1,1,1,1"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Center"
+                              Data="M 4 0 L 8 4 L 4 8 Z">
                             <Path.Fill>
                                 <SolidColorBrush Color="{DynamicResource GlyphColor}" />
                             </Path.Fill>
                         </Path>
-                        <Path
-                            x:Name="Expanded"
-                            Margin="1,1,1,1"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Data="M 0 4 L 8 4 L 4 8 Z"
-                            Visibility="Hidden">
+                        <Path x:Name="Expanded"
+                              Margin="1,1,1,1"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Center"
+                              Data="M 0 4 L 8 4 L 4 8 Z"
+                              Visibility="Hidden">
                             <Path.Fill>
                                 <SolidColorBrush Color="{DynamicResource GlyphColor}" />
                             </Path.Fill>
@@ -1707,12 +1605,11 @@
             <Setter.Value>
                 <ControlTemplate>
                     <Border>
-                        <Rectangle
-                            Margin="0,0,0,0"
-                            Opacity="0"
-                            Stroke="Black"
-                            StrokeDashArray="1 2"
-                            StrokeThickness="5" />
+                        <Rectangle Margin="0,0,0,0"
+                                   Opacity="0"
+                                   Stroke="Black"
+                                   StrokeDashArray="1 2"
+                                   StrokeThickness="5" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -1739,29 +1636,25 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <ToggleButton
-                            x:Name="Expander"
-                            ClickMode="Press"
-                            IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
-                            Style="{StaticResource ExpandCollapseToggleStyle}" />
-                        <Border
-                            x:Name="Bd"
-                            Grid.Column="1"
-                            Padding="{TemplateBinding Padding}"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-                            <ContentPresenter
-                                x:Name="PART_Header"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                ContentSource="Header" />
+                        <ToggleButton x:Name="Expander"
+                                      ClickMode="Press"
+                                      IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Style="{StaticResource ExpandCollapseToggleStyle}" />
+                        <Border x:Name="Bd"
+                                Grid.Column="1"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter x:Name="PART_Header"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              ContentSource="Header" />
                         </Border>
-                        <ItemsPresenter
-                            x:Name="ItemsHost"
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Grid.ColumnSpan="2"
-                            Visibility="Collapsed" />
+                        <ItemsPresenter x:Name="ItemsHost"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="2"
+                                        Visibility="Collapsed" />
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="SelectionStates">
                                 <VisualState x:Name="Selected">
@@ -1874,20 +1767,18 @@
                                 <VisualState x:Name="Normal" />
                                 <VisualState x:Name="MouseOver">
                                     <Storyboard>
-                                        <DoubleAnimation
-                                            x:Name="hoverOverAnimation"
-                                            Storyboard.TargetName="buttonStateImage"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                            Duration="0" />
+                                        <DoubleAnimation x:Name="hoverOverAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <DoubleAnimation
-                                            x:Name="pressedAnimation"
-                                            Storyboard.TargetName="buttonStateImage"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                            Duration="0" />
+                                        <DoubleAnimation x:Name="pressedAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled" />
@@ -1895,11 +1786,10 @@
                             <VisualStateGroup x:Name="CheckStates">
                                 <VisualState x:Name="Checked">
                                     <Storyboard>
-                                        <DoubleAnimation
-                                            x:Name="checkedAnimation"
-                                            Storyboard.TargetName="buttonCheckImage"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                            Duration="0" />
+                                        <DoubleAnimation x:Name="checkedAnimation"
+                                                         Storyboard.TargetName="buttonCheckImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Unchecked" />
@@ -1961,29 +1851,26 @@
                                 <VisualState x:Name="Normal" />
                                 <VisualState x:Name="MouseOver">
                                     <Storyboard>
-                                        <DoubleAnimation
-                                            x:Name="hoverOverAnimation"
-                                            Storyboard.TargetName="buttonStateImage"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                            Duration="0" />
+                                        <DoubleAnimation x:Name="hoverOverAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <DoubleAnimation
-                                            x:Name="pressedAnimation"
-                                            Storyboard.TargetName="buttonStateImage"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                            Duration="0" />
+                                        <DoubleAnimation x:Name="pressedAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
                                     <Storyboard>
-                                        <DoubleAnimation
-                                            x:Name="disabledAnimation"
-                                            Storyboard.TargetName="buttonStateImage"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                            Duration="0" />
+                                        <DoubleAnimation x:Name="disabledAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -2030,29 +1917,26 @@
                                 <VisualState x:Name="Normal" />
                                 <VisualState x:Name="MouseOver">
                                     <Storyboard>
-                                        <DoubleAnimation
-                                            x:Name="hoverOverAnimation"
-                                            Storyboard.TargetName="buttonStateImage"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                            Duration="0" />
+                                        <DoubleAnimation x:Name="hoverOverAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
-                                        <DoubleAnimation
-                                            x:Name="pressedAnimation"
-                                            Storyboard.TargetName="buttonStateImage"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                            Duration="0" />
+                                        <DoubleAnimation x:Name="pressedAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
                                     <Storyboard>
-                                        <DoubleAnimation
-                                            x:Name="disabledAnimation"
-                                            Storyboard.TargetName="buttonStateImage"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                            Duration="0" />
+                                        <DoubleAnimation x:Name="disabledAnimation"
+                                                         Storyboard.TargetName="buttonStateImage"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         Duration="0" />
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -2072,19 +1956,17 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ContentControl">
                     <Grid>
-                        <Border
-                            Margin="0,11,0,0"
-                            Background="{StaticResource FilterPopupBackgroundColor}"
-                            BorderBrush="{StaticResource FilterPopupBorderColor}"
-                            BorderThickness="1"
-                            CornerRadius="5">
+                        <Border Margin="0,11,0,0"
+                                Background="{StaticResource FilterPopupBackgroundColor}"
+                                BorderBrush="{StaticResource FilterPopupBorderColor}"
+                                BorderThickness="1"
+                                CornerRadius="5">
                             <ContentPresenter />
                         </Border>
-                        <Path
-                            x:Name="arrow"
-                            Data="M 5 12 L 15 0 L 25 12"
-                            Fill="{StaticResource FilterPopupBackgroundColor}"
-                            Stroke="{StaticResource FilterPopupBorderColor}" />
+                        <Path x:Name="arrow"
+                              Data="M 5 12 L 15 0 L 25 12"
+                              Fill="{StaticResource FilterPopupBackgroundColor}"
+                              Stroke="{StaticResource FilterPopupBorderColor}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -2123,28 +2005,25 @@
 
     <Style TargetType="{x:Type dynui:UseLevelSpinner}">
         <Style.Resources>
-            <Style
-                x:Key="IncreaseButton"
-                BasedOn="{x:Null}"
-                TargetType="{x:Type RepeatButton}">
-                <Setter Property="MinWidth" Value="12" />
+            <Style x:Key="IncreaseButton"
+                   BasedOn="{x:Null}"
+                   TargetType="{x:Type RepeatButton}">
+                <Setter Property="MinWidth" Value="10" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type RepeatButton}">
                             <Grid>
-                                <Border
-                                    Name="Border"
-                                    Margin="0"
-                                    Padding="0"
-                                    Background="#3C3C3C"
-                                    BorderThickness="0" />
-                                <ContentPresenter
-                                    x:Name="ContentPresenter"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Content="{TemplateBinding Content}"
-                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                    ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
+                                <Border Name="Border"
+                                        Margin="0"
+                                        Padding="0"
+                                        Background="#3C3C3C"
+                                        BorderThickness="0" />
+                                <ContentPresenter x:Name="ContentPresenter"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
@@ -2161,27 +2040,24 @@
                 </Setter>
             </Style>
 
-            <Style
-                x:Key="DecreaseButton"
-                BasedOn="{x:Null}"
-                TargetType="{x:Type RepeatButton}">
-                <!--<Setter Property="MinWidth" Value="10" />-->
+            <Style x:Key="DecreaseButton"
+                   BasedOn="{x:Null}"
+                   TargetType="{x:Type RepeatButton}">
+                <Setter Property="MinWidth" Value="10" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type RepeatButton}">
                             <Grid>
-                                <Border
-                                    Name="Border"
-                                    Margin="0"
-                                    Padding="0"
-                                    Background="#3C3C3C" />
-                                <ContentPresenter
-                                    x:Name="ContentPresenter"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Content="{TemplateBinding Content}"
-                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                    ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
+                                <Border Name="Border"
+                                        Margin="0"
+                                        Padding="0"
+                                        Background="#3C3C3C" />
+                                <ContentPresenter x:Name="ContentPresenter"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
@@ -2202,13 +2078,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type dynui:UseLevelSpinner}">
-                    <Grid
-                        x:Name="TemplateGrid"
-                        Background="{TemplateBinding Background}"
-                        SnapsToDevicePixels="True">
+                    <Grid x:Name="TemplateGrid"
+                          Width="{TemplateBinding Width}"
+                          Background="{TemplateBinding Background}"
+                          SnapsToDevicePixels="True">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="1" />
+                            <ColumnDefinition Width="10" />
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
@@ -2216,60 +2093,62 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <TextBox
-                            Name="textbox"
-                            Grid.RowSpan="2"
-                            Grid.Column="0"
-                            Padding="4,0"
-                            VerticalContentAlignment="Center"
-                            Background="#3C3C3C"
-                            BorderThickness="0"
-                            CaretBrush="Transparent"
-                            FontFamily="{StaticResource ArtifaktElementRegular}"
-                            FontSize="11px"
-                            FontWeight="Medium"
-                            Foreground="White"
-                            IsHitTestVisible="False"
-                            Opacity="1.0"
-                            Style="{StaticResource SZoomFadeTextBox}" />
-
-                        <RepeatButton
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Margin="0"
-                            Padding="0"
-                            Command="{x:Static dynui:UseLevelSpinner.IncreaseCommand}"
-                            Focusable="False"
-                            Style="{StaticResource IncreaseButton}">
-                            <Path
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Data="M-2,1 L0,-1 L2,1"
-                                Fill="{x:Null}"
-                                Stroke="#6AC0E7" />
+                        <TextBox Name="textbox"
+                                 Grid.RowSpan="2"
+                                 Grid.Column="0"
+                                 Margin="0"
+                                 Padding="0"
+                                 VerticalContentAlignment="Center"
+                                 Background="#3C3C3C"
+                                 BorderThickness="0"
+                                 CaretBrush="Transparent"
+                                 FontFamily="{StaticResource ArtifaktElementRegular}"
+                                 FontSize="11px"
+                                 FontWeight="Medium"
+                                 Foreground="White"
+                                 IsHitTestVisible="False"
+                                 Opacity="1.0"
+                                 Style="{StaticResource SZoomFadeTextBox}" />
+                        <Rectangle Grid.Row="0"
+                                   Grid.RowSpan="2"
+                                   Grid.Column="1"
+                                   Fill="#4A4A4A" />
+                        <RepeatButton Grid.Row="0"
+                                      Grid.Column="2"
+                                      Margin="0"
+                                      Padding="0"
+                                      Command="{x:Static dynui:UseLevelSpinner.IncreaseCommand}"
+                                      Focusable="False"
+                                      Style="{StaticResource IncreaseButton}">
+                            <Path HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Data="M-2,1 L0,-1 L2,1"
+                                  Fill="{x:Null}"
+                                  Stretch="None"
+                                  Stroke="#6AC0E7" />
                         </RepeatButton>
 
-                        <RepeatButton
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Margin="0"
-                            Padding="0"
-                            Command="{x:Static dynui:UseLevelSpinner.DecreaseCommand}"
-                            Focusable="False"
-                            Style="{StaticResource DecreaseButton}">
-                            <Path
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Data="M-2,-1 L0,1 L2,-1"
-                                Fill="{x:Null}"
-                                Stroke="#6AC0E7" />
+                        <RepeatButton Grid.Row="1"
+                                      Grid.Column="2"
+                                      Margin="0"
+                                      Padding="0"
+                                      Command="{x:Static dynui:UseLevelSpinner.DecreaseCommand}"
+                                      Focusable="False"
+                                      Style="{StaticResource DecreaseButton}">
+                            <Path HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Data="M-2,-1 L0,1 L2,-1"
+                                  Fill="{x:Null}"
+                                  Stretch="None"
+                                  Stroke="#6AC0E7" />
                         </RepeatButton>
 
-                        <Border
-                            Grid.RowSpan="2"
-                            Grid.ColumnSpan="2"
-                            BorderBrush="#4A4A4A"
-                            BorderThickness="1" />
+                        <Border Grid.Row="0"
+                                Grid.RowSpan="2"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                BorderBrush="#4A4A4A"
+                                BorderThickness="1" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -2291,28 +2170,25 @@
     <SolidColorBrush x:Key="SemiTransparent" Color="#80000000" />
 
     <!--  Usual button color for the Preferences Window  -->
-    <Color
-        x:Key="PreferencesToogleCheckedColor"
-        A="255"
-        B="215"
-        G="150"
-        R="6" />
+    <Color x:Key="PreferencesToogleCheckedColor"
+           A="255"
+           B="215"
+           G="150"
+           R="6" />
 
     <!--  Gray Window Background Color  -->
-    <Color
-        x:Key="PreferencesToogleUnCheckedColor"
-        A="229"
-        B="229"
-        G="229"
-        R="229" />
+    <Color x:Key="PreferencesToogleUnCheckedColor"
+           A="229"
+           B="229"
+           G="229"
+           R="229" />
 
     <!--  White Window Color for borders  -->
-    <Color
-        x:Key="PreferencesToogleBorderColor"
-        A="255"
-        B="255"
-        G="255"
-        R="255" />
+    <Color x:Key="PreferencesToogleBorderColor"
+           A="255"
+           B="255"
+           G="255"
+           R="255" />
 
     <Style x:Key="DarkTextBlock" TargetType="TextBlock">
         <Setter Property="FontSize" Value="12" />
@@ -2328,22 +2204,20 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid
-                        x:Name="LayoutRoot"
-                        Width="46"
-                        Height="40"
-                        Background="Transparent">
-                        <TextBlock
-                            x:Name="txt"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontFamily="Segoe MDL2 Assets"
-                            FontSize="14"
-                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                            RenderOptions.ClearTypeHint="Auto"
-                            Text="{TemplateBinding Content}"
-                            TextOptions.TextFormattingMode="Display"
-                            TextOptions.TextRenderingMode="Aliased" />
+                    <Grid x:Name="LayoutRoot"
+                          Width="46"
+                          Height="40"
+                          Background="Transparent">
+                        <TextBlock x:Name="txt"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="14"
+                                   Foreground="{StaticResource PreferencesWindowFontColor}"
+                                   RenderOptions.ClearTypeHint="Auto"
+                                   Text="{TemplateBinding Content}"
+                                   TextOptions.TextFormattingMode="Display"
+                                   TextOptions.TextRenderingMode="Aliased" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -2361,11 +2235,55 @@
         </Setter>
     </Style>
 
-    <Style
-        x:Key="CloseButtonStyle"
-        BasedOn="{StaticResource CaptionButtonStyleClose}"
-        TargetType="Button">
+    <Style x:Key="CloseButtonStyle"
+           BasedOn="{StaticResource CaptionButtonStyleClose}"
+           TargetType="Button">
         <Setter Property="Content" Value="&#xE8BB;" />
+    </Style>
+
+    <Style x:Key="PopupButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#4D4D4D" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Margin" Value="8" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border Name="border"
+                                Padding="4"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                BorderThickness="0"/>
+                        <ContentPresenter Name="contentpresenter"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            TextBlock.Foreground="#4D4D4D"
+                                            TextBlock.FontSize="13px" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="Transparent" />
+                            <Setter TargetName="contentpresenter" Property="Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#99E0FF" />
+                            <Setter TargetName="border" Property="Opacity" Value="0.3" />
+                            <Setter Property="Foreground" Value="{StaticResource PreferencesWindowButtonMouseOverFontColor}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="#99E0FF" />
+                            <Setter TargetName="border"
+                                    Property="Opacity"
+                                    Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="NormalButtonStyle" TargetType="Button">
@@ -2373,18 +2291,16 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border
-                        Name="border"
-                        Padding="4,2"
-                        Background="{StaticResource PreferencesWindowButtonColor}"
-                        BorderBrush="Transparent"
-                        BorderThickness="1"
-                        CornerRadius="3">
+                    <Border Name="border"
+                            Padding="4,2"
+                            Background="{StaticResource PreferencesWindowButtonColor}"
+                            BorderBrush="Transparent"
+                            BorderThickness="1"
+                            CornerRadius="3">
                         <Grid>
-                            <ContentPresenter
-                                Name="contentShadow"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center" />
+                            <ContentPresenter Name="contentShadow"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -2406,33 +2322,30 @@
     <SolidColorBrush x:Key="ExpanderCaretToggleButtonSelectedBackground" Color="#3c3c3c" />
 
     <ControlTemplate x:Key="ExpanderCaretToggleButton" TargetType="{x:Type ToggleButton}">
-        <Border
-            Name="Border"
-            Grid.Row="0"
-            Background="{StaticResource ExpanderCaretToggleButtonBackground}"
-            BorderThickness="1"
-            CornerRadius="1">
+        <Border Name="Border"
+                Grid.Row="0"
+                Background="{StaticResource ExpanderCaretToggleButtonBackground}"
+                BorderThickness="1"
+                CornerRadius="1">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Image
-                    x:Name="Caret"
-                    Grid.Column="0"
-                    Width="16"
-                    Height="16"
-                    Margin="5,10,0,10"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/Caret_Down.png" />
-                <ContentPresenter
-                    x:Name="HeaderContent"
-                    Grid.Column="0"
-                    Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}}, Path=ActualWidth}"
-                    Margin="0,0,0,0"
-                    VerticalAlignment="Center"
-                    RecognizesAccessKey="True" />
+                <Image x:Name="Caret"
+                       Grid.Column="0"
+                       Width="16"
+                       Height="16"
+                       Margin="5,10,0,10"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/Caret_Down.png" />
+                <ContentPresenter x:Name="HeaderContent"
+                                  Grid.Column="0"
+                                  Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}}, Path=ActualWidth}"
+                                  Margin="0,0,0,0"
+                                  VerticalAlignment="Center"
+                                  RecognizesAccessKey="True" />
             </Grid>
         </Border>
         <ControlTemplate.Triggers>
@@ -2448,36 +2361,33 @@
     </ControlTemplate>
 
     <ControlTemplate x:Key="ExpanderPlusToggleButton" TargetType="{x:Type ToggleButton}">
-        <Border
-            Name="Border"
-            Grid.Row="0"
-            Background="{StaticResource SecondaryGray}"
-            BorderThickness="1"
-            CornerRadius="1">
+        <Border Name="Border"
+                Grid.Row="0"
+                Background="{StaticResource SecondaryGray}"
+                BorderThickness="1"
+                CornerRadius="1">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <!--  Draws a plus (+) sign on the expander  -->
-                <Path
-                    x:Name="Sign"
-                    Grid.Column="1"
-                    Width="12"
-                    Height="12"
-                    Margin="0,10,15,10"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Data="M 0,6 H 12 M 6,0 V 12 Z"
-                    Stroke="{StaticResource PreferencesWindowFontColor}"
-                    StrokeThickness="2" />
-                <ContentPresenter
-                    x:Name="HeaderContent"
-                    Grid.Column="0"
-                    Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}}, Path=ActualWidth}"
-                    Margin="15,0,0,0"
-                    VerticalAlignment="Center"
-                    RecognizesAccessKey="True" />
+                <Path x:Name="Sign"
+                      Grid.Column="1"
+                      Width="12"
+                      Height="12"
+                      Margin="0,10,15,10"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Data="M 0,6 H 12 M 6,0 V 12 Z"
+                      Stroke="{StaticResource PreferencesWindowFontColor}"
+                      StrokeThickness="2" />
+                <ContentPresenter x:Name="HeaderContent"
+                                  Grid.Column="0"
+                                  Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}}, Path=ActualWidth}"
+                                  Margin="15,0,0,0"
+                                  VerticalAlignment="Center"
+                                  RecognizesAccessKey="True" />
             </Grid>
         </Border>
         <ControlTemplate.Triggers>
@@ -2493,10 +2403,9 @@
     </ControlTemplate>
 
     <DataTemplate x:Key="expanderHeader">
-        <TextBlock
-            FontSize="14"
-            FontWeight="Medium"
-            Text="{Binding}" />
+        <TextBlock FontSize="14"
+                   FontWeight="Medium"
+                   Text="{Binding}" />
     </DataTemplate>
 
 
@@ -2510,27 +2419,24 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Name="ContentRow" Height="0" />
                         </Grid.RowDefinitions>
-                        <Border
-                            Name="Border"
-                            Grid.Row="0"
-                            Background="{x:Null}"
-                            BorderBrush="{x:Null}"
-                            BorderThickness="1"
-                            CornerRadius="0,0,0,0">
+                        <Border Name="Border"
+                                Grid.Row="0"
+                                Background="{x:Null}"
+                                BorderBrush="{x:Null}"
+                                BorderThickness="1"
+                                CornerRadius="0,0,0,0">
                             <ToggleButton IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Template="{StaticResource ExpanderCaretToggleButton}">
                                 <ToggleButton.Content>
-                                    <ContentPresenter
-                                        ContentSource="Header"
-                                        OverridesDefaultStyle="True"
-                                        RecognizesAccessKey="True" />
+                                    <ContentPresenter ContentSource="Header"
+                                                      OverridesDefaultStyle="True"
+                                                      RecognizesAccessKey="True" />
                                 </ToggleButton.Content>
                             </ToggleButton>
                         </Border>
-                        <Border
-                            x:Name="Content"
-                            Grid.Row="1"
-                            BorderThickness="1,0,1,1"
-                            CornerRadius="0,0,4,4">
+                        <Border x:Name="Content"
+                                Grid.Row="1"
+                                BorderThickness="1,0,1,1"
+                                CornerRadius="0,0,4,4">
                             <!--  The Margin is necesary so that the Content is perfectly aligned with the Header  -->
                             <ContentPresenter Margin="1,-3,1,0" />
                         </Border>
@@ -2556,10 +2462,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ContextMenu}">
-                    <Border
-                        x:Name="Border"
-                        Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
-                        BorderThickness="1">
+                    <Border x:Name="Border"
+                            Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
+                            BorderThickness="1">
                         <ItemsPresenter />
                     </Border>
                 </ControlTemplate>
@@ -2587,28 +2492,25 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Name="ContentRow" Height="0" />
                         </Grid.RowDefinitions>
-                        <Border
-                            Name="Border"
-                            Grid.Row="0"
-                            Background="{x:Null}"
-                            BorderBrush="{x:Null}"
-                            BorderThickness="1"
-                            CornerRadius="0,0,0,0">
-                            <ToggleButton
-                                Background="#FF4682B4"
-                                IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                OverridesDefaultStyle="True"
-                                Template="{StaticResource ExpanderPlusToggleButton}">
+                        <Border Name="Border"
+                                Grid.Row="0"
+                                Background="{x:Null}"
+                                BorderBrush="{x:Null}"
+                                BorderThickness="1"
+                                CornerRadius="0,0,0,0">
+                            <ToggleButton Background="#FF4682B4"
+                                          IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          OverridesDefaultStyle="True"
+                                          Template="{StaticResource ExpanderPlusToggleButton}">
                                 <ToggleButton.Content>
                                     <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
                                 </ToggleButton.Content>
                             </ToggleButton>
                         </Border>
-                        <Border
-                            x:Name="Content"
-                            Grid.Row="1"
-                            BorderThickness="1,0,1,1"
-                            CornerRadius="0,0,4,4">
+                        <Border x:Name="Content"
+                                Grid.Row="1"
+                                BorderThickness="1,0,1,1"
+                                CornerRadius="0,0,4,4">
                             <ContentPresenter Margin="12,0,0,15" />
                         </Border>
                     </Grid>
@@ -2639,28 +2541,25 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Name="ContentRow" Height="0" />
                         </Grid.RowDefinitions>
-                        <Border
-                            Name="Border"
-                            Grid.Row="0"
-                            Background="{x:Null}"
-                            BorderBrush="{x:Null}"
-                            BorderThickness="1"
-                            CornerRadius="0,0,0,0">
-                            <ToggleButton
-                                Background="#FF4682B4"
-                                IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                OverridesDefaultStyle="True"
-                                Template="{StaticResource ExpanderPlusToggleButton}">
+                        <Border Name="Border"
+                                Grid.Row="0"
+                                Background="{x:Null}"
+                                BorderBrush="{x:Null}"
+                                BorderThickness="1"
+                                CornerRadius="0,0,0,0">
+                            <ToggleButton Background="#FF4682B4"
+                                          IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          OverridesDefaultStyle="True"
+                                          Template="{StaticResource ExpanderPlusToggleButton}">
                                 <ToggleButton.Content>
                                     <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
                                 </ToggleButton.Content>
                             </ToggleButton>
                         </Border>
-                        <Border
-                            x:Name="Content"
-                            Grid.Row="1"
-                            BorderThickness="1,0,1,1"
-                            CornerRadius="0,0,4,4">
+                        <Border x:Name="Content"
+                                Grid.Row="1"
+                                BorderThickness="1,0,1,1"
+                                CornerRadius="0,0,4,4">
                             <ContentPresenter Margin="2,0,0,15" />
                         </Border>
                     </Grid>
@@ -2679,35 +2578,31 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabItem}">
-                    <Border
-                        Name="TabBorder"
-                        Margin="2"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        BorderThickness="2"
-                        CornerRadius="6">
-                        <StackPanel
+                    <Border Name="TabBorder"
+                            Margin="2"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
-                            Orientation="Horizontal">
-                            <Grid
-                                Name="TabPanel"
-                                Width="165"
-                                Height="30">
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="2"
+                            CornerRadius="6">
+                        <StackPanel HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Orientation="Horizontal">
+                            <Grid Name="TabPanel"
+                                  Width="165"
+                                  Height="30">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="5" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Label x:Name="SelectedItem" Grid.Column="0" />
-                                <ContentPresenter
-                                    x:Name="ContentSection"
-                                    Grid.Column="1"
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Center"
-                                    ContentSource="Header" />
+                                <ContentPresenter x:Name="ContentSection"
+                                                  Grid.Column="1"
+                                                  Margin="5,0,0,0"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Center"
+                                                  ContentSource="Header" />
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -2737,11 +2632,10 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Border
-                            Name="_borderOn"
-                            Grid.Column="0"
-                            Width="{TemplateBinding Width}"
-                            Background="Transparent">
+                        <Border Name="_borderOn"
+                                Grid.Column="0"
+                                Width="{TemplateBinding Width}"
+                                Background="Transparent">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -2753,41 +2647,37 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <Border
-                                    Grid.Row="0"
-                                    Grid.RowSpan="1"
-                                    Grid.Column="1"
-                                    Grid.ColumnSpan="3"
-                                    Panel.ZIndex="1"
-                                    Background="{StaticResource PreferencesWindowButtonColor}" />
-                                <Ellipse
-                                    Name="ButtonBackgroundOn"
-                                    Grid.Row="0"
-                                    Grid.RowSpan="1"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="2"
-                                    Width="{TemplateBinding Height}"
-                                    Panel.ZIndex="0"
-                                    Fill="{StaticResource PreferencesWindowButtonColor}" />
-                                <Ellipse
-                                    Grid.Row="0"
-                                    Grid.RowSpan="1"
-                                    Grid.Column="3"
-                                    Grid.ColumnSpan="2"
-                                    Width="{TemplateBinding Height}"
-                                    Height="{TemplateBinding Height}"
-                                    Panel.ZIndex="3"
-                                    Fill="{StaticResource CloseButtonMouseOverForeground}"
-                                    Stroke="{StaticResource PreferencesWindowButtonColor}"
-                                    StrokeThickness="4" />
+                                <Border Grid.Row="0"
+                                        Grid.RowSpan="1"
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="3"
+                                        Panel.ZIndex="1"
+                                        Background="{StaticResource PreferencesWindowButtonColor}" />
+                                <Ellipse Name="ButtonBackgroundOn"
+                                         Grid.Row="0"
+                                         Grid.RowSpan="1"
+                                         Grid.Column="0"
+                                         Grid.ColumnSpan="2"
+                                         Width="{TemplateBinding Height}"
+                                         Panel.ZIndex="0"
+                                         Fill="{StaticResource PreferencesWindowButtonColor}" />
+                                <Ellipse Grid.Row="0"
+                                         Grid.RowSpan="1"
+                                         Grid.Column="3"
+                                         Grid.ColumnSpan="2"
+                                         Width="{TemplateBinding Height}"
+                                         Height="{TemplateBinding Height}"
+                                         Panel.ZIndex="3"
+                                         Fill="{StaticResource CloseButtonMouseOverForeground}"
+                                         Stroke="{StaticResource PreferencesWindowButtonColor}"
+                                         StrokeThickness="4" />
                             </Grid>
                         </Border>
 
-                        <Border
-                            Name="_borderOff"
-                            Grid.Column="0"
-                            Width="{TemplateBinding Width}"
-                            Background="Transparent">
+                        <Border Name="_borderOff"
+                                Grid.Column="0"
+                                Width="{TemplateBinding Width}"
+                                Background="Transparent">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -2799,34 +2689,31 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <Border
-                                    Grid.Row="0"
-                                    Grid.RowSpan="1"
-                                    Grid.Column="1"
-                                    Grid.ColumnSpan="3"
-                                    Panel.ZIndex="1"
-                                    Background="{StaticResource TabItemUnSelected}" />
-                                <Ellipse
-                                    Name="ButtonBackgroundOff"
-                                    Grid.Row="0"
-                                    Grid.RowSpan="1"
-                                    Grid.Column="3"
-                                    Grid.ColumnSpan="2"
-                                    Width="{TemplateBinding Height}"
-                                    Height="{TemplateBinding Height}"
-                                    Panel.ZIndex="0"
-                                    Fill="{StaticResource TabItemUnSelected}" />
-                                <Ellipse
-                                    Grid.Row="0"
-                                    Grid.RowSpan="1"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="2"
-                                    Width="{TemplateBinding Height}"
-                                    Height="{TemplateBinding Height}"
-                                    Panel.ZIndex="3"
-                                    Fill="{StaticResource CloseButtonMouseOverForeground}"
-                                    Stroke="{StaticResource TabItemUnSelected}"
-                                    StrokeThickness="4" />
+                                <Border Grid.Row="0"
+                                        Grid.RowSpan="1"
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="3"
+                                        Panel.ZIndex="1"
+                                        Background="{StaticResource TabItemUnSelected}" />
+                                <Ellipse Name="ButtonBackgroundOff"
+                                         Grid.Row="0"
+                                         Grid.RowSpan="1"
+                                         Grid.Column="3"
+                                         Grid.ColumnSpan="2"
+                                         Width="{TemplateBinding Height}"
+                                         Height="{TemplateBinding Height}"
+                                         Panel.ZIndex="0"
+                                         Fill="{StaticResource TabItemUnSelected}" />
+                                <Ellipse Grid.Row="0"
+                                         Grid.RowSpan="1"
+                                         Grid.Column="0"
+                                         Grid.ColumnSpan="2"
+                                         Width="{TemplateBinding Height}"
+                                         Height="{TemplateBinding Height}"
+                                         Panel.ZIndex="3"
+                                         Fill="{StaticResource CloseButtonMouseOverForeground}"
+                                         Stroke="{StaticResource TabItemUnSelected}"
+                                         StrokeThickness="4" />
                             </Grid>
                         </Border>
                     </Grid>
@@ -2857,37 +2744,33 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="20" />
             </Grid.ColumnDefinitions>
-            <Border
-                x:Name="Border"
-                Grid.ColumnSpan="2"
-                Background="{StaticResource PreferencesWindowBackgroundColor}"
-                BorderBrush="#FF97A0A5"
-                BorderThickness="0,0,0,1"
-                CornerRadius="0" />
-            <Border
-                Grid.Column="0"
-                Margin="1"
-                Background="{StaticResource PreferencesWindowBackgroundColor}"
-                BorderBrush="#FF97A0A5"
-                BorderThickness="0,0,0,0"
-                CornerRadius="0" />
+            <Border x:Name="Border"
+                    Grid.ColumnSpan="2"
+                    Background="{StaticResource PreferencesWindowBackgroundColor}"
+                    BorderBrush="#FF97A0A5"
+                    BorderThickness="0,0,0,1"
+                    CornerRadius="0" />
+            <Border Grid.Column="0"
+                    Margin="1"
+                    Background="{StaticResource PreferencesWindowBackgroundColor}"
+                    BorderBrush="#FF97A0A5"
+                    BorderThickness="0,0,0,0"
+                    CornerRadius="0" />
             <!--  This Path will draw a small triangle symbol inside the toogle button  -->
-            <Path
-                x:Name="Arrow"
-                Grid.Column="1"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
-                Fill="{StaticResource PreferencesWindowFontColor}" />
+            <Path x:Name="Arrow"
+                  Grid.Column="1"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
+                  Fill="{StaticResource PreferencesWindowFontColor}" />
         </Grid>
     </ControlTemplate>
 
     <!--  This ControlTemplate for TextBox is used inside the NoBordersComboBox control  -->
     <ControlTemplate x:Key="NoBordersComboBoxTextBox" TargetType="{x:Type TextBox}">
-        <Border
-            x:Name="PART_ContentHost"
-            Background="{TemplateBinding Background}"
-            Focusable="False" />
+        <Border x:Name="PART_ContentHost"
+                Background="{TemplateBinding Background}"
+                Focusable="False" />
     </ControlTemplate>
 
     <!--  This is the main Style for the new ComboBox in the Preferences window General tab and using the previous templated declared  -->
@@ -2904,54 +2787,48 @@
                 <ControlTemplate TargetType="{x:Type ComboBox}">
                     <Grid>
                         <!--  Toogle button that is shown in the right side of the combobox and when is clicked displays a list of all the values  -->
-                        <ToggleButton
-                            Name="ToggleButton"
-                            Grid.Column="2"
-                            ClickMode="Press"
-                            Focusable="false"
-                            IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                            Template="{StaticResource NoBordersComboBoxToggleButton}" />
-                        <ContentPresenter
-                            Name="ContentSite"
-                            Margin="3,3,23,3"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Content="{TemplateBinding SelectionBoxItem}"
-                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                            IsHitTestVisible="False" />
+                        <ToggleButton Name="ToggleButton"
+                                      Grid.Column="2"
+                                      ClickMode="Press"
+                                      Focusable="false"
+                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Template="{StaticResource NoBordersComboBoxToggleButton}" />
+                        <ContentPresenter Name="ContentSite"
+                                          Margin="3,3,23,3"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                          IsHitTestVisible="False" />
                         <!--  This TextBox shows the current comboboxitem value selected  -->
-                        <TextBox
-                            x:Name="PART_EditableTextBox"
-                            Margin="3,3,23,3"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Background="#FF3F3F3F"
-                            Focusable="True"
-                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                            IsReadOnly="{TemplateBinding IsReadOnly}"
-                            Style="{x:Null}"
-                            Template="{StaticResource NoBordersComboBoxTextBox}"
-                            Visibility="Hidden" />
+                        <TextBox x:Name="PART_EditableTextBox"
+                                 Margin="3,3,23,3"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Background="#FF3F3F3F"
+                                 Focusable="True"
+                                 Foreground="{StaticResource PreferencesWindowFontColor}"
+                                 IsReadOnly="{TemplateBinding IsReadOnly}"
+                                 Style="{x:Null}"
+                                 Template="{StaticResource NoBordersComboBoxTextBox}"
+                                 Visibility="Hidden" />
                         <!--  The Popup is the window with all the comboboxitems displayed when the user clicks the combobox toogle button  -->
-                        <Popup
-                            Name="Popup"
-                            AllowsTransparency="True"
-                            Focusable="False"
-                            IsOpen="{TemplateBinding IsDropDownOpen}"
-                            Placement="Bottom"
-                            PopupAnimation="Slide">
+                        <Popup Name="Popup"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               Placement="Bottom"
+                               PopupAnimation="Slide">
 
-                            <Grid
-                                Name="DropDown"
-                                MinWidth="{TemplateBinding ActualWidth}"
-                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                                SnapsToDevicePixels="True">
-                                <Border
-                                    x:Name="DropDownBorder"
-                                    Background="#FF3F3F3F"
-                                    BorderBrush="#888888"
-                                    BorderThickness="1" />
+                            <Grid Name="DropDown"
+                                  MinWidth="{TemplateBinding ActualWidth}"
+                                  MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                  SnapsToDevicePixels="True">
+                                <Border x:Name="DropDownBorder"
+                                        Background="#FF3F3F3F"
+                                        BorderBrush="#888888"
+                                        BorderThickness="1" />
                                 <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
                                     <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                                 </ScrollViewer>
@@ -2991,10 +2868,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBoxItem}">
-                    <Border
-                        Name="Border"
-                        Padding="2"
-                        SnapsToDevicePixels="true">
+                    <Border Name="Border"
+                            Padding="2"
+                            SnapsToDevicePixels="true">
                         <ContentPresenter />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -3020,25 +2896,22 @@
                         <BulletDecorator.Bullet>
                             <Grid Width="18" Height="18">
                                 <!--  The main white circle filled with White color (see the trigger IsChecked -> True  -->
-                                <Ellipse
-                                    x:Name="MainEllipse"
-                                    Stroke="Black"
-                                    StrokeThickness="1" />
+                                <Ellipse x:Name="MainEllipse"
+                                         Stroke="Black"
+                                         StrokeThickness="1" />
                                 <!--  The black circle inside the MainEllipse which indicates which radio button is checked  -->
-                                <Ellipse
-                                    x:Name="SelectedEllipse"
-                                    Margin="5"
-                                    Fill="Black"
-                                    Visibility="Collapsed" />
+                                <Ellipse x:Name="SelectedEllipse"
+                                         Margin="5"
+                                         Fill="Black"
+                                         Visibility="Collapsed" />
                             </Grid>
                         </BulletDecorator.Bullet>
                         <!--  Text element next to each radio button  -->
-                        <TextBlock
-                            Margin="3,1,0,0"
-                            FontFamily="Calibri"
-                            FontSize="12"
-                            FontWeight="Regular"
-                            Foreground="{StaticResource PreferencesWindowFontColor}">
+                        <TextBlock Margin="3,1,0,0"
+                                   FontFamily="Calibri"
+                                   FontSize="12"
+                                   FontWeight="Regular"
+                                   Foreground="{StaticResource PreferencesWindowFontColor}">
                             <ContentPresenter />
                         </TextBlock>
                     </BulletDecorator>
@@ -3074,25 +2947,22 @@
                         <BulletDecorator.Bullet>
                             <Grid Width="18" Height="18">
                                 <!--  The main white circle filled with White color (see the trigger IsChecked -> True  -->
-                                <Ellipse
-                                    x:Name="MainEllipse"
-                                    Stroke="Black"
-                                    StrokeThickness="1" />
+                                <Ellipse x:Name="MainEllipse"
+                                         Stroke="Black"
+                                         StrokeThickness="1" />
                                 <!--  The black circle inside the MainEllipse which indicates which radio button is checked  -->
-                                <Ellipse
-                                    x:Name="SelectedEllipse"
-                                    Margin="5"
-                                    Fill="Black"
-                                    Visibility="Collapsed" />
+                                <Ellipse x:Name="SelectedEllipse"
+                                         Margin="5"
+                                         Fill="Black"
+                                         Visibility="Collapsed" />
                             </Grid>
                         </BulletDecorator.Bullet>
                         <!--  Text element next to each radio button  -->
-                        <TextBlock
-                            x:Name="RadioTextBlock"
-                            Margin="3,1,0,0"
-                            FontSize="12"
-                            FontWeight="Regular"
-                            Foreground="{StaticResource PreferencesWindowFontColor}">
+                        <TextBlock x:Name="RadioTextBlock"
+                                   Margin="3,1,0,0"
+                                   FontSize="12"
+                                   FontWeight="Regular"
+                                   Foreground="{StaticResource PreferencesWindowFontColor}">
                             <ContentPresenter />
                         </TextBlock>
                     </BulletDecorator>
@@ -3140,54 +3010,48 @@
                             <ColumnDefinition />
                             <ColumnDefinition Width="20" />
                         </Grid.ColumnDefinitions>
-                        <Border
-                            Grid.Row="0"
-                            Grid.ColumnSpan="2"
-                            Background="#666666"
-                            BorderBrush="{StaticResource PreferencesWindowButtonColor}"
-                            BorderThickness="0,0,0,2" />
-                        <ScrollViewer
-                            x:Name="PART_ContentHost"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center" />
+                        <Border Grid.Row="0"
+                                Grid.ColumnSpan="2"
+                                Background="#666666"
+                                BorderBrush="{StaticResource PreferencesWindowButtonColor}"
+                                BorderThickness="0,0,0,2" />
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                      Margin="5,0,0,0"
+                                      VerticalAlignment="Center" />
 
                         <!--  This Label will show the WaterMark text that will be deleted once the user starts typing  -->
-                        <Label
-                            x:Name="WaterMarkLabel"
-                            Grid.Row="0"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            Content="{TemplateBinding Tag}"
-                            Foreground="LightGray"
-                            Visibility="Collapsed" />
+                        <Label x:Name="WaterMarkLabel"
+                               Grid.Row="0"
+                               Margin="5,0,0,0"
+                               VerticalAlignment="Center"
+                               Content="{TemplateBinding Tag}"
+                               Foreground="LightGray"
+                               Visibility="Collapsed" />
 
                         <!--  This is the Canvas for the exclamation mark appearing when the Style that the user is trying to insert already exists  -->
-                        <Canvas
-                            Grid.Column="1"
-                            ToolTip="{x:Static p:Resources.PreferencesViewStyleWarning}"
-                            Visibility="{Binding Path=IsWarningEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Canvas Grid.Column="1"
+                                ToolTip="{x:Static p:Resources.PreferencesViewStyleWarning}"
+                                Visibility="{Binding Path=IsWarningEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Polygon Points="10,5 18,20 2,20">
                                 <Polygon.Fill>
                                     <SolidColorBrush Color="#FAA21B" />
                                 </Polygon.Fill>
                             </Polygon>
 
-                            <Line
-                                x:Name="exclamationMark"
-                                Stroke="Black"
-                                StrokeThickness="2"
-                                X1="10"
-                                X2="10"
-                                Y1="8"
-                                Y2="15" />
-                            <Ellipse
-                                x:Name="exclamationPoint"
-                                Canvas.Left="9"
-                                Canvas.Top="17"
-                                Canvas.Right="10"
-                                Width="2"
-                                Height="2"
-                                Fill="Black" />
+                            <Line x:Name="exclamationMark"
+                                  Stroke="Black"
+                                  StrokeThickness="2"
+                                  X1="10"
+                                  X2="10"
+                                  Y1="8"
+                                  Y2="15" />
+                            <Ellipse x:Name="exclamationPoint"
+                                     Canvas.Left="9"
+                                     Canvas.Top="17"
+                                     Canvas.Right="10"
+                                     Width="2"
+                                     Height="2"
+                                     Fill="Black" />
                         </Canvas>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -3213,11 +3077,10 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border
-                        x:Name="ButtonBorder"
-                        Background="Transparent"
-                        BorderBrush="#E0E0E0"
-                        CornerRadius="4">
+                    <Border x:Name="ButtonBorder"
+                            Background="Transparent"
+                            BorderBrush="#E0E0E0"
+                            CornerRadius="4">
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
                             <ContentPresenter />
                         </TextBlock>
@@ -3254,12 +3117,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border
-                        x:Name="ButtonBorder"
-                        Background="Transparent"
-                        BorderBrush="#E0E0E0"
-                        BorderThickness="0.5"
-                        CornerRadius="4">
+                    <Border x:Name="ButtonBorder"
+                            Background="Transparent"
+                            BorderBrush="#E0E0E0"
+                            BorderThickness="0.5"
+                            CornerRadius="4">
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
                             <ContentPresenter />
                         </TextBlock>
@@ -3269,12 +3131,11 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Button.Effect">
                                 <Setter.Value>
-                                    <DropShadowEffect
-                                        BlurRadius="5"
-                                        Direction="320"
-                                        Opacity="0.5"
-                                        ShadowDepth="3"
-                                        Color="Black" />
+                                    <DropShadowEffect BlurRadius="5"
+                                                      Direction="320"
+                                                      Opacity="0.5"
+                                                      ShadowDepth="3"
+                                                      Color="Black" />
                                 </Setter.Value>
                             </Setter>
                             <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="1" />
@@ -3323,11 +3184,10 @@
         <Setter Property="BorderBrush" Value="#549ee7" />
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect
-                    BlurRadius="9.0"
-                    Opacity="0.25"
-                    ShadowDepth="0"
-                    Color="#222" />
+                <DropShadowEffect BlurRadius="9.0"
+                                  Opacity="0.25"
+                                  ShadowDepth="0"
+                                  Color="#222" />
             </Setter.Value>
         </Setter>
     </Style>
@@ -3346,11 +3206,10 @@
                     <Border x:Name="removeStyleBorder" Background="{TemplateBinding Background}">
                         <Grid>
                             <Rectangle x:Name="backgroundRectangle" Fill="{TemplateBinding Background}" />
-                            <Rectangle
-                                x:Name="borderRectangle"
-                                Fill="Transparent"
-                                Stroke="Transparent"
-                                StrokeThickness="2" />
+                            <Rectangle x:Name="borderRectangle"
+                                       Fill="Transparent"
+                                       Stroke="Transparent"
+                                       StrokeThickness="2" />
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Grid>
                     </Border>
@@ -3379,11 +3238,10 @@
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border x:Name="removeStyleBorder" Background="{TemplateBinding Background}">
                         <Grid>
-                            <Rectangle
-                                x:Name="borderRectangle"
-                                Fill="Transparent"
-                                Stroke="Transparent"
-                                StrokeThickness="2" />
+                            <Rectangle x:Name="borderRectangle"
+                                       Fill="Transparent"
+                                       Stroke="Transparent"
+                                       StrokeThickness="2" />
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Grid>
                     </Border>
@@ -3404,12 +3262,11 @@
 
     <SolidColorBrush x:Key="PopupWhiteColor" Color="#FFFFFF" />
 
-    <Color
-        x:Key="PopupTitleBorderColor"
-        A="255"
-        B="128"
-        G="128"
-        R="128" />
+    <Color x:Key="PopupTitleBorderColor"
+           A="255"
+           B="128"
+           G="128"
+           R="128" />
 
     <SolidColorBrush x:Key="PopupRatingControlBackColor" Color="#F5F5F5" />
 
@@ -3422,26 +3279,23 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border
-                        x:Name="CaretButtonBorder"
-                        Background="{StaticResource PopupWhiteColor}"
-                        BorderBrush="Transparent"
-                        BorderThickness="0">
+                    <Border x:Name="CaretButtonBorder"
+                            Background="{StaticResource PopupWhiteColor}"
+                            BorderBrush="Transparent"
+                            BorderThickness="0">
                         <Canvas Width="5" Height="10">
-                            <Line
-                                x:Name="line1"
-                                Stroke="Black"
-                                X1="5"
-                                X2="0"
-                                Y1="0"
-                                Y2="5" />
-                            <Line
-                                x:Name="line2"
-                                Stroke="Black"
-                                X1="0"
-                                X2="5"
-                                Y1="5"
-                                Y2="10" />
+                            <Line x:Name="line1"
+                                  Stroke="Black"
+                                  X1="5"
+                                  X2="0"
+                                  Y1="0"
+                                  Y2="5" />
+                            <Line x:Name="line2"
+                                  Stroke="Black"
+                                  X1="0"
+                                  X2="5"
+                                  Y1="5"
+                                  Y2="10" />
                         </Canvas>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -3477,28 +3331,25 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border
-                        x:Name="CloseButtonBorder"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        BorderThickness="0">
+                    <Border x:Name="CloseButtonBorder"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0">
                         <Canvas Margin="0,0,0,0">
-                            <Line
-                                x:Name="line1"
-                                Stroke="#808080"
-                                StrokeThickness="1"
-                                X1="0"
-                                X2="13"
-                                Y1="0"
-                                Y2="13" />
-                            <Line
-                                x:Name="line2"
-                                Stroke="#808080"
-                                StrokeThickness="1"
-                                X1="0"
-                                X2="13"
-                                Y1="13"
-                                Y2="0" />
+                            <Line x:Name="line1"
+                                  Stroke="#808080"
+                                  StrokeThickness="1"
+                                  X1="0"
+                                  X2="13"
+                                  Y1="0"
+                                  Y2="13" />
+                            <Line x:Name="line2"
+                                  Stroke="#808080"
+                                  StrokeThickness="1"
+                                  X1="0"
+                                  X2="13"
+                                  Y1="13"
+                                  Y2="0" />
                         </Canvas>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -3526,15 +3377,13 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border
-                        x:Name="PopupButtonBorder"
-                        Background="{StaticResource PreferencesWindowButtonColor}"
-                        BorderThickness="1"
-                        CornerRadius="4">
-                        <ContentPresenter
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Content="{TemplateBinding Content}" />
+                    <Border x:Name="PopupButtonBorder"
+                            Background="{StaticResource PreferencesWindowButtonColor}"
+                            BorderThickness="1"
+                            CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

@@ -75,7 +75,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="ProtoGeometry, Version=2.12.0.5595, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5595\lib\net48\ProtoGeometry.dll</HintPath>
-		<Private>False</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
@@ -573,6 +573,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="UI\Fonts\Artifakt-Element-Regular.otf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\CourierPrime-Regular.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="UI\Fonts\OpenSans-Bold.ttf">
@@ -1381,6 +1384,9 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\default-node-icon.png" />
+    <Resource Include="UI\Images\more-vertical.png" />
+    <Resource Include="UI\Images\warning.png" />
     <Resource Include="UI\Images\pin_default_16_16.png" />
     <Resource Include="UI\Images\watch_default_16_16.png" />
     <Resource Include="UI\Images\wire_anchor_12_12.png" />

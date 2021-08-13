@@ -18,7 +18,7 @@
     </UserControl.Resources>
     <Grid>
         <Border
-            Padding="2,6"
+            Padding="2,11,2,6"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             BorderBrush="#959595"
@@ -28,9 +28,9 @@
             <avalonedit:TextEditor
                 x:Name="InnerTextEditor"
                 MaxWidth="677"
-                Padding="8,3"
+                Padding="8,0"
                 Background="#3A3B3B"
-                FontFamily="{StaticResource ArtifaktElementRegular}"
+                FontFamily="{StaticResource CourierPrime}"
                 FontSize="14px"
                 Foreground="#DCDCDC"
                 LineNumbersForeground="#DCDCDC"
@@ -42,7 +42,7 @@
             x:Name="WatermarkLabel"
             Margin="3,5,3,0"
             Padding="8,3"
-            FontFamily="{StaticResource ArtifaktElementRegular}"
+                   FontFamily="{StaticResource CourierPrime}"
             FontSize="14px"
             Foreground="#DBDCDB"
             IsHitTestVisible="False" />
