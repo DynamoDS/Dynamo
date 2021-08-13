@@ -18,6 +18,7 @@ using NUnit.Framework;
 using SystemTestServices;
 using Dynamo.Wpf.Views;
 using Dynamo.Core;
+using Dynamo.Extensions;
 
 namespace DynamoCoreWpfTests
 {
@@ -349,6 +350,38 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(conflictingPkg.LoadState.State, PackageLoadState.StateTypes.Loaded);
             Assert.AreEqual(conflictingPkg.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.None);
         }
+
+        public void PackageContainingNodeViewOnlyCustomization_AddsCustomizationToCustomizationLibrary()
+        {
+            var dynamoModel = ViewModel.Model;
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new[] { PackagesDirectory });
+            pathManager.SetupGet(x => x.CommonDataDirectory).Returns(() => string.Empty);
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(dynamoModel);
+
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = ViewModel.Model.PreferenceSettings
+
+            };
+            loader.LoadAll(loadPackageParams);
+            //verify the UI assembly was imported from the correct package.
+            var testPackage = loader.LocalPackages.FirstOrDefault(x => x.Name == "NodeViewCustomizationTestPackage");
+            var uiassembly = testPackage.LoadedAssemblies.FirstOrDefault(a => a.Name == "NodeViewCustomizationAssembly");
+            var nodeModelAssembly = testPackage.LoadedAssemblies.FirstOrDefault(a => a.Name == "NodeModelAssembly");
+            Assert.IsNotNull(uiassembly);
+            Assert.IsNotNull(nodeModelAssembly);
+            //verify is marked as nodelib
+            Assert.IsTrue(uiassembly.IsNodeLibrary);
+            //verify that the customization was added to the customization library
+            Assert.IsTrue(View.nodeViewCustomizationLibrary.ContainsCustomizationForNodeModel(nodeModelAssembly.Assembly.GetType("NodeModelAssembly.NodeModelDerivedClass")));
+
+            loader.RequestLoadNodeLibrary -= libraryLoader.LoadNodeLibrary;
+        }
+
         #endregion
 
         #region PackageManagerSearchView

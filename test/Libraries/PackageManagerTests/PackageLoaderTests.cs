@@ -26,6 +26,7 @@ namespace Dynamo.PackageManager.Tests
         public string PackagesDirectorySigned { get { return Path.Combine(TestDirectory, "pkgs_signed"); } }
         internal string BuiltInPackagesTestDir { get { return Path.Combine(TestDirectory, "builtinpackages testdir", "Packages"); } }
 
+        private string originalBltPackagesDir = PathManager.BuiltinPackagesDirectory;
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("DesignScriptBuiltin.dll");
@@ -140,7 +141,7 @@ namespace Dynamo.PackageManager.Tests
                 
             };
             loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(18, loader.LocalPackages.Count());
+            Assert.AreEqual(19, loader.LocalPackages.Count());
             Assert.AreEqual(true, packagesLoaded);
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
@@ -150,7 +151,7 @@ namespace Dynamo.PackageManager.Tests
             loadPackageParams.NewPaths = new List<string>();
             // This function is called upon addition of new package paths in the UI.
             loader.LoadCustomNodesAndPackages(loadPackageParams, CurrentDynamoModel.CustomNodeManager);
-            Assert.AreEqual(18, loader.LocalPackages.Count());
+            Assert.AreEqual(19, loader.LocalPackages.Count());
 
             // Assert packages are not reloaded if there are no new package paths.
             Assert.False(packagesLoaded);
@@ -186,7 +187,7 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = CurrentDynamoModel.PreferenceSettings,
             };
             loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(18, loader.LocalPackages.Count());
+            Assert.AreEqual(19, loader.LocalPackages.Count());
             Assert.AreEqual(true, packagesLoaded);
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
@@ -198,7 +199,7 @@ namespace Dynamo.PackageManager.Tests
             loadPackageParams.NewPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
             // This function is called upon addition of new package paths in the UI.
             loader.LoadCustomNodesAndPackages(loadPackageParams, CurrentDynamoModel.CustomNodeManager);
-            Assert.AreEqual(19, loader.LocalPackages.Count());
+            Assert.AreEqual(20, loader.LocalPackages.Count());
 
             // Assert packages are reloaded if there are new package paths.
             Assert.True(packagesLoaded);
@@ -305,6 +306,9 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void LoadingBuiltInZTPackageAddsItToLibrary()
         {
+            //restore bltin packages dir
+            PathManager.BuiltinPackagesDirectory = originalBltPackagesDir;
+
             var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
             pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new List<string> { BuiltInPackagesTestDir });
 
@@ -351,8 +355,8 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = CurrentDynamoModel.PreferenceSettings,
             });
 
-            // There are 18 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(18, loader.LocalPackages.Count());
+            // There are 19 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(19, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
             // TODO: Review these assertions. Lambdas are not using x, so they are basically just checking that test files exist.
@@ -389,8 +393,8 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = CurrentDynamoModel.PreferenceSettings,
             });
 
-            // There are 18 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(18, loader.LocalPackages.Count());
+            // There are 19 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(19, loader.LocalPackages.Count());
 
             // Simulate loading new package from PM
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
@@ -424,8 +428,10 @@ namespace Dynamo.PackageManager.Tests
 
             // This test needs the "isTestMode" flag to be turned off as an exception to be able 
             // to test duplicate custom node def loading.
-            Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> reqLoadCNDelegate = (dir, pkgInfo) =>
-            CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode: false, packageInfo: pkgInfo);
+            Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> reqLoadCNDelegate = (dir, pkgInfo) => {
+                Console.WriteLine($"packageInfo reqLoadCNDelegate :{pkgInfo}");
+                return CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode: false, packageInfo: pkgInfo);
+                };
             loader.RequestLoadCustomNodeDirectory += reqLoadCNDelegate;
 
             loader.LoadAll(new LoadPackageParams
@@ -434,7 +440,15 @@ namespace Dynamo.PackageManager.Tests
             });
 
             var packageInfo = new PackageInfo("EvenOdd", new System.Version(1,0,0));
-            var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo.Equals(packageInfo)).ToList();
+
+            //this test fails randomly - log some info to help debug it.
+            Console.WriteLine($"pathmanager.PackagesDirectories{String.Join(",",pathManager.Object.PackagesDirectories)}");
+            var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x =>
+            {
+                Console.WriteLine($"val {x.Value}, name {x.Value.Name}, pkginfo {x.Value.PackageInfo}, packagemember {x.Value.IsPackageMember}");
+                return x.Value.PackageInfo.Equals(packageInfo);
+            }
+            ).ToList();
             //the node should have the correct package info and should be marked a packageMember.
             Assert.AreEqual(1, matchingNodes.Count);
             Assert.IsTrue(matchingNodes.All(x=>x.Value.IsPackageMember == true));
@@ -459,7 +473,14 @@ namespace Dynamo.PackageManager.Tests
 
 
             var packageInfo = new PackageInfo("EvenOdd", new System.Version(1, 0, 0));
-            var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo.Equals(packageInfo)).ToList();
+            //this test fails randomly - log some info to help debug it.
+            Console.WriteLine($"pathmanager.PackagesDirectories{String.Join(",", CurrentDynamoModel.PathManager.PackagesDirectories)}");
+            var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x =>
+            {
+                Console.WriteLine($"val{x.Value}, name{x.Value.Name}, pkginfo{x.Value.PackageInfo}, packagemember{x.Value.IsPackageMember}");
+                return x.Value.PackageInfo.Equals(packageInfo);
+            }
+            ).ToList();
             //the node should have the correct package info and should be marked a packageMember.
             Assert.AreEqual(1, matchingNodes.Count);
             Assert.IsTrue(matchingNodes.All(x => x.Value.IsPackageMember == true));
@@ -500,8 +521,8 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = CurrentDynamoModel.PreferenceSettings,
             });
 
-            // There are 18 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(18, loader.LocalPackages.Count());
+            // There are 19 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(19, loader.LocalPackages.Count());
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
 
@@ -906,6 +927,8 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void HasValidBuiltinPackagesAndDefaultPackagesPath()
         {
+            //restore bltin packages dir
+            PathManager.BuiltinPackagesDirectory = originalBltPackagesDir;
             // Arrange
             var pathManager = CurrentDynamoModel.PathManager as PathManager;
             var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(pathManager.GetType()).Location),
@@ -1207,6 +1230,47 @@ namespace Dynamo.PackageManager.Tests
             // Restore "en-US"
             Thread.CurrentThread.CurrentCulture = currentCulture;
             Thread.CurrentThread.CurrentUICulture = currentUICulture;
+
+            loader.PackagesLoaded -= libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary -= libraryLoader.LoadNodeLibrary;
+        }
+
+        [Test]
+        public void PackageContainingNodeViewOnlyCustomization_AddsCorrectAssembliesToNodeModelLoader()
+        {
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new[] { PackagesDirectory });
+            pathManager.SetupGet(x => x.CommonDataDirectory).Returns(() => string.Empty);
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+
+            };
+            loader.LoadAll(loadPackageParams);
+            //verify the UI assembly was imported from the correct package.
+            var testPackage = loader.LocalPackages.FirstOrDefault(x => x.Name == "NodeViewCustomizationTestPackage");
+            var uiassembly = testPackage.LoadedAssemblies.FirstOrDefault(a => a.Name == "NodeViewCustomizationAssembly");
+            Assert.IsNotNull(uiassembly);
+            //verify is marked as nodelib
+            Assert.IsTrue(uiassembly.IsNodeLibrary);
+            //verify that no zero touch method in that assembly was imported.
+            var importedFunctionGroups = CurrentDynamoModel.LibraryServices.ImportedFunctionGroups.ToList();
+            var searchEntries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+
+            Assert.IsTrue(importedFunctionGroups.Count(x => x.QualifiedName.Contains("NodeModelAssembly.TestClass.TestFunc")) == 0);
+            Assert.IsTrue(importedFunctionGroups.Count(x => x.QualifiedName.Contains("NodeViewCustomizationAssembly.TestClass2.TestFunc2")) == 0);
+            //verify that the nodemodel is imported!
+            Assert.IsTrue(searchEntries.Count(x => x.FullName.Contains("NodeModelAssembly.NodeModelDerivedClass")) == 1);
+
+            //verify customization assembly was added to nodeModelAssemblyLoader
+            Assert.IsTrue(CurrentDynamoModel.Loader.LoadedAssemblies.Select(x=>x.FullName.Contains("NodeViewCustomizationAssembly")).Any());
+            Assert.IsTrue(CurrentDynamoModel.Loader.LoadedAssemblies.Select(x => x.FullName.Contains("NodeModelAssembly")).Any());
 
             loader.PackagesLoaded -= libraryLoader.LoadPackages;
             loader.RequestLoadNodeLibrary -= libraryLoader.LoadNodeLibrary;

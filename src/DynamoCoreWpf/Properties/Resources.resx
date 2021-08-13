@@ -363,7 +363,7 @@
     <comment>FIle menu | New | New custom node</comment>
   </data>
   <data name="DynamoViewFileMenuNewHomeWorkSpace" xml:space="preserve">
-    <value>_Home Workspace...</value>
+    <value>_Home Workspace</value>
     <comment>File menu | New | New home workspace</comment>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
@@ -371,7 +371,7 @@
     <comment>File menu | Open</comment>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
-    <value>_Open Recent Files...</value>
+    <value>_Open Recent Files</value>
     <comment>File menu | Open Recent files</comment>
   </data>
   <data name="DynamoViewFileMenuSave" xml:space="preserve">
@@ -387,7 +387,7 @@
     <comment>Help menu</comment>
   </data>
   <data name="DynamoViewDynamoMenuAbout" xml:space="preserve">
-    <value>_About...</value>
+    <value>_About</value>
     <comment>Dynamo menu | Display About dialog</comment>
   </data>
   <data name="DynamoViewHelpMenuDisplayStartPage" xml:space="preserve">
@@ -2491,6 +2491,9 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
+  </data>
+  <data name="ExitTourWindowContent" xml:space="preserve">
+    <value>You can return to this tutorial later from the Help menu.</value>
   </data>
   <data name="PackageStateError" xml:space="preserve">
     <value>Error</value>

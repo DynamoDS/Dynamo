@@ -260,7 +260,7 @@ namespace Dynamo.PackageManager
             try
             {
                 // load node libraries
-                foreach (var assem in package.EnumerateAssembliesInBinDirectory())
+                foreach (var assem in package.EnumerateAndLoadAssembliesInBinDirectory())
                 {
                     if (assem.IsNodeLibrary)
                     {
@@ -336,7 +336,7 @@ namespace Dynamo.PackageManager
             TryLoadPackageIntoLibrary(package);
 
             var assemblies =
-                LocalPackages.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
+                LocalPackages.SelectMany(x => x.EnumerateAndLoadAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
             OnPackagesLoaded(assemblies.Select(x => x.Assembly));
         }
 
