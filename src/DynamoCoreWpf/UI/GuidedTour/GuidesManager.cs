@@ -34,6 +34,22 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private const double ExitTourVerticalOffset = 30;
         private const double ExitTourHorizontalOffset = 0;
 
+        public static string GuidesExecutingDirectory
+        {
+            get
+            {
+                return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            }
+        }
+
+        public static string GuidesJsonFilePath
+        {
+            get
+            {
+                return Path.Combine(GuidesExecutingDirectory, @"UI\GuidedTour\dynamo_guides.json");
+            }
+        }
+
         /// <summary>
         /// GuidesManager Constructor that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
         /// </summary>
@@ -45,7 +61,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             guideBackgroundElement = Guide.FindChild(root, "GuidesBackground") as GuideBackground;
 
             Guides = new List<Guide>();
-            CreateGuideSteps(@"UI\GuidedTour\dynamo_guides.json");
+          
+            CreateGuideSteps(GuidesJsonFilePath);
 
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
             GuideFlowEvents.GuidedTourStart += TourStarted;
