@@ -20,6 +20,8 @@ namespace Dynamo.ViewModels
     {
         private readonly DynamoViewModel dynamoViewModel;
         private readonly PackageManagerClient packageManagerClient;
+        private readonly DynamoModel dynamoModel;
+
         public Package Model { get; private set; }
 
         public bool HasAdditionalFiles
@@ -139,7 +141,9 @@ namespace Dynamo.ViewModels
         public PackageViewModel(DynamoViewModel dynamoViewModel, Package model)
         {
             this.dynamoViewModel = dynamoViewModel;
-            var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+            this.dynamoModel = dynamoViewModel.Model;
+
+            var pmExtension = dynamoModel.GetPackageManagerExtension();
             this.packageManagerClient = pmExtension.PackageManagerClient;
             Model = model;
 
@@ -158,8 +162,8 @@ namespace Dynamo.ViewModels
             Model.LoadedAssemblies.CollectionChanged += LoadedAssembliesOnCollectionChanged;
             Model.PropertyChanged += ModelOnPropertyChanged;
 
-            this.dynamoViewModel.Model.WorkspaceAdded += WorkspaceAdded;
-            this.dynamoViewModel.Model.WorkspaceRemoved += WorkspaceRemoved;
+            this.dynamoModel.WorkspaceAdded += WorkspaceAdded;
+            this.dynamoModel.WorkspaceRemoved += WorkspaceRemoved;
         }
 
         private void NodeAddedOrRemovedHandler(object _)
@@ -210,7 +214,7 @@ namespace Dynamo.ViewModels
 
         private void UnmarkForUninstallation()
         {
-            Model.UnmarkForUninstall( dynamoViewModel.Model.PreferenceSettings );
+            Model.UnmarkForUninstall( dynamoModel.PreferenceSettings );
             NotifyLoadStatePropertyChanged();
         }
 
@@ -244,8 +248,9 @@ namespace Dynamo.ViewModels
 
             try
             {
-                var dynModel = dynamoViewModel.Model;
-                Model.UninstallCore(dynModel.CustomNodeManager, dynModel.GetPackageManagerExtension().PackageLoader, dynModel.PreferenceSettings);
+                Model.UninstallCore(dynamoModel.CustomNodeManager, 
+                    dynamoModel.GetPackageManagerExtension().PackageLoader, 
+                    dynamoModel.PreferenceSettings);
             }
             catch (Exception)
             {
@@ -262,7 +267,7 @@ namespace Dynamo.ViewModels
 
         private bool CanUninstall()
         {
-            if (!Model.InUse(dynamoViewModel.Model) || Model.LoadedAssemblies.Any())
+            if (!Model.InUse(dynamoModel) || Model.LoadedAssemblies.Any())
             {
                 return Model.BuiltInPackage ?
                     Model.LoadState.State != PackageLoadState.StateTypes.Unloaded &&
@@ -275,10 +280,9 @@ namespace Dynamo.ViewModels
         // Loads a built-in package that was previously set as Unloaded
         private void Load()
         {
-            var dynModel = dynamoViewModel.Model;
-            var packageLoader = dynModel.GetPackageManagerExtension().PackageLoader;
+            var packageLoader = dynamoModel.GetPackageManagerExtension().PackageLoader;
             var conflicts = packageLoader.LocalPackages.ToList().Where(x => x.Name == Model.Name && x != Model);
-            bool hasConflictsWithLoadedAssemblies = conflicts.Any(x => x.InUse(dynamoViewModel.Model));
+            bool hasConflictsWithLoadedAssemblies = conflicts.Any(x => x.InUse(dynamoModel));
 
             if (conflicts.Any())
             {
@@ -303,7 +307,7 @@ namespace Dynamo.ViewModels
             {
                 foreach (var package in conflicts)
                 {
-                    package.UninstallCore(dynModel.CustomNodeManager, packageLoader, dynModel.PreferenceSettings);
+                    package.UninstallCore(dynamoModel.CustomNodeManager, packageLoader, dynamoModel.PreferenceSettings);
                 }
 
                 if (!hasConflictsWithLoadedAssemblies)
@@ -315,12 +319,12 @@ namespace Dynamo.ViewModels
                     } 
                     catch 
                     {
-                        Model.MarkForLoad(dynModel.PreferenceSettings);
+                        Model.MarkForLoad(dynamoModel.PreferenceSettings);
                     }
                 }
                 else
                 {
-                    Model.MarkForLoad(dynModel.PreferenceSettings);
+                    Model.MarkForLoad(dynamoModel.PreferenceSettings);
                 }
             }
             catch (Exception e) 
@@ -340,19 +344,18 @@ namespace Dynamo.ViewModels
         // Cancels the ScheduledForLoad status on a built-in package
         private void UnmarkForLoad()
         {
-            var dynModel = dynamoViewModel.Model;
-            var packageLoader = dynModel.GetPackageManagerExtension().PackageLoader;
+            var packageLoader = dynamoModel.GetPackageManagerExtension().PackageLoader;
             var conflicts = packageLoader.LocalPackages.ToList().Where(x => x.Name == Model.Name && x != Model);
 
             foreach (var package in conflicts)
             {
                 if (package.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion)
                 {
-                    package.UnmarkForUninstall(dynModel.PreferenceSettings);
+                    package.UnmarkForUninstall(dynamoModel.PreferenceSettings);
                 }
             }
 
-            Model.UnmarkForLoad(dynModel.PreferenceSettings);
+            Model.UnmarkForLoad(dynamoModel.PreferenceSettings);
 
             NotifyLoadStatePropertyChanged();
             foreach (var package in dynamoViewModel.PreferencesViewModel.LocalPackages.Where(x => conflicts.Contains(x.Model)))
@@ -404,8 +407,8 @@ namespace Dynamo.ViewModels
 
         private bool CanDeprecate()
         {
-            if (!dynamoViewModel.Model.AuthenticationManager.HasAuthProvider) return false;
-            return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoViewModel.Model.AuthenticationManager.Username);
+            if (!dynamoModel.AuthenticationManager.HasAuthProvider) return false;
+            return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
         }
 
         private void Undeprecate()
@@ -419,13 +422,13 @@ namespace Dynamo.ViewModels
 
         private bool CanUndeprecate()
         {
-            if (!dynamoViewModel.Model.AuthenticationManager.HasAuthProvider) return false;
-            return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoViewModel.Model.AuthenticationManager.Username);
+            if (!dynamoModel.AuthenticationManager.HasAuthProvider) return false;
+            return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
         }
 
         private void PublishNewPackageVersion()
         {
-            Model.RefreshCustomNodesFromDirectory(dynamoViewModel.Model.CustomNodeManager, DynamoModel.IsTestMode);
+            Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
             var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model);
             vm.IsNewVersion = true;
 
@@ -434,12 +437,12 @@ namespace Dynamo.ViewModels
 
         private bool CanPublishNewPackageVersion()
         {
-            return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider;
+            return dynamoModel.AuthenticationManager.HasAuthProvider;
         }
 
         private void PublishNewPackage()
         {
-            Model.RefreshCustomNodesFromDirectory(dynamoViewModel.Model.CustomNodeManager, DynamoModel.IsTestMode);
+            Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
             var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model);
             vm.IsNewVersion = false;
 
@@ -448,13 +451,12 @@ namespace Dynamo.ViewModels
 
         private void ExecuteWithTou(Action acceptanceCallback)
         {
-            var dModel = dynamoViewModel.Model;
             // create TermsOfUseHelper object to check asynchronously whether the Terms of Use has 
             // been accepted, and if so, continue to execute the provided Action.
             var termsOfUseCheck = new TermsOfUseHelper(new TermsOfUseHelperParams
             {
-                PackageManagerClient = dModel.GetPackageManagerExtension().PackageManagerClient,
-                AuthenticationManager = dModel.AuthenticationManager,
+                PackageManagerClient = dynamoModel.GetPackageManagerExtension().PackageManagerClient,
+                AuthenticationManager = dynamoModel.AuthenticationManager,
                 ResourceProvider = dynamoViewModel.BrandingResourceProvider,
                 AcceptanceCallback = acceptanceCallback
             });
@@ -464,7 +466,7 @@ namespace Dynamo.ViewModels
 
         private bool CanPublishNewPackage()
         {
-            return dynamoViewModel.Model.AuthenticationManager.HasAuthProvider;
+            return dynamoModel.AuthenticationManager.HasAuthProvider;
         }
 
         private void GetLatestVersion()

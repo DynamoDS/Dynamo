@@ -406,10 +406,10 @@ namespace Dynamo.PackageManager
 
             foreach (var path in loadPackageParams.NewPaths)
             {
-                var packageDirs = pathManager.PackagesDirectories.Where(x => x.StartsWith(path));
-                if (packageDirs.Any())
+                var packageDirectory = pathManager.PackagesDirectories.Where(x => x.StartsWith(path)).FirstOrDefault();
+                if (packageDirectory != null)
                 {
-                    ScanPackageDirectories(packageDirs.First(), loadPackageParams.Preferences);
+                    ScanPackageDirectories(packageDirectory, loadPackageParams.Preferences);
                 }
             }
 
@@ -503,7 +503,8 @@ namespace Dynamo.PackageManager
                     {
                         if (pkg.BuiltInPackage)
                         {
-                            // If the discovered package is built-in and marked to be unloaded then we set it directly to Unloaded state.
+                            // If the built-in package's package root dir was contained in the uninstall list in preferences,
+                            // then we set it directly to Unloaded state.
                             pkg.LoadState.SetAsUnloaded();
                         } 
                         else
@@ -552,10 +553,9 @@ namespace Dynamo.PackageManager
 
                 var discoveredVersion = CheckAndGetPackageVersion(discoveredPackage.VersionName, discoveredPackage.Name, discoveredPackage.RootDirectory);
 
-                var existingPackage = LocalPackages.FirstOrDefault(package => (package.Name == discoveredPackage.Name) && (package.LoadState.State != PackageLoadState.StateTypes.Unloaded));
-
-                // Do we want to notify the user when we encounter unloaded packages ?
-                //
+                var existingPackage = LocalPackages.FirstOrDefault(package => 
+                                        (package.Name == discoveredPackage.Name) && 
+                                        (package.LoadState.State != PackageLoadState.StateTypes.Unloaded));
 
                 // Is this a new package?
                 if (existingPackage == null)
