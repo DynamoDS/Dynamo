@@ -2587,5 +2587,13 @@ Uninstall the following packages: {0}?</value>
 To load the built-in package {1}, Dynamo needs to first delete the conflicting packages. 
 
 Delete the following packages: {0}?</value>
+  <data name="GraphIssuesOnSavePath_Description" xml:space="preserve">
+    <value>The selected save location path is too long. Please change the save location and try again.</value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Summary" xml:space="preserve">
+    <value>You are trying to save a graph with a path that is too long.</value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Title" xml:space="preserve">
+    <value>Save Path Issues Found</value>
   </data>
 </root>
