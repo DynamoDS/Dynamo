@@ -1267,6 +1267,9 @@ namespace Dynamo.Graph.Workspaces
 
             HasUnsavedChanges = true;
 
+            if (node is CodeBlockNodeModel cbn
+                && string.IsNullOrEmpty(cbn.Code)) return;
+
             RequestRun();
         }
 

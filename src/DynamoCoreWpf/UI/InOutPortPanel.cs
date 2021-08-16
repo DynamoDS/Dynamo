@@ -43,8 +43,15 @@ namespace Dynamo.UI.Controls
             var cumulative = new Size(0, 0);
             foreach (UIElement child in this.Children)
             {
-                // Default behavior of getting each child to measure.
-                child.Measure(constraint);
+                try
+                {
+                    // Default behavior of getting each child to measure.
+                    child.Measure(constraint);
+                }
+                catch(System.Exception)
+                {
+                    continue;
+                }
 
                 // All children should be stacked from top to bottom, so we 
                 // will take the largest child's width as the final width.
