@@ -3461,6 +3461,32 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading the built-in package {1} conflicts with one or more packages that are already loadeded. 
+        ///To load the built-in package {1}, Dynamo needs to first delete the conflicting packages. 
+        ///
+        ///Delete the following packages: {0}?.
+        /// </summary>
+        public static string MessageLoadBuiltInPackage {
+            get {
+                return ResourceManager.GetString("MessageLoadBuiltInPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The built in package {1} cannot be loaded.
+        ///Loading it would conflict with one or more packages that are already loaded. 
+        ///To load {1}, Dynamo needs to first delete the conflicting packages. 
+        ///Restart Dynamo to complete the install.
+        ///
+        ///Uninstall the following packages: {0}?.
+        /// </summary>
+        public static string MessageLoadBuiltInPackageWithRestart {
+            get {
+                return ResourceManager.GetString("MessageLoadBuiltInPackageWithRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} elapsed for loading {1} main window..
         /// </summary>
         public static string MessageLoadingTime {
@@ -4830,6 +4856,42 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageUseNewerDynamoMessageBoxTitle {
             get {
                 return ResourceManager.GetString("PackageUseNewerDynamoMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load.
+        /// </summary>
+        public static string PackageViewContextMenuLoadText {
+            get {
+                return ResourceManager.GetString("PackageViewContextMenuLoadText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load this package into Dynamo. Other packages with the same name will be automatically deleted.
+        /// </summary>
+        public static string PackageViewContextMenuLoadTooltip {
+            get {
+                return ResourceManager.GetString("PackageViewContextMenuLoadTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel Load.
+        /// </summary>
+        public static string PackageViewContextMenuUnmarkForLoadText {
+            get {
+                return ResourceManager.GetString("PackageViewContextMenuUnmarkForLoadText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove scheduled load status and all schduled for delete statuses from all conflicting packages.
+        /// </summary>
+        public static string PackageViewContextMenuUnmarkForLoadTooltip {
+            get {
+                return ResourceManager.GetString("PackageViewContextMenuUnmarkForLoadTooltip", resourceCulture);
             }
         }
         
