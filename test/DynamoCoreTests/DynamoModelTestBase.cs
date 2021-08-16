@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -27,6 +28,7 @@ namespace Dynamo
         protected Preloader preloader;
         protected TestPathResolver pathResolver;
         protected IPreferences dynamoSettings;
+        private string originalBuiltinPackagesDirectory;
 
         protected override DynamoModel GetModel()
         {
@@ -37,6 +39,8 @@ namespace Dynamo
         public override void Setup()
         {
             base.Setup();
+
+            originalBuiltinPackagesDirectory = PathManager.BuiltinPackagesDirectory;
             StartDynamo(dynamoSettings);
         }
 
@@ -52,6 +56,8 @@ namespace Dynamo
                     CurrentDynamoModel.ShutDown(false);
                     CurrentDynamoModel = null;
                 }
+
+                PathManager.BuiltinPackagesDirectory = originalBuiltinPackagesDirectory;
             }
             catch (Exception ex)
             {

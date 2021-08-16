@@ -26,7 +26,6 @@ namespace Dynamo.PackageManager.Tests
         public string PackagesDirectorySigned { get { return Path.Combine(TestDirectory, "pkgs_signed"); } }
         internal string BuiltInPackagesTestDir { get { return Path.Combine(TestDirectory, "builtinpackages testdir", "Packages"); } }
 
-        private string originalBltPackagesDir = PathManager.BuiltinPackagesDirectory;
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("DesignScriptBuiltin.dll");
@@ -232,8 +231,6 @@ namespace Dynamo.PackageManager.Tests
             {
                 Preferences = CurrentDynamoModel.PreferenceSettings,
             };
-            CurrentDynamoModel.SearchModel.ClearAllEntries();
-
             loader.LoadAll(loadPackageParams);
             Assert.AreEqual(3, loader.LocalPackages.Count());
             Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
@@ -306,9 +303,6 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void LoadingBuiltInZTPackageAddsItToLibrary()
         {
-            //restore bltin packages dir
-            PathManager.BuiltinPackagesDirectory = originalBltPackagesDir;
-
             var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
             pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new List<string> { BuiltInPackagesTestDir });
 
@@ -327,8 +321,6 @@ namespace Dynamo.PackageManager.Tests
                 Preferences = CurrentDynamoModel.PreferenceSettings,
 
             };
-
-            CurrentDynamoModel.SearchModel.ClearAllEntries();
             loader.LoadAll(loadPackageParams);
 
             Assert.AreEqual(1, loader.LocalPackages.Count());
@@ -927,8 +919,6 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void HasValidBuiltinPackagesAndDefaultPackagesPath()
         {
-            //restore bltin packages dir
-            PathManager.BuiltinPackagesDirectory = originalBltPackagesDir;
             // Arrange
             var pathManager = CurrentDynamoModel.PathManager as PathManager;
             var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(pathManager.GetType()).Location),
@@ -1034,7 +1024,7 @@ namespace Dynamo.PackageManager.Tests
             loader.LoadAll(loaderParams);
 
             //assert the package in the custom package path was not loaded
-            Assert.IsFalse(loader.LocalPackages.Any(x => x.BinaryDirectory.Contains("SignedPackage2")));
+            Assert.IsFalse(loader.LocalPackages.Any(x => x.BuiltInPackage));
             Assert.AreEqual(0, loader.LocalPackages.Count());
            
         }
