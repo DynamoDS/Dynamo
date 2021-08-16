@@ -1439,20 +1439,12 @@ namespace Dynamo.Graph.Workspaces
             var selectedNodes = this.Nodes == null ? null:this.Nodes.Where(s => s.IsSelected);
             var selectedNotes = this.Notes == null ? null: this.Notes.Where(s => s.IsSelected);
 
-            if (!CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
+            if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
             {
-                var annotationModel = new AnnotationModel(selectedNodes, selectedNotes)
-                {
-                    GUID = id,
-                    AnnotationText = text
-                };
-                annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
-                annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
-                AddNewAnnotation(annotationModel);
-                HasUnsavedChanges = true;
-                return annotationModel;
+                return null;
             }
-            return null;
+
+            return CreateAndSubcribeAnnotationModel(selectedNodes, selectedNotes, id, text);
         }
 
         internal AnnotationModel AddAnnotation(string titleText, string text, Guid id)
@@ -1460,21 +1452,32 @@ namespace Dynamo.Graph.Workspaces
             var selectedNodes = this.Nodes == null ? null : this.Nodes.Where(s => s.IsSelected);
             var selectedNotes = this.Notes == null ? null : this.Notes.Where(s => s.IsSelected);
 
-            if (!CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
+            if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
             {
-                var annotationModel = new AnnotationModel(selectedNodes, selectedNotes)
-                {
-                    GUID = id,
-                    AnnotationDescriptionText = titleText,
-                    AnnotationText = text
-                };
-                annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
-                annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
-                AddNewAnnotation(annotationModel);
-                HasUnsavedChanges = true;
-                return annotationModel;
+                return null;
             }
-            return null;
+
+            return CreateAndSubcribeAnnotationModel(selectedNodes, selectedNotes, id, titleText, text);
+        }
+
+        private AnnotationModel CreateAndSubcribeAnnotationModel(
+            IEnumerable<NodeModel> nodes, 
+            IEnumerable<NoteModel> notes, 
+            Guid id, 
+            string titel, 
+            string description = "")
+        {
+            var annotationModel = new AnnotationModel(nodes, notes)
+            {
+                GUID = id,
+                AnnotationDescriptionText = description,
+                AnnotationText = titel
+            };
+            annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
+            annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
+            AddNewAnnotation(annotationModel);
+            HasUnsavedChanges = true;
+            return annotationModel;
         }
 
         /// <summary>

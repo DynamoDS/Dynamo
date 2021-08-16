@@ -512,22 +512,13 @@ namespace Dynamo.Graph.Nodes
     /// </summary>
     internal class ProxyPortModel : PortModel
     {
-        //private int index;
-        //private Point2D center;
-
+        /// <summary>
+        /// Creates a new ProxyPortModel (TBD how this should be implemented)
+        /// </summary>
+        /// <param name="portModel"></param>
         public ProxyPortModel(PortModel portModel) : base(portModel.PortType, portModel.Owner, new PortData(portModel.Name, portModel.ToolTip))
         {
-            //this.index = portModel.Index;
         }
-
-        //public override int Index { get => index; }
-
-        //public override Point2D Center { get => center; }
-
-        //internal void SetCenterPoint(Point2D point)
-        //{
-        //    center = point;
-        //}
     }
 
     /// <summary>

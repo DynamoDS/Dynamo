@@ -180,20 +180,18 @@ namespace Dynamo.Graph.Annotations
                 // we need to reset all previous values.
                 if (nodes != null)
                 {
-                    foreach (var node in nodes)
-                    {
-                        node.BelongsToGroup = false;
-                    }
+                    nodes.ToList()
+                        .ForEach(x => x.BelongsToGroup = false);
                 }
 
-                nodes = value.ToList();
+                nodes = value;
                 if (nodes != null && nodes.Any())
                 {
                     foreach (var model in nodes)
                     {
                         model.BelongsToGroup = true;
-                        model.PropertyChanged +=model_PropertyChanged;
-                        model.Disposed+=model_Disposed;
+                        model.PropertyChanged += model_PropertyChanged;
+                        model.Disposed += model_Disposed;
                     }
                 }
                 UpdateBoundaryFromSelection();
@@ -293,8 +291,9 @@ namespace Dynamo.Graph.Annotations
 
         private double widthAdjustment;
         /// <summary>
-        /// Adjustment set to the size of the groups
-        /// width.
+        /// Adjustment margin to be added to the width of the
+        /// group. When set the width of the group will always
+        /// be set to Width + widthAdjustment
         /// </summary>
         public double WidthAdjustment
         {
@@ -307,18 +306,19 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
-        private double userHeightAdjustment;
+        private double heightAdjustment;
         /// <summary>
-        /// Adjustment set to the size of the groups
-        /// height.
+        /// Adjustment margin to be added to the height of the
+        /// group. When set the height of the group will always
+        /// be set to Height + heightAdjustment
         /// </summary>
         public double HeightAdjustment
         {
-            get { return userHeightAdjustment; }
+            get { return heightAdjustment; }
             set 
             {
-                if (value == userHeightAdjustment) return;
-                userHeightAdjustment = value;
+                if (value == heightAdjustment) return;
+                heightAdjustment = value;
                 UpdateBoundaryFromSelection();
             }
         }
@@ -351,6 +351,12 @@ namespace Dynamo.Graph.Annotations
         /// <param name="notes">The notes.</param>
         public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes) : this(nodes, notes, new List<AnnotationModel>()) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AnnotationModel"/> class.
+        /// </summary>
+        /// <param name="nodes">The nodes that belongs to this group.</param>
+        /// <param name="notes">The notes that belongs to this group.</param>
+        /// <param name="groups">The groups that belongs to this group</param>
         public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes, IEnumerable<AnnotationModel> groups)
         {
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();

@@ -815,6 +815,10 @@ namespace Dynamo.ViewModels
                     var dropGroups = owningWorkspace.Annotations
                         .Where(x => x.AnnotationModel.Rect.Contains(mouseCursor.X, mouseCursor.Y));
 
+                    // In scenariors where there are nested groups, the above will return both
+                    // the nested group and the parent group, as the mouse coursor will be inside
+                    // both of there rects. In these cases we want to get group that is nested
+                    // inside the parent gropup.
                     var dropGroup = dropGroups.FirstOrDefault(x => x.AnnotationModel.BelongsToGroup) ?? dropGroups.FirstOrDefault();
 
                     // If the dropGroup is null or any of the selected items is already in the dropGroup,
