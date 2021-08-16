@@ -194,7 +194,6 @@ namespace NodeDocumentationMarkdownGenerator
                         m.Position = 0;
                         optimizer.Compress(m);
                     }
-                    //animated gif compression does not robustly with the optimizer.
                     if (compressGifs && ext == ".gif")
                     {
                         using (MagickImageCollection images = new MagickImageCollection(imageFileInfo))
