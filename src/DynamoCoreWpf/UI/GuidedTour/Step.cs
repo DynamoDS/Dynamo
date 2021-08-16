@@ -81,6 +81,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         [JsonProperty("HostPopupInfo")]
         public HostControlInfo HostPopupInfo { get; set; }
 
+        /// <summary>
+        /// This property will hold the UI Automation action (information) will be executed when the Next or Back button are pressed
+        /// </summary>
         [JsonProperty("UIAutomation")]
         public StepUIAutomation UIAutomation { get; set; }
 

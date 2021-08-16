@@ -109,6 +109,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (nextStep != null)
                 {
                     nextStep.Show();
+
+                    //In case the UIAutomation info is set for the Step we execute the action when the Next button is pressed
                     if (nextStep.UIAutomation != null)
                     {
                         ExecuteUIAutomationStep(nextStep.UIAutomation, true);
@@ -121,6 +123,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (CurrentStep != null)
             {
                 CurrentStep.Hide();
+
+                //Disable the current action automation that is executed for the Current Step (if there is one)
                 if (CurrentStep.UIAutomation != null)
                 {
                     ExecuteUIAutomationStep(CurrentStep.UIAutomation, false);
@@ -143,6 +147,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (prevStep != null)
                 {
                     prevStep.Show();
+
+                    //In case the UIAutomation info is set for the Step we execute the action when the Back button is pressed
                     if (prevStep.UIAutomation != null)
                     {
                         ExecuteUIAutomationStep(prevStep.UIAutomation, true);
@@ -154,6 +160,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (CurrentStep != null)
             {
                 CurrentStep.Hide();
+
+                //Disable the current action automation that is executed for the Current Step (if there is one)
                 if (CurrentStep.UIAutomation != null)
                 {
                     ExecuteUIAutomationStep(CurrentStep.UIAutomation, false);
@@ -211,16 +219,24 @@ namespace Dynamo.Wpf.UI.GuidedTour
             return foundChild;
         }
 
-        public void ExecuteUIAutomationStep(StepUIAutomation uiAutomationData, bool enableUIAutomation)
+        /// <summary>
+        /// This method will execute an UIAutomation action over a specific UIElement
+        /// </summary>
+        /// <param name="uiAutomationData">UIAutomation info read from a json file</param>
+        /// <param name="enableUIAutomation">Enable/Disable the automation action for a specific UIElement</param>
+        private void ExecuteUIAutomationStep(StepUIAutomation uiAutomationData, bool enableUIAutomation)
         {
-            switch (uiAutomationData.ControlType)
+            switch (uiAutomationData.ControlType.ToUpper())
             {
-                case "MenuItem":
+                case "MENUITEM":
                     if (uiAutomationData.UIElementAutomation != null)
                     {
-                        MenuItem menuEntry = uiAutomationData.UIElementAutomation as MenuItem;
-                        menuEntry.IsSubmenuOpen = enableUIAutomation;
-                        menuEntry.StaysOpenOnClick = enableUIAutomation;
+                        if(uiAutomationData.Action.ToUpper().Equals("OPEN"))
+                        {
+                            MenuItem menuEntry = uiAutomationData.UIElementAutomation as MenuItem;
+                            menuEntry.IsSubmenuOpen = enableUIAutomation;
+                            menuEntry.StaysOpenOnClick = enableUIAutomation;
+                        }                      
                     }                      
                     break;
             }
