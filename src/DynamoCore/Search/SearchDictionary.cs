@@ -43,15 +43,6 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Cleans up all recorded search entries
-        ///     Used for writing unit tests.
-        /// </summary>
-        internal void ClearAllEntries()
-        {
-            entryDictionary.Clear();
-        }
-
-        /// <summary>
         ///     The number of tags in the dictionary
         /// </summary>
         public int NumTags
