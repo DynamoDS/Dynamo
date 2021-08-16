@@ -34,6 +34,9 @@ namespace Dynamo.ViewModels
             get { return Model.LoadedAssemblies.Any(x => !x.IsNodeLibrary); }
         }
 
+        /// <summary>
+        /// Specifies whether or not this Package's LoadState is set to Unloaded.
+        /// </summary>
         public bool Unloaded
         {
             get
