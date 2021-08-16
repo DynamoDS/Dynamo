@@ -130,6 +130,7 @@ limitations under the License.
     <Compile Include="Graph\Workspaces\SerializationExtensions.cs" />
     <Compile Include="Graph\Workspaces\UndoRedo.cs" />
     <Compile Include="Extensions\IServiceManager.cs" />
+    <Compile Include="Interfaces\LayoutSpecification.cs" />
     <Compile Include="Linting\Interfaces\RuleEvaluationStatusEnum.cs" />
     <Compile Include="Linting\Interfaces\IRuleEvaluationResult.cs" />
     <Compile Include="Linting\Interfaces\SeverityCodesEnum.cs" />
