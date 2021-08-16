@@ -1089,7 +1089,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _About....
+        ///   Looks up a localized string similar to _About.
         /// </summary>
         public static string DynamoViewDynamoMenuAbout {
             get {
@@ -1422,7 +1422,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Home Workspace....
+        ///   Looks up a localized string similar to _Home Workspace.
         /// </summary>
         public static string DynamoViewFileMenuNewHomeWorkSpace {
             get {
@@ -1440,7 +1440,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Open Recent Files....
+        ///   Looks up a localized string similar to _Open Recent Files.
         /// </summary>
         public static string DynamoViewFileMenuRecentFiles {
             get {
@@ -2699,6 +2699,33 @@ namespace Dynamo.Wpf.Properties {
         public static string GraphIssuesOnSave_Title {
             get {
                 return ResourceManager.GetString("GraphIssuesOnSave_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected save location path is too long. Please change the save location and try again..
+        /// </summary>
+        public static string GraphIssuesOnSavePath_Description {
+            get {
+                return ResourceManager.GetString("GraphIssuesOnSavePath_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are trying to save a graph with a path that is too long..
+        /// </summary>
+        public static string GraphIssuesOnSavePath_Summary {
+            get {
+                return ResourceManager.GetString("GraphIssuesOnSavePath_Summary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Path Issues Found.
+        /// </summary>
+        public static string GraphIssuesOnSavePath_Title {
+            get {
+                return ResourceManager.GetString("GraphIssuesOnSavePath_Title", resourceCulture);
             }
         }
         
