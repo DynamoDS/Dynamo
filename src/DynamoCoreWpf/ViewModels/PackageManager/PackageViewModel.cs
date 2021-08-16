@@ -393,7 +393,7 @@ namespace Dynamo.ViewModels
                 (Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForLoad);
         }
 
-    private void GoToRootDirectory()
+        private void GoToRootDirectory()
         {
             // Check for the existance of RootDirectory
             if (Directory.Exists(Model.RootDirectory))
