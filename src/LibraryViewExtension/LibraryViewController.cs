@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using CefSharp;
 using CefSharp.Wpf;
 using Dynamo.Extensions;
+using Dynamo.Interfaces;
 using Dynamo.LibraryUI.Handlers;
 using Dynamo.LibraryUI.ViewModels;
 using Dynamo.LibraryUI.Views;
