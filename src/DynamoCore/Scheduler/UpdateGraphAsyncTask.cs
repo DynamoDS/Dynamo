@@ -98,11 +98,10 @@ namespace Dynamo.Scheduler
                 // Detect cyclic dependencies in graph
                 var cyclicNodes = new List<NodeModel>();
 
+                var visited = new HashSet<NodeModel>();
+                var recursed = new HashSet<NodeModel>();
                 foreach (var node in ModifiedNodes)
                 {
-                    var visited = new HashSet<NodeModel>();
-                    var recursed = new HashSet<NodeModel>();
-
                     if(!IsGraphCyclic(node, visited, recursed, cyclicNodes))
                     {
                         // TODO: check if we can only clear cyclic dependency warnings here.
