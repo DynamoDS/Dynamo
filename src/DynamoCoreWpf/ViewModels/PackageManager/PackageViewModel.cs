@@ -84,7 +84,9 @@ namespace Dynamo.ViewModels
 
                 switch (Model.LoadState.State)
                 {
-                    case PackageLoadState.StateTypes.Unloaded: return Resources.PackageStateUnloadedTooltip;
+                    case PackageLoadState.StateTypes.Unloaded:
+                        return dynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(Model.RootDirectory) ?
+                           Resources.PackageStateManuallyUnloadedTooltip : Resources.PackageStateAutomaticallyUnloadedTooltip;
                     case PackageLoadState.StateTypes.Loaded: return Resources.PackageStateLoadedTooltip;
                     case PackageLoadState.StateTypes.Error: return string.Format(Resources.PackageStateErrorTooltip, Model.LoadState.ErrorMessage);
                     default:
@@ -330,8 +332,11 @@ namespace Dynamo.ViewModels
                 {
                     try
                     {
+                        // Set the package load state as None so that we can try to load it again
+                        Model.LoadState.ResetState();
+
                         packageLoader.TryLoadPackageIntoLibrary(Model);
-                        Model.LoadState.SetAsLoaded();
+                        Model.MarkForLoad(dynamoModel.PreferenceSettings, false);
                     } 
                     catch 
                     {

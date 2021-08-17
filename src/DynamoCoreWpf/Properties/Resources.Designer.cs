@@ -4655,6 +4655,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        ///This package has not been loaded because another conflicting package was loaded before it..
+        /// </summary>
+        public static string PackageStateAutomaticallyUnloadedTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateAutomaticallyUnloadedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string PackageStateError {
@@ -4690,6 +4700,16 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageStateLoadedTooltip {
             get {
                 return ResourceManager.GetString("PackageStateLoadedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        ///This package was manually set as Unloaded..
+        /// </summary>
+        public static string PackageStateManuallyUnloadedTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateManuallyUnloadedTooltip", resourceCulture);
             }
         }
         
@@ -4765,16 +4785,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageStateUnloaded {
             get {
                 return ResourceManager.GetString("PackageStateUnloaded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unloaded.
-        ///This package has not been loaded because another conflicting package was loaded before it..
-        /// </summary>
-        public static string PackageStateUnloadedTooltip {
-            get {
-                return ResourceManager.GetString("PackageStateUnloadedTooltip", resourceCulture);
             }
         }
         
