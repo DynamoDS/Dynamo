@@ -244,7 +244,7 @@ namespace Dynamo.ViewModels
             if (Model.LoadedAssemblies.Any())
             {
                 var resAssem =
-                    MessageBox.Show(string.Format(MessageNeedToRestart,
+                    MessageBoxService.Show(string.Format(MessageNeedToRestart,
                         dynamoViewModel.BrandingResourceProvider.ProductName),
                         MessageNeedToRestartTitle,
                         MessageBoxButton.OKCancel,
@@ -254,7 +254,7 @@ namespace Dynamo.ViewModels
 
             if (!Model.BuiltInPackage)
             {
-                var res = MessageBox.Show(String.Format(Resources.MessageConfirmToDeletePackage, this.Model.Name),
+                var res = MessageBoxService.Show(String.Format(Resources.MessageConfirmToDeletePackage, this.Model.Name),
                     Resources.MessageNeedToRestartAfterDeleteTitle,
                     MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -270,7 +270,7 @@ namespace Dynamo.ViewModels
             }
             catch (Exception)
             {
-                MessageBox.Show(string.Format(MessageFailedToDeleteOrUnload,
+                MessageBoxService.Show(string.Format(MessageFailedToDeleteOrUnload,
                     dynamoViewModel.BrandingResourceProvider.ProductName),
                     MessageFailedToDeleteOrUnloadTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);

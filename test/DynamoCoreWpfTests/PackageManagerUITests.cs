@@ -351,6 +351,48 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(conflictingPkg.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.None);
         }
 
+        [Test]
+        [Description("User tries to unload an built-in package")]
+        public void PackageManagerUninstallCommand()
+        {
+            var currentDynamoModel = ViewModel.Model;
+            PathManager.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
+
+            currentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>() { BuiltinPackagesTestDir };
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = currentDynamoModel.PreferenceSettings,
+            };
+            var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
+
+            // This function is called upon addition of new package paths in the UI.
+            loader.LoadAll(loadPackageParams);
+            Assert.AreEqual(1, loader.LocalPackages.Count());
+
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            var builtInPkgViewModel = ViewModel.PreferencesViewModel.LocalPackages.Where(x => x.Model.BuiltInPackage).FirstOrDefault();
+            Assert.IsNotNull(builtInPkgViewModel);
+            Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
+            Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
+
+            builtInPkgViewModel.UninstallCommand.Execute();
+
+            Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
+            Assert.AreEqual(PackageLoadState.ScheduledTypes.ScheduledForUnload, builtInPkgViewModel.Model.LoadState.ScheduledState);
+
+            Assert.IsTrue(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
+
+            builtInPkgViewModel.UnmarkForUninstallationCommand.Execute();
+            Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
+            Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
+
+            Assert.IsFalse(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
+        }
+
         public void PackageContainingNodeViewOnlyCustomization_AddsCustomizationToCustomizationLibrary()
         {
             var dynamoModel = ViewModel.Model;
