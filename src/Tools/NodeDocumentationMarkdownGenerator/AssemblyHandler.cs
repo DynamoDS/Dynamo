@@ -30,6 +30,7 @@ namespace NodeDocumentationMarkdownGenerator
         /// <returns></returns>
         internal static List<MdFileInfo> ScanAssemblies(IEnumerable<string> assemblyPaths, IEnumerable<string> additionalPathsToLoad = null)
         {
+            //TODO put these paths into the assembly resolve event.
             var paths = GetDefaultPaths();
             paths.AddRange(assemblyPaths);
             if (additionalPathsToLoad != null)
@@ -37,94 +38,87 @@ namespace NodeDocumentationMarkdownGenerator
                 paths.AddRange(additionalPathsToLoad);
             }
 
-            var resolver = new PathAssemblyResolver(paths);
-            var mlc = new MetadataLoadContext(resolver);
-
-            return Scan(assemblyPaths, mlc, resolver);
+            return Scan(assemblyPaths);
         }
 
-        private static List<MdFileInfo> Scan(IEnumerable<string> assemblyPaths, MetadataLoadContext mlc, PathAssemblyResolver resolver)
+        private static List<MdFileInfo> Scan(IEnumerable<string> assemblyPaths)
         {
             var fileInfos = new List<MdFileInfo>();
             var nodeSearchModel = new NodeSearchModel();
             var pathManager = new PathManager(new PathManagerParams());
 
             Console.WriteLine($"Starting scan of following assemblies: {string.Join(", ", assemblyPaths)}");
+            var nodeModelType = typeof(NodeModel);
 
-            using (mlc)
+            var functionGroups = new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
+
+            foreach (var path in assemblyPaths)
             {
-                var dynamoCoreAss = resolver.Resolve(mlc, new AssemblyName("DynamoCore"));
-                var nodeModelType = dynamoCoreAss.GetType("Dynamo.Graph.Nodes.NodeModel");
-
-                var functionGroups = new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
-                
-                foreach (var path in assemblyPaths)
+                try
                 {
-                    try
+                    var functionDescriptors = new List<FunctionDescriptor>();
+
+                    if (new FileInfo(path).Extension == ".ds")
                     {
-                        var functionDescriptors = new List<FunctionDescriptor>();
-
-                        if (new FileInfo(path).Extension == ".ds")
+                        var dsDescriptors = GetFunctionDescriptorsFromDsFile(pathManager, path);
+                        if (dsDescriptors != null)
                         {
-                            var dsDescriptors = GetFunctionDescriptorsFromDsFile(pathManager, path);
-                            if (dsDescriptors != null)
-                            {
-                                functionDescriptors.AddRange(dsDescriptors);
-                            }
-                        }
-
-                        else
-                        {
-                            Assembly asm = mlc.LoadFromAssemblyPath(path);
-                            AssemblyName name = asm.GetName();
-
-                            if (NodeModelAssemblyLoader.ContainsNodeModelSubTypeReflectionLoaded(asm, nodeModelType))
-                            {
-                                AddNodeModelsToSearchModel(asm, nodeModelType, nodeSearchModel);
-                                continue;
-                            }
-
-                            var dllDescriptors = GetFunctionDescriptorsFromDll(pathManager, asm);
-                            if (dllDescriptors != null)
-                            {
-                                functionDescriptors.AddRange(dllDescriptors);
-                            }
-                        }                  
-
-                        foreach (var descriptor in functionDescriptors)
-                        {
-                            Dictionary<string, FunctionGroup> functionGroupDict;
-                            if (!functionGroups.TryGetValue(descriptor.Assembly, out functionGroupDict))
-                            {
-                                functionGroupDict = new Dictionary<string, FunctionGroup>();
-                                functionGroups[descriptor.Assembly] = functionGroupDict;
-                            }
-
-                            var qualifiedName = descriptor.QualifiedName;
-                            FunctionGroup functionGroup;
-                            if (!functionGroupDict.TryGetValue(qualifiedName, out functionGroup))
-                            {
-                                functionGroup = new FunctionGroup(qualifiedName);
-                                functionGroupDict[qualifiedName] = functionGroup;
-                            }
-                            functionGroup.AddFunctionDescriptor(descriptor);
+                            functionDescriptors.AddRange(dsDescriptors);
                         }
                     }
-                    catch (Exception e)
+
+                    else
                     {
-                        CommandHandler.LogExceptionToConsole(e);
-                        continue;
+                        //load the assembly.
+                        Assembly asm = Assembly.LoadFrom(path);
+                        AssemblyName name = asm.GetName();
+
+                        if (NodeModelAssemblyLoader.ContainsNodeModelSubType(asm))
+                        {
+                            AddNodeModelsToSearchModel(asm, nodeSearchModel);
+                            continue;
+                        }
+
+                        var dllDescriptors = GetFunctionDescriptorsFromDll(pathManager, asm);
+                        if (dllDescriptors != null)
+                        {
+                            functionDescriptors.AddRange(dllDescriptors);
+                        }
+                    }
+
+                    foreach (var descriptor in functionDescriptors)
+                    {
+                        Dictionary<string, FunctionGroup> functionGroupDict;
+                        if (!functionGroups.TryGetValue(descriptor.Assembly, out functionGroupDict))
+                        {
+                            functionGroupDict = new Dictionary<string, FunctionGroup>();
+                            functionGroups[descriptor.Assembly] = functionGroupDict;
+                        }
+
+                        var qualifiedName = descriptor.QualifiedName;
+                        FunctionGroup functionGroup;
+                        if (!functionGroupDict.TryGetValue(qualifiedName, out functionGroup))
+                        {
+                            functionGroup = new FunctionGroup(qualifiedName);
+                            functionGroupDict[qualifiedName] = functionGroup;
+                        }
+                        functionGroup.AddFunctionDescriptor(descriptor);
                     }
                 }
-
-                if (functionGroups.Any())
+                catch (Exception e)
                 {
-                    AddFunctionGroupsToSearch(functionGroups.Values.SelectMany(x => x.Values.Select(g => g)), nodeSearchModel);
+                    CommandHandler.LogExceptionToConsole(e);
+                    continue;
                 }
-
-                fileInfos.AddRange(FileInfosFromSearchModel(nodeSearchModel));
-                Console.WriteLine($"{fileInfos.Count()} nodes found during scan");
             }
+
+            if (functionGroups.Any())
+            {
+                AddFunctionGroupsToSearch(functionGroups.Values.SelectMany(x => x.Values.Select(g => g)), nodeSearchModel);
+            }
+
+            fileInfos.AddRange(FileInfosFromSearchModel(nodeSearchModel));
+            Console.WriteLine($"{fileInfos.Count()} nodes found during scan");
 
             return fileInfos;
         }
@@ -142,7 +136,8 @@ namespace NodeDocumentationMarkdownGenerator
 
             // Getting ZT imports from CLRModuleTypes
             var dllModule = new CLRDLLModule(asm.GetName().Name, asm);
-            dllModule.ScanModule(true);
+            //TODO if this does not work replace with simpler method to generate types in module.
+            dllModule.ImportCodeBlock("", "", new CodeBlockNode());
             List<CLRModuleType> moduleTypes = CLRModuleType.GetTypes((CLRModuleType mtype) => { return mtype.Module == dllModule; });
 
             var customizationFile = LibraryCustomizationServices.GetForAssembly(asm.Location, pathManager);
@@ -161,8 +156,8 @@ namespace NodeDocumentationMarkdownGenerator
                     {
                         continue;
                     }
-                        
-                        
+
+
 
                     var ctorNodes = t.ClassNode.Procedures
                         .OfType<ConstructorDefinitionNode>()
@@ -183,7 +178,7 @@ namespace NodeDocumentationMarkdownGenerator
 
                     foreach (var node in associativeNodes)
                     {
-                        if (TryGetFunctionDescriptor(node, asm, asm.Location, className, customizationFile, out ReflectionFunctionDescriptor des))
+                        if (TryGetFunctionDescriptor(node, asm.Location, className, out FunctionDescriptor des))
                         {
                             descriptors.Add(des);
                         }
@@ -202,28 +197,25 @@ namespace NodeDocumentationMarkdownGenerator
         private static IEnumerable<FunctionDescriptor> GetFunctionDescriptorsFromDsFile(PathManager pathManager, string dsFilePath)
         {
             var descriptors = new List<FunctionDescriptor>();
-            //we need to put CLRModuleType into reflection mode because importing DS may import some CLR modules as a side effect.
-            CLRModuleType.IsReflectionContext = true;
             var importModuleHandler = new ImportModuleHandler(new ProtoCore.Core(new ProtoCore.Options()));
             var dsCodeNode = importModuleHandler.Import(dsFilePath, "", "");
             var classNodes = dsCodeNode.CodeNode.Body.OfType<ClassDeclNode>();
-            var customizationFile = LibraryCustomizationServices.GetForAssembly(dsFilePath, pathManager);
 
             //build up tuples of all functions and their owning classes
             var allFunctionTuples = new List<(string ClassName, AssociativeNode Procedure)>();
             foreach (var class_ in classNodes)
             {
-                foreach(var procedure in class_.Procedures)
+                foreach (var procedure in class_.Procedures)
                 {   //todo not sure if we should use className or class_.Name or ExternLibName... see 
                     //that generated output of Builtin.ds is now of the form List.FunctionName
                     allFunctionTuples.Add((ClassName: class_.ClassName, Procedure: procedure));
                 }
             }
             //comine class methods and free functions
-            allFunctionTuples.AddRange(dsCodeNode.CodeNode.Body.OfType<FunctionDefinitionNode>().Select(func=>(ClassName:"",Procedure:func as AssociativeNode)));
+            allFunctionTuples.AddRange(dsCodeNode.CodeNode.Body.OfType<FunctionDefinitionNode>().Select(func => (ClassName: "", Procedure: func as AssociativeNode)));
             foreach (var tuple in allFunctionTuples)
             {
-                if (TryGetFunctionDescriptor(tuple.Procedure, null, dsFilePath, tuple.ClassName, customizationFile, out ReflectionFunctionDescriptor des))
+                if (TryGetFunctionDescriptor(tuple.Procedure, dsFilePath, tuple.ClassName, out FunctionDescriptor des))
                 {
                     descriptors.Add(des);
                 }
@@ -258,12 +250,12 @@ namespace NodeDocumentationMarkdownGenerator
 
         /// <summary>
         /// As we rely on search when generating markdown files and matching them with content from the DynamoDictionary
-        /// we need to add all NodeModels nodes to the SearchModel.
+        /// we need to add all NodeModel nodes to the SearchModel.
         /// </summary>
         /// <param name="asm"></param>
         /// <param name="nodeModelType"></param>
         /// <param name="searchModel"></param>
-        private static void AddNodeModelsToSearchModel(Assembly asm, Type nodeModelType, NodeSearchModel searchModel)
+        private static void AddNodeModelsToSearchModel(Assembly asm, NodeSearchModel searchModel)
         {
             System.Type[] typesInAsm = null;
             try
@@ -273,18 +265,19 @@ namespace NodeDocumentationMarkdownGenerator
             // see https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assembly.gettypes?view=netframework-4.8#remarks
             catch (ReflectionTypeLoadException ex)
             {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
                 typesInAsm = ex.Types;
             }
 
             var nodeTypes = typesInAsm
-                .Where(x => NodeModelAssemblyLoader.IsNodeSubTypeReflectionLoaded(x, nodeModelType))
-                .Select(t => new TypeLoadData(t, t.GetAttributesFromReflectionContext().ToArray()))
+                .Where(x => NodeModelAssemblyLoader.IsNodeSubType(x))
+                .Select(t => new TypeLoadData(t))
                 .Where(type => type != null && !type.IsDeprecated && !type.IsHidden)
                 .ToList();
 
             foreach (var type in nodeTypes)
             {
-                searchModel.Add(new NodeModelSearchElement(type, false));
+                searchModel.Add(new NodeModelSearchElement(type));
             }
         }
 
@@ -300,9 +293,9 @@ namespace NodeDocumentationMarkdownGenerator
         }
 
         private static bool TryGetFunctionDescriptor(
-            AssociativeNode associativeNode, Assembly asm, string asmPath,
-            string className, LibraryCustomization customization,
-            out ReflectionFunctionDescriptor descriptor)
+            AssociativeNode associativeNode, string asmPath,
+            string className,
+            out FunctionDescriptor descriptor)
         {
             descriptor = null;
             string name = associativeNode.Name;
@@ -326,7 +319,7 @@ namespace NodeDocumentationMarkdownGenerator
                     break;
             }
 
-            descriptor = new ReflectionFunctionDescriptor(functionParams, customization, asm);
+            descriptor = new FunctionDescriptor(functionParams);
             return true;
         }
 
@@ -423,10 +416,10 @@ namespace NodeDocumentationMarkdownGenerator
 
             foreach (var entry in nodeSearchModel.SearchEntries)
             {
-                if (MdFileInfo.TryGetMdFileInfoFromSearchEntry(entry,  out MdFileInfo info))
+                if (MdFileInfo.TryGetMdFileInfoFromSearchEntry(entry, out MdFileInfo info))
                 {
                     fileInfos.Add(info);
-                }              
+                }
             }
 
             return fileInfos;

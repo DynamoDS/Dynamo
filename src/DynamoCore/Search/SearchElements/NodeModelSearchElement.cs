@@ -20,16 +20,9 @@ namespace Dynamo.Search.SearchElements
         /// Initializes a new instance of the <see cref="NodeModelSearchElement"/> class.
         /// </summary>
         /// <param name="typeLoadData">Data to load.</param>
-        internal NodeModelSearchElement(TypeLoadData typeLoadData) : this(typeLoadData, true)
+        internal NodeModelSearchElement(TypeLoadData typeLoadData) : base(typeLoadData)
         {
-        }
-
-        internal NodeModelSearchElement(TypeLoadData typeLoadData, bool createConstructor) : base(typeLoadData)
-        {
-            if (createConstructor)
-            {
-                constructor = typeLoadData.Type.GetDefaultConstructor<NodeModel>();
-            }
+            constructor = typeLoadData.Type.GetDefaultConstructor<NodeModel>();
             creationName = typeLoadData.Type.ToString();
         }
 
