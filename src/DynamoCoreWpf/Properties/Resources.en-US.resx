@@ -2525,9 +2525,13 @@ This package has not been loaded due to the following error:
     <value>Loaded.
 This package is loaded and ready to be used.</value>
   </data>
-  <data name="PackageStateUnloadedTooltip" xml:space="preserve">
+  <data name="PackageStateAutomaticallyUnloadedTooltip" xml:space="preserve">
     <value>Unloaded.
 This package has not been loaded because another conflicting package was loaded before it.</value>
+  </data>
+  <data name="PackageStateManuallyUnloadedTooltip" xml:space="preserve">
+    <value>Unloaded.
+This package was manually set as Unloaded.</value>
   </data>
   <data name="PackageStateScheduledForUnloadTooltip" xml:space="preserve">
     <value>Scheduled for Unload.
