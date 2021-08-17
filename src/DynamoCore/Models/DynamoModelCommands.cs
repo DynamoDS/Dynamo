@@ -246,7 +246,8 @@ namespace Dynamo.Models
 
             foreach (var guid in command.ModelGuids)
             {
-                ModelBase model = CurrentWorkspace.GetModelInternal(guid);
+                var model = CurrentWorkspace.GetModelInternal(guid);
+                if (model == null) return;
 
                 if (!model.IsSelected)
                 {
@@ -308,9 +309,8 @@ namespace Dynamo.Models
         {
             bool isInPort = portType == PortType.Input;
             activeStartPorts = null;
-            
-            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
-            if (node == null)
+
+            if (!(CurrentWorkspace.GetModelInternal(nodeId) is NodeModel node))
                 return;
             PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
 
@@ -349,8 +349,7 @@ namespace Dynamo.Models
 
             // Otherwise, if the port is an input port, check if the port already has a connection.
             // If it does, duplicate the existing connection.
-            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
-            if (node == null)
+            if (!(CurrentWorkspace.GetModelInternal(nodeId) is NodeModel node))
             {
                 return;
             }
@@ -370,8 +369,7 @@ namespace Dynamo.Models
         private void BeginShiftReconnections(Guid nodeId, int portIndex, PortType portType)
         {
             if (portType == PortType.Input) return; //only handle multiple connections when the port selected is an output port
-            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
-            if (node == null) return;
+            if (!(CurrentWorkspace.GetModelInternal(nodeId) is NodeModel node)) return;
 
             PortModel selectedPort = node.OutPorts[portIndex];
 
@@ -410,8 +408,7 @@ namespace Dynamo.Models
             var startNode = CurrentWorkspace.GetModelInternal(activeStartPorts[0].Owner.GUID);
             if (startNode == null) return;
 
-            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
-            if (node == null) return;
+            if (!(CurrentWorkspace.GetModelInternal(nodeId) is NodeModel node)) return;
 
             bool isInPort = portType == PortType.Input;
             
@@ -429,8 +426,7 @@ namespace Dynamo.Models
             if (portType == PortType.Input) return; //only handle multiple connections when the port selected is an output port
             if (activeStartPorts == null || activeStartPorts.Count() <= 0) return;
 
-            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
-            if (node == null) return;
+            if (!(CurrentWorkspace.GetModelInternal(nodeId) is NodeModel node)) return;
             PortModel selectedPort = node.OutPorts[portIndex];
             
             var firstModel = GetConnectorsToAddAndDelete(selectedPort, activeStartPorts[0]);
@@ -451,9 +447,7 @@ namespace Dynamo.Models
         {
             if (portType == PortType.Output) return; // Only handle ctrl connections if selected port is an input port
             if (firstStartPort == null || activeStartPorts == null || activeStartPorts.Count() <= 0) return;
-            
-            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
-            if (node == null) return;
+            if (!(CurrentWorkspace.GetModelInternal(nodeId) is NodeModel node)) return;
 
             PortModel portModel = node.InPorts[portIndex];
             var models = GetConnectorsToAddAndDelete(portModel, activeStartPorts[0]);
