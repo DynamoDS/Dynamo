@@ -13,7 +13,6 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
-using ProtoFFI.Reflection;
 using ProtoCore.Utils;
 using ProtoFFI;
 using static Dynamo.Engine.LibraryServices;
