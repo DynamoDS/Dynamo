@@ -37,6 +37,14 @@ namespace Dynamo.Scheduler
             this.verboseLogging = verboseLogging1;
         }
 
+        /// <summary>
+        /// DFS algorithm to check cyclic dependency in Dynamo graph.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="visitTracker"></param>
+        /// <param name="recursionTracker"></param>
+        /// <param name="cyclicNodes">list of all nodes participating in a cycle</param>
+        /// <returns>true if graph is cyclic, false otherwise</returns>
         private bool IsGraphCyclic(NodeModel node, HashSet<NodeModel> visitTracker, 
             HashSet<NodeModel> recursionTracker, List<NodeModel> cyclicNodes)
         {
@@ -97,6 +105,7 @@ namespace Dynamo.Scheduler
 
                     if(!IsGraphCyclic(node, visited, recursed, cyclicNodes))
                     {
+                        // TODO: check if we can only clear cyclic dependency warnings here.
                         node.ClearErrorsAndWarnings();
                     }
                 }
@@ -104,9 +113,10 @@ namespace Dynamo.Scheduler
                 {
                     foreach (var node in cyclicNodes)
                     {
-                        // Log cyclic dependency warning on node
+                        // TODO: Add warning message as resource string.
                         node.Warning("This node has a cyclic dependency", true);
                     }
+                    // Skip scheduling task for graph execution.
                     return false;
                 }
                 graphSyncData = engineController.ComputeSyncData(workspace.Nodes, ModifiedNodes, verboseLogging);
