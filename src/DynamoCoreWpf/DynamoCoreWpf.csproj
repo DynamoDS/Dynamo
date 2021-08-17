@@ -569,10 +569,10 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="UI\Fonts\Artifakt-Element-Bold.otf">
+    <None Include="UI\Fonts\Autodesk\Artifakt-Element-Bold.otf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="UI\Fonts\Artifakt-Element-Regular.otf">
+    <None Include="UI\Fonts\Autodesk\Artifakt-Element-Regular.otf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="UI\Fonts\CourierPrime-Regular.ttf">

@@ -105,8 +105,8 @@
     <FontFamily x:Key="OpenSansLightItalic">../../Fonts/#Open Sans Light Italic</FontFamily>
     <FontFamily x:Key="OpenSansSemiboldItalic">../../Fonts/#Open Sans Semibold Italic</FontFamily>
     <FontFamily x:Key="OpenSansBoldItalic">../../Fonts/#Open Sans Bold Italic</FontFamily>
-    <FontFamily x:Key="ArtifaktElementRegular">../../Fonts/#Artifakt Element Regular</FontFamily>
-    <FontFamily x:Key="ArtifaktElementBold">../../Fonts/#Artifakt Element Bold</FontFamily>
+    <FontFamily x:Key="ArtifaktElementRegular">../../Fonts/Autodesk/#Artifakt Element Regular</FontFamily>
+    <FontFamily x:Key="ArtifaktElementBold">../../Fonts/Autodesk/#Artifakt Element Bold</FontFamily>
     <FontFamily x:Key="CourierPrime">../../Fonts/#Courier Prime Regular</FontFamily>
 
     <!--  Window Common Styling  -->
