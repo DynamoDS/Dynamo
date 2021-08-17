@@ -88,6 +88,7 @@ namespace Dynamo.PackageManager
         internal void SetAsLoaded() { state = StateTypes.Loaded; errorMessage = ""; }
         internal void SetAsError(string msg = "") { state = StateTypes.Error; errorMessage = msg; }
         internal void SetAsUnloaded() { state = StateTypes.Unloaded; errorMessage = ""; }
+        internal void ResetState() { state = StateTypes.None; }
 
         internal void SetScheduledForDeletion() { scheduledState = ScheduledTypes.ScheduledForDeletion; }
         internal void SetScheduledForUnload() { scheduledState = ScheduledTypes.ScheduledForUnload; }
@@ -539,11 +540,18 @@ namespace Dynamo.PackageManager
             RaisePropertyChanged(nameof(LoadState));
         }
 
-        internal void MarkForLoad(IPreferences prefs)
+        internal void MarkForLoad(IPreferences prefs, bool schedule = true)
         {
             if (BuiltInPackage)
             {
-                LoadState.SetScheduledForLoad();
+                if (schedule)
+                {
+                    LoadState.SetScheduledForLoad();
+                }
+                else
+                {
+                    LoadState.SetAsLoaded();
+                }
 
                 if (prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
                 {

@@ -319,8 +319,11 @@ namespace Dynamo.ViewModels
                 {
                     try
                     {
+                        // Set the package load state as None so that we can try to load it again
+                        Model.LoadState.ResetState();
+
                         packageLoader.TryLoadPackageIntoLibrary(Model);
-                        Model.LoadState.SetAsLoaded();
+                        Model.MarkForLoad(dynamoModel.PreferenceSettings, false);
                     } 
                     catch 
                     {
