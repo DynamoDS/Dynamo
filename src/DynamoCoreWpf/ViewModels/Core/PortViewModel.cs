@@ -678,32 +678,5 @@ namespace Dynamo.ViewModels
             }
             return ">";
         }
-
-        /// <summary>
-        /// Replaces the old POrtNameConverter.
-        /// Ports without names are generally converter chevrons i.e. '>'. However, if an output
-        /// port is displaying its context menu chevron AND has no name (e.g. the Function node)
-        /// the output port is renamed in order to avoid confusing the user with double chevrons.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private string GetPortDisplayName(string value)
-        {
-            if (value is string && !string.IsNullOrEmpty(value as string))
-            {
-                return value as string;
-            }
-            if (_node.ArgumentLacing != LacingStrategy.Disabled)
-            {
-                switch (_port.PortType)
-                {
-                    case PortType.Input:
-                        return Properties.Resources.InputPortAlternativeName;
-                    case PortType.Output:
-                        return Properties.Resources.OutputPortAlternativeName;
-                }
-            }
-            return ">";
-        }
     }
 }
