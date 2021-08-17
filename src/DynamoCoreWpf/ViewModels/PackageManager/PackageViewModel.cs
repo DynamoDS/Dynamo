@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -322,7 +323,7 @@ namespace Dynamo.ViewModels
                         // Set the package load state as None so that we can try to load it again
                         Model.LoadState.ResetState();
 
-                        packageLoader.TryLoadPackageIntoLibrary(Model);
+                        packageLoader.LoadPackages(new List<Package>() { Model });
                         Model.MarkForLoad(dynamoModel.PreferenceSettings, false);
                     } 
                     catch 

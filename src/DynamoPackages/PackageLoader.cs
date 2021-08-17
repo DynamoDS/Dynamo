@@ -247,7 +247,7 @@ namespace Dynamo.PackageManager
         /// and add to LocalPackages.
         /// </summary>
         /// <param name="package"></param>
-        internal void TryLoadPackageIntoLibrary(Package package)
+        private void TryLoadPackageIntoLibrary(Package package)
         {
             Add(package);
 
