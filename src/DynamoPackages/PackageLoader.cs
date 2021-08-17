@@ -781,7 +781,6 @@ namespace Dynamo.PackageManager
                 if (pkgNameDirTup.StartsWith(PathManager.BuiltinPackagesDirectory))
                 {
                     // do not delete packages from the built in dir
-                    pkgDirsRemoved.Add(pkgNameDirTup);
                     continue;
                 }
                 

@@ -28,6 +28,8 @@ namespace Dynamo
         protected Preloader preloader;
         protected TestPathResolver pathResolver;
         protected IPreferences dynamoSettings;
+
+        // Some tests override the static property PathManager.BuiltinPackagesDirectory, so we need a way to reset it after each test.
         private string originalBuiltinPackagesDirectory;
 
         protected override DynamoModel GetModel()
@@ -40,7 +42,8 @@ namespace Dynamo
         {
             base.Setup();
 
-            originalBuiltinPackagesDirectory = PathManager.BuiltinPackagesDirectory;
+            // Store a copy of the PathManager.BuiltinPackagesDirectory so that we can reset it after each DynamoModelTest
+            originalBuiltinPackagesDirectory = originalBuiltinPackagesDirectory ?? PathManager.BuiltinPackagesDirectory;
             StartDynamo(dynamoSettings);
         }
 
