@@ -610,29 +610,29 @@ namespace Dynamo.ViewModels
                 // Special case for keeping list structure visual appearance
                 if (_port.UseLevels && _port.KeepListStructure && _port.IsConnected)
                 {
-                    PortBackgroundColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortKeepListStructureBackground"];
-                    PortBorderBrushColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortKeepListStructureBorderBrush"];
+                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(94, 165, 196));
+                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
                 }
 
                 // Port has a default value, shows blue marker
                 else if (UsingDefaultValue && DefaultValueEnabled)
                 {
-                    PortBackgroundColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsConnectedBackground"];
-                    PortBorderBrushColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsConnectedBorderBrush"];
+                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
+                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
                 }
                 else
                 {
                     // Port isn't connected and has no default value (or isn't using it)
                     if (!_port.IsConnected)
                     {
-                        PortBackgroundColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsNotConnectedBackground"];
-                        PortBorderBrushColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsNotConnectedBorderBrush"];
+                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(107, 67, 67));
+                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(244, 134, 134));
                     }
                     // Port is connected and has no default value
                     else
                     {
-                        PortBackgroundColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsConnectedBackground"];
-                        PortBorderBrushColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsConnectedBorderBrush"];
+                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
+                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
                     }
                 }
             }
@@ -641,19 +641,19 @@ namespace Dynamo.ViewModels
             {
                 if (_port.IsConnected)
                 {
-                    PortBackgroundColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsConnectedBackground"];
-                    PortBorderBrushColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortIsConnectedBorderBrush"];
+                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
+                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
                 }
                 else
                 {
-                    PortBackgroundColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortDefaultBackground"];
-                    PortBorderBrushColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortDefaultBorderBrush"];
+                    PortBackgroundColor = new SolidColorBrush(Colors.Transparent);
+                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(204, 204, 204));
                 }
             }
         }
 
         /// <summary>
-        /// Replaces the old POrtNameConverter.
+        /// Replaces the old PortNameConverter.
         /// Ports without names are generally converter chevrons i.e. '>'. However, if an output
         /// port is displaying its context menu chevron AND has no name (e.g. the Function node)
         /// the output port is renamed in order to avoid confusing the user with double chevrons.
