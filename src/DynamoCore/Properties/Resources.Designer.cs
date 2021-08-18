@@ -107,6 +107,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Backup file is saved.
+        /// </summary>
+        public static string BackupSavedMsg {
+            get {
+                return ResourceManager.GetString("BackupSavedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bad identifier syntax: &quot;{0}&quot;.
         /// </summary>
         public static string BadIdentifierSyntax {
@@ -1011,7 +1020,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Node &apos;{0}&apos; is now deprecated.
+        ///   Looks up a localized string similar to Node &apos;{0}&apos; is now deprecated..
         /// </summary>
         public static string NodeDeprecatedMsg {
             get {

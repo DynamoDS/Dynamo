@@ -753,8 +753,11 @@ Parameter name: {0}</value>
   <data name="NoneLinterDescriptorName" xml:space="preserve">
     <value>None</value>
   </data>
+  <data name="BackupSavedMsg" xml:space="preserve">
+    <value>Backup file is saved</value>
+  </data>
   <data name="NodeDeprecatedMsg" xml:space="preserve">
-    <value>Node '{0}' is now deprecated</value>
+    <value>Node '{0}' is now deprecated.</value>
   </data>
   <data name="NodeNotResolvedMsg" xml:space="preserve">
     <value>Node '{0}' cannot be resolved.</value>
