@@ -92,7 +92,6 @@ namespace Dynamo.PackageManager
 
         internal void SetScheduledForDeletion() { scheduledState = ScheduledTypes.ScheduledForDeletion; }
         internal void SetScheduledForUnload() { scheduledState = ScheduledTypes.ScheduledForUnload; }
-        internal void SetScheduledForLoad() { scheduledState = ScheduledTypes.ScheduledForLoad; }
         internal void ResetScheduledState() { scheduledState = ScheduledTypes.None; }
 
         // The current load state of the Package.
@@ -540,41 +539,14 @@ namespace Dynamo.PackageManager
             RaisePropertyChanged(nameof(LoadState));
         }
 
-        internal void MarkForLoad(IPreferences prefs, bool schedule = true)
+        internal void MarkForLoad(IPreferences prefs)
         {
             if (BuiltInPackage)
             {
-                if (schedule)
-                {
-                    LoadState.SetScheduledForLoad();
-                }
-                else
-                {
-                    LoadState.SetAsLoaded();
-                }
-
-                if (prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
-                {
-                    prefs.PackageDirectoriesToUninstall.Remove(RootDirectory);
-                }
+                LoadState.SetAsLoaded();
+                prefs.PackageDirectoriesToUninstall.Remove(RootDirectory);
                 RaisePropertyChanged(nameof(LoadState));
             }
-        }
-
-        internal void UnmarkForLoad(IPreferences prefs)
-        {
-            if (BuiltInPackage && 
-                LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForLoad && 
-                LoadState.State == PackageLoadState.StateTypes.Unloaded)
-            {
-                LoadState.ResetScheduledState();
-                if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
-                {
-                    prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
-                }
-                RaisePropertyChanged(nameof(LoadState));
-            }
-
         }
 
         internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)

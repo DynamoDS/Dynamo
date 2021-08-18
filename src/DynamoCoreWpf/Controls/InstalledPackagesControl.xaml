@@ -128,12 +128,6 @@
                                                                               Header="{x:Static p:Resources.PackageViewContextMenuLoadText}"
                                                                               ToolTip="{x:Static p:Resources.PackageViewContextMenuLoadTooltip}">
                                                             </MenuItem>
-                                                            <MenuItem Name="UnmarkForInstallButton"
-                                                                              Style="{StaticResource MenuItemCollapseStyle}"
-                                                                              Command="{Binding Path=UnmarkForLoadCommand}"
-                                                                              Header="{x:Static p:Resources.PackageViewContextMenuUnmarkForLoadText}"
-                                                                              ToolTip="{x:Static p:Resources.PackageViewContextMenuUnmarkForLoadTooltip}">
-                                                            </MenuItem>
                                                             <Separator BorderBrush="{StaticResource ExpanderCaretToggleButtonBackground}" 
                                                                        BorderThickness="0 1 0 0"
                                                                        Visibility="{Binding Path=CanPublish, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
