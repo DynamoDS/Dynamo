@@ -246,7 +246,10 @@
                               IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CrossProduct, Mode=OneWay}" />
                 </MenuItem>
-                <MenuItem Name="dismissedAlerts" Header="Dismissed Alerts" />
+                <MenuItem
+                    Name="dismissedAlerts"
+                    Header="Dismissed Alerts"
+                    ItemsSource="{Binding DismissedAlerts, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                 <Separator />
                 <MenuItem Name="isInput_cm"
                           Header="{x:Static p:Resources.NodeContextMenuIsInput}"
@@ -331,7 +334,7 @@
                 Grid.RowSpan="3"
                 Grid.ColumnSpan="3"
                 Background="{StaticResource DarkerGreyBrush}"
-                Canvas.ZIndex="10"
+                Canvas.ZIndex="3"
                 CornerRadius="8,8,0,0" />
 
         <!--  Node Header Background  -->
@@ -341,7 +344,7 @@
                 Grid.ColumnSpan="3"
                 Height="46px"
                 Background="{StaticResource DarkMidGreyBrush}"
-                Canvas.ZIndex="12"
+                Canvas.ZIndex="4"
                 CornerRadius="8,8,0,0">
             <Rectangle Fill="Transparent"
                        IsHitTestVisible="True"
@@ -382,7 +385,7 @@
                    Margin="7,7,10,0"
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Top"
-                   Panel.ZIndex="14"
+                   Panel.ZIndex="4"
                    FlowDirection="LeftToRight">
             <!--  The Icon for this Node  -->
             <Ellipse Name="nodeIcon"
@@ -424,7 +427,7 @@
             <!--  Ellipse sits within Grid to increase size of MouseOver/ToolTip area  -->
             <Grid HorizontalAlignment="Right"
                   VerticalAlignment="Center"
-                  Panel.ZIndex="100"
+                  Panel.ZIndex="5"
                   Background="Transparent"
                   DockPanel.Dock="Right">
                 <Ellipse Name="nodeRenamedBlueDot"
@@ -456,7 +459,7 @@
                       Margin="0,8,0,0"
                       VerticalAlignment="Top"
                       HorizontalContentAlignment="Stretch"
-                      Canvas.ZIndex="20"
+                      Canvas.ZIndex="4"
                       ItemsSource="{Binding Path=InPorts}"
                       Style="{StaticResource InOutPortControlStyle}" />
 
@@ -467,7 +470,7 @@
                       Margin="{Binding OriginalName, Converter={StaticResource NodeOriginalNameToMarginConverter}}"
                       VerticalAlignment="Top"
                       HorizontalContentAlignment="Stretch"
-                      Canvas.ZIndex="20"
+                      Canvas.ZIndex="4"
                       ItemsSource="{Binding Path=OutPorts}"
                       Style="{StaticResource InOutPortControlStyle}" />
 
@@ -476,7 +479,7 @@
               Grid.Column="1"
               Margin="10,0,10,0"
               VerticalAlignment="Top"
-              Canvas.ZIndex="20">
+              Canvas.ZIndex="4">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -485,14 +488,13 @@
             </Grid.RowDefinitions>
 
             <!--  INPUT GRID  -->
-
             <Grid Name="inputGrid"
                   MinHeight="{Binding Source={x:Static configuration:Configurations.PortHeightInPixels}}"
                   Margin="0,5,0,0"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                   x:FieldModifier="public"
-                  Canvas.ZIndex="21"
+                  Canvas.ZIndex="5"
                   IsEnabled="{Binding Path=IsInteractionEnabled}" />
 
         </Grid>
@@ -504,7 +506,7 @@
                     Margin="0,4,6,6"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
-                    Canvas.ZIndex="43"
+                    Canvas.ZIndex="4"
                     FlowDirection="RightToLeft"
                     Orientation="Horizontal"
                     Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
@@ -567,7 +569,7 @@
                             <DataTrigger Binding="{Binding NumberOfDismissedAlerts}" Value="0">
                                 <Setter Property="Grid.MinWidth" Value="0" />
                                 <Setter Property="Grid.Margin" Value="0" />
-                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -612,7 +614,7 @@
                    Grid.Row="1"
                    Grid.RowSpan="3"
                    Grid.ColumnSpan="3"
-                   Canvas.ZIndex="40"
+                   Canvas.ZIndex="0"
                    Fill="Transparent"
                    IsHitTestVisible="False" />
 
@@ -636,7 +638,7 @@
                 Background="Transparent"
                 BorderBrush="{StaticResource Blue300Brush}"
                 BorderThickness="4"
-                Canvas.ZIndex="41"
+                Canvas.ZIndex="6"
                 CornerRadius="7,7,0,0"
                 IsHitTestVisible="False">
             <Border.Visibility>
