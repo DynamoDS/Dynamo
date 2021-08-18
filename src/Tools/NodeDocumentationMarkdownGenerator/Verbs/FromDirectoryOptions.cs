@@ -35,6 +35,9 @@ namespace NodeDocumentationMarkdownGenerator.Verbs
         [Option('s', "compress-images", HelpText = "When set, the tool will try to compress images from dictionary content", Required = false, Default = false)]
         public bool CompressImages { get; set; }
 
+        [Option('g', "compress-gifs", HelpText = "When set, the tool will try to compress gifs from dictionary content", Required = false, Default = false)]
+        public bool CompressGifs { get; set; }
+
         [Option('x', "layout-spec", HelpText = "Path to a LayoutSpecification json file", Required = false)]
         public string LayoutSpecPath { get; set; }
 

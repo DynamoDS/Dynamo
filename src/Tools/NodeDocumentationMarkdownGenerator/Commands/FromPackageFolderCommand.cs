@@ -57,6 +57,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
         private static List<MdFileInfo> ScanCustomNodes(Package pkg)
         {
             var fileInfos = new List<MdFileInfo>();
+            if (!Directory.Exists(pkg.CustomNodeDirectory)) return fileInfos;
 
             foreach (var path in Directory.EnumerateFiles(pkg.CustomNodeDirectory, "*.dyf"))
             {

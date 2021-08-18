@@ -21,11 +21,12 @@ namespace NodeDocumentationMarkdownGenerator
         /// <param name="outputDir">Folder path where files should be created</param>
         /// <param name="overWrite">if true, files in outputDir will be overwritten</param>
         /// <param name="compressImages">if true images matched from dictionary will be compressed (if possible)</param>
+        /// <param name="compressGifs">if true animated gifs matched from dictionary will be compressed (if possible)</param>
         /// <param name="dictionaryPath">path to dictionary json file</param>
         /// <param name="layoutSpec">path to layout spec json</param>
         internal static void CreateMdFilesFromFileNames(
             IEnumerable<MdFileInfo> fileInfos, string outputDir, bool overWrite, 
-            bool compressImages = false, string dictionaryPath = null, string layoutSpec = null)
+            bool compressImages = false, bool compressGifs = false, string dictionaryPath = null, string layoutSpec = null)
         {
             ImageOptimizer optimizer = null;
             LayoutSpecification spec = null;
@@ -84,7 +85,7 @@ namespace NodeDocumentationMarkdownGenerator
                     DynamoDictionaryEntry matchingEntry = GetMatchingDictionaryEntry(dictEntrys, info, spec);
                     if (matchingEntry != null)
                     {
-                        fileContent = GetContentFromDictionaryEntry(matchingEntry, examplesDirectory, optimizer, fileInfo);    
+                        fileContent = GetContentFromDictionaryEntry(matchingEntry, examplesDirectory, optimizer,compressGifs, fileInfo);    
                     }
                 }
 
@@ -131,7 +132,7 @@ namespace NodeDocumentationMarkdownGenerator
 
         private static string GetContentFromDictionaryEntry(
             DynamoDictionaryEntry entry, string examplesDirectory, 
-            ImageOptimizer optimizer, FileInfo fileInfo)
+            ImageOptimizer optimizer, bool compressGifs, FileInfo fileInfo)
         {
             var imgDir = new DirectoryInfo(Path.Combine(examplesDirectory, entry.FolderPath, "img"));
 
@@ -145,7 +146,7 @@ namespace NodeDocumentationMarkdownGenerator
             var imageFile = entry.ImageFile.FirstOrDefault();
             if (imgDir.Exists &&
                 imgDir.GetFiles($"{imageFile}.*").Length > 0 &&
-                !TrySaveImage(imgDir, imageFile, optimizer, fileInfo, out imageString))
+                !TrySaveImage(imgDir, imageFile, optimizer, compressGifs, fileInfo, out imageString))
             {
                 missingFields.Add("Image");
             }
@@ -169,7 +170,7 @@ namespace NodeDocumentationMarkdownGenerator
 
         private static bool TrySaveImage(
             DirectoryInfo imgDir, string imgName, 
-            ImageOptimizer optimizer, FileInfo fileInfo, 
+            ImageOptimizer optimizer,bool compressGifs, FileInfo fileInfo, 
             out string outputImagePath)
         {
             outputImagePath = string.Empty;
@@ -177,29 +178,54 @@ namespace NodeDocumentationMarkdownGenerator
 
             if (!imageFileInfo.Exists) return false;
 
+            
+
             try
             {
                 using (Image image = Image.FromFile(imageFileInfo.FullName))
                 using (MemoryStream m = new MemoryStream())
                 {
                     image.Save(m, image.RawFormat);
-
-                    if (optimizer != null)
+                    var oldSize = m.Length;
+                    var ext = imageFileInfo.Extension.ToLower();
+                    //the simple optimizer fails with animated gifs, or gifs that have already been semi optimized (different size frames)
+                    if (optimizer != null && ext != ".gif" )
                     {
                         m.Position = 0;
                         optimizer.Compress(m);
                     }
+                    if (compressGifs && ext == ".gif")
+                    {
+                        using (MagickImageCollection images = new MagickImageCollection(imageFileInfo))
+                        {
+                            //I've disabled these optimization steps for now because they are extremely slow.
+                            //quantization is much faster and produces mostly very good results. (though not lossless)
 
+                            //images.Coalesce();
+                            //images.Optimize();
+                            //images.OptimizeTransparency();
+                            //reduce color bit depth from 8 to 5.
+                            images.Quantize(new QuantizeSettings() { Colors = 32768 });
+                            m.Position = 0;
+                            m.SetLength(0);
+                            images.Write(m);
+                        }
+                    }
+
+                    var newsize = m.Length;
+                    System.Diagnostics.Debug.WriteLine($"reduced {imageFileInfo.Name} from {oldSize} to {newsize} ~{ (int)(100.0 - (((float)newsize / (float)oldSize) * 100.0))}% reduction");
                     var img = Image.FromStream(m);
                     var fileName = $"{Path.GetFileNameWithoutExtension(fileInfo.FullName)}_img{imageFileInfo.Extension}";
                     var path = Path.Combine(fileInfo.Directory.FullName, fileName);
                     img.Save(path);
                     outputImagePath = $"![{imgName}](./{fileName.Replace(" ", "%20")})";
+                    
                     return true;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 return false;
             }
 

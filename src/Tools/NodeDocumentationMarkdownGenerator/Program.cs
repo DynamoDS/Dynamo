@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,6 +14,8 @@ namespace NodeDocumentationMarkdownGenerator
         internal static IEnumerable<FileInfo> DynamoDirectoryAssemblyPaths;
         static void Main(string[] args)
         {
+            var sw = new Stopwatch();
+            sw.Start();
             Program.DynamoDirectoryAssemblyPaths = new DirectoryInfo(
                 Path.GetFullPath(
                     Path.Combine(
@@ -29,6 +32,10 @@ namespace NodeDocumentationMarkdownGenerator
                     (FromDirectoryOptions opts) => CommandHandler.HandleFromDirectory(opts),
                     (FromPackageOptions opts) => CommandHandler.HandleFromPackage(opts),
                     err => "1");
+            Console.WriteLine($"docs generation took {sw.Elapsed.TotalSeconds}");
+# if DEBUG
+            Console.ReadLine();
+#endif
         }
 
         private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
