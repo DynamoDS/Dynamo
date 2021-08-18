@@ -58,7 +58,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             if (filter.Any())
             {
                 // Filters the assemblies specified in the filter from allAssembliesFromInputFolder,
-                // the assembly paths left after this filter is the ones that will be scanned.
+                // the assembly paths left after this filter are the ones that will be scanned for nodes.
                 var assemblyPathsToScan = allAssembliesFromInputFolder
                     .Where(x => filter.Contains(x.Name) || filter.Contains(x.FullName))
                     .Select(x => x.FullName)
@@ -66,14 +66,14 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
                 // We still need all assemblies in the inputFolderPath for the PathAssemblyResolver
                 // so here we separate the assemblyPathsToScan from allAssembliesFromInputFolder
-                // which gives us the additional assemblies that need to be added to the PathAssemblyResolver
+                // which gives us the additional assemblies that need to be added to the AssemblyResolveHandler
                 var addtionalPathsToLoad = allAssembliesFromInputFolder
                     .Select(x => x.FullName)
                     .Except(assemblyPathsToScan)
                     .ToList();
 
                 // If there are any paths specified in the referencePaths we need to add them
-                // to addtionalPathsToLoad as the PathAssemblyResolver will need them to resolve types
+                // to addtionalPathsToLoad as the AssemblyResolveHandler will need them to resolve types.
                 if (referenceDllPaths.Any())
                 {
                     addtionalPathsToLoad.AddRange(referenceDllPaths);
@@ -82,8 +82,8 @@ namespace NodeDocumentationMarkdownGenerator.Commands
                 return AssemblyHandler.ScanAssemblies(assemblyPathsToScan, addtionalPathsToLoad);
             }
 
-            // If there are no filter specified we want to scan all assemblies in the inputFolderPath
-            // and still add any referencePaths to the PathAssemblyResolver
+            // If there are no filters specified we want to scan all assemblies in the inputFolderPath
+            // and still add any referencePaths to the AssemblyResolveHandler
             return AssemblyHandler.
                 ScanAssemblies(allAssembliesFromInputFolder.Select(x => x.FullName), referenceDllPaths);
         }

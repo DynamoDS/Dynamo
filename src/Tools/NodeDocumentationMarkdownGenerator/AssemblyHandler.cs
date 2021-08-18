@@ -23,6 +23,7 @@ namespace NodeDocumentationMarkdownGenerator
     {
         /// <summary>
         /// Scans a list of assemblies using to determine which nodes are in the assemblies.
+        /// This method has a side effect of passing the additionalPathsToLoad to the AssemblyResovleHandler.
         /// </summary>
         /// <param name="assemblyPaths">List of dll paths that should be scanned</param>
         /// <param name="additionalPathsToLoad">List of dll paths that should be handled by the AssemmblyResolveHandler.
