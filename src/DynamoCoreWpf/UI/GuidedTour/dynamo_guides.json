@@ -43,7 +43,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "bottom_left",
 				"Width": 480,
-				"Height": 240,
+				"Height": 260,
 				"StepContent": {
 					"Title": "GetStartedGuideRunStatusBarTitle",
 					"FormattedText": "GetStartedGuideRunStatusBarText"

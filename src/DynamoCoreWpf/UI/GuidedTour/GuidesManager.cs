@@ -185,7 +185,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This methos will create an StepUIAutomation instance based in the information passed as parameter
+        /// This method will create an StepUIAutomation instance based on the information passed as parameter
         /// </summary>
         /// <param name="jsonUIAutomation">StepUIAutomation instance read from the json file</param>
         /// <returns></returns>

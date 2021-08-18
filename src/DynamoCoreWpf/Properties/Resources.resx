@@ -2445,37 +2445,37 @@ Uninstall the following packages: {0}?</value>
     <comment>Dynamo Guided Tours</comment>
   </data>
   <data name="GetStartedGuideLibraryText" xml:space="preserve">
-    <value>The Library contains all default Dynamo nodes, and any other nodes you have loaded, such as #custom=https://primer.dynamobim.org/10_Custom-Nodes/10-1_Introduction.html nodes or #packages=https://primer.dynamobim.org/11_Packages/11-1_Introduction.html \n\nYou can browse through the node Categories, or search the library to find a node.</value>
+    <value>The library contains all default functions #(nodes)=https://www.dynamoprimer.com/03_Anatomy-of-a-Dynamo-Definition/3-1_dynamo_nodes.html of Dynamo, as well as custom nodes you may have loaded. \n\nTo find a node, search the library or browse its categories.</value>
   </data>
   <data name="GetStartedGuideLibraryTitle" xml:space="preserve">
     <value>Library</value>
   </data>
   <data name="GetStartedGuidePreferencesText" xml:space="preserve">
-    <value>In the Preferences palette, you can customize your Dynamo experience, from language and time zone settings, to experimental features and visual styles of your workspace.</value>
+    <value>Use Preferences to customize your Dynamo experience. \n\nYou can change language and time zone settings, adjust the visual style of your workspace, and more.</value>
   </data>
   <data name="GetStartedGuidePreferencesTitle" xml:space="preserve">
     <value>Preferences</value>
   </data>
   <data name="GetStartedGuideResourcesText" xml:space="preserve">
-    <value>Use the Help menu to access tools and resources to help you get started.\n\nYou can choose sample scripts, browse the Dynamo Dictionary, replay this and other tutorials, and more!</value>
+    <value>Use the Help menu to access tools and resources to help you get started. \n\nYou can explore sample scripts, browse the Dynamo Dictionary, find other guides, and more.</value>
   </data>
   <data name="GetStartedGuideResourcesTitle" xml:space="preserve">
     <value>Resources</value>
   </data>
   <data name="GetStartedGuideRunStatusBarText" xml:space="preserve">
-    <value>Use the Run Status Bar to run your Dynamo graphs and choose between automatic and manual run types. \n\nSelecting Automatic means your graph will run each time you make a change, and selecting manual means your graph will only run when you select the Run button.</value>
+    <value>Use the Run Status Bar to run a Dynamo graph (a script that contains the logic or algorithm). \n\nYou can select your preferred run type: -Automatic: The graph runs each time you make a change.- -Manual: The graph runs only when you click Run-</value>
   </data>
   <data name="GetStartedGuideRunStatusBarTitle" xml:space="preserve">
     <value>Run Status Bar</value>
   </data>
   <data name="GetStartedGuideToolbarText" xml:space="preserve">
-    <value>From the Toolbar, you can: -Open a new workspace- -Open a saved Dynamo file- -Save your current Dynamo file- -Undo or redo changes-</value>
+    <value>From the toolbar, you can: -Open a new workspace- -Open a saved Dynamo file- -Save your current Dynamo file- -Undo or redo changes-</value>
   </data>
   <data name="GetStartedGuideToolbarTitle" xml:space="preserve">
     <value>Toolbar</value>
   </data>
   <data name="GetStartedGuideWelcomeText" xml:space="preserve">
-    <value>Take a short tour to learn some basics about the Dynamo interface and features to help you get started on your visual programming journey.</value>
+    <value>Start your visual programming journey with this short guide. \n\nHere you'll learn some basics about the Dynamo interface and features.</value>
   </data>
   <data name="GetStartedGuideWelcomeTitle" xml:space="preserve">
     <value>Welcome To Dynamo</value>
@@ -2487,7 +2487,7 @@ Uninstall the following packages: {0}?</value>
     <value>Rate this guide</value>
   </data>
   <data name="GetStartedGuideSurveyText" xml:space="preserve">
-    <value>Learn more about working in Dynamo with the #Dynamo Primer=https://primer.dynamobim.org/</value>
+    <value>Learn more about Dynamo in the #online help=https://primer.dynamobim.org/</value>
   </data>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
