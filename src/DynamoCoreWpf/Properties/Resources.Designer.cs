@@ -2268,7 +2268,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can return to this tutorial later from the Help menu..
+        ///   Looks up a localized string similar to You can return to this guide later from the Help menu..
         /// </summary>
         public static string ExitTourWindowContent {
             get {
