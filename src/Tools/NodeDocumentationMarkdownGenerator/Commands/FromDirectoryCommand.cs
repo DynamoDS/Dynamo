@@ -22,7 +22,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
                 fileInfos.AddRange(ScanFolderForCustomNodes(opts.InputFolderPath, searchOption));
             }
 
-            MarkdownHandler.CreateMdFilesFromFileNames(fileInfos, opts.OutputFolderPath, opts.Overwrite, opts.CompressImages, opts.DictionaryDirectory, opts.LayoutSpecPath);
+            MarkdownHandler.CreateMdFilesFromFileNames(fileInfos, opts.OutputFolderPath, opts.Overwrite, opts.CompressImages, opts.CompressGifs, opts.DictionaryDirectory, opts.LayoutSpecPath);
         }
 
         private static List<MdFileInfo> ScanFolderForCustomNodes(string inputFolderPath, SearchOption searchOption)
