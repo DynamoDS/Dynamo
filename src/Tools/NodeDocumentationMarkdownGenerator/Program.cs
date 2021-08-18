@@ -11,16 +11,28 @@ namespace NodeDocumentationMarkdownGenerator
 {
     class Program
     {
-        internal static IEnumerable<FileInfo> DynamoDirectoryAssemblyPaths;
+        private static IEnumerable<FileInfo> dynamoDirectoryAssemblyPaths;
+        internal static IEnumerable<FileInfo> DynamoDirectoryAssemblyPaths
+        {
+            get
+            {
+                if (dynamoDirectoryAssemblyPaths is null)
+                {
+                    dynamoDirectoryAssemblyPaths = new DirectoryInfo(
+                        Path.GetFullPath(
+                            Path.Combine(
+                                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\bin\AnyCPU\Debug")))
+                        .EnumerateFiles("*.dll", SearchOption.TopDirectoryOnly);
+                }
+
+                return dynamoDirectoryAssemblyPaths;
+            }
+        }
+
         internal static void Main(string[] args)
         {
             var sw = new Stopwatch();
             sw.Start();
-            Program.DynamoDirectoryAssemblyPaths = new DirectoryInfo(
-                Path.GetFullPath(
-                    Path.Combine(
-                        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\bin\AnyCPU\Debug")))
-                .EnumerateFiles("*.dll", SearchOption.TopDirectoryOnly);
 
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NodeDocumentationMarkdownGenerator;
+using NodeDocumentationMarkdownGenerator.Commands;
+using NodeDocumentationMarkdownGenerator.Verbs;
 using NUnit.Framework;
 
 namespace NodeDocumentationMarkdownGeneratorTests
@@ -16,12 +19,21 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
         private DirectoryInfo tempDirectory = null;
 
+        [SetUp]
+        public void SetUp()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += Program.CurrentDomain_AssemblyResolve;
+        }
+
         [TearDown]
         public void CleanUp()
         {
+            AppDomain.CurrentDomain.AssemblyResolve -= Program.CurrentDomain_AssemblyResolve;
+
             if (tempDirectory == null || !tempDirectory.Exists) return;
 
             tempDirectory.Delete(true);
+            tempDirectory = null;
         }
 
         [Test]
@@ -47,18 +59,16 @@ namespace NodeDocumentationMarkdownGeneratorTests
             tempDirectory = CreateTempOutputDirectory();
             Assert.That(tempDirectory.Exists);
 
-            string[] args = new string[] 
-            { 
-                "fromdirectory",
-                "-i",
-                toolsTestFilesDirectory,
-                "-o",
-                tempDirectory.FullName,
-                "-f",
-                CORENODEMODELS_DLL_NAME
+            var opts = new FromDirectoryOptions
+            {
+                InputFolderPath = toolsTestFilesDirectory,
+                OutputFolderPath = tempDirectory.FullName,
+                Filter = new List<string> { CORENODEMODELS_DLL_NAME },
+                ReferencePaths = new List<string>()
             };
 
-            NodeDocumentationMarkdownGenerator.Program.Main(args);
+            FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
+
             var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
 
             // Assert
@@ -67,7 +77,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
 
         [Test]
-        public void ProducesCorrectOutputFromPackage()
+        public void ProducesCorrectOutputFromPackageWithRevitDependecy()
         {
             // Arrange
             var packageName = "InspectionTest";
@@ -101,18 +111,16 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 "Autodesk.Revit.DB.Reference.UVPoint.md",
                 "InspectionTest.HelloDynamo.HelloDynamo.md"
             };
-
+            
             // Act
-            string[] args = new string[]
+            var opts = new FromPackageOptions
             {
-                "frompackage",
-                "-i",
-                Path.Combine(toolsTestFilesDirectory,packageName),
-                "-r",
-                toolsTestFilesDirectory,
+                InputFolderPath = Path.Combine(toolsTestFilesDirectory, packageName),
+                ReferencePaths = new List<string> { toolsTestFilesDirectory }
             };
 
-            NodeDocumentationMarkdownGenerator.Program.Main(args);
+            FromPackageFolderCommand.HandlePackageDocumentation(opts);
+
             tempDirectory.Refresh();
 
             // Assert
@@ -139,45 +147,34 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 .Select(x => x.LastWriteTime)
                 .ToList();
 
-            string[] argsWithOverwrite = new string[]
+            var opts = new FromDirectoryOptions
             {
-                "fromdirectory",
-                "-i",
-                toolsTestFilesDirectory,
-                "-o",
-                tempDirectory.FullName,
-                "-f",
-                CORENODEMODELS_DLL_NAME,
-                "-w"
+                InputFolderPath = toolsTestFilesDirectory,
+                OutputFolderPath = tempDirectory.FullName,
+                Filter = new List<string> { CORENODEMODELS_DLL_NAME },
+                ReferencePaths = new List<string>(),
+                Overwrite = false
             };
 
-            string[] argsWithoutOverwrite = new string[]
-            {
-                "fromdirectory",
-                "-i",
-                toolsTestFilesDirectory,
-                "-o",
-                tempDirectory.FullName,
-                "-f",
-                CORENODEMODELS_DLL_NAME
-            };
+            FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
 
-            NodeDocumentationMarkdownGenerator.Program.Main(argsWithoutOverwrite);
             tempDirectory.Refresh();
-            var lastWriteTimeAfterMainWithoutOverwrite = tempDirectory
+            var lastWriteTimeAfterCommandWithoutOverwrite = tempDirectory
                 .GetFiles()
                 .Select(x => x.LastWriteTime)
                 .ToList();
 
-            NodeDocumentationMarkdownGenerator.Program.Main(argsWithOverwrite);
+            opts.Overwrite = true;
+            FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
+
             tempDirectory.Refresh();
-            var lastWriteTimeAfterMainWithOverwrite = tempDirectory
+            var lastWriteTimeAfterCommandWithOverwrite = tempDirectory
                 .GetFiles()
                 .Select(x => x.LastWriteTime)
                 .ToList();
 
             // Assert
-            Assert.IsTrue(lastWriteTimeAfterMainWithOverwrite.Count() == lastWriteTimeBefore.Count());
+            Assert.IsTrue(lastWriteTimeAfterCommandWithOverwrite.Count() == lastWriteTimeBefore.Count());
 
             // Compare last write times on original files
             // and new files without overwrite (-w)
@@ -186,7 +183,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 // as overwrite has not been specified here
                 // it is expected that last write time will
                 // be the same for all the files
-                Assert.That(DateTime.Compare(lastWriteTimeBefore[i], lastWriteTimeAfterMainWithoutOverwrite[i]) == 0);
+                Assert.That(DateTime.Compare(lastWriteTimeBefore[i], lastWriteTimeAfterCommandWithoutOverwrite[i]) == 0);
             }
 
             // Compare last write times on original files
@@ -195,12 +192,41 @@ namespace NodeDocumentationMarkdownGeneratorTests
             {
                 // if Compare returns less than 0 first element
                 // is earlier then 2nd
-                Assert.That(DateTime.Compare(lastWriteTimeBefore[i], lastWriteTimeAfterMainWithOverwrite[i]) < 0);
+                Assert.That(DateTime.Compare(lastWriteTimeBefore[i], lastWriteTimeAfterCommandWithOverwrite[i]) < 0);
             }
 
             CollectionAssert.AreEquivalent(
                 originalOutDir.GetFiles().Select(x => x.Name), 
                 tempDirectory.GetFiles().Select(x => x.Name));
+        }
+
+        [Test]
+        public void CanScanAssemblyFromPath()
+        {
+            // Arrange
+            var assemblyPath = Path.Combine(toolsTestFilesDirectory, CORENODEMODELS_DLL_NAME);
+            var coreNodeModelMdFilesDir = new DirectoryInfo(Path.Combine(toolsTestFilesDirectory, "TestMdOutput_CoreNodeModels"));
+            var coreNodeModelMdFiles = coreNodeModelMdFilesDir.GetFiles();
+
+            // Act
+            var mdFileInfos = AssemblyHandler.ScanAssemblies(new List<string> { assemblyPath });
+
+
+            // Assert
+            Assert.IsTrue(coreNodeModelMdFiles.Count() == mdFileInfos.Count);
+            AssertMdFileInfos(mdFileInfos, coreNodeModelMdFiles);
+        }
+
+        #region Helpers
+        private void AssertMdFileInfos(List<MdFileInfo> mdFileInfos, FileInfo[] coreNodeModelMdFiles)
+        {
+            var expectedFileNames = coreNodeModelMdFiles.Select(x => Path.GetFileNameWithoutExtension(x.FullName));
+            var expectedMdFileInfoNamespace = "CoreNodeModels";
+            foreach (var info in mdFileInfos)
+            {
+                Assert.That(expectedFileNames.Contains(info.FileName));
+                Assert.IsTrue(info.NodeNamespace.StartsWith(expectedMdFileInfoNamespace));
+            }
         }
 
         private DirectoryInfo CreateTempOutputDirectory()
@@ -217,5 +243,6 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 file.CopyTo(Path.Combine(targetDir.FullName, file.Name));
             }
         }
+        #endregion
     }
 }
