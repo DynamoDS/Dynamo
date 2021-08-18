@@ -26,6 +26,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using Type = System.Type;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -143,6 +144,19 @@ namespace Dynamo.Graph.Nodes
         /// Note: This event will only be triggered when profiling is active.
         /// </summary>
         public event Action<NodeModel> NodeExecutionBegin;
+
+        /// <summary>
+        /// Event triggered whenever the node re-executes to clear its warnings and errors.
+        /// </summary>
+        public event Action<NodeModel> NodeMessagesClearing;
+
+        /// <summary>
+        /// Fires on each node that is modified when the graph executes.
+        /// </summary>
+        internal void OnNodeMessagesClearing()
+        {
+            NodeMessagesClearing?.Invoke(this);
+        }
 
         internal void OnNodeExecutionBegin()
         {
@@ -1578,6 +1592,7 @@ namespace Dynamo.Graph.Nodes
 
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTooltipText();
+            OnNodeMessagesClearing();
         }
 
         public void SelectNeighbors()
