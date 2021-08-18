@@ -2568,12 +2568,6 @@ This package will be deleted after the next Dynamo restart.</value>
   <data name="PackageViewContextMenuLoadTooltip">
       <value>Load this package into Dynamo. Other packages with the same name will be automatically deleted</value>
   </data>
-  <data name="PackageViewContextMenuUnmarkForLoadText">
-      <value>Cancel Load</value>
-  </data>
-  <data name="PackageViewContextMenuUnmarkForLoadTooltip">
-      <value>Remove scheduled load status and all schduled for delete statuses from all conflicting packages</value>
-  </data>
   <data name="CannotLoadPackageMessageBoxTitle" xml:space="preserve">
     <value>Cannot Load Package</value>
   </data>

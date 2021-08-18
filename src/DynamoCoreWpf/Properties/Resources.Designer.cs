@@ -4840,24 +4840,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel Load.
-        /// </summary>
-        public static string PackageViewContextMenuUnmarkForLoadText {
-            get {
-                return ResourceManager.GetString("PackageViewContextMenuUnmarkForLoadText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remove scheduled load status and all schduled for delete statuses from all conflicting packages.
-        /// </summary>
-        public static string PackageViewContextMenuUnmarkForLoadTooltip {
-            get {
-                return ResourceManager.GetString("PackageViewContextMenuUnmarkForLoadTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Package Warning.
         /// </summary>
         public static string PackageWarningMessageBoxTitle {
