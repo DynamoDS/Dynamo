@@ -116,11 +116,6 @@
                                                                               Header="{x:Static p:Resources.PackageViewContextMenuLoadText}"
                                                                               ToolTip="{x:Static p:Resources.PackageViewContextMenuLoadTooltip}">
                                                             </MenuItem>
-                                                            <MenuItem Name="UnmarkForInstallButton"
-                                                                              Command="{Binding Path=UnmarkForLoadCommand}"
-                                                                              Header="{x:Static p:Resources.PackageViewContextMenuUnmarkForLoadText}"
-                                                                              ToolTip="{x:Static p:Resources.PackageViewContextMenuUnmarkForLoadTooltip}">
-                                                            </MenuItem>
                                                             <MenuItem Name="MakePackageButton"
                                                                               Command="{Binding Path=PublishNewPackageCommand}"
                                                                               ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishTooltip}"

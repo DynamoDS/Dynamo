@@ -286,6 +286,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot Load Package.
+        /// </summary>
+        public static string CannotLoadPackageMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("CannotLoadPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can&apos;t submit a package in this version of {0}.  You&apos;ll need a host application, like Revit, to submit a package..
         /// </summary>
         public static string CannotSubmitPackage {
@@ -3443,10 +3452,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading the built-in package {1} conflicts with one or more packages that are already loadeded. 
-        ///To load the built-in package {1}, Dynamo needs to first delete the conflicting packages. 
+        ///   Looks up a localized string similar to To load the built-in package {1}, {0} needs to first delete any conflicting packages.
         ///
-        ///Delete the following packages: {0}?.
+        ///Delete the following packages: {2}?.
         /// </summary>
         public static string MessageLoadBuiltInPackage {
             get {
@@ -3455,16 +3463,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The built in package {1} cannot be loaded.
-        ///Loading it would conflict with one or more packages that are already loaded. 
-        ///To load {1}, Dynamo needs to first delete the conflicting packages. 
-        ///Restart Dynamo to complete the install.
+        ///   Looks up a localized string similar to To load the built-in package {1}, {0} needs to first delete any conflicting packages.
+        ///Restart {0} to complete the deletion, then try and load the built-in pacakge again.
         ///
-        ///Uninstall the following packages: {0}?.
+        ///Delete the following packages: {2}?
+        ///    .
         /// </summary>
-        public static string MessageLoadBuiltInPackageWithRestart {
+        public static string MessageLoadBuiltInWithRestartPackage {
             get {
-                return ResourceManager.GetString("MessageLoadBuiltInPackageWithRestart", resourceCulture);
+                return ResourceManager.GetString("MessageLoadBuiltInWithRestartPackage", resourceCulture);
             }
         }
         
@@ -4610,16 +4617,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unloaded.
-        ///This package has not been loaded because another conflicting package was loaded before it..
-        /// </summary>
-        public static string PackageStateAutomaticallyUnloadedTooltip {
-            get {
-                return ResourceManager.GetString("PackageStateAutomaticallyUnloadedTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string PackageStateError {
@@ -4655,16 +4652,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageStateLoadedTooltip {
             get {
                 return ResourceManager.GetString("PackageStateLoadedTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unloaded.
-        ///This package was manually set as Unloaded..
-        /// </summary>
-        public static string PackageStateManuallyUnloadedTooltip {
-            get {
-                return ResourceManager.GetString("PackageStateManuallyUnloadedTooltip", resourceCulture);
             }
         }
         
@@ -4740,6 +4727,16 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageStateUnloaded {
             get {
                 return ResourceManager.GetString("PackageStateUnloaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        ///This package has been marked as unloaded..
+        /// </summary>
+        public static string PackageStateUnloadedTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateUnloadedTooltip", resourceCulture);
             }
         }
         

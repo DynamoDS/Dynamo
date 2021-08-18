@@ -326,29 +326,22 @@ namespace DynamoCoreWpfTests
 
             var builtInPkgViewModel = ViewModel.PreferencesViewModel.LocalPackages.Where(x => x.Model.BuiltInPackage).FirstOrDefault();
             Assert.IsNotNull(builtInPkgViewModel);
-            Assert.AreEqual(builtInPkgViewModel.Model.LoadState.State, PackageLoadState.StateTypes.Unloaded);
-            Assert.AreEqual(builtInPkgViewModel.Model.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.None);
+            Assert.AreEqual(PackageLoadState.StateTypes.Unloaded, builtInPkgViewModel.Model.LoadState.State);
+            Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
             var conflictingPkg = loader.LocalPackages.FirstOrDefault(x => x.Name == "SignedPackage" && !x.BuiltInPackage);
             Assert.IsNotNull(conflictingPkg);
-            Assert.AreEqual(conflictingPkg.LoadState.State, PackageLoadState.StateTypes.Loaded);
-            Assert.AreEqual(conflictingPkg.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.None);
+            Assert.AreEqual(PackageLoadState.StateTypes.Loaded, conflictingPkg.LoadState.State);
+            Assert.AreEqual(PackageLoadState.ScheduledTypes.None, conflictingPkg.LoadState.ScheduledState);
+            Assert.IsTrue(conflictingPkg.LoadedAssemblies.Count() > 0);
 
             builtInPkgViewModel.LoadCommand.Execute();
 
-            Assert.AreEqual(builtInPkgViewModel.Model.LoadState.State, PackageLoadState.StateTypes.Unloaded);
-            Assert.AreEqual(builtInPkgViewModel.Model.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.ScheduledForLoad);
+            Assert.AreEqual(PackageLoadState.StateTypes.Unloaded, builtInPkgViewModel.Model.LoadState.State);
+            Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
-            Assert.AreEqual(conflictingPkg.LoadState.State, PackageLoadState.StateTypes.Loaded);
-            Assert.AreEqual(conflictingPkg.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.ScheduledForDeletion);
-
-            builtInPkgViewModel.UnmarkForLoadCommand.Execute();
-
-            Assert.AreEqual(builtInPkgViewModel.Model.LoadState.State, PackageLoadState.StateTypes.Unloaded);
-            Assert.AreEqual(builtInPkgViewModel.Model.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.None);
-
-            Assert.AreEqual(conflictingPkg.LoadState.State, PackageLoadState.StateTypes.Loaded);
-            Assert.AreEqual(conflictingPkg.LoadState.ScheduledState, PackageLoadState.ScheduledTypes.None);
+            Assert.AreEqual(PackageLoadState.StateTypes.Loaded, conflictingPkg.LoadState.State);
+            Assert.AreEqual(PackageLoadState.ScheduledTypes.ScheduledForDeletion, conflictingPkg.LoadState.ScheduledState);
         }
 
         [Test]
