@@ -188,7 +188,6 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Name of the package this node belongs to
         /// </summary>
-        //public string PackageName => Category.Split('.').FirstOrDefault();
         public string PackageName { get; private set; }
 
         /// <summary>
@@ -278,7 +277,7 @@ namespace Dynamo.ViewModels
 
                 case DSFunctionBase dSFunction:
                     var descriptor = dSFunction.Controller.Definition;
-                    if (descriptor.IsOverloaded && NodeModelHasCollisions(descriptor.QualifiedName, viewModel))
+                    if (descriptor.IsOverloaded)
                     {
                         var inputString = GetInputNames(nodeModel);
                         return $"{descriptor.QualifiedName}({inputString})";

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -10,26 +11,17 @@ namespace NodeDocumentationMarkdownGenerator
 {
     class Program
     {
-        private static IEnumerable<FileInfo> dynamoDirectoryAssemblyPaths;
-        internal static IEnumerable<FileInfo> DynamoDirectoryAssemblyPaths
-        {
-            get
-            {
-                if (dynamoDirectoryAssemblyPaths is null)
-                {
-                    dynamoDirectoryAssemblyPaths = new DirectoryInfo(
-                        Path.GetFullPath(
-                            Path.Combine(
-                                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\bin\AnyCPU\Debug")))
-                        .EnumerateFiles("*.dll", SearchOption.TopDirectoryOnly);
-                }
-
-                return dynamoDirectoryAssemblyPaths;
-            }
-        }
-
+        internal static IEnumerable<FileInfo> DynamoDirectoryAssemblyPaths;
         internal static void Main(string[] args)
         {
+            var sw = new Stopwatch();
+            sw.Start();
+            Program.DynamoDirectoryAssemblyPaths = new DirectoryInfo(
+                Path.GetFullPath(
+                    Path.Combine(
+                        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\bin\AnyCPU\Debug")))
+                .EnumerateFiles("*.dll", SearchOption.TopDirectoryOnly);
+
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
             ShowWelcomeMessages();
@@ -40,6 +32,10 @@ namespace NodeDocumentationMarkdownGenerator
                     (FromDirectoryOptions opts) => CommandHandler.HandleFromDirectory(opts),
                     (FromPackageOptions opts) => CommandHandler.HandleFromPackage(opts),
                     err => "1");
+            Console.WriteLine($"docs generation took {sw.Elapsed.TotalSeconds}");
+# if DEBUG
+            Console.ReadLine();
+#endif
         }
 
         internal static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)

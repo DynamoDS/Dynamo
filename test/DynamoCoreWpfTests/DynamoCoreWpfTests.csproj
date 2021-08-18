@@ -123,6 +123,7 @@
     </Compile>
     <Compile Include="ColorPaletteTests.cs" />
     <Compile Include="ConverterViewModelTests.cs" />
+    <Compile Include="GuidedTourTests.cs" />
     <Compile Include="InfoBubbleTests.cs" />
     <Compile Include="Libraries\LabelTests.cs" />
     <Compile Include="ListAtLevelTest.cs" />

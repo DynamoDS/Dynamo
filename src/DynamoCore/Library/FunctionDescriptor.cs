@@ -598,7 +598,7 @@ namespace Dynamo.Engine
                 if (ClassName != null || !(reflectionAsm is null))
                 {
 
-                    if (reflectionAsm != null && reflectionAsm.GetType(ClassName) is System.Type type)
+                    if (reflectionAsm.GetType(ClassName) is System.Type type)
                     {
                         var nodeCat = string.Empty;
                         foreach (var t in type.GetMembers())

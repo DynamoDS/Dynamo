@@ -54,7 +54,6 @@ namespace Dynamo.Utilities
             }
             return Expression.Lambda<Func<T>>(Expression.New(type)).Compile();
         }
-
         /// <summary>
         /// Returns an instance of the <paramref name="type"/> on which the method is invoked.
         /// </summary>

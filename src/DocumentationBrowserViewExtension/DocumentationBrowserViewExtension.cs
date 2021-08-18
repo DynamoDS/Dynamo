@@ -86,16 +86,16 @@ namespace Dynamo.DocumentationBrowser
 
             // subscribe to package loaded so we can add the package documentation 
             // to the Package documentation manager when a package is loaded
-            pmExtension.PackageLoader.PackgeLoaded += OnPackgeLoaded;
+            pmExtension.PackageLoader.PackgeLoaded += OnPackageLoaded;
 
             // add packages already loaded to the PackageDocumentationManager
             foreach (var pkg in pmExtension.PackageLoader.LocalPackages)
             {
-                OnPackgeLoaded(pkg);
+                OnPackageLoaded(pkg);
             }
         }
 
-        private void OnPackgeLoaded(Package pkg)
+        private void OnPackageLoaded(Package pkg)
         {
             // Add documentation files from the package to the DocManager
             PackageDocumentationManager.Instance.AddPackageDocumentation(pkg.NodeDocumentaionDirectory, pkg.Name);
@@ -141,7 +141,7 @@ namespace Dynamo.DocumentationBrowser
 
             if (this.pmExtension != null)
             {
-                this.pmExtension.PackageLoader.PackgeLoaded -= OnPackgeLoaded;
+                this.pmExtension.PackageLoader.PackgeLoaded -= OnPackageLoaded;
             }
             PackageDocumentationManager.Instance.Dispose();
         }

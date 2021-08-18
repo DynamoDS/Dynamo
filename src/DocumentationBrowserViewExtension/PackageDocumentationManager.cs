@@ -31,7 +31,7 @@ namespace Dynamo.DocumentationBrowser
         private const string VALID_DOC_FILEEXTENSION = "*.md";
         private const string FALLBACK_DOC_DIRECTORY_NAME = "fallback_docs";
         private static PackageDocumentationManager instance;
-        private DirectoryInfo dynamoCoreFallbackHostPath;
+        private DirectoryInfo dynamoCoreFallbackDocPath;
         private DirectoryInfo hostDynamoFallbackDocPath;
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Dynamo.DocumentationBrowser
             if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
             {
                 var coreDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, FALLBACK_DOC_DIRECTORY_NAME));
-                dynamoCoreFallbackHostPath = coreDir.Exists ? coreDir : null;
+                dynamoCoreFallbackDocPath = coreDir.Exists ? coreDir : null;
             }
 
             if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
@@ -98,9 +98,9 @@ namespace Dynamo.DocumentationBrowser
                 }
             }
 
-            if (dynamoCoreFallbackHostPath != null)
+            if (dynamoCoreFallbackDocPath != null)
             {
-                matchingDoc = dynamoCoreFallbackHostPath.GetFiles($"{nodeNamespace}.md").FirstOrDefault();
+                matchingDoc = dynamoCoreFallbackDocPath.GetFiles($"{nodeNamespace}.md").FirstOrDefault();
             }
 
             return matchingDoc is null ? string.Empty : matchingDoc.FullName;

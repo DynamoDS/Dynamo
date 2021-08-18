@@ -9,6 +9,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoFFI.Reflection;
 using ProtoCore.Utils;
+using System.IO;
 
 namespace ProtoFFI
 {
@@ -628,7 +629,7 @@ namespace ProtoFFI
                 if (null != indexParams && indexParams.Length > 0)
                     return null;
             }
-            catch(Exception e)
+            catch(FileNotFoundException e)
             {
                 // Exceptions can happen here if a reference is missing,
                 // this can happen when scanning the module in reflection only context.
@@ -696,7 +697,7 @@ namespace ProtoFFI
                             return true;
                     }
                 }
-                catch(Exception e)
+                catch(FileNotFoundException e)
                 {
                     // Exceptions can happen here if a reference is missing,
                     // this can happen when scanning the module in reflection only context.
@@ -753,7 +754,7 @@ namespace ProtoFFI
                 {
                     varDeclNode = ParseArgumentDeclaration(f.Name, f.FieldType);
                 }
-                catch (Exception)
+                catch (FileNotFoundException e)
                 {
                     // If f.FieldType is an unloaded type we can't ParseArgumentDeclaration,
                     // instead we pass a object type. This can happen when we are in reflection only context
@@ -855,11 +856,8 @@ namespace ProtoFFI
 
                 func.Signature = ParseArgumentSignature(method);
             }
-            catch (Exception e)
+            catch (FileNotFoundException e)
             {
-                if (!IsReflectionContext)
-                    throw;
-
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
             }
@@ -1341,14 +1339,21 @@ namespace ProtoFFI
         private Type[] GetReflectionTypes(string typeName)
         {
             List<TypeInfo> types = null;
+            if (Module is null) types = Assembly.DefinedTypes.ToList();
+            else types = Module.Assembly.DefinedTypes.ToList();
+
             if (string.IsNullOrEmpty(typeName) || string.IsNullOrWhiteSpace(typeName))
             {
-                if (Module is null) types = Assembly.DefinedTypes.ToList();
-                else types = Module.Assembly.DefinedTypes.ToList();
+                var typeArr = types
+                    .Select(t => t.AsType())
+                    .ToArray();
+
+                return typeArr;
             }
 
-            var typeArr = types.Select(t => t.AsType()).ToArray();
-            return typeArr;
+            var returnType = new Type[1];
+            returnType[0] = types.FirstOrDefault(x => x.Name == typeName).AsType();
+            return returnType;
         }
 
         public override FFIObjectMarshaler GetMarshaler(ProtoCore.RuntimeCore runtimeCore)
