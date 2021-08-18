@@ -22,21 +22,21 @@ namespace NodeDocumentationMarkdownGenerator
     internal static class AssemblyHandler
     {
         /// <summary>
-        /// Scans a list of assemblies using a Reflection only load context to determine which nodes are in the assemblies.
+        /// Scans a list of assemblies using to determine which nodes are in the assemblies.
         /// </summary>
         /// <param name="assemblyPaths">List of dll paths that should be scanned</param>
-        /// <param name="additionalPathsToLoad">List of dll paths that should be added to the PathAssemblyResolver. This can be used when there are types in the assembly that depends on coming from an external assembly that are not part of the assembly paths</param>
+        /// <param name="additionalPathsToLoad">List of dll paths that should be handled by the AssemmblyResolveHandler.
+        /// This can be used when there are types in the node assembly that depend on types from an external assembly that are not part of the assembly paths parameter.</param>
         /// <returns></returns>
         internal static List<MdFileInfo> ScanAssemblies(IEnumerable<string> assemblyPaths, IEnumerable<string> additionalPathsToLoad = null)
         {
-            //TODO put these paths into the assembly resolve event.
             var paths = GetDefaultPaths();
             paths.AddRange(assemblyPaths);
             if (additionalPathsToLoad != null)
             {
                 paths.AddRange(additionalPathsToLoad);
             }
-
+            Program.ReferenceAssemblyPaths.AddRange(paths);
             return Scan(assemblyPaths);
         }
 

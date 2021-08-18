@@ -12,15 +12,24 @@ namespace NodeDocumentationMarkdownGenerator
     class Program
     {
         internal static IEnumerable<FileInfo> DynamoDirectoryAssemblyPaths;
+        internal static List<String> ReferenceAssemblyPaths = new List<string>();
         static void Main(string[] args)
         {
+#if DEBUG
+            var config = "Debug";
+#else
+   var config = "Release";
+#endif
+            var relativePathToDynamo = $@"..\..\..\..\..\bin\AnyCPU\{config}";
+            Console.WriteLine($"looking for dynamo core assemblies in {relativePathToDynamo}");
+
             var sw = new Stopwatch();
             sw.Start();
             Program.DynamoDirectoryAssemblyPaths = new DirectoryInfo(
                 Path.GetFullPath(
                     Path.Combine(
-                        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\bin\AnyCPU\Debug")))
-                .EnumerateFiles("*.dll", SearchOption.TopDirectoryOnly);
+                        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), relativePathToDynamo)))
+                .EnumerateFiles("*.dll", SearchOption.AllDirectories);
 
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
@@ -41,12 +50,12 @@ namespace NodeDocumentationMarkdownGenerator
         private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             var requestedAssembly = new AssemblyName(args.Name);
-            var requestedAssemblyLocation = Program.DynamoDirectoryAssemblyPaths
+            //concat both dynamocore paths and any reference paths the user added.
+            var requestedAssemblyLocation = Program.DynamoDirectoryAssemblyPaths.Concat(Program.ReferenceAssemblyPaths.Select(x => new FileInfo(x)))
                 .Where(x => Path.GetFileNameWithoutExtension(x.FullName) == requestedAssembly.Name)
                 .FirstOrDefault();
-
+           
             Assembly assembly = null;
-            AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
             try
             {
                 assembly = Assembly.LoadFrom(requestedAssemblyLocation.FullName);
@@ -55,7 +64,6 @@ namespace NodeDocumentationMarkdownGenerator
             {
                 CommandHandler.LogExceptionToConsole(ex);
             }
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             return assembly;
         }
 
