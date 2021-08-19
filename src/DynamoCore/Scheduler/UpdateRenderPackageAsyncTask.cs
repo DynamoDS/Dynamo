@@ -223,7 +223,7 @@ namespace Dynamo.Scheduler
                 {
                     CreatePlaneTessellation(package, plane);
                 }
-                else if (graphicItem is IInstanceableItem instanceableItem)
+                else if (graphicItem is IInstanceableItem instanceableItem && instanceableItem.InstanceInfoAvailable)
                 {
                     if (!packageInstances.MeshVerticesRangesAssociatedWithInstancing.ContainsKey(instanceableItem.BaseTessellationGuid) 
                         && !packageInstances.LineVerticesRangesAssociatedWithInstancing.ContainsKey(instanceableItem.BaseTessellationGuid))
@@ -233,7 +233,6 @@ namespace Dynamo.Scheduler
 
                     instanceableItem.AddInstance(package, factory.TessellationParameters);
 
-                    //todo add labels here based on transform.
                     return;
                 }
                 else

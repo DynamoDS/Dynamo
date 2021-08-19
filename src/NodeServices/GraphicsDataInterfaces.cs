@@ -502,9 +502,14 @@ namespace Autodesk.DesignScript.Interfaces
     public interface IInstanceableItem
     {
         /// <summary>
-        /// A Guid used to reference the base tessellation geometry that will be transformed for all instances
+        /// A Guid used to reference the base tessellation geometry that will be transformed for all related instances
         /// </summary>
         Guid BaseTessellationGuid { get; }
+
+        /// <summary>
+        /// A flag used to indicate if the current geometrical configuration of an item has instance information.
+        /// </summary>
+        bool InstanceInfoAvailable { get; }
 
         /// <summary>
         /// Adds the base graphics/tesselation data in given render package object.
