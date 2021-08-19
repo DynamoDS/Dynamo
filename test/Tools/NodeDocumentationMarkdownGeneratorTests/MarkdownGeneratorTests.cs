@@ -77,45 +77,40 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
 
         [Test]
-        public void ProducesCorrectOutputFromPackageWithRevitDependecy()
+        public void ProducesCorrectOutputFromPackage()
         {
             // Arrange
-            var packageName = "InspectionTest";
+            var packageName = "Dynamo Samples";
+            var packageDirectory = Path.GetFullPath(Path.Combine(toolsTestFilesDirectory, @"..\..\pkgs", packageName));
             var testOutputDirName = "doc";
-            tempDirectory = new DirectoryInfo(Path.Combine(toolsTestFilesDirectory, packageName, testOutputDirName));
+            tempDirectory = new DirectoryInfo(Path.Combine(packageDirectory, testOutputDirName));
             Assert.IsFalse(tempDirectory.Exists);
 
             var expectedFileNames = new List<string>
             {
-                "Autodesk.Revit.DB.APIObject.Dispose.md",
-                "Autodesk.Revit.DB.APIObject.IsReadOnly.md",
-                "Autodesk.Revit.DB.ElementReferenceType.REFERENCE_TYPE_CUT_EDGE.md",
-                "Autodesk.Revit.DB.ElementReferenceType.REFERENCE_TYPE_FOREIGN.md",
-                "Autodesk.Revit.DB.ElementReferenceType.REFERENCE_TYPE_INSTANCE.md",
-                "Autodesk.Revit.DB.ElementReferenceType.REFERENCE_TYPE_LINEAR.md",
-                "Autodesk.Revit.DB.ElementReferenceType.REFERENCE_TYPE_MESH.md",
-                "Autodesk.Revit.DB.ElementReferenceType.REFERENCE_TYPE_NONE.md",
-                "Autodesk.Revit.DB.ElementReferenceType.REFERENCE_TYPE_SUBELEMENT.md",
-                "Autodesk.Revit.DB.ElementReferenceType.REFERENCE_TYPE_SURFACE.md",
-                "Autodesk.Revit.DB.Reference.Contains.md",
-                "Autodesk.Revit.DB.Reference.ConvertToStableRepresentation.md",
-                "Autodesk.Revit.DB.Reference.CreateLinkReference.md",
-                "Autodesk.Revit.DB.Reference.CreateReferenceInLink.md",
-                "Autodesk.Revit.DB.Reference.ElementId.md",
-                "Autodesk.Revit.DB.Reference.ElementReferenceType.md",
-                "Autodesk.Revit.DB.Reference.EqualTo.md",
-                "Autodesk.Revit.DB.Reference.GlobalPoint.md",
-                "Autodesk.Revit.DB.Reference.LinkedElementId.md",
-                "Autodesk.Revit.DB.Reference.ParseFromStableRepresentation.md",
-                "Autodesk.Revit.DB.Reference.Reference.md",
-                "Autodesk.Revit.DB.Reference.UVPoint.md",
-                "InspectionTest.HelloDynamo.HelloDynamo.md"
+                "Examples.BasicExample.Awesome.md",
+                "Examples.BasicExample.Create(point).md",
+                "Examples.BasicExample.Create(x, y, z).md",
+                "Examples.BasicExample.MultiReturnExample.md",
+                "Examples.BasicExample.MultiReturnExample2.md",
+                "Examples.BasicExample.Point.md",
+                "Examples.CustomRenderExample.Create.md",
+                "Examples.PeriodicIncrement.Increment.md",
+                "Examples.PeriodicUpdateExample.PointField.md",
+                "Examples.TransformableExample.ByGeometry.md",
+                "Examples.TransformableExample.Geometry.md",
+                "Examples.TransformableExample.TransformableExample.md",
+                "Examples.TransformableExample.TransformObject.md",
+                "SampleLibraryUI.Examples.ButtonCustomNodeModel.md",
+                "SampleLibraryUI.Examples.DropDownExample.md",
+                "SampleLibraryUI.Examples.LocalizedCustomNodeModel.md",
+                "SampleLibraryUI.Examples.SliderCustomNodeModel.md"
             };
             
             // Act
             var opts = new FromPackageOptions
             {
-                InputFolderPath = Path.Combine(toolsTestFilesDirectory, packageName),
+                InputFolderPath = packageDirectory,
                 ReferencePaths = new List<string> { toolsTestFilesDirectory }
             };
 

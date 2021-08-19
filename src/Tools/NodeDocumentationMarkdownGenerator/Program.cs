@@ -22,7 +22,7 @@ namespace NodeDocumentationMarkdownGenerator
                         Path.GetFullPath(
                             Path.Combine(
                                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\bin\AnyCPU\Debug")))
-                        .EnumerateFiles("*.dll", SearchOption.TopDirectoryOnly);
+                        .EnumerateFiles("*.dll", SearchOption.AllDirectories);
                 }
 
                 return dynamoDirectoryAssemblyPaths;
