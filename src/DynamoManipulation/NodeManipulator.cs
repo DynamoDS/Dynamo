@@ -548,6 +548,10 @@ namespace Dynamo.Manipulation
         {
             Dispose(true);
 
+            // We only show the manipulator warning while the manipulator is alive.
+            // When the owner Node is deselected and the manipulator is disposed,
+            // we cleanup the manipulator warning from the owner Node.
+            // See PR 7623 for more details
             if (!string.IsNullOrEmpty(persistentWarning))
             {
                 Node.ClearPersistentWarnings(persistentWarning);
