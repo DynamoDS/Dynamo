@@ -1021,7 +1021,7 @@ namespace DynamoCoreWpfTests
             Assert.NotNull(nodeingraph);
             Assert.IsTrue(nodeingraph.State == ElementState.Active);
             //remove custom node from definitions folder
-            var savePath = Path.Combine(Path.GetTempPath(), "NewCustomNodeSaveAndLoadDir", "Packages", "NewCustomNodeSaveAndLoad", "NewCustomNodeSaveAndLoad.dyf");
+            var savePath = Path.Combine(Path.GetTempPath(), "NewCustomNodeSaveAndLoad", "NewCustomNodeSaveAndLoad.dyf");
             File.Delete(savePath);
         }
 
