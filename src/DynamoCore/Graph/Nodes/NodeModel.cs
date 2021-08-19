@@ -1572,7 +1572,7 @@ namespace Dynamo.Graph.Nodes
         public virtual void ClearErrorsAndWarnings()
         {
             State = ElementState.Dead;
-            ClearPersistentWarnings();
+            persistentWarnings.Clear();
 
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTooltipText();
@@ -1589,24 +1589,16 @@ namespace Dynamo.Graph.Nodes
                 if (p != null)
                 {
                     persistentWarnings.Remove(p);
-                }
-                else
-                {
-                    persistentWarnings.Clear();
-                }
-
-                State = ElementState.Dead;
-
-                SetNodeStateBasedOnConnectionAndDefaults();
-
-                if (State == ElementState.PersistentWarning)
-                {
                     ToolTipText = persistentWarning;
                 }
                 else
                 {
+                    persistentWarnings.Clear();
                     ClearTooltipText();
                 }
+
+                State = ElementState.Dead;
+                SetNodeStateBasedOnConnectionAndDefaults();
             }
         }
 
@@ -1705,7 +1697,7 @@ namespace Dynamo.Graph.Nodes
             {
                 State = ElementState.Warning;
                 ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.Format("{0}\n{1}", persistentWarning, p);
-                ClearPersistentWarnings();
+                persistentWarnings.Clear();
             }
         }
 
