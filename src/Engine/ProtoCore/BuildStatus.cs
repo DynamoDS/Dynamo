@@ -680,6 +680,37 @@ namespace ProtoCore
             }
         }
 
+        public void LogWarning(WarningID warningID,
+                               string message,
+                               Guid guid)
+        {
+            var entry = new WarningEntry
+            {
+                ID = warningID,
+                Message = message,
+                Line = -1,
+                Column = -1,
+                GraphNodeGuid = guid,
+            };
+            warnings.Add(entry);
+
+            if (LogWarnings)
+            {
+#if DEBUG
+
+                Console.WriteLine("Warning:{0}", message);
+#endif
+
+                OutputMessage outputmessage = new OutputMessage(OutputMessage.MessageType.Warning, message.Trim(), null, -1, -1);
+                if (MessageHandler != null)
+                {
+                    MessageHandler.Write(outputmessage);
+                    if (!outputmessage.Continue)
+                        throw new BuildHaltException(message);
+                }
+            }
+        }
+
         public void ReportBuildResult()
         {
             string buildResult = string.Format("========== Build: {0} error(s), {1} warning(s) ==========\n", errors.Count, warnings.Count);

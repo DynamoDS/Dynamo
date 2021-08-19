@@ -104,16 +104,26 @@ namespace Dynamo.Scheduler
                 {
                     if(!IsGraphCyclic(node, visited, recursed, cyclicNodes))
                     {
-                        // TODO: check if we can only clear cyclic dependency warnings here.
-                        node.ClearErrorsAndWarnings();
+                        var warnings = controller.LiveRunnerCore.BuildStatus.Warnings.ToList();
+                        foreach(var warning in warnings)
+                        {
+                            if(warning.ID == WarningID.InvalidStaticCyclicDependency && 
+                                node.GUID == warning.GraphNodeGuid)
+                            {
+                                node.ClearErrorsAndWarnings();
+                                controller.LiveRunnerCore.BuildStatus.ClearWarningsForGraph(warning.GraphNodeGuid);
+                            }
+                        }
                     }
                 }
                 if (cyclicNodes.Any())
                 {
                     foreach (var node in cyclicNodes)
                     {
-                        // TODO: Add warning message as resource string.
-                        node.Warning("This node has a cyclic dependency", true);
+                        controller.LiveRunnerCore.BuildStatus.LogWarning(WarningID.InvalidStaticCyclicDependency,
+                        ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, node.GUID);
+
+                        node.Warning(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, true);
                     }
                     // Skip scheduling task for graph execution.
                     return false;
