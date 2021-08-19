@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ProtoCore.AssociativeGraph;
 using ProtoCore.Exceptions;
 using ProtoCore.Lang.Replication;
 using ProtoCore.Properties;
@@ -1323,21 +1324,27 @@ namespace ProtoCore.DSASM
 
         private int UpdateGraph(int exprUID, bool isSSAAssign)
         {
-            List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
             if (runtimeCore.Options.DirectDependencyExecution)
             {
                 // Data flow execution prototype
                 // Dependency has already been resolved at compile time
                 // Get the reachable nodes directly from the executingGraphNode
-                reachableGraphNodes = new List<AssociativeGraph.GraphNode>(Properties.executingGraphNode.ChildrenNodes);
-            }
-            else
-            {
-                // Find reachable graphnodes
-                reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                    Properties.executingGraphNode, this, exprUID, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
+                GraphUpdateImpl(Properties.executingGraphNode.ChildrenNodes);
+
+                return Properties.executingGraphNode.ChildrenNodes.Count;
             }
 
+            // Find reachable graphnodes
+            var reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                Properties.executingGraphNode, this, exprUID, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
+
+            GraphUpdateImpl(reachableGraphNodes);
+            return reachableGraphNodes.Count;
+
+        }
+
+        private void GraphUpdateImpl(List<GraphNode> reachableGraphNodes)
+        {
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);
             if (reachableGraphNodes.Count > 0)
@@ -1405,7 +1412,6 @@ namespace ProtoCore.DSASM
                 }
                 gnode.isActive = false;
             }
-            return reachableGraphNodes.Count;
         }
 
         /// <summary>
