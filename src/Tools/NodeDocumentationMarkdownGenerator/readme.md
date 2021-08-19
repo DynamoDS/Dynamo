@@ -89,3 +89,12 @@ frompackage
 -r "C:\Users\...\Program Files\Autodesk\Revit 2022"
 -w
 ```
+
+### Known Issues:
+* The nodedocsgenerator.exe tool currently requires being able to load the types used by the binaries being inspected. For example
+if you are trying to generate docs for a package which depends on Revit you will need to use the `-references flag (-r)` to give the tool access to the RevitAPI and Revit binaries. 
+    * There is a version of this tool that attempts to use `MetaDataLoadContext` to avoid this requirment, but it was deemed too complex at the current time, see: https://github.com/SHKnudsen/Dynamo/tree/Node-Markdown-generator-tool for this version.
+
+* When creating stub markdown files for nodes without linkned dictionary content the default content is not very useful in a dictionary context. At runtime in Dynamo automatic content can be generated for inputs, outputs, and description, but in dictionary this content cannot be generated. Eventually this tool should generate this default content, and it should be filtered out if present in the Dynamo context.
+
+* 
