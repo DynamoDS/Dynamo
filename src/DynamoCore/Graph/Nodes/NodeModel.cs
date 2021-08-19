@@ -43,7 +43,11 @@ namespace Dynamo.Graph.Nodes
         private ElementState state;
         private string toolTipText = "";
         private string description;
-        private string persistentWarning = "";
+        private HashSet<string> persistentWarnings = new HashSet<String>();
+        private string persistentWarning
+        {
+            get { return persistentWarnings.Count > 0 ? string.Join(",", persistentWarnings) : string.Empty; }
+        }
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
 
@@ -1561,11 +1565,6 @@ namespace Dynamo.Graph.Nodes
             ToolTipText = "";
         }
 
-        private void ClearPersistentWarning()
-        {
-            persistentWarning = String.Empty;
-        }
-
         /// <summary>
         /// Clears the errors/warnings that are generated when running the graph,
         /// the State will be set to ElementState.Dead.
@@ -1577,6 +1576,38 @@ namespace Dynamo.Graph.Nodes
 
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTooltipText();
+        }
+
+        /// <summary>
+        /// Clears a specific persistent warning that was added before.
+        /// The State will remain as ElementState.PersistentWarning if other warnings remain.
+        /// </summary>
+        internal void ClearPersistentWarning(string p = null)
+        {
+            if (State == ElementState.PersistentWarning)
+            {
+                if (p != null)
+                {
+                    persistentWarnings.Remove(p);
+                }
+                else
+                {
+                    persistentWarnings.Clear();
+                }
+
+                State = ElementState.Dead;
+
+                SetNodeStateBasedOnConnectionAndDefaults();
+
+                if (State == ElementState.PersistentWarning)
+                {
+                    ToolTipText = persistentWarning;
+                }
+                else
+                {
+                    ClearTooltipText();
+                }
+            }
         }
 
         public void SelectNeighbors()
@@ -1667,9 +1698,9 @@ namespace Dynamo.Graph.Nodes
             if (isPersistent)
             {
                 State = ElementState.PersistentWarning;
-                if (!string.Equals(persistentWarning, p))
+                if (!persistentWarnings.Contains(p))
                 {
-                    persistentWarning += p;
+                    persistentWarnings.Add(p);
                 }
                 ToolTipText = persistentWarning;
             }

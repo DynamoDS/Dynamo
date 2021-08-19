@@ -42,6 +42,7 @@ namespace Dynamo.Manipulation
         private const double NewNodeOffsetX = 350;
         private const double NewNodeOffsetY = 50;
         private bool active;
+        private string persistentWarning = "";
 
         protected const double gizmoScale = 1.2;
 
@@ -547,7 +548,7 @@ namespace Dynamo.Manipulation
         {
             Dispose(true);
 
-            Node.ClearErrorsAndWarnings();
+            Node.ClearPersistentWarning(persistentWarning);
             DeleteGizmos();
             DetachHandlers();
         }
@@ -559,7 +560,7 @@ namespace Dynamo.Manipulation
         public RenderPackageCache BuildRenderPackage()
         {
             Debug.Assert(IsMainThread());
-
+            persistentWarning = null;
             var packages = new RenderPackageCache();
             try
             {
@@ -571,7 +572,8 @@ namespace Dynamo.Manipulation
             }
             catch (Exception e)
             {
-                Node.Warning(Properties.Resources.DirectManipulationError +": " + e.Message);
+                persistentWarning = Properties.Resources.DirectManipulationError + ": " + e.Message;
+                Node.Warning(persistentWarning);
             }
 
             return packages;

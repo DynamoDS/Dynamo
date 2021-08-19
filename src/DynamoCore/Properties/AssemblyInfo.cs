@@ -41,3 +41,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoPythonTests")]
 [assembly: InternalsVisibleTo("GraphMetadataViewExtension")]
 [assembly: InternalsVisibleTo("SystemTestServices")]
+[assembly: InternalsVisibleTo("DynamoManipulation")]
