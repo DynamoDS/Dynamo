@@ -52,7 +52,6 @@ namespace Dynamo.ViewModels
             {
                 switch (Model.LoadState.ScheduledState)
                 {
-                    case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateScheduledForLoad;
                     case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Resources.PackageStateScheduledForUnload;
                     case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateScheduledForDeletion;
                     default:
@@ -76,7 +75,6 @@ namespace Dynamo.ViewModels
             {
                 switch (Model.LoadState.ScheduledState)
                 {
-                    case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateScheduledForLoadTooltip;
                     case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Resources.PackageStateScheduledForUnloadTooltip;
                     case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateScheduledForDeletionTooltip;
                     default:
@@ -353,14 +351,75 @@ namespace Dynamo.ViewModels
             }
         }
 
+        // Loads a built-in package that was previously set as Unloaded
+        private void Load()
+        {
+            var packageLoader = dynamoModel.GetPackageManagerExtension().PackageLoader;
+            var conflicts = packageLoader.LocalPackages.ToList().Where(x => x.Name == Model.Name && x != Model);
+            bool hasConflictsWithLoadedAssemblies = conflicts.Any(x => x.InUse(dynamoModel));
+
+            if (conflicts.Any())
+            {
+                string conflictsMsg = string.Join(",", conflicts.Select(x => x.Name + " " + x.VersionName));
+
+                // Found conflicting packages
+                // 1. If the conflicting packages have assemblies loaded, then we can only mark them as "Scheduled to be deleted" and
+                // have the user re-load the built-in package upon restart.
+                // 2. If the the conflicting packages do not have any assemblies loaded, then we can immediately
+                // delete the conflicting packages and also load the built in one. 
+                string msgText = hasConflictsWithLoadedAssemblies ? 
+                    string.Format(Resources.MessageLoadBuiltInWithRestartPackage, dynamoViewModel.BrandingResourceProvider.ProductName, 
+                        Model.Name + " " + Model.VersionName, conflictsMsg) : 
+                    string.Format(Resources.MessageLoadBuiltInPackage, dynamoViewModel.BrandingResourceProvider.ProductName, 
+                        Model.Name + " " + Model.VersionName, conflictsMsg);
+
+                var dialogResult = MessageBoxService.Show(msgText,
+                        Resources.CannotLoadPackageMessageBoxTitle,
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Exclamation);
+
+                // Proceed only if we have the user's consent.
+                if (dialogResult == MessageBoxResult.Cancel) return;
+            }
+
+            try
+            {
+                foreach (var package in conflicts)
+                {
+                    // Only markForUninstall is done if any loaded assemblies are found
+                    package.UninstallCore(dynamoModel.CustomNodeManager, packageLoader, dynamoModel.PreferenceSettings);
+                }
+
+                if (!hasConflictsWithLoadedAssemblies)
+                {
+                    // Set the package load state as None so that we can try to load it again
+                    Model.LoadState.ResetState();
+
+                    packageLoader.LoadPackages(new List<Package>() { Model });
+                    dynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Remove(Model.RootDirectory);
+                }
+            }
+            catch (Exception e) 
+            {
+                dynamoViewModel.Model.Logger.Log(e);
+            }
+            finally
+            {
+                NotifyLoadStatePropertyChanged();
+                foreach (var package in dynamoViewModel.PreferencesViewModel.LocalPackages.Where(x => conflicts.Contains(x.Model)))
+                {
+                    package.NotifyLoadStatePropertyChanged();
+                }
+            }
+        }
+
         private bool CanLoad()
         {
             return Model.BuiltInPackage && 
-                (Model.LoadState.State == PackageLoadState.StateTypes.Unloaded) && 
-                (Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForLoad);
+                (Model.LoadState.State == PackageLoadState.StateTypes.Unloaded);
         }
 
-        private void GoToRootDirectory()
+    private void GoToRootDirectory()
         {
             // Check for the existance of RootDirectory
             if (Directory.Exists(Model.RootDirectory))
