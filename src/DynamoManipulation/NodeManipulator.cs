@@ -548,7 +548,11 @@ namespace Dynamo.Manipulation
         {
             Dispose(true);
 
-            Node.ClearPersistentWarnings(persistentWarning);
+            if (!string.IsNullOrEmpty(persistentWarning))
+            {
+                Node.ClearPersistentWarnings(persistentWarning);
+            }
+            
             DeleteGizmos();
             DetachHandlers();
         }
