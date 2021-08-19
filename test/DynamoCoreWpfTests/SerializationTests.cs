@@ -987,7 +987,7 @@ namespace DynamoCoreWpfTests
             {
                 File.Delete(savePath);
             }
-            //save it to the definitions folder so it gets loaded at startup.
+            //save it to a temp location so that we can safely load it in NewCustomNodeSaveAndLoadPt2
             ws.Save(savePath);
 
             //assert the filesaved
