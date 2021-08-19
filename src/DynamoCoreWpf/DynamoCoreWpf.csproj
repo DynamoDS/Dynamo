@@ -181,6 +181,7 @@
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
     <Compile Include="UI\GuidedTour\Step.cs" />
+    <Compile Include="UI\GuidedTour\StepUIAutomation.cs" />
     <Compile Include="UI\GuidedTour\Survey.cs" />
     <Compile Include="UI\GuidedTour\Tooltip.cs" />
     <Compile Include="UI\GuidedTour\Welcome.cs" />

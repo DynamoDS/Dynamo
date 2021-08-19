@@ -158,7 +158,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     HostControlInfo hostControlInfo = CreateHostControl(step);               
                     Step newStep = CreateStep(step, hostControlInfo, totalTooltips);
-                    if(newStep != null)
+
+                    //If the UI Automation info was read from the json file then we create an StepUIAutomation instance containing all the info
+                    if (step.UIAutomation != null)
+                        newStep.UIAutomation = CreateStepUIAutomationInfo(step.UIAutomation);
+
+                    if (newStep != null)
                     {
                         //The step is added to the new Guide being created
                         newGuide.GuideSteps.Add(newStep);
@@ -194,6 +199,29 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 popupInfo.HostUIElement = hostUIElement;
 
             return popupInfo;
+        }
+
+        /// <summary>
+        /// This method will create an StepUIAutomation instance based on the information passed as parameter
+        /// </summary>
+        /// <param name="jsonUIAutomation">StepUIAutomation instance read from the json file</param>
+        /// <returns></returns>
+        private StepUIAutomation CreateStepUIAutomationInfo(StepUIAutomation jsonUIAutomation)
+        {
+            var uiAutomationInfo = new StepUIAutomation()
+            {
+                Sequence = jsonUIAutomation.Sequence,
+                ControlType = jsonUIAutomation.ControlType,
+                Name = jsonUIAutomation.Name,
+                Action = jsonUIAutomation.Action
+            };
+
+            //This section will search the UIElement in the Dynamo VisualTree in which an automation action will be executed
+            UIElement automationUIElement = Guide.FindChild(mainRootElement, jsonUIAutomation.Name);
+            if (automationUIElement != null)
+                uiAutomationInfo.UIElementAutomation = automationUIElement;
+
+            return uiAutomationInfo;
         }
 
         /// <summary>

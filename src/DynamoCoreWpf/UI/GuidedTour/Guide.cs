@@ -106,12 +106,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 nextStep = (from step in GuideSteps where step.Sequence == args.StepSequence + 1 select step).FirstOrDefault();
                 if (nextStep != null)
+                {
                     nextStep.Show();
+                }
+
             }
 
             CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
             if (CurrentStep != null)
+            {
                 CurrentStep.Hide();
+            }             
         }
 
 
@@ -127,12 +132,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 prevStep = (from step in GuideSteps where step.Sequence == args.StepSequence - 1 select step).FirstOrDefault();
                 if (prevStep != null)
+                {
                     prevStep.Show();
+                }                   
             }
 
             CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
             if (CurrentStep != null)
+            {
                 CurrentStep.Hide();
+            }             
         }
 
         /// <summary>
