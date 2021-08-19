@@ -1,4 +1,4 @@
-### Node Documentation Generator
+## Node Documentation Generator
 
 The NodeDocumentationGenerator is a CLI tool to generate node documentation markdown stubs. The tool creates markdown files.
 Depending on the mode and option flags used, the file content can be default content, or extracted from the DynamoDictionary.
@@ -6,7 +6,7 @@ Depending on the mode and option flags used, the file content can be default con
 There are two different high level commands:
 1. Create Documentation From Directory
 2. Create Documentation From Package
-### Use Cases
+## Use Cases
 
 1. One time dynamo dictionary migration to .md files. The resulting files will be stored in the Dynamo and host specific repos. (DynamoRevit)
 
@@ -15,22 +15,26 @@ There are two different high level commands:
 3. user by package authors to stub out documentation for nodes.
 third parties can run the --FromPackage command to stub out empty markdown files in the /doc folder of their package. Then the package author can manually fill in the markddown file with detailed documentation, images, gifs etc.
 
-### What to do with docs
+## How to use the Generated Docs
 
+### Dynamo
 Dynamo loads documentation markdown files using documentationbrowser view extension. It loads documentation from packages, from the host_fallback_docs folder, and finally from the core fallback_docs folder.
 
 The documentation for core nodes that are not imported from packages should be generated with this tool, or manually created, then added to the fallback docs folders, then the docs browser will be able to display them when users request help on specific nodes.
 
+### Dictionary
+Eventually Dictionary website can be refactored to consume markdown files from core and each host, that way the documenation between core and dictionary is always in sync.
 
-### CLI options
 
-#### Verbs
+## Using the Tool with CLI options
+
+### Verbs
 | Verb            | Description                                                                                                                                                                                                 |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `fromdirectory` | Generates documentation for all dlls (or only those specified in the filter) and all dyfs (if specified by the  `--includedyfs` flag) in the input directory                                |
 | `frompackage`   | Looks up node libraries in the pkg.json file and creates documentation for those dlls and creates documentation for all dyfs in the `/dyf` folder. All generated files gets saved in `path/to/package/docs` |
 
-#### fromdirectory - flags
+### fromdirectory - flags
 | Short name | Long name           | Optional | Description                                                                            |
 | ---------- | ------------------- | :------: | -------------------------------------------------------------------------------------- |
 | `-i`       | `--input`           |          | Input binary file, containing nodes that documentaion should be generated for.         |
@@ -46,7 +50,7 @@ The documentation for core nodes that are not imported from packages should be g
 | `-x`       | `--layout-spec`     |    ✅     | optional flag - Path to a LayoutSpecification json file                                |
 
 
-#### FromDirectory examples
+### FromDirectory examples
 
 generate docs for CoreNodeModels.dll, importing dictionary content, and compressing images.
 
@@ -72,14 +76,14 @@ fromdirectory
 -w -s
 ```
 
-#### frompackage - flags
+### frompackage - flags
 | Short name | Long name      | Optional | Description                                                                     |
 | ---------- | -------------- | :------: | ------------------------------------------------------------------------------- |
 | `-i`       | `--input`      |          | Package folder path.                                                            |
 | `-r`       | `--references` |    ✅     | optional flag - Folder paths to dlls that are used as references in the nodes   |
 | `-w`       | `--overwrite`  |    ✅     | optional flag - When specified the tool will overwrite files in the output path |
 
-#### FromPackage examples
+### FromPackage examples
 
 generate docs for a package which depends on the revitAPI.
 
@@ -90,7 +94,7 @@ frompackage
 -w
 ```
 
-### Known Issues:
+## Known Issues:
 * The nodedocsgenerator.exe tool currently requires being able to load the types used by the binaries being inspected. For example
 if you are trying to generate docs for a package which depends on Revit you will need to use the `-references flag (-r)` to give the tool access to the RevitAPI and Revit binaries. 
     * There is a version of this tool that attempts to use `MetaDataLoadContext` to avoid this requirment, but it was deemed too complex at the current time, see: https://github.com/SHKnudsen/Dynamo/tree/Node-Markdown-generator-tool for this version.
