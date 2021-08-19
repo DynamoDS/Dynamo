@@ -285,16 +285,15 @@ namespace ProtoCore.DSASM
             CallingConvention.CallType callType = sv.CallType;
             IsExplicitCall = CallingConvention.CallType.Explicit == callType || CallingConvention.CallType.ExplicitBase == callType;
 
-            List<bool> execStateRestore = new List<bool>();
             if (!runtimeCore.Options.IDEDebugMode || runtimeCore.Options.RunMode == InterpreterMode.Expression)
             {
                 int localCount = procNode.LocalCount;
                 int paramCount = procNode.ArgumentTypes.Count;
 
-                execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
+                var execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
 
                 rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.FrameIndexFramePointer).IntegerValue;
-                rmem.PopFrame(StackFrame.StackFrameSize + localCount + paramCount + execStateRestore.Count);
+                rmem.PopFrame(StackFrame.StackFrameSize + localCount + paramCount + (execStateRestore?.Count ?? 0));
 
                 if (runtimeCore.Options.RunMode != InterpreterMode.Expression)
                 {
@@ -303,7 +302,7 @@ namespace ProtoCore.DSASM
                     bounceType = (CallingConvention.BounceType)TX.CallType;
                 }
 
-                if (execStateRestore.Any())
+                if (execStateRestore != null)
                 {
                     Validity.Assert(execStateRestore.Count == procNode.GraphNodeList.Count);
                     for (int n = 0; n < execStateRestore.Count; ++n)
@@ -1802,13 +1801,12 @@ namespace ProtoCore.DSASM
             GetLocalAndParamCount(blockId, ci, fi, out localCount, out paramCount);
 
             // Get execution states
-            List<bool> execStateRestore = new List<bool>();
-            execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
+            var execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
 
             // Pop function stackframe as this is not allowed in Ret/Retc in debug mode
             rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.FrameIndexFramePointer).IntegerValue;
 
-            rmem.PopFrame(StackFrame.StackFrameSize + localCount + paramCount + execStateRestore.Count); 
+            rmem.PopFrame(StackFrame.StackFrameSize + localCount + paramCount + (execStateRestore?.Count ?? 0)); 
 
             ResumeRegistersFromStackExceptRX();
 
@@ -4460,10 +4458,10 @@ namespace ProtoCore.DSASM
         private List<bool> RetrieveExecutionStatesFromStack(int localSize, int paramSize)
         {
             // Retrieve the execution execution states 
-            List<bool> execStateRestore = new List<bool>();
             int execstates = (int)rmem.GetAtRelative(StackFrame.FrameIndexExecutionStates).IntegerValue;
             if (execstates > 0)
             {
+                List<bool> execStateRestore = new List<bool>();
                 int offset = StackFrame.StackFrameSize + localSize + paramSize;
                 for (int n = 0; n < execstates; ++n)
                 {
@@ -4472,8 +4470,11 @@ namespace ProtoCore.DSASM
                     Validity.Assert(svState.IsBoolean);
                     execStateRestore.Add(svState.BooleanValue);
                 }
+
+                return execStateRestore;
             }
-            return execStateRestore;
+
+            return null;
         }
 
         private void RETURN_Handler()
