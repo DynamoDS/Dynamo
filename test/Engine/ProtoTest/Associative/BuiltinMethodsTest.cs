@@ -932,6 +932,7 @@ x = foo([ Evaluate, Evaluate ], [ f1, f2 ], [ [ 41 ], [ 42 ] ]);
         }
 
         [Test]
+        [Category("Failure")]
         public void Test_EvaluateFunctionPointer10()
         {
             // Recursive call
