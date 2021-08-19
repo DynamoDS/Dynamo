@@ -17,7 +17,7 @@ namespace Dynamo.Graph
         public const double StaticWidth = width;
 
         public override double Height { get => height; }
-        public override double Width { get => StaticWidth; }
+        public override double Width { get => width; }
         public ConnectorPinModel(double x, double y, Guid id, Guid connectorId)
         {
             X = x;
