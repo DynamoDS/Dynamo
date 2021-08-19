@@ -31,7 +31,18 @@ namespace ProtoCore.AssociativeEngine
         public static AssociativeGraph.GraphNode GetFirstDirtyGraphNodeFromPC(int pc, List<AssociativeGraph.GraphNode> graphNodesInScope)
         {
             Validity.Assert(graphNodesInScope != null);
-            return graphNodesInScope.FirstOrDefault(g => g.isActive && g.isDirty && g.updateBlock.startpc >= pc);
+            for (int i = 0; i < graphNodesInScope.Count; i++)
+            {
+                var item = graphNodesInScope[i];
+                if(!item.isDirty)
+                    continue;
+                if(!item.isActive)
+                    continue;
+                if (item.updateBlock.startpc >= pc)
+                    return item;
+            }
+
+            return null;
         }
 
         /// <summary>
