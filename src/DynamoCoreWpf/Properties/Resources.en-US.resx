@@ -2513,9 +2513,6 @@ Uninstall the following packages: {0}?</value>
   <data name="PackageStateScheduledForUnload" xml:space="preserve">
     <value>Scheduled for Unload</value>
   </data>
-  <data name="PackageStateScheduledForLoad" xml:space="preserve">
-    <value>Scheduled for Load</value>
-  </data>
   <data name="PackageStateErrorTooltip" xml:space="preserve">
     <value>Error.
 This package has not been loaded due to the following error:
@@ -2528,10 +2525,6 @@ This package is loaded and ready to be used.</value>
   <data name="PackageStateUnloadedTooltip" xml:space="preserve">
     <value>Unloaded.
 This package has been marked as unloaded.</value>
-  </data>
-  <data name="PackageStateScheduledForLoadTooltip" xml:space="preserve">
-    <value>Scheduled for Load.
-This package will be loaded after the next Dynamo restart.</value>
   </data>
   <data name="PackageStateScheduledForDeletionTooltip" xml:space="preserve">
     <value>Scheduled for Delete.

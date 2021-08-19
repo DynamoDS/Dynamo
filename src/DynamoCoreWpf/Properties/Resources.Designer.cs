@@ -4675,25 +4675,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scheduled for Load.
-        /// </summary>
-        public static string PackageStateScheduledForLoad {
-            get {
-                return ResourceManager.GetString("PackageStateScheduledForLoad", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scheduled for Load.
-        ///This package will be loaded after the next Dynamo restart..
-        /// </summary>
-        public static string PackageStateScheduledForLoadTooltip {
-            get {
-                return ResourceManager.GetString("PackageStateScheduledForLoadTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Scheduled for Unload.
         /// </summary>
         public static string PackageStateScheduledForUnload {

@@ -52,7 +52,6 @@ namespace Dynamo.ViewModels
             {
                 switch (Model.LoadState.ScheduledState)
                 {
-                    case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateScheduledForLoad;
                     case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Resources.PackageStateScheduledForUnload;
                     case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateScheduledForDeletion;
                     default:
@@ -76,7 +75,6 @@ namespace Dynamo.ViewModels
             {
                 switch (Model.LoadState.ScheduledState)
                 {
-                    case PackageLoadState.ScheduledTypes.ScheduledForLoad: return Resources.PackageStateScheduledForLoadTooltip;
                     case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Resources.PackageStateScheduledForUnloadTooltip;
                     case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateScheduledForDeletionTooltip;
                     default:
@@ -343,8 +341,7 @@ namespace Dynamo.ViewModels
         private bool CanLoad()
         {
             return Model.BuiltInPackage && 
-                (Model.LoadState.State == PackageLoadState.StateTypes.Unloaded) && 
-                (Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForLoad);
+                (Model.LoadState.State == PackageLoadState.StateTypes.Unloaded);
         }
 
     private void GoToRootDirectory()
