@@ -525,7 +525,8 @@ namespace Autodesk.DesignScript.Interfaces
         /// <param name="package">The render package, where graphics data to be
         /// pushed.</param>
         /// <param name="parameters"></param>
-        void AddInstance(IRenderPackage package, TessellationParameters parameters);
+        /// <param name="labelKey"></param>
+        void AddInstance(IRenderPackage package, TessellationParameters parameters, string labelKey);
     }
 
 
