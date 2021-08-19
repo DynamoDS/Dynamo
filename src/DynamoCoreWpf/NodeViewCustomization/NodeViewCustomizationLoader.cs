@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Logging;
+using Dynamo.Utilities;
 using Dynamo.Wpf.Properties;
 
 namespace Dynamo.Wpf
@@ -20,8 +21,7 @@ namespace Dynamo.Wpf
 
             try
             {
-                var customizerType = typeof (INodeViewCustomization<>);
-                var customizerImps = assem.GetTypes().Where(t => !t.IsAbstract && ImplementsGeneric(customizerType, t));
+                var customizerImps = GetCustomizationTypes(assem);
 
                 foreach (var customizerImp in customizerImps)
                 {
@@ -31,11 +31,11 @@ namespace Dynamo.Wpf
 
                     if (types.ContainsKey(nodeModelType))
                     {
-                        types[nodeModelType] = types[nodeModelType].Concat(new[] {customizerImp});
+                        types[nodeModelType] = types[nodeModelType].Concat(new[] { customizerImp });
                     }
                     else
                     {
-                        types.Add(nodeModelType, new[] {customizerImp});
+                        types.Add(nodeModelType, new[] { customizerImp });
                     }
                 }
             }
@@ -46,6 +46,14 @@ namespace Dynamo.Wpf
             }
 
             return new NodeViewCustomizations(types);
+        }
+
+        private static IEnumerable<Type> GetCustomizationTypes(Assembly assem)
+        {
+            var customizerType = typeof(INodeViewCustomization<>);
+            var customizerImps = assem.GetTypes().Where(t => !t.IsAbstract && 
+                TypeExtensions.ImplementsGeneric(customizerType, t));
+            return customizerImps;
         }
 
         private static Type GetCustomizerTypeParameters(Type toCheck)
@@ -100,21 +108,11 @@ namespace Dynamo.Wpf
             //return types.First().TypeHierarchy().First(t => counts[t] == total);
         }
 
-        private static bool ImplementsGeneric(Type generic, Type toCheck)
+       
+
+        internal static bool ContainsNodeViewCustomizationType(Assembly assem)
         {
-            var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
-
-            var isGenInterf = cur.GetInterfaces().Any(
-                x =>
-                    x.IsGenericType &&
-                        x.GetGenericTypeDefinition() == generic);
-
-            if (generic == cur || isGenInterf)
-            {
-                return true;
-            }
-
-            return false;
+            return GetCustomizationTypes(assem).Any();
         }
     }
 }

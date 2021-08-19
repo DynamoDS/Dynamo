@@ -1326,7 +1326,7 @@ namespace ProtoCore.DSASM
 
                     if (gnode.isCyclic)
                     {
-                        // If the graphnode is cyclic, mark it as not dirst so it wont get executed 
+                        // If the graphnode is cyclic, mark it as not dirty so it wont get executed 
                         // Sets its cyclePoint graphnode to be not dirty so it also doesnt execute.
                         // The cyclepoint is the other graphNode that the current node cycles with
                         gnode.isDirty = false;
@@ -1338,15 +1338,17 @@ namespace ProtoCore.DSASM
                     }
                 }
             }
-
             // Get all redefined graphnodes
             int classScope = Constants.kInvalidIndex;
             int functionScope = Constants.kInvalidIndex;
             GetCallerInformation(out classScope, out functionScope);
+
             var nodesInScope = istream.dependencyGraph.GetGraphNodesAtScope(classScope, functionScope);
+
             List<AssociativeGraph.GraphNode> redefinedNodes = 
                 AssociativeEngine.Utils.GetRedefinedGraphNodes(runtimeCore, Properties.executingGraphNode, nodesInScope, classScope, functionScope);
             Validity.Assert(redefinedNodes != null);
+
             foreach(AssociativeGraph.GraphNode gnode in redefinedNodes)
             {
                 // GC all the temporaries associated with the redefined variable
