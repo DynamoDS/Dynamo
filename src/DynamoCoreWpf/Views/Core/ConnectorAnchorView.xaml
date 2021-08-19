@@ -15,15 +15,45 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="Button" x:Key="TransparentButton">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="Transparent">
+                                <ContentPresenter/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="Button" x:Key="TransparentButtonWithTriggers">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="Transparent">
+                                <ContentPresenter/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding CanDisplayIcons}" Value="True">
+                        <Setter Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding CanDisplayIcons}" Value="False">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Canvas Canvas.Top="0"
             Canvas.Left="0">
         <!--wire anchor-->
-        <Button Background="Transparent"
-                BorderBrush="Transparent"
+        <Button Style="{StaticResource TransparentButton}"
                 x:Name="AnchorButton"
                 Canvas.Top="{Binding CurrentPosition.Y}"
                 Canvas.Left="{Binding CurrentPosition.X}"
@@ -51,9 +81,8 @@
         </Button>
 
         <!--watch icon-->
-        <Button Background="Transparent"
-                BorderBrush="Transparent"
-                x:Name="WatchIconButton"
+        <Button x:Name="WatchIconButton"
+                Style="{StaticResource TransparentButtonWithTriggers}"
                 Canvas.Top="{Binding CurrentPosition.Y}"
                 Canvas.Left="{Binding CurrentPosition.X}"
                 Height="{Binding MarkerSize}"
@@ -61,18 +90,6 @@
                 Command="{Binding PlaceWatchNodeCommand}"
                 MouseEnter="OnWatchIconHover"
                 MouseLeave="OnWatchIconUnhover">
-            <Button.Style>
-                <Style TargetType="{x:Type Button}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding CanDisplayIcons}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding CanDisplayIcons}" Value="False">
-                            <Setter Property="Visibility" Value="Hidden"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
             <StackPanel Background="Transparent">
                 <Image>
                     <Image.Style>
@@ -97,9 +114,8 @@
             </Button.RenderTransform>
         </Button>
         <!--pin icon-->
-        <Button Background="Transparent"
-                BorderBrush="Transparent"
-                x:Name="PinIconButton"
+        <Button x:Name="PinIconButton"
+                Style="{StaticResource TransparentButtonWithTriggers}"
                 Canvas.Top="{Binding CurrentPosition.Y}"
                 Canvas.Left="{Binding CurrentPosition.X}"
                 Height="{Binding MarkerSize}"
@@ -107,18 +123,6 @@
                 Command="{Binding PinConnectorCommand}"
                 MouseEnter="OnPinIconHover"
                 MouseLeave="OnPinIconUnhover">
-            <Button.Style>
-                <Style TargetType="{x:Type Button}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=CanDisplayIcons, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=CanDisplayIcons, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
-                            <Setter Property="Visibility" Value="Hidden"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
             <StackPanel Background="Transparent">
                 <Image>
                     <Image.Style>
@@ -142,6 +146,48 @@
                 <TranslateTransform X="0" Y="-37" />
             </Button.RenderTransform>
         </Button>
+        <!--toolTipBox-->
+        <Border x:Name="borderToolTipBox"
+                BorderThickness="1"
+                BorderBrush="{StaticResource FilterPopupBorderColor}"
+                Canvas.Top="{Binding CurrentPosition.Y}"
+                Canvas.Left="{Binding CurrentPosition.X}">
+            <Border.Style>
+                <Style TargetType="{x:Type Border}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CanDisplayIcons}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding CanDisplayIcons}" Value="False">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock x:Name="toolTipBox"
+                       Background="{StaticResource SearchTextBoxBackground}"
+                       Foreground="Gray"
+                       Text="{Binding DataToolTipText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                       Padding="5"
+                       Canvas.Top="{Binding CurrentPosition.Y}"
+                       Canvas.Left="{Binding CurrentPosition.X}">
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CanDisplayIcons}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding CanDisplayIcons}" Value="False">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+            </TextBlock>
+            <Border.RenderTransform>
+                <TranslateTransform X="0" Y="15" />
+            </Border.RenderTransform>
+        </Border>
     </Canvas>
 </UserControl>
 
