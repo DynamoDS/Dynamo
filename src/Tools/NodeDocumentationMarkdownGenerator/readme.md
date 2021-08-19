@@ -46,9 +46,9 @@ Eventually Dictionary website can be refactored to consume markdown files from c
 | `-w`       | `--overwrite`       |    ✅     | optional flag - When specified the tool will overwrite files in the output path        |
 | `-y`       | `--recursive-scan`  |    ✅     | optional flag - Input folder will be scanned recursively                               |
 | `-s`       | `--compress-images` |    ✅     | optional flag - When set, the tool will try to compress images from dictionary content |
-| `-g`       | `--compress-gifs`   |    ✅     | optional flag - When set, the tool will try to compress gifs from dictionary content |
+| `-g`       | `--compress-gifs`   |    ✅     | optional flag - When set, the tool will try to compress gifs from dictionary content   |
 | `-x`       | `--layout-spec`     |    ✅     | optional flag - Path to a LayoutSpecification json file                                |
-
+| `-v`       | `--verbose`         |    ✅     | optional flag - print debug information                                                |
 
 ### FromDirectory examples
 
@@ -82,6 +82,7 @@ fromdirectory
 | `-i`       | `--input`      |          | Package folder path.                                                            |
 | `-r`       | `--references` |    ✅     | optional flag - Folder paths to dlls that are used as references in the nodes   |
 | `-w`       | `--overwrite`  |    ✅     | optional flag - When specified the tool will overwrite files in the output path |
+| `-v`       | `--verbose`         |    ✅     | optional flag - print debug information                                                |
 
 ### FromPackage examples
 

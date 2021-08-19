@@ -14,6 +14,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
         /// <param name="opts"></param>
         internal static void HandleDocumentationFromDirectory(FromDirectoryOptions opts)
         {
+            Program.VerboseMode = opts.Verbose;
             var searchOption = opts.RecursiveScan ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             var fileInfos = new List<MdFileInfo>();
             fileInfos.AddRange(ScanFolderForAssemblies(opts.InputFolderPath, opts.Filter, opts.ReferencePaths, searchOption));

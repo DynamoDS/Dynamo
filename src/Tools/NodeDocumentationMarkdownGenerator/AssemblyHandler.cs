@@ -48,7 +48,6 @@ namespace NodeDocumentationMarkdownGenerator
             var pathManager = new PathManager(new PathManagerParams());
 
             Console.WriteLine($"Starting scan of following assemblies: {string.Join(", ", assemblyPaths)}");
-            var nodeModelType = typeof(NodeModel);
 
             var functionGroups = new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
 
@@ -125,7 +124,8 @@ namespace NodeDocumentationMarkdownGenerator
 
         private static List<FunctionDescriptor> GetFunctionDescriptorsFromDll(PathManager pathManager, Assembly asm)
         {
-            var objectAsmName = typeof(object).Assembly.GetName().Name;
+  
+            var mscorelib = typeof(object).Assembly.GetName().Name;
             var descriptors = new List<FunctionDescriptor>();
 
             string extension = System.IO.Path.GetExtension(asm.Location).ToLower();
@@ -146,20 +146,29 @@ namespace NodeDocumentationMarkdownGenerator
             {
                 try
                 {
+                    var descriptorCount = 0;
                     var className = t.ClassNode.ClassName;
                     var externalLib = t.ClassNode.ExternLibName;
                     var classIsHidden = t.ClassNode.ClassAttributes?.HiddenInLibrary ?? false;
 
-                    // For some reason mscorelib sometimes gets pass to here, so filtering it away.
-                    if (t.CLRType.Assembly.GetName().Name == objectAsmName ||
+                    Program.VerboseControlLog($"considering members in type: {externalLib} {className }");
+
+                    // For some reason mscorelib sometimes gets passed to here, so filtering it away.
+                    if (t.CLRType.Assembly.GetName().Name == mscorelib ||
                         classIsHidden)
                     {
                         continue;
                     }
 
+                    var ctorNodesAllCount = t.ClassNode.Procedures
+                        .OfType<ConstructorDefinitionNode>().Count();
 
+                    var functionNodesAllCount = t.ClassNode.Procedures
+                      .OfType<FunctionDefinitionNode>().Count();
 
-                    var ctorNodes = t.ClassNode.Procedures
+                    Program.VerboseControlLog($"considering {ctorNodesAllCount} constructors, and {functionNodesAllCount} functions from {className}");
+
+                    var ctorNodesFiltered = t.ClassNode.Procedures
                         .OfType<ConstructorDefinitionNode>()
                         .Where(c => c.Access == ProtoCore.CompilerDefinitions.AccessModifier.Public &&
                                     c.MethodAttributes != null ?
@@ -167,22 +176,24 @@ namespace NodeDocumentationMarkdownGenerator
                                         true)
                         .Cast<AssociativeNode>();
 
-                    var functionNodes = t.ClassNode.Procedures
+                    var functionNodesFiltered = t.ClassNode.Procedures
                         .OfType<FunctionDefinitionNode>()
                         .Where(f => !f.MethodAttributes.HiddenInLibrary &&
                                     !f.MethodAttributes.IsObsolete &&
                                     f.Name != "_Dispose")
                         .Cast<AssociativeNode>();
 
-                    var associativeNodes = ctorNodes.Union(functionNodes);
+                    var associativeNodes = ctorNodesFiltered.Union(functionNodesFiltered);
 
                     foreach (var node in associativeNodes)
                     {
                         if (TryGetFunctionDescriptor(node, asm.Location, className, out FunctionDescriptor des))
                         {
+                            descriptorCount++;
                             descriptors.Add(des);
                         }
                     }
+                    Program.VerboseControlLog($"found {descriptorCount} function descriptors from {className}");
                 }
                 catch (Exception e)
                 {
@@ -190,7 +201,7 @@ namespace NodeDocumentationMarkdownGenerator
                     continue;
                 }
             }
-
+           
             return descriptors;
         }
 
@@ -210,9 +221,13 @@ namespace NodeDocumentationMarkdownGenerator
                     //that generated output of Builtin.ds is now of the form List.FunctionName
                     allFunctionTuples.Add((ClassName: class_.ClassName, Procedure: procedure));
                 }
+                Program.VerboseControlLog($"considering {class_.Procedures.Count} procedures from {class_.ClassName}");
             }
-            //comine class methods and free functions
-            allFunctionTuples.AddRange(dsCodeNode.CodeNode.Body.OfType<FunctionDefinitionNode>().Select(func => (ClassName: "", Procedure: func as AssociativeNode)));
+            //combine class methods and free functions
+            var freeFunctions = dsCodeNode.CodeNode.Body.OfType<FunctionDefinitionNode>().ToList();
+            allFunctionTuples.AddRange(freeFunctions.Select(func => (ClassName: "", Procedure: func as AssociativeNode)));
+            Program.VerboseControlLog($"considering {freeFunctions.Count} functions from {dsFilePath}");
+
             foreach (var tuple in allFunctionTuples)
             {
                 if (TryGetFunctionDescriptor(tuple.Procedure, dsFilePath, tuple.ClassName, out FunctionDescriptor des))
@@ -220,6 +235,7 @@ namespace NodeDocumentationMarkdownGenerator
                     descriptors.Add(des);
                 }
             }
+            Program.VerboseControlLog($"added {descriptors.Count} function descriptors from {dsFilePath}");
             return descriptors;
         }
 
@@ -265,7 +281,7 @@ namespace NodeDocumentationMarkdownGenerator
             // see https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assembly.gettypes?view=netframework-4.8#remarks
             catch (ReflectionTypeLoadException ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                Program.VerboseControlLog(ex.Message);
                 typesInAsm = ex.Types;
             }
 
@@ -277,6 +293,7 @@ namespace NodeDocumentationMarkdownGenerator
 
             foreach (var type in nodeTypes)
             {
+                Program.VerboseControlLog($"adding nodeModelSearchElement for {type.Category} {type.Name}");
                 searchModel.Add(new NodeModelSearchElement(type));
             }
         }

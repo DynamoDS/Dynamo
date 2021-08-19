@@ -13,6 +13,7 @@ namespace NodeDocumentationMarkdownGenerator
     {
         internal static IEnumerable<FileInfo> DynamoDirectoryAssemblyPaths;
         internal static List<String> ReferenceAssemblyPaths = new List<string>();
+        internal static bool VerboseMode { get; set; }
         static void Main(string[] args)
         {
 #if DEBUG
@@ -84,6 +85,15 @@ $$$$$$$/   $$$$$$$ |$$/   $$/  $$$$$$$/ $$/  $$/  $$/  $$$$$$/
            $$$$$$/                                                          
             ";
             Console.WriteLine(header);
+        }
+        internal static void VerboseControlLog(string message)
+        {
+            if (Program.VerboseMode)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine(message);
+                Console.ResetColor();
+            }
         }
     }
 }

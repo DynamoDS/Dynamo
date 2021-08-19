@@ -15,6 +15,8 @@ namespace NodeDocumentationMarkdownGenerator.Verbs
 
         [Option('w', "overwrite", HelpText = "Overwrite ....", Required = false)]
         public bool Overwrite { get; set; }
+        [Option('v', "verbose", HelpText = "verbose mode, log more data", Required = false, Default = false)]
+        public bool Verbose { get; set; }
 
         [Usage(ApplicationAlias = "Dynamo docs generator")]
         public static IEnumerable<Example> Examples

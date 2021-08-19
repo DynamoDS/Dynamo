@@ -72,7 +72,9 @@ namespace NodeDocumentationMarkdownGenerator
                 if (File.Exists(filePath) &&
                     !overWrite)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Creation of {fileName} was skipped as the file already exist and the --overwrite flag was set to false");
+                    Console.ResetColor();
                     continue;
                 }
 
@@ -98,7 +100,9 @@ namespace NodeDocumentationMarkdownGenerator
                     // we log this to the console.
                     if (dictEntrys != null)
                     {
-                        Console.WriteLine($"No matching Dictionary entry found for {fileName}");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"No matching Dictionary entry found for {fileName} - file will only contain default content.");
+                        Console.ResetColor();
                     }
                 }
 
@@ -155,7 +159,9 @@ namespace NodeDocumentationMarkdownGenerator
 
             if (missingFields.Count > 0)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{fileInfo.Name} missing {string.Join(", ", missingFields)}");
+                Console.ResetColor();
             }
 
             var content = new StringBuilder();
@@ -213,7 +219,7 @@ namespace NodeDocumentationMarkdownGenerator
                     }
 
                     var newsize = m.Length;
-                    System.Diagnostics.Debug.WriteLine($"reduced {imageFileInfo.Name} from {oldSize} to {newsize} ~{ (int)(100.0 - (((float)newsize / (float)oldSize) * 100.0))}% reduction");
+                    Program.VerboseControlLog($"reduced {imageFileInfo.Name} from {oldSize} to {newsize} ~{ (int)(100.0 - (((float)newsize / (float)oldSize) * 100.0))}% reduction");
                     var img = Image.FromStream(m);
                     var fileName = $"{Path.GetFileNameWithoutExtension(fileInfo.FullName)}_img{imageFileInfo.Extension}";
                     var path = Path.Combine(fileInfo.Directory.FullName, fileName);

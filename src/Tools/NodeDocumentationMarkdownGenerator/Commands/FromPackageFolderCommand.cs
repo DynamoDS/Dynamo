@@ -13,6 +13,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
     {
         internal static void HandlePackageDocumentation(FromPackageOptions opts)
         {
+            Program.VerboseMode = opts.Verbose;
             var package = PackageFromRoot(opts.InputFolderPath);
 
             var nodeLibraryFileInfos = ScanNodeLibraries(package, opts.ReferencePaths);
