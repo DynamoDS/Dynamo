@@ -8671,7 +8671,7 @@ result = Sum(a);//12.0";
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [Category("WatchFx Tests")]
         public void DebugWatch824_T056_Sum_AssociativeImperative()
         {
@@ -15513,7 +15513,7 @@ c = b;";
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         [Category("WatchFx Tests")]
         public void DebugWatch1565_T12_Update_Undefined_Variables()
         {

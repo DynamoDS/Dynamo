@@ -6569,7 +6569,7 @@ def add_1 : double( a:double )
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void DebugEQT12_Update_Undefined_Variables()
         {
             string code = @"

@@ -832,8 +832,10 @@ namespace ProtoCore.DSASM
                 //      1. In this instruction for implicit calls
                 //      2. In the return instruction
                 //
-                Properties.functionCallArguments = argumentAtLevels.Arguments;
-                Properties.functionCallDotCallDimensions = dotCallDimensions;
+                Properties.functionCallArguments.Clear();
+                Properties.functionCallArguments.AddRange(argumentAtLevels.Arguments);
+                Properties.functionCallDotCallDimensions.Clear();
+                Properties.functionCallDotCallDimensions.AddRange(dotCallDimensions);
                 Properties.DominantStructure = argumentAtLevels.DominantStructure;
 
                 explicitCall = true;
@@ -936,8 +938,9 @@ namespace ProtoCore.DSASM
             isExplicitCall = sv.IsExplicitCall;
             if (isExplicitCall)
             {
-                Properties.functionCallArguments = argumentAtLevels.Arguments;
-                Properties.functionCallDotCallDimensions = new List<StackValue>();
+                Properties.functionCallArguments.Clear();
+                Properties.functionCallArguments.AddRange(argumentAtLevels.Arguments);
+                Properties.functionCallDotCallDimensions.Clear();
                 Properties.DominantStructure = argumentAtLevels.DominantStructure;
                 CallExplicit(sv.ExplicitCallEntry);
             }
@@ -1300,7 +1303,7 @@ namespace ProtoCore.DSASM
                 node.dependentList.Clear();
                 node.isActive = false;
             }
-            Properties.nodeIterations = new List<AssociativeGraph.GraphNode>();
+            Properties.nodeIterations.Clear();
         }
 
         private bool HasCyclicDependency(AssociativeGraph.GraphNode node)
