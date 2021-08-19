@@ -102,4 +102,6 @@ if you are trying to generate docs for a package which depends on Revit you will
 
 * When creating stub markdown files for nodes without linkned dictionary content the default content is not very useful in a dictionary context. At runtime in Dynamo automatic content can be generated for inputs, outputs, and description, but in dictionary this content cannot be generated. Eventually this tool should generate this default content, and it should be filtered out if present in the Dynamo context.
 
-* 
+* when using MetaDataContextLoad there are two issues at least that result in hundreds of nodes not correctly having docs files generated.
+    * Because in metaDataContext mode the potential assembly load order is different from a normal dynamo session - some imported types that conflict with built-in geometry types maybe imported first. This causes other nodes to fail to be imported. You will see errors in the console about namespace support from protocore. Importing `Revit.Element.Area` nodes will reproduce this when imported with metaDataContext.
+    * An issue with retrieving defaultvalue strings - reported to dotnet org here: https://github.com/dotnet/runtime/issues/57238 - causes any class that has a member that has a default value of `string.empty` to fail to import. `Revit.Dimension` nodes will reproduce this when imported with metaDataContext.
