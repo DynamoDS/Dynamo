@@ -2513,9 +2513,6 @@ Uninstall the following packages: {0}?</value>
   <data name="PackageStateScheduledForUnload" xml:space="preserve">
     <value>Scheduled for Unload</value>
   </data>
-  <data name="PackageStateScheduledForLoad" xml:space="preserve">
-    <value>Scheduled for Load</value>
-  </data>
   <data name="PackageStateErrorTooltip" xml:space="preserve">
     <value>Error.
 This package has not been loaded due to the following error:
@@ -2527,15 +2524,7 @@ This package is loaded and ready to be used.</value>
   </data>
   <data name="PackageStateUnloadedTooltip" xml:space="preserve">
     <value>Unloaded.
-This package has not been loaded because another conflicting package was loaded before it.</value>
-  </data>
-  <data name="PackageStateScheduledForUnloadTooltip" xml:space="preserve">
-    <value>Scheduled for Unload.
-This package will be unloaded after the next Dynamo restart.</value>
-  </data>
-  <data name="PackageStateScheduledForLoadTooltip" xml:space="preserve">
-    <value>Scheduled for Load.
-This package will be loaded after the next Dynamo restart.</value>
+This package has been marked as unloaded.</value>
   </data>
   <data name="PackageStateScheduledForDeletionTooltip" xml:space="preserve">
     <value>Scheduled for Delete.
@@ -2564,6 +2553,27 @@ This package will be deleted after the next Dynamo restart.</value>
   </data>
   <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
     <value>Remove the scheduled unload status</value>
+  </data>
+  <data name="PackageViewContextMenuLoadText">
+    <value>Load</value>
+  </data>
+  <data name="PackageViewContextMenuLoadTooltip">
+    <value>Load this package into Dynamo. Other packages with the same name will be automatically deleted</value>
+  </data>
+  <data name="CannotLoadPackageMessageBoxTitle" xml:space="preserve">
+    <value>Cannot Load Package</value>
+  </data>
+  <data name="MessageLoadBuiltInPackage" xml:space="preserve">
+    <value>To load the built-in package {1}, {0} needs to first delete any conflicting packages.
+
+Delete the following packages: {2}?</value>
+  </data>
+  <data name="MessageLoadBuiltInWithRestartPackage" xml:space="preserve">
+    <value>To load the built-in package {1}, {0} needs to first delete any conflicting packages.
+Restart {0} to complete the deletion, then try and load the built-in pacakge again.
+
+Delete the following packages: {2}?
+    </value>
   </data>
   <data name="GraphIssuesOnSavePath_Description" xml:space="preserve">
     <value>The selected save location path is too long. Please change the save location and try again.</value>

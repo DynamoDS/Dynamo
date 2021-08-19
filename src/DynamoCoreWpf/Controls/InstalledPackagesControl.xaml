@@ -50,7 +50,7 @@
                                               IsExpanded="{Binding Path=Model.TypesVisibleInManager}"
                                               Style="{StaticResource InstalledPackagesExpanderStyle}">
                                 <Expander.Header>
-                                    <Grid x:Name="PackageGrid"  >
+                                    <Grid x:Name="PackageGrid" >
                                         <DockPanel HorizontalAlignment="Stretch"
                                                        >
                                             <StackPanel HorizontalAlignment="Left"
@@ -110,6 +110,11 @@
                                                                               Command="{Binding Path=UnmarkForUninstallationCommand}"
                                                                               Header="{Binding Path=PackageViewContextMenuUnmarkUninstallText}"
                                                                               ToolTip="{Binding Path=PackageViewContextMenuUnmarkUninstallTooltip}">
+                                                            </MenuItem>
+                                                            <MenuItem Name="InstallButton"
+                                                                              Command="{Binding Path=LoadCommand}"
+                                                                              Header="{x:Static p:Resources.PackageViewContextMenuLoadText}"
+                                                                              ToolTip="{x:Static p:Resources.PackageViewContextMenuLoadTooltip}">
                                                             </MenuItem>
                                                             <MenuItem Name="MakePackageButton"
                                                                               Command="{Binding Path=PublishNewPackageCommand}"

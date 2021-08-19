@@ -286,6 +286,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot Load Package.
+        /// </summary>
+        public static string CannotLoadPackageMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("CannotLoadPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can&apos;t submit a package in this version of {0}.  You&apos;ll need a host application, like Revit, to submit a package..
         /// </summary>
         public static string CannotSubmitPackage {
@@ -3443,6 +3452,30 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To load the built-in package {1}, {0} needs to first delete any conflicting packages.
+        ///
+        ///Delete the following packages: {2}?.
+        /// </summary>
+        public static string MessageLoadBuiltInPackage {
+            get {
+                return ResourceManager.GetString("MessageLoadBuiltInPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To load the built-in package {1}, {0} needs to first delete any conflicting packages.
+        ///Restart {0} to complete the deletion, then try and load the built-in pacakge again.
+        ///
+        ///Delete the following packages: {2}?
+        ///    .
+        /// </summary>
+        public static string MessageLoadBuiltInWithRestartPackage {
+            get {
+                return ResourceManager.GetString("MessageLoadBuiltInWithRestartPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} elapsed for loading {1} main window..
         /// </summary>
         public static string MessageLoadingTime {
@@ -4642,25 +4675,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scheduled for Load.
-        /// </summary>
-        public static string PackageStateScheduledForLoad {
-            get {
-                return ResourceManager.GetString("PackageStateScheduledForLoad", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scheduled for Load.
-        ///This package will be loaded after the next Dynamo restart..
-        /// </summary>
-        public static string PackageStateScheduledForLoadTooltip {
-            get {
-                return ResourceManager.GetString("PackageStateScheduledForLoadTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Scheduled for Unload.
         /// </summary>
         public static string PackageStateScheduledForUnload {
@@ -4699,7 +4713,7 @@ namespace Dynamo.Wpf.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Unloaded.
-        ///This package has not been loaded because another conflicting package was loaded before it..
+        ///This package has been marked as unloaded..
         /// </summary>
         public static string PackageStateUnloadedTooltip {
             get {
@@ -4785,6 +4799,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageUseNewerDynamoMessageBoxTitle {
             get {
                 return ResourceManager.GetString("PackageUseNewerDynamoMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load.
+        /// </summary>
+        public static string PackageViewContextMenuLoadText {
+            get {
+                return ResourceManager.GetString("PackageViewContextMenuLoadText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load this package into Dynamo. Other packages with the same name will be automatically deleted.
+        /// </summary>
+        public static string PackageViewContextMenuLoadTooltip {
+            get {
+                return ResourceManager.GetString("PackageViewContextMenuLoadTooltip", resourceCulture);
             }
         }
         
