@@ -74,11 +74,7 @@ namespace Dynamo.PackageManager
             /// <summary>
             /// The package is scheduled to be deleted. After the next Dynamo restart, the package will deleted from the package locations
             /// </summary>
-            ScheduledForDeletion,
-            /// <summary>
-            /// The package is scheduled to be loaded. After the next Dynamo restart, the package will be loaded in Dynamo
-            /// </summary>
-            ScheduledForLoad
+            ScheduledForDeletion
         }
 
         private string errorMessage;
