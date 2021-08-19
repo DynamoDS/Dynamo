@@ -3686,4 +3686,55 @@
         <Setter Property="Foreground" Value="#3C3C3C"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
     </Style>
+
+    <!--Style for the Exit Tour popup, that will appear when a tooltip is closed before the tour completion-->
+    <Style x:Key="RealTimeInfoCloseButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="CloseButtonBorder"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    BorderBrush="Transparent">
+                        <Canvas Margin="0,0,0,0">
+                            <Line x:Name="line1" 
+                                          X1="0" Y1="0" X2="13" Y2="13" 
+                                          Stroke="#D9D9D9" 
+                                          StrokeThickness="1"></Line>
+                            <Line x:Name="line2" 
+                                          X1="0" Y1="13" X2="13" Y2="0" 
+                                          Stroke="#D9D9D9" 
+                                          StrokeThickness="1"></Line>
+                        </Canvas>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" 
+                                         Value="True">
+                            <Setter Property="Stroke" 
+                                            TargetName="line1" 
+                                            Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Stroke" 
+                                            TargetName="line2" 
+                                            Value="{StaticResource PreferencesWindowButtonColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" 
+                                         Value="True">
+                            <Setter Property="Stroke" 
+                                            TargetName="line1" 
+                                            Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Stroke" 
+                                            TargetName="line2" 
+                                            Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Cursor" 
+                                            Value="Hand"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <SolidColorBrush x:Key="RealTimeInfoWindowIconColor" 
+                     Color="#38ABDF" />
+    <SolidColorBrush x:Key="RealTimeInfoWindowBackgroundColor" 
+                     Color="#535353" />
 </ResourceDictionary>

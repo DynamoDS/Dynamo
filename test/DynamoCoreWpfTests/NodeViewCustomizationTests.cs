@@ -494,6 +494,19 @@ namespace DynamoCoreWpfTests
                     Assert.IsFalse(item.IsEnabled);
             }
         }
+
+        [Test]
+        public void INodeViewCustomizationCheckUsingReflectionIsCorrect()
+        {
+            var dyncorewpfAssem = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name == "DynamoCoreWpf").FirstOrDefault();
+            var dyncoreAssem = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name == "DynamoCore").FirstOrDefault();
+            Assert.IsNotNull(dyncorewpfAssem);
+            Assert.IsNotNull(dyncoreAssem);
+            //this assembly contains some builtin nodeviewcustomizations and this methd should return true.
+            Assert.IsTrue(NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(dyncorewpfAssem));
+            //this assembly contains some builtin nodeviewcustomizations and this methd should return true.
+            Assert.IsFalse(NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(dyncoreAssem));
+        }
     }
 
 }
