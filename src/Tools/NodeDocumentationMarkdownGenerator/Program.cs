@@ -13,7 +13,6 @@ namespace NodeDocumentationMarkdownGenerator
     {
         internal static List<String> ReferenceAssemblyPaths = new List<string>();
         internal static bool VerboseMode { get; set; }
-        static void Main(string[] args)
         private static IEnumerable<FileInfo> dynamoDirectoryAssemblyPaths;
         internal static IEnumerable<FileInfo> DynamoDirectoryAssemblyPaths
         {
