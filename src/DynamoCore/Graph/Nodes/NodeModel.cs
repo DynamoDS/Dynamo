@@ -1595,6 +1595,7 @@ namespace Dynamo.Graph.Nodes
                     if (string.Compare(t, transientWarning) == 0)
                     {
                         transientWarning = string.Empty;
+                        SetNodeStateBasedOnConnectionAndDefaults();
                         ToolTipText = persistentWarning;
                     }
                     // if no match is found, we do nothing.
@@ -1604,9 +1605,12 @@ namespace Dynamo.Graph.Nodes
                 if(persistentWarnings.Any())
                 {
                     // If persistent warnings still exists, then we simply set the tooltip without any transient
+                    SetNodeStateBasedOnConnectionAndDefaults();
                     ToolTipText = persistentWarning;
                     return;
                 }
+                // called with null argument or no persistent warnings remain
+                // in this case we just reset everything
                 ClearErrorsAndWarnings();
             }
         }
@@ -1621,15 +1625,25 @@ namespace Dynamo.Graph.Nodes
             if (State == ElementState.PersistentWarning)
             {
                 if (!string.IsNullOrEmpty(p))
-                {
-                    persistentWarnings.Remove(p);
-                    ToolTipText = persistentWarning;
-
-                    if (persistentWarnings.Any())
+                {// Called with valid argument
+                    if (persistentWarnings.Remove(p))
+                    {// p was found among the existing persistent warnings
+                        if (persistentWarnings.Any())
+                        {
+                            // If any persistent warnings remain then we just set the tooltip
+                            ToolTipText = persistentWarning;
+                            return;
+                        }
+                    }
+                    else
                     {
+                        // p was not found among the existing persistent warnings then there is
+                        // nothing to do further
                         return;
                     }
                 }
+                // called with null argument or no more persistent warnings remain
+                // in this case we just reset everything
                 ClearErrorsAndWarnings();
             }
         }
