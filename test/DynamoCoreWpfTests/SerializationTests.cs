@@ -1114,7 +1114,7 @@ namespace DynamoCoreWpfTests
                         Height = annotation.Height,
                         InitialTop = annotation.AnnotationModel.InitialTop,
                         TextBlockHeight = annotation.AnnotationModel.TextBlockHeight,
-                        Groups = annotation.Nodes.OfType<AnnotationModel>().Select(x => x.GUID.ToString())
+                        HasNestedGroups = annotation.AnnotationModel.HasNestedGroups
                     });
                 }
 

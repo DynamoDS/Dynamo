@@ -124,13 +124,8 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
                 writer.WriteValue(m.GUID.ToString("N"));
             }
             writer.WriteEndArray();
-            writer.WritePropertyName("Groups");
-            writer.WriteStartArray();
-            foreach (var m in anno.Nodes.OfType<AnnotationModel>())
-            {
-                writer.WriteValue(m.GUID.ToString("N"));
-            }
-            writer.WriteEndArray();
+            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.HasNestedGroups));
+            writer.WriteValue(anno.HasNestedGroups);
             writer.WritePropertyName("Left");
             writer.WriteValue(anno.X);
             writer.WritePropertyName("Top");

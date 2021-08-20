@@ -90,7 +90,7 @@ namespace Dynamo.Graph.Workspaces
         public string DescriptionText;
         public bool IsExpanded;
         public IEnumerable<string> Nodes;
-        public IEnumerable<string> Groups;
+        public bool HasNestedGroups;
         public double FontSize;
         public string Background;
         public string Id;
@@ -120,7 +120,7 @@ namespace Dynamo.Graph.Workspaces
                 this.Title == other.Title &&
                 this.DescriptionText == other.DescriptionText &&
                 this.Nodes.SequenceEqual(other.Nodes) &&
-                this.Groups.SequenceEqual(other.Groups) &&
+                this.HasNestedGroups == other.HasNestedGroups &&
                 this.FontSize == other.FontSize &&
                 this.Background == other.Background &&
                 this.WidthAdjustment == other.WidthAdjustment &&
@@ -2174,18 +2174,17 @@ namespace Dynamo.Graph.Workspaces
             if (annotationViews == null)
               return;
 
-            foreach (ExtraAnnotationViewInfo annotationViewInfo in annotationViews)
+            var annotationQueue = new Queue<ExtraAnnotationViewInfo>(annotationViews);
+            while (annotationQueue.Any())
             {
+                var annotationViewInfo = annotationQueue.Dequeue();
                 // Before creating this group we need to create
                 // any group belonging to this group.
-                if (annotationViewInfo.Groups != null)
+                if (annotationViewInfo.HasNestedGroups &&
+                    !annotationQueue.All(x=>x.HasNestedGroups))
                 {
-                    foreach (var group in annotationViewInfo.Groups)
-                    {
-                        var annotation = annotationViews.FirstOrDefault(x => x.Id == group);
-                        if (annotation is null) continue;
-                        LoadAnnotation(annotation);
-                    }
+                    annotationQueue.Enqueue(annotationViewInfo);
+                    continue;
                 }
 
                 LoadAnnotation(annotationViewInfo);
@@ -2239,26 +2238,38 @@ namespace Dynamo.Graph.Workspaces
                 notes.Add(noteModel);
             }
 
+            var groups = new List<AnnotationModel>();
+            foreach (var groupId in annotationViewInfo.Nodes)
+            {
+                var guidValue = IdToGuidConverter(groupId);
+                if (guidValue == null) continue;
+
+                var group = Annotations.FirstOrDefault(g => g.GUID == guidValue);
+                if (group == null) continue;
+
+                groups.Add(group);
+            }
+
             // Older graphs wont have the "Groups" property,
             // so we first check if there is any property
             // and then check if there are any groups grouped
             // to this group. After that we proceed to create
             // a collection of AnnotationModels for this group.
-            var groups = new List<AnnotationModel>();
-            if (annotationViewInfo.Groups != null &&
-                annotationViewInfo.Groups.Any())
-            {
-                foreach (string groupId in annotationViewInfo.Groups)
-                {
-                    var guidValue = IdToGuidConverter(groupId);
-                    if (guidValue == null) continue;
+            //var groups = new List<AnnotationModel>();
+            //if (annotationViewInfo.Groups != null &&
+            //    annotationViewInfo.Groups.Any())
+            //{
+            //    foreach (string groupId in annotationViewInfo.Groups)
+            //    {
+            //        var guidValue = IdToGuidConverter(groupId);
+            //        if (guidValue == null) continue;
 
-                    var group = Annotations.FirstOrDefault(g => g.GUID == guidValue);
-                    if (group == null) continue;
+            //        var group = Annotations.FirstOrDefault(g => g.GUID == guidValue);
+            //        if (group == null) continue;
 
-                    groups.Add(group);
-                }
-            }
+            //        groups.Add(group);
+            //    }
+            //}
 
             var annotationModel = new AnnotationModel(nodes, notes, groups);
             annotationModel.AnnotationText = text;
