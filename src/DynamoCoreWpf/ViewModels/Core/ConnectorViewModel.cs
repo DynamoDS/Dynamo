@@ -158,8 +158,6 @@ namespace Dynamo.ViewModels
                 isVisible = value;
                 RaisePropertyChanged(nameof(IsVisible));
                 SetVisibilityOfPins(IsVisible);
-                if(connectorAnchorViewModel != null)
-                    connectorAnchorViewModel.IsVisible = isVisible;
             }
         }
 
@@ -593,16 +591,13 @@ namespace Dynamo.ViewModels
         private void MouseUnhoverCommandExecute(object parameter)
         {
             MouseHoverOn = false;
-            if (ConnectorAnchorViewModel != null)
-                ConnectorAnchorViewModel.MouseHoverOn = false;
         }
         /// <summary>
         /// Called from outside during unit tests and thus 'internal' as opposed to 'private'.
         /// </summary>
         internal void FlipOnConnectorAnchor()
         {
-            ConnectorAnchorViewModel = new ConnectorAnchorViewModel(this, workspaceViewModel.DynamoViewModel.Model);
-            ConnectorAnchorViewModel.MouseHoverOn = true;
+            ConnectorAnchorViewModel = new ConnectorAnchorViewModel(this, workspaceViewModel.DynamoViewModel.Model, ConnectorDataTooltip);
             ConnectorAnchorViewModel.CurrentPosition = MousePosition;
             ConnectorAnchorViewModel.IsHalftone = !IsVisible;
             ConnectorAnchorViewModel.IsDataFlowCollection = IsDataFlowCollection;
@@ -704,10 +699,10 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void PinConnectorCommandExecute(object parameters)
         {
-            MousePosition = new Point(PanelX, PanelY);
+            MousePosition = new Point(PanelX-ConnectorPinModel.StaticWidth, PanelY-ConnectorPinModel.StaticWidth);
             ConnectorAnchorViewModel.CurrentPosition = MousePosition;
             if (MousePosition == new Point(0, 0)) return;
-            var connectorPinModel = new ConnectorPinModel(PanelX, PanelY, Guid.NewGuid(), model.GUID);
+            var connectorPinModel = new ConnectorPinModel(MousePosition.X, MousePosition.Y, Guid.NewGuid(), model.GUID);
             ConnectorModel.AddPin(connectorPinModel);
             workspaceViewModel.Model.RecordCreatedModel(connectorPinModel);
         }
@@ -731,7 +726,7 @@ namespace Dynamo.ViewModels
 
         private bool CanRunMouseHover(object parameter)
         {
-            return !IsConnecting;
+            return !IsConnecting && BezVisibility;
         }
         private bool CanRunMouseUnhover(object parameter)
         {
@@ -1277,7 +1272,7 @@ namespace Dynamo.ViewModels
                 int count = 0;
                 foreach (var wirePin in ConnectorPinViewCollection)
                 {
-                    points[count] = new Point(wirePin.Left+wirePin.Model.Width - (wirePin.HalfWidth * 0.3), wirePin.Top+wirePin.Model.Height - (wirePin.HalfWidth * 0.3));
+                    points[count] = new Point(wirePin.Left+ConnectorPinModel.StaticWidth - (wirePin.HalfWidth * 0.3), wirePin.Top+ ConnectorPinModel.StaticWidth - (wirePin.HalfWidth * 0.3));
                     count++;
                 }
 
