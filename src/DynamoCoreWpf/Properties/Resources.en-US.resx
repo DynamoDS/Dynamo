@@ -616,7 +616,7 @@ You will get a chance to save your work.</value>
     <comment>FIle menu | New | New custom node</comment>
   </data>
   <data name="DynamoViewFileMenuNewHomeWorkSpace" xml:space="preserve">
-    <value>_Home Workspace...</value>
+    <value>_Home Workspace</value>
     <comment>File menu | New | New home workspace</comment>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
@@ -624,7 +624,7 @@ You will get a chance to save your work.</value>
     <comment>File menu | Open</comment>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
-    <value>_Open Recent Files...</value>
+    <value>_Open Recent Files</value>
     <comment>File menu | Open Recent files</comment>
   </data>
   <data name="DynamoViewFileMenuSave" xml:space="preserve">
@@ -1124,12 +1124,6 @@ Failed to publish file(s):
   <data name="InstalledPackageViewAdditionalLabel" xml:space="preserve">
     <value>Additional Libraries</value>
   </data>
-  <data name="InstalledPackageViewContextMenuCancelUninstall" xml:space="preserve">
-    <value>Cancel pending uninstall...</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuCancelUninstallTooltip" xml:space="preserve">
-    <value>Remove the pending uninstall status</value>
-  </data>
   <data name="InstalledPackageViewContextMenuDeprecate" xml:space="preserve">
     <value>Deprecate</value>
   </data>
@@ -1165,12 +1159,6 @@ Failed to publish file(s):
   </data>
   <data name="InstalledPackageViewContextMenuShowRootDirTooltip" xml:space="preserve">
     <value>Go to the root folder of this package</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuUninstall" xml:space="preserve">
-    <value>Uninstall...</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuUninstallTooltip" xml:space="preserve">
-    <value>Uninstall this package, only allowed if none of the types are currently in use</value>
   </data>
   <data name="InstalledPackageViewCustomNodesLabel" xml:space="preserve">
     <value>Custom Nodes</value>
@@ -1270,8 +1258,8 @@ Would you like to save your changes?</value>
     <value>We can't save "{0}" because the file is read-only or contains unresolved or invalid nodes. To keep changes, would you like to "Save As..." with a different name or path?</value>
     <comment>Message box content</comment>
   </data>
-  <data name="MessageConfirmToUninstallPackage" xml:space="preserve">
-    <value>Are you sure you want to uninstall {0} ?  This will delete the packages root directory.
+  <data name="MessageConfirmToDeletePackage" xml:space="preserve">
+    <value>Are you sure you want to delete {0} ?  This will delete the packages root directory.
 
 You can always redownload the package.</value>
   </data>
@@ -1319,8 +1307,8 @@ You can always redownload the package.</value>
   <data name="MessageFailedToSaveAsImage" xml:space="preserve">
     <value>Failed to save the Workspace as image.</value>
   </data>
-  <data name="MessageFailedToUninstall" xml:space="preserve">
-    <value>{0} failed to uninstall the package.  You may need to delete the package's root directory manually.</value>
+  <data name="MessageFailedToDelete" xml:space="preserve">
+    <value>{0} failed to delete the package.  You may need to delete the package's root directory manually.</value>
   </data>
   <data name="MessageFailToUninstallPackage" xml:space="preserve">
     <value>{0} failed to uninstall the package: {1}.  The package may need to be reinstalled manually.</value>
@@ -1333,8 +1321,8 @@ You can always redownload the package.</value>
   <data name="MessageLoadingTime" xml:space="preserve">
     <value>{0} elapsed for loading {1} main window.</value>
   </data>
-  <data name="MessageNeedToRestart" xml:space="preserve">
-    <value>{0} and its host application must restart before uninstall takes effect.</value>
+  <data name="MessageNeedToRestartAfterDelete" xml:space="preserve">
+    <value>{0} and its host application must restart before delete takes effect.</value>
   </data>
   <data name="MessageNodeWithNullFunction" xml:space="preserve">
     <value>There is a null function definition for this node.</value>
@@ -2016,11 +2004,11 @@ Want to publish a different package?</value>
   <data name="UndeprecatingPackageMessageBoxTitle" xml:space="preserve">
     <value>Removing Package Deprecation</value>
   </data>
-  <data name="UninstallFailureMessageBoxTitle" xml:space="preserve">
-    <value>Uninstall Failure</value>
+  <data name="DeleteFailureMessageBoxTitle" xml:space="preserve">
+    <value>Delete Failure</value>
   </data>
-  <data name="UninstallingPackageMessageBoxTitle" xml:space="preserve">
-    <value>Uninstalling Package</value>
+  <data name="MessageNeedToRestartAfterDeleteTitle" xml:space="preserve">
+    <value>Deleting Package</value>
   </data>
   <data name="UnitAcres" xml:space="preserve">
     <value>Acres</value>
@@ -2282,7 +2270,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Dynamo menu</comment>
   </data>
   <data name="DynamoViewDynamoMenuAbout" xml:space="preserve">
-    <value>_About...</value>
+    <value>_About</value>
     <comment>Dynamo menu | Display About dialog</comment>
   </data>
   <data name="DynamoViewDynamoMenuPreferences" xml:space="preserve">
@@ -2457,37 +2445,37 @@ Uninstall the following packages: {0}?</value>
     <comment>Dynamo Guided Tours</comment>
   </data>
   <data name="GetStartedGuideLibraryText" xml:space="preserve">
-    <value>The Library contains all default Dynamo nodes, and any other nodes you have loaded, such as #custom=https://primer.dynamobim.org/10_Custom-Nodes/10-1_Introduction.html nodes or #packages=https://primer.dynamobim.org/11_Packages/11-1_Introduction.html \n\nYou can browse through the node Categories, or search the library to find a node.</value>
+    <value>The library contains all default functions #(nodes)=https://www.dynamoprimer.com/03_Anatomy-of-a-Dynamo-Definition/3-1_dynamo_nodes.html of Dynamo, as well as custom nodes you may have loaded. \n\nTo find a node, search the library or browse its categories.</value>
   </data>
   <data name="GetStartedGuideLibraryTitle" xml:space="preserve">
     <value>Library</value>
   </data>
   <data name="GetStartedGuidePreferencesText" xml:space="preserve">
-    <value>In the Preferences palette, you can customize your Dynamo experience, from language and time zone settings, to experimental features and visual styles of your workspace.</value>
+    <value>Use Preferences to customize your Dynamo experience. \n\nYou can change language and time zone settings, adjust the visual style of your workspace, and more.</value>
   </data>
   <data name="GetStartedGuidePreferencesTitle" xml:space="preserve">
     <value>Preferences</value>
   </data>
   <data name="GetStartedGuideResourcesText" xml:space="preserve">
-    <value>Use the Help menu to access tools and resources to help you get started.\n\nYou can choose sample scripts, browse the Dynamo Dictionary, replay this and other tutorials, and more!</value>
+    <value>Use the Help menu to access tools and resources to help you get started. \n\nYou can explore sample scripts, browse the Dynamo Dictionary, find other guides, and more.</value>
   </data>
   <data name="GetStartedGuideResourcesTitle" xml:space="preserve">
     <value>Resources</value>
   </data>
   <data name="GetStartedGuideRunStatusBarText" xml:space="preserve">
-    <value>Use the Run Status Bar to run your Dynamo graphs and choose between automatic and manual run types. \n\nSelecting Automatic means your graph will run each time you make a change, and selecting manual means your graph will only run when you select the Run button.</value>
+    <value>Use the Run Status Bar to run a Dynamo graph (a script that contains the logic or algorithm). \n\nYou can select your preferred run type: -Automatic: The graph runs each time you make a change.- -Manual: The graph runs only when you click Run-</value>
   </data>
   <data name="GetStartedGuideRunStatusBarTitle" xml:space="preserve">
     <value>Run Status Bar</value>
   </data>
   <data name="GetStartedGuideToolbarText" xml:space="preserve">
-    <value>From the Toolbar, you can: -Open a new workspace- -Open a saved Dynamo file- -Save your current Dynamo file- -Undo or redo changes-</value>
+    <value>From the toolbar, you can: -Open a new workspace- -Open a saved Dynamo file- -Save your current Dynamo file- -Undo or redo changes-</value>
   </data>
   <data name="GetStartedGuideToolbarTitle" xml:space="preserve">
     <value>Toolbar</value>
   </data>
   <data name="GetStartedGuideWelcomeText" xml:space="preserve">
-    <value>Take a short tour to learn some basics about the Dynamo interface and features to help you get started on your visual programming journey.</value>
+    <value>Start your visual programming journey with this short guide. \n\nHere you'll learn some basics about the Dynamo interface and features.</value>
   </data>
   <data name="GetStartedGuideWelcomeTitle" xml:space="preserve">
     <value>Welcome To Dynamo</value>
@@ -2499,9 +2487,113 @@ Uninstall the following packages: {0}?</value>
     <value>Rate this guide</value>
   </data>
   <data name="GetStartedGuideSurveyText" xml:space="preserve">
-    <value>Learn more about working in Dynamo with the #Dynamo Primer=https://primer.dynamobim.org/</value>
+    <value>Learn more about Dynamo in the #online help=https://primer.dynamobim.org/</value>
   </data>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
+  </data>
+  <data name="ExitTourWindowContent" xml:space="preserve">
+    <value>You can return to this guide later from the Help menu.</value>
+  </data>
+  <data name="PackageStatePendingUnload" xml:space="preserve">
+    <value>Scheduled to be unloaded</value>
+  </data>
+  <data name="PackageStateError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="PackageStateLoaded" xml:space="preserve">
+    <value>Loaded</value>
+  </data>
+  <data name="PackageStateUnloaded" xml:space="preserve">
+    <value>Unloaded</value>
+  </data>
+  <data name="PackageStateScheduledForDeletion" xml:space="preserve">
+    <value>Scheduled for Delete</value>
+  </data>
+  <data name="PackageStateScheduledForUnload" xml:space="preserve">
+    <value>Scheduled for Unload</value>
+  </data>
+  <data name="PackageStateErrorTooltip" xml:space="preserve">
+    <value>Error.
+This package has not been loaded due to the following error:
+{0}.</value>
+  </data>
+  <data name="PackageStateLoadedTooltip" xml:space="preserve">
+    <value>Loaded.
+This package is loaded and ready to be used.</value>
+  </data>
+  <data name="PackageStateUnloadedTooltip" xml:space="preserve">
+    <value>Unloaded.
+This package has been marked as unloaded.</value>
+  </data>
+  <data name="PackageStateScheduledForDeletionTooltip" xml:space="preserve">
+    <value>Scheduled for Delete.
+This package will be deleted after the next Dynamo restart.</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageTooltip" xml:space="preserve">
+    <value>Delete this package from the Dynamo package locations. Once deleted, it will not be loaded into Dynamo anymore until it is re-installed</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageText" xml:space="preserve">
+    <value>Unload</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageTooltip" xml:space="preserve">
+    <value>Unload this package so that it will not be loaded into Dynamo. The package will not be deleted from the Dynamo package locations</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageText" xml:space="preserve">
+    <value>Cancel Delete</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageTooltip" xml:space="preserve">
+    <value>Remove the scheduled delete status</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageText" xml:space="preserve">
+    <value>Cancel Unload</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
+    <value>Remove the scheduled unload status</value>
+  </data>
+  <data name="PackageViewContextMenuLoadText">
+    <value>Load</value>
+  </data>
+  <data name="PackageViewContextMenuLoadTooltip">
+    <value>Load this package into Dynamo. Other packages with the same name will be automatically deleted</value>
+  </data>
+  <data name="CannotLoadPackageMessageBoxTitle" xml:space="preserve">
+    <value>Cannot Load Package</value>
+  </data>
+  <data name="MessageLoadBuiltInPackage" xml:space="preserve">
+    <value>To load the built-in package {1}, {0} needs to first delete any conflicting packages.
+
+Delete the following packages: {2}?</value>
+  </data>
+  <data name="MessageLoadBuiltInWithRestartPackage" xml:space="preserve">
+    <value>To load the built-in package {1}, {0} needs to first delete any conflicting packages.
+Restart {0} to complete the deletion, then try and load the built-in pacakge again.
+
+Delete the following packages: {2}?
+    </value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Description" xml:space="preserve">
+    <value>The selected save location path is too long. Please change the save location and try again.</value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Summary" xml:space="preserve">
+    <value>You are trying to save a graph with a path that is too long.</value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Title" xml:space="preserve">
+    <value>Save Path Issues Found</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnload" xml:space="preserve">
+    <value>{0} and its host application must restart before unload takes effect.</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnloadTitle" xml:space="preserve">
+    <value>Unloading Package</value>
+  </data>
+  <data name="MessageFailedToUnload" xml:space="preserve">
+    <value>{0} failed to unload the package.</value>
+  </data>
+  <data name="UnloadFailureMessageBoxTitle" xml:space="preserve">
+    <value>Unload Failure</value>
   </data>
 </root>

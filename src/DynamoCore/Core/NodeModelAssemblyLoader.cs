@@ -7,6 +7,7 @@ using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
 using Dynamo.Migration;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -21,8 +22,10 @@ namespace Dynamo.Models
         #region Properties/Fields
 
         /// <summary>
-        /// Loaded Assemblies.
+        /// Used at startup to avoid reloading NodeModels from assemblies that have already been loaded.
+        /// Is NOT kept in sync with latest loaded assemblies - use LoadedAssemblies Property for that.
         /// </summary>
+        [Obsolete("Will be made internal, please use LoadedAssemblies Property.")]
         public readonly HashSet<string> LoadedAssemblyNames = new HashSet<string>();
         private readonly HashSet<Assembly> loadedAssemblies = new HashSet<Assembly>();
 
@@ -197,6 +200,34 @@ namespace Dynamo.Models
         internal static bool ContainsNodeModelSubType(Assembly assem)
         {
             return assem.GetTypes().Any(IsNodeSubType);
+        }
+        internal static bool ContainsNodeViewCustomizationType(Assembly assem)
+        {
+            return GetCustomizationTypesUsingReflection(assem).Any();
+        }
+
+        internal static IEnumerable<Type> GetCustomizationTypesUsingReflection(Assembly assem)
+        {
+            IEnumerable<Type> output = new Type[] { };
+            //to avoid changing when we load DynamoCoreWpf bail out if it's not yet loaded.
+            if (AppDomain.CurrentDomain.GetAssemblies().All(x => !x.FullName.StartsWith("DynamoCoreWpf"))){
+                return output;
+            }
+            try
+            {
+                var customizerType = Type.GetType("Dynamo.Wpf.INodeViewCustomization`1,DynamoCoreWpf");
+                if (customizerType != null)
+                {
+                    output = assem.GetTypes().Where(t => !t.IsAbstract && TypeExtensions.ImplementsGeneric(customizerType, t));
+                    return output;
+                }
+            }
+            catch
+            {   
+                return output;
+            }
+           
+            return output;
         }
 
         /// <summary>

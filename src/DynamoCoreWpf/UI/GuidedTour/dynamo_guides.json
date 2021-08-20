@@ -43,7 +43,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "bottom_left",
 				"Width": 480,
-				"Height": 220,
+				"Height": 260,
 				"StepContent": {
 					"Title": "GetStartedGuideRunStatusBarTitle",
 					"FormattedText": "GetStartedGuideRunStatusBarText"
@@ -87,8 +87,14 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
 					"HostUIElementString": "dynamoMenu",
-					"VerticalPopupOffset": 0,
-					"HorizontalPopupOffset": 150
+					"VerticalPopupOffset": 50,
+					"HorizontalPopupOffset": 230
+				},
+				"UIAutomation":{
+						"Sequence": 1,
+						"ControlType": "MenuItem",
+						"Name": "dynamoMenu",
+						"Action": "open"
 				}
 			},
 			{
@@ -105,8 +111,14 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
 					"HostUIElementString": "HelpMenu",
-					"VerticalPopupOffset": 0,
+					"VerticalPopupOffset": 20,
 					"HorizontalPopupOffset": 170
+				},
+				"UIAutomation":{
+						"Sequence": 1,
+						"ControlType": "MenuItem",
+						"Name": "HelpMenu",
+						"Action": "open"
 				}
 			},
 			{

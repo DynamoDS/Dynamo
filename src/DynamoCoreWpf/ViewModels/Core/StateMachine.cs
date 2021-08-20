@@ -171,9 +171,7 @@ namespace Dynamo.ViewModels
         {
             bool isInPort = portType == PortType.Input;
 
-            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
-            if (node == null)
-                return;
+            if (!(Model.GetModelInternal(nodeId) is NodeModel node)) return;
             PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
 
             // Test if port already has a connection, if so grab it and begin connecting 
@@ -204,9 +202,7 @@ namespace Dynamo.ViewModels
         internal void BeginShiftReconnections(Guid nodeId, int portIndex, PortType portType)
         {
             if (portType == PortType.Input) return;
-
-            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
-            if (node == null) return;
+            if (!(Model.GetModelInternal(nodeId) is NodeModel node)) return;
 
             PortModel portModel = node.OutPorts[portIndex];
             if (portModel.Connectors.Count <= 0) return;
@@ -243,9 +239,7 @@ namespace Dynamo.ViewModels
             this.SetActiveConnectors(null); // End the current connection
 
             // Then, start a new connection
-            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
-            if (node == null)
-                return;
+            if (!(Model.GetModelInternal(nodeId) is NodeModel)) return;
             try
             {
                 // Create an array containing a connector view model to begin drawing
@@ -896,12 +890,13 @@ namespace Dynamo.ViewModels
 
             private void CancelWindowSelection()
             {
-                // visualization unpause
-                owningWorkspace.OnDragSelectionEnded(this, EventArgs.Empty);
-
-                SelectionBoxUpdateArgs args = null;
-                args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
-                this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+                if (owningWorkspace != null)
+                {
+                    // visualization unpause
+                    owningWorkspace.OnDragSelectionEnded(this, EventArgs.Empty);
+                    SelectionBoxUpdateArgs args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
+                    this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+                }
             }
 
             #endregion
@@ -912,8 +907,7 @@ namespace Dynamo.ViewModels
             {
                 foreach (var selectable in DynamoSelection.Instance.Selection)
                 {
-                    var locatable = selectable as ILocatable;
-                    if (locatable == null || (!locatable.Rect.Contains(point.AsDynamoType())))
+                    if (!(selectable is ILocatable locatable) || (!locatable.Rect.Contains(point.AsDynamoType())))
                         continue;
 
                     return selectable;

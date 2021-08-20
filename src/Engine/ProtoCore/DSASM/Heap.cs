@@ -782,7 +782,7 @@ namespace ProtoCore.DSASM
             foreach (var ptr in sweepSet)
             {
                 var hp = heapElements[ptr];
-                Validity.Assert(hp != null, "Heap element found at index during GC sweep cannot be null.");
+                Validity.Assert(hp != null, "Heap element found during GC sweep cannot be null.");
 
                 if (hp.Mark != GCMark.White)
                     continue;

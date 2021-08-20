@@ -8,6 +8,23 @@ namespace Dynamo.Utilities
 {
     public static class TypeExtensions
     {
+        public static bool ImplementsGeneric(Type generic, Type toCheck)
+        {
+            var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
+
+            var isGenInterf = cur.GetInterfaces().Any(
+                x =>
+                    x.IsGenericType &&
+                        x.GetGenericTypeDefinition() == generic);
+
+            if (generic == cur || isGenInterf)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         ///     Creates a function that constructs an instance of an object of the given
         ///     type.
