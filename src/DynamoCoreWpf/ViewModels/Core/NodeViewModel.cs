@@ -1012,10 +1012,18 @@ namespace Dynamo.ViewModels
 
                 ErrorBubble.UpdateContentCommand.Execute(data);
 
-                DynamoViewModel.UIDispatcher.Invoke(() =>
+                // If running Dynamo with UI, use dispatcher, otherwise not
+                if(DynamoViewModel.UIDispatcher != null)
+                {
+                    DynamoViewModel.UIDispatcher.Invoke(() =>
+                    {
+                        ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
+                    });
+                }
+                else
                 {
                     ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                });
+                }
 
                 ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
 
