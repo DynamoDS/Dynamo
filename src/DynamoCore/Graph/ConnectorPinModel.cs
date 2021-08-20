@@ -14,10 +14,7 @@ namespace Dynamo.Graph
         /// Required when needing to pull a reliable value for objects of this
         /// type when there is no instances of this object type.
         /// </summary>
-        public static double StaticWidth() 
-        {
-             return  width;
-        }
+        public const double StaticWidth = width;
 
         public override double Height { get => height; }
         public override double Width { get => width; }
