@@ -11,11 +11,11 @@ namespace Dynamo.Tests.Models
     class NodeModelWarningsTest : DynamoModelTestBase
     {
         /// <summary>
-        /// This test case will execute the method void ExecuteCore(DynamoModel dynamoModel) from the CreateAndConnectNodeCommand class
+        /// This test case will test adding and removing persistent and transient warnings on a node model
         /// </summary>
         [Test]
         [Category("UnitTests")]
-        public void CreateAndConnectNodeCommand_ExecuteCore()
+        public void TestWarningsOnNodeModel()
         {
             //Arrange
             var cbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
