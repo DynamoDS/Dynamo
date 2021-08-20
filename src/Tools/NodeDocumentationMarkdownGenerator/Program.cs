@@ -11,17 +11,28 @@ namespace NodeDocumentationMarkdownGenerator
 {
     class Program
     {
+        internal static List<String> ReferenceAssemblyPaths = new List<string>();
+        internal static bool VerboseMode { get; set; }
+        static void Main(string[] args)
         private static IEnumerable<FileInfo> dynamoDirectoryAssemblyPaths;
         internal static IEnumerable<FileInfo> DynamoDirectoryAssemblyPaths
         {
             get
             {
+
                 if (dynamoDirectoryAssemblyPaths is null)
                 {
+#if DEBUG
+            var config = "Debug";
+#else
+                    var config = "Release";
+#endif
+                    var relativePathToDynamo = $@"..\..\..\..\..\bin\AnyCPU\{config}";
+                    Console.WriteLine($"looking for dynamo core assemblies in {relativePathToDynamo}");
                     dynamoDirectoryAssemblyPaths = new DirectoryInfo(
                         Path.GetFullPath(
                             Path.Combine(
-                                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\bin\AnyCPU\Debug")))
+                                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), relativePathToDynamo)))
                         .EnumerateFiles("*.dll", SearchOption.AllDirectories);
                 }
 
@@ -33,6 +44,8 @@ namespace NodeDocumentationMarkdownGenerator
         {
             var sw = new Stopwatch();
             sw.Start();
+
+          
 
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
@@ -53,12 +66,12 @@ namespace NodeDocumentationMarkdownGenerator
         internal static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             var requestedAssembly = new AssemblyName(args.Name);
-            var requestedAssemblyLocation = Program.DynamoDirectoryAssemblyPaths
+            //concat both dynamocore paths and any reference paths the user added.
+            var requestedAssemblyLocation = Program.DynamoDirectoryAssemblyPaths.Concat(Program.ReferenceAssemblyPaths.Select(x => new FileInfo(x)))
                 .Where(x => Path.GetFileNameWithoutExtension(x.FullName) == requestedAssembly.Name)
                 .FirstOrDefault();
-
+           
             Assembly assembly = null;
-            AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
             try
             {
                 assembly = Assembly.LoadFrom(requestedAssemblyLocation.FullName);
@@ -67,8 +80,6 @@ namespace NodeDocumentationMarkdownGenerator
             {
                 CommandHandler.LogExceptionToConsole(ex);
             }
-
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             return assembly;
         }
 
@@ -89,6 +100,15 @@ $$$$$$$/   $$$$$$$ |$$/   $$/  $$$$$$$/ $$/  $$/  $$/  $$$$$$/
            $$$$$$/                                                          
             ";
             Console.WriteLine(header);
+        }
+        internal static void VerboseControlLog(string message)
+        {
+            if (Program.VerboseMode)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine(message);
+                Console.ResetColor();
+            }
         }
     }
 }

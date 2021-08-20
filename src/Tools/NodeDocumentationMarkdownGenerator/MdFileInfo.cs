@@ -103,7 +103,7 @@ namespace NodeDocumentationMarkdownGenerator
                 var nodeNamespace = "";
 
                 string fileName = "";
-                if (entry is ZeroTouchSearchElement reflectionSearch)
+                if (entry is ZeroTouchSearchElement searchElement)
                 {
                     // the ZeroTouchSearchElements FulleName includes the node name at the end
                     // we need the namespace to not contain the nodename therefor we remove it here.
@@ -113,7 +113,7 @@ namespace NodeDocumentationMarkdownGenerator
                     // Create the filename from the nodes className + nodeName
                     // We need the filename to be structured like this as this is
                     // how Dynamo matches the file with the correct node.
-                    fileName = $"{reflectionSearch.Descriptor.ClassName}.{nodeName}";
+                    fileName = $"{searchElement.Descriptor.ClassName}.{nodeName}";
                 }
                 else
                 {

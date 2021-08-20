@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
-using ProtoFFI.Reflection;
 using ProtoCore.Utils;
-using System.IO;
 
 namespace ProtoFFI
 {
@@ -251,17 +248,6 @@ namespace ProtoFFI
 
             return null;
         }
-
-        /// <summary>
-        /// If true reflection methods will be used to get module types. 
-        /// Getting module types using reflection can be used when the use case inst
-        /// to load the types into Dynamo but simply scan types and extract nodes.
-        /// Currently this is used in the NodeDocumentationGenerator which is a separate
-        /// tool to create documentation markdown files, in this scenario we don't need the types
-        /// loaded as we only care about metadata from the types.
-        /// </summary>
-        internal static bool IsReflectionContext { get; set; }
-
         #endregion
 
         #region PRIVATE_METHODS_AND_FIELDS
@@ -318,16 +304,13 @@ namespace ProtoFFI
                 if (null != func)
                 {
                     func.IsStatic = true;
-                    if (!IsReflectionContext)
-                    {
-                        RegisterFunctionPointer(func.Name, f, null, func.ReturnType);
-                    }
+                    RegisterFunctionPointer(func.Name, f, null, func.ReturnType);
                     classnode.Procedures.Add(func);
                 }
             }
 
             //Get all the attributes on this type and set it to the classnode.
-            FFIClassAttributes cattrs = new FFIClassAttributes(type, IsReflectionContext);
+            FFIClassAttributes cattrs = new FFIClassAttributes(type);
             classnode.ClassAttributes = cattrs;
             SetTypeAttributes(type, cattrs);
 
@@ -385,11 +368,8 @@ namespace ProtoFFI
                         ConstructorDefinitionNode node = ParseConstructor(c, type);
                         classnode.Procedures.Add(node);
 
-                        if (!IsReflectionContext)
-                        {
-                            var argTypes = GetArgumentTypes(node);
-                            RegisterFunctionPointer(node.Name, c, argTypes, node.ReturnType);
-                        }
+                        List<ProtoCore.Type> argTypes = GetArgumentTypes(node);
+                        RegisterFunctionPointer(node.Name, c, argTypes, node.ReturnType);
                     }
                 }
             }
@@ -416,38 +396,15 @@ namespace ProtoFFI
                 if (SupressesImport(m, mGetterAttributes))
                     continue;
 
-                MethodInfo baseDefinition;
-                if (IsReflectionContext)
-                {
-                    baseDefinition = m.GetBaseDefinitionReflectionContext();
-                    if (baseDefinition is null)
-                        continue;
-                }
-                else
-                {
-                    baseDefinition = m.GetBaseDefinition();
-                }
-
-                if (classnode.IsStatic && baseDefinition.DeclaringType == baseType && baseType == typeof(object))
+                if (classnode.IsStatic && m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(object))
                     continue;
-
-                // If we are in ReflectionContext we cannot compare m.DeclaringType to typeof(object)
-                // this is because typeof gets checked at compile time so it dosent use the reflection only
-                // types https://stackoverflow.com/questions/58912559/how-to-ensure-typeof-and-cast-operators-operate-on-a-different-load-context-not
-                // Instead we check if the AssemblyQualifiedName is the same on the DeclaringType and typeof(object)
-                if (CLRModuleType.IsReflectionContext &&
-                    m.DeclaringType.AssemblyQualifiedName == typeof(object).AssemblyQualifiedName &&
-                    m == baseDefinition)
-                {
-                    continue;
-                }
 
                 // Mono issue: m == m.GetBaseDefinition() for methods from Object class returns True instead of False
-                if (m.DeclaringType == typeof(object) && m == baseDefinition)
+                if (m.DeclaringType == typeof(object) && m == m.GetBaseDefinition())
                     continue;
 
                 //Don't include overriden methods or generic methods
-                if (m.IsPublic && !m.IsGenericMethod && m == baseDefinition)
+                if (m.IsPublic && !m.IsGenericMethod && m == m.GetBaseDefinition())
                 {
                     AssociativeNode node = ParseAndRegisterFunctionPointer(isDisposable, ref hasDisposeMethod, m);
                     classnode.Procedures.Add(node);
@@ -487,11 +444,11 @@ namespace ProtoFFI
                     continue;
                 classnode.Variables.Add(variable);
                 FunctionDefinitionNode func = ParseFieldAccessor(f);
-                if (null != func && !IsReflectionContext)
+                if (null != func)
                     RegisterFunctionPointer(func.Name, f, null, func.ReturnType);
             }
 
-            FFIClassAttributes cattrs = new FFIClassAttributes(type, IsReflectionContext);
+            FFIClassAttributes cattrs = new FFIClassAttributes(type);
             classnode.ClassAttributes = cattrs;
             SetTypeAttributes(type, cattrs);
 
@@ -515,14 +472,12 @@ namespace ProtoFFI
                     func.IsAutoGenerated = true;
                 }
 
-                if (!IsReflectionContext)
-                    RegisterFunctionPointer(func.Name, m, argTypes, func.ReturnType);
+                RegisterFunctionPointer(func.Name, m, argTypes, func.ReturnType);
             }
             else if (node is ConstructorDefinitionNode)
             {
                 ConstructorDefinitionNode constr = node as ConstructorDefinitionNode;
-                if (!IsReflectionContext)
-                    RegisterFunctionPointer(constr.Name, m, argTypes, constr.ReturnType);
+                RegisterFunctionPointer(constr.Name, m, argTypes, constr.ReturnType);
             }
             return node;
         }
@@ -583,18 +538,10 @@ namespace ProtoFFI
 
         private bool isDisposeMethod(MethodInfo m)
         {
-            try
-            {
-                ParameterInfo[] ps = m.GetParameters();
-                return (ps == null || ps.Length == 0) && m.Name == "Dispose";
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-                return false;
-            }
-
+            ParameterInfo[] ps = m.GetParameters();
+            if ((ps == null || ps.Length == 0) && m.Name == "Dispose")
+                return true;
+            return false;
         }
 
         private PropertyInfo GetProperty(ref Type type, string name)
@@ -613,30 +560,16 @@ namespace ProtoFFI
         private ProtoCore.AST.AssociativeAST.AssociativeNode ParseProperty(PropertyInfo p)
         {
             MethodInfo m = p.GetAccessors(false)[0];
-            var attribs = IsReflectionContext ? 
-                p.GetAttributesFromReflectionContext() : 
-                p.GetCustomAttributes(false).Cast<Attribute>().ToArray();
-
-            mGetterAttributes.Add(m, attribs.ToArray());
+            var attribs = p.GetCustomAttributes(false).Cast<Attribute>().ToArray();
+            mGetterAttributes.Add(m, attribs);
 
             if (null == p || SupressesImport(p))
                 return null;
 
             //Index properties are not parsed as property at this moment.
-            try
-            {
-                ParameterInfo[] indexParams = p.GetIndexParameters();
-                if (null != indexParams && indexParams.Length > 0)
-                    return null;
-            }
-            catch(FileNotFoundException e)
-            {
-                // Exceptions can happen here if a reference is missing,
-                // this can happen when scanning the module in reflection only context.
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-            }
-
+            ParameterInfo[] indexParams = p.GetIndexParameters();
+            if (null != indexParams && indexParams.Length > 0)
+                return null;
 
             //If this method hides the base class accessor method by signature
             if (m.IsHideBySig)
@@ -654,10 +587,7 @@ namespace ProtoFFI
 
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = ParseArgumentDeclaration(p.Name, p.PropertyType);
             if (null != varDeclNode)
-            {
                 varDeclNode.IsStatic = m.IsStatic;
-            }
-
             return varDeclNode;
         }
 
@@ -671,38 +601,18 @@ namespace ProtoFFI
             if (null == member)
                 return true;
 
-            object[] atts = null;
-            if (IsReflectionContext)
-            {
-                atts = member
-                    .GetAttributesFromReflectionContext()
-                    .ToArray();
-            }
-            else
-            {
-                atts = member.GetCustomAttributes(false);
-            }
+            object[] atts = member.GetCustomAttributes(false);
 
             var method = member as MethodInfo;
             if (method != null)
             {
-                try
+                // Skip importing methods that have out and ref parameters
+                // as these are not supported currently: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5460
+                ParameterInfo[] parameters = method.GetParameters();
+                foreach (var parameter in parameters)
                 {
-                    // Skip importing methods that have out and ref parameters
-                    // as these are not supported currently: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5460
-                    ParameterInfo[] parameters = method.GetParameters();
-                    foreach (var parameter in parameters)
-                    {
-                        if (parameter.ParameterType.IsByRef == true)
-                            return true;
-                    }
-                }
-                catch(FileNotFoundException e)
-                {
-                    // Exceptions can happen here if a reference is missing,
-                    // this can happen when scanning the module in reflection only context.
-                    Console.WriteLine(e.Message);
-                    Console.WriteLine(e.StackTrace);
+                    if (parameter.ParameterType.IsByRef == true)
+                        return true;
                 }
 
                 // If method is a getter accessor belonging to a property
@@ -714,7 +624,6 @@ namespace ProtoFFI
                         atts = propAtts;
                 }
             }
-
 
             foreach (Attribute item in atts)
             {
@@ -742,29 +651,7 @@ namespace ProtoFFI
             if (null == f || SupressesImport(f))
                 return null;
 
-            
-            ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode;
-            if (!IsReflectionContext)
-            {
-                varDeclNode = ParseArgumentDeclaration(f.Name, f.FieldType);
-            }
-            else
-            {
-                try
-                {
-                    varDeclNode = ParseArgumentDeclaration(f.Name, f.FieldType);
-                }
-                catch (FileNotFoundException e)
-                {
-                    // If f.FieldType is an unloaded type we can't ParseArgumentDeclaration,
-                    // instead we pass a object type. This can happen when we are in reflection only context
-                    // and a type reference is missing.
-                    // In this scenario we still return a varDeclNode with the correct name but the wrong type
-                    varDeclNode = ParseArgumentDeclaration(f.Name, typeof(object));
-                }
-            }
-
-
+            ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = ParseArgumentDeclaration(f.Name, f.FieldType);
             //TODO: temporary limitation, can't have variable name matching with class name.
             if (null != CLRModuleType.GetImportedType(f.Name))
                 return null;
@@ -775,41 +662,20 @@ namespace ProtoFFI
 
         private FunctionDefinitionNode ParseFieldAccessor(FieldInfo f)
         {
-            if (null == f || SupressesImport(f)) return null;
-
-            ProtoCore.Type returnType = new ProtoCore.Type();
-            if (!IsReflectionContext)
-            {
-                returnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module);
-            }
-            else
-            {
-                // if the FieldType is an unloaded type we can't create the ProtoCore Type,
-                // for now just continue with the empty one, this might require more testing
-                // but for the NodeDocumentionGenerator which is where this might happen
-                // this is okay, as the return type isn't necessary for generating the doc files
-                try
-                {
-                    returnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module);
-                }
-                catch(Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    Console.WriteLine(e.StackTrace);
-                }
-            }
+            if (null == f || SupressesImport(f))
+                return null;
 
             var func = new FunctionDefinitionNode
             {
                 Name = string.Format("{0}{1}", Constants.kGetterPrefix, f.Name),
                 Signature = new ArgumentSignatureNode(),
-                ReturnType = returnType,
+                ReturnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module),
                 FunctionBody = null,
                 Access = ProtoCore.CompilerDefinitions.AccessModifier.Public,
                 IsExternLib = true,
                 ExternLibName = Module.Name,
                 IsStatic = f.IsStatic,
-                MethodAttributes = new FFIMethodAttributes(f, IsReflectionContext),
+                MethodAttributes = new FFIMethodAttributes(f),
             };
             
             return func;
@@ -817,50 +683,28 @@ namespace ProtoFFI
 
         private ProtoCore.AST.AssociativeAST.AssociativeNode ParseMethod(MethodInfo method)
         {
-            ProtoCore.Type retype = new ProtoCore.Type();
-            var func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-            FFIMethodAttributes mattrs = new FFIMethodAttributes(method, mGetterAttributes, IsReflectionContext);
+            ProtoCore.Type retype = CLRModuleType.GetProtoCoreType(method.ReturnType, Module);
+            bool propaccessor = isPropertyAccessor(method);
             bool isOperator = isOverloadedOperator(method);
 
-            // GetProtoCoreType and isPropertyAccessor might break in ReflectionMode.
-            // Generally we are trying to get return types a few places here, we cannot guarantee that these types are available in reflection.
-            // If it breaks we continue with an empty ProtoCore Type as we aren't interested in the return type for the NodeDocumentationGenerator
-            // where this is used currently.
-            try
+            FFIMethodAttributes mattrs = new FFIMethodAttributes(method, mGetterAttributes);
+            if (method.IsStatic &&
+                method.DeclaringType == method.ReturnType &&
+                !propaccessor &&
+                !isOperator)
             {
-                retype = CLRModuleType.GetProtoCoreType(method.ReturnType, Module);
-                bool propaccessor = isPropertyAccessor(method);
+                //case for named constructor. Must return a pointer type
+                if (!Object.Equals(method.ReturnType, CLRType))
+                    throw new InvalidOperationException("Unexpected type for constructor {0D28FC00-F8F4-4049-AD1F-BBC34A68073F}");
 
-                if (method.IsStatic &&
-                    method.DeclaringType == method.ReturnType &&
-                    !propaccessor &&
-                    !isOperator)
-                {
-                    //case for named constructor. Must return a pointer type
-                    if (!Object.Equals(method.ReturnType, CLRType))
-                        throw new InvalidOperationException("Unexpected type for constructor {0D28FC00-F8F4-4049-AD1F-BBC34A68073F}");
-
-                    retype = ProtoCoreType;
-                    ConstructorDefinitionNode node = ParsedNamedConstructor(method, method.Name, retype);
-                    node.MethodAttributes = mattrs;
-                    return node;
-                }
-
-                if ((retype.IsIndexable && mattrs.AllowRankReduction)
-                    || (typeof(object).Equals(method.ReturnType)))
-                {
-                    retype.rank = Constants.kArbitraryRank;
-                }
-
-                func.Signature = ParseArgumentSignature(method);
-            }
-            catch (FileNotFoundException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                retype = ProtoCoreType;
+                ConstructorDefinitionNode node = ParsedNamedConstructor(method, method.Name, retype);
+                node.MethodAttributes = mattrs;
+                return node;
             }
 
-            string prefix = isOperator ? Constants.kInternalNamePrefix : string.Empty;       
+            string prefix = isOperator ? Constants.kInternalNamePrefix : string.Empty;
+            var func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
 
             if (isOperator)
             {
@@ -870,7 +714,13 @@ namespace ProtoFFI
             {
                 func.Name = string.Format("{0}{1}", prefix, method.Name);
             }
-            
+            func.Signature = ParseArgumentSignature(method);
+
+            if ((retype.IsIndexable && mattrs.AllowRankReduction)
+                || (typeof(object).Equals(method.ReturnType)))
+            {
+                retype.rank = Constants.kArbitraryRank;
+            }
             func.ReturnType = retype;
             func.FunctionBody = null;
             func.Access = ProtoCore.CompilerDefinitions.AccessModifier.Public;
@@ -971,7 +821,8 @@ namespace ProtoFFI
             foreach (var parameter in parameters)
             {
                 var paramNode = ParseArgumentDeclaration(parameter.Name, parameter.ParameterType);
-                var ffiAttribute = new FFIParamAttributes(parameter, IsReflectionContext);
+
+                var ffiAttribute = new FFIParamAttributes(parameter);
                 paramNode.ExternalAttributes = ffiAttribute;
                 if (ffiAttribute.IsArbitraryDimensionArray)
                 {
@@ -984,7 +835,7 @@ namespace ProtoFFI
                 {
                     var lhs = paramNode.NameNode;
 
-                    var defaultValue = IsReflectionContext ? parameter.RawDefaultValue : parameter.DefaultValue;
+                    var defaultValue = parameter.DefaultValue;
                     if (defaultValue != null)
                     {
                         var rhs = AstFactory.BuildPrimitiveNodeFromObject(defaultValue);
@@ -994,11 +845,8 @@ namespace ProtoFFI
                 argumentSignature.AddArgument(paramNode);
             }
 
-            argumentSignature.IsVarArg = parameters.Any() && 
-                (IsReflectionContext ? 
-                    parameters.Last().GetAttributesFromReflectionContext().OfType<ParamArrayAttribute>().Any() : 
-                    parameters.Last().GetCustomAttributes(typeof(ParamArrayAttribute), false).Any()
-                );
+            argumentSignature.IsVarArg = parameters.Any()
+                && parameters.Last().GetCustomAttributes(typeof(ParamArrayAttribute), false).Any();
 
             return argumentSignature;
         }
@@ -1015,14 +863,8 @@ namespace ProtoFFI
                     Name = parameterName,
                     datatype = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Var, 0)
                 };
-
             //Lets emit native DS type object
-            //This will fail in reflection mode if the type is not loaded
-            ProtoCore.Type argtype = new ProtoCore.Type();
-            if (!IsReflectionContext)
-            {
-                argtype = CLRModuleType.GetProtoCoreType(parameterType, Module);
-            }
+            ProtoCore.Type argtype = CLRModuleType.GetProtoCoreType(parameterType, Module);
 
             varDeclNode.NameNode = identifierNode;
             varDeclNode.ArgumentType = argtype;
@@ -1146,44 +988,9 @@ namespace ProtoFFI
             return null;
         }
 
-        /// <summary>
-        /// Creates CLRModuleTypes for all types in this module.
-        /// </summary>
-        /// <param name="isReflectionContext">When true the behavior for creating AST Nodes for the module types is using specific ReflectionOnly methods</param>
-        internal void ScanModule(bool isReflectionContext)
-        {
-            CLRModuleType.IsReflectionContext = isReflectionContext;
-
-            Type[] types = isReflectionContext ? 
-                GetReflectionTypes(string.Empty) : 
-                GetTypes("");
-
-            foreach (var type in types)
-            {
-                //For now there is no support for generic type.
-                if (type.IsGenericType || 
-                    !type.IsPublic || 
-                    CLRModuleType.SupressesImport(type)) continue;
-
-                try
-                {
-                    CLRModuleType.GetInstance(type, this, "");
-                }
-                catch(Exception e)
-                {
-                    Console.WriteLine($"While scanning {type.Name}, the following exception was encountered - {e.GetType()} :");
-                    Console.WriteLine(e.Message);
-                    Console.WriteLine(e.StackTrace);
-                    continue;
-                }                
-            }
-        }
-
         public override CodeBlockNode ImportCodeBlock(string typeName, string alias, CodeBlockNode refNode)
         {
-            Type[] types = CLRModuleType.IsReflectionContext ?
-               GetReflectionTypes(typeName) :
-               GetTypes(typeName);
+            Type[] types = GetTypes(typeName);
             Type exttype = typeof(IExtensionApplication);
 
             foreach (var type in types)
@@ -1334,26 +1141,6 @@ namespace ProtoFFI
             return types;
         }
 
-        private Type[] GetReflectionTypes(string typeName)
-        {
-            List<TypeInfo> types = null;
-            if (Module is null) types = Assembly.DefinedTypes.ToList();
-            else types = Module.Assembly.DefinedTypes.ToList();
-
-            if (string.IsNullOrEmpty(typeName) || string.IsNullOrWhiteSpace(typeName))
-            {
-                var typeArr = types
-                    .Select(t => t.AsType())
-                    .ToArray();
-
-                return typeArr;
-            }
-
-            var returnType = new Type[1];
-            returnType[0] = types.FirstOrDefault(x => x.Name == typeName).AsType();
-            return returnType;
-        }
-
         public override FFIObjectMarshaler GetMarshaler(ProtoCore.RuntimeCore runtimeCore)
         {
             return CLRObjectMarshaler.GetInstance(runtimeCore);
@@ -1435,11 +1222,7 @@ namespace ProtoFFI
             get { return attributes; }
         }
 
-        public FFIClassAttributes(Type type) : this(type, false)
-        {
-        }
-
-        public FFIClassAttributes(Type type, bool isReflectionContext)
+        public FFIClassAttributes(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -1447,10 +1230,7 @@ namespace ProtoFFI
             // Hide all interfaces from library and search
             if (type.IsInterface) HiddenInLibrary = true;
 
-            attributes = isReflectionContext ?
-                type.GetAttributesFromReflectionContext().ToArray() :
-                type.GetCustomAttributes(false).Cast<Attribute>().ToArray();
-
+            attributes = type.GetCustomAttributes(false).Cast<Attribute>().ToArray();
             foreach (var attr in attributes)
             {
                 if (attr.HiddenInDynamoLibrary())
@@ -1461,7 +1241,8 @@ namespace ProtoFFI
                 {
                     HiddenInLibrary = true;
                     ObsoleteMessage = (attr as ObsoleteAttribute).Message;
-                    if (string.IsNullOrEmpty(ObsoleteMessage)) ObsoleteMessage = "Obsolete";
+                    if (string.IsNullOrEmpty(ObsoleteMessage))
+                        ObsoleteMessage = "Obsolete";
                 }
                 else if (attr is PreferredShortNameAttribute)
                 {
@@ -1488,27 +1269,17 @@ namespace ProtoFFI
         public bool RequireTracing { get; protected set; }
 
         //Set the MethodAttributes for Enum fields.
-        public FFIMethodAttributes(FieldInfo f) : this(f, false)
+        public FFIMethodAttributes(FieldInfo f)
         {
+            var atts = f.GetCustomAttributes(false).Cast<Attribute>();
 
-        }
-
-        public FFIMethodAttributes(FieldInfo f, bool isReflectionContext)
-        {
-            var atts = isReflectionContext ?
-                f.GetAttributesFromReflectionContext() :
-                f.GetCustomAttributes(false).Cast<Attribute>();
-
-            var parentAtts = isReflectionContext ?
-                f.DeclaringType.GetAttributesFromReflectionContext() :
-                f.DeclaringType.GetCustomAttributes(false).Cast<Attribute>();
-
+            var parentAtts = f.DeclaringType.GetCustomAttributes(false).Cast<Attribute>();
             var isObsolete = false;
             var hidden = false;
             var message = "";
-            foreach (var attr in parentAtts)
+            foreach(var attr in parentAtts)
             {
-                if (attr is ObsoleteAttribute)
+                if(attr is ObsoleteAttribute)
                 {
                     isObsolete = true;
                     message = (attr as ObsoleteAttribute).Message;
@@ -1532,7 +1303,7 @@ namespace ProtoFFI
                     if (string.IsNullOrEmpty(ObsoleteMessage))
                         ObsoleteMessage = "Obsolete";
                 }
-                else if (attr is IsVisibleInDynamoLibraryAttribute)
+                else if(attr is IsVisibleInDynamoLibraryAttribute)
                 {
                     HiddenInLibrary = !((IsVisibleInDynamoLibraryAttribute)attr).Visible;
                 }
@@ -1544,7 +1315,7 @@ namespace ProtoFFI
             }
         }
 
-        internal FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes, bool isReflectionContext)
+        public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes)
         {
             if (method == null)
                 throw new ArgumentNullException("method");
@@ -1553,7 +1324,7 @@ namespace ProtoFFI
             Type type = method.DeclaringType;
             if (!CLRModuleType.TryGetTypeAttributes(type, out baseAttributes))
             {
-                baseAttributes = new FFIClassAttributes(type, isReflectionContext);
+                baseAttributes = new FFIClassAttributes(type);
                 CLRModuleType.SetTypeAttributes(type, baseAttributes);
             }
 
@@ -1568,19 +1339,10 @@ namespace ProtoFFI
                 attributes = atts;
             }
             else
-            {
-                if (isReflectionContext)
-                {
-                    attributes = method
-                        .GetAttributesFromReflectionContext()
-                        .ToArray();
-                }
-                else
-                {
-                    attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
-                }
+            {   
+                attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
             }
-
+            
             foreach (var attr in attributes)
             {
                 if (attr is AllowRankReductionAttribute)
@@ -1596,7 +1358,7 @@ namespace ProtoFFI
                     var multiReturnAttr = (attr as MultiReturnAttribute);
                     returnKeys = multiReturnAttr.ReturnKeys.ToList();
                 }
-                else if (attr.HiddenInDynamoLibrary())
+                else if(attr.HiddenInDynamoLibrary())
                 {
                     HiddenInLibrary = true;
                 }
@@ -1624,19 +1386,13 @@ namespace ProtoFFI
                 }
                 else if (attr is IsLacingDisabledAttribute)
                 {
-                    IsLacingDisabled = true;
+                    IsLacingDisabled = true; 
                 }
                 else if (attr is AllowArrayPromotionAttribute)
                 {
                     AllowArrayPromotion = (attr as AllowArrayPromotionAttribute).IsAllowed;
                 }
             }
-        }
-
-        public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes) : 
-            this(method, getterAttributes, false)
-        {
-            
         }
 
     }
@@ -1670,16 +1426,9 @@ namespace ProtoFFI
             }
         }
 
-        public FFIParamAttributes(ParameterInfo parameter) : this(parameter, false)
+        public FFIParamAttributes(ParameterInfo parameter)
         {
-        }
-
-        internal FFIParamAttributes(ParameterInfo parameter, bool reflectionOnly)
-        {
-            var attributes = reflectionOnly ? 
-                parameter.GetAttributesFromReflectionContext().ToArray() : 
-                parameter.GetCustomAttributes(false);
-
+            var attributes = parameter.GetCustomAttributes(false);
             foreach (var attr in attributes)
             {
                 if (attr is DefaultArgumentAttribute)
@@ -1710,6 +1459,7 @@ namespace ProtoFFI
             //can be removed in 3.0, once we have removed the dlls we can restore
             //following code.
             //return attribute is SupressImportIntoVMAttribute;
+
             return null != attribute && attribute.GetType().Name == typeof(SupressImportIntoVMAttribute).Name;
         }
 
