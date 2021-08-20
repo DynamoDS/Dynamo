@@ -7,9 +7,14 @@ namespace Dynamo.Graph
 {
     public class ConnectorPinModel : ModelBase
     {
-        private double height = 30;
-        private double width = 30;
+        private const double height = 30;
+        private const double width = 30;
         public Guid ConnectorId { get; set; }
+        /// <summary>
+        /// Required when needing to pull a reliable value for objects of this
+        /// type when there is no instances of this object type.
+        /// </summary>
+        public static double StaticWidth => width;
 
         public override double Height { get => height; }
         public override double Width { get => width; }

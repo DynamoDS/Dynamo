@@ -16,14 +16,13 @@ namespace Dynamo.ViewModels
         #region Properties 
         private Point currentPosition;
         private bool isHalftone;
-        private bool isVisible;
-        private bool mouseHoverOn;
         private bool isPartlyVisible = false;
         private bool isDataFlowCollection;
         private bool canDisplayIcons = false;
 
         private bool watchIconPreviewOn = false;
         private bool pinIconPreviewOn = false;
+        private string dataTooltipText;
 
         private ConnectorViewModel ViewModel { get; set; }
         private DynamoModel DynamoModel { get; set; }
@@ -52,7 +51,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-
+        /// Follows the 'isHalftone' visibility of the connector.
         /// </summary>
         public bool IsHalftone
         {
@@ -64,32 +63,6 @@ namespace Dynamo.ViewModels
             {
                 isHalftone = value;
                 RaisePropertyChanged(nameof(IsHalftone));
-            }
-        }
-       
-        public bool IsVisible
-        {
-            get
-            {
-                return isVisible;
-            }
-            set
-            {
-                isVisible = value;
-                RaisePropertyChanged(nameof(IsVisible));
-            }
-        }
-
-        public bool MouseHoverOn
-        {
-            get
-            {
-                return mouseHoverOn;
-            }
-            set
-            {
-                mouseHoverOn = value;
-                RaisePropertyChanged(nameof(MouseHoverOn));
             }
         }
 
@@ -107,6 +80,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Is the mouse over one of pin icon? Flag to switch color(binding) of pin button.
+        /// </summary>
         public bool PinIconPreviewOn
         {
             get
@@ -119,6 +95,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(PinIconPreviewOn));
             }
         }
+        ///Is the mouse over one of watch icon? Flag to switch color(binding) of watch button.
         public bool WatchIconPreviewOn
         {
             get
@@ -131,8 +108,6 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(WatchIconPreviewOn));
             }
         }
-
-
 
         internal void SwitchWatchPreviewOn()
         {
@@ -164,6 +139,10 @@ namespace Dynamo.ViewModels
             PinIconPreviewOn = false;
         }
 
+        /// <summary>
+        /// This property acts as the main flag that signals whether or not watch icon/pin icon/tooltip
+        /// should be visibile/ hidden.
+        /// </summary>
         public bool CanDisplayIcons
         {
             get { return canDisplayIcons; }
@@ -171,6 +150,23 @@ namespace Dynamo.ViewModels
             {
                 canDisplayIcons = value;
                 RaisePropertyChanged(nameof(CanDisplayIcons));
+            }
+        }
+        /// <summary>
+        /// This property holds the string representation of the data 
+        /// being passed through this connector. It gets relayed from the 
+        /// ConnectorViewModel.
+        /// </summary>
+        public string DataToolTipText
+        {
+            get
+            {
+                return dataTooltipText;
+            }
+            set
+            {
+                dataTooltipText = value;
+                RaisePropertyChanged(nameof(DataToolTipText));
             }
         }
         #endregion
@@ -223,10 +219,11 @@ namespace Dynamo.ViewModels
             OnRequestDispose(this, EventArgs.Empty);
         }
 
-        public ConnectorAnchorViewModel(ConnectorViewModel connectorViewModel, DynamoModel dynamoModel)
+        public ConnectorAnchorViewModel(ConnectorViewModel connectorViewModel, DynamoModel dynamoModel, string tooltipText)
         {
             ViewModel = connectorViewModel;
             DynamoModel = dynamoModel;
+            DataToolTipText = tooltipText;
             InitCommands();
 
             Dispatcher = Dispatcher.CurrentDispatcher;
