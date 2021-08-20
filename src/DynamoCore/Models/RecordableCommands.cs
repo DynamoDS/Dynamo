@@ -2075,14 +2075,14 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            /// Recordable command to create a new AnnotationModel
             /// </summary>
-            /// <param name="annotationId"></param>
-            /// <param name="annotationText"></param>
-            /// <param name="annotationDescriptionText"></param>
-            /// <param name="x"></param>
-            /// <param name="y"></param>
-            /// <param name="defaultPosition"></param>
+            /// <param name="annotationId">Id of the new AnnotationModel</param>
+            /// <param name="annotationText">Header text</param>
+            /// <param name="annotationDescriptionText">Description text</param>
+            /// <param name="x">X location</param>
+            /// <param name="y">Y location</param>
+            /// <param name="defaultPosition">The default position</param>
             public CreateAnnotationCommand(Guid annotationId, string annotationText, string annotationDescriptionText,
                 double x, double y, bool defaultPosition)
                 : base(new List<Guid> { annotationId })
@@ -2104,7 +2104,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            ///
+            /// Recordable command to create a new AnnotationModel
             /// </summary>
             /// <param name="annotationId"></param>
             /// <param name="annotationText"></param>
@@ -2126,14 +2126,14 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            /// Recordable command to create a new AnnotationModel
             /// </summary>
-            /// <param name="annotationId"></param>
-            /// <param name="annotationTitelText"></param>
-            /// <param name="annotationText"></param>
-            /// <param name="x"></param>
-            /// <param name="y"></param>
-            /// <param name="defaultPosition"></param>
+            /// <param name="annotationId">Collection of ids</param>
+            /// <param name="annotationText">Header text</param>
+            /// <param name="annotationDescriptionText">Description text</param>
+            /// <param name="x">X location</param>
+            /// <param name="y">Y location</param>
+            /// <param name="defaultPosition">The default position</param>
             public CreateAnnotationCommand(IEnumerable<Guid> annotationId, string annotationText,
                 string annotationDescriptionText, double x, double y, bool defaultPosition)
                 : base(annotationId)
@@ -2312,7 +2312,17 @@ namespace Dynamo.Models
             public Guid HostGroupGuid { get; set; }
 
             [JsonConstructor]
-            public AddGroupToGroupCommand(Guid modeGuid, Guid hostModelGuid) : base(new[] { modeGuid }) 
+            public AddGroupToGroupCommand(string modelGuid, string hostModelGuid) : base(new[] { Guid.Parse(modelGuid) }) 
+            {
+                HostGroupGuid = Guid.Parse(hostModelGuid);
+            }
+
+            /// <summary>
+            /// Creates a command to add a AnnotationModel object to another AnnotationModel.
+            /// </summary>
+            /// <param name="modelGuid">The guid of the AnnotationModel to group</param>
+            /// <param name="hostModelGuid">The guid of the host AnnotationModel</param>
+            public AddGroupToGroupCommand(Guid modelGuid, Guid hostModelGuid) : base(new[] { modelGuid })
             {
                 HostGroupGuid = hostModelGuid;
             }
@@ -2320,8 +2330,8 @@ namespace Dynamo.Models
             /// <summary>
             /// Creates a command to add a AnnotationModel object to another AnnotationModel.
             /// </summary>
-            /// <param name="modelGuid"></param>
-            /// <param name="hostModelGuid"></param>
+            /// <param name="modelGuid">The guid of the AnnotationModel to group</param>
+            /// <param name="hostModelGuid">The guid of the host AnnotationModel</param>
             public AddGroupToGroupCommand(IEnumerable<Guid> modelGuid, Guid hostModelGuid) : base(modelGuid) 
             {
                 HostGroupGuid = hostModelGuid;

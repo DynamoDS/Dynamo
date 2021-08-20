@@ -33,8 +33,9 @@ namespace Dynamo.Nodes
             Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
 
             InitializeComponent();
+            Unloaded += AnnotationView_Unloaded;
             Loaded += AnnotationView_Loaded;
-            this.DataContextChanged += AnnotationView_DataContextChanged;
+            DataContextChanged += AnnotationView_DataContextChanged;
             this.GroupTextBlock.SizeChanged += GroupTextBlock_SizeChanged;
 
             // Because the size of the CollapsedAnnotationRectangle doesn't necessarily change 
@@ -42,6 +43,15 @@ namespace Dynamo.Nodes
             // to IsVisibleChanged. Both of these handlers will set the ModelAreaHeight on the ViewModel
             this.CollapsedAnnotationRectangle.SizeChanged += CollapsedAnnotationRectangle_SizeChanged;
             this.CollapsedAnnotationRectangle.IsVisibleChanged += CollapsedAnnotationRectangle_IsVisibleChanged;
+        }
+
+        private void AnnotationView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= AnnotationView_Loaded;
+            DataContextChanged -= AnnotationView_DataContextChanged;
+            this.GroupTextBlock.SizeChanged -= GroupTextBlock_SizeChanged;
+            this.CollapsedAnnotationRectangle.SizeChanged -= CollapsedAnnotationRectangle_SizeChanged;
+            this.CollapsedAnnotationRectangle.IsVisibleChanged -= CollapsedAnnotationRectangle_IsVisibleChanged;
         }
 
         private void AnnotationView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -155,7 +165,7 @@ namespace Dynamo.Nodes
             if (GroupTextBlock.IsVisible ||
                 (!GroupTextBlock.IsVisible && !GroupTextBox.IsVisible))
             {
-                ViewModel.Select();
+                ViewModel.SelectAll();
             }
 
             //When Textbox is visible,clear the selection. That way, models will not be added to
@@ -193,7 +203,7 @@ namespace Dynamo.Nodes
 
         private void AnnotationView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.Select();                      
+            ViewModel.SelectAll();                      
         }
 
         /// <summary>
@@ -275,7 +285,7 @@ namespace Dynamo.Nodes
             if (ViewModel != null)
             {
                 DynamoSelection.Instance.ClearSelection();
-                ViewModel.Select();
+                ViewModel.SelectAll();
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
             }
         }
@@ -289,7 +299,7 @@ namespace Dynamo.Nodes
         {
             if (ViewModel != null)
             {
-                ViewModel.Select();
+                ViewModel.SelectAll();
                 ViewModel.WorkspaceViewModel.DynamoViewModel.GraphAutoLayoutCommand.Execute(null);
             }
         }
@@ -366,7 +376,7 @@ namespace Dynamo.Nodes
 
         private void contextMenu_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.Select();
+            ViewModel.SelectAll();
             this.AnnotationGrid.ContextMenu.DataContext = ViewModel;
             this.AnnotationGrid.ContextMenu.IsOpen = true;
         }

@@ -238,13 +238,13 @@ namespace Dynamo.ViewModels
                 annotationModel.IsExpanded = value;
                 if (value)
                 {
-                    this.ShowGroupNodes();
+                    this.ShowGroupContents();
                 }
                 else
                 {
                     this.SetGroupInputPorts();
                     this.SetGroupOutPorts();
-                    this.CollapseGroupNodes(true);
+                    this.CollapseGroupContents(true);
                     RaisePropertyChanged(nameof(InbetweenNodesCount));
                 }
                 RaisePropertyChanged(nameof(IsExpanded));
@@ -315,6 +315,9 @@ namespace Dynamo.ViewModels
                 .Count();
         }
 
+        /// <summary>
+        /// Rectangle of the ModelArea
+        /// </summary>
         public System.Windows.Rect ModelAreaRect
         {
             get
@@ -323,15 +326,13 @@ namespace Dynamo.ViewModels
             }
         }
 
-
-        private GeometryCollection groupedGroupsGeometry;
         /// <summary>
         /// Collection of rectangles based on AnnotationModels
         /// that belongs to this group.
         /// This is used to make a cutout in this groups background
         /// where another group is placed so there wont be an overlay.
         /// </summary>
-        public GeometryCollection GroupedGroupsGeometry
+        public GeometryCollection NestedGroupsGeometryCollection
         {
             get => new GeometryCollection(GroupIdToCutGeometry.Values.Select(x => x));
         }
@@ -542,8 +543,15 @@ namespace Dynamo.ViewModels
 
             if (!AnnotationModel.HasNestedGroups)
             {
+                // we need to store the original ports here
+                // as we need thoese later for when we
+                // need to collapse the groups content
                 originalInPorts = GetGroupInPorts();
 
+                // Create proxies of the ports so we can
+                // visually add them to the group but they
+                // should still reference their NodeModel
+                // owner
                 newPortViewModels = CreateProxyPorts(originalInPorts);
 
                 if (newPortViewModels == null) return;
@@ -551,10 +559,15 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            // We need to get all NodeModels for the nested groups 
+            // here, as we will have to show any ports belonging to a
+            // node that are either unconnected or connected to outside
+            // of the owner group.
             var ownerGroupNodes = Nodes.OfType<AnnotationModel>()
                 .SelectMany(x=>x.Nodes.OfType<NodeModel>())
                 .Concat(Nodes.OfType<NodeModel>());
 
+            // Find the needed input ports of all the nested groups
             var groupedGroupsInPorts = new List<PortModel>();
             foreach (var group in ViewModelBases.OfType<AnnotationViewModel>())
             {
@@ -576,16 +589,43 @@ namespace Dynamo.ViewModels
         internal void SetGroupOutPorts()
         {
             OutPorts.Clear();
+            List<PortViewModel> newPortViewModels;
+
+            if (!AnnotationModel.HasNestedGroups)
+            {
+                // we need to store the original ports here
+                // as we need thoese later for when we
+                // need to collapse the groups content
+                originalOutPorts = GetGroupInPorts();
+
+                // Create proxies of the ports so we can
+                // visually add them to the group but they
+                // should still reference their NodeModel
+                // owner
+                newPortViewModels = CreateProxyPorts(originalOutPorts);
+
+                if (newPortViewModels == null) return;
+                InPorts.AddRange(newPortViewModels);
+                return;
+            }
+
+            // We need to get all NodeModels for the nested groups 
+            // here, as we will have to show any ports belonging to a
+            // node that are either unconnected or connected to outside
+            // of the owner group.
+            var ownerGroupNodes = Nodes.OfType<AnnotationModel>()
+                .SelectMany(x => x.Nodes.OfType<NodeModel>())
+                .Concat(Nodes.OfType<NodeModel>());
 
             var groupedGroupsOutPorts = new List<PortModel>();
             foreach (var group in ViewModelBases.OfType<AnnotationViewModel>())
             {
-                groupedGroupsOutPorts.AddRange(group.GetGroupOutPorts());
+                groupedGroupsOutPorts.AddRange(group.GetGroupOutPorts(ownerGroupNodes));
             }
 
             originalOutPorts = GetGroupOutPorts().Concat(groupedGroupsOutPorts);
 
-            List<PortViewModel> newPortViewModels = CreateProxyPorts(originalOutPorts);
+            newPortViewModels = CreateProxyPorts(originalOutPorts);
 
             if (newPortViewModels == null) return;
             OutPorts.AddRange(newPortViewModels);
@@ -613,7 +653,7 @@ namespace Dynamo.ViewModels
                 );
         }
 
-        internal IEnumerable<PortModel> GetGroupOutPorts()
+        internal IEnumerable<PortModel> GetGroupOutPorts(IEnumerable<NodeModel> ownerNodes = null)
         {
             // If this group does not contain any AnnotationModels
             // we want to get all ports that are connected to something
@@ -622,7 +662,7 @@ namespace Dynamo.ViewModels
             {
                 return Nodes.OfType<NodeModel>()
                     .SelectMany(x => x.OutPorts
-                        .Where(p => !p.IsConnected || !p.Connectors.Any(c => Nodes.Contains(c.End.Owner)))
+                        .Where(p => !p.IsConnected || !p.Connectors.Any(c => ownerNodes.Contains(c.End.Owner)))
                     );
             }
 
@@ -650,7 +690,6 @@ namespace Dynamo.ViewModels
             for (int i = 0; i < proxyModels.Count(); i++)
             {
                 var proxyModel = proxyModels[i];
-                //proxyModel.SetCenterPoint(new Point2D(0, 0));
                 newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(proxyModel));
             }
 
@@ -672,7 +711,7 @@ namespace Dynamo.ViewModels
         /// the connector that needs it.
         /// </summary>
         /// <param name="collapseConnectors"></param>
-        private void CollapseGroupNodes(bool collapseConnectors)
+        private void CollapseGroupContents(bool collapseConnectors)
         {
             foreach (var viewModel in ViewModelBases)
             {
@@ -681,7 +720,7 @@ namespace Dynamo.ViewModels
                     // If there is a group in this group
                     // we collapse that and all of its content.
                     annotationViewModel.IsCollapsed = true;
-                    annotationViewModel.CollapseGroupNodes(false);
+                    annotationViewModel.CollapseGroupContents(false);
                 }
 
                 viewModel.IsCollapsed = true;
@@ -722,7 +761,7 @@ namespace Dynamo.ViewModels
         /// Shows all content of the group by setting
         /// its IsCollapsed property to false.
         /// </summary>
-        internal void ShowGroupNodes()
+        internal void ShowGroupContents()
         {
             if (!IsExpanded)
             {
@@ -736,7 +775,7 @@ namespace Dynamo.ViewModels
                     // If there is a group in this group
                     // we expand that and all of its content.
                     annotationViewModel.IsCollapsed = false;
-                    annotationViewModel.ShowGroupNodes();
+                    annotationViewModel.ShowGroupContents();
                 }
 
                 viewModel.IsCollapsed = false;
@@ -769,7 +808,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Selects this group and models within it.
         /// </summary>
-        internal void Select()
+        internal void SelectAll()
         {
             var annotationGuid = this.AnnotationModel.GUID;
             this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
@@ -907,7 +946,7 @@ namespace Dynamo.ViewModels
             }
 
             GroupIdToCutGeometry.Remove(groupGuid);
-            RaisePropertyChanged(nameof(GroupedGroupsGeometry));
+            RaisePropertyChanged(nameof(NestedGroupsGeometryCollection));
 
             var groupViewModel = this.WorkspaceViewModel.Annotations
                 .Where(x => x.AnnotationModel.GUID.ToString() == groupGuid)
@@ -924,7 +963,7 @@ namespace Dynamo.ViewModels
 
             GroupIdToCutGeometry[key] = CreateRectangleGeometry(annotationViewModel);
             annotationViewModel.PropertyChanged += GroupViewModel_PropertyChanged;
-            RaisePropertyChanged(nameof(GroupedGroupsGeometry));
+            RaisePropertyChanged(nameof(NestedGroupsGeometryCollection));
         }
 
         private RectangleGeometry CreateRectangleGeometry(AnnotationViewModel annotationViewModel)
@@ -1004,7 +1043,15 @@ namespace Dynamo.ViewModels
             var key = annotationViewModel.AnnotationModel.GUID.ToString();
             var updatedGeometry = CreateRectangleGeometry(annotationViewModel);
             GroupIdToCutGeometry[key] = updatedGeometry;
-            RaisePropertyChanged(nameof(GroupedGroupsGeometry));
+            RaisePropertyChanged(nameof(NestedGroupsGeometryCollection));
+        }
+
+        public override void Dispose()
+        {
+            InPorts.CollectionChanged -= InPorts_CollectionChanged;
+            OutPorts.CollectionChanged -= OutPorts_CollectionChanged;
+            annotationModel.PropertyChanged -= model_PropertyChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
         }
     }
 }

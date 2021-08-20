@@ -453,6 +453,8 @@
                 </ListBox>
             </ContextMenu>
         </Grid.ContextMenu>
+        
+        <!--Selection border shows around the entire group when its selected in the workspace-->
         <Border Name="selectionBorder"
                 Grid.RowSpan="2"
                 Background="Transparent"
@@ -471,6 +473,12 @@
             </Border.Visibility>
         </Border>
 
+        <!--
+        If a node is dragged over this group (and that node does not already belong to another group)
+        this border is activated, indicating that the node can be dropped into the group.
+        The visibility of this is controlled by the AnnotationViewModel property 'NodeHoveringState'
+        which is set in the StateMachine.
+        -->
         <Border x:Name="nodeHoveringStateBorder"
                 Grid.RowSpan="2"
                 Background="Transparent"
@@ -483,7 +491,18 @@
                 Margin="-4px">
         </Border>
 
-
+        <!--
+        The entire group is embedded in this expander, which is consist of two parts
+        - The header: holds the Title and Description of the group and also a context menu icon
+            - The description is only visible when the Expander is expanded.
+        - The content grid: this grid holds all of the content in the group:
+            - the AnnotationRectangle canvas: this is where the content (nodes, notes and groups) live
+              this is a Path with a background color set by the ViewModel, the canvas will cutout any
+              nested groups AnnotationRectangle to avoid overlaps
+            - ResizeThumb: this is used to manually expand the size of the group, the thumb has no icon
+              but will convert the mouse courser to visually show the user that they can resize the group
+              when hovering over the bottom right corner.
+        -->
         <Expander x:Name="GroupExpander"
                   Width="{Binding Width}" 
                   IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
@@ -688,15 +707,15 @@
                                 </CombinedGeometry.Geometry1>
                                 <CombinedGeometry.Geometry2>
                                     <GeometryGroup FillRule="EvenOdd"
-                                                   Children="{Binding GroupedGroupsGeometry}" />
+                                                   Children="{Binding NestedGroupsGeometryCollection}" />
                                 </CombinedGeometry.Geometry2>
                             </CombinedGeometry>
                         </Path.Data>
                     </Path>
                 </Canvas>
 
-
-                <Thumb Width="10"
+                <Thumb x:Name="ResizeThumb" 
+                       Width="10"
                        Height="10"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Bottom"
@@ -719,6 +738,17 @@
                 </Thumb>
             </Grid>
         </Expander>
+        
+        <!--
+        The CollapsedAnnotationRectangle is visible whenever the expander is collapsed. In this state the
+        expander header is still visible but will hide the group description text. This border has 3 children
+            - inputPortControl: This will display any input port of nodes that are either not connected or connected
+              to nodes outside of the group
+            - outputPortControl: This will display any output port of nodes that are either not connected or connected
+              to nodes outside of the group
+            - GroupContentIcons: This will display the node icons of all Input/Output ports that are on the group
+              it also shows a counter of all nodes that are in between the input/output nodes.
+        -->
         <Border x:Name="CollapsedAnnotationRectangle"
                 Width="{Binding Width}"
                 Visibility="{Binding ElementName=GroupExpander, Path=IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
@@ -757,7 +787,8 @@
                 </ItemsControl>
 
                 <!--Group content icons-->
-                <Grid Grid.Column="1"
+                <Grid x:Name="GroupContentIcons" 
+                      Grid.Column="1"
                       Grid.Row="1"
                       Background="Transparent"
                       HorizontalAlignment="Center"
