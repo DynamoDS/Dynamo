@@ -699,7 +699,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void PinConnectorCommandExecute(object parameters)
         {
-            MousePosition = new Point(PanelX-ConnectorPinModel.StaticWidth, PanelY-ConnectorPinModel.StaticWidth);
+            MousePosition = new Point(PanelX - ConnectorPinModel.StaticWidth, PanelY - ConnectorPinModel.StaticWidth);
             ConnectorAnchorViewModel.CurrentPosition = MousePosition;
             if (MousePosition == new Point(0, 0)) return;
             var connectorPinModel = new ConnectorPinModel(MousePosition.X, MousePosition.Y, Guid.NewGuid(), model.GUID);
