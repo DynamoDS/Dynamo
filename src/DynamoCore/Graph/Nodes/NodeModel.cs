@@ -1583,15 +1583,14 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Clears the transient warning only if the current state is ElementState.Warning or ElementState.PersistentWarning.
+        /// Clears the transient warning only if the current state is ElementState.Warning.
         /// If an argument is specified, then the transient warning will be cleared only if it matches the argument value.
         /// If no argument is specified (i.e null or empty value), then the transient warning will be cleared no matter its value.
         /// PersistentWarning  warnings will be kept. If no persistent warning is found, then the default state will be assigned. 
         /// </summary>
         internal void ClearTransientWarning(string t = null)
         {
-            if (State == ElementState.Warning ||
-                State == ElementState.PersistentWarning)
+            if (State == ElementState.Warning)
             {
                 if (string.IsNullOrEmpty(t) || string.Compare(t, transientWarning) == 0)
                 {// Called with null (or empty argument) or argument matched the existing transient warning
