@@ -1595,6 +1595,7 @@ namespace Dynamo.Graph.Nodes
                     if (string.Compare(t, transientWarning) == 0)
                     {
                         transientWarning = string.Empty;
+                        State = ElementState.Dead;
                         SetNodeStateBasedOnConnectionAndDefaults();
                         ToolTipText = persistentWarning;
                     }
@@ -1603,8 +1604,8 @@ namespace Dynamo.Graph.Nodes
                 } 
 
                 if(persistentWarnings.Any())
-                {
-                    // If persistent warnings still exists, then we simply set the tooltip without any transient
+                {// If persistent warnings still exists, then we simply reset the state and set the tooltip without any transient
+                    State = ElementState.Dead;
                     SetNodeStateBasedOnConnectionAndDefaults();
                     ToolTipText = persistentWarning;
                     return;
