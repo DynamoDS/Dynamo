@@ -754,7 +754,7 @@ namespace Dynamo.ViewModels
                                 MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, 
                                     DynamoViewModel.BrandingResourceProvider.ProductName,
                                     packageDownloadHandle.Name),
-                                    Resources.UninstallFailureMessageBoxTitle, 
+                                    Resources.DeleteFailureMessageBoxTitle, 
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
