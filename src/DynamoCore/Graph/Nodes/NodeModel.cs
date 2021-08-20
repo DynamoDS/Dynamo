@@ -43,11 +43,7 @@ namespace Dynamo.Graph.Nodes
         private ElementState state;
         private string toolTipText = string.Empty;
         private string description;
-        private HashSet<string> persistentWarnings = new HashSet<String>();
-        private string persistentWarning
-        {
-            get { return persistentWarnings.Any() ? string.Join("\n", persistentWarnings) : string.Empty; }
-        }
+        private string persistentWarning = string.Empty;
         private string transientWarning = string.Empty;
 
         private bool areInputPortsRegistered;
@@ -1567,6 +1563,11 @@ namespace Dynamo.Graph.Nodes
             ToolTipText = "";
         }
 
+        private void ClearPersistentWarning()
+        {
+            persistentWarning = String.Empty;
+        }
+
         /// <summary>
         /// Clears the errors/warnings that are generated when running the graph,
         /// the State will be set to ElementState.Dead.
@@ -1574,78 +1575,38 @@ namespace Dynamo.Graph.Nodes
         public virtual void ClearErrorsAndWarnings()
         {
             State = ElementState.Dead;
-            persistentWarnings.Clear();
+            ClearPersistentWarning();
+            transientWarning = string.Empty;
 
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTooltipText();
         }
 
         /// <summary>
-        /// Clears the transient warning.
+        /// Clears the transient warning only if the current state is ElementState.Warning or ElementState.PersistentWarning.
         /// If an argument is specified, then the transient warning will be cleared only if it matches the argument value.
         /// If no argument is specified (i.e null or empty value), then the transient warning will be cleared no matter its value.
-        /// PersistentWarning  warnings will be kept. If no persistent warning is found, then the state will be recomputed. 
+        /// PersistentWarning  warnings will be kept. If no persistent warning is found, then the default state will be assigned. 
         /// </summary>
         internal void ClearTransientWarning(string t = null)
         {
-            if (State == ElementState.Warning)
+            if (State == ElementState.Warning ||
+                State == ElementState.PersistentWarning)
             {
-                if (!string.IsNullOrEmpty(t))
-                {// If a warning was specified, try to clear it only if it matches the current existing transient warning
-                    if (string.Compare(t, transientWarning) == 0)
-                    {
-                        transientWarning = string.Empty;
-                        State = ElementState.Dead;
-                        SetNodeStateBasedOnConnectionAndDefaults();
+                if (string.IsNullOrEmpty(t) || string.Compare(t, transientWarning) == 0)
+                {// Called with null (or empty argument) or argument matched the existing transient warning
+                    transientWarning = string.Empty;// Reset the transient warning
+                    if (!string.IsNullOrEmpty(persistentWarning))
+                    {// Still have persistent warnings then switch to the PersistentWarning state
+                        State = ElementState.PersistentWarning;
                         ToolTipText = persistentWarning;
                     }
-                    // if no match is found, we do nothing.
-                    return;
-                } 
-
-                if(persistentWarnings.Any())
-                {// If persistent warnings still exists, then we simply reset the state and set the tooltip without any transient
-                    State = ElementState.Dead;
-                    SetNodeStateBasedOnConnectionAndDefaults();
-                    ToolTipText = persistentWarning;
-                    return;
-                }
-                // called with null argument or no persistent warnings remain
-                // in this case we just reset everything
-                ClearErrorsAndWarnings();
-            }
-        }
-
-        /// <summary>
-        /// Clears the transient warning.
-        /// If an argument is specified, then only the permanent warning matching the argument value will be cleared.
-        /// If no argument is specified (i.e null value), then all permanent warnings will be cleared and the will be recomputed.
-        /// </summary>
-        internal void ClearPermanentWarning(string p = null)
-        {
-            if (State == ElementState.PersistentWarning)
-            {
-                if (!string.IsNullOrEmpty(p))
-                {// Called with valid argument
-                    if (persistentWarnings.Remove(p))
-                    {// p was found among the existing persistent warnings
-                        if (persistentWarnings.Any())
-                        {
-                            // If any persistent warnings remain then we just set the tooltip
-                            ToolTipText = persistentWarning;
-                            return;
-                        }
-                    }
                     else
-                    {
-                        // p was not found among the existing persistent warnings then there is
-                        // nothing to do further
-                        return;
+                    {// No persistent warnings, go to default
+                        State = ElementState.Dead;
+                        ClearErrorsAndWarnings();
                     }
-                }
-                // called with null argument or no more persistent warnings remain
-                // in this case we just reset everything
-                ClearErrorsAndWarnings();
+                } 
             }
         }
 
@@ -1700,7 +1661,7 @@ namespace Dynamo.Graph.Nodes
 
             if (State == ElementState.PersistentWarning) return;
 
-            if (persistentWarnings.Any())
+            if (!string.IsNullOrEmpty(persistentWarning))
             {
                 State = ElementState.PersistentWarning;
                 return;
@@ -1737,14 +1698,14 @@ namespace Dynamo.Graph.Nodes
             if (isPersistent)
             {
                 State = ElementState.PersistentWarning;
-                persistentWarnings.Add(p);
+                persistentWarning += p;
                 ToolTipText = persistentWarning;
             }
             else
             {
                 State = ElementState.Warning;
                 transientWarning = p;
-                ToolTipText = persistentWarnings.Any() ? $"{persistentWarning}\n{p}" : p;
+                ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.IsNullOrEmpty(p) ? persistentWarning : $"{persistentWarning}\n{p}";
             }
         }
 
