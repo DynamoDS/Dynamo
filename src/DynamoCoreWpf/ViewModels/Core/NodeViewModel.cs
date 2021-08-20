@@ -580,6 +580,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public ImageSource ImageSource
         {
             get => imageSource;
