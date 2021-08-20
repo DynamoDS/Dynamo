@@ -677,7 +677,7 @@
           "20d4ed50fa3244408aa401356cf29614",
           "dcd595f0655347418fd28bc6747289ab"
         ],
-        "Groups": [],
+        "HasNestedGroups": false,
         "Left": 187.33333333333326,
         "Top": 218.66666666666666,
         "Width": 630.0,
@@ -699,7 +699,7 @@
           "4e929260e6d64452bb6d33a4742164dd",
           "dbb1c03101da49ef8eed8abbc0c5744e"
         ],
-        "Groups": [],
+        "HasNestedGroups": false,
         "Left": 185.0,
         "Top": 437.01817471912284,
         "Width": 436.33333333333337,
@@ -724,7 +724,7 @@
           "1c7b783b69a34f5cafadeaadda4ce24b",
           "20e10367e1a4483c9f9c9e15019a5237"
         ],
-        "Groups": [],
+        "HasNestedGroups": false,
         "Left": 188.16669442413149,
         "Top": 642.397537448161,
         "Width": 637.74548060428992,
@@ -746,7 +746,7 @@
           "64d897c190f243c69b8c0dbd31a91406",
           "1dab3860fa534ab9b3a6b46772bc8e08"
         ],
-        "Groups": [],
+        "HasNestedGroups": false,
         "Left": 283.38819583319059,
         "Top": 1315.1041345455105,
         "Width": 515.81759004030323,
@@ -769,9 +769,7 @@
           "3a8039e80d984ae19f1a4dfd08a49289",
           "1997f3c83f764260a3f2f10cc73f802d"
         ],
-        "Groups": [
-          "1997f3c83f764260a3f2f10cc73f802d"
-        ],
+        "HasNestedGroups": true,
         "Left": 185.70075726305083,
         "Top": 1104.2283106882585,
         "Width": 623.505028610443,

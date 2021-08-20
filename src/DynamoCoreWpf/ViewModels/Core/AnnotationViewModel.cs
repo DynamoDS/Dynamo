@@ -596,7 +596,7 @@ namespace Dynamo.ViewModels
                 // we need to store the original ports here
                 // as we need thoese later for when we
                 // need to collapse the groups content
-                originalOutPorts = GetGroupInPorts();
+                originalOutPorts = GetGroupOutPorts();
 
                 // Create proxies of the ports so we can
                 // visually add them to the group but they
@@ -605,7 +605,7 @@ namespace Dynamo.ViewModels
                 newPortViewModels = CreateProxyPorts(originalOutPorts);
 
                 if (newPortViewModels == null) return;
-                InPorts.AddRange(newPortViewModels);
+                OutPorts.AddRange(newPortViewModels);
                 return;
             }
 
@@ -658,7 +658,7 @@ namespace Dynamo.ViewModels
             // If this group does not contain any AnnotationModels
             // we want to get all ports that are connected to something
             // outside of the group
-            if (!AnnotationModel.HasNestedGroups)
+            if (ownerNodes != null)
             {
                 return Nodes.OfType<NodeModel>()
                     .SelectMany(x => x.OutPorts
@@ -671,7 +671,7 @@ namespace Dynamo.ViewModels
             // not belong to a group.
             return Nodes.OfType<NodeModel>()
                 .SelectMany(x => x.OutPorts
-                    .Where(p => !p.IsConnected || !p.Connectors.Any(c => c.End.Owner.BelongsToGroup))
+                    .Where(p => !p.IsConnected || !p.Connectors.Any(c => Nodes.Contains(c.End.Owner)))
                 );
         }
 
