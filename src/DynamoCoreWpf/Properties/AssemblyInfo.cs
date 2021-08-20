@@ -50,3 +50,4 @@ using System.Windows;
 [assembly: TypeForwardedTo(typeof(Dynamo.Interfaces.LayoutElement))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Interfaces.LayoutElementType))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Interfaces.LayoutIncludeInfo))]
+[assembly: TypeForwardedTo(typeof(Dynamo.Interfaces.ILibraryViewCustomization))]

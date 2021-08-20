@@ -12,7 +12,7 @@ There are two different high level commands:
 
 2. Continual creation of new docs stubs for use on dictionary and in Dynamo docs browser. DynamoDictionary site will consume .md files.
 
-3. user by package authors to stub out documentation for nodes.
+3. Used by package authors to stub out documentation for nodes.
 third parties can run the --FromPackage command to stub out empty markdown files in the /doc folder of their package. Then the package author can manually fill in the markddown file with detailed documentation, images, gifs etc.
 
 ## How to use the Generated Docs
