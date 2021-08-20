@@ -312,9 +312,11 @@ namespace DynamoCoreWpfTests
 
             var imgs = nodeView.ChildrenOfType<Image>();
 
-            Assert.AreEqual(1, imgs.Count());
+            // Starting from Dynamo 2.13, node view now comes with 
+            // images like node icon, lacing image etc
+            Assert.AreEqual(3, imgs.Count());
 
-            var img = imgs.First();
+            var img = imgs.Last();
 
             Assert.Greater(img.ActualWidth, 10);
             Assert.Greater(img.ActualHeight, 10);
