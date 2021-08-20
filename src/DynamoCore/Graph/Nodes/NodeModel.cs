@@ -1685,7 +1685,7 @@ namespace Dynamo.Graph.Nodes
 
             if (State == ElementState.PersistentWarning) return;
 
-            if (!persistentWarnings.Any())
+            if (persistentWarnings.Any())
             {
                 State = ElementState.PersistentWarning;
                 return;
