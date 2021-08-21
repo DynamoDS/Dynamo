@@ -321,7 +321,11 @@ namespace Dynamo.Models
                 PreferenceSettings.ShowConnector = value;
             }
         }
-
+        /// <summary>
+        /// Flag specifying the current state of whether or not to show 
+        /// tooltips in the graph. In addition to this toggle, tooltip is only
+        /// available when connectors are set to 'bezier' mode.
+        /// </summary>
         public bool IsShowingConnectorTooltip
         {
             get

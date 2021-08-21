@@ -140,6 +140,11 @@ namespace Dynamo.ViewModels
             PinIconPreviewOn = false;
         }
 
+        /// <summary>
+        /// This flag's final destination, (dynamomodel -> dynamoviewmodel -> connectorviewmodel-> connectoranchorviewmodel)
+        /// where it tells the view whether or not it can
+        /// show the tooltip.
+        /// </summary>
         public bool CanShowTooltip
         {
             get

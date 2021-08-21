@@ -219,6 +219,9 @@ namespace Dynamo.ViewModels
         }
         /// <summary>
         /// Flag controlling whether the connector tooltip is visible.
+        /// Worth noting that in addition to this flag, connector tooltip
+        /// is only visible when the connectors are set to
+        /// 'bezier' mode.
         /// </summary>
         public bool CanShowConnectorTooltip
         {

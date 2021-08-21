@@ -371,6 +371,10 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(IsShowingConnectors));
             }
         }
+        /// <summary>
+        /// Relaying the flag `IsShowingConnectorTooltip' coming from
+        /// the Dynamo model.
+        /// </summary>
         public bool IsShowingConnectorTooltip
         {
             get
