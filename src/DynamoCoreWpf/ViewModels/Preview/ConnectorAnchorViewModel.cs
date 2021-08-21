@@ -19,6 +19,7 @@ namespace Dynamo.ViewModels
         private bool isPartlyVisible = false;
         private bool isDataFlowCollection;
         private bool canDisplayIcons = false;
+        private bool canShowTooltip = true;
 
         private bool watchIconPreviewOn = false;
         private bool pinIconPreviewOn = false;
@@ -137,6 +138,19 @@ namespace Dynamo.ViewModels
         internal void SwitchPinPreviewOff()
         {
             PinIconPreviewOn = false;
+        }
+
+        public bool CanShowTooltip
+        {
+            get
+            {
+                return canShowTooltip;
+            }
+            set
+            {
+                canShowTooltip = value;
+                RaisePropertyChanged(nameof(CanShowTooltip));
+            }
         }
 
         /// <summary>

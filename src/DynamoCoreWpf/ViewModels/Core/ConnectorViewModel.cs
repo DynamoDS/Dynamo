@@ -37,6 +37,7 @@ namespace Dynamo.ViewModels
         private bool isVisible = true;
         private bool isPartlyVisible = false;
         private string connectorDataToolTip;
+        private bool canShowConnectorTooltip = true;
         private bool mouseHoverOn;
         private bool connectorAnchorViewModelExists;
         private bool isDataFlowCollection;
@@ -214,6 +215,21 @@ namespace Dynamo.ViewModels
             {
                 connectorDataToolTip = value;
                 RaisePropertyChanged(nameof(ConnectorDataTooltip));
+            }
+        }
+        /// <summary>
+        /// Flag controlling whether the connector tooltip is visible.
+        /// </summary>
+        public bool CanShowConnectorTooltip
+        {
+            get
+            {
+                return canShowConnectorTooltip;
+            }
+            set
+            {
+                canShowConnectorTooltip = value;
+                RaisePropertyChanged(nameof(CanShowConnectorTooltip));
             }
         }
 
@@ -598,6 +614,7 @@ namespace Dynamo.ViewModels
         internal void FlipOnConnectorAnchor()
         {
             ConnectorAnchorViewModel = new ConnectorAnchorViewModel(this, workspaceViewModel.DynamoViewModel.Model, ConnectorDataTooltip);
+            ConnectorAnchorViewModel.CanShowTooltip = CanShowConnectorTooltip;
             ConnectorAnchorViewModel.CurrentPosition = MousePosition;
             ConnectorAnchorViewModel.IsHalftone = !IsVisible;
             ConnectorAnchorViewModel.IsDataFlowCollection = IsDataFlowCollection;
@@ -1048,6 +1065,10 @@ namespace Dynamo.ViewModels
                     {
                         IsPartlyVisible = false;
                     }
+                    break;
+                case nameof(DynamoViewModel.IsShowingConnectorTooltip):
+                    dynModel = sender as DynamoViewModel;
+                    CanShowConnectorTooltip = dynModel.IsShowingConnectorTooltip;
                     break;
                 default: break;
             }

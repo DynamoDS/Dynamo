@@ -322,6 +322,18 @@ namespace Dynamo.Models
             }
         }
 
+        public bool IsShowingConnectorTooltip
+        {
+            get
+            {
+                return PreferenceSettings.ShowConnectorToolTip;
+            }
+            set
+            {
+                PreferenceSettings.ShowConnectorToolTip = value;
+            }
+        }
+
         /// <summary>
         ///     Specifies how connectors are displayed in Dynamo.
         /// </summary>
