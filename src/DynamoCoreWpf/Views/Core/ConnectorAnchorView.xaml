@@ -47,6 +47,16 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
+            <Style x:Key="ConnectorTooltip" TargetType="ToolTip">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding CanShowTooltip, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                        <Setter Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding CanShowTooltip, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -59,6 +69,16 @@
                 Canvas.Left="{Binding CurrentPosition.X}"
                 Height="{Binding AnchorSize}"
                 Width="{Binding AnchorSize}">
+            <Button.ToolTip>
+                <ToolTip Style="{StaticResource ConnectorTooltip}">
+                    <StackPanel Margin="5">
+                        <TextBlock Text="{Binding DataToolTipText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ToolTipFirstLine}}"
+                                   FontWeight="Bold"/>
+                        <TextBlock Text="{Binding DataToolTipText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ToolTipFirstLineNot}}"
+                                   FontWeight="Regular"/>
+                    </StackPanel>
+                </ToolTip>
+            </Button.ToolTip>
             <StackPanel Background="Transparent">
                 <Image>
                     <Image.Style>
@@ -146,48 +166,6 @@
                 <TranslateTransform X="0" Y="-37" />
             </Button.RenderTransform>
         </Button>
-        <!--toolTipBox-->
-        <Border x:Name="borderToolTipBox"
-                BorderThickness="1"
-                BorderBrush="{StaticResource FilterPopupBorderColor}"
-                Canvas.Top="{Binding CurrentPosition.Y}"
-                Canvas.Left="{Binding CurrentPosition.X}">
-            <Border.Style>
-                <Style TargetType="{x:Type Border}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding CanDisplayIcons}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding CanDisplayIcons}" Value="False">
-                            <Setter Property="Visibility" Value="Hidden"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-            <TextBlock x:Name="toolTipBox"
-                       Background="{StaticResource SearchTextBoxBackground}"
-                       Foreground="Gray"
-                       Text="{Binding DataToolTipText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                       Padding="5"
-                       Canvas.Top="{Binding CurrentPosition.Y}"
-                       Canvas.Left="{Binding CurrentPosition.X}">
-            <TextBlock.Style>
-                <Style TargetType="{x:Type TextBlock}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding CanDisplayIcons}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding CanDisplayIcons}" Value="False">
-                            <Setter Property="Visibility" Value="Hidden"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-            </TextBlock>
-            <Border.RenderTransform>
-                <TranslateTransform X="0" Y="15" />
-            </Border.RenderTransform>
-        </Border>
     </Canvas>
 </UserControl>
 
