@@ -19,6 +19,7 @@ namespace Dynamo.ViewModels
         private bool isPartlyVisible = false;
         private bool isDataFlowCollection;
         private bool canDisplayIcons = false;
+        private bool canShowTooltip = true;
 
         private bool watchIconPreviewOn = false;
         private bool pinIconPreviewOn = false;
@@ -137,6 +138,24 @@ namespace Dynamo.ViewModels
         internal void SwitchPinPreviewOff()
         {
             PinIconPreviewOn = false;
+        }
+
+        /// <summary>
+        /// This flag's final destination, (dynamomodel -> dynamoviewmodel -> connectorviewmodel-> connectoranchorviewmodel)
+        /// where it tells the view whether or not it can
+        /// show the tooltip.
+        /// </summary>
+        public bool CanShowTooltip
+        {
+            get
+            {
+                return canShowTooltip;
+            }
+            set
+            {
+                canShowTooltip = value;
+                RaisePropertyChanged(nameof(CanShowTooltip));
+            }
         }
 
         /// <summary>

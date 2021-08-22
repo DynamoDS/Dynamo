@@ -8,6 +8,8 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
 
+    <controls:ToolTipFirstLineOnly x:Key="ToolTipFirstLine" />
+    <controls:ToolTipAllLinesButFirst x:Key="ToolTipFirstLineNot" />
     <controls:WorkspaceTypeConverter x:Key="WorkspaceTypeConverter" />
     <controls:WorkspaceBackgroundColorConverter
         x:Key="WorkspaceBackgroundColorConverter"

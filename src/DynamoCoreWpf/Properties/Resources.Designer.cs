@@ -2133,6 +2133,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Show Tooltip.
+        /// </summary>
+        public static string DynamoViewViewMenuConnectorShowTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuConnectorShowTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Connector Type.
         /// </summary>
         public static string DynamoViewViewMenuConnectorType {
@@ -6351,24 +6360,6 @@ namespace Dynamo.Wpf.Properties {
         public static string UnhideWiresPopupMenuItem {
             get {
                 return ResourceManager.GetString("UnhideWiresPopupMenuItem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Uninstall Failure.
-        /// </summary>
-        public static string UninstallFailureMessageBoxTitle {
-            get {
-                return ResourceManager.GetString("UninstallFailureMessageBoxTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Uninstalling Package.
-        /// </summary>
-        public static string UninstallingPackageMessageBoxTitle {
-            get {
-                return ResourceManager.GetString("UninstallingPackageMessageBoxTitle", resourceCulture);
             }
         }
         

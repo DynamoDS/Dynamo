@@ -2607,11 +2607,11 @@ This package will be deleted after the next Dynamo restart.</value>
   <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
     <value>Remove the scheduled unload status</value>
   </data>
-  <data name="PackageViewContextMenuLoadText">
-      <value>Load</value>
+  <data name="PackageViewContextMenuLoadText" xml:space="preserve">
+    <value>Load</value>
   </data>
-  <data name="PackageViewContextMenuLoadTooltip">
-      <value>Load this package into Dynamo. Other packages with the same name will be automatically deleted</value>
+  <data name="PackageViewContextMenuLoadTooltip" xml:space="preserve">
+    <value>Load this package into Dynamo. Other packages with the same name will be automatically deleted</value>
   </data>
   <data name="CannotLoadPackageMessageBoxTitle" xml:space="preserve">
     <value>Cannot Load Package</value>
@@ -2648,5 +2648,8 @@ Delete the following packages: {2}?
   </data>
   <data name="UnloadFailureMessageBoxTitle" xml:space="preserve">
     <value>Unload Failure</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
+    <value>_Show Tooltip</value>
   </data>
 </root>
