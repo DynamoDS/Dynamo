@@ -46,15 +46,15 @@ namespace NodeDocumentationMarkdownGenerator.Commands
                 .Where(x => x.EndsWith(".dll") || x.EndsWith(".ds"))
                 .Select(x => new FileInfo(x))
                 .GroupBy(x => x.Name)
-                .Select(x => x.FirstOrDefault())
-                .ToList();
+                .Select(x => x.FirstOrDefault());
+
 
             var referenceDllPaths = referencePaths
                 .SelectMany(p => new DirectoryInfo(p)
                     .EnumerateFiles("*.dll", SearchOption.AllDirectories)
                     .Select(d => d.FullName)
-                    .Distinct()
-                    .ToList());
+                    .Distinct());
+                   
 
             if (filter.Any())
             {
@@ -62,8 +62,8 @@ namespace NodeDocumentationMarkdownGenerator.Commands
                 // the assembly paths left after this filter are the ones that will be scanned for nodes.
                 var assemblyPathsToScan = allAssembliesFromInputFolder
                     .Where(x => filter.Contains(x.Name) || filter.Contains(x.FullName))
-                    .Select(x => x.FullName)
-                    .ToList();
+                    .Select(x => x.FullName);
+
 
                 // We still need all assemblies in the inputFolderPath for the PathAssemblyResolver
                 // so here we separate the assemblyPathsToScan from allAssembliesFromInputFolder
@@ -72,6 +72,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
                     .Select(x => x.FullName)
                     .Except(assemblyPathsToScan)
                     .ToList();
+                   
 
                 // If there are any paths specified in the referencePaths we need to add them
                 // to addtionalPathsToLoad as the AssemblyResolveHandler will need them to resolve types.
