@@ -107,6 +107,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Backup file is saved.
+        /// </summary>
+        public static string BackupSavedMsg {
+            get {
+                return ResourceManager.GetString("BackupSavedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bad identifier syntax: &quot;{0}&quot;.
         /// </summary>
         public static string BadIdentifierSyntax {
@@ -1011,6 +1020,42 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Node &apos;{0}&apos; is now deprecated..
+        /// </summary>
+        public static string NodeDeprecatedMsg {
+            get {
+                return ResourceManager.GetString("NodeDeprecatedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node &apos;{0}&apos; cannot be resolved..
+        /// </summary>
+        public static string NodeNotResolvedMsg {
+            get {
+                return ResourceManager.GetString("NodeNotResolvedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node of type &apos;{0}&apos;,from assembly &apos;{1}&apos;, is now deprecated..
+        /// </summary>
+        public static string NodeOfTypeDeprecatedMsg {
+            get {
+                return ResourceManager.GetString("NodeOfTypeDeprecatedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node of type &apos;{0}&apos;, from assembly &apos;{1}&apos;, cannot be resolved..
+        /// </summary>
+        public static string NodeOfTypeNotResolvedMsg {
+            get {
+                return ResourceManager.GetString("NodeOfTypeNotResolvedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:.
         /// </summary>
         public static string NodeProblemEncountered {
@@ -1025,6 +1070,15 @@ namespace Dynamo.Properties {
         public static string NoDescriptionAvailable {
             get {
                 return ResourceManager.GetString("NoDescriptionAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unhandled &apos;DummyNode.NodeNature&apos; value: {0}.
+        /// </summary>
+        public static string NodeUnhandledMsg {
+            get {
+                return ResourceManager.GetString("NodeUnhandledMsg", resourceCulture);
             }
         }
         
