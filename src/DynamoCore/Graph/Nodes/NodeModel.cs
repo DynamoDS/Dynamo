@@ -1697,7 +1697,10 @@ namespace Dynamo.Graph.Nodes
             if (isPersistent)
             {
                 State = ElementState.PersistentWarning;
-                persistentWarning += p;
+                if (!string.Equals(persistentWarning, p))
+                {
+                    persistentWarning += p;
+                }
                 ToolTipText = persistentWarning;
             }
             else
