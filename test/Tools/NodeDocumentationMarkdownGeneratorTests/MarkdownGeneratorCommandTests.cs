@@ -15,7 +15,6 @@ namespace NodeDocumentationMarkdownGeneratorTests
     {
         private const string CORENODEMODELS_DLL_NAME = "CoreNodeModels.dll";
         private const string LibraryViewExtension_DLL_NAME = "LibraryViewExtension.dll";
-
         private static readonly string DynamoCoreDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         private static readonly string DynamoCoreNodesDir = Path.Combine(DynamoCoreDir, "Nodes");
         private static string DynamoRepoRoot = new DirectoryInfo(DynamoCoreDir).Parent.Parent.Parent.FullName;
@@ -23,6 +22,23 @@ namespace NodeDocumentationMarkdownGeneratorTests
         private static readonly string toolsTestFilesDirectory = Path.GetFullPath(Path.Combine(DynamoRepoRoot, "test","Tools", "docGeneratorTestFiles"));
         private static readonly string testLayoutSpecPath = Path.Combine(toolsTestFilesDirectory, "testlayoutspec.json");
         private static readonly string mockedDictionaryJson = Path.Combine(toolsTestFilesDirectory, "sampledictionarycontent", "Dynamo_Nodes_Documentation.json");
+
+        private static readonly List<string> preloadedLibraryPaths = new List<string>
+            {
+                "VMDataBridge.dll",
+                "ProtoGeometry.dll",
+                "DesignScriptBuiltin.dll",
+                "DSCoreNodes.dll",
+                "DSOffice.dll",
+                "DSCPython.dll",
+                "FunctionObject.ds",
+                "BuiltIn.ds",
+                "DynamoConversions.dll",
+                "DynamoUnits.dll",
+                "Tessellation.dll",
+                "Analysis.dll",
+                "GeometryColor.dll"
+            };
 
         private DirectoryInfo tempDirectory = null;
 
@@ -112,6 +128,75 @@ namespace NodeDocumentationMarkdownGeneratorTests
             // Assert file names are correct.
             CollectionAssert.AreEquivalent(expectedOutputDirectory.GetFiles().Select(x => x.Name), generatedFileNames);
         }
+
+        [Test]
+        public void ProducesCorrectOutputFromCoreDirectory_preloadedbinaries()
+        {
+            // Arrange
+            var testOutputDirName = "TestMdOutput_CoreNodeModels";
+         
+            // Act
+            tempDirectory = CreateTempOutputDirectory();
+            Assert.That(tempDirectory.Exists);
+
+            var opts = new FromDirectoryOptions
+            {
+                InputFolderPath = DynamoCoreDir,
+                RecursiveScan = true,
+                OutputFolderPath = tempDirectory.FullName,
+                Filter = preloadedLibraryPaths,
+                ReferencePaths = new List<string>()
+            };
+
+            FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
+
+            var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
+            //assert count is correct.
+            //TODO this should be 610 - but 2 tsplines nodes have such long signatures the paths are too long for windows.
+            Assert.AreEqual(608, generatedFileNames.Count());
+        }
+        [Test]
+        public void ProducesCorrectOutputFromCoreDirectory_dsFiles()
+        {
+            // Arrange
+            var testOutputDirName = "TestMdOutput_CoreNodeModels";
+
+            var expectedFileNames = new List<string>
+            {
+                "LoopWhile.md", 
+                "List.Equals.md", 
+                "List.GroupByFunction.md",
+                "List.MaximumItemByKey.md",
+                "List.MinimumItemByKey.md", 
+                "List.Rank.md", 
+                "List.RemoveIfNot.md", 
+                "List.SortByFunction.md", 
+                "List.TrueForAll.md", 
+                "List.TrueForAny.md"
+            };
+
+            // Act
+            tempDirectory = CreateTempOutputDirectory();
+            Assert.That(tempDirectory.Exists);
+
+            var opts = new FromDirectoryOptions
+            {
+                InputFolderPath = DynamoCoreDir,
+                OutputFolderPath = tempDirectory.FullName,
+                Filter = new List<string> { "FunctionObject.ds",
+                "BuiltIn.ds", },
+                ReferencePaths = new List<string>()
+            };
+
+            FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
+
+            var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
+            //assert count is correct.
+            Assert.AreEqual(10, generatedFileNames.Count());
+            CollectionAssert.AreEquivalent(expectedFileNames, generatedFileNames);
+
+        }
+
 
         [Test]
         public void DictionaryContentIsFoundCorrectlyForCoreNodes()
