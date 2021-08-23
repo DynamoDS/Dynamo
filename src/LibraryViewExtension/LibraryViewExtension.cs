@@ -1,7 +1,7 @@
 ﻿using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.Extensions;
-using Dynamo.Wpf.Interfaces;
+using Dynamo.Interfaces;
 
 namespace Dynamo.LibraryUI
 {
