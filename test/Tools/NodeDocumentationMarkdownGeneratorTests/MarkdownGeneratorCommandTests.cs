@@ -21,7 +21,8 @@ namespace NodeDocumentationMarkdownGeneratorTests
         private static readonly string NodeGeneratorToolBuildPath = Path.Combine(DynamoRepoRoot, "src","tools", "NodeDocumentationMarkdownGenerator","bin");
         private static readonly string toolsTestFilesDirectory = Path.GetFullPath(Path.Combine(DynamoRepoRoot, "test","Tools", "docGeneratorTestFiles"));
         private static readonly string testLayoutSpecPath = Path.Combine(toolsTestFilesDirectory, "testlayoutspec.json");
-        private static readonly string mockedDictionaryJson = Path.Combine(toolsTestFilesDirectory, "sampledictionarycontent", "Dynamo_Nodes_Documentation.json");
+        private static readonly string mockedDictionaryRoot = Path.Combine(toolsTestFilesDirectory, "sampledictionarycontent");
+        private static readonly string mockedDictionaryJson = Path.Combine(mockedDictionaryRoot, "Dynamo_Nodes_Documentation.json");
 
         private static readonly List<string> preloadedLibraryPaths = new List<string>
             {
@@ -239,8 +240,48 @@ namespace NodeDocumentationMarkdownGeneratorTests
             //assert that the generated markdown files all contain an "indepth section" from the dictionary entry, which means
             //they were all found.
 
-            Assert.True(generatedFileNames.All(x => File.ReadAllText(x).ToLower().Contains("in depth")));
+            Assert.True(generatedFileNames.Where(x=>Path.GetExtension(x).Contains("md")).All(x => File.ReadAllText(x).ToLower().Contains("in depth")));
           
+        }
+
+        [Test]
+        public void DictionaryImagesAreCompressed()
+        {
+           
+            // Arrange
+            var testOutputDirName = "TestMdOutput_CoreNodeModels";
+            var sizesBeforeCompression = new DirectoryInfo(mockedDictionaryRoot).GetFiles("*.*", SearchOption.AllDirectories).Where(
+                x => x.Extension.ToLower().Contains("gif") || x.Extension.ToLower().Contains("jpg")).OrderBy(x=>x.FullName).Select(f => File.ReadAllBytes(f.FullName).Length).ToArray();
+
+            var coreNodeModelsDll = Path.Combine(DynamoCoreNodesDir, CORENODEMODELS_DLL_NAME);
+            Assert.That(File.Exists(coreNodeModelsDll));
+
+            // Act
+            tempDirectory = CreateTempOutputDirectory();
+            Assert.That(tempDirectory.Exists);
+
+            var opts = new FromDirectoryOptions
+            {
+                InputFolderPath = DynamoCoreNodesDir,
+                OutputFolderPath = tempDirectory.FullName,
+                DictionaryDirectory = mockedDictionaryJson,
+                LayoutSpecPath = testLayoutSpecPath,
+                Filter = new List<string> { CORENODEMODELS_DLL_NAME },
+                ReferencePaths = new List<string>(),
+                Overwrite = true,
+                CompressGifs = true,
+                CompressImages = true,
+                Verbose = true
+            };
+
+            FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
+
+            var generatedFileImages = tempDirectory.GetFiles().Where(
+                x => x.Extension.ToLower().Contains("gif") || x.Extension.ToLower().Contains("jpg")).OrderBy(x => x.FullName);
+            var generatedFileSizes = generatedFileImages.Select(x=> File.ReadAllBytes(x.FullName).Length);
+            //check all files were larger before in bytes.
+            Assert.IsTrue(generatedFileSizes.Select((x, i) => sizesBeforeCompression[i] >= x).All(x=>x));
+
         }
 
 

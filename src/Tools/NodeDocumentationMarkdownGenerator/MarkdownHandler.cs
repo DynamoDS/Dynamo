@@ -215,6 +215,13 @@ namespace NodeDocumentationMarkdownGenerator
                             m.Position = 0;
                             m.SetLength(0);
                             images.Write(m);
+                            //in the case where gif compression fails to create a gif that is smaller
+                            //fallback to the old image stream.
+                            if(m.Length > oldSize){
+                                m.Position = 0;
+                                m.SetLength(0);
+                                image.Save(m, image.RawFormat);
+                            }
                         }
                     }
 
