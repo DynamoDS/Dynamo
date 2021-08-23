@@ -58,5 +58,18 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             CleanRealTimeInfoWindow();
         }
+
+        /// <summary>
+        /// This method will update the current location of the RealTimeInfo window due that probably the window was moved or resized
+        /// </summary>
+        public void UpdateLocation()
+        {
+            if (IsOpen == true)
+            {
+                //Uodating the Offset will produce that the Popup will update the position(that's the only way I found).
+                HorizontalOffset = HorizontalOffset + 1;
+                HorizontalOffset = HorizontalOffset - 1;
+            }
+        }
     }
 }
