@@ -358,8 +358,8 @@ namespace Dynamo.Graph.Workspaces
                 // If any of the incident edges are connected to unselected (outside) nodes
                 // then mark these edges as anchors.
 
-                graph.AnchorRightEdges.UnionWith(currentNode.RightEdges.Where(e => e.EndNode != null || !e.EndNode.IsSelected));
-                graph.AnchorLeftEdges.UnionWith(currentNode.LeftEdges.Where(e => e.StartNode != null || !e.StartNode.IsSelected));
+                graph.AnchorRightEdges.UnionWith(currentNode.RightEdges.Where(e => e.EndNode != null && !e.EndNode.IsSelected));
+                graph.AnchorLeftEdges.UnionWith(currentNode.LeftEdges.Where(e => e.StartNode != null && !e.StartNode.IsSelected));
 
                 foreach (var node in selectedNodes)
                 {
@@ -522,7 +522,7 @@ namespace Dynamo.Graph.Workspaces
                         double offsetY = graph.OffsetY;
 
                         pin.CenterX = n.X;
-                        pin.CenterY = n.Y + offsetY;
+                        pin.CenterY = n.Y + offsetY - (pin.Width * 0.3);
                         pin.ReportPosition();
                         workspace.HasUnsavedChanges = true;
                     }
