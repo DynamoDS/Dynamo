@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using NodeDocumentationMarkdownGenerator;
 using NodeDocumentationMarkdownGenerator.Commands;
 using NodeDocumentationMarkdownGenerator.Verbs;
@@ -10,14 +11,51 @@ using NUnit.Framework;
 namespace NodeDocumentationMarkdownGeneratorTests
 {
     [TestFixture]
-    public class MarkdownGeneratorTests
+    public class MarkdownGeneratorCommandTests
     {
         private const string CORENODEMODELS_DLL_NAME = "CoreNodeModels.dll";
+        private const string LibraryViewExtension_DLL_NAME = "LibraryViewExtension.dll";
 
-        private static readonly string coreDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-        private static readonly string toolsTestFilesDirectory = Path.GetFullPath(Path.Combine(coreDirectory, @"..\..\..\docGeneratorTestFiles"));
+        private static readonly string DynamoCoreDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        private static readonly string DynamoCoreNodesDir = Path.Combine(DynamoCoreDir, "Nodes");
+        private static string DynamoRepoRoot = new DirectoryInfo(DynamoCoreDir).Parent.Parent.Parent.FullName;
+        private static readonly string NodeGeneratorToolBuildPath = Path.Combine(DynamoRepoRoot, "src","tools", "NodeDocumentationMarkdownGenerator","bin");
+        private static readonly string toolsTestFilesDirectory = Path.GetFullPath(Path.Combine(DynamoRepoRoot, "test","Tools", "docGeneratorTestFiles"));
+        private static readonly string testLayoutSpecPath = Path.Combine(toolsTestFilesDirectory, "testlayoutspec.json");
+        private static readonly string mockedDictionaryJson = Path.Combine(toolsTestFilesDirectory, "sampledictionarycontent", "Dynamo_Nodes_Documentation.json");
 
         private DirectoryInfo tempDirectory = null;
+
+        [TestFixtureSetUp]
+        public void FixtureSetup()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            var libviewExtensionAssem = Assembly.LoadFrom(Path.Combine(DynamoCoreDir, LibraryViewExtension_DLL_NAME));
+            SaveCoreLayoutSpecToPath(libviewExtensionAssem, testLayoutSpecPath);
+        }
+        [TestFixtureTearDown]
+        public void FixtureTearDown()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
+            if (File.Exists(testLayoutSpecPath))
+            {
+                File.Delete(testLayoutSpecPath);
+            }
+        }
+
+        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            //resovle assemblies from the tool's bin folder - nmgt is not copied to dynamo bin.
+            var requestedAssembly = new AssemblyName(args.Name);
+            var masks = new[] { "*.dll", "*.exe" };
+            var files = masks.SelectMany(x=> new DirectoryInfo(NodeGeneratorToolBuildPath).EnumerateFiles(x, SearchOption.AllDirectories));
+            var found = files.Where(f => Path.GetFileNameWithoutExtension(f.FullName) == requestedAssembly.Name).FirstOrDefault();
+            if (found != null)
+            {
+                return Assembly.LoadFrom(found.FullName);
+            }
+            return null;
+        }
 
         [SetUp]
         public void SetUp()
@@ -43,7 +81,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
             // 
             // NodeDocumentationMarkdownGenerator.exe
             // fromdirectory
-            // -i "..\Dynamo\test\Tools\docGeneratorTestFiles"
+            // -i "..\Dynamo\bin\nodes"
             // -o "..\Dynamo\test\Tools\docGeneratorTestFiles\TestMdOutput_CoreNodeModels"
             // -f "CoreNodeModels.dll"
 
@@ -52,7 +90,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
             var expectedOutputDirectory = new DirectoryInfo(Path.Combine(toolsTestFilesDirectory, testOutputDirName));
             Assert.That(expectedOutputDirectory.Exists);
 
-            var coreNodeModelsDll = Path.Combine(toolsTestFilesDirectory, CORENODEMODELS_DLL_NAME);
+            var coreNodeModelsDll = Path.Combine(DynamoCoreNodesDir, CORENODEMODELS_DLL_NAME);
             Assert.That(File.Exists(coreNodeModelsDll));
 
             // Act
@@ -61,7 +99,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             var opts = new FromDirectoryOptions
             {
-                InputFolderPath = toolsTestFilesDirectory,
+                InputFolderPath = DynamoCoreNodesDir,
                 OutputFolderPath = tempDirectory.FullName,
                 Filter = new List<string> { CORENODEMODELS_DLL_NAME },
                 ReferencePaths = new List<string>()
@@ -71,8 +109,53 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
 
-            // Assert
+            // Assert file names are correct.
             CollectionAssert.AreEquivalent(expectedOutputDirectory.GetFiles().Select(x => x.Name), generatedFileNames);
+        }
+
+        [Test]
+        public void DictionaryContentIsFoundCorrectlyForCoreNodes()
+        {
+            // Test output is generated with the following args:
+            // 
+            // NodeDocumentationMarkdownGenerator.exe
+            // fromdirectory
+            // -i "..\Dynamo\bin\nodes"
+            // -o "..\Dynamo\test\Tools\docGeneratorTestFiles\TestMdOutput_CoreNodeModels"
+            // -d "..\Dynamo\test\Tools\docGeneratorTestFiles\sampledictionarycontent\Dynamo_Nodes_Documentation.json"
+            // -x  "..\Dynamo\test\Tools\docGeneratorTestFiles\testlayoutspec.json"
+            // -f "CoreNodeModels.dll"
+
+            // Arrange
+            var testOutputDirName = "TestMdOutput_CoreNodeModels";
+ 
+            var coreNodeModelsDll = Path.Combine(DynamoCoreNodesDir, CORENODEMODELS_DLL_NAME);
+            Assert.That(File.Exists(coreNodeModelsDll));
+
+            // Act
+            tempDirectory = CreateTempOutputDirectory();
+            Assert.That(tempDirectory.Exists);
+
+            var opts = new FromDirectoryOptions
+            {
+                InputFolderPath = DynamoCoreNodesDir,
+                OutputFolderPath = tempDirectory.FullName,
+                DictionaryDirectory = mockedDictionaryJson,
+                LayoutSpecPath = testLayoutSpecPath,
+                Filter = new List<string> { CORENODEMODELS_DLL_NAME },
+                ReferencePaths = new List<string>(),
+                Overwrite = true
+            };
+
+            FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
+
+            var generatedFileNames = tempDirectory.GetFiles().Select(x => x.FullName);
+
+            //assert that the generated markdown files all contain an "indepth section" from the dictionary entry, which means
+            //they were all found.
+
+            Assert.True(generatedFileNames.All(x => File.ReadAllText(x).ToLower().Contains("in depth")));
+          
         }
 
 
@@ -123,6 +206,38 @@ namespace NodeDocumentationMarkdownGeneratorTests
             CollectionAssert.AreEquivalent(expectedFileNames, tempDirectory.GetFiles().Select(x => x.Name));
         }
 
+        [Test]
+        public void ProducesCorrectOutputFromPackageIncludingDYF()
+        {
+            // Arrange
+            var packageName = "EvenOdd";
+            var packageDirectory = Path.GetFullPath(Path.Combine(toolsTestFilesDirectory, @"..\..\pkgs", packageName));
+            var testOutputDirName = "doc";
+            tempDirectory = new DirectoryInfo(Path.Combine(packageDirectory, testOutputDirName));
+            Assert.IsFalse(tempDirectory.Exists);
+
+            var expectedFileNames = new List<string>
+            {
+
+                "Test.EvenOdd.md"
+            };
+
+            // Act
+            var opts = new FromPackageOptions
+            {
+                InputFolderPath = packageDirectory,
+                Overwrite = true
+            };
+
+            FromPackageFolderCommand.HandlePackageDocumentation(opts);
+
+            tempDirectory.Refresh();
+
+            // Assert
+            Assert.IsTrue(tempDirectory.Exists);
+            CollectionAssert.AreEquivalent(expectedFileNames, tempDirectory.GetFiles().Select(x => x.Name));
+        }
+
 
         [Test]
         public void CanOverWriteExistingFiles()
@@ -144,7 +259,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             var opts = new FromDirectoryOptions
             {
-                InputFolderPath = toolsTestFilesDirectory,
+                InputFolderPath = DynamoCoreNodesDir,
                 OutputFolderPath = tempDirectory.FullName,
                 Filter = new List<string> { CORENODEMODELS_DLL_NAME },
                 ReferencePaths = new List<string>(),
@@ -199,7 +314,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
         public void CanScanAssemblyFromPath()
         {
             // Arrange
-            var assemblyPath = Path.Combine(toolsTestFilesDirectory, CORENODEMODELS_DLL_NAME);
+            var assemblyPath = Path.Combine(DynamoCoreNodesDir, CORENODEMODELS_DLL_NAME);
             var coreNodeModelMdFilesDir = new DirectoryInfo(Path.Combine(toolsTestFilesDirectory, "TestMdOutput_CoreNodeModels"));
             var coreNodeModelMdFiles = coreNodeModelMdFilesDir.GetFiles();
 
@@ -213,7 +328,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
         }
 
         #region Helpers
-        private void AssertMdFileInfos(List<MdFileInfo> mdFileInfos, FileInfo[] coreNodeModelMdFiles)
+        internal void AssertMdFileInfos(List<MdFileInfo> mdFileInfos, FileInfo[] coreNodeModelMdFiles)
         {
             var expectedFileNames = coreNodeModelMdFiles.Select(x => Path.GetFileNameWithoutExtension(x.FullName));
             var expectedMdFileInfoNamespace = "CoreNodeModels";
@@ -224,19 +339,31 @@ namespace NodeDocumentationMarkdownGeneratorTests
             }
         }
 
-        private DirectoryInfo CreateTempOutputDirectory()
+        protected DirectoryInfo CreateTempOutputDirectory()
         {
             string tempDirectoryPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}_markdownGeneratorTestOutput");
             var tempDir = Directory.CreateDirectory(tempDirectoryPath);
             return tempDir;
         }
 
-        private static void CopyFilesRecursively(DirectoryInfo originalDir, DirectoryInfo targetDir)
+        protected static void CopyFilesRecursively(DirectoryInfo originalDir, DirectoryInfo targetDir)
         {
             foreach (var file in originalDir.GetFiles())
             {
                 file.CopyTo(Path.Combine(targetDir.FullName, file.Name));
             }
+        }
+
+        protected static void SaveCoreLayoutSpecToPath(Assembly assembly, string savePath)
+        {
+            var resource = "Dynamo.LibraryUI.web.library.layoutSpecs.json";
+            assembly = assembly == null ? Assembly.GetExecutingAssembly() : assembly;
+            var stream = assembly.GetManifestResourceStream(resource);
+            var fs = File.Create(savePath);
+            stream.Seek(0, SeekOrigin.Begin);
+            stream.CopyTo(fs);
+            fs.Close();
+            stream.Close();
         }
         #endregion
     }

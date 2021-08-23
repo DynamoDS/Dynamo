@@ -88,7 +88,7 @@ namespace NodeDocumentationMarkdownGenerator
             var nodeName = header.Name;
             var nodeNamspace = header.Category;
             var fullCategory = $"{header.Category}.{header.Name}";
-            return new MdFileInfo(nodeName, nodeNamspace, fullCategory, header.Category, nodeNamspace);
+            return new MdFileInfo(nodeName, nodeNamspace, fullCategory, header.Category, fullCategory);
         }
 
         internal static bool TryGetMdFileInfoFromSearchEntry(NodeSearchElement entry, out MdFileInfo info)

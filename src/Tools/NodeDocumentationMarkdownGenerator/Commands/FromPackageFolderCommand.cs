@@ -33,22 +33,30 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
         private static List<MdFileInfo> ScanNodeLibraries(Package pkg, IEnumerable<string> hostPaths)
         {
-            var binDlls = new DirectoryInfo(pkg.BinaryDirectory)
-                .EnumerateFiles("*.dll")
-                .ToList();
+            var addtionalPathsToLoad = new List<string>();
+            var nodeLibraryPaths = new List<string>();
+            var hostDllPaths = new List<string>();
+            if (Directory.Exists(pkg.BinaryDirectory))
+            {
+                var binDlls = new DirectoryInfo(pkg.BinaryDirectory)
+               .EnumerateFiles("*.dll")
+               .ToList();
 
-            var nodeLibraryPaths = binDlls
-                .Where(x => pkg.Header.node_libraries.Contains(AssemblyName.GetAssemblyName(x.FullName).FullName))
-                .Select(x => x.FullName)
-                .ToList();
+                nodeLibraryPaths = binDlls
+                    .Where(x => pkg.Header.node_libraries.Contains(AssemblyName.GetAssemblyName(x.FullName).FullName))
+                    .Select(x => x.FullName)
+                    .ToList();
 
-            var addtionalPathsToLoad = binDlls.Select(x => x.FullName).Except(nodeLibraryPaths).ToList();
-
-            var hostDllPaths = hostPaths
-                .SelectMany(p => new DirectoryInfo(p)
-                    .EnumerateFiles("*.dll", SearchOption.AllDirectories)
-                    .Select(d => d.FullName)
-                    .ToList());
+                addtionalPathsToLoad = binDlls.Select(x => x.FullName).Except(nodeLibraryPaths).ToList();
+            }
+            if (hostPaths != null)
+            {
+                hostDllPaths = hostPaths
+               .SelectMany(p => new DirectoryInfo(p)
+                   .EnumerateFiles("*.dll", SearchOption.AllDirectories)
+                   .Select(d => d.FullName)).ToList();
+            }
+          
 
             addtionalPathsToLoad.AddRange(hostDllPaths);
 
