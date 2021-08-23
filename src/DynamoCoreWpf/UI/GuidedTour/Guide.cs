@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.UI.GuidedTour
@@ -32,6 +33,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This variable represents the total number of steps that the guide has (every guide can have a different number of steps).
         /// </summary>
         public int TotalSteps { get; set; }
+
+        public GuideBackground guideBackgroundElement { get; set; }
 
         public Guide()
         {
@@ -105,6 +108,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (args.StepSequence < TotalSteps)
             {
                 nextStep = (from step in GuideSteps where step.Sequence == args.StepSequence + 1 select step).FirstOrDefault();
+
+                if(nextStep.HostPopupInfo != null)
+                    SetupBackgroundHoleSize(nextStep.HostPopupInfo.HostUIElement);
+
                 if (nextStep != null)
                     nextStep.Show();
             }
@@ -112,6 +119,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
             CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
             if (CurrentStep != null)
                 CurrentStep.Hide();
+        }
+
+        private void SetupBackgroundHoleSize(UIElement hostElement)
+        {
+            Point position = hostElement.PointToScreen(new Point(0, 0));
+
+            guideBackgroundElement.HoleRect = new Rect(position.X, position.Y,
+                hostElement.DesiredSize.Width, hostElement.DesiredSize.Height);
+
         }
 
 
