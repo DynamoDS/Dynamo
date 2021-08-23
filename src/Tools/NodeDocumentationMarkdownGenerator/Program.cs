@@ -24,15 +24,15 @@ namespace NodeDocumentationMarkdownGenerator
 #if DEBUG
             var config = "Debug";
 #else
-                    var config = "Release";
+   var config = "Release";
 #endif
-                    var relativePathToDynamo = $@"..\..\..\..\..\bin\AnyCPU\{config}";
-                    Console.WriteLine($"looking for dynamo core assemblies in {relativePathToDynamo}");
+            var relativePathToDynamo = $@"..\..\..\..\..\bin\AnyCPU\{config}";
+            Console.WriteLine($"looking for dynamo core assemblies in {relativePathToDynamo}");
                     dynamoDirectoryAssemblyPaths = new DirectoryInfo(
-                        Path.GetFullPath(
-                            Path.Combine(
-                                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), relativePathToDynamo)))
-                        .EnumerateFiles("*.dll", SearchOption.AllDirectories);
+                Path.GetFullPath(
+                    Path.Combine(
+                        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), relativePathToDynamo)))
+                .EnumerateFiles("*.dll", SearchOption.AllDirectories);
                 }
 
                 return dynamoDirectoryAssemblyPaths;

@@ -38,22 +38,22 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             var hostDllPaths = new List<string>();
             if (Directory.Exists(pkg.BinaryDirectory))
             {
-                var binDlls = new DirectoryInfo(pkg.BinaryDirectory)
-               .EnumerateFiles("*.dll")
-               .ToList();
+            var binDlls = new DirectoryInfo(pkg.BinaryDirectory)
+                .EnumerateFiles("*.dll")
+                .ToList();
 
                 nodeLibraryPaths = binDlls
-                    .Where(x => pkg.Header.node_libraries.Contains(AssemblyName.GetAssemblyName(x.FullName).FullName))
-                    .Select(x => x.FullName)
-                    .ToList();
+                .Where(x => pkg.Header.node_libraries.Contains(AssemblyName.GetAssemblyName(x.FullName).FullName))
+                .Select(x => x.FullName)
+                .ToList();
 
                 addtionalPathsToLoad = binDlls.Select(x => x.FullName).Except(nodeLibraryPaths).ToList();
             }
             if (hostPaths != null)
             {
                 hostDllPaths = hostPaths
-               .SelectMany(p => new DirectoryInfo(p)
-                   .EnumerateFiles("*.dll", SearchOption.AllDirectories)
+                .SelectMany(p => new DirectoryInfo(p)
+                    .EnumerateFiles("*.dll", SearchOption.AllDirectories)
                    .Select(d => d.FullName)).ToList();
             }
           
