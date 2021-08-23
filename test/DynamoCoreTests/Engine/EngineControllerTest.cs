@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Engine;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
@@ -82,6 +83,7 @@ namespace Dynamo.Tests.Engine
             //Act
             var codeBlockNodeOne = CreateCodeBlockNode();
             CurrentDynamoModel.AddNodeToCurrentWorkspace(codeBlockNodeOne, true);
+            codeBlockNodeOne.UpdateValue(new UpdateValueParams("Code", "10;"));
             CurrentDynamoModel.EngineController.AstBuilt -= EngineController_AstBuilt;
 
             //Assert

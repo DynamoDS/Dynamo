@@ -214,6 +214,7 @@ namespace ProtoScript.Runners
         private void ApplyChangeSetDeleted(ChangeSetData changeSet)
         {
             DeactivateGraphnodes(changeSet.DeletedBinaryExprASTNodes);
+            ReActivateGraphNodesInCycle(changeSet.DeletedBinaryExprASTNodes);
             UndefineFunctions(changeSet.DeletedFunctionDefASTNodes);
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(runtimeCore, changeSet.DeletedFunctionDefASTNodes);
         }
@@ -223,6 +224,8 @@ namespace ProtoScript.Runners
             ClearModifiedNestedBlocks(changeSet.ModifiedNestedLangBlock);
 
             DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
+
+            ReActivateGraphNodesInCycle(changeSet.RemovedBinaryNodesFromModification);
 
             // Undefine a function that was removed 
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
@@ -250,6 +253,43 @@ namespace ProtoScript.Runners
                 if (!changeSet.ContainsDeltaAST)
                 {
                     runtimeCore.SetStartPC(firstDirtyNode.updateBlock.startpc);
+                }
+            }
+        }
+
+        private void ReActivateGraphNodesInCycle(List<AssociativeNode> nodeList)
+        {
+            if (nodeList == null || !nodeList.Any()) return;
+
+            var assocGraph = core.DSExecutable.instrStreamList[0].dependencyGraph;
+            var graphNodes = assocGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kInvalidIndex);
+
+            foreach (var node in nodeList)
+            {
+                var bNode = node as BinaryExpressionNode;
+
+                var identifier = bNode?.LeftNode as IdentifierNode;
+                if (identifier == null) continue;
+
+                var rootNodes = new List<GraphNode>();
+                foreach(var gNode in graphNodes)
+                {
+                    if(identifier.Value == gNode.updateNodeRefList[0].nodeList[0].symbol.name)
+                    {
+                        rootNodes.Add(gNode);
+                    }
+                }
+
+                foreach (var rootNode in rootNodes)
+                {
+                    // Walk the dependency graph for the rootNode and clear cycles from dependent graph nodes.
+                    var guids = rootNode.ClearCycles(graphNodes);
+
+                    // Clear warnings for all graphnodes participating in cycle.
+                    foreach (var id in guids)
+                    {
+                        core.BuildStatus.ClearWarningsForGraph(id);
+                    }
                 }
             }
         }
@@ -745,7 +785,6 @@ namespace ProtoScript.Runners
 
             return deltaAstList;
         }
-
 
         public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData)
         {
@@ -1401,21 +1440,13 @@ namespace ProtoScript.Runners
         private void PostExecution()
         {
             ApplyUpdate();
-            HandleWarnings();
-        }
-
-        /// <summary>
-        /// Handle warnings that will be reported to the frontend
-        /// </summary>
-        private void HandleWarnings()
-        {
-            SuppressResovledUnboundVariableWarnings();
+            SuppressResolvedUnboundVariableWarnings();
         }
 
         /// <summary>
         /// Removes all warnings that were initially unbound variables but were resolved at runtime
         /// </summary>
-        private void SuppressResovledUnboundVariableWarnings()
+        private void SuppressResolvedUnboundVariableWarnings()
         {
             runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runnerCore.DSExecutable.UpdatedSymbols);
 
@@ -1526,6 +1557,7 @@ namespace ProtoScript.Runners
                 // Prior to execution, apply state modifications to the VM given the delta AST's
                 bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
                 changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
+
                 if (finalDeltaAstList.Any() || anyForcedExecutedNodes)
                 {
                     CompileAndExecuteForDeltaExecution(finalDeltaAstList);
