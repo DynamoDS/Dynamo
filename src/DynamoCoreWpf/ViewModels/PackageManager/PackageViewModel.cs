@@ -127,8 +127,11 @@ namespace Dynamo.ViewModels
             get { return Model.LoadedAssemblies.Any(); }
         }
 
+        public bool CanPublish => dynamoModel.AuthenticationManager.HasAuthProvider;
+
         [Obsolete("Do not use. This command will be removed. It does nothing.")]
         public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
+        [Obsolete("Do not use. This command will be removed. It does nothing.")]
         public DelegateCommand GetLatestVersionCommand { get; set; }
         public DelegateCommand PublishNewPackageVersionCommand { get; set; }
         public DelegateCommand UninstallCommand { get; set; }
@@ -149,15 +152,15 @@ namespace Dynamo.ViewModels
             Model = model;
 
             ToggleTypesVisibleInManagerCommand = new DelegateCommand(() => { }, () => true);
-            GetLatestVersionCommand = new DelegateCommand(GetLatestVersion, CanGetLatestVersion);
-            PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), CanPublishNewPackageVersion);
-            PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), CanPublishNewPackage);
+            GetLatestVersionCommand = new DelegateCommand(() => { }, () => false);
+            PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), () => CanPublish);
+            PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), () => CanPublish);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
             LoadCommand = new DelegateCommand(Load, CanLoad);
             DeprecateCommand = new DelegateCommand(Deprecate, CanDeprecate);
             UndeprecateCommand = new DelegateCommand(Undeprecate, CanUndeprecate);
-            GoToRootDirectoryCommand = new DelegateCommand(GoToRootDirectory, CanGoToRootDirectory);
+            GoToRootDirectoryCommand = new DelegateCommand(GoToRootDirectory, () => true);
 
             Model.LoadedAssemblies.CollectionChanged += LoadedAssembliesOnCollectionChanged;
             Model.PropertyChanged += ModelOnPropertyChanged;
@@ -224,26 +227,36 @@ namespace Dynamo.ViewModels
                 Model.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion;
         }
 
+        private string MessageNeedToRestart => Model.BuiltInPackage ? Resources.MessageNeedToRestartAfterUnload : Resources.MessageNeedToRestartAfterDelete;
+
+        private string MessageNeedToRestartTitle => Model.BuiltInPackage ? Resources.MessageNeedToRestartAfterUnloadTitle : Resources.MessageNeedToRestartAfterDeleteTitle;
+
+        private string MessageFailedToDeleteOrUnload => Model.BuiltInPackage ? Resources.MessageFailedToUnload : Resources.MessageFailedToDelete;
+
+        private string MessageFailedToDeleteOrUnloadTitle => Model.BuiltInPackage ? Resources.UnloadFailureMessageBoxTitle : Resources.DeleteFailureMessageBoxTitle;
+
         private void Uninstall()
         {
             if (Model.LoadedAssemblies.Any())
             {
                 var resAssem =
-                    MessageBoxService.Show(string.Format(Resources.MessageNeedToRestart,
+                    MessageBoxService.Show(string.Format(MessageNeedToRestart,
                         dynamoViewModel.BrandingResourceProvider.ProductName),
-                        Resources.UninstallingPackageMessageBoxTitle,
+                        MessageNeedToRestartTitle,
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Exclamation);
                 if (resAssem == MessageBoxResult.Cancel) return;
             }
 
-            if (!Model.BuiltInPackage) {
-                var res = MessageBoxService.Show(String.Format(Resources.MessageConfirmToUninstallPackage, this.Model.Name),
-                          Resources.UninstallingPackageMessageBoxTitle,
-                          MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (!Model.BuiltInPackage)
+            {
+                var res = MessageBoxService.Show(String.Format(Resources.MessageConfirmToDeletePackage, this.Model.Name),
+                    Resources.MessageNeedToRestartAfterDeleteTitle,
+                    MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (res == MessageBoxResult.No) return;
             }
+
 
             try
             {
@@ -253,9 +266,9 @@ namespace Dynamo.ViewModels
             }
             catch (Exception)
             {
-                MessageBoxService.Show(string.Format(Resources.MessageFailedToUninstall,
+                MessageBoxService.Show(string.Format(MessageFailedToDeleteOrUnload,
                     dynamoViewModel.BrandingResourceProvider.ProductName),
-                    Resources.UninstallFailureMessageBoxTitle,
+                    MessageFailedToDeleteOrUnloadTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
@@ -357,11 +370,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanGoToRootDirectory()
-        {
-            return true;
-        }
-
         private void Deprecate()
         {
             var res = MessageBox.Show(String.Format(Resources.MessageToDeprecatePackage, this.Model.Name),
@@ -374,7 +382,7 @@ namespace Dynamo.ViewModels
 
         private bool CanDeprecate()
         {
-            if (!dynamoModel.AuthenticationManager.HasAuthProvider) return false;
+            if (!CanPublish) return false;
             return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
         }
 
@@ -389,7 +397,7 @@ namespace Dynamo.ViewModels
 
         private bool CanUndeprecate()
         {
-            if (!dynamoModel.AuthenticationManager.HasAuthProvider) return false;
+            if (!CanPublish) return false;
             return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
         }
 
@@ -400,11 +408,6 @@ namespace Dynamo.ViewModels
             vm.IsNewVersion = true;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
-        }
-
-        private bool CanPublishNewPackageVersion()
-        {
-            return dynamoModel.AuthenticationManager.HasAuthProvider;
         }
 
         private void PublishNewPackage()
@@ -429,21 +432,6 @@ namespace Dynamo.ViewModels
             });
 
             termsOfUseCheck.Execute(false);
-        }
-
-        private bool CanPublishNewPackage()
-        {
-            return dynamoModel.AuthenticationManager.HasAuthProvider;
-        }
-
-        private void GetLatestVersion()
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool CanGetLatestVersion()
-        {
-            return false;
         }
     }
 }
