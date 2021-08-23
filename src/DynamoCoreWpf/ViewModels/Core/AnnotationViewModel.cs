@@ -90,7 +90,7 @@ namespace Dynamo.ViewModels
         {
             get 
             {
-                if (this.AnnotationModel.BelongsToGroup)
+                if (BelongsToGroup())
                 {
                     return 2;
                 }
@@ -429,7 +429,7 @@ namespace Dynamo.ViewModels
             // and that it does not already belong to
             // another group
             if (!this.AnnotationModel.IsSelected ||
-                this.AnnotationModel.BelongsToGroup) 
+                BelongsToGroup()) 
             {
                 return false;
             }
@@ -447,7 +447,7 @@ namespace Dynamo.ViewModels
             // and there are at least one of the groups that does
             // not already belong to another group.
             return !selectedAnnotationModels.Any(x => x.HasNestedGroups) &&
-                !selectedAnnotationModels.All(x => x.BelongsToGroup);
+                !selectedAnnotationModels.All(x => WorkspaceViewModel.Model.Annotations.ContainsModel(x));
                     
         }
 
@@ -457,18 +457,22 @@ namespace Dynamo.ViewModels
             {
                 var selectedModels = DynamoSelection.Instance.Selection
                     .OfType<AnnotationModel>()
-                    .Where(x => x.GUID != this.AnnotationModel.GUID && !x.BelongsToGroup);
+                    .Where(x => x.GUID != this.AnnotationModel.GUID && 
+                                !WorkspaceViewModel.Model.Annotations.ContainsModel(x));
 
                 foreach (var model in selectedModels)
                 {
                     WorkspaceViewModel.DynamoViewModel.AddGroupToGroupModelCommand.Execute(this.AnnotationModel.GUID);
                     if (Nodes.Contains(model))
                     {
-                        AddToCutGeometryDictionary(
-                            ViewModelBases.OfType<AnnotationViewModel>()
+                        var groupViewModel = ViewModelBases.OfType<AnnotationViewModel>()
                             .Where(x => x.AnnotationModel.GUID == model.GUID)
-                            .FirstOrDefault()
-                            );
+                            .FirstOrDefault();
+                        groupViewModel.RaisePropertyChanged(nameof(ZIndex));
+                        groupViewModel.AddToGroupCommand.RaiseCanExecuteChanged();
+                        groupViewModel.AddGroupToGroupCommand.RaiseCanExecuteChanged();
+                        groupViewModel.RemoveGroupFromGroupCommand.RaiseCanExecuteChanged();
+                        AddToCutGeometryDictionary(groupViewModel);
                     }
                 }
             }
@@ -488,7 +492,7 @@ namespace Dynamo.ViewModels
 
         private bool CanUngroupGroup(object parameters)
         {
-            return this.AnnotationModel.BelongsToGroup;
+            return BelongsToGroup();
         }
 
         private bool CanChangeFontSize(object obj)
@@ -883,12 +887,12 @@ namespace Dynamo.ViewModels
                 case "SelectedModels":
                     this.AnnotationModel.UpdateBoundaryFromSelection();
                     break;
-                case nameof(AnnotationModel.BelongsToGroup):
-                    RaisePropertyChanged(nameof(ZIndex));
-                    AddToGroupCommand.RaiseCanExecuteChanged();
-                    AddGroupToGroupCommand.RaiseCanExecuteChanged();
-                    RemoveGroupFromGroupCommand.RaiseCanExecuteChanged();
-                    break;
+                //case nameof(AnnotationModel.BelongsToGroup):
+                //    RaisePropertyChanged(nameof(ZIndex));
+                //    AddToGroupCommand.RaiseCanExecuteChanged();
+                //    AddGroupToGroupCommand.RaiseCanExecuteChanged();
+                //    RemoveGroupFromGroupCommand.RaiseCanExecuteChanged();
+                //    break;
                 case nameof(AnnotationModel.Nodes):
                     ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
                     HandleNodesCollectionChanges();
@@ -1044,6 +1048,11 @@ namespace Dynamo.ViewModels
             var updatedGeometry = CreateRectangleGeometry(annotationViewModel);
             GroupIdToCutGeometry[key] = updatedGeometry;
             RaisePropertyChanged(nameof(NestedGroupsGeometryCollection));
+        }
+
+        private bool BelongsToGroup()
+        {
+            return WorkspaceViewModel.Model.Annotations.ContainsModel(this.annotationModel);
         }
 
         public override void Dispose()

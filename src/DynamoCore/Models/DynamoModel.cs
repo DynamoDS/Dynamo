@@ -2108,7 +2108,6 @@ namespace Dynamo.Models
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
                             {
-                                model.BelongsToGroup = false;
                                 annotation.Nodes = list;
                                 annotation.UpdateBoundaryFromSelection();
                             }
@@ -2383,7 +2382,7 @@ namespace Dynamo.Models
             // We handle creation of nested groups when creating the
             // parent group.
             var annotations = ClipBoard.OfType<AnnotationModel>()
-                .Where(x=>x.HasNestedGroups || !x.BelongsToGroup);
+                .Where(x=>x.HasNestedGroups || !currentWorkspace.Annotations.ContainsModel(x));
 
             var xmlDoc = new XmlDocument();
 
@@ -2569,7 +2568,6 @@ namespace Dynamo.Models
                 WidthAdjustment = model.WidthAdjustment,
                 Background = model.Background,
                 FontSize = model.FontSize,
-                BelongsToGroup = model.BelongsToGroup
             };
 
             modelLookup.Add(model.GUID, annotationModel);

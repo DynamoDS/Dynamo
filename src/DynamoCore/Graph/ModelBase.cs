@@ -213,21 +213,6 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
-        /// If this model belongs to an AnnotationModel
-        /// </summary>
-        [JsonIgnore]
-        public bool BelongsToGroup
-        {
-            get { return belongsToGroup; }
-            set 
-            { 
-                belongsToGroup = value;
-                RaisePropertyChanged(nameof(BelongsToGroup));
-            }
-        }
-
-
-        /// <summary>
         /// Unique ID.
         /// </summary>
         [JsonProperty("Uuid")]

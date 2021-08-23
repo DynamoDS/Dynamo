@@ -167,7 +167,7 @@ namespace Dynamo.Graph.Annotations
             }
         }
               
-        private IEnumerable<ModelBase> nodes;
+        private HashSet<ModelBase> nodes;
         /// <summary>
         /// Returns collection of models (nodes and notes) which the group contains
         /// </summary>
@@ -176,20 +176,11 @@ namespace Dynamo.Graph.Annotations
             get { return nodes; }
             set
             {
-                // Before setting this property
-                // we need to reset all previous values.
-                if (nodes != null)
-                {
-                    nodes.ToList()
-                        .ForEach(x => x.BelongsToGroup = false);
-                }
-
-                nodes = value;
+                nodes = value.ToHashSet<ModelBase>();
                 if (nodes != null && nodes.Any())
                 {
                     foreach (var model in nodes)
                     {
-                        model.BelongsToGroup = true;
                         model.PropertyChanged += model_PropertyChanged;
                         model.Disposed += model_Disposed;
                     }
@@ -503,7 +494,6 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("InitialHeight", this.InitialHeight);
             helper.SetAttribute("TextblockHeight", this.TextBlockHeight);
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));
-            helper.SetAttribute(nameof(BelongsToGroup), this.BelongsToGroup);
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
             foreach (var guids in this.Nodes.Select(x => x.GUID))
@@ -533,7 +523,6 @@ namespace Dynamo.Graph.Annotations
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
-            this.BelongsToGroup = helper.ReadBoolean(nameof(BelongsToGroup), false);
             //Deserialize Selected models
             if (element.HasChildNodes)
             {
@@ -575,7 +564,7 @@ namespace Dynamo.Graph.Annotations
         /// completely inside that group</param>
         internal void AddToSelectedModels(ModelBase model, bool checkOverlap = false)
         {
-            if (model.BelongsToGroup) return;
+            //if (model.BelongsToGroup) return;
 
             var list = this.Nodes.ToList();
             if (model.GUID == this.GUID) return;
@@ -632,6 +621,19 @@ namespace Dynamo.Graph.Annotations
             }   
        
             base.Deselect();
+        }
+
+        /// <summary>
+        /// Checks if the provided modelbase belongs
+        /// to this group.
+        /// </summary>
+        /// <param name="modelBase">modelbase to check if belongs to this group</param>
+        /// <returns></returns>
+        public bool ContainsModel(ModelBase modelBase)
+        {
+            if (modelBase is null) return false;
+
+            return nodes.Contains(modelBase);
         }
 
         /// <summary>
