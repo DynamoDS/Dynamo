@@ -887,12 +887,6 @@ namespace Dynamo.ViewModels
                 case "SelectedModels":
                     this.AnnotationModel.UpdateBoundaryFromSelection();
                     break;
-                //case nameof(AnnotationModel.BelongsToGroup):
-                //    RaisePropertyChanged(nameof(ZIndex));
-                //    AddToGroupCommand.RaiseCanExecuteChanged();
-                //    AddGroupToGroupCommand.RaiseCanExecuteChanged();
-                //    RemoveGroupFromGroupCommand.RaiseCanExecuteChanged();
-                //    break;
                 case nameof(AnnotationModel.Nodes):
                     ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
                     HandleNodesCollectionChanges();
