@@ -41,9 +41,11 @@ namespace Dynamo.Graph.Nodes
         private bool canUpdatePeriodically;
         private string name;
         private ElementState state;
-        private string toolTipText = "";
+        private string toolTipText = string.Empty;
         private string description;
-        private string persistentWarning = "";
+        private string persistentWarning = string.Empty;
+        private string transientWarning = string.Empty;
+
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
 
@@ -1574,9 +1576,37 @@ namespace Dynamo.Graph.Nodes
         {
             State = ElementState.Dead;
             ClearPersistentWarning();
+            transientWarning = string.Empty;
 
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTooltipText();
+        }
+
+        /// <summary>
+        /// Clears the transient warning only if the current state is ElementState.Warning.
+        /// If an argument is specified, then the transient warning will be cleared only if it matches the argument value.
+        /// If no argument is specified (i.e null or empty value), then the transient warning will be cleared no matter its value.
+        /// PersistentWarning warnings will be kept. If no persistent warnings are found, then the default state will be assigned. 
+        /// </summary>
+        internal void ClearTransientWarning(string t = null)
+        {
+            if (State == ElementState.Warning)
+            {
+                if (string.IsNullOrEmpty(t) || string.Compare(t, transientWarning) == 0)
+                {// Called with null (or empty argument) or argument matched the existing transient warning
+                    transientWarning = string.Empty;// Reset the transient warning
+                    if (!string.IsNullOrEmpty(persistentWarning))
+                    {// Still have persistent warnings then switch to the PersistentWarning state
+                        State = ElementState.PersistentWarning;
+                        ToolTipText = persistentWarning;
+                    }
+                    else
+                    {// No persistent warnings, go to default
+                        State = ElementState.Dead;
+                        ClearErrorsAndWarnings();
+                    }
+                } 
+            }
         }
 
         public void SelectNeighbors()
@@ -1676,8 +1706,8 @@ namespace Dynamo.Graph.Nodes
             else
             {
                 State = ElementState.Warning;
-                ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.Format("{0}\n{1}", persistentWarning, p);
-                ClearPersistentWarning();
+                transientWarning = p;
+                ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.IsNullOrEmpty(p) ? persistentWarning : $"{persistentWarning}\n{p}";
             }
         }
 
