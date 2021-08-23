@@ -143,6 +143,23 @@
 					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 0
 				}
+			},
+			{
+				"Sequence": 7,
+				"Name": "test",
+				"Type": "tooltip",
+				"Width": 50,
+				"Height": 50,
+				"StepContent": {
+					"Title": "GetStartedGuideSurveyTitle",
+					"FormattedText": "GetStartedGuideSurveyText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"HostUIElementString": "WorkspaceTabs",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 0
+				}
 			}
 		]
 	}
