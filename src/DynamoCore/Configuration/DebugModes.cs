@@ -49,6 +49,12 @@ namespace Dynamo.Configuration
             // Register app wide new debug modes here.
             AddDebugMode("PythonEngineSelectionUIDebugMode", "Enable/disable PythonEngineSelectionUI.", true);
             AddDebugMode("Python2ObsoleteMode", "Enable/disable warnings regarding Python 2 obsoletion.");
+            AddDebugMode("Disable1", "Disables SearchAndUpdateResults - Searching for nodes should be completely disabled", false);
+            AddDebugMode("Disable2", "Disables LogPiiInfo - No calls to logger", false);
+            AddDebugMode("Disable3", "Disables UpdateSearchCategories - No calls to update search categories", false);
+            AddDebugMode("Disable4", "Disables SearchViewModelRequestBitmapSource - Completely disable icons", false);
+            AddDebugMode("Disable5", "Disables LoadIconInternal - Disable loading the icons from the resource assembly", false);
+            AddDebugMode("Disable6", "Disables ConvertToImageSource - Disable conversion from bitmap to imagesource", false);
         }
 
         internal static void LoadDebugModesStatusFromConfig(string configPath)

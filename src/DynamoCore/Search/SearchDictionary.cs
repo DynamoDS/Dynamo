@@ -12,7 +12,7 @@ namespace Dynamo.Search
     /// </summary>
     public class SearchDictionary<V>
     {
-        private ILogger logger;
+        internal ILogger logger;
 
         /// <summary>
         ///     Construct a SearchDictionary object
