@@ -7,7 +7,7 @@ using System.Windows;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
-using Dynamo.Wpf.Interfaces;
+using Dynamo.Interfaces;
 
 namespace Dynamo.LibraryViewExtensionMSWebBrowser
 {

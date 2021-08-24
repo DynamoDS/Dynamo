@@ -1088,7 +1088,7 @@ namespace Dynamo.Tests
             // change to
             // def foo() { return = 42; }
             var cbnGuid = Guid.Parse("6a260ba7-d658-4350-a777-49511f725454");
-            var command = new Models.DynamoModel.UpdateModelValueCommand(Guid.Empty, cbnGuid, "Code", @"def foo() { return = 42; }");
+            var command = new Dynamo.Models.DynamoModel.UpdateModelValueCommand(Guid.Empty, cbnGuid, "Code", @"def foo() { return = 42; }");
             CurrentDynamoModel.ExecuteCommand(command);
             RunCurrentModel();
 
@@ -1196,7 +1196,7 @@ namespace Dynamo.Tests
             var guidCodeBlock = Guid.Parse("b9dec880d99347eb8a203783f54763e6");
             AssertPreviewValue(guidCurveLength, new object[] { new object[] { }, new object[] { 6.283185 } });
 
-            var command = new Models.DynamoModel.UpdateModelValueCommand(Guid.Empty, guidCodeBlock, "Code", @"[[c],[]]");
+            var command = new Dynamo.Models.DynamoModel.UpdateModelValueCommand(Guid.Empty, guidCodeBlock, "Code", @"[[c],[]]");
             CurrentDynamoModel.ExecuteCommand(command);
             RunCurrentModel();
             AssertPreviewValue(guidCurveLength, new object[] { new object[] { 6.283185 }, new object[] { } });
