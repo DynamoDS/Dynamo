@@ -214,12 +214,11 @@ namespace Dynamo.Nodes
         /// <param name="e">The <see cref="TextChangedEventArgs"/> instance containing the event data.</param>
         private void GroupTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (ViewModel != null)
-            {
-                SetTextMaxWidth();
-                SetTextHeight();
-                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
-            }
+            if (ViewModel is null || !IsLoaded) return;
+
+            SetTextMaxWidth();
+            SetTextHeight();
+            ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
 
@@ -331,7 +330,7 @@ namespace Dynamo.Nodes
 
         private void GroupDescriptionTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (ViewModel is null) return;
+            if (ViewModel is null || !IsLoaded) return;
 
             SetTextMaxWidth();
             SetTextHeight();
