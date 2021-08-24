@@ -456,6 +456,7 @@ namespace Dynamo.Graph.Workspaces
         bool verboseLogging;
 
         internal readonly static string NodeLibraryDependenciesPropString = "NodeLibraryDependencies";
+        internal readonly static string NodeLocalDefinitionsPropString = "NodeLocalDefinitions";
         internal const string EXTENSION_WORKSPACE_DATA = "ExtensionWorkspaceData";
         internal const string LINTING_PROP_STRING = "Linting";
 
@@ -595,6 +596,16 @@ namespace Dynamo.Graph.Workspaces
                 nodeLibraryDependencies = new List<PackageDependencyInfo>();
             }
 
+            IEnumerable<INodeLibraryDependencyInfo> nodeLocalDefinitions;
+            if (obj[NodeLocalDefinitionsPropString] != null)
+            {
+                nodeLocalDefinitions = obj[NodeLocalDefinitionsPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
+            }
+            else
+            {
+                nodeLocalDefinitions = new List<LocalDefinitionInfo>();
+            }
+
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
 
             // IsVisibleInDynamoLibrary and Category should be set explicitly for custom node workspace
@@ -677,7 +688,7 @@ namespace Dynamo.Graph.Workspaces
             }
 
             ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
-
+            ws.NodeLocalDefinitions = nodeLocalDefinitions.ToList();
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
 
@@ -828,7 +839,11 @@ namespace Dynamo.Graph.Workspaces
             // NodeLibraryDependencies
             writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
             serializer.Serialize(writer, ws.NodeLibraryDependencies);
-            
+
+            // NodeLibraryDependencies
+            writer.WritePropertyName(WorkspaceReadConverter.NodeLocalDefinitionsPropString);
+            serializer.Serialize(writer, ws.NodeLocalDefinitions);
+
             if (!isCustomNode && ws is HomeWorkspaceModel hws)
             {
                 // Thumbnail
@@ -1006,8 +1021,10 @@ namespace Dynamo.Graph.Workspaces
                 writer.WriteStartObject();
                 writer.WritePropertyName(NamePropString);
                 writer.WriteValue(p.Name);
-                writer.WritePropertyName(VersionPropString);
-                writer.WriteValue(p.Version.ToString());
+                if (p.Version != null) {
+                    writer.WritePropertyName(VersionPropString);
+                    writer.WriteValue(p.Version.ToString());
+                }
                 writer.WritePropertyName(ReferenceTypePropString);
                 writer.WriteValue(p.ReferenceType.ToString("G"));
                 writer.WritePropertyName(NodesPropString);

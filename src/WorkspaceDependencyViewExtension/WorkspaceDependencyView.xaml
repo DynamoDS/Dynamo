@@ -221,9 +221,22 @@
                 CanUserSortColumns="False"
                 HeadersVisibility="Column">
                 <DataGrid.Columns>
+                    <!-- State Icon -->
+                    <DataGridTemplateColumn 
+                        IsReadOnly="True"
+                        Width="38">
+                        <DataGridTemplateColumn.Header>
+                            <LineBreak />
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Icon}" Width="18" Height="18" Margin="0,8,0,8"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <!-- Local Definition Name -->
                     <DataGridTextColumn 
-                        Header="{x:Static w:Resources.NameHeader}" 
+                        Header="{x:Static w:Resources.NameHeader}"
                         Binding="{Binding Name}" 
                         Foreground="#aaaaaa" 
                         IsReadOnly="True" 
@@ -252,7 +265,7 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
                     <!--  Local Definition Size -->
-                    <DataGridTextColumn 
+                    <DataGridTextColumn
                         Header="{x:Static w:Resources.SizeHeader}" 
                         Binding="{Binding Version}" 
                         Foreground="#aaaaaa" 

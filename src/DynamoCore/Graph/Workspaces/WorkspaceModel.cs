@@ -685,7 +685,7 @@ namespace Dynamo.Graph.Workspaces
                 foreach (var dependency in value)
                 {
                     //handle package dependencies
-                    if(dependency.ReferenceType == ReferenceType.Package 
+                    if (dependency.ReferenceType == ReferenceType.Package
                         && dependency is PackageDependencyInfo)
                     {
                         foreach (var node in dependency.Nodes)
@@ -693,14 +693,72 @@ namespace Dynamo.Graph.Workspaces
                             nodePackageDictionary[node] = (dependency as PackageDependencyInfo).PackageInfo;
                         }
                     }
-                   
                 }
 
                 RaisePropertyChanged(nameof(NodeLibraryDependencies));
             }
         }
 
+        internal List<INodeLibraryDependencyInfo> NodeLocalDefinitions
+        {
+            get
+            {
+               var nodeLocalDefinitions = new Dictionary<object, LocalDefinitionInfo>();
+                foreach (var node in Nodes)
+                {
+                    var collected = GetNodePackage(node);
+
+                    if (!nodePackageDictionary.ContainsKey(node.GUID) && collected == null)
+                    {
+                        if (node.IsCustomFunction)
+                        {
+                            Guid functionSignature = ((Function)node).FunctionSignature;
+
+                            if (!nodeLocalDefinitions.ContainsKey(functionSignature))
+                            {
+                                nodeLocalDefinitions[functionSignature] = new LocalDefinitionInfo(node.Name);
+                            }
+
+                            nodeLocalDefinitions[functionSignature].AddDependent(node.GUID);
+                            nodeLocalDefinitions[functionSignature].ReferenceType = ReferenceType.DYFFILE;
+                        }
+                        if(node is DSFunctionBase functionNode) 
+                        {
+                            string name = functionNode.Controller.Definition.Namespace;
+
+                            if (!nodeLocalDefinitions.ContainsKey(name))
+                            {
+                                nodeLocalDefinitions[name] = new LocalDefinitionInfo(name, functionNode.Controller.Definition.Assembly);
+                            }
+
+                            nodeLocalDefinitions[name].AddDependent(node.GUID);
+                            nodeLocalDefinitions[name].ReferenceType = ReferenceType.ZeroTouch;
+                        }
+                    }
+                }
+
+                return nodeLocalDefinitions.Values.ToList<INodeLibraryDependencyInfo>();
+            }
+            set
+            {
+                foreach (var dependency in value)
+                {
+                    //handle package dependencies
+                    if (dependency.ReferenceType == ReferenceType.DYFFILE)
+                    {
+                        foreach (var node in dependency.Nodes)
+                        {
+                            localDefinitionsDictionary.Add(node);
+                        }
+                    }
+                }
+
+                RaisePropertyChanged(nameof(NodeLocalDefinitions));
+            }
+        }
+
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
+        private List<Guid> localDefinitionsDictionary = new List<Guid>();
 
 
         /// <summary>
@@ -1042,6 +1100,7 @@ namespace Dynamo.Graph.Workspaces
             this.annotations = new List<AnnotationModel>(annotations);
 
             this.NodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            this.NodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;

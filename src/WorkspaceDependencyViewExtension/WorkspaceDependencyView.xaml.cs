@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
@@ -39,6 +40,7 @@ namespace Dynamo.WorkspaceDependency
         /// You are not expected to modify this but rather inspection.
         /// </summary>
         internal IEnumerable<PackageDependencyRow> dataRows;
+        internal IEnumerable<LocalDefinitionRow> localDefinitionDataRows;
 
         private Boolean hasDependencyIssue = false;
         /// <summary>
@@ -79,6 +81,8 @@ namespace Dynamo.WorkspaceDependency
             }
         }
 
+        internal CustomNodeManager CustomNodeManager { get; set; }
+
         /// <summary>
         /// Event handler for workspaceAdded event
         /// </summary>
@@ -114,7 +118,7 @@ namespace Dynamo.WorkspaceDependency
 
         private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName == nameof(currentWorkspace.NodeLibraryDependencies))
+            if (args.PropertyName == nameof(currentWorkspace.NodeLibraryDependencies) || args.PropertyName == nameof(currentWorkspace.NodeLocalDefinitions))
                 DependencyRegen(currentWorkspace);
         }
 
@@ -126,6 +130,16 @@ namespace Dynamo.WorkspaceDependency
         {
             RestartBanner.Visibility = Visibility.Hidden;
             var packageDependencies = ws.NodeLibraryDependencies.Where(d => d is PackageDependencyInfo).ToList();
+            var localDefinitions = ws.NodeLocalDefinitions.Where(d => d is LocalDefinitionInfo).ToList();
+
+            foreach (LocalDefinitionInfo info in localDefinitions) 
+            {
+                dependencyViewExtension.DependencyView.CustomNodeManager.TryGetNodeInfo(info.Name, out CustomNodeInfo customNodeInfo);
+                if (customNodeInfo != null)
+                {
+                    info.Path = customNodeInfo.Path;
+                }
+            }
 
             var pythonPackageDependencies = ws.OnRequestPackageDependencies();
             if (pythonPackageDependencies != null)
@@ -163,7 +177,10 @@ namespace Dynamo.WorkspaceDependency
             }
 
             dataRows = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
+            localDefinitionDataRows = localDefinitions.Select(d => new LocalDefinitionRow(d as LocalDefinitionInfo));
+
             PackageDependencyTable.ItemsSource = dataRows;
+            LocalDefinitionsTable.ItemsSource = localDefinitionDataRows;
         }
 
         /// <summary>
@@ -284,7 +301,9 @@ namespace Dynamo.WorkspaceDependency
             WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
             HomeWorkspaceModel.WorkspaceClosed -= this.CloseExtensionTab;
             PackageDependencyTable.ItemsSource = null;
+            LocalDefinitionsTable.ItemsSource = null;
             dataRows = null;
+            localDefinitionDataRows = null;
         }
 
         private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -402,5 +421,33 @@ namespace Dynamo.WorkspaceDependency
         /// Indicates whether to show/enable the package keep local button
         /// </summary>
         public bool ShowKeepLocalButton => this.DependencyInfo.State == PackageDependencyState.IncorrectVersion;
+    }
+
+    /// <summary>
+    /// Represents information about a local dependency as a row in the dependency table
+    /// </summary>
+    public class LocalDefinitionRow
+    {
+        internal LocalDefinitionInfo DependencyInfo { get; private set; }
+
+        internal LocalDefinitionRow(LocalDefinitionInfo localDefinitionInfo)
+        {
+            DependencyInfo = localDefinitionInfo;
+        }
+
+        /// <summary>
+        /// Name of this package dependency
+        /// </summary>
+        public string Name => DependencyInfo.Name;
+
+        /// <summary>
+        /// local dependency path
+        /// </summary>
+        public string Path => DependencyInfo.Path;
+
+        /// <summary>
+        /// local dependency size
+        /// </summary>
+        public string Size => DependencyInfo.Size;
     }
 }
