@@ -153,14 +153,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This method will update the Popup offset so it will be re-drawn in the new location (just when the PlacementTarget is moved or resized).
+        /// This method will update the Popup location by calling the private method UpdatePosition using reflection (just when the PlacementTarget is moved or resized).
         /// </summary>
         public void UpdateLocation()
         {
             if(stepUIPopup.IsOpen == true)
             {
-                stepUIPopup.HorizontalOffset = stepUIPopup.HorizontalOffset + 1;
-                stepUIPopup.HorizontalOffset = stepUIPopup.HorizontalOffset - 1;
+                var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                positionMethod.Invoke(stepUIPopup, null);
             }         
         }
 

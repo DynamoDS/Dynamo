@@ -66,9 +66,9 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             if (IsOpen == true)
             {
-                //Uodating the Offset will produce that the Popup will update the position(that's the only way I found).
-                HorizontalOffset = HorizontalOffset + 1;
-                HorizontalOffset = HorizontalOffset - 1;
+                //This section will update the Popup location by calling the private method UpdatePosition using reflection
+                var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                positionMethod.Invoke(this, null);
             }
         }
     }

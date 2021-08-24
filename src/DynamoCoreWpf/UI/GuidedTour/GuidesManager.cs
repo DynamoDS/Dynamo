@@ -33,7 +33,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private RealTimeInfoWindow exitTourPopup;
 
+        //The ExitTour popup will be shown at the top-right section of the Dynamo window (at the left side of the statusBarPanel element) only when the tour is closed
+        //The ExitTourVerticalOffset is used to move vertically the popup (using as a reference the statusBarPanel position)
         private const double ExitTourVerticalOffset = 10;
+        //The ExitTourHorizontalOffset is used to move horizontally the popup (using as a reference the statusBarPanel position)
         private const double ExitTourHorizontalOffset = 110;
 
         public static string GuidesExecutingDirectory
