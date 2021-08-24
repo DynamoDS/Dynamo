@@ -89,7 +89,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 //Show background overlay
                 guideBackgroundElement.Visibility = Visibility.Visible;
-                currentGuide.guideBackgroundElement = guideBackgroundElement;
+                currentGuide.GuideBackgroundElement = guideBackgroundElement;
                 currentGuide.Initialize();
                 currentGuide.Play();
             }

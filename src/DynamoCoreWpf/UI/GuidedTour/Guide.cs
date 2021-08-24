@@ -34,7 +34,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         public int TotalSteps { get; set; }
 
-        public GuideBackground guideBackgroundElement { get; set; }
+        /// <summary>
+        /// This variable represents the Guide Background Element to manipulate it's hole rect
+        /// </summary>
+        public GuideBackground GuideBackgroundElement { get; set; }
 
         public Guide()
         {
@@ -65,7 +68,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             GuideFlowEvents.GuidedTourNextStep += Next;
             GuideFlowEvents.GuidedTourPrevStep += Back;
-
         }
 
         /// <summary>
@@ -126,15 +128,19 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }             
         }
 
+        /// <summary>
+        /// This method will update the hole size everytime that the step change
+        /// </summary>
+        /// <param name="hostElement">Element for size and position reference</param>
         private void SetupBackgroundHoleSize(UIElement hostElement)
         {
-            Point position = hostElement.PointToScreen(new Point(0, 0));
+            Point relativePoint = hostElement.TransformToAncestor(Application.Current.MainWindow)
+                              .Transform(new Point(0, 0));
 
-            guideBackgroundElement.HoleRect = new Rect(position.X, position.Y,
+            GuideBackgroundElement.HoleRect = new Rect(relativePoint.X, relativePoint.Y,
                 hostElement.DesiredSize.Width, hostElement.DesiredSize.Height);
 
         }
-
 
         /// <summary>
         /// This event method will be executed then the user press the Back button in the tooltip/popup
@@ -149,6 +155,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 prevStep = (from step in GuideSteps where step.Sequence == args.StepSequence - 1 select step).FirstOrDefault();
                 if (prevStep != null)
                 {
+                    if (prevStep.HostPopupInfo != null)
+                        SetupBackgroundHoleSize(prevStep.HostPopupInfo.HostUIElement);
                     prevStep.Show();
                 }                   
             }
