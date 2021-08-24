@@ -813,12 +813,12 @@ namespace Dynamo.ViewModels
 
                     // Here we check if the mouse cursor is inside any Annotation groups
                     var dropGroups = owningWorkspace.Annotations
-                        .Where(x => x.AnnotationModel.Rect.Contains(mouseCursor.X, mouseCursor.Y));
+                        .Where(x => x.IsExpanded && x.AnnotationModel.Rect.Contains(mouseCursor.X, mouseCursor.Y));
 
                     // In scenarios where there are nested groups, the above will return both
                     // the nested group and the parent group, as the mouse coursor will be inside
                     // both of there rects. In these cases we want to get group that is nested
-                    // inside the parent gropup.
+                    // inside the parent group.
                     var dropGroup = dropGroups.FirstOrDefault(x => !x.AnnotationModel.HasNestedGroups) ?? dropGroups.FirstOrDefault();
 
                     // If the dropGroup is null or any of the selected items is already in the dropGroup,

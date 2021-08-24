@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -88,6 +89,8 @@ namespace Dynamo.Graph.Workspaces
     {
         public string Title;
         public string DescriptionText;
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool IsExpanded;
         public IEnumerable<string> Nodes;
         public bool HasNestedGroups;
@@ -2248,27 +2251,6 @@ namespace Dynamo.Graph.Workspaces
 
                 groups.Add(group);
             }
-
-            // Older graphs wont have the "Groups" property,
-            // so we first check if there is any property
-            // and then check if there are any groups grouped
-            // to this group. After that we proceed to create
-            // a collection of AnnotationModels for this group.
-            //var groups = new List<AnnotationModel>();
-            //if (annotationViewInfo.Groups != null &&
-            //    annotationViewInfo.Groups.Any())
-            //{
-            //    foreach (string groupId in annotationViewInfo.Groups)
-            //    {
-            //        var guidValue = IdToGuidConverter(groupId);
-            //        if (guidValue == null) continue;
-
-            //        var group = Annotations.FirstOrDefault(g => g.GUID == guidValue);
-            //        if (group == null) continue;
-
-            //        groups.Add(group);
-            //    }
-            //}
 
             var annotationModel = new AnnotationModel(nodes, notes, groups);
             annotationModel.AnnotationText = text;

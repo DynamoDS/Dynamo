@@ -527,7 +527,6 @@ namespace Dynamo.ViewModels
             OutPorts.CollectionChanged += OutPorts_CollectionChanged;
 
             ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
-            IsExpanded = annotationModel.IsExpanded;
 
             // Add all grouped AnnotaionModels to the CutGeometryDictionary.
             ViewModelBases.OfType<AnnotationViewModel>()
