@@ -222,6 +222,8 @@ namespace Dynamo.Graph.Workspaces
         private HashSet<Guid> dependencies = new HashSet<Guid>();
 
         private int delayGraphExecutionCounter = 0;
+        private readonly string zeroTouchExtension = ".dll";
+        private readonly string customNodeExtension = ".dyf";
 
         /// <summary>
         /// Whether or not to delay graph execution.
@@ -716,23 +718,25 @@ namespace Dynamo.Graph.Workspaces
 
                             if (!nodeLocalDefinitions.ContainsKey(functionSignature))
                             {
-                                nodeLocalDefinitions[functionSignature] = new LocalDefinitionInfo(node.Name);
+                                string localDefinitionName = node.Name + customNodeExtension;
+                                nodeLocalDefinitions[functionSignature] = new LocalDefinitionInfo(localDefinitionName);
                             }
 
                             nodeLocalDefinitions[functionSignature].AddDependent(node.GUID);
                             nodeLocalDefinitions[functionSignature].ReferenceType = ReferenceType.DYFFILE;
                         }
-                        if(node is DSFunctionBase functionNode) 
+                        if (node is DSFunctionBase functionNode)
                         {
-                            string name = functionNode.Controller.Definition.Namespace;
+                            string namespaceKey = functionNode.Controller.Definition.Namespace;
 
-                            if (!nodeLocalDefinitions.ContainsKey(name))
+                            if (!nodeLocalDefinitions.ContainsKey(namespaceKey))
                             {
-                                nodeLocalDefinitions[name] = new LocalDefinitionInfo(name, functionNode.Controller.Definition.Assembly);
+                                string localDefinitionName = node.Name + zeroTouchExtension;
+                                nodeLocalDefinitions[namespaceKey] = new LocalDefinitionInfo(localDefinitionName, functionNode.Controller.Definition.Assembly);
                             }
 
-                            nodeLocalDefinitions[name].AddDependent(node.GUID);
-                            nodeLocalDefinitions[name].ReferenceType = ReferenceType.ZeroTouch;
+                            nodeLocalDefinitions[namespaceKey].AddDependent(node.GUID);
+                            nodeLocalDefinitions[namespaceKey].ReferenceType = ReferenceType.ZeroTouch;
                         }
                     }
                 }

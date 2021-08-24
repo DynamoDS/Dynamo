@@ -267,7 +267,7 @@
                     <!--  Local Definition Size -->
                     <DataGridTextColumn
                         Header="{x:Static w:Resources.SizeHeader}" 
-                        Binding="{Binding Version}" 
+                        Binding="{Binding Size}" 
                         Foreground="#aaaaaa" 
                         IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>

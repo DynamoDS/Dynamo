@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,6 +30,8 @@ namespace Dynamo.WorkspaceDependency
         /// The hyper link where Dynamo user will be forwarded to for submitting comments.
         /// </summary>
         private readonly string FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
+        private readonly string sizeUnits = " KB";
+        private readonly string customNodeExtension = ".dyf";
 
         private ViewLoadedParams loadedParams;
         private WorkspaceDependencyViewExtension dependencyViewExtension;
@@ -134,10 +137,19 @@ namespace Dynamo.WorkspaceDependency
 
             foreach (LocalDefinitionInfo info in localDefinitions) 
             {
-                dependencyViewExtension.DependencyView.CustomNodeManager.TryGetNodeInfo(info.Name, out CustomNodeInfo customNodeInfo);
+                string customNodeName = info.Name.Replace(customNodeExtension, "");
+                dependencyViewExtension.DependencyView.CustomNodeManager.TryGetNodeInfo(customNodeName, out CustomNodeInfo customNodeInfo);
+
                 if (customNodeInfo != null)
                 {
                     info.Path = customNodeInfo.Path;
+                }
+
+                if (info.Path != null)
+                {
+                    FileInfo localDefinitionFileInfo = new FileInfo(info.Path);
+                    long size = localDefinitionFileInfo.Length / 1024;
+                    info.Size = size.ToString() + sizeUnits;
                 }
             }
 
