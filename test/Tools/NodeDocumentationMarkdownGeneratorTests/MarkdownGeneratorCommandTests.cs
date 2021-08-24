@@ -452,6 +452,28 @@ namespace NodeDocumentationMarkdownGeneratorTests
             Assert.IsTrue(coreNodeModelMdFiles.Count() == mdFileInfos.Count);
             AssertMdFileInfos(mdFileInfos, coreNodeModelMdFiles);
         }
+        [Test]
+        public void ReferencesFlagAddsReferencePaths()
+        {   
+            // Arrange
+            //using the dynamosamples package as a reference because it's not in the default bin paths.
+            var packageName = "Dynamo Samples";
+            var packageDirectory = Path.GetFullPath(Path.Combine(toolsTestFilesDirectory, @"..\..\pkgs", packageName)); ;
+            var opts = new FromDirectoryOptions
+            {
+                InputFolderPath = DynamoCoreNodesDir,
+                Filter = new string[] { "doesnotexist.dll" },
+                ReferencePaths = new List<string> { packageDirectory }
+            };
+
+
+            // Act
+            FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
+
+
+            // Assert
+            Assert.IsTrue(Program.ReferenceAssemblyPaths.Select(x => new FileInfo(x).Name).Contains("SampleLibraryUI.dll"));
+        }
 
         #region Helpers
         internal void AssertMdFileInfos(List<MdFileInfo> mdFileInfos, FileInfo[] coreNodeModelMdFiles)
