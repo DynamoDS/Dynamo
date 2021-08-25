@@ -143,6 +143,11 @@ namespace Dynamo.WorkspaceDependency
                 if (customNodeInfo != null)
                 {
                     info.Path = customNodeInfo.Path;
+                    info.Type = "CustomNode";
+                }
+                else
+                {
+                    info.Type = "ZeroTouchNode";
                 }
 
                 if (info.Path != null)
@@ -461,5 +466,29 @@ namespace Dynamo.WorkspaceDependency
         /// local dependency size
         /// </summary>
         public string Size => DependencyInfo.Size;
+
+        /// <summary>
+        /// The icon representing the reference object.
+        /// </summary>
+        public ImageSource Icon
+        {
+            get
+            {
+                Bitmap bitmap = null;
+
+                switch (DependencyInfo.Type)
+                {
+                    case "CustomNode":
+                        bitmap = Properties.Resources.CustomNodeReferenceIcon;
+                        break;
+
+                    case "ZeroTouchNode":
+                        bitmap = Properties.Resources.ZeroTouchNodeReferenceIcon;
+                        break;
+                }
+
+                return ResourceUtilities.ConvertToImageSource(bitmap);
+            }
+        }
     }
 }

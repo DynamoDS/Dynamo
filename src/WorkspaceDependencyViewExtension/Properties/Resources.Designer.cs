@@ -61,6 +61,16 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap CustomNodeReferenceIcon {
+            get {
+                object obj = ResourceManager.GetObject("CustomNodeReferenceIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error from WorkspaceDependencyViewExtension: {0}.
         /// </summary>
         public static string DependencyViewExtensionErrorTemplate {
@@ -267,6 +277,16 @@ namespace Dynamo.WorkspaceDependency.Properties {
         public static string VersionHeader {
             get {
                 return ResourceManager.GetString("VersionHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ZeroTouchNodeReferenceIcon {
+            get {
+                object obj = ResourceManager.GetObject("ZeroTouchNodeReferenceIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
