@@ -116,7 +116,7 @@ namespace Dynamo.Nodes.Prompts
             this.CrashDetailsContent.Visibility = Visibility.Visible;
 
             var allAssemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.FullName);
-            Clipboard.SetData(DataFormats.Text, details + "\n" + string.Join("|", allAssemblies));
+            Clipboard.SetData(DataFormats.Text, details + "\n\n-------- Assemblies --------\n\n" + string.Join("|", allAssemblies));
         }
 
         private void OpenFolder_Click(object sender, RoutedEventArgs e)
