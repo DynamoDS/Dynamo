@@ -92,6 +92,8 @@ namespace Dynamo.Controls
         internal ViewExtensionManager viewExtensionManager;
         internal Watch3DView BackgroundPreview { get; private set; }
 
+        internal GuidesManager mainGuideManager;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -735,12 +737,20 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.Model.PreferenceSettings.WindowX = Left;
             dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
+
+            //When the Dynamo window is moved to another place we need to update the Steps location
+            if(mainGuideManager != null)
+                mainGuideManager.UpdateGuideStepsLocation();
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             dynamoViewModel.Model.PreferenceSettings.WindowW = e.NewSize.Width;
             dynamoViewModel.Model.PreferenceSettings.WindowH = e.NewSize.Height;
+
+            //When the Dynamo window size is changed then we need to update the Steps location
+            if (mainGuideManager != null)
+                mainGuideManager.UpdateGuideStepsLocation();
         }
 
         private void InitializeLogin()
@@ -2340,8 +2350,8 @@ namespace Dynamo.Controls
         private void ShowGetStartedGuidedTour()
         {
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
-            var testGuide = new GuidesManager(_this, dynamoViewModel);
-            testGuide.LaunchTour(Res.GetStartedGuide);
+            mainGuideManager = new GuidesManager(_this, dynamoViewModel);
+            mainGuideManager.LaunchTour(Res.GetStartedGuide);
         }
 
         private void RightExtensionSidebar_DragCompleted(object sender, DragCompletedEventArgs e)

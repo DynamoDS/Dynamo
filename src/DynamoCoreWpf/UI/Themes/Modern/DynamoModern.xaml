@@ -3457,13 +3457,11 @@
     </Style>
 
     <Style x:Key="PoupPathRectangleStyle" TargetType="{x:Type Path}">
-        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}" />
-        <Setter Property="Stroke" Value="Black" />
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
     </Style>
 
     <Style x:Key="PoupPolygonPointerStyle" TargetType="{x:Type Polygon}">
-        <Setter Property="Stroke" Value="Black" />
-        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}" />
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
     </Style>
 
     <Style x:Key="CustomRichTextBoxStyle" TargetType="{x:Type RichTextBox}">
