@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using Dynamo.Interfaces;
+using Dynamo.Wpf.Interfaces;
 using ImageMagick;
 using Newtonsoft.Json;
 
