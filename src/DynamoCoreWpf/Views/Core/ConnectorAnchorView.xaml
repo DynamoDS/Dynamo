@@ -9,6 +9,7 @@
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:props="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
              MouseLeave="OnMouseLeave">
 
     <UserControl.Resources>
@@ -68,7 +69,8 @@
                 Canvas.Top="{Binding CurrentPosition.Y}"
                 Canvas.Left="{Binding CurrentPosition.X}"
                 Height="{Binding AnchorSize}"
-                Width="{Binding AnchorSize}">
+                Width="{Binding AnchorSize}"
+                ToolTipService.ShowDuration="{x:Static Member=System:Int32.MaxValue}">
             <Button.ToolTip>
                 <ToolTip Style="{StaticResource ConnectorTooltip}">
                     <StackPanel Margin="5">
