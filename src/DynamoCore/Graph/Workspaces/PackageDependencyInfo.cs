@@ -274,7 +274,7 @@ namespace Dynamo.Graph.Workspaces
     /// <summary>
     /// Class containing info about a workspace package dependency
     /// </summary>
-        internal class PackageDependencyInfo : INodeLibraryDependencyInfo, IPackageInfo
+    internal class PackageDependencyInfo : INodeLibraryDependencyInfo, IPackageInfo
     {
         private PackageDependencyState _state;
         /// <summary>
