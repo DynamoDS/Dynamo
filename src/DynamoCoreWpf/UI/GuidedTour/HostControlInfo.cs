@@ -60,8 +60,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This property will highlight the clickable area if its set to true
         /// </summary>
-        [JsonProperty("Highlight")]
-        public bool Highlight { get; set; }
+        [JsonProperty("HighlightColor")]
+        public string HighlightColor { get; set; }
 
         /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Vertically (by specifying an offset) 

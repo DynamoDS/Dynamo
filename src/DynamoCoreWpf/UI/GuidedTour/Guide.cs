@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -112,20 +113,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 nextStep = (from step in GuideSteps where step.Sequence == args.StepSequence + 1 select step).FirstOrDefault();
 
-                if(nextStep.HostPopupInfo != null)
-                    SetupBackgroundHoleSize(nextStep.HostPopupInfo.HostUIElement);
-
-                if(nextStep.HostPopupInfo.Highlight)
-                    GuideBackgroundElement.HolePath.Visibility = Visibility.Visible;
-                else
-                    GuideBackgroundElement.HolePath.Visibility = Visibility.Hidden;
-
+                if (nextStep.HostPopupInfo != null)
+                    SetupBackgroundHole(nextStep);
 
                 if (nextStep != null)
                 {
                     nextStep.Show();
                 }
-
             }
 
             CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
@@ -133,6 +127,34 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 CurrentStep.Hide();
             }             
+        }
+
+        /// <summary>
+        /// This method styles the bacground in every step
+        /// </summary>
+        /// <param name="step">This parameter represents the step with informations of the element and color of the border</param>
+        private void SetupBackgroundHole(Step step)
+        {
+            SetupBackgroundHoleSize(step.HostPopupInfo.HostUIElement);
+            SetupBackgroundHoleBorderColor(step.HostPopupInfo.HighlightColor);
+        }
+
+        /// <summary>
+        /// This method will set the border color with there is any configured
+        /// </summary>
+        /// <param name="highlightColor">This parameter represents the color in hexadecimal</param>
+        private void SetupBackgroundHoleBorderColor(string highlightColor)
+        {
+            if(string.IsNullOrEmpty(highlightColor))
+            {
+                GuideBackgroundElement.HolePath.Stroke = Brushes.Black;
+            }
+            else
+            {
+                var converter = new BrushConverter();
+                var brush = (Brush)converter.ConvertFromString(highlightColor);
+                GuideBackgroundElement.HolePath.Stroke = brush;
+            }
         }
 
         /// <summary>
@@ -163,7 +185,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (prevStep != null)
                 {
                     if (prevStep.HostPopupInfo != null)
-                        SetupBackgroundHoleSize(prevStep.HostPopupInfo.HostUIElement);
+                        SetupBackgroundHole(prevStep);
+
                     prevStep.Show();
                 }                   
             }
