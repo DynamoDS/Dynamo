@@ -1,4 +1,4 @@
-<UserControl x:Class="Dynamo.Controls.NodeView"
+﻿<UserControl x:Class="Dynamo.Controls.NodeView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" MinHeight="8" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <!--  Sets grid to 70% opacity when node is frozen  -->
@@ -52,6 +52,7 @@
                             <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                         </ResourceDictionary.MergedDictionaries>
                         <Style TargetType="{x:Type MenuItem}">
+                            <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
                             <Setter Property="Height" Value="30" />
                             <Setter Property="Width" Value="240" />
                             <Setter Property="Padding" Value="15,0,0,0" />
@@ -62,6 +63,17 @@
                                                    HorizontalAlignment="Stretch"
                                                    Background="Transparent"
                                                    SnapsToDevicePixels="true">
+                                            <Label x:Name="checkBox"
+                                                   Margin="10,0,-10,0"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   Content="✓"
+                                                   DockPanel.Dock="Left"
+                                                   FontSize="9px"
+                                                   Foreground="White"
+                                                   Visibility="Collapsed" />
                                             <ContentPresenter x:Name="ContentPresenter"
                                                               Margin="{TemplateBinding Padding}"
                                                               VerticalAlignment="Center"
@@ -152,6 +164,9 @@
                                             <DataTrigger Binding="{Binding ElementName=ContentPresenter, Path=Content}" Value="Dismissed Alerts">
                                                 <Setter TargetName="dismissedAlertsBadge" Property="Visibility" Value="Visible" />
                                             </DataTrigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
+                                            </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -173,8 +188,9 @@
                 </ContextMenu.Resources>
                 <MenuItem Name="deleteElem_cm"
                           Command="{Binding Path=DeleteCommand}"
-                          Header="{x:Static p:Resources.ContextMenuDelete}" />
-                <MenuItem Header="{x:Static p:Resources.ContextMenuGroups}">
+                          Header="{x:Static p:Resources.ContextMenuDelete}"
+                          IsCheckable="False" />
+                <MenuItem Header="{x:Static p:Resources.ContextMenuGroups}" IsCheckable="False">
                     <MenuItem Name="createGroup_cm"
                               Command="{Binding Path=CreateGroupCommand}"
                               Header="{x:Static p:Resources.ContextCreateGroupFromSelection}" />
@@ -188,11 +204,13 @@
                 <MenuItem Name="isVisible_cm"
                           Command="{Binding Path=ToggleIsVisibleCommand}"
                           Header="{x:Static p:Resources.NodeContextMenuPreview}"
+                          IsCheckable="True"
                           IsChecked="{Binding Path=IsVisible, Mode=OneWay}"
                           Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <MenuItem Name="nodeIsFrozen"
                           Command="{Binding Path=ToggleIsFrozenCommand}"
                           Header="{x:Static p:Resources.NodesRunStatus}"
+                          IsCheckable="True"
                           IsChecked="{Binding IsFrozenExplicitly, Mode=OneWay}"
                           IsEnabled="{Binding CanToggleFrozen, Mode=OneWay}" />
                 <MenuItem Name="isDisplayLabelsEnabled_cm"
@@ -202,8 +220,11 @@
                           IsEnabled="{Binding Path=CanDisplayLabels}" />
                 <MenuItem Name="rename_cm"
                           Command="{Binding Path=RenameCommand}"
-                          Header="{x:Static p:Resources.NodeContextMenuRenameNode}" />
-                <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}" Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}, Mode=OneWay}">
+                          Header="{x:Static p:Resources.NodeContextMenuRenameNode}"
+                          IsCheckable="False" />
+                <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
+                          IsCheckable="False"
+                          Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}, Mode=OneWay}">
                     <MenuItem Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="Auto"
                               Header="{x:Static p:Resources.ContextMenuLacingAuto}"
@@ -225,11 +246,18 @@
                               IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CrossProduct, Mode=OneWay}" />
                 </MenuItem>
+<<<<<<< Updated upstream
                 <MenuItem
                     Name="dismissedAlerts"
                     Header="Dismissed Alerts"
                     ItemsSource="{Binding DismissedAlerts, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                 <Separator />
+=======
+                <MenuItem Name="dismissedAlerts"
+                          Header="Dismissed Alerts"
+                          IsCheckable="False" />
+                <Separator Visibility="{Binding Path=IsInputOrOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+>>>>>>> Stashed changes
                 <MenuItem Name="isInput_cm"
                           Header="{x:Static p:Resources.NodeContextMenuIsInput}"
                           IsCheckable="True"
@@ -243,7 +271,8 @@
                 <Separator />
                 <MenuItem Name="help_cm"
                           Command="{Binding Path=ShowHelpCommand}"
-                          Header="{x:Static p:Resources.NodeContextMenuHelp}" />
+                          Header="{x:Static p:Resources.NodeContextMenuHelp}"
+                          IsCheckable="False" />
                 <ContextMenu.Style>
                     <Style TargetType="{x:Type ContextMenu}">
                         <Setter Property="Placement" Value="MousePoint" />
@@ -331,34 +360,23 @@
                 <Rectangle.ToolTip>
                     <dynui:DynamoToolTip AttachmentSide="Top" Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>
-                            <StackPanel MaxWidth="320" Orientation="Vertical">
+                            <StackPanel MaxWidth="320"
+                                        Margin="10"
+                                        Orientation="Vertical">
                                 <StackPanel>
-                                    <TextBlock Padding="10px"
-                                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
                                                FontWeight="Medium"
-                                               Text="{x:Static p:Resources.NodeTooltipOriginalName}"
-                                               TextWrapping="Wrap" />
-                                    <TextBlock Padding="10px"
-                                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                                               TextWrapping="Wrap">
+                                        <Run Text="{x:Static p:Resources.NodeTooltipOriginalName}" />
+                                        <Run Text="{Binding Path=OriginalName, Mode=OneWay}" />
+                                    </TextBlock>
+                                    <TextBlock Text="&#x0a;" />
+                                    <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
                                                FontWeight="Medium"
-                                               Text="{Binding Path=OriginalName}"
-                                               TextWrapping="Wrap" />
-                                </StackPanel>
-                                <!--  Space for splitting the original name and description  -->
-                                <StackPanel>
-                                    <TextBlock Text="&#xD;" />
-                                </StackPanel>
-                                <StackPanel>
-                                    <TextBlock Padding="10px"
-                                               FontFamily="{StaticResource ArtifaktElementRegular}"
-                                               FontWeight="Medium"
-                                               Text="{x:Static p:Resources.NodeTooltipDescription}"
-                                               TextWrapping="Wrap" />
-                                    <TextBlock Padding="10px"
-                                               FontFamily="{StaticResource ArtifaktElementRegular}"
-                                               FontWeight="Medium"
-                                               Text="{Binding Path=Description}"
-                                               TextWrapping="Wrap" />
+                                               TextWrapping="Wrap">
+                                        <Run Text="{x:Static p:Resources.NodeTooltipDescription}" />
+                                        <Run Text="{Binding Path=Description, Mode=OneWay}" />
+                                    </TextBlock>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
@@ -367,6 +385,7 @@
             </Rectangle>
         </Border>
 
+<<<<<<< Updated upstream
         <!--  Displays Tooltip when the user's mouse hovers over the node header  -->
         <Border Name="previewStateNameBlock"
                 Grid.Row="1"
@@ -404,6 +423,8 @@
             </Border.ToolTip>
         </Border>
 
+=======
+>>>>>>> Stashed changes
         <!--  Displays the node's header content, such as its icon, name and whether it's been renamed  -->
         <DockPanel Name="nodeHeaderContent"
                    Grid.Row="1"
@@ -503,7 +524,7 @@
         <Grid Name="centralGrid"
               Grid.Row="2"
               Grid.Column="1"
-              Margin="10,0,10,10"
+              Margin="10,0,10,0"
               VerticalAlignment="Top"
               Canvas.ZIndex="4">
 

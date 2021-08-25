@@ -96,7 +96,7 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// Check to see if can hide connector. 'HideConnectorCommand' is really 
+        /// Check to see if can hide connector. 'HideConnection' is really 
         /// a command that toggles between 'IsVisible' and '!IsVisible'. So this test
         /// verifies that this works as expected.
         /// </summary>
@@ -112,7 +112,7 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// Check to see if can unhide connector. 'HideConnectorCommand' toggles the visibility
+        /// Check to see if can unhide connector. 'HideConnection' toggles the visibility
         /// of the wire, so calling it twice should unhide the connector.
         /// </summary>
         [Test]
