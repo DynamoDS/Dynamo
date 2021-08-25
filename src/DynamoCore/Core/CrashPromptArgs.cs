@@ -69,20 +69,20 @@ namespace Dynamo.Core
             if (e != null)
             {
                 var eDetails = new List<string>();
-                GetDetailsFromException(e, ref eDetails);
+                GetDetailsFromException(e, eDetails);
 
                 Details = string.Join($"\n\n-------- {nameof(Exception.InnerException)} --------\n\n", eDetails);
                 Options |= DisplayOptions.HasDetails;
             }
         }
 
-        private void GetDetailsFromException(Exception e, ref List<string> details)
+        private void GetDetailsFromException(Exception e, List<string> details)
         {
             details.Add(e.Message + "\n\n" + e.StackTrace);
 
             if (e.InnerException != null)
             {
-                GetDetailsFromException(e.InnerException, ref details);
+                GetDetailsFromException(e.InnerException, details);
             }
         }
 
