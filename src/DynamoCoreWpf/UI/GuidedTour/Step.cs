@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -149,6 +150,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 ExecuteUIAutomationStep(UIAutomation, false);
             }
+        }
+
+        /// <summary>
+        /// This method will update the Popup location by calling the private method UpdatePosition using reflection (just when the PlacementTarget is moved or resized).
+        /// </summary>
+        public void UpdateLocation()
+        {
+            if(stepUIPopup.IsOpen == true)
+            {
+                var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                positionMethod.Invoke(stepUIPopup, null);
+            }         
         }
 
         /// <summary>
