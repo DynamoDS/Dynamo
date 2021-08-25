@@ -145,7 +145,8 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 InputFolderPath = DynamoCoreDir,
                 RecursiveScan = true,
                 OutputFolderPath = tempDirectory.FullName,
-                Filter = preloadedLibraryPaths,
+                Filter = preloadedLibraryPaths.Concat(new string[] 
+                {CORENODEMODELS_DLL_NAME,"GeometryUI.dll","PythonNodeModels.dll","Watch3dNodeModels.dll","UnitsUI.dll","" }),
                 ReferencePaths = new List<string>()
             };
 
@@ -153,8 +154,8 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
             var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
             //assert count is correct.
-            //TODO this should be 610 - but 2 tsplines nodes have such long signatures the paths are too long for windows.
-            Assert.AreEqual(608, generatedFileNames.Count());
+            //TODO this should be 653 - but 2 tsplines nodes have such long signatures the paths are too long for windows.
+            Assert.AreEqual(651, generatedFileNames.Count());
         }
         [Test]
         public void ProducesCorrectOutputFromCoreDirectory_dsFiles()
