@@ -50,13 +50,13 @@ namespace Dynamo.Wpf.Views.GuidedTour
             }
             set { 
                 hole = value;
-                NotifyPropertyChanged(nameof(HoleRect));
+                RaisePropertyChanged(nameof(HoleRect));
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void NotifyPropertyChanged(string info)
+        private void RaisePropertyChanged(string info)
         {
             if (PropertyChanged != null)
             {
