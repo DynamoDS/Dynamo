@@ -26,7 +26,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             get { return "63cd0755-4a36-4670-ae89-b68e772633c4"; }
         }
 
-        public static readonly string ExtensionName = "LibraryUI2";
+        public static readonly string ExtensionName = "LibraryUI - MSWebBrowser";
 
         public string Name
         {
