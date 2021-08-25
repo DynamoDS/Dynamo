@@ -175,6 +175,19 @@ namespace Dynamo.ViewModels
             {
                 filteredResults = ToggleSelect(value);
                 RaisePropertyChanged(nameof(FilteredResults));
+                RaisePropertyChanged(nameof(EnableSearchResults));
+            }
+        }
+
+        public bool EnableSearchResults
+        {
+            get
+            {
+                if (DebugModes.IsEnabled("Disable7"))
+                {
+                    return false;
+                }
+                return true;
             }
         }
 

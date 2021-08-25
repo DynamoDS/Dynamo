@@ -118,6 +118,7 @@
                 Name="FoundMembers"
                 MaxHeight="250">
             <ListBox Name="MembersListBox"
+                     Visibility="{Binding EnableSearchResults, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                      Background="Transparent"
                      BorderBrush="Transparent"
                      ItemContainerStyle="{StaticResource SearchMemberStyle}"

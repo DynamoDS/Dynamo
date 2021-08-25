@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
