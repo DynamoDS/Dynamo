@@ -214,7 +214,7 @@ namespace ProtoScript.Runners
         private void ApplyChangeSetDeleted(ChangeSetData changeSet)
         {
             DeactivateGraphnodes(changeSet.DeletedBinaryExprASTNodes);
-            ReActivateGraphNodesInCycle(changeSet.DeletedBinaryExprASTNodes);
+            //ReActivateGraphNodesInCycle(changeSet.DeletedBinaryExprASTNodes);
             UndefineFunctions(changeSet.DeletedFunctionDefASTNodes);
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(runtimeCore, changeSet.DeletedFunctionDefASTNodes);
         }
@@ -225,7 +225,7 @@ namespace ProtoScript.Runners
 
             DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
 
-            ReActivateGraphNodesInCycle(changeSet.RemovedBinaryNodesFromModification);
+            //ReActivateGraphNodesInCycle(changeSet.RemovedBinaryNodesFromModification);
 
             // Undefine a function that was removed 
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
@@ -257,42 +257,42 @@ namespace ProtoScript.Runners
             }
         }
 
-        private void ReActivateGraphNodesInCycle(List<AssociativeNode> nodeList)
-        {
-            if (nodeList == null || !nodeList.Any()) return;
+        //private void ReActivateGraphNodesInCycle(List<AssociativeNode> nodeList)
+        //{
+        //    if (nodeList == null || !nodeList.Any()) return;
 
-            var assocGraph = core.DSExecutable.instrStreamList[0].dependencyGraph;
-            var graphNodes = assocGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kInvalidIndex);
+        //    var assocGraph = core.DSExecutable.instrStreamList[0].dependencyGraph;
+        //    var graphNodes = assocGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kInvalidIndex);
 
-            foreach (var node in nodeList)
-            {
-                var bNode = node as BinaryExpressionNode;
+        //    foreach (var node in nodeList)
+        //    {
+        //        var bNode = node as BinaryExpressionNode;
 
-                var identifier = bNode?.LeftNode as IdentifierNode;
-                if (identifier == null) continue;
+        //        var identifier = bNode?.LeftNode as IdentifierNode;
+        //        if (identifier == null) continue;
 
-                var rootNodes = new List<GraphNode>();
-                foreach(var gNode in graphNodes)
-                {
-                    if(identifier.Value == gNode.updateNodeRefList[0].nodeList[0].symbol.name)
-                    {
-                        rootNodes.Add(gNode);
-                    }
-                }
+        //        var rootNodes = new List<GraphNode>();
+        //        foreach(var gNode in graphNodes)
+        //        {
+        //            if(identifier.Value == gNode.updateNodeRefList[0].nodeList[0].symbol.name)
+        //            {
+        //                rootNodes.Add(gNode);
+        //            }
+        //        }
 
-                foreach (var rootNode in rootNodes)
-                {
-                    // Walk the dependency graph for the rootNode and clear cycles from dependent graph nodes.
-                    var guids = rootNode.ClearCycles(graphNodes);
+        //        foreach (var rootNode in rootNodes)
+        //        {
+        //            // Walk the dependency graph for the rootNode and clear cycles from dependent graph nodes.
+        //            var guids = rootNode.ClearCycles(graphNodes);
 
-                    // Clear warnings for all graphnodes participating in cycle.
-                    foreach (var id in guids)
-                    {
-                        core.BuildStatus.ClearWarningsForGraph(id);
-                    }
-                }
-            }
-        }
+        //            // Clear warnings for all graphnodes participating in cycle.
+        //            foreach (var id in guids)
+        //            {
+        //                core.BuildStatus.ClearWarningsForGraph(id);
+        //            }
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Deactivate a single graphnode regardless of its associated dependencies

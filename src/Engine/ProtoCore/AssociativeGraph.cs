@@ -968,39 +968,39 @@ namespace ProtoCore.AssociativeGraph
         /// </summary>
         /// <param name="graphNodes"></param>
         /// <returns>Collection of graph nodes participating in cycle.</returns>
-        internal IEnumerable<Guid> ClearCycles(IEnumerable<GraphNode> graphNodes)
-        {
-            Stack<GraphNode> stack = new Stack<GraphNode>();
-            stack.Push(this);
+        //internal IEnumerable<Guid> ClearCycles(IEnumerable<GraphNode> graphNodes)
+        //{
+        //    Stack<GraphNode> stack = new Stack<GraphNode>();
+        //    stack.Push(this);
 
-            var visited = graphNodes.ToDictionary(node => node, node => false);
+        //    var visited = graphNodes.ToDictionary(node => node, node => false);
 
-            var guids = new List<Guid>();
-            while(stack.Any())
-            {
-                var node = stack.Pop();
-                if (!visited[node])
-                {
-                    guids.Add(node.guid);
-                    if (node.isCyclic)
-                    {
-                        node.isCyclic = false;
-                        node.isActive = true;
+        //    var guids = new List<Guid>();
+        //    while(stack.Any())
+        //    {
+        //        var node = stack.Pop();
+        //        if (!visited[node])
+        //        {
+        //            guids.Add(node.guid);
+        //            if (node.isCyclic)
+        //            {
+        //                node.isCyclic = false;
+        //                node.isActive = true;
 
-                    }
-                    visited[node] = true;
-                }
+        //            }
+        //            visited[node] = true;
+        //        }
 
-                foreach(var cNode in node.ChildrenNodes)
-                {
-                    if (!visited[cNode])
-                    {
-                        stack.Push(cNode);
-                    }
-                }
-            }
-            return guids;
-        }
+        //        foreach(var cNode in node.ChildrenNodes)
+        //        {
+        //            if (!visited[cNode])
+        //            {
+        //                stack.Push(cNode);
+        //            }
+        //        }
+        //    }
+        //    return guids;
+        //}
 
         public void PushDependent(GraphNode dependent)
         {
