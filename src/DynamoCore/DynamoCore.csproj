@@ -95,6 +95,7 @@ limitations under the License.
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
@@ -131,6 +132,8 @@ limitations under the License.
     <Compile Include="Graph\Workspaces\SerializationExtensions.cs" />
     <Compile Include="Graph\Workspaces\UndoRedo.cs" />
     <Compile Include="Extensions\IServiceManager.cs" />
+    <Compile Include="Interfaces\ILibraryViewCustomization.cs" />
+    <Compile Include="Interfaces\LayoutSpecification.cs" />
     <Compile Include="Linting\Interfaces\RuleEvaluationStatusEnum.cs" />
     <Compile Include="Linting\Interfaces\IRuleEvaluationResult.cs" />
     <Compile Include="Linting\Interfaces\SeverityCodesEnum.cs" />

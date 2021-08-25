@@ -108,6 +108,11 @@ namespace Dynamo.Configuration
         public bool ShowConnector { get; set; }
 
         /// <summary>
+        /// Should connector tooltip be visible?
+        /// </summary>
+        public bool ShowConnectorToolTip { get; set; }
+
+        /// <summary>
         /// The types of connector: Bezier or Polyline.
         /// </summary>
         public ConnectorType ConnectorType { get; set; }
@@ -443,6 +448,7 @@ namespace Dynamo.Configuration
             ShowPreviewBubbles = true;
             ShowCodeBlockLineNumber = true;
             ShowConnector = true;
+            ShowConnectorToolTip = true;
             ConnectorType = ConnectorType.BEZIER;
             IsBackgroundGridVisible = true;
             PackageDirectoriesToUninstall = new List<string>();

@@ -115,7 +115,8 @@
             <Path Stroke="{DynamicResource BConnectorSelection}" StrokeThickness="3"
               Name="connector"
               Visibility="{Binding BezVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" 
-              Style="{StaticResource SConnector}" Canvas.ZIndex="0" ToolTip="{Binding ConnectorDataTooltip}" Data="{Binding ComputedBezierPathGeometry, UpdateSourceTrigger=PropertyChanged}">
+              Style="{StaticResource SConnector}" Canvas.ZIndex="0" 
+                  Data="{Binding ComputedBezierPathGeometry, UpdateSourceTrigger=PropertyChanged}">
                 <i:Interaction.Behaviors>
                     <mouse:MouseBehaviour MouseX="{Binding PanelX, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" MouseY="{Binding PanelY, Mode=OneWayToSource,  UpdateSourceTrigger=PropertyChanged}" />
                 </i:Interaction.Behaviors>

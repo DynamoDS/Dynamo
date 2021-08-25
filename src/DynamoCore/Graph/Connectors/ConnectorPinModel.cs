@@ -5,14 +5,41 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Graph
 {
+    /// <summary>
+    /// Connector Pin Model
+    /// </summary>
     public class ConnectorPinModel : ModelBase
     {
-        private double height = 30;
-        private double width = 30;
+        private readonly double height = 30;
+
+        /// <summary>
+        /// Connector Id
+        /// </summary>
         public Guid ConnectorId { get; set; }
 
-        public override double Height { get => height; }
-        public override double Width { get => width; }
+        /// <summary>
+        /// Required when needing to pull a reliable value for objects of this
+        /// type when there is no instances of this object type.
+        /// </summary>
+        public static double StaticWidth { get; } = 30;
+
+        /// <summary>
+        /// Static height of pin
+        /// </summary>
+        public override double Height => height;
+
+        /// <summary>
+        /// Static width of pin
+        /// </summary>
+        public override double Width { get => StaticWidth; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="id"></param>
+        /// <param name="connectorId"></param>
         public ConnectorPinModel(double x, double y, Guid id, Guid connectorId)
         {
             X = x;

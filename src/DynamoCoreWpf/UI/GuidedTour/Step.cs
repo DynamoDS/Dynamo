@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Newtonsoft.Json;
@@ -81,6 +83,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
         [JsonProperty("HostPopupInfo")]
         public HostControlInfo HostPopupInfo { get; set; }
 
+        /// <summary>
+        /// This property will hold the UI Automation action (information) will be executed when the Next or Back button are pressed
+        /// </summary>
+        [JsonProperty("UIAutomation")]
+        public StepUIAutomation UIAutomation { get; set; }
+
         public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT };
 
         /// <summary>
@@ -122,6 +130,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public void Show()
         {
             stepUIPopup.IsOpen = true;
+
+            //In case the UIAutomation info is set for the Step we execute the action when the Next button is pressed
+            if (UIAutomation != null)
+            {
+                ExecuteUIAutomationStep(UIAutomation, true);
+            }
         }
 
         /// <summary>
@@ -130,6 +144,47 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public void Hide()
         {
             stepUIPopup.IsOpen = false;
+
+            //Disable the current action automation that is executed for the Current Step (if there is one)
+            if (UIAutomation != null)
+            {
+                ExecuteUIAutomationStep(UIAutomation, false);
+            }
+        }
+
+        /// <summary>
+        /// This method will update the Popup location by calling the private method UpdatePosition using reflection (just when the PlacementTarget is moved or resized).
+        /// </summary>
+        public void UpdateLocation()
+        {
+            if(stepUIPopup.IsOpen == true)
+            {
+                var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                positionMethod.Invoke(stepUIPopup, null);
+            }         
+        }
+
+        /// <summary>
+        /// This method will execute an UIAutomation action over a specific UIElement
+        /// </summary>
+        /// <param name="uiAutomationData">UIAutomation info read from a json file</param>
+        /// <param name="enableUIAutomation">Enable/Disable the automation action for a specific UIElement</param>
+        private void ExecuteUIAutomationStep(StepUIAutomation uiAutomationData, bool enableUIAutomation)
+        {
+            switch (uiAutomationData.ControlType.ToUpper())
+            {
+                case "MENUITEM":
+                    if (uiAutomationData.UIElementAutomation != null)
+                    {
+                        if (uiAutomationData.Action.ToUpper().Equals("OPEN"))
+                        {
+                            MenuItem menuEntry = uiAutomationData.UIElementAutomation as MenuItem;
+                            menuEntry.IsSubmenuOpen = enableUIAutomation;
+                            menuEntry.StaysOpenOnClick = enableUIAutomation;
+                        }
+                    }
+                    break;
+            }
         }
 
         /// <summary>

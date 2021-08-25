@@ -31,8 +31,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private DynamoViewModel dynamoViewModel;
 
-        private const double ExitTourVerticalOffset = 30;
-        private const double ExitTourHorizontalOffset = 0;
+        private RealTimeInfoWindow exitTourPopup;
+
+        //The ExitTour popup will be shown at the top-right section of the Dynamo window (at the left side of the statusBarPanel element) only when the tour is closed
+        //The ExitTourVerticalOffset is used to move vertically the popup (using as a reference the statusBarPanel position)
+        private const double ExitTourVerticalOffset = 10;
+        //The ExitTourHorizontalOffset is used to move horizontally the popup (using as a reference the statusBarPanel position)
+        private const double ExitTourHorizontalOffset = 110;
 
         public static string GuidesExecutingDirectory
         {
@@ -67,6 +72,22 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
             GuideFlowEvents.GuidedTourStart += TourStarted;
             GuideFlowEvents.GuidedTourFinish += TourFinished;
+        }
+
+        /// <summary>
+        /// This method will be used when the PlacementTarget element of the Popup was moved or resize so we need to update each Step and the ExitTour popup
+        /// </summary>
+        public void UpdateGuideStepsLocation()
+        {
+            if (currentGuide != null)
+            {
+                currentGuide.CurrentStep.UpdateLocation();
+            }
+
+            if(exitTourPopup != null)
+            {
+                exitTourPopup.UpdateLocation();
+            }
         }
 
         /// <summary>
@@ -158,7 +179,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     HostControlInfo hostControlInfo = CreateHostControl(step);               
                     Step newStep = CreateStep(step, hostControlInfo, totalTooltips);
-                    if(newStep != null)
+
+                    //If the UI Automation info was read from the json file then we create an StepUIAutomation instance containing all the info
+                    if (step.UIAutomation != null)
+                        newStep.UIAutomation = CreateStepUIAutomationInfo(step.UIAutomation);
+
+                    if (newStep != null)
                     {
                         //The step is added to the new Guide being created
                         newGuide.GuideSteps.Add(newStep);
@@ -194,6 +220,29 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 popupInfo.HostUIElement = hostUIElement;
 
             return popupInfo;
+        }
+
+        /// <summary>
+        /// This method will create an StepUIAutomation instance based on the information passed as parameter
+        /// </summary>
+        /// <param name="jsonUIAutomation">StepUIAutomation instance read from the json file</param>
+        /// <returns></returns>
+        private StepUIAutomation CreateStepUIAutomationInfo(StepUIAutomation jsonUIAutomation)
+        {
+            var uiAutomationInfo = new StepUIAutomation()
+            {
+                Sequence = jsonUIAutomation.Sequence,
+                ControlType = jsonUIAutomation.ControlType,
+                Name = jsonUIAutomation.Name,
+                Action = jsonUIAutomation.Action
+            };
+
+            //This section will search the UIElement in the Dynamo VisualTree in which an automation action will be executed
+            UIElement automationUIElement = Guide.FindChild(mainRootElement, jsonUIAutomation.Name);
+            if (automationUIElement != null)
+                uiAutomationInfo.UIElementAutomation = automationUIElement;
+
+            return uiAutomationInfo;
         }
 
         /// <summary>
@@ -288,11 +337,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
             UIElement hostUIElement = Guide.FindChild(mainRootElement, "statusBarPanel");
 
             //Creates the RealTimeInfoWindow popup and set up all the needed values to show the popup over the Dynamo workspace
-            var exitTourPopup = new RealTimeInfoWindow()
+            exitTourPopup = new RealTimeInfoWindow()
             {
                 VerticalOffset = ExitTourVerticalOffset,
                 HorizontalOffset = ExitTourHorizontalOffset,
-                Placement = PlacementMode.Center,
+                Placement = PlacementMode.Left,
                 TextContent = Res.ExitTourWindowContent
             };
 

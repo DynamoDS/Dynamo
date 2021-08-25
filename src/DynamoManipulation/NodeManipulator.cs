@@ -42,6 +42,7 @@ namespace Dynamo.Manipulation
         private const double NewNodeOffsetX = 350;
         private const double NewNodeOffsetY = 50;
         private bool active;
+        private string warning = string.Empty;
 
         protected const double gizmoScale = 1.2;
 
@@ -547,7 +548,15 @@ namespace Dynamo.Manipulation
         {
             Dispose(true);
 
-            Node.ClearErrorsAndWarnings();
+            // We only show the manipulator warning while the manipulator is alive.
+            // When the owner Node is deselected and the manipulator is disposed,
+            // we cleanup the manipulator warning from the owner Node.
+            // See PR 7623 for more details
+            if (!string.IsNullOrEmpty(warning))
+            {
+                Node.ClearTransientWarning(warning);
+            }
+
             DeleteGizmos();
             DetachHandlers();
         }
@@ -559,7 +568,7 @@ namespace Dynamo.Manipulation
         public RenderPackageCache BuildRenderPackage()
         {
             Debug.Assert(IsMainThread());
-
+            warning = string.Empty;
             var packages = new RenderPackageCache();
             try
             {
@@ -571,9 +580,9 @@ namespace Dynamo.Manipulation
             }
             catch (Exception e)
             {
-                Node.Warning(Properties.Resources.DirectManipulationError +": " + e.Message);
+                warning = Properties.Resources.DirectManipulationError + ": " + e.Message;
+                Node.Warning(warning);
             }
-
             return packages;
         }
 
