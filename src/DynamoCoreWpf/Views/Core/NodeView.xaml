@@ -246,18 +246,10 @@
                               IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CrossProduct, Mode=OneWay}" />
                 </MenuItem>
-<<<<<<< Updated upstream
-                <MenuItem
-                    Name="dismissedAlerts"
-                    Header="Dismissed Alerts"
-                    ItemsSource="{Binding DismissedAlerts, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-                <Separator />
-=======
                 <MenuItem Name="dismissedAlerts"
                           Header="Dismissed Alerts"
                           IsCheckable="False" />
                 <Separator Visibility="{Binding Path=IsInputOrOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
->>>>>>> Stashed changes
                 <MenuItem Name="isInput_cm"
                           Header="{x:Static p:Resources.NodeContextMenuIsInput}"
                           IsCheckable="True"
@@ -384,47 +376,7 @@
                 </Rectangle.ToolTip>
             </Rectangle>
         </Border>
-
-<<<<<<< Updated upstream
-        <!--  Displays Tooltip when the user's mouse hovers over the node header  -->
-        <Border Name="previewStateNameBlock"
-                Grid.Row="1"
-                Grid.ColumnSpan="3"
-                Margin="1,1,1,1"
-                Canvas.ZIndex="4"
-                MouseDown="NameBlock_OnMouseDown"
-                Opacity=".4"
-                Style="{StaticResource SZoomFadePreview}"
-                ToolTipService.ShowDuration="60000">
-            <Border.ToolTip>
-                <dynui:DynamoToolTip AttachmentSide="Top" Style="{DynamicResource ResourceKey=SLightToolTip}">
-                    <Grid>
-                        <StackPanel MaxWidth="320" Orientation="Vertical">
-                            <StackPanel>
-                                <TextBlock Text="{x:Static p:Resources.NodeTooltipOriginalName}" TextWrapping="Wrap" />
-                                <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontWeight="Medium"
-                                           Text="{Binding Path=OriginalName}"
-                                           TextWrapping="Wrap" />
-                            </StackPanel>
-                            <!--  Space for splitting the original name and description  -->
-                            <StackPanel>
-                                <TextBlock Text="&#xD;" />
-                            </StackPanel>
-                            <StackPanel>
-                                <TextBlock Text="{x:Static p:Resources.NodeTooltipDescription}" TextWrapping="Wrap" />
-                                <TextBlock FontWeight="Normal"
-                                           Text="{Binding Path=Description}"
-                                           TextWrapping="Wrap" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </dynui:DynamoToolTip>
-            </Border.ToolTip>
-        </Border>
-
-=======
->>>>>>> Stashed changes
+       
         <!--  Displays the node's header content, such as its icon, name and whether it's been renamed  -->
         <DockPanel Name="nodeHeaderContent"
                    Grid.Row="1"

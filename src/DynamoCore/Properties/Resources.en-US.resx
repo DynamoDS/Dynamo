@@ -789,7 +789,6 @@ This package has not been loaded because another conflicting package was loaded 
     <value>input</value>
     <comment>Used when an input port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
   </data>
-<<<<<<< Updated upstream
   <data name="BackupSavedMsg" xml:space="preserve">
     <value>Backup file is saved</value>
   </data>
@@ -807,12 +806,11 @@ This package has not been loaded because another conflicting package was loaded 
   </data>
   <data name="NodeUnhandledMsg" xml:space="preserve">
     <value>Unhandled 'DummyNode.NodeNature' value: {0}</value>
-=======
+  </data>
   <data name="HideWiresPopupMenuItem" xml:space="preserve">
     <value>Hide Wires</value>
   </data>
   <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
     <value>Unhide Wires</value>
->>>>>>> Stashed changes
   </data>
 </root>
