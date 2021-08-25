@@ -57,7 +57,7 @@
 			},
 			{
 				"Sequence": 3,
-				"Name": "toolbar",
+				"Name": "toolbar2",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
@@ -69,6 +69,7 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "bottom",
 					"HostUIElementString": "shortcutsBarGrid",
+					"Highlight": "true",
 					"VerticalPopupOffset": -60,
 					"HorizontalPopupOffset": 200
 				}

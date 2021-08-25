@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
@@ -114,6 +115,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if(nextStep.HostPopupInfo != null)
                     SetupBackgroundHoleSize(nextStep.HostPopupInfo.HostUIElement);
 
+                if(nextStep.HostPopupInfo.Highlight)
+                    GuideBackgroundElement.HolePath.Visibility = Visibility.Visible;
+                else
+                    GuideBackgroundElement.HolePath.Visibility = Visibility.Hidden;
+
+
                 if (nextStep != null)
                 {
                     nextStep.Show();
@@ -138,7 +145,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                               .Transform(new Point(0, 0));
 
             GuideBackgroundElement.HoleRect = new Rect(relativePoint.X, relativePoint.Y,
-                hostElement.DesiredSize.Width, hostElement.DesiredSize.Height);
+                            hostElement.DesiredSize.Width, hostElement.DesiredSize.Height);
 
         }
 

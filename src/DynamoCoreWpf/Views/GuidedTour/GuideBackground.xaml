@@ -23,6 +23,16 @@
                     </CombinedGeometry>
                 </Path.Data>
             </Path>
+            
+            <Path Name="HolePath" Stroke="#ef9362" StrokeThickness="3" Fill="Transparent" Opacity="1">
+                <Path.Data>
+                    <CombinedGeometry GeometryCombineMode="Exclude">
+                        <CombinedGeometry.Geometry1>
+                            <RectangleGeometry Rect="{Binding HoleRect}" />
+                        </CombinedGeometry.Geometry1>
+                    </CombinedGeometry>
+                </Path.Data>
+            </Path>
         </Canvas>
     </Grid>
 </UserControl>
