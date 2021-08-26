@@ -136,7 +136,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
                     base64String = GetIconAsBase64(icon, out extension);
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     //look in resources for registered path and just use the stream directly
                     var resourceDict = this.customization.Resources.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
