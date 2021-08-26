@@ -7,7 +7,7 @@
   <MakeConnectionCommand NodeId="b15874d6-674a-42ae-a643-22bc14829136" PortIndex="0" Type="1" ConnectionMode="0" />
   <MakeConnectionCommand NodeId="93b04370-b048-4236-b2e1-a04b3416c9d5" PortIndex="0" Type="0" ConnectionMode="1" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <SelectInRegionCommand X="42" Y="123" Width="332" Height="200" IsCrossSelection="false" />
+  <SelectInRegionCommand X="42" Y="123" Width="500" Height="350" IsCrossSelection="false" />
   <DeleteModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" />
   <UndoRedoCommand CmdOperation="0" />
 </Commands>

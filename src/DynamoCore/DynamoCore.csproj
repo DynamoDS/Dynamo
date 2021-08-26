@@ -95,6 +95,7 @@ limitations under the License.
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
@@ -120,6 +121,7 @@ limitations under the License.
     <Compile Include="Extensions\ExtensionData.cs" />
     <Compile Include="Extensions\IExtensionStorageAccess.cs" />
     <Compile Include="Extensions\LinterExtensionBase.cs" />
+    <Compile Include="Graph\Connectors\ConnectorPinModel.cs" />
     <Compile Include="Graph\Workspaces\PackageDependencyInfo.cs" />
     <Compile Include="Graph\Nodes\NodeOutputData.cs" />
     <Compile Include="Graph\Nodes\NodeInputData.cs" />
