@@ -143,10 +143,8 @@ namespace Dynamo.Graph.Workspaces
 
         public PackageDependencyState State { get; internal set; }
 
-        public string Type { get; internal set; }
-
         /// <summary>
-        /// Create a package info object from the package name and path
+        /// Create a package info object from the package Name and Path
         /// </summary>
         /// <param name="name"></param>
         /// <param name="path"></param>
@@ -154,6 +152,18 @@ namespace Dynamo.Graph.Workspaces
         {
             Name = name;
             Path = path;
+            nodes = new HashSet<Guid>();
+        }
+
+        /// <summary>
+        /// Create a package info object from the package Name and ReferenceType
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="referenceType"></param>
+        internal LocalDefinitionInfo(string name, ReferenceType referenceType)
+        {
+            Name = name;
+            ReferenceType = referenceType;
             nodes = new HashSet<Guid>();
         }
 

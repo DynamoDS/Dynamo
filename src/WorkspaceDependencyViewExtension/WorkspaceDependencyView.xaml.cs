@@ -147,21 +147,18 @@ namespace Dynamo.WorkspaceDependency
                     if (customNodeInfo != null)
                     {
                         info.Path = customNodeInfo.Path;
-                        info.Type = "CustomNode";
-                    }
-                    else
-                    {
-                        info.Type = "ZeroTouchNode";
-                    }
 
-                    if (info.Path != null)
-                    {
-                        FileInfo localDefinitionFileInfo = new FileInfo(info.Path);
-                        long size = localDefinitionFileInfo.Length / 1024;
-                        info.Size = size.ToString() + sizeUnits;
+                        if (info.Path != null)
+                        {
+                            FileInfo localDefinitionFileInfo = new FileInfo(info.Path);
+                            long size = localDefinitionFileInfo.Length / 1024;
+                            info.Size = size.ToString() + sizeUnits;
+                        }
                     }
                 }
                 catch (Exception) { }
+
+                HasDependencyIssue = info.Path == null;
             }
 
             var pythonPackageDependencies = ws.OnRequestPackageDependencies();
@@ -202,8 +199,8 @@ namespace Dynamo.WorkspaceDependency
             dataRows = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
             localDefinitionDataRows = localDefinitions.Select(d => new LocalDefinitionRow(d as LocalDefinitionInfo));
 
-            Packages.IsEnabled = dataRows.Count() > 0;
-            LocalDefinitions.IsEnabled = localDefinitionDataRows.Count() > 0;
+            Packages.IsExpanded = dataRows.Count() > 0;
+            LocalDefinitions.IsExpanded = localDefinitionDataRows.Count() > 0;
 
 
             PackageDependencyTable.ItemsSource = dataRows;
@@ -486,13 +483,13 @@ namespace Dynamo.WorkspaceDependency
             {
                 Bitmap bitmap = null;
 
-                switch (DependencyInfo.Type)
+                switch (DependencyInfo.ReferenceType)
                 {
-                    case "CustomNode":
+                    case ReferenceType.DYFFILE:
                         bitmap = Properties.Resources.CustomNodeReferenceIcon;
                         break;
 
-                    case "ZeroTouchNode":
+                    case ReferenceType.ZeroTouch:
                         bitmap = Properties.Resources.ZeroTouchNodeReferenceIcon;
                         break;
                 }

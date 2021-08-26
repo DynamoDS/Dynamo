@@ -1089,10 +1089,11 @@ namespace Dynamo.Graph.Workspaces
                     depInfo = new PackageDependencyInfo(name, version);
                     break;
                 case ReferenceType.DYFFILE:
-                    depInfo = new LocalDefinitionInfo(name);
+                    depInfo = new LocalDefinitionInfo(name, ReferenceType.DYFFILE);
+
                     break;
                 case ReferenceType.ZeroTouch:
-                    depInfo = new LocalDefinitionInfo(name);
+                    depInfo = new LocalDefinitionInfo(name, ReferenceType.ZeroTouch);
                     break;
                 default:
                     depInfo = new LocalDefinitionInfo(name);

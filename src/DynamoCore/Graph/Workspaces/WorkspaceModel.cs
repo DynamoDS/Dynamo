@@ -709,7 +709,17 @@ namespace Dynamo.Graph.Workspaces
                 {
                     var collected = GetNodePackage(node);
 
-                    if (!nodePackageDictionary.ContainsKey(node.GUID) && collected == null)
+                    if (localDefinitionsDictionary.ContainsKey(node.GUID))
+                    {
+                        var savedInfo = localDefinitionsDictionary[node.GUID];
+
+                        if (!nodeLocalDefinitions.ContainsKey(node.Name))
+                        {
+                            nodeLocalDefinitions[node.Name] = savedInfo;
+                        }
+                        nodeLocalDefinitions[node.Name].AddDependent(node.GUID);
+                    }
+                    else if (!nodePackageDictionary.ContainsKey(node.GUID) && collected == null)
                     {
                         if (node.IsCustomFunction)
                         {
@@ -747,11 +757,11 @@ namespace Dynamo.Graph.Workspaces
                 foreach (var dependency in value)
                 {
                     //handle package dependencies
-                    if (dependency.ReferenceType == ReferenceType.DYFFILE)
+                    if (dependency.ReferenceType == ReferenceType.DYFFILE || dependency.ReferenceType == ReferenceType.ZeroTouch)
                     {
                         foreach (var node in dependency.Nodes)
                         {
-                            localDefinitionsDictionary.Add(node);
+                            localDefinitionsDictionary[node] = dependency as LocalDefinitionInfo;
                         }
                     }
                 }
@@ -761,7 +771,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
-        private List<Guid> localDefinitionsDictionary = new List<Guid>();
+        private Dictionary<Guid, LocalDefinitionInfo> localDefinitionsDictionary = new Dictionary<Guid, LocalDefinitionInfo>();
 
 
         /// <summary>
