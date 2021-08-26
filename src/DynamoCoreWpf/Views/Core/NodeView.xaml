@@ -550,6 +550,7 @@
                                                 CornerRadius="2" />
                                         <Image Width="24px"
                                                Height="24px"
+                                               Margin="0,1,0,0"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                Source="/DynamoCoreWpf;component/UI/Images/more-vertical.png" />
@@ -587,8 +588,8 @@
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Visible"/>
-                        <Setter Property="Grid.MinWidth" Value="20" />
-                        <Setter Property="Grid.Margin" Value="0,0,6,0" />
+                        <Setter Property="MinWidth" Value="20" />
+                        <Setter Property="Margin" Value="3,0,0,0" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding NumberOfDismissedAlerts}" Value="0">
                                 <Setter Property="Grid.MinWidth" Value="0" />
