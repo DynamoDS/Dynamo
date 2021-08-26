@@ -10,7 +10,7 @@ namespace ViewExtensionLibraryTests
 {
     public class LibraryViewCustomizationTests
     {
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void AddSections()
         {
             ILibraryViewCustomization customization = new LibraryViewCustomization();
@@ -39,7 +39,7 @@ namespace ViewExtensionLibraryTests
             controller.Verify(c => c.RaiseEvent(eventanme), Times.Once); //Only notified once
         }
 
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void AddElementsToDefaultSection()
         {
             ILibraryViewCustomization customization = new LibraryViewCustomization();
@@ -72,7 +72,7 @@ namespace ViewExtensionLibraryTests
             controller.Verify(c => c.RaiseEvent(eventanme), Times.Once); //Only notified once
         }
 
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void AddElementsToNewSection()
         {
             var customization = new LibraryViewCustomization();
@@ -85,7 +85,7 @@ namespace ViewExtensionLibraryTests
             controller.Verify(c => c.RaiseEvent(eventanme), Times.Once); //Only notified once
         }
 
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void AddElementsToExistingSection()
         {
             ILibraryViewCustomization customization = new LibraryViewCustomization();
@@ -105,7 +105,7 @@ namespace ViewExtensionLibraryTests
             controller.Verify(c => c.RaiseEvent(eventanme), Times.Exactly(2)); //Only notified twice
         }
 
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void AddSameElementsToDifferentSection()
         {
             ILibraryViewCustomization customization = new LibraryViewCustomization();
@@ -149,7 +149,7 @@ namespace ViewExtensionLibraryTests
             Assert.AreEqual("A, B, C", string.Join(", ", section.childElements.Select(s => s.text)));
         }
 
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void AddIncludeInfoToDefaultSection()
         {
             ILibraryViewCustomization customization = new LibraryViewCustomization();
@@ -181,7 +181,7 @@ namespace ViewExtensionLibraryTests
             controller.Verify(c => c.RaiseEvent(eventanme), Times.Once); //Only notified once
         }
 
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void AddIncludeInfoToNewSection()
         {
             var customization = new LibraryViewCustomization();
@@ -195,7 +195,7 @@ namespace ViewExtensionLibraryTests
             controller.Verify(c => c.RaiseEvent(eventanme), Times.Once); //Only notified once
         }
 
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void AddIncludeInfoToExistingSection()
         {
             ILibraryViewCustomization customization = new LibraryViewCustomization();
@@ -214,7 +214,7 @@ namespace ViewExtensionLibraryTests
             controller.Verify(c => c.RaiseEvent(eventanme), Times.Once); //Only notified once
         }
 
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void AddSameIncludeInfoToDifferentSection()
         {
             ILibraryViewCustomization customization = new LibraryViewCustomization();
@@ -257,7 +257,7 @@ namespace ViewExtensionLibraryTests
             Assert.AreEqual("A, B, C, D", string.Join(", ", section.include.Select(s => s.path)));
         }
 
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void GetSpecification()
         {
             ILibraryViewCustomization customization = new LibraryViewCustomization();
@@ -274,7 +274,7 @@ namespace ViewExtensionLibraryTests
             Assert.AreEqual("A, B, C", string.Join(", ", spec2.sections.Select(s => s.text)));
         }
 
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void ToJSONStream()
         {
             ILibraryViewCustomization customization = new LibraryViewCustomization();
