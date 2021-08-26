@@ -10,7 +10,7 @@
         <Canvas 
             Background="Transparent"
             Name="RootLayout" >
-            <Path Name="HolePath" Stroke="Black" StrokeThickness="3" Fill="Black" Opacity="0.5">
+            <Path Stroke="Black" StrokeThickness="1" Fill="Black" Opacity="0.5">
                 <Path.Data>
                     <!--Combines two geometries using the exclude combine mode.-->
                     <CombinedGeometry GeometryCombineMode="Exclude">
@@ -18,8 +18,19 @@
                             <RectangleGeometry Rect="{Binding WindowsRect}"  />
                         </CombinedGeometry.Geometry1>
                         <CombinedGeometry.Geometry2>
-                            <RectangleGeometry Rect="{Binding HoleRect}" RadiusX="1" RadiusY="1"/>
+                            <RectangleGeometry Rect="{Binding HoleRect}"/>
                         </CombinedGeometry.Geometry2>
+                    </CombinedGeometry>
+                </Path.Data>
+            </Path>
+
+            <Path Name="HolePath" Stroke="Black" StrokeThickness="3" Fill="Transparent" Opacity="0.5">
+                <Path.Data>
+                    <!--Combines two geometries using the exclude combine mode.-->
+                    <CombinedGeometry GeometryCombineMode="Exclude">
+                        <CombinedGeometry.Geometry1>
+                            <RectangleGeometry Rect="{Binding HoleRect}" RadiusX="1" RadiusY="1"/>
+                        </CombinedGeometry.Geometry1>
                     </CombinedGeometry>
                 </Path.Data>
             </Path>
