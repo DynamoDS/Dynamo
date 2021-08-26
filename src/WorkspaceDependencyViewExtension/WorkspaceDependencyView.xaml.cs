@@ -138,30 +138,30 @@ namespace Dynamo.WorkspaceDependency
             foreach (LocalDefinitionInfo info in localDefinitions) 
             {
                 string customNodeName = info.Name.Replace(customNodeExtension, "");
-                dependencyViewExtension.DependencyView.CustomNodeManager.TryGetNodeInfo(customNodeName, out CustomNodeInfo customNodeInfo);
 
-                if (customNodeInfo != null)
+                // Try to get the Custom node information if possible. 
+                try
                 {
-                    info.Path = customNodeInfo.Path;
-                    info.Type = "CustomNode";
-                }
-                else
-                {
-                    info.Type = "ZeroTouchNode";
-                }
+                    dependencyViewExtension.DependencyView.CustomNodeManager.TryGetNodeInfo(customNodeName, out CustomNodeInfo customNodeInfo);
 
-                if (info.Path != null)
-                {
-                    try
+                    if (customNodeInfo != null)
+                    {
+                        info.Path = customNodeInfo.Path;
+                        info.Type = "CustomNode";
+                    }
+                    else
+                    {
+                        info.Type = "ZeroTouchNode";
+                    }
+
+                    if (info.Path != null)
                     {
                         FileInfo localDefinitionFileInfo = new FileInfo(info.Path);
                         long size = localDefinitionFileInfo.Length / 1024;
                         info.Size = size.ToString() + sizeUnits;
                     }
-                    catch (Exception) {
-                        // Do nothing as file size won't be dislayed.
-                    }
                 }
+                catch (Exception) { }
             }
 
             var pythonPackageDependencies = ws.OnRequestPackageDependencies();
@@ -201,6 +201,10 @@ namespace Dynamo.WorkspaceDependency
 
             dataRows = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
             localDefinitionDataRows = localDefinitions.Select(d => new LocalDefinitionRow(d as LocalDefinitionInfo));
+
+            Packages.IsEnabled = dataRows.Count() > 0;
+            LocalDefinitions.IsEnabled = localDefinitionDataRows.Count() > 0;
+
 
             PackageDependencyTable.ItemsSource = dataRows;
             LocalDefinitionsTable.ItemsSource = localDefinitionDataRows;

@@ -587,8 +587,8 @@ namespace Dynamo.Graph.Workspaces
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
             IEnumerable<INodeLibraryDependencyInfo> workspaceReferences;
-            IEnumerable<INodeLibraryDependencyInfo> nodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
-            IEnumerable<INodeLibraryDependencyInfo> nodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+            List<INodeLibraryDependencyInfo> nodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            List<INodeLibraryDependencyInfo> nodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
 
             if (obj[NodeLibraryDependenciesPropString] != null)
             {
@@ -603,11 +603,11 @@ namespace Dynamo.Graph.Workspaces
             {
                 if (depInfo is PackageDependencyInfo)
                 {
-                    nodeLibraryDependencies.Append(depInfo);
+                    nodeLibraryDependencies.Add(depInfo);
                 }
                 else if (depInfo is LocalDefinitionInfo) 
                 {
-                    nodeLocalDefinitions.Append(depInfo);
+                    nodeLocalDefinitions.Add(depInfo);
                 }
             }
 
@@ -692,8 +692,8 @@ namespace Dynamo.Graph.Workspaces
                 ws = homeWorkspace;
             }
 
-            ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
-            ws.NodeLocalDefinitions = nodeLocalDefinitions.ToList();
+            ws.NodeLibraryDependencies = nodeLibraryDependencies;
+            ws.NodeLocalDefinitions = nodeLocalDefinitions;
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
 
