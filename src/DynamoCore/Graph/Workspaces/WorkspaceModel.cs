@@ -741,7 +741,7 @@ namespace Dynamo.Graph.Workspaces
                         else if (node is DSFunctionBase functionNode)
                         {
                             string assemblyPath = functionNode.Controller.Definition.Assembly;
-                            localDefinitionName = assemblyPath.Split('\\').LastOrDefault();
+                            localDefinitionName = Path.GetFileName(assemblyPath);
 
                             if (!updatedNodeLocalDefinitions.ContainsKey(localDefinitionName))
                             {
@@ -768,7 +768,6 @@ namespace Dynamo.Graph.Workspaces
             {
                 foreach (var dependency in value)
                 {
-                    //handle package dependencies
                     if (dependency.ReferenceType == ReferenceType.DYFFILE || dependency.ReferenceType == ReferenceType.ZeroTouch)
                     {
                         foreach (var node in dependency.Nodes)

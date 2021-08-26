@@ -456,7 +456,6 @@ namespace Dynamo.Graph.Workspaces
         bool verboseLogging;
 
         internal readonly static string NodeLibraryDependenciesPropString = "NodeLibraryDependencies";
-        internal readonly static string NodeLocalDefinitionsPropString = "NodeLocalDefinitions";
         internal const string EXTENSION_WORKSPACE_DATA = "ExtensionWorkspaceData";
         internal const string LINTING_PROP_STRING = "Linting";
 
@@ -587,8 +586,8 @@ namespace Dynamo.Graph.Workspaces
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
             IEnumerable<INodeLibraryDependencyInfo> workspaceReferences;
-            List<INodeLibraryDependencyInfo> nodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
-            List<INodeLibraryDependencyInfo> nodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+            var nodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            var nodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
 
             if (obj[NodeLibraryDependenciesPropString] != null)
             {
@@ -841,7 +840,7 @@ namespace Dynamo.Graph.Workspaces
             }
             writer.WriteEndArray();
 
-            // Join NodeLibraryDependencies and NodeLibraryDependencies and serialze them.
+            // Join NodeLibraryDependencies & NodeLocalDefinitions and serialze them.
             writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
 
             IEnumerable<INodeLibraryDependencyInfo> referencesList = ws.NodeLibraryDependencies;

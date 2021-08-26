@@ -122,7 +122,7 @@ namespace Dynamo.Graph.Workspaces
         public string Size { get; internal set; }
 
         /// <summary>
-        /// Size of the LocalDefinition
+        /// ReferenceType of the LocalDefinition
         /// </summary>
         public ReferenceType ReferenceType { get; internal set; }
 
@@ -144,7 +144,7 @@ namespace Dynamo.Graph.Workspaces
         public PackageDependencyState State { get; internal set; }
 
         /// <summary>
-        /// Create a package info object from the package Name and Path
+        /// Create a LocalDefinition info object from the package Name and Path
         /// </summary>
         /// <param name="name"></param>
         /// <param name="path"></param>
@@ -156,7 +156,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Create a package info object from the package Name and ReferenceType
+        /// Create a LocalDefinition info object from the package Name and ReferenceType
         /// </summary>
         /// <param name="name"></param>
         /// <param name="referenceType"></param>
@@ -168,7 +168,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Create a package info object from the package name
+        /// Create a LocalDefinition info object from the package name
         /// </summary>
         /// <param name="name"></param>
         internal LocalDefinitionInfo(string name)
@@ -178,7 +178,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Checks whether two PackageInfos are equal
+        /// Checks whether two LocalDefinitionInfo's are equal
         /// They are equal if their Name and Versions are equal
         /// </summary>
         /// <param name="obj"></param>
@@ -203,7 +203,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Gets the hashcode for this PackageInfo
+        /// Gets the hashcode for this dependency
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()
@@ -212,7 +212,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Get the string representing this PackageInfo
+        /// Get the string representing this dependency.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
