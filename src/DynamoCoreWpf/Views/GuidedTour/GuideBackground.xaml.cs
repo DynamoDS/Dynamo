@@ -17,6 +17,9 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
         private Rect hole;
 
+        //This property garantees that border don't appear around the window
+        private const double deltaWindowsRect = 10;
+
         /// <summary>
         /// Width of the background
         /// </summary>
@@ -39,7 +42,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         /// Rect with the size of the Dynamo Window regularly updating its size depending the window's size. Those are represented by 
         /// SystemParameters.PrimaryScreenWidth and SystemParameters.PrimaryScreenHeight
         /// </summary>
-        public Rect WindowsRect { get { return new Rect(-10, 0, SystemParameters.PrimaryScreenWidth * 1.5f, SystemParameters.PrimaryScreenHeight * 1.5f); } }
+        public Rect WindowsRect { get { return new Rect(-deltaWindowsRect, 0, SystemParameters.PrimaryScreenWidth + deltaWindowsRect, SystemParameters.PrimaryScreenHeight) ; } }
 
         /// <summary>
         /// Rect used to cut the hole on the guide background 
