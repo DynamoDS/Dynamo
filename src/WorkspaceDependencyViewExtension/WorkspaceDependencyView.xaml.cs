@@ -152,9 +152,15 @@ namespace Dynamo.WorkspaceDependency
 
                 if (info.Path != null)
                 {
-                    FileInfo localDefinitionFileInfo = new FileInfo(info.Path);
-                    long size = localDefinitionFileInfo.Length / 1024;
-                    info.Size = size.ToString() + sizeUnits;
+                    try
+                    {
+                        FileInfo localDefinitionFileInfo = new FileInfo(info.Path);
+                        long size = localDefinitionFileInfo.Length / 1024;
+                        info.Size = size.ToString() + sizeUnits;
+                    }
+                    catch (Exception) {
+                        // Do nothing as file size won't be dislayed.
+                    }
                 }
             }
 

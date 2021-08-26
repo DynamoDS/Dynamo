@@ -222,7 +222,6 @@ namespace Dynamo.Graph.Workspaces
         private HashSet<Guid> dependencies = new HashSet<Guid>();
 
         private int delayGraphExecutionCounter = 0;
-        private readonly string zeroTouchExtension = ".dll";
         private readonly string customNodeExtension = ".dyf";
 
         /// <summary>
@@ -727,16 +726,16 @@ namespace Dynamo.Graph.Workspaces
                         }
                         if (node is DSFunctionBase functionNode)
                         {
-                            string namespaceKey = functionNode.Controller.Definition.Namespace;
+                            string assembplyPath = functionNode.Controller.Definition.Assembly;
+                            string assemblyName = assembplyPath.Split('\\').LastOrDefault();
 
-                            if (!nodeLocalDefinitions.ContainsKey(namespaceKey))
+                            if (!nodeLocalDefinitions.ContainsKey(assemblyName))
                             {
-                                string localDefinitionName = node.Name + zeroTouchExtension;
-                                nodeLocalDefinitions[namespaceKey] = new LocalDefinitionInfo(localDefinitionName, functionNode.Controller.Definition.Assembly);
+                                nodeLocalDefinitions[assemblyName] = new LocalDefinitionInfo(assemblyName, functionNode.Controller.Definition.Assembly);
                             }
 
-                            nodeLocalDefinitions[namespaceKey].AddDependent(node.GUID);
-                            nodeLocalDefinitions[namespaceKey].ReferenceType = ReferenceType.ZeroTouch;
+                            nodeLocalDefinitions[assemblyName].AddDependent(node.GUID);
+                            nodeLocalDefinitions[assemblyName].ReferenceType = ReferenceType.ZeroTouch;
                         }
                     }
                 }

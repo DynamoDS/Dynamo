@@ -586,24 +586,29 @@ namespace Dynamo.Graph.Workspaces
             // relevant ports.
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
-            IEnumerable<INodeLibraryDependencyInfo> nodeLibraryDependencies;
+            IEnumerable<INodeLibraryDependencyInfo> workspaceReferences;
+            IEnumerable<INodeLibraryDependencyInfo> nodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            IEnumerable<INodeLibraryDependencyInfo> nodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+
             if (obj[NodeLibraryDependenciesPropString] != null)
             {
-                nodeLibraryDependencies = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
+                workspaceReferences = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
             }
             else
             {
-                nodeLibraryDependencies = new List<PackageDependencyInfo>();
+                workspaceReferences = new List<INodeLibraryDependencyInfo>();
             }
 
-            IEnumerable<INodeLibraryDependencyInfo> nodeLocalDefinitions;
-            if (obj[NodeLocalDefinitionsPropString] != null)
+            foreach(INodeLibraryDependencyInfo depInfo in workspaceReferences) 
             {
-                nodeLocalDefinitions = obj[NodeLocalDefinitionsPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
-            }
-            else
-            {
-                nodeLocalDefinitions = new List<LocalDefinitionInfo>();
+                if (depInfo is PackageDependencyInfo)
+                {
+                    nodeLibraryDependencies.Append(depInfo);
+                }
+                else if (depInfo is LocalDefinitionInfo) 
+                {
+                    nodeLocalDefinitions.Append(depInfo);
+                }
             }
 
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
@@ -836,13 +841,12 @@ namespace Dynamo.Graph.Workspaces
             }
             writer.WriteEndArray();
 
-            // NodeLibraryDependencies
+            // Join NodeLibraryDependencies and NodeLibraryDependencies and serialze them.
             writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
-            serializer.Serialize(writer, ws.NodeLibraryDependencies);
 
-            // NodeLibraryDependencies
-            writer.WritePropertyName(WorkspaceReadConverter.NodeLocalDefinitionsPropString);
-            serializer.Serialize(writer, ws.NodeLocalDefinitions);
+            IEnumerable<INodeLibraryDependencyInfo> referencesList = ws.NodeLibraryDependencies;
+            referencesList = referencesList.Concat(ws.NodeLocalDefinitions);
+            serializer.Serialize(writer, referencesList);
 
             if (!isCustomNode && ws is HomeWorkspaceModel hws)
             {
@@ -1049,14 +1053,17 @@ namespace Dynamo.Graph.Workspaces
             // Get dependency name
             var name = obj["Name"].Value<string>();
 
+            Version version = null;
             // Try get dependency version
-            var versionString = obj["Version"].Value<string>();
-            Version version;
-            if (!Version.TryParse(versionString, out version))
+            if (obj["Version"] != null) 
             {
-                logger.LogWarning(
-                    string.Format("The version of Package Dependency {0} could not be deserialized.", name), 
-                    Logging.WarningLevel.Moderate);
+                var versionString = obj["Version"].Value<string>();
+                if (!Version.TryParse(versionString, out version))
+                {
+                    logger.LogWarning(
+                        string.Format("The version of Package Dependency {0} could not be deserialized.", name),
+                        Logging.WarningLevel.Moderate);
+                }
             }
 
             //default to package.
@@ -1081,16 +1088,16 @@ namespace Dynamo.Graph.Workspaces
                 case ReferenceType.Package:
                     depInfo = new PackageDependencyInfo(name, version);
                     break;
-                /*TODO add other cases: for example
-                 * case ReferenceType.ZeroTouch
-                 * depInfp = new ZeroTouchDependencyInfo(name,version)
-                */
+                case ReferenceType.DYFFILE:
+                    depInfo = new LocalDefinitionInfo(name);
+                    break;
+                case ReferenceType.ZeroTouch:
+                    depInfo = new LocalDefinitionInfo(name);
+                    break;
                 default:
-                    depInfo = new PackageDependencyInfo(name, version);
+                    depInfo = new LocalDefinitionInfo(name);
                     break;
             }
-
-           
 
             // Try get dependent node IDs
             var nodes = obj["Nodes"].Values<string>();
