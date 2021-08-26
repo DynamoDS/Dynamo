@@ -597,7 +597,7 @@ value : bool = false</value>
     <value>Search Autocomplete Results</value>
   </data>
   <data name="WatermarkLabelText" xml:space="preserve">
-    <value>Enter code here</value>
+    <value>Your code goes here</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
     <value>&lt;Click here to edit the group title&gt;</value>
@@ -609,20 +609,6 @@ value : bool = false</value>
   <data name="DefaultValueDisabled" xml:space="preserve">
     <value>(disabled)</value>
     <comment>Default value is disabled</comment>
-  </data>
-  <data name="HideWiresPopupMenuItem" xml:space="preserve">
-    <value>Hide Wires</value>
-  </data>
-  <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
-    <value>Unhide Wires</value>
-  </data>
-  <data name="InputPortAlternativeName" xml:space="preserve">
-    <value>input</value>
-    <comment>Used when an input port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
-  </data>
-  <data name="OutputPortAlternativeName" xml:space="preserve">
-    <value>output</value>
-    <comment>Used when an output port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
   </data>
   <data name="SymbolSearchTags" xml:space="preserve">
     <value>variable;argument;parameter</value>
@@ -766,37 +752,6 @@ Parameter name: {0}</value>
   </data>
   <data name="NoneLinterDescriptorName" xml:space="preserve">
     <value>None</value>
-  </data>
-  <data name="PackageStatePendingUnload" xml:space="preserve">
-    <value>Scheduled to be unloaded</value>
-  </data>
-  <data name="PackageStateError" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="PackageStateLoaded" xml:space="preserve">
-    <value>Loaded</value>
-  </data>
-  <data name="PackageStateUnloaded" xml:space="preserve">
-    <value>Unloaded</value>
-  </data>
-  <data name="PackageStatePendingUnloadTooltip" xml:space="preserve">
-    <value>Scheduled to be unloaded.
-This package will be unloaded after the next Dynamo restart.</value>
-  </data>
-  <data name="PackageStateErrorTooltip" xml:space="preserve">
-    <value>Unloaded.
-This package has not been loaded due to an unexpected error.</value>
-  </data>
-  <data name="PackageStateLoadedTooltip" xml:space="preserve">
-    <value>Loaded.
-This package is loaded and ready to be used.</value>
-  </data>
-  <data name="PackageStateUnloadedTooltip" xml:space="preserve">
-    <value>Unloaded.
-This package has not been loaded because another conflicting package was loaded before it.</value>
-  </data>
-  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
-    <value>Show all errors</value>
   </data>
   <data name="BackupSavedMsg" xml:space="preserve">
     <value>Backup file is saved</value>

@@ -221,7 +221,7 @@ namespace Dynamo.Tests
         //
         // DynamoWPFCLI Tests
         //
-        [Test, RequiresSTA]
+        [Test]
         public void CanOpenAndRunDynamoModelWithWPFCommandLineRunner()
         {
             string openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
@@ -244,7 +244,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("4c5889ac-7b91-4fb5-aaad-a2128b533279", 4.0);
         }
 
-        [Test, RequiresSTA]
+        [Test]
         public void CanOpenAndRunFileWihtListsCorrectlyToOutputFileFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simplelists.dyn");
@@ -261,7 +261,7 @@ namespace Dynamo.Tests
                 output);
         }
 
-        [Test, RequiresSTA]
+        [Test]
         public void CanOpenAndRunFileWithDictionaryCorrectlyToOutputFileFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simpleDict.dyn");
@@ -284,7 +284,7 @@ namespace Dynamo.Tests
                 }, output);
         }
 
-        [Test, RequiresSTA]
+        [Test]
         public void CanOpenAndRunFileWithCustomNodeAndOutputGeometryFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\GeometryTest.dyn");

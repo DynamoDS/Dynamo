@@ -106,7 +106,20 @@ namespace Dynamo.Controls
         #endregion
 
         /// <summary>
-        /// Used to present useful/important information to user when the node is in Error or Warning state.
+        /// Used to present useful/important information to user
+        /// Known usages (when this summary is written): DynamoView and NodeView (via DataTemplates.xaml)
+        /// Till date there are 5 major types of info bubble
+        /// 1. LibraryItemPreview:  Displayed when mouse hover over an item in the search view
+        /// 2. NodeTooltip:         Displayed when mouse hover over the title area of a node
+        /// 3. PreviewCondensed:    This is the default state when preview is shown.
+        ///                         Displayed when mouse hover over the little triangle at the bottom of a node
+        ///                         or
+        ///                         when user chooses to show the preview
+        /// 4. Preview:             Displayed when the node has a preview and mouse hover over the condensed preview        
+        /// 5. ErrorCondensed:      This is the default state when error is shown.
+        ///                         Displayed when errors exist for the node
+        /// 6. Error:               Displayed when errors exist for the node and mouse hover over the condensed
+        ///                         error
         /// </summary>
         public InfoBubbleView()
         {
@@ -374,7 +387,6 @@ namespace Dynamo.Controls
             if (ViewModel.Content == "...")
             {
                 #region Draw Icon
-
                 Rectangle r1 = new Rectangle();
                 r1.Fill = Brushes.Black;
                 r1.Height = 1;
@@ -395,12 +407,12 @@ namespace Dynamo.Controls
                 r3.HorizontalAlignment = HorizontalAlignment.Left;
 
                 Grid myGrid = new Grid();
-                myGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
-                myGrid.VerticalAlignment = VerticalAlignment.Stretch;
-                myGrid.Background = Brushes.Transparent;
-                myGrid.Margin = ContentMargin;
-                myGrid.MaxHeight = ContentMaxHeight;
-                myGrid.MaxWidth = contentMaxWidth;
+                myGrid.HorizontalAlignment  = HorizontalAlignment.Stretch;
+                myGrid.VerticalAlignment    = VerticalAlignment.Stretch;
+                myGrid.Background   = Brushes.Transparent;
+                myGrid.Margin       = ContentMargin;
+                myGrid.MaxHeight    = ContentMaxHeight;
+                myGrid.MaxWidth     = contentMaxWidth;
 
                 // Create row definitions.
                 RowDefinition rowDefinition1 = new RowDefinition();
@@ -422,7 +434,6 @@ namespace Dynamo.Controls
                 myGrid.UseLayoutRounding = true;
 
                 ContentContainer.Children.Add(myGrid);
-
                 #endregion
             }
             else
@@ -459,23 +470,23 @@ namespace Dynamo.Controls
             textBox.Text = text;
             textBox.TextWrapping = TextWrapping.Wrap;
 
-            textBox.Margin = ContentMargin;
-            textBox.MaxHeight = ContentMaxHeight;
-            textBox.MaxWidth = ContentMaxWidth;
+            textBox.Margin      = ContentMargin;
+            textBox.MaxHeight   = ContentMaxHeight;
+            textBox.MaxWidth    = ContentMaxWidth;
 
-            textBox.Foreground = ContentForeground;
-            textBox.FontWeight = ContentFontWeight;
-            textBox.FontSize = ContentFontSize;
+            textBox.Foreground  = ContentForeground;
+            textBox.FontWeight  = ContentFontWeight;
+            textBox.FontSize    = ContentFontSize;
 
             var font = SharedDictionaryManager.DynamoModernDictionary["OpenSansRegular"];
             textBox.FontFamily = font as FontFamily;
 
-            textBox.Background = Brushes.Transparent;
-            textBox.IsReadOnly = true;
+            textBox.Background      = Brushes.Transparent;
+            textBox.IsReadOnly      = true;
             textBox.BorderThickness = new System.Windows.Thickness(0);
 
             textBox.HorizontalAlignment = HorizontalAlignment.Center;
-            textBox.VerticalAlignment = VerticalAlignment.Center;
+            textBox.VerticalAlignment   = VerticalAlignment.Center;
 
             textBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
 
@@ -599,7 +610,6 @@ namespace Dynamo.Controls
                 pointCollection.Add(new Point(estimatedWidth - arrowWidth, arrowHeight / 2));
 
             }
-
             return pointCollection;
         }
 
@@ -685,15 +695,32 @@ namespace Dynamo.Controls
 
         #region Update Position
 
-        /// <summary>
-        /// Ensures that the InfoBubbleView moves in tandem with the node it's attached to.
-        /// </summary>
         private void UpdatePosition()
         {
-            Canvas.SetTop(mainGrid, ViewModel.TargetTopLeft.Y);
-            Canvas.SetLeft(mainGrid, ViewModel.TargetTopLeft.X);
+            ContentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            double estimatedHeight = ContentContainer.DesiredSize.Height;
+            double estimatedWidth = ContentContainer.DesiredSize.Width;
+
+            switch (ViewModel.InfoBubbleStyle)
+            {
+                case InfoBubbleViewModel.Style.Warning:
+                case InfoBubbleViewModel.Style.WarningCondensed:
+                case InfoBubbleViewModel.Style.Error:
+                case InfoBubbleViewModel.Style.ErrorCondensed:
+                    mainGrid.Margin = GetMargin_Error(estimatedHeight, estimatedWidth);
+                    break;
+            }
         }
-        
+
+        private System.Windows.Thickness GetMargin_Error(double estimatedHeight, double estimatedWidth)
+        {
+            System.Windows.Thickness margin = new System.Windows.Thickness();
+            double nodeWidth = ViewModel.TargetBotRight.X - ViewModel.TargetTopLeft.X;
+            margin.Top = -(estimatedHeight) + ViewModel.TargetTopLeft.Y;
+            margin.Left = -((estimatedWidth - nodeWidth) / 2) + ViewModel.TargetTopLeft.X;
+            return margin;
+        }
+
         #endregion
 
         #region Resize
@@ -705,13 +732,11 @@ namespace Dynamo.Controls
             double newMaxWidth = deltaPoint.X;
             double newMaxHeight = deltaPoint.Y;
 
-            if (deltaPoint.X != double.MaxValue && newMaxWidth >= Configurations.PreviewMinWidth &&
-                newMaxWidth <= Configurations.PreviewMaxWidth)
+            if (deltaPoint.X != double.MaxValue && newMaxWidth >= Configurations.PreviewMinWidth && newMaxWidth <= Configurations.PreviewMaxWidth)
             {
                 ContentContainer.MaxWidth = newMaxWidth;
                 contentMaxWidth = newMaxWidth - 10;
             }
-
             if (deltaPoint.Y != double.MaxValue && newMaxHeight >= Configurations.PreviewMinHeight)
             {
                 ContentContainer.MaxHeight = newMaxHeight;
@@ -742,7 +767,6 @@ namespace Dynamo.Controls
             {
                 data.Style = InfoBubbleViewModel.Style.Warning;
             }
-
             data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
 
             this.ViewModel.ShowFullContentCommand.Execute(data);
@@ -762,7 +786,6 @@ namespace Dynamo.Controls
             {
                 data.Style = InfoBubbleViewModel.Style.WarningCondensed;
             }
-
             data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
 
             this.ViewModel.ShowCondensedContentCommand.Execute(data);
@@ -841,11 +864,11 @@ namespace Dynamo.Controls
         {
             if (this.IsDisconnected)
                 return;
-
+                
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed ||
                 ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.WarningCondensed)
                 ShowErrorBubbleFullContent();
-
+            
             ShowInfoBubble();
 
             this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
@@ -910,152 +933,12 @@ namespace Dynamo.Controls
         {
             viewModel.PropertyChanged -= ViewModel_PropertyChanged;
             viewModel.RequestAction -= InfoBubbleRequestAction;
-
+            
             // make sure we unsubscribe from handling the hyperlink click event
             if (this.hyperlink != null)
                 this.hyperlink.RequestNavigate -= RequestNavigateToDocumentationLinkHandler;
         }
 
-
-        private void ErrorsBorder_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton != MouseButton.Left) return;
-            if (ViewModel.NodeErrorsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
-            {
-                ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
-                ErrorsBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
-            }
-            else
-            {
-                ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
-                ErrorsBorder.HorizontalAlignment = HorizontalAlignment.Left;
-            }
-
-            ViewModel.NodeWarningsShowLessMessageVisible = false;
-        }
-
-        private void WarningsBorder_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton != MouseButton.Left) return;
-            if (ViewModel.NodeWarningsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
-            {
-                ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
-                WarningsBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
-            }
-            else
-            {
-                ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
-                WarningsBorder.HorizontalAlignment = HorizontalAlignment.Left;
-            }
-
-            ViewModel.NodeWarningsShowLessMessageVisible = false;
-        }
-
-        private void InfoBorder_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton != MouseButton.Left) return;
-            if (ViewModel.NodeInfoVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
-            {
-                ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
-                InfoBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
-            }
-            else
-            {
-                ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
-                InfoBorder.HorizontalAlignment = HorizontalAlignment.Left;
-            }
-
-            ViewModel.NodeWarningsShowLessMessageVisible = false;
-        }
-
-        private void ShowAllErrorsButton_Click(object sender, RoutedEventArgs e)
-        {
-            // If we're already expanded, this button collapses the border
-            if (ViewModel.NodeErrorsVisibilityState == 
-                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
-            {
-                ViewModel.NodeErrorsVisibilityState = 
-                    InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
-                ViewModel.NodeErrorsShowLessMessageVisible = false;
-                return;
-            }
-            ViewModel.NodeErrorsVisibilityState =
-                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
-            ViewModel.NodeErrorsShowLessMessageVisible = true;
-        }
-
-        private void ShowAllWarningsButton_Click(object sender, RoutedEventArgs e)
-        {
-            // If we're already expanded, this button collapses the border
-            if (ViewModel.NodeWarningsVisibilityState ==
-                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
-            {
-                ViewModel.NodeWarningsVisibilityState =
-                    InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
-                ViewModel.NodeWarningsShowLessMessageVisible = false;
-                return;
-            }
-            ViewModel.NodeWarningsVisibilityState =
-                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
-            ViewModel.NodeWarningsShowLessMessageVisible = true;
-        }
-
-        private void ShowAllInfoButton_Click(object sender, RoutedEventArgs e)
-        {
-            // If we're already expanded, this button collapses the border
-            if (ViewModel.NodeInfoVisibilityState ==
-                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
-            {
-                ViewModel.NodeInfoVisibilityState = 
-                    InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
-                ViewModel.NodeInfoShowLessMessageVisible = false;
-                return;
-            }
-            ViewModel.NodeInfoVisibilityState =
-                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
-            ViewModel.NodeInfoShowLessMessageVisible = true;
-        }
-
-        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            ScrollViewer scv = (ScrollViewer)sender;
-            scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
-            e.Handled = true;
-        }
-
-        private void DismissAllInfoButton_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeMessages)
-            {
-                if (infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.Info ||
-                    ViewModel.DismissedMessages.Contains(infoBubbleDataPacket))
-                {
-                    continue;
-                }
-
-                ViewModel.DismissedMessages.Add(infoBubbleDataPacket);
-            }
-
-            ViewModel.RefreshNodeInformationalStateDisplay();
-        }
-
-        private void DismissAllWarningsButton_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeMessages)
-            {
-                if (infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.Warning &&
-                    infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.WarningCondensed ||
-                    ViewModel.DismissedMessages.Contains(infoBubbleDataPacket))
-                {
-                    continue;
-                }
-
-                ViewModel.DismissedMessages.Add(infoBubbleDataPacket);
-            }
-
-            ViewModel.RefreshNodeInformationalStateDisplay();
-        }
-        
         #endregion
     }
 }

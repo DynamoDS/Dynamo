@@ -36,9 +36,6 @@ namespace DSCore.File
             var backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
             tb.Background = backgroundBrush;
             tb.BorderThickness = new Thickness(0);
-            tb.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 238, 238, 238));
-            tb.FontFamily = new System.Windows.Media.FontFamily("Artifakt Element");
-            tb.FontSize = 16;
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
             tb.TextChanged += delegate
@@ -46,7 +43,7 @@ namespace DSCore.File
                 tb.ScrollToHorizontalOffset(double.PositiveInfinity);
                 nodeView.ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
             };
-            tb.Margin = new Thickness(0, 8, 0, 5);
+            tb.Margin = new Thickness(0, 5, 0, 5);
 
             var sp = new StackPanel();
             sp.Children.Add(readFileButton);

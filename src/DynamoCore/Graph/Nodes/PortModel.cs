@@ -36,7 +36,6 @@ namespace Dynamo.Graph.Nodes
         private bool keepListStructure = false;
         private int level = 1;
         private string toolTip;
-
         #endregion
 
         #region public members
@@ -174,13 +173,6 @@ namespace Dynamo.Graph.Nodes
                     case PortType.Input:
                         return new Point2D(Owner.X, y);
                     case PortType.Output:
-                        if (Owner is CodeBlockNodeModel)
-                        {
-                            // Special case because code block outputs are smaller than regular outputs.
-                            // This ensures the output port of the first code block output aligns with
-                            // the first input port of any node.
-                            return new Point2D(Owner.X + Owner.Width, y + 12.7);
-                        }
                         return new Point2D(Owner.X + Owner.Width, y);
                 }
 
@@ -310,7 +302,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
         #endregion
-        
+
         [JsonConstructor]
         internal PortModel(string name, string toolTip)
         {
@@ -323,6 +315,7 @@ namespace Dynamo.Graph.Nodes
             LineIndex = -1;
             this.toolTip = toolTip;
             this.Name = name;
+
             MarginThickness = new Thickness(0);
             Height = Math.Abs(Height) < 0.001 ? Configurations.PortHeightInPixels : Height;
         }
@@ -352,11 +345,6 @@ namespace Dynamo.Graph.Nodes
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
         }
 
-        internal void RaisePortIsConnectedChanged()
-        {
-            RaisePropertyChanged(nameof(IsConnected));
-        }
-        
         /// <summary>
         /// Deletes all connectors attached to this PortModel.
         /// </summary>

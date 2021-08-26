@@ -365,7 +365,7 @@ namespace DynamoCoreWpfTests
 
             var editMenuItem = nodeView.MainContextMenu
                 .Items
-                .OfType<MenuItem>()
+                .Cast<MenuItem>()
                 .First(x => x.Header.ToString() == "Edit...");
 
             editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
@@ -408,7 +408,7 @@ namespace DynamoCoreWpfTests
 
             var editMenuItem = nodeView.MainContextMenu
                 .Items
-                .OfType<MenuItem>()
+                .Cast<MenuItem>()
                 .First(x => x.Header.ToString() == "Edit...");
 
             editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));

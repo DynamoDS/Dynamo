@@ -3,11 +3,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Media;
 using CoreNodeModels;
 using Dynamo.Configuration;
 using Dynamo.Controls;
-using Dynamo.UI;
 using Dynamo.Wpf;
 
 namespace CoreNodeModelsWpf.Nodes
@@ -24,15 +22,11 @@ namespace CoreNodeModelsWpf.Nodes
             var combo = new ComboBox
             {
                 Width = System.Double.NaN,
-                MinWidth= 150,
+                MinWidth = 100,
                 Height = Configurations.PortHeightInPixels,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center
             };
-
-
-            combo.Style = (Style)SharedDictionaryManager.DynamoModernDictionary["RefreshComboBox"];
-
             nodeView.inputGrid.Children.Add(combo);
             System.Windows.Controls.Grid.SetColumn(combo, 0);
             System.Windows.Controls.Grid.SetRow(combo, 0);
@@ -53,7 +47,7 @@ namespace CoreNodeModelsWpf.Nodes
                 Source = model
             };
             combo.SetBinding(ItemsControl.ItemsSourceProperty, bindingVal);
-            
+
             // bind the selected index to the model property SelectedIndex
             var indexBinding = new Binding("SelectedIndex")
             {
