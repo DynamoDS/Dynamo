@@ -1,7 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.UI;
@@ -12,18 +15,23 @@ namespace Dynamo.ViewModels
 {
     public partial class PortViewModel : ViewModelBase
     {
-
         #region Properties/Fields
 
         private readonly PortModel _port;
         private readonly NodeViewModel _node;
         private DelegateCommand _useLevelsCommand;
         private DelegateCommand _keepListStructureCommand;
+        private DelegateCommand _breakConnectionsCommand;
+        private DelegateCommand _hideConnectionsCommand;
         private const double autocompletePopupSpacing = 2.5;
         private SolidColorBrush portBorderBrushColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
         private SolidColorBrush portBackgroundColor = new SolidColorBrush(Color.FromArgb(0, 60, 60, 60));
         internal bool inputPortDisconnectedByConnectCommand = false;
         private bool _showUseLevelMenu;
+        private bool areConnectorsHidden;
+        private string showHideWiresButtonContent = "";
+        private bool hideWiresButtonEnabled;
+        private string showHideWiresButtonContent1;
 
         /// <summary>
         /// Port model.
@@ -279,21 +287,60 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Determines whether the output port button says 'Hide Wires' or 'Show Wires'
+        /// </summary>
+        public string ShowHideWiresButtonContent
+        {
+            get => showHideWiresButtonContent1;
+            set
+            {
+                showHideWiresButtonContent1 = value;
+                RaisePropertyChanged(nameof(ShowHideWiresButtonContent));
+            }
+        }
+
+        /// <summary>
+        /// Indicates whether this port's connectors are visible or not.
+        /// This can be affected by the HideConnectorsCommand in the output port context menu.
+        /// </summary>
+        public bool AreConnectorsHidden
+        {
+            get => areConnectorsHidden;
+            set
+            {
+                areConnectorsHidden = value; 
+                RaisePropertyChanged(nameof(AreConnectorsHidden));
+            }
+        }
+
+        /// <summary>
         /// Enables or disables the Hide Wires button on the node output port context menu.
         /// </summary>
         public bool HideWiresButtonEnabled
         {
-            get => true;
+            get => hideWiresButtonEnabled;
+            set
+            {
+                hideWiresButtonEnabled = value; 
+                RaisePropertyChanged(nameof(HideWiresButtonEnabled));
+            }
         }
 
         /// <summary>
-        /// Enables or disables the Unhide Wires button on the node output port context menu.
+        /// Takes care of the multiple UI concerns when dealing with the Unhide/Hide Wires button
+        /// on the output port's context menu.
         /// </summary>
-        public bool UnhideWiresButtonEnabled
+        private void RefreshHideWiresButton()
         {
-            get => !HideWiresButtonEnabled;
-        }
+            HideWiresButtonEnabled = _port.Connectors.Count > 0;
+            AreConnectorsHidden = CheckIfConnectorsAreHidden();
 
+            ShowHideWiresButtonContent = AreConnectorsHidden
+                ? Properties.Resources.UnhideWiresPopupMenuItem
+                : Properties.Resources.HideWiresPopupMenuItem;
+
+            RaisePropertyChanged(nameof(ShowHideWiresButtonContent));
+        }
 
         /// <summary>
         /// Sets the color of the port's border brush
@@ -341,6 +388,7 @@ namespace Dynamo.ViewModels
             _node.WorkspaceViewModel.PropertyChanged += Workspace_PropertyChanged;
 
             RefreshPortColors();
+            RefreshHideWiresButton();
         }
 
         public override void Dispose()
@@ -430,6 +478,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(IsConnected));
                     RaisePropertyChanged(nameof(OutputPortBreakConnectionsButtonEnabled));
                     RefreshPortColors();
+                    RefreshHideWiresButton();
                     break;
                 case "IsEnabled":
                     RaisePropertyChanged("IsEnabled");
@@ -500,6 +549,38 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Used by the 'Break Connection' button in the node output context menu.
+        /// Removes any current connections this port has.
+        /// </summary>
+        public DelegateCommand BreakConnectionsCommand
+        {
+            get
+            {
+                if (_breakConnectionsCommand == null)
+                {
+                    _breakConnectionsCommand = new DelegateCommand(BreakConnections);
+                }
+                return _breakConnectionsCommand;
+            }
+        }
+
+        /// <summary>
+        /// Used by the 'Break Connection' button in the node output context menu.
+        /// Removes any current connections this port has.
+        /// </summary>
+        public DelegateCommand HideConnectionsCommand
+        {
+            get
+            {
+                if (_hideConnectionsCommand == null)
+                {
+                    _hideConnectionsCommand = new DelegateCommand(HideConnections);
+                }
+                return _hideConnectionsCommand;
+            }
+        }
+
         private void KeepListStructure(object parameter)
         {
             bool keepListStructure = (bool)parameter;
@@ -516,6 +597,58 @@ namespace Dynamo.ViewModels
 
             _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
+
+        /// <summary>
+        /// Used by the 'Break Connection' button in the node output context menu.
+        /// Removes any current connections this port has.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void BreakConnections(object parameter)
+        {
+            for (int i = _port.Connectors.Count - 1; i >= 0; i--)
+            {
+                // Attempting to get the relevant ConnectorViewModel via matching GUID
+                ConnectorViewModel connectorViewModel = _node.WorkspaceViewModel.Connectors
+                    .FirstOrDefault(x => x.ConnectorModel.GUID == _port.Connectors[i].GUID);
+
+                if (connectorViewModel == null) continue;
+
+                connectorViewModel.BreakConnectionCommand.Execute(null);
+            }
+        }
+
+        /// <summary>
+        /// Used by the 'Hide Wires' button in the node output context menu.
+        /// Turns of the visibility of any connections this port has.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void HideConnections(object parameter)
+        {
+            for (int i = _port.Connectors.Count - 1; i >= 0; i--)
+            {
+                // Attempting to get the relevant ConnectorViewModel via matching GUID
+                ConnectorViewModel connectorViewModel = _node.WorkspaceViewModel.Connectors
+                    .FirstOrDefault(x => x.ConnectorModel.GUID == _port.Connectors[i].GUID);
+
+                if (connectorViewModel == null) continue;
+
+                connectorViewModel.HideConnectorCommand.Execute(null);
+            }
+            RefreshHideWiresButton();
+        }
+
+        private bool CheckIfConnectorsAreHidden()
+        {
+            if (_port.Connectors.Count < 1 || _node.WorkspaceViewModel.Connectors.Count < 1) return false;
+
+            // Attempting to get a relevant ConnectorViewModel via matching NodeModel GUID
+            ConnectorViewModel connectorViewModel = _node.WorkspaceViewModel.Connectors
+                .FirstOrDefault(x => x.Nodevm.NodeModel.GUID == _port.Owner.GUID);
+
+            if (connectorViewModel == null) return false;
+            return !connectorViewModel.IsVisible;
+        }
+
 
         private void Connect(object parameter)
         {

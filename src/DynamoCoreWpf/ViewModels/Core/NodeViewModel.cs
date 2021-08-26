@@ -204,6 +204,12 @@ namespace Dynamo.ViewModels
                 }
             }
         }
+
+        /// <summary>
+        /// Used to determine whether the node's context menu display an Output/Input menu
+        /// </summary>
+        public bool IsInputOrOutput => IsInput || IsOutput;
+
         /// <summary>
         /// The Name of the nodemodel this view points to
         /// this is the name of the node as it is displayed in the UI.
