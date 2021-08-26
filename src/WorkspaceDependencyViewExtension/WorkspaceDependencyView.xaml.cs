@@ -135,29 +135,31 @@ namespace Dynamo.WorkspaceDependency
             var packageDependencies = ws.NodeLibraryDependencies.Where(d => d is PackageDependencyInfo).ToList();
             var localDefinitions = ws.NodeLocalDefinitions.Where(d => d is LocalDefinitionInfo).ToList();
 
-            foreach (LocalDefinitionInfo info in localDefinitions) 
+            foreach (LocalDefinitionInfo info in localDefinitions)
             {
-                string customNodeName = info.Name.Replace(customNodeExtension, "");
-
-                // Try to get the Custom node information if possible. 
                 try
                 {
-                    dependencyViewExtension.DependencyView.CustomNodeManager.TryGetNodeInfo(customNodeName, out CustomNodeInfo customNodeInfo);
-
-                    if (customNodeInfo != null)
+                    if (info.ReferenceType == ReferenceType.DYFFILE)
                     {
-                        info.Path = customNodeInfo.Path;
+                        // Try to get the Custom node information if possible. 
+                        string customNodeName = info.Name.Replace(customNodeExtension, "");
+                        dependencyViewExtension.DependencyView.CustomNodeManager.TryGetNodeInfo(customNodeName, out CustomNodeInfo customNodeInfo);
 
-                        if (info.Path != null)
+                        if (customNodeInfo != null)
                         {
-                            FileInfo localDefinitionFileInfo = new FileInfo(info.Path);
-                            long size = localDefinitionFileInfo.Length / 1024;
-                            info.Size = size.ToString() + sizeUnits;
+                            info.Path = customNodeInfo.Path;
                         }
+                    }
+
+                    if (info.Path != null)
+                    {
+                        FileInfo localDefinitionFileInfo = new FileInfo(info.Path);
+                        long size = localDefinitionFileInfo.Length / 1024;
+                        info.Size = size.ToString() + sizeUnits;
                     }
                 }
                 catch (Exception) { }
-
+                
                 HasDependencyIssue = info.Path == null;
             }
 

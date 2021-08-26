@@ -226,7 +226,10 @@
                         IsReadOnly="True"
                         Width="38">
                         <DataGridTemplateColumn.Header>
-                            <LineBreak />
+                            <fa:ImageAwesome Name="RefreshReferences" 
+                                             Icon="Refresh" 
+                                             ToolTip="{x:Static w:Resources.RefreshButtonTooltipText}" 
+                                             MouseLeftButtonDown="Refresh_MouseLeftButtonDown"/>
                         </DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
