@@ -208,6 +208,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Used to determine whether the node's context menu display an Output/Input menu
         /// </summary>
+        [JsonIgnore]
         public bool IsInputOrOutput => IsInput || IsOutput;
 
         /// <summary>
@@ -731,7 +732,13 @@ namespace Dynamo.ViewModels
             // errors aren't being dismissed when the graph runs.
             if (nodeLogic.State == ElementState.Error) return;
 
-            ErrorBubble.NodeMessages.Clear();
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    ErrorBubble.NodeMessages.Clear();
+                });
+            }
         }
 
         private void DismissedNodeWarnings_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

@@ -31,8 +31,7 @@ namespace Dynamo.ViewModels
         private bool areConnectorsHidden;
         private string showHideWiresButtonContent = "";
         private bool hideWiresButtonEnabled;
-        private string showHideWiresButtonContent1;
-
+        
         /// <summary>
         /// Port model.
         /// </summary>
@@ -291,10 +290,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string ShowHideWiresButtonContent
         {
-            get => showHideWiresButtonContent1;
+            get => showHideWiresButtonContent;
             set
             {
-                showHideWiresButtonContent1 = value;
+                showHideWiresButtonContent = value;
                 RaisePropertyChanged(nameof(ShowHideWiresButtonContent));
             }
         }

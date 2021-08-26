@@ -523,6 +523,7 @@
                                                 CornerRadius="2" />
                                         <Image Width="24px"
                                                Height="24px"
+                                               Margin="0,1,0,0"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                Source="/DynamoCoreWpf;component/UI/Images/more-vertical.png" />
@@ -545,8 +546,7 @@
                   Width="Auto"
                   Height="20">
                 <Border Background="{StaticResource NodeDismissedWarningsGlyphBackground}"
-                        CornerRadius="10"
-                        Visibility="Collapsed">
+                        CornerRadius="10">
                     <Label Padding="3,2,3,0"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
