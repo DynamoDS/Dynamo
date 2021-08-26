@@ -474,7 +474,6 @@ namespace Dynamo.Core
             private readonly List<ModelBase> models;
             private readonly UndoRedoRecorder recorder;
             private readonly Dictionary<Guid, XmlElement> existingConnectors;
-            private readonly Dictionary<Guid, XmlElement> existingPins;
             private readonly Dictionary<Guid, ConnectorModel> remainingConnectors;
 
             public ModelModificationUndoHelper(UndoRedoRecorder recorder, ModelBase model)
@@ -515,14 +514,6 @@ namespace Dynamo.Core
                         recorder.document, SaveContext.Undo);
 
                     existingConnectors[connectorModel.GUID] = element;
-
-                    foreach(var connectorPin in connectorModel.ConnectorPinModels)
-                    {
-                        var pinElement = connectorPin.Serialize(
-                        recorder.document, SaveContext.Undo);
-
-                        existingPins[connectorPin.GUID] = pinElement;
-                    }
                 }
             }
 

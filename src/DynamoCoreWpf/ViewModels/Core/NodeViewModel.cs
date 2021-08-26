@@ -7,9 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
@@ -20,8 +18,6 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
-using Point = System.Windows.Point;
-using Size = System.Windows.Size;
 
 namespace Dynamo.ViewModels
 {
@@ -57,7 +53,6 @@ namespace Dynamo.ViewModels
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
         private bool isRenamed = false;
-        private ObservableCollection<MenuItem> dismissedAlerts = new ObservableCollection<MenuItem>();
         #endregion
 
         #region public members
@@ -204,13 +199,6 @@ namespace Dynamo.ViewModels
                 }
             }
         }
-
-        /// <summary>
-        /// Used to determine whether the node's context menu display an Output/Input menu
-        /// </summary>
-        [JsonIgnore]
-        public bool IsInputOrOutput => IsInput || IsOutput;
-
         /// <summary>
         /// The Name of the nodemodel this view points to
         /// this is the name of the node as it is displayed in the UI.
@@ -258,16 +246,6 @@ namespace Dynamo.ViewModels
         public ElementState State
         {
             get { return nodeLogic.State; }
-        }
-        
-        /// <summary>
-        /// The total number of info/warnings/errors dismissed by the user on this node.
-        /// This is displayed on the node by a little icon beside the Context Menu button.
-        /// </summary>
-        [JsonIgnore]
-        public int NumberOfDismissedAlerts
-        {
-            get => DismissedAlerts.Count;
         }
 
         [JsonIgnore]
@@ -489,8 +467,6 @@ namespace Dynamo.ViewModels
         }
 
         private bool isNodeNewlyAdded;
-        private ImageSource imageSource;
-        
         [JsonIgnore]
         public bool IsNodeAddedRecently
         {
@@ -587,17 +563,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [JsonIgnore]
-        public ImageSource ImageSource
-        {
-            get => imageSource;
-            set
-            {
-                imageSource = value;
-                RaisePropertyChanged(nameof(ImageSource));
-            }
-        }
-
         internal double ActualHeight { get; set; }
         internal double ActualWidth { get; set; }
 
@@ -609,20 +574,6 @@ namespace Dynamo.ViewModels
         {
             get { return NodeModel.UserDescription; }
             set { NodeModel.UserDescription = value; }
-        }
-
-        /// <summary>
-        /// A collection of MenuItems used by the node's Context Menu, since errors/warnings are undismissed via a sub-menu.
-        /// </summary>
-        [JsonIgnore]
-        public ObservableCollection<MenuItem> DismissedAlerts
-        {
-            get => dismissedAlerts;
-            set
-            {
-                dismissedAlerts = value;
-                RaisePropertyChanged(nameof(DismissedAlerts));
-            }
         }
 
         #endregion
@@ -696,7 +647,7 @@ namespace Dynamo.ViewModels
 
             ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
             UpdateBubbleContent();
-            
+
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -713,84 +664,8 @@ namespace Dynamo.ViewModels
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             ZIndex = ++StaticZIndex;
             ++NoteViewModel.StaticZIndex;
-
-            if(workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource)) ImageSource = imgSource;
-
-            // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
-            ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeWarnings_CollectionChanged;
-            logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
-
         }
 
-        /// <summary>
-        /// Clears the existing messages on a node before it executes and re-evalutes its warnings/errors. 
-        /// </summary>
-        /// <param name="obj"></param>
-        private void Logic_NodeMessagesClearing(NodeModel obj)
-        {
-            // Because errors are evaluated before the graph/node executes, we need to ensure 
-            // errors aren't being dismissed when the graph runs.
-            if (nodeLogic.State == ElementState.Error) return;
-
-            if (DynamoViewModel.UIDispatcher != null)
-            {
-                DynamoViewModel.UIDispatcher.Invoke(() =>
-                {
-                    ErrorBubble.NodeMessages.Clear();
-                });
-            }
-        }
-
-        private void DismissedNodeWarnings_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (!(sender is ObservableCollection<InfoBubbleDataPacket> observableCollection)) return;
-
-            // Local helper method to avoid repeated code
-            void RebuildDismissedWarningsCollection()
-            {
-                foreach (InfoBubbleDataPacket infoBubbleDataPacket in observableCollection)
-                {
-                    List<string> addedMessages = DismissedAlerts
-                        .Select(x => x.Tag.ToString())
-                        .ToList();
-
-                    if (addedMessages.Contains(infoBubbleDataPacket.Message)) continue;
-
-                    // Ellipses to truncate the message if too long
-                    string ellipses = infoBubbleDataPacket.Message.Length > 30 ? "..." : "";
-
-                    DismissedAlerts.Add(new MenuItem
-                    {
-                        Header = infoBubbleDataPacket.Message.Substring(0, Math.Min(infoBubbleDataPacket.Message.Length, 30)) + ellipses,
-                        Tag = infoBubbleDataPacket.Message,
-                        Command = ErrorBubble.UndismissMessageCommand,
-                        CommandParameter = infoBubbleDataPacket.Message
-                    });
-                }
-            }
-
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    RebuildDismissedWarningsCollection();
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    // Clearing, then rebuilding the collection
-                    DismissedAlerts.Clear(); 
-                    RebuildDismissedWarningsCollection();
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
-        }
-        
         /// <summary>
         /// Dispose function
         /// </summary>
@@ -958,7 +833,6 @@ namespace Dynamo.ViewModels
                     break;
                 case "Width":
                     RaisePropertyChanged("Width");
-                    UpdateErrorBubbleWidth();
                     UpdateErrorBubblePosition();
                     break;
                 case "Height":
@@ -990,17 +864,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Updates the width of the node's Warning/Error bubbles, in case the width of the node changes.
-        /// </summary>
-        private void UpdateErrorBubbleWidth()
-        {
-            ErrorBubble.BubbleWidth = NodeModel.Width;
-        }
-
         public void UpdateBubbleContent()
         {
-            if (ErrorBubble == null || DynamoViewModel == null || !NodeModel.WasInvolvedInExecution && !NodeModel.IsInErrorState)
+            if (ErrorBubble == null || DynamoViewModel == null)
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
@@ -1025,22 +891,7 @@ namespace Dynamo.ViewModels
                 var data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
 
                 ErrorBubble.UpdateContentCommand.Execute(data);
-
-                // If running Dynamo with UI, use dispatcher, otherwise not
-                if(DynamoViewModel.UIDispatcher != null)
-                {
-                    DynamoViewModel.UIDispatcher.Invoke(() =>
-                    {
-                        ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                    });
-                }
-                else
-                {
-                    ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                }
-
                 ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
-
             }
         }
 
@@ -1520,7 +1371,7 @@ namespace Dynamo.ViewModels
                     group.AddGroupAndGroupedNodesToSelection();
             }
         }
-        
+
         #region Private Helper Methods
         private Point GetTopLeft()
         {

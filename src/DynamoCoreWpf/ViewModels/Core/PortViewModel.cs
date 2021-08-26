@@ -1,13 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
-using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
@@ -15,22 +10,15 @@ namespace Dynamo.ViewModels
 {
     public partial class PortViewModel : ViewModelBase
     {
+
         #region Properties/Fields
 
         private readonly PortModel _port;
         private readonly NodeViewModel _node;
         private DelegateCommand _useLevelsCommand;
         private DelegateCommand _keepListStructureCommand;
-        private DelegateCommand _breakConnectionsCommand;
-        private DelegateCommand _hideConnectionsCommand;
         private const double autocompletePopupSpacing = 2.5;
-        private SolidColorBrush portBorderBrushColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
-        private SolidColorBrush portBackgroundColor = new SolidColorBrush(Color.FromArgb(0, 60, 60, 60));
         internal bool inputPortDisconnectedByConnectCommand = false;
-        private bool _showUseLevelMenu;
-        private bool areConnectorsHidden;
-        private string showHideWiresButtonContent = "";
-        private bool hideWiresButtonEnabled;
 
         /// <summary>
         /// Port model.
@@ -53,7 +41,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string PortName
         {
-            get { return GetPortDisplayName(_port.Name); }
+            get { return _port.Name; }
         }
 
         /// <summary>
@@ -63,8 +51,7 @@ namespace Dynamo.ViewModels
         {
             get { return _port.PortType; }
         }
-
-
+        
         /// <summary>
         /// If port is selected.
         /// </summary>
@@ -78,19 +65,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsConnected
         {
-            get => _port.IsConnected;
-        }
-
-        /// <summary>
-        /// Sets the condensed styling on Code Block output ports.
-        /// This is used to style the output ports on Code Blocks to be smaller.
-        /// </summary>
-        public bool IsPortCondensed
-        {
-            get
-            {
-                return this.PortModel.Owner is CodeBlockNodeModel && PortType == PortType.Output;
-            }
+            get { return _port.Owner.InPorts[_port.Index].IsConnected; }
         }
 
         /// <summary>
@@ -122,28 +97,24 @@ namespace Dynamo.ViewModels
         /// </summary>
         public ElementState State
         {
-            get { return _node.State; }
+            get { return _node.State; }    
         }
 
         /// <summary>
-        /// Returns whether this port has a default value that can be used.
+        /// If should use default value on this port.
         /// </summary>
         public bool DefaultValueEnabled
         {
             get { return _port.DefaultValue != null; }
         }
-        
+
         /// <summary>
-        /// Returns whether the port is using its default value, or whether this been disabled
+        /// If default value is being used on this port.
         /// </summary>
         public bool UsingDefaultValue
         {
             get { return _port.UsingDefaultValue; }
-            set
-            {
-                _port.UsingDefaultValue = value;
-                RaisePropertyChanged(nameof(UsingDefaultValueMarkerVisibile));
-            }
+            set { _port.UsingDefaultValue = value; }
         }
 
         /// <summary>
@@ -168,6 +139,8 @@ namespace Dynamo.ViewModels
 
         public PortEventType EventType { get; set; }
 
+        private bool _showUseLevelMenu;
+
         /// <summary>
         /// If should display Use Levels popup menu. 
         /// </summary>
@@ -190,28 +163,6 @@ namespace Dynamo.ViewModels
         public bool UseLevels
         {
             get { return _port.UseLevels; }
-        }
-
-        /// <summary>
-        /// Determines whether or not the UseLevelsSpinner is visible on the port.
-        /// </summary>
-        public Visibility UseLevelSpinnerVisible
-        {
-            get
-            {
-                if (PortType == PortType.Output) return Visibility.Collapsed;
-                if (UseLevels) return Visibility.Visible;
-                return Visibility.Hidden;
-            }
-        }
-
-        /// <summary>
-        /// Determines whether the blue marker appears beside an input port, indicating
-        /// the default value for this port is being used.
-        /// </summary>
-        public bool UsingDefaultValueMarkerVisibile
-        {
-            get => PortType == PortType.Input && UsingDefaultValue && DefaultValueEnabled;
         }
 
         /// <summary>
@@ -241,7 +192,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_node.ArgumentLacing != LacingStrategy.Disabled)
+                if (_node.ArgumentLacing != LacingStrategy.Disabled && PortType == PortType.Input)
                 {
                     return Visibility.Visible;
                 }
@@ -249,122 +200,6 @@ namespace Dynamo.ViewModels
                 {
                     return Visibility.Collapsed;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Shows or hides the Use Levels and Keep List Structure checkboxes
-        /// in the node chevron popup menu.
-        /// </summary>
-        public bool UseLevelCheckBoxVisibility
-        {
-            get => _port.PortType == PortType.Input;
-        }
-
-        /// <summary>
-        /// Shows or hides the Use Default Value checkbox in the node chevron popup menu.
-        /// </summary>
-        public bool UseDefaultValueCheckBoxVisibility
-        {
-            get => _port.PortType == PortType.Input && DefaultValueEnabled;
-        }
-
-        /// <summary>
-        /// Shows or hides the Break Connections, Hide Wires and UnhideWires buttons in the node chevron popup menu.
-        /// </summary>
-        public bool OutputPortConnectionsButtonsVisible
-        {
-            get => _port.PortType == PortType.Output;
-        }
-
-        /// <summary>
-        /// Enables or disables the Break Connections button on the node output port context menu.
-        /// </summary>
-        public bool OutputPortBreakConnectionsButtonEnabled
-        {
-            get => OutputPortConnectionsButtonsVisible && IsConnected;
-        }
-
-        /// <summary>
-        /// Determines whether the output port button says 'Hide Wires' or 'Show Wires'
-        /// </summary>
-        public string ShowHideWiresButtonContent
-        {
-            get => showHideWiresButtonContent;
-            set
-            {
-                showHideWiresButtonContent = value;
-                RaisePropertyChanged(nameof(ShowHideWiresButtonContent));
-            }
-        }
-
-        /// <summary>
-        /// Indicates whether this port's connectors are visible or not.
-        /// This can be affected by the HideConnectorsCommand in the output port context menu.
-        /// </summary>
-        public bool AreConnectorsHidden
-        {
-            get => areConnectorsHidden;
-            set
-            {
-                areConnectorsHidden = value; 
-                RaisePropertyChanged(nameof(AreConnectorsHidden));
-            }
-        }
-
-        /// <summary>
-        /// Enables or disables the Hide Wires button on the node output port context menu.
-        /// </summary>
-        public bool HideWiresButtonEnabled
-        {
-            get => hideWiresButtonEnabled;
-            set
-            {
-                hideWiresButtonEnabled = value; 
-                RaisePropertyChanged(nameof(HideWiresButtonEnabled));
-            }
-        }
-
-        /// <summary>
-        /// Takes care of the multiple UI concerns when dealing with the Unhide/Hide Wires button
-        /// on the output port's context menu.
-        /// </summary>
-        private void RefreshHideWiresButton()
-        {
-            HideWiresButtonEnabled = _port.Connectors.Count > 0;
-            AreConnectorsHidden = CheckIfConnectorsAreHidden();
-
-            ShowHideWiresButtonContent = AreConnectorsHidden
-                ? Properties.Resources.UnhideWiresPopupMenuItem
-                : Properties.Resources.HideWiresPopupMenuItem;
-
-            RaisePropertyChanged(nameof(ShowHideWiresButtonContent));
-        }
-
-        /// <summary>
-        /// Sets the color of the port's border brush
-        /// </summary>
-        public SolidColorBrush PortBorderBrushColor
-        {
-            get => portBorderBrushColor;
-            set
-            {
-                portBorderBrushColor = value;
-                RaisePropertyChanged(nameof(PortBorderBrushColor));
-            }
-        }
-
-        /// <summary>
-        /// Sets the color of the port's background - affected by multiple factors such as
-        /// MouseOver, IsConnected, Node States (active, inactie, frozen 
-        /// </summary>
-        public SolidColorBrush PortBackgroundColor
-        {
-            get => portBackgroundColor;
-            set
-            {
-                portBackgroundColor = value;
-                RaisePropertyChanged(nameof(PortBackgroundColor));
             }
         }
 
@@ -385,9 +220,6 @@ namespace Dynamo.ViewModels
             _port.PropertyChanged += _port_PropertyChanged;
             _node.PropertyChanged += _node_PropertyChanged;
             _node.WorkspaceViewModel.PropertyChanged += Workspace_PropertyChanged;
-
-            RefreshPortColors();
-            RefreshHideWiresButton();
         }
 
         public override void Dispose()
@@ -431,7 +263,7 @@ namespace Dynamo.ViewModels
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
 
-            return new[] { placement };
+            return new[] { placement }; 
         }
 
         private void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -474,10 +306,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("PortName");
                     break;
                 case "IsConnected":
-                    RaisePropertyChanged(nameof(IsConnected));
-                    RaisePropertyChanged(nameof(OutputPortBreakConnectionsButtonEnabled));
-                    RefreshPortColors();
-                    RefreshHideWiresButton();
+                    RaisePropertyChanged("IsConnected");
                     break;
                 case "IsEnabled":
                     RaisePropertyChanged("IsEnabled");
@@ -490,7 +319,6 @@ namespace Dynamo.ViewModels
                     break;
                 case "UsingDefaultValue":
                     RaisePropertyChanged("UsingDefaultValue");
-                    RefreshPortColors();
                     break;
                 case "MarginThickness":
                     RaisePropertyChanged("MarginThickness");
@@ -503,15 +331,15 @@ namespace Dynamo.ViewModels
                     break;
                 case "KeepListStructure":
                     RaisePropertyChanged("ShouldKeepListStructure");
-                    RefreshPortColors();
                     break;
             }
+            
         }
 
         /// <summary>
         /// UseLevels command
         /// </summary>
-        public DelegateCommand UseLevelsCommand
+        public DelegateCommand UseLevelsCommand 
         {
             get
             {
@@ -530,7 +358,6 @@ namespace Dynamo.ViewModels
                 Guid.Empty, _node.NodeLogic.GUID, "UseLevels", string.Format("{0}:{1}", _port.Index, useLevel));
 
             _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
-            RaisePropertyChanged(nameof(UseLevelSpinnerVisible));
         }
 
         /// <summary>
@@ -545,38 +372,6 @@ namespace Dynamo.ViewModels
                     _keepListStructureCommand = new DelegateCommand(KeepListStructure, p => true);
                 }
                 return _keepListStructureCommand;
-            }
-        }
-
-        /// <summary>
-        /// Used by the 'Break Connection' button in the node output context menu.
-        /// Removes any current connections this port has.
-        /// </summary>
-        public DelegateCommand BreakConnectionsCommand
-        {
-            get
-            {
-                if (_breakConnectionsCommand == null)
-                {
-                    _breakConnectionsCommand = new DelegateCommand(BreakConnections);
-                }
-                return _breakConnectionsCommand;
-            }
-        }
-
-        /// <summary>
-        /// Used by the 'Break Connection' button in the node output context menu.
-        /// Removes any current connections this port has.
-        /// </summary>
-        public DelegateCommand HideConnectionsCommand
-        {
-            get
-            {
-                if (_hideConnectionsCommand == null)
-                {
-                    _hideConnectionsCommand = new DelegateCommand(HideConnections);
-                }
-                return _hideConnectionsCommand;
             }
         }
 
@@ -596,58 +391,6 @@ namespace Dynamo.ViewModels
 
             _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
-
-        /// <summary>
-        /// Used by the 'Break Connection' button in the node output context menu.
-        /// Removes any current connections this port has.
-        /// </summary>
-        /// <param name="parameter"></param>
-        private void BreakConnections(object parameter)
-        {
-            for (int i = _port.Connectors.Count - 1; i >= 0; i--)
-            {
-                // Attempting to get the relevant ConnectorViewModel via matching GUID
-                ConnectorViewModel connectorViewModel = _node.WorkspaceViewModel.Connectors
-                    .FirstOrDefault(x => x.ConnectorModel.GUID == _port.Connectors[i].GUID);
-
-                if (connectorViewModel == null) continue;
-
-                connectorViewModel.BreakConnectionCommand.Execute(null);
-            }
-        }
-
-        /// <summary>
-        /// Used by the 'Hide Wires' button in the node output context menu.
-        /// Turns of the visibility of any connections this port has.
-        /// </summary>
-        /// <param name="parameter"></param>
-        private void HideConnections(object parameter)
-        {
-            for (int i = _port.Connectors.Count - 1; i >= 0; i--)
-            {
-                // Attempting to get the relevant ConnectorViewModel via matching GUID
-                ConnectorViewModel connectorViewModel = _node.WorkspaceViewModel.Connectors
-                    .FirstOrDefault(x => x.ConnectorModel.GUID == _port.Connectors[i].GUID);
-
-                if (connectorViewModel == null) continue;
-
-                connectorViewModel.HideConnectorCommand.Execute(null);
-            }
-            RefreshHideWiresButton();
-        }
-
-        private bool CheckIfConnectorsAreHidden()
-        {
-            if (_port.Connectors.Count < 1 || _node.WorkspaceViewModel.Connectors.Count < 1) return false;
-
-            // Attempting to get a relevant ConnectorViewModel via matching NodeModel GUID
-            ConnectorViewModel connectorViewModel = _node.WorkspaceViewModel.Connectors
-                .FirstOrDefault(x => x.Nodevm.NodeModel.GUID == _port.Owner.GUID);
-
-            if (connectorViewModel == null) return false;
-            return !connectorViewModel.IsVisible;
-        }
-
 
         private void Connect(object parameter)
         {
@@ -728,87 +471,6 @@ namespace Dynamo.ViewModels
         private void OnMouseLeftUseLevel(object parameter)
         {
             ShowUseLevelMenu = false;
-        }
-
-        /// <summary>
-        /// Handles the logic for updating the PortBackgroundColor and PortBackgroundBrushColor
-        /// </summary>
-        private void RefreshPortColors()
-        {
-            // The visual appearance of ports can be affected by many different logical states
-            // Inputs have more display styles than outputs
-            if (_port.PortType == PortType.Input)
-            {
-                // Special case for keeping list structure visual appearance
-                if (_port.UseLevels && _port.KeepListStructure && _port.IsConnected)
-                {
-                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(94, 165, 196));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-                }
-
-                // Port has a default value, shows blue marker
-                else if (UsingDefaultValue && DefaultValueEnabled)
-                {
-                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-                }
-                else
-                {
-                    // Port isn't connected and has no default value (or isn't using it)
-                    if (!_port.IsConnected)
-                    {
-                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(107, 67, 67));
-                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(244, 134, 134));
-                    }
-                    // Port is connected and has no default value
-                    else
-                    {
-                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
-                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-                    }
-                }
-            }
-            // It's an output port, which either displays a connected style or a disconnected style
-            else
-            {
-                if (_port.IsConnected)
-                {
-                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-                }
-                else
-                {
-                    PortBackgroundColor = new SolidColorBrush(Colors.Transparent);
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(204, 204, 204));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Replaces the old PortNameConverter.
-        /// Ports without names are generally converter chevrons i.e. '>'. However, if an output
-        /// port is displaying its context menu chevron AND has no name (e.g. the Function node)
-        /// the output port is renamed in order to avoid confusing the user with double chevrons.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private string GetPortDisplayName(string value)
-        {
-            if (value is string && !string.IsNullOrEmpty(value as string))
-            {
-                return value as string;
-            }
-            if (_node.ArgumentLacing != LacingStrategy.Disabled)
-            {
-                switch (_port.PortType)
-                {
-                    case PortType.Input:
-                        return Properties.Resources.InputPortAlternativeName;
-                    case PortType.Output:
-                        return Properties.Resources.OutputPortAlternativeName;
-                }
-            }
-            return ">";
         }
     }
 }

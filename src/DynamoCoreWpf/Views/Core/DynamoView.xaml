@@ -560,12 +560,9 @@
                                       Header="{x:Static p:Resources.DynamoViewViewMenuShowConnectors}"
                                       IsCheckable="True"
                                       Name="ShowHideConnectorsMenuItem"
-                                      IsChecked="{Binding Path=IsShowingConnectors}"/>
-                            <MenuItem Focusable="False"
-                                      Header="{x:Static p:Resources.DynamoViewViewMenuConnectorShowTooltip}"
-                                      IsCheckable="True"
-                                      Name="ShowHideConnectorTooltipMenuItem"
-                                      IsChecked="{Binding Path=IsShowingConnectorTooltip}"/>
+                                      IsChecked="{Binding Path=IsShowingConnectors}"
+                                      Command="{Binding ShowHideConnectorsCommand}">
+                            </MenuItem>
                         </MenuItem>
 
                         <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenu3DPreview}"
