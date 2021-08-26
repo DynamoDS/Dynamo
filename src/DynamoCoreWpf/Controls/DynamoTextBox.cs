@@ -101,11 +101,12 @@ namespace Dynamo.Nodes
             FontSize = 16;
             LostFocus += OnLostFocus;
             LostKeyboardFocus += OnLostFocus;
-            Padding = new Thickness(8, 8, 12, 7);
+            Padding = new Thickness(7);
             base.Text = initialText;
             Pending = false;
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SZoomFadeTextBox"];
-            MinHeight = 32;
+            MinHeight = 29;
+            MinWidth = 100;
         }
 
         public void BindToProperty(Binding binding)

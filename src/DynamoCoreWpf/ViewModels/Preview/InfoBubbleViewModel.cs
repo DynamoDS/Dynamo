@@ -460,7 +460,6 @@ namespace Dynamo.ViewModels
         {
             RefreshNodeInformationalStateDisplay();
         }
-
         #region Command Methods
 
         [Obsolete]

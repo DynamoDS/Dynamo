@@ -536,8 +536,7 @@ namespace Dynamo.ViewModels
                 {
                     if (localPkg == null) continue;
 
-                    if (DynamoViewModel.Model.PathManager is PathManager pathManager && 
-                        localPkg.RootDirectory.Contains(pathManager.BuiltinPackagesDirectory))
+                    if (localPkg.BuiltInPackage)
                     {
                         builtinPackages.Add(localPkg);
                         continue;
@@ -755,7 +754,7 @@ namespace Dynamo.ViewModels
                                 MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, 
                                     DynamoViewModel.BrandingResourceProvider.ProductName,
                                     packageDownloadHandle.Name),
-                                    Resources.UninstallFailureMessageBoxTitle, 
+                                    Resources.DeleteFailureMessageBoxTitle, 
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
@@ -782,12 +781,7 @@ namespace Dynamo.ViewModels
                 PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
 
-                if (DebugModes.IsEnabled("DynamoPackageStates"))
-                {
-                    // Temporary location for setting the package state.
-                    // Should be moved somewhere with more visibility into possible errors.
-                    dynPkg.PackageState = Package.PackageStates.Loaded;
-                }
+                dynPkg.LoadState.SetAsLoaded();
             }
             else
             {

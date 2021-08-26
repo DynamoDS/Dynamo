@@ -610,6 +610,14 @@ value : bool = false</value>
     <value>(disabled)</value>
     <comment>Default value is disabled</comment>
   </data>
+  <data name="InputPortAlternativeName" xml:space="preserve">
+    <value>input</value>
+    <comment>Used when an input port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+  </data>
+  <data name="OutputPortAlternativeName" xml:space="preserve">
+    <value>output</value>
+    <comment>Used when an output port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+  </data>
   <data name="SymbolSearchTags" xml:space="preserve">
     <value>variable;argument;parameter</value>
     <comment>Search tags for Symbol/Input node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
@@ -783,5 +791,23 @@ This package has not been loaded because another conflicting package was loaded 
   </data>
   <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
     <value>Show all errors</value>
+  </data>
+  <data name="BackupSavedMsg" xml:space="preserve">
+    <value>Backup file is saved</value>
+  </data>
+  <data name="NodeDeprecatedMsg" xml:space="preserve">
+    <value>Node '{0}' is now deprecated.</value>
+  </data>
+  <data name="NodeNotResolvedMsg" xml:space="preserve">
+    <value>Node '{0}' cannot be resolved.</value>
+  </data>
+  <data name="NodeOfTypeDeprecatedMsg" xml:space="preserve">
+    <value>Node of type '{0}',from assembly '{1}', is now deprecated.</value>
+  </data>
+  <data name="NodeOfTypeNotResolvedMsg" xml:space="preserve">
+    <value>Node of type '{0}', from assembly '{1}', cannot be resolved.</value>
+  </data>
+  <data name="NodeUnhandledMsg" xml:space="preserve">
+    <value>Unhandled 'DummyNode.NodeNature' value: {0}</value>
   </data>
 </root>

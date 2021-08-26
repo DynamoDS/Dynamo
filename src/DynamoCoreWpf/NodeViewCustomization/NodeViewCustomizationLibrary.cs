@@ -100,5 +100,15 @@ namespace Dynamo.Wpf
             entries.Add(internalNodeViewCustomization);
         }
 
+        /// <summary>
+        /// Used only for testing.
+        /// </summary>
+        /// <param name="nodeModel"></param>
+        /// <returns></returns>
+        internal bool ContainsCustomizationForNodeModel(Type nodeModelType)
+        {
+            return lookupDict.ContainsKey(nodeModelType);
+        }
+
     }
 }

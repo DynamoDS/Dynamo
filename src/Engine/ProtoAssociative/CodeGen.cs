@@ -330,7 +330,8 @@ namespace ProtoAssociative
             return null;
         }
 
-        private bool CyclicDependencyTest(ProtoCore.AssociativeGraph.GraphNode node, ref SymbolNode cyclicSymbol1, ref SymbolNode cyclicSymbol2)
+        // Returns true if there is no cyclic dependency, returns false otherwise.
+        private bool CyclicDependencyTest(GraphNode node, ref SymbolNode cyclicSymbol1, ref SymbolNode cyclicSymbol2)
         {
             if (null == node || node.updateNodeRefList.Count == 0)
             {
@@ -339,16 +340,15 @@ namespace ProtoAssociative
 
             var indexMap = new Dictionary<GraphNode, int>();
             var lowlinkMap = new Dictionary<GraphNode, int>();
-            var S = new Stack<GraphNode>();
+            var s = new Stack<GraphNode>();
             int index = 0;
 
-            for (int n = 0; n < codeBlock.instrStream.dependencyGraph.GraphList.Count; ++n)
+            foreach (var subNode in codeBlock.instrStream.dependencyGraph.GraphList)
             {
-                ProtoCore.AssociativeGraph.GraphNode subNode = codeBlock.instrStream.dependencyGraph.GraphList[n];
                 indexMap[subNode] = Constants.kInvalidIndex;
             }
 
-            var dependencyList = StrongConnectComponent(node, ref index, lowlinkMap, indexMap, S);
+            var dependencyList = StrongConnectComponent(node, ref index, lowlinkMap, indexMap, s);
             if (dependencyList == null)
             {
                 return true;
@@ -360,7 +360,7 @@ namespace ProtoAssociative
 
                 foreach (var n in dependencyList.GroupBy(x => x.guid).Select(y => y.First()))
                 {
-                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency,
+                    core.BuildStatus.LogWarning(WarningID.InvalidStaticCyclicDependency,
                         ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, core.CurrentDSFileName, graphNode: n);
                 }
                 firstNode.isCyclic = true;
@@ -1861,96 +1861,101 @@ namespace ProtoAssociative
         /// AST node
         /// </summary>
         /// <param name="node"></param>
-        /// <returns></returns>
+        /// <returns>Replication guide data</returns>
         private List<AssociativeNode> GetReplicationGuides(AssociativeNode node)
         {
-            
-            if (node is ArrayNameNode)
+            if (node is ArrayNameNode nameNode)
             {
-                var guides = ((ArrayNameNode) node).ReplicationGuides;
-                if (guides == null || guides.Count == 0)
+                var guides = nameNode.ReplicationGuides;
+                if ((guides == null || guides.Count == 0) && nameNode is IdentifierListNode identListNode)
                 {
-                    if (node is IdentifierListNode)
-                    {
-                        var identListNode = node as IdentifierListNode;
-                        return GetReplicationGuides(identListNode.RightNode);
-                    }
+                    return GetReplicationGuides(identListNode.RightNode);
                 }
                 return guides;
             }
             
-            if (node is FunctionDotCallNode)
+            if (node is FunctionDotCallNode dotCallNode)
             {
-                var dotCallNode = node as FunctionDotCallNode;
                 return GetReplicationGuides(dotCallNode.FunctionCall.Function);
             }
 
             return null;
         }
 
+        /// <summary>
+        /// This helper function extracts the at level data from the 
+        /// AST node
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns>At level data</returns>
         private AtLevelNode GetAtLevel(AssociativeNode node)
         {
-            var n1 = node as ArrayNameNode;
-            if (n1 != null)
+            // Check classes derived from ArrayNameNode first
+            if (node is IdentifierListNode identifierListNode)
             {
-                return n1.AtLevel;
+                return GetAtLevel(identifierListNode.RightNode);
             }
 
-            var n2 = node as IdentifierListNode;
-            if (n2 != null)
+            // Then check the base class
+            if (node is ArrayNameNode arrayNameNode)
             {
-                return GetAtLevel(n2.RightNode);
+                return arrayNameNode.AtLevel;
             }
 
-            var n3 = node as FunctionDotCallNode;
-            if (n3 != null)
+            if (node is FunctionDotCallNode functionDotCallNode)
             {
-                return GetAtLevel(n3.FunctionCall.Function);
+                return GetAtLevel(functionDotCallNode.FunctionCall.Function);
             }
 
             return null;
         }
 
+        /// <summary>
+        /// This helper function remove the at level data from the
+        /// AST node
+        /// </summary>
+        /// <param name="node"></param>
         private void RemoveAtLevel(AssociativeNode node)
         {
-            var n1 = node as ArrayNameNode;
-            if (n1 != null)
+            // Check classes derived from ArrayNameNode first
+            if (node is IdentifierListNode identifierListNode)
             {
-                n1.AtLevel = null;
+                RemoveAtLevel(identifierListNode.RightNode);
                 return;
             }
 
-            var n2 = node as IdentifierListNode;
-            if (n2 != null)
+            // Then check the base class
+            if (node is ArrayNameNode arrayNameNode)
             {
-                RemoveAtLevel(n2.RightNode);
+                arrayNameNode.AtLevel = null;
                 return;
             }
 
-            var n3 = node as FunctionDotCallNode;
-            if (n3 != null)
+            if (node is FunctionDotCallNode functionDotCallNode)
             {
-                RemoveAtLevel(n3.FunctionCall.Function);
-                return;
+                RemoveAtLevel(functionDotCallNode.FunctionCall.Function);
             }
         }
 
-        // Remove replication guides
+        /// <summary>
+        /// This helper function removes the replication guide data from the 
+        /// AST node
+        /// </summary>
+        /// <param name="node"></param>
         private void RemoveReplicationGuides(AssociativeNode node)
         {
-            if (node is ArrayNameNode)
+            // Check classes derived from ArrayNameNode first
+            if (node is IdentifierListNode identListNode)
             {
-                var nodeWithReplication = node as ArrayNameNode;
-                nodeWithReplication.ReplicationGuides = new List<AssociativeNode>();
-            }
-            else if (node is IdentifierListNode)
-            {
-                var identListNode = node as IdentifierListNode;
                 RemoveReplicationGuides(identListNode.RightNode);
             }
-            else if (node is FunctionDotCallNode)
+            // Then check the base class
+            else if (node is ArrayNameNode nodeWithReplication)
             {
-                var dotCallNode = node as FunctionDotCallNode;
+                nodeWithReplication.ReplicationGuides = new List<AssociativeNode>();
+            }
+            else if (node is FunctionDotCallNode dotCallNode)
+            {
                 RemoveReplicationGuides(dotCallNode.FunctionCall.Function);
             }
         }
@@ -3197,8 +3202,13 @@ namespace ProtoAssociative
                 // Prevent creation of default constructor for static DS class
                 if (!classDecl.IsExternLib && !classDecl.IsStatic)
                 {
-                    ProtoCore.DSASM.ProcedureTable vtable = core.ClassTable.ClassNodes[globalClassIndex].ProcTable;
-                    if (vtable.GetFunctionBySignature(classDecl.ClassName, new List<ProtoCore.Type>()) == null)
+                    core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(new ProcedureMatchOptions()
+                    {
+                        FunctionName = classDecl.ClassName,
+                        ParameterTypes = new List<ProtoCore.Type>(),
+                        IsConstructor = true,
+                    }, out ProcedureNode procNode);
+                    if (procNode == null)
                     {
                         ConstructorDefinitionNode defaultConstructor = new ConstructorDefinitionNode();
                         defaultConstructor.Name = classDecl.ClassName;
@@ -3313,11 +3323,19 @@ namespace ProtoAssociative
                 int bidx = core.ClassTable.ClassNodes[globalClassIndex].Base;
                 if (bidx != Constants.kInvalidIndex )
                 {
-                    int cidx = core.ClassTable.ClassNodes[bidx].ProcTable.IndexOf(baseConstructorName, argTypeList);
-                    if ((cidx != ProtoCore.DSASM.Constants.kInvalidIndex) &&
-                        core.ClassTable.ClassNodes[bidx].ProcTable.Procedures[cidx].IsConstructor)
+                    int pidx = core.ClassTable.ClassNodes[bidx].ProcTable.
+                        GetFunctionBySignature(new ProcedureMatchOptions()
+                        {
+                            FunctionName = baseConstructorName,
+                            ParameterTypes = argTypeList,
+                            ExcludeAutoGeneratedThisProc = true,
+                            IsConstructor = true,
+                            ExactMatchWithNumArgs = false,
+                            ExactMatchWithArgTypes = false
+                        }, out ProcedureNode procNode);
+                    if (procNode != null)
                     {
-                        ctorIndex = cidx;
+                        ctorIndex = pidx;
                         baseIndex = bidx;
                     }
                 }
@@ -3330,15 +3348,23 @@ namespace ProtoAssociative
                 if (bidx != Constants.kInvalidIndex)
                 {
                     baseConstructorName = core.ClassTable.ClassNodes[bidx].Name;
-                    int cidx = core.ClassTable.ClassNodes[bidx].ProcTable.IndexOf(baseConstructorName, argTypeList);
+                    int pidx = core.ClassTable.ClassNodes[bidx].ProcTable.GetFunctionBySignature(new ProcedureMatchOptions()
+                    {
+                        FunctionName = baseConstructorName,
+                        ParameterTypes = argTypeList,
+                        ExcludeAutoGeneratedThisProc = true,
+                        IsConstructor = true,
+                        ExactMatchWithNumArgs = false,
+                        ExactMatchWithArgTypes = false
+                    }, out ProcedureNode _);
                     // If the base class is a FFI class, it may not contain a 
                     // default constructor, so only assert for design script 
                     // class for which we always generate a default constructor.
                     if (!core.ClassTable.ClassNodes[bidx].IsImportedClass)
                     { 
-                        Validity.Assert(cidx != ProtoCore.DSASM.Constants.kInvalidIndex);
+                        Validity.Assert(pidx != Constants.kInvalidIndex);
                     }
-                    ctorIndex = cidx;
+                    ctorIndex = pidx;
                     baseIndex = bidx;
                 }
             }
@@ -3444,11 +3470,14 @@ namespace ProtoAssociative
                     }
                 }
 
-                var procNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(funcDef.Name, argList);
+                globalProcIndex = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(new ProcedureMatchOptions()
+                {
+                    FunctionName = funcDef.Name,
+                    ParameterTypes = argList
+                    
+                }, out ProcedureNode _);
 
-                globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
-
-                Validity.Assert(null == localProcedure);
+                Validity.Assert(globalProcIndex != Constants.kInvalidIndex);
                 localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
 
                 Validity.Assert(null != localProcedure);
@@ -3774,20 +3803,16 @@ namespace ProtoAssociative
                 }
 
                 // Get the exisitng procedure that was added on the previous pass
-                if (ProtoCore.DSASM.Constants.kInvalidIndex == globalClassIndex)
+                ProcedureTable procTable = Constants.kInvalidIndex == globalClassIndex ? codeBlock.procedureTable : core.ClassTable.ClassNodes[globalClassIndex].ProcTable;
+                globalProcIndex = procTable.GetFunctionBySignature(new ProcedureMatchOptions()
                 {
-                    var procNode = codeBlock.procedureTable.GetFunctionBySignature(funcDef.Name, argList);
-                    globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
-                    localProcedure = codeBlock.procedureTable.Procedures[globalProcIndex];
-                }
-                else
-                {
-                    var procNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(funcDef.Name, argList);
-                    globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
-                    localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
-                }
+                    FunctionName = funcDef.Name,
+                    ParameterTypes = argList,
+                    IsStatic = funcDef.IsStatic
+                }, out ProcedureNode procNode);
 
-                Validity.Assert(null != localProcedure);
+                Validity.Assert(procNode != null);
+                localProcedure = procNode;
 
                 // code gen the attribute 
                 // Its only on the parse body pass where the real pc is determined. Update this procedures' pc
@@ -5470,7 +5495,6 @@ namespace ProtoAssociative
                             Validity.Assert(null != cyclicSymbol1);
                             Validity.Assert(null != cyclicSymbol2);
 
-                            //
                             // Set the first symbol that triggers the cycle to null
                             ProtoCore.AssociativeGraph.GraphNode nullAssignGraphNode1 = new ProtoCore.AssociativeGraph.GraphNode();
                             nullAssignGraphNode1.updateBlock.startpc = pc;

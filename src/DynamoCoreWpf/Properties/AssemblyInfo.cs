@@ -44,3 +44,10 @@ using System.Windows;
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("LintingViewExtension")]
 [assembly: InternalsVisibleTo("GraphMetadataViewExtension")]
+
+[assembly: TypeForwardedTo(typeof(Dynamo.Interfaces.LayoutSpecification))]
+[assembly: TypeForwardedTo(typeof(Dynamo.Interfaces.LayoutSection))]
+[assembly: TypeForwardedTo(typeof(Dynamo.Interfaces.LayoutElement))]
+[assembly: TypeForwardedTo(typeof(Dynamo.Interfaces.LayoutElementType))]
+[assembly: TypeForwardedTo(typeof(Dynamo.Interfaces.LayoutIncludeInfo))]
+[assembly: TypeForwardedTo(typeof(Dynamo.Interfaces.ILibraryViewCustomization))]

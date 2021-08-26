@@ -580,6 +580,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public ImageSource ImageSource
         {
             get => imageSource;
@@ -714,6 +715,69 @@ namespace Dynamo.ViewModels
 
         }
 
+        /// <summary>
+        /// Clears the existing messages on a node before it executes and re-evalutes its warnings/errors. 
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Logic_NodeMessagesClearing(NodeModel obj)
+        {
+            // Because errors are evaluated before the graph/node executes, we need to ensure 
+            // errors aren't being dismissed when the graph runs.
+            if (nodeLogic.State == ElementState.Error) return;
+
+            ErrorBubble.NodeMessages.Clear();
+        }
+
+        private void DismissedNodeWarnings_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!(sender is ObservableCollection<InfoBubbleDataPacket> observableCollection)) return;
+
+            // Local helper method to avoid repeated code
+            void RebuildDismissedWarningsCollection()
+            {
+                foreach (InfoBubbleDataPacket infoBubbleDataPacket in observableCollection)
+                {
+                    List<string> addedMessages = DismissedAlerts
+                        .Select(x => x.Tag.ToString())
+                        .ToList();
+
+                    if (addedMessages.Contains(infoBubbleDataPacket.Message)) continue;
+
+                    // Ellipses to truncate the message if too long
+                    string ellipses = infoBubbleDataPacket.Message.Length > 30 ? "..." : "";
+
+                    DismissedAlerts.Add(new MenuItem
+                    {
+                        Header = infoBubbleDataPacket.Message.Substring(0, Math.Min(infoBubbleDataPacket.Message.Length, 30)) + ellipses,
+                        Tag = infoBubbleDataPacket.Message,
+                        Command = ErrorBubble.UndismissMessageCommand,
+                        CommandParameter = infoBubbleDataPacket.Message
+                    });
+                }
+            }
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    RebuildDismissedWarningsCollection();
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    // Clearing, then rebuilding the collection
+                    DismissedAlerts.Clear(); 
+                    RebuildDismissedWarningsCollection();
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
+        }
+        
         /// <summary>
         /// Clears the existing messages on a node before it executes and re-evalutes its warnings/errors. 
         /// </summary>
@@ -1012,10 +1076,18 @@ namespace Dynamo.ViewModels
 
                 ErrorBubble.UpdateContentCommand.Execute(data);
 
-                DynamoViewModel.UIDispatcher.Invoke(() =>
+                // If running Dynamo with UI, use dispatcher, otherwise not
+                if(DynamoViewModel.UIDispatcher != null)
+                {
+                    DynamoViewModel.UIDispatcher.Invoke(() =>
+                    {
+                        ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
+                    });
+                }
+                else
                 {
                     ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                });
+                }
 
                 ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
 

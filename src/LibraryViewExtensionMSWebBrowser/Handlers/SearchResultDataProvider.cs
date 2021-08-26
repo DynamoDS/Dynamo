@@ -55,7 +55,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
 
             var text = Uri.UnescapeDataString(searchText);
             //TODO replace this with direct call.
-            var elements = searchMethod.Invoke(model,new object[] { text,0 }) as IEnumerable<NodeSearchElement>;
+            var elements = searchMethod.Invoke(model,new object[] { text,0,null }) as IEnumerable<NodeSearchElement>;
 
             extension = "json";
             return GetNodeItemDataStream(elements, true);

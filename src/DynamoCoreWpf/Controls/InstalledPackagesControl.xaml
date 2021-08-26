@@ -15,6 +15,13 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type MenuItem}" x:Key="MenuItemCollapseStyle">
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -50,7 +57,7 @@
                                               IsExpanded="{Binding Path=Model.TypesVisibleInManager}"
                                               Style="{StaticResource InstalledPackagesExpanderStyle}">
                                 <Expander.Header>
-                                    <Grid x:Name="PackageGrid"  >
+                                    <Grid x:Name="PackageGrid" >
                                         <DockPanel HorizontalAlignment="Stretch"
                                                        >
                                             <StackPanel HorizontalAlignment="Left"
@@ -67,13 +74,24 @@
                                                                MinWidth="50"
                                                                FontSize="11"
                                                                Foreground="{StaticResource PreferencesWindowFontColor}"></TextBlock>
-                                                <TextBlock Text="{x:Static p:Resources.InstalledPackageViewPendingInstallButton}"
-                                                               Visibility="{Binding Path=Model.EnableOldMarkedForUnistallState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
-                                                               FontSize="11"
-                                                               FontStyle="Italic"
-                                                               MinWidth="160"
-                                                               TextAlignment="Center"
-                                                               Foreground="Red"></TextBlock>
+                                                <Grid Height="18"
+                                                    MaxWidth="150">
+                                                    <Border Background="DimGray"
+                                                        HorizontalAlignment="Stretch"
+                                                        CornerRadius="5"
+                                                        ToolTip="{Binding Path=PackageLoadStateTooltip}"
+                                                        Margin="5,0,0,0"
+                                                        Padding="5,0,5,0">
+                                                        <TextBlock Text="{Binding Path=PackageLoadStateText}"
+                                                                TextTrimming="CharacterEllipsis"
+                                                                FontSize="10"
+                                                                FontFamily="Artifakt Element"
+                                                                TextAlignment="Left"
+                                                                HorizontalAlignment="Center"
+                                                                Margin="0,3,0,0"
+                                                                Foreground="#EEEEEE"/>
+                                                    </Border>
+                                                </Grid>
                                             </StackPanel>
                                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
                                                 <Button Name="MoreButton"
@@ -86,36 +104,53 @@
                                                     <Button.ContextMenu>
                                                         <ContextMenu Style="{StaticResource ContextMenuNoLeftColumnStyle}">
                                                             <MenuItem Name="GoToRoot"
+                                                                      Style="{StaticResource MenuItemCollapseStyle}"
                                                                       Command="{Binding Path=GoToRootDirectoryCommand}"
                                                                       ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDirTooltip}"
                                                                       Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDir}">
                                                             </MenuItem>
+                                                            <Separator BorderBrush="{StaticResource ExpanderCaretToggleButtonBackground}" BorderThickness="0 1 0 0"/>
                                                             <MenuItem Name="UninstallButton"
-                                                                              Command="{Binding Path=UninstallCommand}"
-                                                                              ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuUninstallTooltip}"
-                                                                              Header="{x:Static p:Resources.InstalledPackageViewContextMenuUninstall}">
+                                                                      Style="{StaticResource MenuItemCollapseStyle}"
+                                                                      Command="{Binding Path=UninstallCommand}"
+                                                                      Header="{Binding Path=PackageViewContextMenuUninstallText}"
+                                                                      ToolTip="{Binding Path=PackageViewContextMenuUninstallTooltip}">
                                                             </MenuItem>
                                                             <MenuItem Name="UnmarkUninstallButton"
+                                                                              Style="{StaticResource MenuItemCollapseStyle}"
                                                                               Command="{Binding Path=UnmarkForUninstallationCommand}"
-                                                                              ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstallTooltip}"
-                                                                              Header="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstall}">
+                                                                              Header="{Binding Path=PackageViewContextMenuUnmarkUninstallText}"
+                                                                              ToolTip="{Binding Path=PackageViewContextMenuUnmarkUninstallTooltip}">
                                                             </MenuItem>
+                                                            <MenuItem Name="InstallButton"
+                                                                              Style="{StaticResource MenuItemCollapseStyle}"
+                                                                              Command="{Binding Path=LoadCommand}"
+                                                                              Header="{x:Static p:Resources.PackageViewContextMenuLoadText}"
+                                                                              ToolTip="{x:Static p:Resources.PackageViewContextMenuLoadTooltip}">
+                                                            </MenuItem>
+                                                            <Separator BorderBrush="{StaticResource ExpanderCaretToggleButtonBackground}" 
+                                                                       BorderThickness="0 1 0 0"
+                                                                       Visibility="{Binding Path=CanPublish, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                                                             <MenuItem Name="MakePackageButton"
-                                                                              Command="{Binding Path=PublishNewPackageCommand}"
-                                                                              ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishTooltip}"
-                                                                              Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublish}">
+                                                                      Visibility="{Binding Path=CanPublish, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                                      Command="{Binding Path=PublishNewPackageCommand}"
+                                                                      ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishTooltip}"
+                                                                      Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublish}">
                                                             </MenuItem>
                                                             <MenuItem Name="MakeNewVersionButton"
+                                                                              Visibility="{Binding Path=CanPublish, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                                                               Command="{Binding Path=PublishNewPackageVersionCommand}"
                                                                               ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersionTooltip}"
                                                                               Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersion}">
                                                             </MenuItem>
                                                             <MenuItem Name="DeprecateButton"
+                                                                              Visibility="{Binding Path=CanPublish, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                                                               Command="{Binding Path=DeprecateCommand}"
                                                                               ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuDeprecateTooltip}"
                                                                               Header="{x:Static p:Resources.InstalledPackageViewContextMenuDeprecate}">
                                                             </MenuItem>
                                                             <MenuItem Name="UndeprecateButton"
+                                                                              Visibility="{Binding Path=CanPublish, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                                                               Command="{Binding Path=UndeprecateCommand}"
                                                                               ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuRemoveDeprecationTooltip}"
                                                                               Header="{x:Static p:Resources.InstalledPackageViewContextMenuRemoveDeprecation}">

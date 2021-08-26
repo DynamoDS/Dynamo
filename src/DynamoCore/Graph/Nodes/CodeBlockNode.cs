@@ -245,18 +245,22 @@ namespace Dynamo.Graph.Nodes
 
                 var inportConnections = new OrderedDictionary();
                 var outportConnections = new OrderedDictionary();
+                ///ConnectorPins corresponding to inports
+                var inportPins = new OrderedDictionary();
+                ///ConnectorPins corresponding to outports
+                var outportPins = new OrderedDictionary();
 
                 // disable node modification evnets while mutating the code
                 this.OnRequestSilenceModifiedEvents(true);
 
                 //Save the connectors so that we can recreate them at the correct positions.
-                SaveAndDeleteConnectors(inportConnections, outportConnections);
+                SaveAndDeleteConnectors(inportConnections, outportConnections, inportPins, outportPins);
 
                 code = newCode;
                 ProcessCode(ref errorMessage, ref warningMessage, workspaceElementResolver);
 
                 //Recreate connectors that can be reused
-                LoadAndCreateConnectors(inportConnections, outportConnections, SaveContext.None);
+                LoadAndCreateConnectors(inportConnections, outportConnections, inportPins, outportPins, SaveContext.None);
 
                 RaisePropertyChanged("Code");
 
@@ -354,13 +358,17 @@ namespace Dynamo.Graph.Nodes
 
             var inportConnections = new OrderedDictionary();
             var outportConnections = new OrderedDictionary();
+            ///ConnectorPins corresponding to inports
+            var inportPins = new OrderedDictionary();
+            ///ConnectorPins corresponding to outports
+            var outportPins = new OrderedDictionary();
 
             //before the refactor here: https://github.com/DynamoDS/Dynamo/pull/7301
             //we didn't actually make new portModels we just updated them, 
             //but after this PR we remove the data property of ports,
             //so now new models are created instead,
             //so we have to delete and create new connectors to go along with those ports.
-            SaveAndDeleteConnectors(inportConnections, outportConnections);
+            SaveAndDeleteConnectors(inportConnections, outportConnections, inportPins, outportPins);
 
             var childNodes = nodeElement.ChildNodes.Cast<XmlElement>().ToList();
             var inputPortHelpers =
@@ -395,7 +403,7 @@ namespace Dynamo.Graph.Nodes
 
             ProcessCodeDirect();
             //Recreate connectors that can be reused
-            LoadAndCreateConnectors(inportConnections, outportConnections, SaveContext.Undo);
+            LoadAndCreateConnectors(inportConnections, outportConnections, inportPins, outportPins, SaveContext.Undo);
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
@@ -834,9 +842,9 @@ namespace Dynamo.Graph.Nodes
             // 2. the CBN has only function definitions, in which case we wish to clear the ports
             if (!allDefs.Any())
             {
-                if(codeStatements.Any(x => x.AstNode is FunctionDefinitionNode))
+                if (codeStatements.Any(x => x.AstNode is FunctionDefinitionNode))
                     OutPorts.RemoveAll((p) => true);
-                
+
                 return;
             }
 
@@ -864,10 +872,12 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Deletes all the connections and saves their data (the start and end port)
         ///     so that they can be recreated if needed.
+        ///     InportPins correspond to all connectorPins belonging to INports.
+        ///     OutportPins correspond to all connectorpins belonging to OUTports.
         /// </summary>
         /// <param name="inportConnections">A list of connections that will be destroyed</param>
         /// <param name="outportConnections"></param>
-        private void SaveAndDeleteConnectors(IDictionary inportConnections, IDictionary outportConnections)
+        private void SaveAndDeleteConnectors(IDictionary inportConnections, IDictionary outportConnections, IDictionary inportPins, IDictionary outportPins)
         {
             //----------------------------Inputs---------------------------------
             foreach (var portModel in InPorts)
@@ -879,6 +889,8 @@ namespace Dynamo.Graph.Nodes
                     foreach (var connector in portModel.Connectors)
                     {
                         (inportConnections[portName] as List<ConnectorModel>).Add(connector);
+                        inportPins.Add(connector.GUID, new List<ConnectorPinModel>());
+                        (inportPins[connector.GUID] as List<ConnectorPinModel>).AddRange(connector.ConnectorPinModels);
                     }
                 }
                 else
@@ -900,6 +912,8 @@ namespace Dynamo.Graph.Nodes
                     foreach (ConnectorModel connector in portModel.Connectors)
                     {
                         (outportConnections[portName] as List<ConnectorModel>).Add(connector);
+                        outportPins.Add(connector.GUID, new List<ConnectorPinModel>());
+                        (outportPins[connector.GUID] as List<ConnectorPinModel>).AddRange(connector.ConnectorPinModels);
                     }
                 }
                 else
@@ -915,11 +929,14 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Now that the portData has been set for the new ports, we recreate the connections we
         ///     so mercilessly destroyed, restoring peace and balance to the world once again.
+        ///     InportPins correspond to all connectorPins belonging to INports.
+        ///     OutportPins correspond to all connectorpins belonging to OUTports.
         /// </summary>
         /// <param name="inportConnections"></param>
         /// <param name="outportConnections"> List of the connections that were killed</param>
         /// <param name="context">context this operation is being performed in</param>
-        private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections, SaveContext context)
+        private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections,
+            OrderedDictionary inportPins, OrderedDictionary outportPins, SaveContext context)
         {
             //----------------------------Inputs---------------------------------
             /* Input Port connections are matched only if the name is the same */
@@ -991,7 +1008,7 @@ namespace Dynamo.Graph.Nodes
                         var endPortModel = oldConnector.End;
                         NodeModel endNode = endPortModel.Owner;
                         var connector = ConnectorModel.Make(this, endNode, i, endPortModel.Index);
-                        
+
                         // During an undo operation we should set the new output connector
                         // to have the same id as the old connector.
                         if (context == SaveContext.Undo)
@@ -1058,6 +1075,32 @@ namespace Dynamo.Graph.Nodes
                 }
                 undefinedIndices.RemoveAt(0);
                 unusedConnections.RemoveAt(0);
+            }
+
+            ///All connectorPins corresponding to INports
+            List<List<ConnectorPinModel>> inportPinsList = inportPins.Values.Cast<List<ConnectorPinModel>>().ToList();
+            ///All connectorPins corresponding to OUTports
+            List<List<ConnectorPinModel>> outportPinsList = outportPins.Values.Cast<List<ConnectorPinModel>>().ToList();
+
+            AddConnectorPinsToConnectors(inportPinsList);
+            AddConnectorPinsToConnectors(outportPinsList);
+        }
+
+        /// <summary>
+        /// Adds a collection of connectorPins to their corresponding connector.
+        /// </summary>
+        /// <param name="connectorPinList"></param>
+        private void AddConnectorPinsToConnectors(List<List<ConnectorPinModel>> connectorPinList)
+        {
+            foreach (var list in connectorPinList)
+            {
+                foreach (var pin in list)
+                {
+                    var matchingConnector = this.AllConnectors.FirstOrDefault(c => c.GUID == pin.ConnectorId);
+                    if (matchingConnector is null) return;
+
+                    matchingConnector.AddPin(pin.CenterX, pin.CenterY);
+                }
             }
         }
 
