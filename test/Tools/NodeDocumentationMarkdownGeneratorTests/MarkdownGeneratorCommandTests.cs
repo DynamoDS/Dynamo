@@ -14,7 +14,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
     public class MarkdownGeneratorCommandTests
     {
         private const string CORENODEMODELS_DLL_NAME = "CoreNodeModels.dll";
-        private const string LibraryViewExtension_DLL_NAME = "LibraryViewExtension.dll";
+        private const string LibraryViewExtension_DLL_NAME = "LibraryViewExtensionMSWebBrowser.dll";
         private static readonly string DynamoCoreDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         private static readonly string DynamoCoreNodesDir = Path.Combine(DynamoCoreDir, "Nodes");
         private static string DynamoRepoRoot = new DirectoryInfo(DynamoCoreDir).Parent.Parent.Parent.FullName;
@@ -46,9 +46,17 @@ namespace NodeDocumentationMarkdownGeneratorTests
         [TestFixtureSetUp]
         public void FixtureSetup()
         {
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-            var libviewExtensionAssem = Assembly.LoadFrom(Path.Combine(DynamoCoreDir, LibraryViewExtension_DLL_NAME));
-            SaveCoreLayoutSpecToPath(libviewExtensionAssem, testLayoutSpecPath);
+            try
+            {
+                AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+                var libviewExtensionAssem = Assembly.LoadFrom(Path.Combine(DynamoCoreDir, LibraryViewExtension_DLL_NAME));
+                SaveCoreLayoutSpecToPath(libviewExtensionAssem, testLayoutSpecPath);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
         }
         [TestFixtureTearDown]
         public void FixtureTearDown()
@@ -505,7 +513,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
         protected static void SaveCoreLayoutSpecToPath(Assembly assembly, string savePath)
         {
-            var resource = "Dynamo.LibraryUI.web.library.layoutSpecs.json";
+            var resource = "Dynamo.LibraryViewExtensionMSWebBrowser.web.library.layoutSpecs.json";
             assembly = assembly == null ? Assembly.GetExecutingAssembly() : assembly;
             var stream = assembly.GetManifestResourceStream(resource);
             var fs = File.Create(savePath);
