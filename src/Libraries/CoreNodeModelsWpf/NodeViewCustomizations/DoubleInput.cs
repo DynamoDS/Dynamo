@@ -50,8 +50,7 @@ namespace CoreNodeModelsWpf.Nodes
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))  
+                MinWidth = 40
             };
 
             nodeView.inputGrid.Children.Add(tb);

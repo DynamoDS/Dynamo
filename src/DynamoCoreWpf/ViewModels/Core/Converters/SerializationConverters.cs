@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
@@ -36,6 +37,15 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
 
             writer.WritePropertyName("Camera");
             serializer.Serialize(writer, workspaceView.Camera);
+
+            writer.WritePropertyName("ConnectorPins");
+            writer.WriteStartArray();
+
+            foreach (var wirePin in workspaceView.Pins)
+            {
+                serializer.Serialize(writer, wirePin);
+            }
+            writer.WriteEndArray();
 
             writer.WritePropertyName("NodeViews");
             writer.WriteStartArray();

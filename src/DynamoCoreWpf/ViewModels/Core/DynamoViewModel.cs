@@ -368,8 +368,23 @@ namespace Dynamo.ViewModels
             set
             {
                 model.IsShowingConnectors = value;
-
-                RaisePropertyChanged("IsShowingConnectors");
+                RaisePropertyChanged(nameof(IsShowingConnectors));
+            }
+        }
+        /// <summary>
+        /// Relaying the flag `IsShowingConnectorTooltip' coming from
+        /// the Dynamo model.
+        /// </summary>
+        public bool IsShowingConnectorTooltip
+        {
+            get
+            {
+                return model.IsShowingConnectorTooltip;
+            }
+            set
+            {
+                model.IsShowingConnectorTooltip = value;
+                RaisePropertyChanged(nameof(IsShowingConnectorTooltip));
             }
         }
 
@@ -1929,24 +1944,41 @@ namespace Dynamo.ViewModels
 
             var vm = this;
 
-            FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
+            try
+            {
+                FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
 
-            // If the filePath is not empty set the default directory
-            if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
-            {
-                var fi = new FileInfo(vm.Model.CurrentWorkspace.FileName);
-                _fileDialog.InitialDirectory = fi.DirectoryName;
-                _fileDialog.FileName = fi.Name;
-            }
-            else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
-            {
-                var pathManager = vm.model.PathManager;
-                _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
-            }
+                // If the filePath is not empty set the default directory
+                if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
+                {
+                    var fi = new FileInfo(vm.Model.CurrentWorkspace.FileName);
+                    _fileDialog.InitialDirectory = fi.DirectoryName;
+                    _fileDialog.FileName = fi.Name;
+                }
+                else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
+                {
+                    var pathManager = vm.model.PathManager;
+                    _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
+                }
 
-            if (_fileDialog.ShowDialog() == DialogResult.OK)
+                if (_fileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    SaveAs(_fileDialog.FileName);
+                }
+            }
+            catch (PathTooLongException)
             {
-                SaveAs(_fileDialog.FileName);
+                string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+                var args = new TaskDialogEventArgs(
+                    new Uri(imageUri, UriKind.Relative),
+                    WpfResources.GraphIssuesOnSavePath_Title,
+                    WpfResources.GraphIssuesOnSavePath_Summary,
+                    WpfResources.GraphIssuesOnSavePath_Description);
+
+                args.AddRightAlignedButton((int)DynamoModel.ButtonId.Ok, WpfResources.OKButton);
+
+                var dialog = new GenericTaskDialog(args);
+                dialog.ShowDialog();
             }
         }
 
@@ -2362,15 +2394,6 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanSelectNeighbors(object parameters)
-        {
-            return true;
-        }
-
-        public void ShowConnectors(object parameter)
-        {
-        }
-
-        internal bool CanShowConnectors(object parameter)
         {
             return true;
         }

@@ -39,7 +39,6 @@ namespace Dynamo.Graph.Workspaces
 
             RecordUndoGraphLayout(workspace, isGroupLayout, reuseUndoRedoGroup);
             
-
             // Generate subgraphs separately for each cluster
             subgraphClusters.ForEach(
                 x => GenerateSeparateSubgraphs(new HashSet<GraphLayout.Node>(x), layoutSubgraphs));
@@ -115,6 +114,20 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
+            ///Adding all connectorPins (belonging to all connectors) as graph.nodes to the combined graph.
+            foreach (ConnectorModel edge in workspace.Connectors)
+            {
+                foreach (var pin in edge.ConnectorPinModels)
+                {
+                    combinedGraph.AddNode(pin.GUID,
+                        pin.Width,
+                        pin.Height,
+                        pin.CenterX, 
+                        pin.CenterY, 
+                        pin.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
+                }
+            }
+
             foreach (ConnectorModel edge in workspace.Connectors)
             {
                 if (!isGroupLayout)
@@ -128,6 +141,8 @@ namespace Dynamo.Graph.Workspaces
                     // Treat a group as a node, but do not process edges within a group
                     if (startGroup == null || endGroup == null || startGroup != endGroup)
                     {
+                        AddConnectorPinEdges(combinedGraph, edge);
+
                         combinedGraph.AddEdge(
                             startGroup == null ? edge.Start.Owner.GUID : startGroup.GUID,
                             endGroup == null ? edge.End.Owner.GUID : endGroup.GUID,
@@ -136,6 +151,8 @@ namespace Dynamo.Graph.Workspaces
                 }
                 else
                 {
+                    AddConnectorPinEdges(combinedGraph, edge);
+
                     // Edges within a group are also processed
                     combinedGraph.AddEdge(edge.Start.Owner.GUID, edge.End.Owner.GUID,
                         edge.Start.Center.X, edge.Start.Center.Y, edge.End.Center.X, edge.End.Center.Y);
@@ -201,6 +218,50 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// If a connector has connectorPins, their edges get added to the combined graph.
+        /// </summary>
+        /// <param name="combinedGraph"></param>
+        /// <param name="connector"></param>
+        private static void AddConnectorPinEdges(GraphLayout.Graph combinedGraph, ConnectorModel connector)
+        {
+            ///Bail if there are no connectorPins
+            if (connector.ConnectorPinModels.Count < 1) return;
+
+            ///Add an edge between the left-most (start) node 
+            ///(its corresponding port) to which this connector connects, and the first connectorPin.
+            combinedGraph.AddEdge(connector.Start.Owner.GUID, 
+                connector.ConnectorPinModels[0].GUID,
+                connector.Start.Center.X, 
+                connector.Start.Center.Y, 
+                connector.ConnectorPinModels[0].CenterX, 
+                connector.ConnectorPinModels[0].CenterY);
+
+            ///Add an edge between all other connectorPins that follow, 
+            ///from left to right (except for last one)
+            for (int i = 0; i < connector.ConnectorPinModels.Count; i++)
+            {
+                if (i != connector.ConnectorPinModels.Count - 1)
+                {
+                    combinedGraph.AddEdge(connector.ConnectorPinModels[i].GUID, 
+                        connector.ConnectorPinModels[i + 1].GUID,
+                        connector.ConnectorPinModels[i].CenterX, 
+                        connector.ConnectorPinModels[i].CenterY, 
+                        connector.ConnectorPinModels[i + 1].CenterX, 
+                        connector.ConnectorPinModels[i + 1].CenterY);
+                }
+            }
+
+            ///Add an edge between the last connectorPin and the right-most (end) node
+            ///(its corresponding port) to which this connector connects.
+            combinedGraph.AddEdge(connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].GUID, 
+                connector.End.Owner.GUID,
+                connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].CenterX, 
+                connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].CenterY, 
+                connector.End.Center.X, 
+                connector.End.Center.Y);
+        }
+
+        /// <summary>
         /// This method adds relevant models to the undo recorder.
         /// </summary>
         /// <param name="workspace">A <see cref="WorkspaceModel"/>.</param>
@@ -213,6 +274,7 @@ namespace Dynamo.Graph.Workspaces
             if (!isGroupLayout)
             {
                 // Add all selected items to the undo recorder
+                undoItems.AddRange(workspace.Connectors.SelectMany(conn => conn.ConnectorPinModels));
                 undoItems.AddRange(workspace.Nodes);
                 undoItems.AddRange(workspace.Notes);
                 if (DynamoSelection.Instance.Selection.Count > 0)
@@ -296,8 +358,8 @@ namespace Dynamo.Graph.Workspaces
                 // If any of the incident edges are connected to unselected (outside) nodes
                 // then mark these edges as anchors.
 
-                graph.AnchorRightEdges.UnionWith(currentNode.RightEdges.Where(e => !e.EndNode.IsSelected));
-                graph.AnchorLeftEdges.UnionWith(currentNode.LeftEdges.Where(e => !e.StartNode.IsSelected));
+                graph.AnchorRightEdges.UnionWith(currentNode.RightEdges.Where(e => e.EndNode != null && !e.EndNode.IsSelected));
+                graph.AnchorLeftEdges.UnionWith(currentNode.LeftEdges.Where(e => e.StartNode != null && !e.StartNode.IsSelected));
 
                 foreach (var node in selectedNodes)
                 {
@@ -443,6 +505,26 @@ namespace Dynamo.Graph.Workspaces
                             noteOffset += note.Height + GraphLayout.Graph.VerticalNoteDistance;
                             note.ReportPosition();
                         }
+                    }
+                }
+            }
+            // Assign coordinates to connectors outside of groups
+            foreach (var connector in workspace.Connectors)
+            {
+                foreach (var pin in connector.ConnectorPinModels)
+                {
+                    GraphLayout.Graph graph = layoutSubgraphs
+                        .FirstOrDefault(g => g.FindNode(pin.GUID) != null);
+
+                    if (graph != null)
+                    {
+                        GraphLayout.Node n = graph.FindNode(pin.GUID);
+                        double offsetY = graph.OffsetY;
+
+                        pin.CenterX = n.X;
+                        pin.CenterY = n.Y + offsetY - (pin.Width * 0.3);
+                        pin.ReportPosition();
+                        workspace.HasUnsavedChanges = true;
                     }
                 }
             }

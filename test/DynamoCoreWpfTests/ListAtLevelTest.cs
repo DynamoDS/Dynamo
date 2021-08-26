@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Dynamo.Controls;
@@ -78,12 +79,15 @@ namespace DynamoCoreWpfTests
             Assert.NotNull(matchingNodeView);
 
             //when keeplist structure is on highlight should be blue
-            var rectangle = WpfUtilities.ChildrenOfType<Rectangle>(matchingNodeView).Where(x => x.Name == "highlightOverlay").FirstOrDefault();
-            Assert.NotNull(rectangle);
+            ItemsControl inputItemsControl = WpfUtilities.ChildrenOfType<ItemsControl>(matchingNodeView).Where(x => x.Name == "inputPortControl").FirstOrDefault();
+            Assert.NotNull(inputItemsControl);
+            
+            var portViewModel = inputItemsControl.ItemsSource.OfType<PortViewModel>().FirstOrDefault();
+            Assert.NotNull(portViewModel);
+            
+            var trueColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortKeepListStructureBackground"] as SolidColorBrush;
 
-            var trueColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["KeepListStructureHighlight"] as SolidColorBrush;
-
-            Assert.AreEqual(trueColor.Color, (rectangle.Fill as SolidColorBrush).Color);
+            Assert.AreEqual(trueColor.Color, portViewModel.PortBackgroundColor.Color);
 
             //when keeplist structure is on text should start with @@.
             var spinner = WpfUtilities.ChildrenOfType<UseLevelSpinner>(matchingNodeView).FirstOrDefault();

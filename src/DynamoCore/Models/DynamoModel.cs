@@ -321,6 +321,22 @@ namespace Dynamo.Models
                 PreferenceSettings.ShowConnector = value;
             }
         }
+        /// <summary>
+        /// Flag specifying the current state of whether or not to show 
+        /// tooltips in the graph. In addition to this toggle, tooltip is only
+        /// available when connectors are set to 'bezier' mode.
+        /// </summary>
+        public bool IsShowingConnectorTooltip
+        {
+            get
+            {
+                return PreferenceSettings.ShowConnectorToolTip;
+            }
+            set
+            {
+                PreferenceSettings.ShowConnectorToolTip = value;
+            }
+        }
 
         /// <summary>
         ///     Specifies how connectors are displayed in Dynamo.
@@ -1358,7 +1374,15 @@ namespace Dynamo.Models
         /// </param>
         internal void LoadNodeLibrary(Assembly assem, bool suppressZeroTouchLibraryLoad = true)
         {
-            if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
+           // don't import assembly if its marked node lib and contains any nodemodels and any nodecustomizations
+           // as a consequence we won't import any ZT nodes from assemblies that contain customziations and are marked node libraries.
+           // We'll only apply the customizations and import NodeModels which are present.
+           // I think this is consistent with the current behavior - IE today - if a nodeModel exists in an assembly, the rest of the assembly 
+           // is not imported as ZT - the same will be true if the assembly contains a NodeViewCustomization.
+
+           // TODO(mjk) draw up matrix of current behaviors which nodeLib flag can control.
+            if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem)
+                && !(NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(assem)))
             {
                 if (suppressZeroTouchLibraryLoad)
                 {
@@ -2006,7 +2030,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     OnRequestWorkspaceBackUpSave(savePath, true);
                     backupFilesDict[workspace.Guid] = savePath;
-                    Logger.Log("Backup file is saved: " + savePath);
+                    Logger.Log(Resources.BackupSavedMsg + ": " + savePath);
                 }
                 PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);
             });
@@ -2897,7 +2921,6 @@ namespace Dynamo.Models
             if (args.PropertyName == "EnablePresetOptions")
                 OnPropertyChanged("EnablePresetOptions");
         }
-
         #endregion
     }
 }

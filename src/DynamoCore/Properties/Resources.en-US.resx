@@ -600,7 +600,7 @@ value : bool = false</value>
     <value>Autocomplete</value>
   </data>
   <data name="WatermarkLabelText" xml:space="preserve">
-    <value>Your code goes here</value>
+    <value>Enter code here</value>
   </data>
   <data name="DefaultValue" xml:space="preserve">
     <value>Default value</value>
@@ -783,5 +783,37 @@ This package has not been loaded because another conflicting package was loaded 
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
     <value>&lt;Click here to edit the group title&gt;</value>
+  </data>
+  <data name="OutputPortAlternativeName" xml:space="preserve">
+    <value>output</value>
+    <comment>Used when an output port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+  </data>
+  <data name="InputPortAlternativeName" xml:space="preserve">
+    <value>input</value>
+    <comment>Used when an input port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+  </data>
+  <data name="BackupSavedMsg" xml:space="preserve">
+    <value>Backup file is saved</value>
+  </data>
+  <data name="NodeDeprecatedMsg" xml:space="preserve">
+    <value>Node '{0}' is now deprecated.</value>
+  </data>
+  <data name="NodeNotResolvedMsg" xml:space="preserve">
+    <value>Node '{0}' cannot be resolved.</value>
+  </data>
+  <data name="NodeOfTypeDeprecatedMsg" xml:space="preserve">
+    <value>Node of type '{0}',from assembly '{1}', is now deprecated.</value>
+  </data>
+  <data name="NodeOfTypeNotResolvedMsg" xml:space="preserve">
+    <value>Node of type '{0}', from assembly '{1}', cannot be resolved.</value>
+  </data>
+  <data name="NodeUnhandledMsg" xml:space="preserve">
+    <value>Unhandled 'DummyNode.NodeNature' value: {0}</value>
+  </data>
+  <data name="HideWiresPopupMenuItem" xml:space="preserve">
+    <value>Hide Wires</value>
+  </data>
+  <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
+    <value>Unhide Wires</value>
   </data>
 </root>

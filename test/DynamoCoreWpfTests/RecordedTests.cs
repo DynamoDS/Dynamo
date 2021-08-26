@@ -46,7 +46,7 @@ namespace DynamoCoreWpfTests
         protected WorkspaceModel workspace = null;
         protected WorkspaceViewModel workspaceViewModel = null;
         protected double tolerance = 1e-6;
-        protected double codeBlockPortHeight = Configurations.CodeBlockPortHeightInPixels;
+        protected double codeBlockPortHeight = Configurations.PortHeightInPixels;
 
         public override void Setup()
         {
