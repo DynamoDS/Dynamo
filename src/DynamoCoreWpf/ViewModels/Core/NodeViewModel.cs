@@ -204,6 +204,13 @@ namespace Dynamo.ViewModels
                 }
             }
         }
+
+        /// <summary>
+        /// Used to determine whether the node's context menu display an Output/Input menu
+        /// </summary>
+        [JsonIgnore]
+        public bool IsInputOrOutput => IsInput || IsOutput;
+
         /// <summary>
         /// The Name of the nodemodel this view points to
         /// this is the name of the node as it is displayed in the UI.
@@ -725,7 +732,6 @@ namespace Dynamo.ViewModels
             // errors aren't being dismissed when the graph runs.
             if (nodeLogic.State == ElementState.Error) return;
 
-            // If running Dynamo with UI, use dispatcher, otherwise not
             if (DynamoViewModel.UIDispatcher != null)
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
