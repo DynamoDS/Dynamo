@@ -635,17 +635,28 @@ namespace Dynamo.Graph.Nodes
                 var resolver = workspaceElementResolver ?? this.ElementResolver;
                 var parseParam = new ParseParam(GUID, code, resolver);
                 var priorNames = libraryServices.GetPriorNames();
-
+                
                 if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam, priorNames))
                 {
-                    if (parseParam.ParsedNodes != null)
+                    // Check if there are statements in the code statement written by user
+                    if (Enumerable.Count(parseParam.ParsedNodes) > 0)
                     {
-                        // Create an instance of statement for each code statement written by the user
-                        foreach (var parsedNode in parseParam.ParsedNodes)
+                        if (parseParam.ParsedNodes != null)
                         {
-                            // Create a statement variable from the generated nodes
-                            codeStatements.Add(Statement.CreateInstance(parsedNode));
-                        }
+                            // Create an instance of statement for each code statement written by the user
+                            foreach (var parsedNode in parseParam.ParsedNodes)
+                            {
+                                // Create a statement variable from the generated nodes
+                                codeStatements.Add(Statement.CreateInstance(parsedNode));
+                            }
+                        } 
+                    }
+                    else
+                    {
+                        // If the node has zero statements remove all ports
+                        OutPorts.RemoveAll((p) => { return true; });
+                        InPorts.RemoveAll((p) => { return true; });
+                        inputPortNames.Clear();
                     }
                 }
 
