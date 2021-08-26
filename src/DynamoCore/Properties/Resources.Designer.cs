@@ -739,6 +739,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide Wires.
+        /// </summary>
+        public static string HideWiresPopupMenuItem {
+            get {
+                return ResourceManager.GetString("HideWiresPopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No identifiers found..
         /// </summary>
         public static string IdentifiersNotFound {
@@ -807,6 +816,15 @@ namespace Dynamo.Properties {
         public static string InputNodeSearchTags {
             get {
                 return ResourceManager.GetString("InputNodeSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to input.
+        /// </summary>
+        public static string InputPortAlternativeName {
+            get {
+                return ResourceManager.GetString("InputPortAlternativeName", resourceCulture);
             }
         }
         
@@ -1020,6 +1038,14 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show all errors.
+        /// </summary>
+        public static string NodeInformationalStateShowAllErrors {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowAllErrors", resourceCulture);
+            }
+        }
+
         ///   Looks up a localized string similar to Node &apos;{0}&apos; is now deprecated..
         /// </summary>
         public static string NodeDeprecatedMsg {
@@ -1205,6 +1231,15 @@ namespace Dynamo.Properties {
         public static string OutputNodeDescription {
             get {
                 return ResourceManager.GetString("OutputNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to output.
+        /// </summary>
+        public static string OutputPortAlternativeName {
+            get {
+                return ResourceManager.GetString("OutputPortAlternativeName", resourceCulture);
             }
         }
         
@@ -1740,6 +1775,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unhide Wires.
+        /// </summary>
+        public static string UnhideWiresPopupMenuItem {
+            get {
+                return ResourceManager.GetString("UnhideWiresPopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown.
         /// </summary>
         public static string UnknownVersion {
@@ -1857,7 +1901,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your code goes here.
+        ///   Looks up a localized string similar to Enter code here.
         /// </summary>
         public static string WatermarkLabelText {
             get {

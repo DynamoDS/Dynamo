@@ -58,5 +58,18 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             CleanRealTimeInfoWindow();
         }
+
+        /// <summary>
+        /// This method will update the current location of the RealTimeInfo window due that probably the window was moved or resized
+        /// </summary>
+        public void UpdateLocation()
+        {
+            if (IsOpen == true)
+            {
+                //This section will update the Popup location by calling the private method UpdatePosition using reflection
+                var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                positionMethod.Invoke(this, null);
+            }
+        }
     }
 }

@@ -451,7 +451,7 @@ namespace DynamoCoreWpfTests
             var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
             var nodeName = "+";
             var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
-            var expectedNodeDocumentationNamespace = "<p><i>.%add</i></p>";
+            var expectedNodeDocumentationNamespace = $"<p><i>{nodeName}</i></p>";
             var expectedAddtionalNodeDocumentation = @"<h2 id=""no-further-documentation-provided-for-this-node"">No further documentation provided for this node.</h2>";
        
             // Act
@@ -531,12 +531,13 @@ namespace DynamoCoreWpfTests
         public void CanGetNodeDocumentationMarkdownFromPackageDocumentationManager()
         {
             // Arrange
+            var packageName = "Package";
             var nodeWithDocumentation = "Package.Package.Hello";
             var nodeWithoutDocumentation = "Package.Package.Package";
 
             // Assert
-            Assert.That(PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithDocumentation));
-            Assert.That(!PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithoutDocumentation));
+            Assert.That(PackageDocumentationManager.Instance.ContainsAnnotationDoc(Path.Combine(packageName, nodeWithDocumentation)));
+            Assert.That(!PackageDocumentationManager.Instance.ContainsAnnotationDoc(Path.Combine(packageName, nodeWithoutDocumentation)));
         }
 
         #region Helpers

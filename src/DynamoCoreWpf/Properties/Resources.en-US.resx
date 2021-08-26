@@ -1408,7 +1408,7 @@ Uninstall the following dependent packages: {1}?</value>
     <comment>Context menu item - preview geometry</comment>
   </data>
   <data name="NodeContextMenuRenameNode" xml:space="preserve">
-    <value>Rename Node...</value>
+    <value>Rename</value>
     <comment>Context menu item - rename this node</comment>
   </data>
   <data name="NodeContextMenuShowLabels" xml:space="preserve">
@@ -2314,6 +2314,18 @@ Uninstall the following packages: {0}?</value>
     <value>_Extensions</value>
     <comment>Extensions menu</comment>
   </data>
+  <data name="ConnectorContextMenuHeaderBreakConnections" xml:space="preserve">
+    <value>Break Connections</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
+    <value>Pin Wire</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderSelectConnected" xml:space="preserve">
+    <value>Select Connected</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderUnpinConnector" xml:space="preserve">
+    <value>Unpin Wire</value>
+  </data>
   <data name="PreferencesViewPython" xml:space="preserve">
     <value>Python</value>
     <comment>Preferences | Features | Python</comment>
@@ -2480,6 +2492,10 @@ Uninstall the following packages: {0}?</value>
   <data name="GetStartedGuideWelcomeTitle" xml:space="preserve">
     <value>Welcome To Dynamo</value>
   </data>
+  <data name="ContextMenuGroups" xml:space="preserve">
+    <value>Groups</value>
+    <comment>Context menu for group-based operations</comment>
+  </data>
   <data name="ContextPinToNode" xml:space="preserve">
     <value>Pin to node</value>
   </data>
@@ -2491,6 +2507,42 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
+  </data>
+  <data name="NodeInformationalStateDismiss" xml:space="preserve">
+    <value>Dismiss</value>
+  </data>
+  <data name="NodeInformationalStateShowAllInfo" xml:space="preserve">
+    <value>Show all info</value>
+  </data>
+  <data name="NodeInformationalStateShowAllWarnings" xml:space="preserve">
+    <value>Show all warnings</value>
+  </data>
+  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
+    <value>Show all errors</value>
+  </data>
+  <data name="NodeInformationalStateShowLess" xml:space="preserve">
+    <value>Show less</value>
+  </data>
+  <data name="NodeInformationalStateLearnMore" xml:space="preserve">
+    <value>Learn more</value>
+  </data>
+  <data name="NodeInformationalStateDismissAll" xml:space="preserve">
+    <value>Dismiss all</value>
+  </data>
+  <data name="NodeInfoDismissButtonToolTip" xml:space="preserve">
+    <value>Dismisses the info messages on this node. Utilize when you want to design in graph failures, or the info message will not be relevant during graph execution.</value>
+  </data>
+  <data name="NodeWarningDismissButtonToolTip" xml:space="preserve">
+    <value>Dismisses the warning messages on this node. Utilize when you want to design in graph failures, or the warning message will not be relevant during graph execution.</value>
+  </data>
+  <data name="BreakConnectionPopupMenuItem" xml:space="preserve">
+    <value>Break Connection</value>
+  </data>
+  <data name="HideWiresPopupMenuItem" xml:space="preserve">
+    <value>Hide Wires</value>
+  </data>
+  <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
+    <value>Unhide Wires</value>
   </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this guide later from the Help menu.</value>
@@ -2554,10 +2606,10 @@ This package will be deleted after the next Dynamo restart.</value>
   <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
     <value>Remove the scheduled unload status</value>
   </data>
-  <data name="PackageViewContextMenuLoadText">
+  <data name="PackageViewContextMenuLoadText" xml:space="preserve">
     <value>Load</value>
   </data>
-  <data name="PackageViewContextMenuLoadTooltip">
+  <data name="PackageViewContextMenuLoadTooltip" xml:space="preserve">
     <value>Load this package into Dynamo. Other packages with the same name will be automatically deleted</value>
   </data>
   <data name="CannotLoadPackageMessageBoxTitle" xml:space="preserve">
@@ -2595,5 +2647,8 @@ Delete the following packages: {2}?
   </data>
   <data name="UnloadFailureMessageBoxTitle" xml:space="preserve">
     <value>Unload Failure</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
+    <value>_Show Tooltip</value>
   </data>
 </root>

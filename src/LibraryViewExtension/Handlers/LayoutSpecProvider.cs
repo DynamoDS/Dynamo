@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using CefSharp;
+using Dynamo.Interfaces;
 using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.LibraryUI.Handlers

@@ -4,7 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Dynamo.Wpf.Interfaces
+namespace Dynamo.Interfaces
 {
     /// <summary>
     /// Represents the specification for the library items layout in library view.
