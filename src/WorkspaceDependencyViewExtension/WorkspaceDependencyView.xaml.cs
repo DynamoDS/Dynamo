@@ -46,10 +46,10 @@ namespace Dynamo.WorkspaceDependency
         internal IEnumerable<LocalDefinitionRow> localDefinitionDataRows;
 
         private Boolean hasDependencyIssue = false;
+
         /// <summary>
-        /// Property to check if the Dynamo active workspace has any package dependencies
-        /// issue worth workspace author's attention. This determines if the package dep 
-        /// viewer will be injected into right panel.
+        /// Property to raise to author's attention, if the Dynamo active workspace has any missing dependencies.
+        /// This determines if the package dep viewer will be injected into right panel.
         /// </summary>
         private Boolean HasDependencyIssue
         {
