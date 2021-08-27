@@ -805,7 +805,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         public override void Dispose()
         {
-            this.NodeModel.PropertyChanged -= logic_PropertyChanged;
+            NodeModel.PropertyChanged -= logic_PropertyChanged;
+            NodeModel.InPorts.CollectionChanged -= inports_collectionChanged;
+            NodeModel.OutPorts.CollectionChanged -= outports_collectionChanged;
 
             DynamoViewModel.Model.PropertyChanged -= Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged -= DebugSettings_PropertyChanged;
