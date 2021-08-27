@@ -721,7 +721,10 @@ namespace Dynamo.ViewModels
             ZIndex = ++StaticZIndex;
             ++NoteViewModel.StaticZIndex;
 
-            if(workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource)) ImageSource = imgSource;
+            if (workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource))
+            {
+                ImageSource = imgSource;
+            }
 
             // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
             ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeWarnings_CollectionChanged;
