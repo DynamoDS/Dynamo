@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.UI.GuidedTour
@@ -33,6 +34,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         public int TotalSteps { get; set; }
 
+        /// <summary>
+        /// This variable represents the Guide Background Element to manipulate it's hole rect
+        /// </summary>
+        public GuideBackground GuideBackgroundElement { get; set; }
+
         public Guide()
         {
             GuideSteps = new List<Step>();
@@ -62,7 +68,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             GuideFlowEvents.GuidedTourNextStep += Next;
             GuideFlowEvents.GuidedTourPrevStep += Back;
-
         }
 
         /// <summary>
@@ -106,6 +111,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (args.StepSequence < TotalSteps)
             {
                 nextStep = (from step in GuideSteps where step.Sequence == args.StepSequence + 1 select step).FirstOrDefault();
+
+                if(nextStep.HostPopupInfo != null)
+                    SetupBackgroundHoleSize(nextStep.HostPopupInfo.HostUIElement);
+
                 if (nextStep != null)
                 {
                     CurrentStep = nextStep;
@@ -116,6 +125,19 @@ namespace Dynamo.Wpf.UI.GuidedTour
             HideOpenedStep(args.StepSequence);
         }
 
+        /// <summary>
+        /// This method will update the hole size everytime that the step change
+        /// </summary>
+        /// <param name="hostElement">Element for size and position reference</param>
+        private void SetupBackgroundHoleSize(UIElement hostElement)
+        {
+            Point relativePoint = hostElement.TransformToAncestor(Application.Current.MainWindow)
+                              .Transform(new Point(0, 0));
+
+            GuideBackgroundElement.HoleRect = new Rect(relativePoint.X, relativePoint.Y,
+                hostElement.DesiredSize.Width, hostElement.DesiredSize.Height);
+
+        }
 
         /// <summary>
         /// This event method will be executed then the user press the Back button in the tooltip/popup
@@ -130,6 +152,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 prevStep = (from step in GuideSteps where step.Sequence == args.StepSequence - 1 select step).FirstOrDefault();
                 if (prevStep != null)
                 {
+                    if (prevStep.HostPopupInfo != null)
+                        SetupBackgroundHoleSize(prevStep.HostPopupInfo.HostUIElement);
                     CurrentStep = prevStep;
                     prevStep.Show();
                 }                   

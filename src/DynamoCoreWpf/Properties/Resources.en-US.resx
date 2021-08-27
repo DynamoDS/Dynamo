@@ -1075,9 +1075,6 @@ Failed to publish file(s):
   <data name="GroupContextMenuUngroup" xml:space="preserve">
     <value>Ungroup</value>
   </data>
-  <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
-  </data>
   <data name="HideClassicNodeLibrary" xml:space="preserve">
     <value>Hide Classic Node Library</value>
   </data>
@@ -2507,6 +2504,15 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
+  </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>&lt;Click here to edit the group description&gt;</value>
+  </data>
+  <data name="GroupNameDefaultText" xml:space="preserve">
+    <value>&lt;Click here to edit the group title&gt;</value>
+  </data>
+  <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
+    <value>Add group to group</value>
   </data>
   <data name="NodeInformationalStateDismiss" xml:space="preserve">
     <value>Dismiss</value>

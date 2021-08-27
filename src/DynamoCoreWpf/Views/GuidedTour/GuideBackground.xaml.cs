@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Dynamo.Wpf.Views.GuidedTour
@@ -6,13 +7,15 @@ namespace Dynamo.Wpf.Views.GuidedTour
     /// <summary>
     /// Interaction logic for GuideBackground.xaml
     /// </summary>
-    public partial class GuideBackground : UserControl
+    public partial class GuideBackground : UserControl, INotifyPropertyChanged
     {
         public GuideBackground()
         {
             InitializeComponent();
             DataContext = this;
         }
+
+        private Rect hole;
 
         /// <summary>
         /// Width of the background
@@ -33,14 +36,33 @@ namespace Dynamo.Wpf.Views.GuidedTour
         }
 
         /// <summary>
-        /// Rect with the size of the Dynamo Window 
+        /// Rect with the size of the Dynamo Window regularly updating its size depending the window's size. Those are represented by 
+        /// SystemParameters.PrimaryScreenWidth and SystemParameters.PrimaryScreenHeight
         /// </summary>
-        public Rect WindowsRect { get { return new Rect(0, 0, CanvasWidth, CanvasHeight); } }
+        public Rect WindowsRect { get { return new Rect(0, 0, SystemParameters.PrimaryScreenWidth, SystemParameters.PrimaryScreenHeight); } }
 
         /// <summary>
         /// Rect used to cut the hole on the guide background 
         /// </summary>
-        public Rect HoleRect { get { return new Rect (50, 100, 250, 130); } }
+        public Rect HoleRect {
+            get {
+                return hole; 
+            }
+            set { 
+                hole = value;
+                RaisePropertyChanged(nameof(HoleRect));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChanged(string info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+            }
+        }
 
         //Dependency Properties defined to be able to bind values for the properties above
         public static readonly DependencyProperty CanvasWidthProperty = DependencyProperty

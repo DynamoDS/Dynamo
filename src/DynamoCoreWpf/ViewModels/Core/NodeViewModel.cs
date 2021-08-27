@@ -611,6 +611,14 @@ namespace Dynamo.ViewModels
             set { NodeModel.UserDescription = value; }
         }
 
+        public override bool IsCollapsed
+        {
+            get => base.IsCollapsed;
+            set
+            {
+                base.IsCollapsed = value;
+            }
+        }
         /// <summary>
         /// A collection of MenuItems used by the node's Context Menu, since errors/warnings are undismissed via a sub-menu.
         /// </summary>

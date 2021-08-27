@@ -41,7 +41,7 @@ namespace ViewExtensionLibraryTests
         private const string EventX = "X";
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void EventControllerCallback()
         {
             var cmd = new Mock<ICommandExecutive>();
@@ -56,7 +56,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void ResourceHandlerFactoryRegistration()
         {
             var factory = new ResourceHandlerFactory();
@@ -72,7 +72,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void ResourceHandlerFactoryProviderDonotExist()
         {
             var factory = new ResourceHandlerFactory();
@@ -91,7 +91,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void ResourceHandlerFactoryReturnsValidHandler()
         {
             var factory = new ResourceHandlerFactory();
@@ -109,7 +109,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void ResourceHandlerFactoryRegistersStaticResourceHandler()
         {
             var factory = new ResourceHandlerFactory();
@@ -129,7 +129,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void CreateDllResourceProvider()
         {
             var factory = new ResourceHandlerFactory();
@@ -168,7 +168,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void ResourceHandlerFactoryGetDllResource()
         {
             var factory = new ResourceHandlerFactory();
@@ -200,7 +200,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void IconUrlRoundTrip()
         {
             var name = "icon";
@@ -221,7 +221,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void CustomNodeIconUrlIsCorrectWhenCustomizationDllExists()
         {
             var name = "c4a6b7cc-f860-4afc-bc74-72d8888002f2";
@@ -234,7 +234,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void NodeSearchElementLoadedType()
         {
             var fullname = "abc.xyz.something";
@@ -249,7 +249,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void PackagedNodeSearchElementLoadedType()
         {
             var category = "abc.xyz.somepackage";
@@ -273,7 +273,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void CustomNodeSearchElementLoadedType()
         {
             var category = "abc.xyz.somepackage";
@@ -297,7 +297,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void PackagedCustomNodeSearchElementLoadedType()
         {
             var category = "abc.xyz.somepackage";
@@ -319,7 +319,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void CustomNodePropertiesWindowValidateCategories()
         {
             // sample CN #1
@@ -381,7 +381,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void LibraryDataUpdatedEventRaised()
         {
             const string libraryDataUpdated = "libraryDataUpdated";
@@ -430,7 +430,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void SimpleEventObserver()
         {
             const string disposed = "Disposed";
@@ -455,7 +455,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void EvenNumberEventObserver()
         {
             const string EvenNumber = "Even Number";
@@ -480,7 +480,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void ThrottleAggregateEventObserver()
         {
             var timeout = 500;
@@ -509,7 +509,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void ThrottleIdentityEventObserver()
         {
             var timeout = 50;
@@ -533,7 +533,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void ParallelEventObserver()
         {
             var resetevent = new AutoResetEvent(false);
@@ -555,7 +555,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void RefireThrottledEvents()
         {
             var resetevent = new AutoResetEvent(false);
@@ -583,7 +583,7 @@ namespace ViewExtensionLibraryTests
             controller.Verify(c => c.RaiseEvent(EventX, list2.Sum()), Times.Once); //doesn't contain old values
         }
 
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void AnonymousDisposable()
         {
             var controller = new Mock<IEventController>();
@@ -594,7 +594,7 @@ namespace ViewExtensionLibraryTests
             controller.Verify(c => c.RaiseEvent("Disposed"), Times.Once);
         }
 
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void ConcurrentIconRequest()
         {
             var resetevent = new AutoResetEvent(false);
