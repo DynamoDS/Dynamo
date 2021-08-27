@@ -139,7 +139,7 @@
 				],
 				"HostPopupInfo": {
 					"PopupPlacement": "center",
-					"HostUIElementString": "WorkspaceTabs",
+					"HostUIElementString": "",
 					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 0
 				}
