@@ -4,8 +4,8 @@
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -17,10 +17,10 @@
              PreviewMouseMove="OnNodeViewMouseMove">
 
     <Grid Name="grid"
-          x:FieldModifier="public"
           HorizontalAlignment="Left"
-          Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
-          ContextMenuService.IsEnabled="false">
+          x:FieldModifier="public"
+          ContextMenuService.IsEnabled="false"
+          Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -254,13 +254,20 @@
                           ItemsSource="{Binding DismissedAlerts, UpdateSourceTrigger=PropertyChanged}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <Rectangle Width="50"
-                                           Height="50"
-                                           Fill="Green" />
-                                <TextBlock Background="Yellow"
-                                           Foreground="Red"
-                                           Text="nalnalnal" />
+                            <Grid Width="200"
+                                  Height="30"
+                                  Margin="-15,0,0,0"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
+                                  Background="Transparent"
+                                  MouseDown="UnDismissMessage_Click">
+                                <TextBlock HorizontalAlignment="Stretch"
+                                        Margin="15,0"
+                                        IsHitTestVisible="False"
+                                        VerticalAlignment="Center"                                        
+                                        Text="{Binding Converter={StaticResource NodeWarningConverter}}"
+                                        Tag="{Binding}"
+                                        Foreground="{StaticResource NodeContextMenuForeground}"/>
                             </Grid>
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
@@ -505,7 +512,7 @@
             <!--  INPUT GRID  -->
             <Grid Name="inputGrid"
                   MinHeight="{Binding Source={x:Static configuration:Configurations.PortHeightInPixels}}"
-                  Margin="0,5,0,0"
+                  Margin="0,12,0,0"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                   x:FieldModifier="public"

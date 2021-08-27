@@ -1025,13 +1025,18 @@ namespace Dynamo.Controls
 
         private void DismissAllInfoButton_Click(object sender, RoutedEventArgs e)
         {
+            // Clearing all existing info-level messages from the dismissed collection.
+            for (int i = ViewModel.DismissedMessages.Count - 1; i >= 0; i--)
+            {
+                if (ViewModel.DismissedMessages[i].Style != InfoBubbleViewModel.Style.Info) continue;
+
+                ViewModel.DismissedMessages.RemoveAt(i);
+            }
+
+            // Recreating all info-level messages from scratch.
             foreach (InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeMessages)
             {
-                if (infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.Info ||
-                    ViewModel.DismissedMessages.Contains(infoBubbleDataPacket))
-                {
-                    continue;
-                }
+                if (infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.Info) continue;
 
                 ViewModel.DismissedMessages.Add(infoBubbleDataPacket);
             }
@@ -1041,15 +1046,21 @@ namespace Dynamo.Controls
 
         private void DismissAllWarningsButton_Click(object sender, RoutedEventArgs e)
         {
+            // Clearing all existing warning-level messages from the dismissed collection.
+            for (int i = ViewModel.DismissedMessages.Count - 1; i >= 0; i--)
+            {
+                if (ViewModel.DismissedMessages[i].Style != InfoBubbleViewModel.Style.Warning &&
+                    ViewModel.DismissedMessages[i].Style != InfoBubbleViewModel.Style.WarningCondensed) continue;
+
+                ViewModel.DismissedMessages.RemoveAt(i);
+            }
+            
+            // Recreating all warning-level messages from scratch.
             foreach (InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeMessages)
             {
                 if (infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.Warning &&
-                    infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.WarningCondensed ||
-                    ViewModel.DismissedMessages.Contains(infoBubbleDataPacket))
-                {
-                    continue;
-                }
-
+                    infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.WarningCondensed) continue;
+                
                 ViewModel.DismissedMessages.Add(infoBubbleDataPacket);
             }
 

@@ -1693,6 +1693,21 @@ namespace Dynamo.Controls
         }
     }
 
+    public class NodeWarningConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is string stringValue)) return null;
+            string ellipses = stringValue.Length > 30 ? "..." : "";
+            return stringValue.Substring(0, Math.Min(stringValue.Length, 30)) + ellipses;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class TabSizeConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)

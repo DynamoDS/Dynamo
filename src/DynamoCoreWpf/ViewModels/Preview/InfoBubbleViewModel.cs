@@ -401,16 +401,23 @@ namespace Dynamo.ViewModels
         public bool NodeInfoIteratorVisible =>
             GetMessagesOfStyle(NodeMessages, Style.Info).Count -
             GetMessagesOfStyle(DismissedMessages, Style.Info).Count > 1;
-        
+
         /// <summary>
         /// Used to switch out the DataTemplate from one that shows an iterator beside each message
         /// to one which doesn't. This is necessary because empty TextBlock Runs are non zero-width
         /// and cannot have their Width (or Visibility) set manually.
         /// </summary>
-        public bool NodeWarningsIteratorVisible =>
-            GetMessagesOfStyle(NodeMessages, Style.Warning).Count -
-            GetMessagesOfStyle(DismissedMessages, Style.Warning).Count > 1;
-
+        public bool NodeWarningsIteratorVisible
+        {
+            get
+            {
+                List<InfoBubbleDataPacket> messages = GetMessagesOfStyle(NodeMessages, Style.Warning);
+                List<InfoBubbleDataPacket> dismissedMessages = GetMessagesOfStyle(DismissedMessages, Style.Warning);
+                
+                return messages.Count - dismissedMessages.Count > 1;
+            }
+        }
+           
         /// <summary>
         /// Used to switch out the DataTemplate from one that shows an iterator beside each message
         /// to one which doesn't. This is necessary because empty TextBlock Runs are non zero-width
@@ -563,7 +570,7 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Fired by the users to manually 'dismiss' a user-facing message, such as a Warning or an Error.
-        /// Adds the message(s) to the collection of DismissedMessages, then rebuilds the
+        /// Adds the message(s) to the collection of DismissedAlerts, then rebuilds the
         /// user-facing messages display from scratch.
         /// </summary>
         /// <param name="parameter"></param>
@@ -571,13 +578,27 @@ namespace Dynamo.ViewModels
         {
             if (!(parameter is InfoBubbleDataPacket infoBubbleDataPacket)) return;
 
-            
+            // If we're dismissing a message we have more than once, we dismiss them all in one go.
+            int messageCount = NodeMessages.Count(x => x.Message == infoBubbleDataPacket.Message);
 
-            if (!DismissedMessages.Contains(infoBubbleDataPacket))
+            // This loop handles dismissing multiple messages with the same text.
+            for (int i = 0; i < messageCount; i++)
             {
                 DismissedMessages.Add(infoBubbleDataPacket);
             }
+            
             RefreshNodeInformationalStateDisplay();
+        }
+
+        /// <summary>
+        /// Truncates a warning/error message to 30 characters or less with ellipses.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        internal string TruncateMessage(string value)
+        {
+            string ellipses = value.Length > 30 ? "..." : "";
+            return value.Substring(0, Math.Min(value.Length, 30)) + ellipses;
         }
 
         /// <summary>
@@ -588,11 +609,12 @@ namespace Dynamo.ViewModels
         {
             if (!(parameter is string value)) return;
 
-            InfoBubbleDataPacket dataPacketToUndismiss = DismissedMessages
-                .FirstOrDefault(x => x.Message == value);
-            
-            DismissedMessages.Remove(dataPacketToUndismiss);
-
+            // We match the object to undismiss using the full warning message
+            for (int i = DismissedMessages.Count - 1; i >= 0; i--)
+            {
+                if (DismissedMessages[i].Message != value) continue;
+                DismissedMessages.Remove(DismissedMessages[i]);
+            }
             RefreshNodeInformationalStateDisplay();
         }
 
@@ -906,10 +928,11 @@ namespace Dynamo.ViewModels
                 .Select(x => x.Text)
                 .ToList();
 
-            int nonDismissedMessageCount = GetMessagesOfStyle(NodeMessages, messageStyle).Count - dismissedMessageStrings.Count;
+            // The total number of messages we're looking to display at this level.
+            int denominator = infoBubbleDataPackets.Count(x => !dismissedMessageStrings.Contains(x.Message));
 
-            // If there are no messages to display to the user, return
-            if (nonDismissedMessageCount < 1) return;
+            // If there are no messages to display to the user, return.
+            if (denominator < 1) return;
             
             // Formats user-facing information to suit the redesigned Node Informational State design.
             InfoBubbleDataPacket infoBubbleDataPacket;
@@ -924,24 +947,29 @@ namespace Dynamo.ViewModels
                     break;
                 // The user just sees the first message, with a count displaying the total number of collapsed messages at this level.
                 case NodeMessageVisibility.CollapseMessages:
-                    if (dismissedMessageStrings.Contains(infoBubbleDataPackets[0].Text)) break;
-
-                    infoBubbleDataPacket = DuplicateInfoBubbleDataPacket(infoBubbleDataPackets[0]);
-                    infoBubbleDataPacket.MessageNumber = nonDismissedMessageCount < 2 ? "" : $"1/{nonDismissedMessageCount} ";
-                    displayMessages.Add(infoBubbleDataPacket);
-                    break;
-                // The user sees all messages, with an interating counter displayed next to each message.
-                case NodeMessageVisibility.ShowAllMessages:
-                    // Otherwise we display the iterator
-                    int messageIterator = 1;
                     for (int i = 0; i < infoBubbleDataPackets.Count; i++)
                     {
                         if (dismissedMessageStrings.Contains(infoBubbleDataPackets[i].Text)) continue;
 
                         infoBubbleDataPacket = DuplicateInfoBubbleDataPacket(infoBubbleDataPackets[i]);
-                        infoBubbleDataPacket.MessageNumber = $"{messageIterator}/{nonDismissedMessageCount} ";
+                        infoBubbleDataPacket.MessageNumber = denominator < 2 ? "" : $"1/{denominator} ";
                         displayMessages.Add(infoBubbleDataPacket);
-                        messageIterator++;
+                        break;
+                    }
+                    break;
+                // The user sees all messages, with an interating counter displayed next to each message.
+                case NodeMessageVisibility.ShowAllMessages:
+                    // Otherwise we display the iterator
+                    int iteratingNumerator = 1;
+                    
+                    for (int i = 0; i < infoBubbleDataPackets.Count; i++)
+                    {
+                        if (dismissedMessageStrings.Contains(infoBubbleDataPackets[i].Text)) continue;
+
+                        infoBubbleDataPacket = DuplicateInfoBubbleDataPacket(infoBubbleDataPackets[i]);
+                        infoBubbleDataPacket.MessageNumber = $"{iteratingNumerator}/{denominator} ";
+                        displayMessages.Add(infoBubbleDataPacket);
+                        iteratingNumerator++;
                     }
                     break;
                 default:

@@ -970,6 +970,10 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// A collection of error/warning/info messages, dismissed via a sub-menu in the node Context Menu.
+        [JsonIgnore]
+        public ObservableCollection<string> DismissedAlerts { get; set; } = new ObservableCollection<string>();
+
         #endregion
 
         #region freeze execution

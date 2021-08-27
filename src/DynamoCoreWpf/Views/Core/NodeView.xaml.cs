@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Mime;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -702,6 +703,16 @@ namespace Dynamo.Controls
 
             grid.ContextMenu.DataContext = viewModel;
             grid.ContextMenu.IsOpen = true;
+        }
+        
+        private void UnDismissMessage_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (!(sender is Grid grid)) return;
+
+            TextBlock textBlock = WpfUtilities.ChildOfType<TextBlock>(grid);
+            if (textBlock == null) return;
+
+            viewModel.ErrorBubble.UndismissMessageCommand.Execute(textBlock.Tag);
         }
     }
 }

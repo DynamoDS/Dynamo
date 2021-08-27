@@ -152,7 +152,7 @@
                                                                 <StackPanel Background="Transparent">
                                                                     <Border Name="Separator"
                                                                             Height="1"
-                                                                            Margin="0,5,0,10"
+                                                                            Margin="0,8,0,10"
                                                                             BorderBrush="#D9D9D9"
                                                                             BorderThickness="1"
                                                                             SnapsToDevicePixels="True"
@@ -209,7 +209,7 @@
                                                                 <StackPanel Background="Transparent">
                                                                     <Border Name="Separator"
                                                                             Height="1"
-                                                                            Margin="0,5,0,10"
+                                                                            Margin="0,8,0,10"
                                                                             BorderBrush="#D9D9D9"
                                                                             BorderThickness="1"
                                                                             SnapsToDevicePixels="True"
@@ -382,7 +382,7 @@
                                                                 <StackPanel Background="Transparent">
                                                                     <Border Name="Separator"
                                                                             Height="1"
-                                                                            Margin="0,5,0,10"
+                                                                            Margin="0,8,0,10"
                                                                             BorderBrush="#D9D9D9"
                                                                             BorderThickness="1"
                                                                             SnapsToDevicePixels="True"

@@ -57,7 +57,7 @@ namespace Dynamo.ViewModels
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
         private bool isRenamed = false;
-        private ObservableCollection<MenuItem> dismissedAlerts = new ObservableCollection<MenuItem>();
+        
         #endregion
 
         #region public members
@@ -619,11 +619,11 @@ namespace Dynamo.ViewModels
                 base.IsCollapsed = value;
             }
         }
+
         /// <summary>
-        /// A collection of MenuItems used by the node's Context Menu, since errors/warnings are undismissed via a sub-menu.
+        /// A collection of error/warning/info messages, dismissed via a sub-menu in the node Context Menu.
         /// </summary>
-        [JsonIgnore]
-        public ObservableCollection<MenuItem> DismissedAlerts { get; set; } = new ObservableCollection<MenuItem>();
+        public ObservableCollection<string> DismissedAlerts => nodeLogic.DismissedAlerts;
         
         #endregion
 
@@ -747,51 +747,13 @@ namespace Dynamo.ViewModels
         {
             if (!(sender is ObservableCollection<InfoBubbleDataPacket> observableCollection)) return;
 
-            // Local helper method to avoid repeated code
-            void RebuildDismissedWarningsCollection()
+            DismissedAlerts.Clear();
+
+            foreach (InfoBubbleDataPacket infoBubbleDataPacket in observableCollection)
             {
-                foreach (InfoBubbleDataPacket infoBubbleDataPacket in observableCollection)
-                {
-                    List<string> addedMessages = DismissedAlerts
-                        .Select(x => x.Tag.ToString())
-                        .ToList();
-
-                    if (addedMessages.Contains(infoBubbleDataPacket.Message)) continue;
-
-                    // Ellipses to truncate the message if too long
-                    string ellipses = infoBubbleDataPacket.Message.Length > 30 ? "..." : "";
-
-
-                    
-                    DismissedAlerts.Add(new MenuItem
-                    {
-                        Header = infoBubbleDataPacket.Message.Substring(0, Math.Min(infoBubbleDataPacket.Message.Length, 30)) + ellipses,
-                        Tag = infoBubbleDataPacket.Message,
-                        Command = ErrorBubble.UndismissMessageCommand,
-                        CommandParameter = infoBubbleDataPacket.Message
-                    });
-                }
+                DismissedAlerts.Add(infoBubbleDataPacket.Message);
             }
-
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    RebuildDismissedWarningsCollection();
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    // Clearing, then rebuilding the collection
-                    DismissedAlerts.Clear(); 
-                    RebuildDismissedWarningsCollection();
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            RaisePropertyChanged(nameof(DismissedAlerts));
             RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
         }
         

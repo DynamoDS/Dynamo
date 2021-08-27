@@ -11,7 +11,6 @@ using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Events;
-using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -65,6 +64,7 @@ namespace Dynamo.Graph.Workspaces
         public bool IsSetAsInput;
         public bool IsSetAsOutput;
         public string UserDescription;
+        public IEnumerable<string> DismissedAlerts;
     }
 
     /// <summary>
@@ -2120,6 +2120,14 @@ namespace Dynamo.Graph.Workspaces
                     nodeModel.IsSetAsOutput = nodeViewInfo.IsSetAsOutput;
                     nodeModel.UserDescription = nodeViewInfo.UserDescription;
 
+                    if (nodeViewInfo.DismissedAlerts != null)
+                    {
+                        foreach (string message in nodeViewInfo.DismissedAlerts)
+                        {
+                            nodeModel.DismissedAlerts.Add(message);
+                        }
+                    }
+                    
                     // NOTE: The name needs to be set using UpdateValue to cause the view to update
                     nodeModel.UpdateValue(new UpdateValueParams("Name", nodeViewInfo.Name));
 

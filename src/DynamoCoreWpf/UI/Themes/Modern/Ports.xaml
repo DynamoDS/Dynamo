@@ -207,6 +207,7 @@
                        Height="35px"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
+                       IsHitTestVisible="False"
                        Fill="{StaticResource PortUsingDefaultValueMarkerColor}"
                        Visibility="{Binding UsingDefaultValueMarkerVisibile, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <!--
