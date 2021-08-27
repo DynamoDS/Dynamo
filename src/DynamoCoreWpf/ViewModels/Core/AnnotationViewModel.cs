@@ -1054,6 +1054,7 @@ namespace Dynamo.ViewModels
             OutPorts.CollectionChanged -= OutPorts_CollectionChanged;
             annotationModel.PropertyChanged -= model_PropertyChanged;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
+            base.Dispose();
         }
     }
 }
