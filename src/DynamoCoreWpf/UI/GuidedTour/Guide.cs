@@ -80,7 +80,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (GuideSteps.Any())
             {
                 Step firstStep = (from step in GuideSteps where step.Sequence == 0 select step).FirstOrDefault();
-                CurrentStep = firstStep;
                 firstStep.Show();
             }
         }
@@ -119,18 +118,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 if (nextStep != null)
                 {
-                    CurrentStep = nextStep;
                     nextStep.Show();
                 }
             }
-            HideOpenedStep(args.StepSequence);
-        }
 
             CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
             if (CurrentStep != null)
             {
                 CurrentStep.Hide();
-            }             
+            }
         }
 
         /// <summary>
@@ -149,7 +145,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="highlightColor">This parameter represents the color in hexadecimal</param>
         private void SetupBackgroundHoleBorderColor(string highlightColor)
         {
-            if(string.IsNullOrEmpty(highlightColor))
+            if (string.IsNullOrEmpty(highlightColor))
             {
                 GuideBackgroundElement.HolePath.Stroke = Brushes.Black;
             }
@@ -167,14 +163,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="hostElement">Element for size and position reference</param>
         private void SetupBackgroundHoleSize(UIElement hostElement)
         {
-            if(hostElement != null)
-            {
-                Point relativePoint = hostElement.TransformToAncestor(Application.Current.MainWindow)
-                                  .Transform(new Point(0, 0));
+            Point relativePoint = hostElement.TransformToAncestor(Application.Current.MainWindow)
+                              .Transform(new Point(0, 0));
 
-                GuideBackgroundElement.HoleRect = new Rect(relativePoint.X, relativePoint.Y,
-                                hostElement.DesiredSize.Width, hostElement.DesiredSize.Height);
-            }
+            GuideBackgroundElement.HoleRect = new Rect(relativePoint.X, relativePoint.Y,
+                            hostElement.DesiredSize.Width, hostElement.DesiredSize.Height);
+
         }
 
         /// <summary>
@@ -194,19 +188,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         SetupBackgroundHole(prevStep);
 
                     prevStep.Show();
-                }                   
+                }
             }
-            HideOpenedStep(args.StepSequence);
-        }
 
-        private void HideOpenedStep(int stepSequence)
-        {
-            var OpenStep = (from step in GuideSteps 
-                            where step.Sequence == stepSequence 
-                            select step).FirstOrDefault();
-            if (OpenStep != null)
+            CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
+            if (CurrentStep != null)
             {
-                OpenStep.Hide();
+                CurrentStep.Hide();
             }
         }
 
