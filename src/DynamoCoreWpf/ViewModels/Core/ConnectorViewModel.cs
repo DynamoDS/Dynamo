@@ -618,16 +618,19 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void FlipOnConnectorAnchor()
         {
-            ConnectorAnchorViewModel = new ConnectorAnchorViewModel(this, workspaceViewModel.DynamoViewModel.Model, ConnectorDataTooltip);
-            ConnectorAnchorViewModel.CanShowTooltip = CanShowConnectorTooltip;
-            ConnectorAnchorViewModel.CurrentPosition = MousePosition;
-            ConnectorAnchorViewModel.IsHalftone = !IsVisible;
-            ConnectorAnchorViewModel.IsDataFlowCollection = IsDataFlowCollection;
+            ConnectorAnchorViewModel = new ConnectorAnchorViewModel(this, workspaceViewModel.DynamoViewModel.Model, ConnectorDataTooltip)
+            {
+                CanShowTooltip = CanShowConnectorTooltip,
+                CurrentPosition = MousePosition,
+                IsHalftone = !IsVisible,
+                IsDataFlowCollection = IsDataFlowCollection
+            };
             ConnectorAnchorViewModel.RequestDispose += DisposeAnchor;
         }
 
         private void DisposeAnchor(object arg1, EventArgs arg2)
         {
+            ConnectorAnchorViewModel.Dispose();
             ConnectorAnchorViewModel.RequestDispose -= DisposeAnchor;
             ConnectorAnchorViewModel = null;
         }
