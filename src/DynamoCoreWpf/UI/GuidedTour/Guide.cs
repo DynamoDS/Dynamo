@@ -163,12 +163,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="hostElement">Element for size and position reference</param>
         private void SetupBackgroundHoleSize(UIElement hostElement)
         {
-            Point relativePoint = hostElement.TransformToAncestor(Application.Current.MainWindow)
-                              .Transform(new Point(0, 0));
+            if(hostElement != null)
+            {
+                Point relativePoint = hostElement.TransformToAncestor(Application.Current.MainWindow)
+                                  .Transform(new Point(0, 0));
 
-            GuideBackgroundElement.HoleRect = new Rect(relativePoint.X, relativePoint.Y,
-                            hostElement.DesiredSize.Width, hostElement.DesiredSize.Height);
-
+                GuideBackgroundElement.HoleRect = new Rect(relativePoint.X, relativePoint.Y,
+                                hostElement.DesiredSize.Width, hostElement.DesiredSize.Height);
+            }
         }
 
         /// <summary>
