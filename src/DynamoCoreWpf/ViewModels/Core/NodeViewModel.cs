@@ -676,6 +676,11 @@ namespace Dynamo.ViewModels
 
         #region constructors
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="workspaceViewModel"></param>
+        /// <param name="logic"></param>
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic)
         {
             WorkspaceViewModel = workspaceViewModel;
@@ -819,6 +824,8 @@ namespace Dynamo.ViewModels
                 p.Dispose();
             }
 
+            NodeModel.NodeMessagesClearing -= Logic_NodeMessagesClearing;
+            ErrorBubble.DismissedMessages.CollectionChanged -= DismissedNodeWarnings_CollectionChanged;
             ErrorBubble.Dispose();
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();

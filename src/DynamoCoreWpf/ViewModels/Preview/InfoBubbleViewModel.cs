@@ -609,8 +609,6 @@ namespace Dynamo.ViewModels
             }
 
             Content = FullContent;
-
-            //ZIndex = 5;
         }
 
         [Obsolete]
@@ -630,8 +628,6 @@ namespace Dynamo.ViewModels
 
             // Generate condensed content
             GenerateContent();
-
-            //ZIndex = 3;
         }
 
         [Obsolete]
