@@ -577,9 +577,6 @@
     <None Include="UI\Fonts\CourierPrime-Regular.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="UI\Fonts\CourierPrime-Regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="UI\Fonts\OpenSans-Bold.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1387,6 +1384,9 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\error.png" />
+    <Resource Include="UI\Images\info.png" />
+    <Resource Include="UI\Images\warning.png" />
     <Resource Include="UI\Images\menu_grey_48px.png" />
     <Resource Include="UI\Images\caret_down_grey_48px.png" />
     <Resource Include="UI\Images\caret_up_grey_48px.png" />
@@ -1394,7 +1394,6 @@
     <Resource Include="UI\Images\hidden.png" />
     <Resource Include="UI\Images\default-node-icon.png" />
     <Resource Include="UI\Images\more-vertical.png" />
-    <Resource Include="UI\Images\warning.png" />
     <Resource Include="UI\Images\pin_default_16_16.png" />
     <Resource Include="UI\Images\watch_default_16_16.png" />
     <Resource Include="UI\Images\wire_anchor_12_12.png" />

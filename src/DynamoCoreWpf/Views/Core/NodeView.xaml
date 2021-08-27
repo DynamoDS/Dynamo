@@ -249,8 +249,22 @@
                               IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CrossProduct, Mode=OneWay}" />
                 </MenuItem>
                 <MenuItem Name="dismissedAlerts"
-                          Header="Dismissed Alerts"
-                          IsCheckable="False" />
+                          Header="{x:Static p:Resources.NodeInformationalStateDismissedAlerts}"
+                          IsCheckable="False"
+                          ItemsSource="{Binding DismissedAlerts, UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Rectangle Width="50"
+                                           Height="50"
+                                           Fill="Green" />
+                                <TextBlock Background="Yellow"
+                                           Foreground="Red"
+                                           Text="nalnalnal" />
+                            </Grid>
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                </MenuItem>
                 <Separator Visibility="{Binding Path=IsInputOrOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <MenuItem Name="isInput_cm"
                           Header="{x:Static p:Resources.NodeContextMenuIsInput}"
@@ -378,7 +392,7 @@
                 </Rectangle.ToolTip>
             </Rectangle>
         </Border>
-       
+
         <!--  Displays the node's header content, such as its icon, name and whether it's been renamed  -->
         <DockPanel Name="nodeHeaderContent"
                    Grid.Row="1"
@@ -491,7 +505,7 @@
             <!--  INPUT GRID  -->
             <Grid Name="inputGrid"
                   MinHeight="{Binding Source={x:Static configuration:Configurations.PortHeightInPixels}}"
-                  Margin="0,11,0,0"
+                  Margin="0,5,0,0"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                   x:FieldModifier="public"
@@ -511,7 +525,9 @@
                     FlowDirection="RightToLeft"
                     Orientation="Horizontal"
                     Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-            <Button x:Name="OptionsButton" Click="OptionsButton_Click">
+            <Button x:Name="OptionsButton"
+                    Click="OptionsButton_Click"
+                    ToolTip="{x:Static p:Resources.ContextMenu}">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Template">
@@ -547,8 +563,7 @@
             <Grid Name="AlertsGlyph"
                   Width="Auto"
                   Height="20">
-                <Border Background="{StaticResource NodeDismissedWarningsGlyphBackground}"
-                        CornerRadius="10">
+                <Border Background="{StaticResource NodeDismissedWarningsGlyphBackground}" CornerRadius="10">
                     <Label Padding="3,2,3,0"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
@@ -562,14 +577,14 @@
                 </Border>
                 <Grid.Style>
                     <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Visible"/>
-                        <Setter Property="Grid.MinWidth" Value="20" />
-                        <Setter Property="Grid.Margin" Value="0,0,6,0" />
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Setter Property="MinWidth" Value="20" />
+                        <Setter Property="Margin" Value="3,0,0,0" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding NumberOfDismissedAlerts}" Value="0">
                                 <Setter Property="Grid.MinWidth" Value="0" />
                                 <Setter Property="Grid.Margin" Value="0" />
-                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

@@ -623,16 +623,8 @@ namespace Dynamo.ViewModels
         /// A collection of MenuItems used by the node's Context Menu, since errors/warnings are undismissed via a sub-menu.
         /// </summary>
         [JsonIgnore]
-        public ObservableCollection<MenuItem> DismissedAlerts
-        {
-            get => dismissedAlerts;
-            set
-            {
-                dismissedAlerts = value;
-                RaisePropertyChanged(nameof(DismissedAlerts));
-            }
-        }
-
+        public ObservableCollection<MenuItem> DismissedAlerts { get; set; } = new ObservableCollection<MenuItem>();
+        
         #endregion
 
         #region events
@@ -704,7 +696,9 @@ namespace Dynamo.ViewModels
 
             ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
             UpdateBubbleContent();
-            
+
+            ErrorBubble.ZIndex = 1000;
+
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -767,6 +761,8 @@ namespace Dynamo.ViewModels
                     // Ellipses to truncate the message if too long
                     string ellipses = infoBubbleDataPacket.Message.Length > 30 ? "..." : "";
 
+
+                    
                     DismissedAlerts.Add(new MenuItem
                     {
                         Header = infoBubbleDataPacket.Message.Substring(0, Math.Min(infoBubbleDataPacket.Message.Length, 30)) + ellipses,
@@ -822,6 +818,7 @@ namespace Dynamo.ViewModels
             {
                 p.Dispose();
             }
+
             ErrorBubble.Dispose();
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
