@@ -80,6 +80,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (GuideSteps.Any())
             {
                 Step firstStep = (from step in GuideSteps where step.Sequence == 0 select step).FirstOrDefault();
+                CurrentStep = firstStep;
                 firstStep.Show();
             }
         }
@@ -118,9 +119,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 if (nextStep != null)
                 {
+                    CurrentStep = nextStep;
                     nextStep.Show();
                 }
             }
+            HideOpenedStep(args.StepSequence);
+        }
 
             CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
             if (CurrentStep != null)
@@ -192,12 +196,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     prevStep.Show();
                 }                   
             }
+            HideOpenedStep(args.StepSequence);
+        }
 
-            CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
-            if (CurrentStep != null)
+        private void HideOpenedStep(int stepSequence)
+        {
+            var OpenStep = (from step in GuideSteps 
+                            where step.Sequence == stepSequence 
+                            select step).FirstOrDefault();
+            if (OpenStep != null)
             {
-                CurrentStep.Hide();
-            }             
+                OpenStep.Hide();
+            }
         }
 
         /// <summary>

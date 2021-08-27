@@ -44,7 +44,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void CreatingNodeCustomNodeDefinitionOrUpdatingItShouldRaiseUpdate()
         {
             var customNodeManager = this.Model.CustomNodeManager;
@@ -98,7 +98,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void InstantiatingLazyLoadedCustomNodeShouldNotRaiseUpdate()
         {
 

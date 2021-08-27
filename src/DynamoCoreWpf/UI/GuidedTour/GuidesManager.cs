@@ -31,8 +31,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private DynamoViewModel dynamoViewModel;
 
-        private const double ExitTourVerticalOffset = 30;
-        private const double ExitTourHorizontalOffset = 0;
+        private RealTimeInfoWindow exitTourPopup;
+
+        //The ExitTour popup will be shown at the top-right section of the Dynamo window (at the left side of the statusBarPanel element) only when the tour is closed
+        //The ExitTourVerticalOffset is used to move vertically the popup (using as a reference the statusBarPanel position)
+        private const double ExitTourVerticalOffset = 10;
+        //The ExitTourHorizontalOffset is used to move horizontally the popup (using as a reference the statusBarPanel position)
+        private const double ExitTourHorizontalOffset = 110;
 
         public static string GuidesExecutingDirectory
         {
@@ -67,6 +72,22 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
             GuideFlowEvents.GuidedTourStart += TourStarted;
             GuideFlowEvents.GuidedTourFinish += TourFinished;
+        }
+
+        /// <summary>
+        /// This method will be used when the PlacementTarget element of the Popup was moved or resize so we need to update each Step and the ExitTour popup
+        /// </summary>
+        public void UpdateGuideStepsLocation()
+        {
+            if (currentGuide != null)
+            {
+                currentGuide.CurrentStep.UpdateLocation();
+            }
+
+            if(exitTourPopup != null)
+            {
+                exitTourPopup.UpdateLocation();
+            }
         }
 
         /// <summary>
@@ -318,11 +339,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
             UIElement hostUIElement = Guide.FindChild(mainRootElement, "statusBarPanel");
 
             //Creates the RealTimeInfoWindow popup and set up all the needed values to show the popup over the Dynamo workspace
-            var exitTourPopup = new RealTimeInfoWindow()
+            exitTourPopup = new RealTimeInfoWindow()
             {
                 VerticalOffset = ExitTourVerticalOffset,
                 HorizontalOffset = ExitTourHorizontalOffset,
-                Placement = PlacementMode.Center,
+                Placement = PlacementMode.Left,
                 TextContent = Res.ExitTourWindowContent
             };
 
