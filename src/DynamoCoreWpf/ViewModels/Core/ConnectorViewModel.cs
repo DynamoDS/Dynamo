@@ -301,9 +301,11 @@ namespace Dynamo.ViewModels
         }
 
         //Changed the connectors ZIndex to 2. Groups have ZIndex of 1.
+        // 08/02/2021 - ZIndex to 3 as groups can now have grouped groups
+        // and they will have a ZIndex of 2
         public double ZIndex
         {
-            get { return 2; }
+            get { return 3; }
         }
 
         /// <summary>
