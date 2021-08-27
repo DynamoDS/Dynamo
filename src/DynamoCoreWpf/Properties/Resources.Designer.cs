@@ -493,6 +493,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Node Options.
+        /// </summary>
+        public static string ContextMenu {
+            get {
+                return ResourceManager.GetString("ContextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string ContextMenuCopy {
@@ -3980,6 +3989,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeInformationalStateDismissAll {
             get {
                 return ResourceManager.GetString("NodeInformationalStateDismissAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismissed Alerts.
+        /// </summary>
+        public static string NodeInformationalStateDismissedAlerts {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateDismissedAlerts", resourceCulture);
             }
         }
         

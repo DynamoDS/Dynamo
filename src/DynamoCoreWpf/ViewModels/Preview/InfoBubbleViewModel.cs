@@ -58,7 +58,9 @@ namespace Dynamo.ViewModels
 
         #region Properties
 
-        private double zIndex;
+        // Each new node placed on the canvas has an incremented ZIndex
+        // In order to stay above these, we need a high ZIndex value. 
+        private double zIndex = 1000;
         private Style infoBubbleStyle;
         
         [Obsolete]
@@ -103,6 +105,11 @@ namespace Dynamo.ViewModels
         private bool nodeInfoShowLessMessageVisible;
         private bool nodeWarningsShowLessMessageVisible;
         private bool nodeErrorsShowLessMessageVisible;
+
+        /// <summary>
+        /// Determines whether any messages are shown to the user at all; switches chevron icon on/off in the view.
+        /// </summary>
+        public bool DoesNodeDisplayMessages => NodeWarningsToDisplay.Count + NodeErrorsToDisplay.Count + NodeInfoToDisplay.Count > 0;
 
         /// <summary>
         /// Determines whether the show more/show less buttons are visible to the user at the Info Message level.
@@ -441,7 +448,6 @@ namespace Dynamo.ViewModels
             Content = string.Empty;
             DocumentationLink = null;
             // To appear above any NodeView elements
-            ZIndex = 7; 
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
 
@@ -565,6 +571,8 @@ namespace Dynamo.ViewModels
         {
             if (!(parameter is InfoBubbleDataPacket infoBubbleDataPacket)) return;
 
+            
+
             if (!DismissedMessages.Contains(infoBubbleDataPacket))
             {
                 DismissedMessages.Add(infoBubbleDataPacket);
@@ -602,7 +610,7 @@ namespace Dynamo.ViewModels
 
             Content = FullContent;
 
-            ZIndex = 5;
+            //ZIndex = 5;
         }
 
         [Obsolete]
@@ -623,7 +631,7 @@ namespace Dynamo.ViewModels
             // Generate condensed content
             GenerateContent();
 
-            ZIndex = 3;
+            //ZIndex = 3;
         }
 
         [Obsolete]
@@ -801,6 +809,8 @@ namespace Dynamo.ViewModels
             UpdateShowMoreButtonText();
             // If there are no items to show at a particular message level, the bubble's visibility is collapsed.
             UpdateUserFacingCollectionVisibility();
+
+            RaisePropertyChanged(nameof(DoesNodeDisplayMessages));
         }
 
         /// <summary>
@@ -942,6 +952,14 @@ namespace Dynamo.ViewModels
             
             // Adding the messages to the user-facing collection
             for (int i = 0; i < displayMessages.Count; i++) targetCollection.Add(displayMessages[i]);
+        }
+        
+        /// <summary>
+        /// Unsubscribes from any events this class is subscribed to.
+        /// </summary>
+        public override void Dispose()
+        {
+            NodeMessages.CollectionChanged -= NodeInformation_CollectionChanged;
         }
     }
 
