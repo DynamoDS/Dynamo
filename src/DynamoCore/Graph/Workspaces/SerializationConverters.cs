@@ -1052,19 +1052,6 @@ namespace Dynamo.Graph.Workspaces
             // Get dependency name
             var name = obj["Name"].Value<string>();
 
-            Version version = null;
-            // Try get dependency version
-            if (obj["Version"] != null) 
-            {
-                var versionString = obj["Version"].Value<string>();
-                if (!Version.TryParse(versionString, out version))
-                {
-                    logger.LogWarning(
-                        string.Format("The version of Package Dependency {0} could not be deserialized.", name),
-                        Logging.WarningLevel.Moderate);
-                }
-            }
-
             //default to package.
             ReferenceType parsedType = ReferenceType.Package;
             JToken referenceTypeToken;
@@ -1079,7 +1066,20 @@ namespace Dynamo.Graph.Workspaces
                 }
 
             }
-        
+
+            Version version = null;
+            // Try get dependency version
+            if (obj["Version"] != null)
+            {
+                var versionString = obj["Version"].Value<string>();
+                if (!Version.TryParse(versionString, out version))
+                {
+                    logger.LogWarning(
+                        string.Format("The Version of Dependency: {0}, ReferenceType: {1} could not be deserialized.", name, parsedType),
+                        Logging.WarningLevel.Moderate);
+                }
+            }
+
             INodeLibraryDependencyInfo depInfo;
             //select correct constructor based on referenceType
             switch (parsedType)

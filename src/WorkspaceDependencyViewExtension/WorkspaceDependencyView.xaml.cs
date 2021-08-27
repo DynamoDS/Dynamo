@@ -15,6 +15,7 @@ using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Logging;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -158,7 +159,9 @@ namespace Dynamo.WorkspaceDependency
                         info.Size = size.ToString() + sizeUnits;
                     }
                 }
-                catch (Exception) { }
+                catch (Exception ex) {
+                    dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
+                }
                 
                 HasDependencyIssue = info.Path == null;
             }
