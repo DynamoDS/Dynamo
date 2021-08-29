@@ -17,11 +17,6 @@ namespace Dynamo.Wpf.Views.GuidedTour
             Application.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
         }
                 
-        ~GuideBackground()
-        {
-            Application.Current.MainWindow.SizeChanged -= MainWindow_SizeChanged;
-        }
-
         private Rect hole;
         private Rect windowsRect;
 
@@ -45,7 +40,6 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
         /// <summary>
         /// Rect with the size of the Dynamo Window regularly updating its size depending the window's size. Those are represented by 
-        /// SystemParameters.PrimaryScreenWidth and SystemParameters.PrimaryScreenHeight
         /// </summary>
         public Rect WindowsRect { 
             get { 
