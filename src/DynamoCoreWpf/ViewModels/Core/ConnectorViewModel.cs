@@ -641,11 +641,12 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="timer"></param>
         /// <param name="timeSpan"></param>
-        /// <param name="hover"></param>
         private void StartTimer(DispatcherTimer timer, TimeSpan timeSpan)
         {
-            timer = new DispatcherTimer();
-            timer.Interval = timeSpan;
+            timer = new DispatcherTimer
+            {
+                Interval = timeSpan
+            };
             timer.Start();
             timer.Tick += TimerDoneShow;
         }
@@ -789,10 +790,10 @@ namespace Dynamo.ViewModels
             Redraw(port.Center);
 
             InitializeCommands();
-            this.PropertyChanged += connectorViewModelPropertyChanged;
+            this.PropertyChanged += ConnectorViewModelPropertyChanged;
         }
 
-        private void connectorViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void ConnectorViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch(e.PropertyName)
             {
@@ -837,7 +838,7 @@ namespace Dynamo.ViewModels
             InitializeCommands();
 
             UpdateConnectorDataToolTip();
-            this.PropertyChanged += connectorViewModelPropertyChanged;
+            this.PropertyChanged += ConnectorViewModelPropertyChanged;
         }
 
         private void ConnectorPinModelCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -894,9 +895,11 @@ namespace Dynamo.ViewModels
         /// <param name="pinModel"></param>
         private void AddConnectorPinViewModel(ConnectorPinModel pinModel)
         {
-            var pinViewModel = new ConnectorPinViewModel(this.workspaceViewModel, pinModel);
-            pinViewModel.IsVisible = IsVisible;
-            pinViewModel.IsPartlyVisible = isPartlyVisible;
+            var pinViewModel = new ConnectorPinViewModel(this.workspaceViewModel, pinModel)
+            {
+                IsVisible = IsVisible,
+                IsPartlyVisible = isPartlyVisible
+            };
             pinViewModel.PropertyChanged += PinViewModelPropertyChanged;
 
             pinViewModel.RequestSelect += HandleRequestSelected;
@@ -930,7 +933,7 @@ namespace Dynamo.ViewModels
         private void HandleRequestSelected(object sender, EventArgs e)
         {
             ConnectorPinViewModel pinViewModel = sender as ConnectorPinViewModel;
-            IsPartlyVisible = pinViewModel.IsSelected && IsVisible == false ? true : false;
+            IsPartlyVisible = pinViewModel.IsSelected && IsVisible == false;
         }
         /// <summary>
         /// Handles ConnectorPin 'Unpin' command.
@@ -971,6 +974,7 @@ namespace Dynamo.ViewModels
                 pin.RequestSelect -= HandleRequestSelected;
             }
 
+            this.PropertyChanged -= ConnectorViewModelPropertyChanged;
             DiscardAllConnectorPinModels();
             base.Dispose();
         }
