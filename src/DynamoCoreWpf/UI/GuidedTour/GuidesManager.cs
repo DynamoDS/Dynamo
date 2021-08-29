@@ -63,10 +63,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             mainRootElement = root;
             dynamoViewModel = dynViewModel;
-            guideBackgroundElement = Guide.FindChild(root, "GuidesBackground") as GuideBackground;
+            guideBackgroundElement = Guide.FindChild(root, "GuidesBackground") as GuideBackground;            
 
             Guides = new List<Guide>();
-          
+            
             CreateGuideSteps(GuidesJsonFilePath);
 
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
@@ -110,6 +110,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 //Show background overlay
                 guideBackgroundElement.Visibility = Visibility.Visible;
+                currentGuide.GuideBackgroundElement = guideBackgroundElement;
                 currentGuide.Initialize();
                 currentGuide.Play();
             }
@@ -211,7 +212,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 HostUIElementString = jsonStepInfo.HostPopupInfo.HostUIElementString,
                 HostUIElement = mainRootElement,
                 VerticalPopupOffSet = jsonStepInfo.HostPopupInfo.VerticalPopupOffSet,
-                HorizontalPopupOffSet = jsonStepInfo.HostPopupInfo.HorizontalPopupOffSet
+                HorizontalPopupOffSet = jsonStepInfo.HostPopupInfo.HorizontalPopupOffSet,
+                HighlightColor = jsonStepInfo.HostPopupInfo.HighlightColor
             };
 
             //The host_ui_element read from the json file need to exists otherwise the host will be null
