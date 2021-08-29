@@ -113,7 +113,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 nextStep = (from step in GuideSteps where step.Sequence == args.StepSequence + 1 select step).FirstOrDefault();
 
-                if (nextStep.HostPopupInfo != null)
+                if (nextStep.StepType == Step.StepTypes.TOOLTIP && nextStep.HostPopupInfo != null)
                     SetupBackgroundHole(nextStep);
 
                 if (nextStep != null)
@@ -184,7 +184,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 prevStep = (from step in GuideSteps where step.Sequence == args.StepSequence - 1 select step).FirstOrDefault();
                 if (prevStep != null)
                 {
-                    if (prevStep.HostPopupInfo != null)
+                    if (prevStep.StepType == Step.StepTypes.TOOLTIP && prevStep.HostPopupInfo != null)
                         SetupBackgroundHole(prevStep);
 
                     prevStep.Show();

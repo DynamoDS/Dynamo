@@ -13,9 +13,17 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             InitializeComponent();
             DataContext = this;
+
+            Application.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
+        }
+                
+        ~GuideBackground()
+        {
+            Application.Current.MainWindow.SizeChanged -= MainWindow_SizeChanged;
         }
 
         private Rect hole;
+        private Rect windowsRect;
 
         /// <summary>
         /// Width of the background
@@ -39,7 +47,16 @@ namespace Dynamo.Wpf.Views.GuidedTour
         /// Rect with the size of the Dynamo Window regularly updating its size depending the window's size. Those are represented by 
         /// SystemParameters.PrimaryScreenWidth and SystemParameters.PrimaryScreenHeight
         /// </summary>
-        public Rect WindowsRect { get { return new Rect(0, 0, SystemParameters.PrimaryScreenWidth, SystemParameters.PrimaryScreenHeight) ; } }
+        public Rect WindowsRect { 
+            get { 
+                return windowsRect; 
+            }
+            set
+            {
+                windowsRect = value;
+                RaisePropertyChanged(nameof(WindowsRect));
+            }
+        }
 
         /// <summary>
         /// Rect used to cut the hole on the guide background 
@@ -63,6 +80,12 @@ namespace Dynamo.Wpf.Views.GuidedTour
                 PropertyChanged(this, new PropertyChangedEventArgs(info));
             }
         }
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            WindowsRect = new Rect(0, 0, e.NewSize.Width, e.NewSize.Height);
+        }
+
 
         //Dependency Properties defined to be able to bind values for the properties above
         public static readonly DependencyProperty CanvasWidthProperty = DependencyProperty
