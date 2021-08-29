@@ -618,16 +618,19 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void FlipOnConnectorAnchor()
         {
-            ConnectorAnchorViewModel = new ConnectorAnchorViewModel(this, workspaceViewModel.DynamoViewModel.Model, ConnectorDataTooltip);
-            ConnectorAnchorViewModel.CanShowTooltip = CanShowConnectorTooltip;
-            ConnectorAnchorViewModel.CurrentPosition = MousePosition;
-            ConnectorAnchorViewModel.IsHalftone = !IsVisible;
-            ConnectorAnchorViewModel.IsDataFlowCollection = IsDataFlowCollection;
+            ConnectorAnchorViewModel = new ConnectorAnchorViewModel(this, workspaceViewModel.DynamoViewModel.Model, ConnectorDataTooltip)
+            {
+                CanShowTooltip = CanShowConnectorTooltip,
+                CurrentPosition = MousePosition,
+                IsHalftone = !IsVisible,
+                IsDataFlowCollection = IsDataFlowCollection
+            };
             ConnectorAnchorViewModel.RequestDispose += DisposeAnchor;
         }
 
         private void DisposeAnchor(object arg1, EventArgs arg2)
         {
+            ConnectorAnchorViewModel.Dispose();
             ConnectorAnchorViewModel.RequestDispose -= DisposeAnchor;
             ConnectorAnchorViewModel = null;
         }
@@ -770,6 +773,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Construct a view and start drawing.
         /// </summary>
+        /// <param name="workspace"></param>
         /// <param name="port"></param>
         public ConnectorViewModel(WorkspaceViewModel workspace, PortModel port)
         {
@@ -802,6 +806,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Construct a view and respond to property changes on the model. 
         /// </summary>
+        /// <param name="workspace"></param>
         /// <param name="connectorModel"></param>
         public ConnectorViewModel(WorkspaceViewModel workspace, ConnectorModel connectorModel)
         {
@@ -946,7 +951,11 @@ namespace Dynamo.ViewModels
         {
             Redraw();
         }
-        public virtual void Dispose()
+
+        /// <summary>
+        /// Dispose function
+        /// </summary>
+        public override void Dispose()
         {
             model.Start.Owner.PropertyChanged -= StartOwner_PropertyChanged;
             model.End.Owner.PropertyChanged -= EndOwner_PropertyChanged;
@@ -954,6 +963,7 @@ namespace Dynamo.ViewModels
 
             workspaceViewModel.DynamoViewModel.Model.PreferenceSettings.PropertyChanged -= DynamoViewModel_PropertyChanged;
             Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
+            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;         
 
             foreach (var pin in ConnectorPinViewCollection.ToList())
             {
@@ -962,6 +972,7 @@ namespace Dynamo.ViewModels
             }
 
             DiscardAllConnectorPinModels();
+            base.Dispose();
         }
 
         private void nodeViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
