@@ -880,6 +880,7 @@ namespace Dynamo.ViewModels
             connectorPinViewModel.PropertyChanged -= PinViewModelPropertyChanged;
             connectorPinViewModel.RequestSelect -= HandleRequestSelected;
             connectorPinViewModel.RequestRedraw -= HandlerRedrawRequest;
+            connectorPinViewModel.RequestRemove -= HandleConnectorPinViewModelRemove;
             workspaceViewModel.Pins.Remove(connectorPinViewModel);
             ConnectorPinViewCollection.Remove(connectorPinViewModel);
 
@@ -964,6 +965,7 @@ namespace Dynamo.ViewModels
             model.End.Owner.PropertyChanged -= EndOwner_PropertyChanged;
             model.ConnectorPinModels.CollectionChanged -= ConnectorPinModelCollectionChanged;
 
+            workspaceViewModel.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
             workspaceViewModel.DynamoViewModel.Model.PreferenceSettings.PropertyChanged -= DynamoViewModel_PropertyChanged;
             Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
             ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;         
