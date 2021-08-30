@@ -33,6 +33,7 @@ namespace Dynamo.WorkspaceDependency
         private readonly string FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
         private readonly string sizeUnits = " KB";
         private readonly string customNodeExtension = ".dyf";
+        private const long KbConversionConstant = 1024;
 
         private ViewLoadedParams loadedParams;
         private WorkspaceDependencyViewExtension dependencyViewExtension;
@@ -155,7 +156,7 @@ namespace Dynamo.WorkspaceDependency
                     if (info.Path != null)
                     {
                         FileInfo localDefinitionFileInfo = new FileInfo(info.Path);
-                        long size = localDefinitionFileInfo.Length / 1024;
+                        long size = localDefinitionFileInfo.Length / KbConversionConstant;
                         info.Size = size.ToString() + sizeUnits;
                     }
                 }
