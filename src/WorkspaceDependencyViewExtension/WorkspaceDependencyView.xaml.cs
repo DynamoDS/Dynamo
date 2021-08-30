@@ -155,7 +155,7 @@ namespace Dynamo.WorkspaceDependency
 
                     if (info.Path != null)
                     {
-                        FileInfo localDefinitionFileInfo = new FileInfo(info.Path);
+                        var localDefinitionFileInfo = new FileInfo(info.Path);
                         long size = localDefinitionFileInfo.Length / KbConversionConstant;
                         info.Size = size.ToString() + sizeUnits;
                     }
