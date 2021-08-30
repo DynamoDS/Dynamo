@@ -67,6 +67,7 @@ namespace Dynamo.Nodes
 
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
         {
+            Console.WriteLine(AnnotationView_Loaded);
             ViewModel = this.DataContext as AnnotationViewModel;
             if (ViewModel != null)
             {
@@ -82,6 +83,7 @@ namespace Dynamo.Nodes
         //Set the max width of text area based on the width of the longest word in the text
         private void SetTextMaxWidth()
         {
+            Console.WriteLine(nameof(SetTextMaxWidth));
             Console.WriteLine($"Text:{ViewModel.AnnotationText}");
             var words = this.ViewModel.AnnotationText.Split(' ');
             Console.WriteLine($"words:{words}");
