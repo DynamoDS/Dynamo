@@ -152,6 +152,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
 
+        public ObservableCollection<PackageFilter> Filters => installedPackagesViewModel.Filters;
+
         //This includes all the properties that can be set on the General tab
         #region General Properties
         /// <summary>

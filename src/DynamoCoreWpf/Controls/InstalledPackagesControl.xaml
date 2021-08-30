@@ -30,7 +30,41 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ScrollViewer  
+        <ItemsControl  Grid.Column="0" Grid.Row="0"
+                   ItemsSource="{Binding Path=Filters}" 
+                   Background="Transparent"
+                   Padding="0,5,0,10">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" IsItemsHost="True"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <RadioButton Content="{Binding Path=Name, Mode=OneWay}" 
+                                 GroupName="PackageFilters"
+                                 IsChecked="{Binding Path=IsChecked, Mode=TwoWay}"
+                                 Style="{StaticResource {x:Type ToggleButton}}"
+                                 FontSize="10"
+                                 FontFamily="Artifakt Element"
+                                 HorizontalAlignment="Center"
+                                 BorderThickness="1,1,1,1"
+                                 Background="#CCCCCC"
+                                 Checked="ToggleButton_OnChecked"
+                                 Foreground="#4D4D4D">
+                        <RadioButton.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                <Setter Property="Margin" Value="5,0,0,0"/>
+                                <Setter Property="Padding" Value="5,0,5,0"/>
+                            </Style>
+                        </RadioButton.Resources>
+                    </RadioButton>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ScrollViewer Grid.Row="1"  
             VerticalScrollBarVisibility="Auto" 
             Background="{StaticResource PreferencesWindowBackgroundColor}" 
             MaxHeight="290">
