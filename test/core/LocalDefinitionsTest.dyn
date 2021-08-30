@@ -76,7 +76,7 @@
   "NodeLibraryDependencies": [
     {
       "Name": "RootNode.dyf",
-      "ReferenceType": "DYFFILE",
+      "ReferenceType": "DYFFile",
       "Nodes": [
         "b9aa509cf9734bfd891d1f652581fa86"
       ]
@@ -112,7 +112,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.13.0.2373",
+      "Version": "2.13.0.2415",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
