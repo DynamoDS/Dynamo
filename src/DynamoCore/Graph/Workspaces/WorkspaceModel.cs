@@ -705,60 +705,52 @@ namespace Dynamo.Graph.Workspaces
             get
             {
                var nodeLocalDefinitions = new Dictionary<object, LocalDefinitionInfo>();
-               var updatedNodeLocalDefinitions = new Dictionary<object, LocalDefinitionInfo>();
 
                 foreach (var node in Nodes)
                 {
                     var collected = GetNodePackage(node);
-
-                    if (localDefinitionsDictionary.TryGetValue(node.GUID, out var savedInfo))
-                    {
-                        if (!nodeLocalDefinitions.ContainsKey(node.Name))
-                        {
-                            nodeLocalDefinitions[node.Name] = savedInfo;
-                        }
-                        nodeLocalDefinitions[node.Name].AddDependent(node.GUID);
-                    }
                     
                     if (!nodePackageDictionary.ContainsKey(node.GUID) && collected == null)
                     {
                         string localDefinitionName;
+
                         if (node.IsCustomFunction)
                         {
                             localDefinitionName = node.Name + customNodeExtension;
 
-                            if (!updatedNodeLocalDefinitions.ContainsKey(localDefinitionName)) 
+                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName)) 
                             {
-                                updatedNodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName);
+                                nodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName);
                             }
 
-                            updatedNodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
-                            updatedNodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.DYFFILE;
+                            nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
+                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.DYFFILE;
                         }
                         else if (node is DSFunctionBase functionNode)
                         {
                             string assemblyPath = functionNode.Controller.Definition.Assembly;
                             localDefinitionName = Path.GetFileName(assemblyPath);
 
-                            if (!updatedNodeLocalDefinitions.ContainsKey(localDefinitionName))
+                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
                             {
-                                updatedNodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName, assemblyPath);
+                                nodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName, assemblyPath);
                             }
 
-                            updatedNodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
-                            updatedNodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.ZeroTouch;
+                            nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
+                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.ZeroTouch;
                         }
                         else if (node is DummyNode)
                         {
-                            if (nodeLocalDefinitions.TryGetValue(node.Name, out var localDefinitionInfo))
+                            // Read the serialized value if the node is not resolved.
+                            if (localDefinitionsDictionary.TryGetValue(node.GUID, out var localDefinitionInfo))
                             {
-                                updatedNodeLocalDefinitions[localDefinitionInfo.Name] = localDefinitionInfo;
+                                nodeLocalDefinitions[localDefinitionInfo.Name] = localDefinitionInfo;
                             }
                         }
                     }
                 }
 
-                return updatedNodeLocalDefinitions.Values.ToList<INodeLibraryDependencyInfo>();
+                return nodeLocalDefinitions.Values.ToList<INodeLibraryDependencyInfo>();
             }
             set
             {
