@@ -28,8 +28,9 @@ namespace Dynamo.DocumentationBrowser
         private const string VALID_DOC_FILEEXTENSION = "*.md";
         private const string FALLBACK_DOC_DIRECTORY_NAME = "fallback_docs";
         private static PackageDocumentationManager instance;
-        private DirectoryInfo dynamoCoreFallbackDocPath;
-        private DirectoryInfo hostDynamoFallbackDocPath;
+        //these fields should only be directly set by tests.
+        internal DirectoryInfo dynamoCoreFallbackDocPath;
+        internal DirectoryInfo hostDynamoFallbackDocPath;
 
         /// <summary>
         /// PackageDocManager singleton instance.

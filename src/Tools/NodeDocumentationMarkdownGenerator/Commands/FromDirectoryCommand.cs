@@ -49,12 +49,15 @@ namespace NodeDocumentationMarkdownGenerator.Commands
                 .Select(x => x.FirstOrDefault());
 
 
-            var referenceDllPaths = referencePaths
+            var referenceDllPaths = new List<string>();
+            if(referencePaths != null)
+            {
+                referenceDllPaths = referencePaths
                 .SelectMany(p => new DirectoryInfo(p)
                     .EnumerateFiles("*.dll", SearchOption.AllDirectories)
                     .Select(d => d.FullName)
-                    .Distinct());
-                   
+                    .Distinct()).ToList();
+            }
 
             if (filter.Any())
             {
