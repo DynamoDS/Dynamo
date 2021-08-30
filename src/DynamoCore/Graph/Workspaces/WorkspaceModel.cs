@@ -711,10 +711,8 @@ namespace Dynamo.Graph.Workspaces
                 {
                     var collected = GetNodePackage(node);
 
-                    if (localDefinitionsDictionary.ContainsKey(node.GUID))
+                    if (localDefinitionsDictionary.TryGetValue(node.GUID, out var savedInfo))
                     {
-                        var savedInfo = localDefinitionsDictionary[node.GUID];
-
                         if (!nodeLocalDefinitions.ContainsKey(node.Name))
                         {
                             nodeLocalDefinitions[node.Name] = savedInfo;
@@ -724,10 +722,9 @@ namespace Dynamo.Graph.Workspaces
                     
                     if (!nodePackageDictionary.ContainsKey(node.GUID) && collected == null)
                     {
-                        string localDefinitionName = null;
+                        string localDefinitionName;
                         if (node.IsCustomFunction)
                         {
-                            Guid functionSignature = ((Function)node).FunctionSignature;
                             localDefinitionName = node.Name + customNodeExtension;
 
                             if (!updatedNodeLocalDefinitions.ContainsKey(localDefinitionName)) 
@@ -753,9 +750,8 @@ namespace Dynamo.Graph.Workspaces
                         }
                         else if (node is DummyNode)
                         {
-                            if (nodeLocalDefinitions.ContainsKey(node.Name))
+                            if (nodeLocalDefinitions.TryGetValue(node.Name, out var localDefinitionInfo))
                             {
-                                var localDefinitionInfo = nodeLocalDefinitions[node.Name];
                                 updatedNodeLocalDefinitions[localDefinitionInfo.Name] = localDefinitionInfo;
                             }
                         }
