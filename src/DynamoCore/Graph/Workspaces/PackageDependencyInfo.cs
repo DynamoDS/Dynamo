@@ -138,7 +138,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Indicates whether this LocalDefinition is loaded in the current session
         /// </summary>
-        [Obsolete("This property is obsolete, use PackageDependencyState property instead", false)]
+        [Obsolete("This property is obsolete", false)]
         public bool IsLoaded { get; set; }
 
         public PackageDependencyState State { get; internal set; }
@@ -321,7 +321,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Indicates whether this package is loaded in the current session
         /// </summary>
-        [Obsolete("This property is obsolete, use PackageDependencyState property instead", false)]
+        [Obsolete("This property is obsolete, use State property instead", false)]
         public bool IsLoaded{ get; set;}
 
         /// <summary>
