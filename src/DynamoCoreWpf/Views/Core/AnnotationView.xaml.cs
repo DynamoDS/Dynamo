@@ -50,11 +50,15 @@ namespace Dynamo.Nodes
         }
 
         //Set the max width of text area based on the width of the longest word in the text
+        //Set the max width of text area based on the width of the longest word in the text
         private void SetTextMaxWidth()
         {
+            Console.WriteLine($"Text:{ViewModel.AnnotationText}");
             var words = this.ViewModel.AnnotationText.Split(' ');
+            Console.WriteLine($"words:{words}");
             var maxLength = 0;
             string longestWord = words[0];
+            Console.WriteLine($"longestword:{longestWord}");
 
             foreach (var w in words)
             {
@@ -64,7 +68,13 @@ namespace Dynamo.Nodes
                     maxLength = w.Length;
                 }
             }
-
+            Console.WriteLine($"culture:{System.Globalization.CultureInfo.CurrentUICulture}");
+            Console.WriteLine($"grouptextblock:{GroupTextBlock}");
+            Console.WriteLine($"fontfamily:{GroupTextBlock.FontFamily}");
+            Console.WriteLine($"fontstyle:{GroupTextBlock.FontStyle}");
+            Console.WriteLine($"weight:{GroupTextBlock.FontWeight}");
+            Console.WriteLine($"stretch:{GroupTextBlock.FontStretch}");
+            Console.WriteLine($"brush:{Brushes.Black}");
             var formattedText = new FormattedText(
                 longestWord,
                 System.Globalization.CultureInfo.CurrentUICulture,
@@ -73,6 +83,9 @@ namespace Dynamo.Nodes
                 this.GroupTextBlock.FontSize,
                 Brushes.Black);
 
+            Console.WriteLine($"annomodel:{ViewModel.AnnotationModel}");
+            Console.WriteLine($"annomodelwidth:{ViewModel.AnnotationModel.Width}");
+            Console.WriteLine($"annomodeltextmaxwidth:{ViewModel.AnnotationModel.TextMaxWidth}");
             this.ViewModel.AnnotationModel.Width = formattedText.Width;
             this.ViewModel.AnnotationModel.TextMaxWidth = formattedText.Width;
         }
