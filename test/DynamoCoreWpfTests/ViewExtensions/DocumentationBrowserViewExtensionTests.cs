@@ -50,7 +50,7 @@ namespace DynamoCoreWpfTests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");
-            libraries.Add("Builtin.ds");
+            libraries.Add("BuiltIn.ds");
             libraries.Add("FunctionObject.ds");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
