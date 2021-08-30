@@ -250,6 +250,24 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [Description Missing].
+        /// </summary>
+        public static string CustomSelectionNodeDescription {
+            get {
+                return ResourceManager.GetString("CustomSelectionNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [Tags Missing].
+        /// </summary>
+        public static string CustomSelectionSearchTags {
+            get {
+                return ResourceManager.GetString("CustomSelectionSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create a DateTime object from a formatted date and time string. Date and time must be of the format &quot;April 12, 1977 12:00 PM&quot;.
         /// </summary>
         public static string DateTimeDescription {

@@ -16,8 +16,9 @@ using CoreNodeModels.Properties;
 namespace CoreNodeModels.Input
 {
     [NodeName("Custom Selection")]
-    [NodeDescription("NeoDropdown node for user defined enums.")]
-    [NodeCategory("DropdownUI")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("CustomSelectionNodeDescription", typeof(Properties.Resources))]
+    [NodeSearchTags("CustomSelectionSearchTags", typeof(Properties.Resources))]
     [OutPortNames("value")]
     [OutPortTypes("object")]
     [OutPortDescriptions("Selected value")]

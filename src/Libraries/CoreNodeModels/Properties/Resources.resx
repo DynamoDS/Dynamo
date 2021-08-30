@@ -617,4 +617,10 @@ Default value: {0}</value>
   <data name="IFNodeWarningMessage" xml:space="preserve">
     <value>This node has been updated and will be removed in a future version of Dynamo. Existing behavior is retained, but a new version now supports Empty Lists, Null values and inputs of varying length. Please replace this node if you wish to use this improved behavior.</value>
   </data>
+  <data name="CustomSelectionNodeDescription" xml:space="preserve">
+      <value>[Description Missing]</value>
+  </data>
+  <data name="CustomSelectionSearchTags" xml:space="preserve">
+      <value>[Tags Missing]</value>
+  </data>
 </root>
