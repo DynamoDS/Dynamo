@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -113,7 +114,9 @@ namespace Dynamo.Nodes.Prompts
         private void Copy_Click(object sender, RoutedEventArgs e)
         {
             this.CrashDetailsContent.Visibility = Visibility.Visible;
-            Clipboard.SetData(DataFormats.Text, details);
+
+            var allAssemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.FullName);
+            Clipboard.SetData(DataFormats.Text, details + "\n\n-------- Assemblies --------\n\n" + string.Join("|", allAssemblies));
         }
 
         private void OpenFolder_Click(object sender, RoutedEventArgs e)

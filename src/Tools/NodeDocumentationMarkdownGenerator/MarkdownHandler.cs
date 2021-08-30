@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using Dynamo.Interfaces;
+using Dynamo.Wpf.Interfaces;
 using ImageMagick;
 using Newtonsoft.Json;
 
@@ -215,6 +215,13 @@ namespace NodeDocumentationMarkdownGenerator
                             m.Position = 0;
                             m.SetLength(0);
                             images.Write(m);
+                            //in the case where gif compression fails to create a gif that is smaller
+                            //fallback to the old image stream.
+                            if(m.Length > oldSize){
+                                m.Position = 0;
+                                m.SetLength(0);
+                                image.Save(m, image.RawFormat);
+                            }
                         }
                     }
 

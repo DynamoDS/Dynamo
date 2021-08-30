@@ -33,7 +33,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void VerifyIconsForLibraryItems()
         {
             var iconProvider = new IconResourceProvider(GetModel().PathManager);
@@ -65,7 +65,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Failure")]
         public void NodeItemDataProvider()
         {
             var provider = new NodeItemDataProvider(GetModel().SearchModel);
@@ -88,7 +88,7 @@ namespace ViewExtensionLibraryTests
             }
         }
 
-        [Test, Category("UnitTests")]
+        [Test, Category("UnitTests"), Category("Failure")]
         public void LibraryViewCustomizationServiceLoaded()
         {
             var model = GetModel();

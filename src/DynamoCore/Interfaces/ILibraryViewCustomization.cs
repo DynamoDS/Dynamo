@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Dynamo.Interfaces
+namespace Dynamo.Wpf.Interfaces
 {
     /// <summary>
     /// Provides methods to customize library view
