@@ -1828,16 +1828,6 @@
             </Grid.Background>
         </Grid>
 
-        <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>
-        
-        <!--This is the background overlay utilized for the interactive guides-->
-        <guides:GuideBackground x:Name ="GuidesBackground"
-                                Visibility="Hidden"
-                                CanvasWidth="{Binding ElementName=mainGrid, Path=ActualWidth}"
-                                CanvasHeight="{Binding ElementName=mainGrid, Path=ActualHeight}"
-                                HorizontalAlignment="Left" 
-                                VerticalAlignment="Top" 
-                                Grid.RowSpan="6" 
-                                Grid.ColumnSpan="5"/>
+        <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>        
     </Grid>
 </Window>

@@ -80,6 +80,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (GuideSteps.Any())
             {
                 Step firstStep = (from step in GuideSteps where step.Sequence == 0 select step).FirstOrDefault();
+                CurrentStep = firstStep;
                 firstStep.Show();
             }
         }
@@ -109,6 +110,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public void Next(GuidedTourMovementEventArgs args)
         {
             Step nextStep = null;
+
+            CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
+            if (CurrentStep != null)
+            {
+                CurrentStep.Hide();
+            }
+
             if (args.StepSequence < TotalSteps)
             {
                 nextStep = (from step in GuideSteps where step.Sequence == args.StepSequence + 1 select step).FirstOrDefault();
@@ -120,13 +128,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     nextStep.Show();
                 }
-            }
-
-            CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
-            if (CurrentStep != null)
-            {
-                CurrentStep.Hide();
-            }
+            }                        
         }
 
         /// <summary>

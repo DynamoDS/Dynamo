@@ -14,29 +14,12 @@ namespace Dynamo.Wpf.Views.GuidedTour
             InitializeComponent();
             DataContext = this;
 
+            WindowsRect = new Rect(0, 0, System.Windows.SystemParameters.PrimaryScreenWidth, System.Windows.SystemParameters.PrimaryScreenHeight);
             Application.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
         }
                 
         private Rect hole;
         private Rect windowsRect;
-
-        /// <summary>
-        /// Width of the background
-        /// </summary>
-        public double CanvasWidth
-        {
-            get { return (double)GetValue(CanvasWidthProperty); }
-            set { SetValue(CanvasWidthProperty, value); }
-        }
-
-        /// <summary>
-        /// Height of the background
-        /// </summary>
-        public double CanvasHeight
-        {
-            get { return (double)GetValue(CanvasHeightProperty); }
-            set { SetValue(CanvasHeightProperty, value); }
-        }
 
         /// <summary>
         /// Rect with the size of the Dynamo Window regularly updating its size depending the window's size. Those are represented by 
@@ -77,18 +60,9 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            WindowsRect = new Rect(0, 0, e.NewSize.Width, e.NewSize.Height);
+            windowsRect.Width = e.NewSize.Width;
+            windowsRect.Height = e.NewSize.Height;
+            RaisePropertyChanged(nameof(WindowsRect));
         }
-
-
-        //Dependency Properties defined to be able to bind values for the properties above
-        public static readonly DependencyProperty CanvasWidthProperty = DependencyProperty
-            .Register("CanvasWidth", typeof(double), typeof(GuideBackground),
-                        new FrameworkPropertyMetadata(new double()));
-
-        public static readonly DependencyProperty CanvasHeightProperty = DependencyProperty
-            .Register("CanvasHeight", typeof(double), typeof(GuideBackground),
-                        new FrameworkPropertyMetadata(new double()));
-
     }
 }

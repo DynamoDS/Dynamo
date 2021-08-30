@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views.GuidedTour;
@@ -64,9 +65,25 @@ namespace Dynamo.Wpf.UI.GuidedTour
             mainRootElement = root;
             dynamoViewModel = dynViewModel;
             guideBackgroundElement = Guide.FindChild(root, "GuidesBackground") as GuideBackground;            
-
             Guides = new List<Guide>();
-            
+
+            if (guideBackgroundElement == null)
+            {
+                guideBackgroundElement = new GuideBackground
+                {
+                    Name = "GuideBackground",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Visibility = Visibility.Hidden
+                };
+
+                Grid mainGrid = Guide.FindChild(root, "mainGrid") as Grid;
+                mainGrid.Children.Add(guideBackgroundElement);
+                Grid.SetColumnSpan(guideBackgroundElement, 5);
+                Grid.SetRowSpan(guideBackgroundElement, 6);
+            }
+
+
             CreateGuideSteps(GuidesJsonFilePath);
 
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
