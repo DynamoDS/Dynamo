@@ -910,12 +910,10 @@ namespace DynamoCoreWpfTests
             // Arrange
             var expectedWindowTitle = WpfResources.GraphIssuesOnSave_Title;
             var recivedEvents = new List<string>();
-
-            ViewModel.SaveWarningOnUnresolvedIssuesShows += delegate (SaveWarningOnUnresolvedIssuesArgs e)
-            {
-                recivedEvents.Add(e.TaskDialog.Title);
-            };
-
+            var savewarnHandler = new Action<SaveWarningOnUnresolvedIssuesArgs>((e) => { recivedEvents.Add(e.TaskDialog.Title); e.TaskDialog.Close(); });
+            ViewModel.SaveWarningOnUnresolvedIssuesShows += savewarnHandler;
+            
+    
             Mock<LinterExtensionBase> mockLinter = new Mock<LinterExtensionBase>() { CallBase = true };
             SetupMockLinter(mockLinter);
 
@@ -944,8 +942,12 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.That(recivedEvents.Count == 1);
-            Assert.That(recivedEvents.First() == expectedWindowTitle); 
+            Assert.That(recivedEvents.First() == expectedWindowTitle);
+            ViewModel.SaveWarningOnUnresolvedIssuesShows -= savewarnHandler;
+            
         }
+
+   
 
         private void SetupMockLinter(Mock<LinterExtensionBase> mockLinter)
         {
