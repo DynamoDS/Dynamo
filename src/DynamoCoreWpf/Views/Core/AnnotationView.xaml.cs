@@ -67,7 +67,7 @@ namespace Dynamo.Nodes
 
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(AnnotationView_Loaded);
+            Console.WriteLine(nameof(AnnotationView_Loaded));
             ViewModel = this.DataContext as AnnotationViewModel;
             if (ViewModel != null)
             {
