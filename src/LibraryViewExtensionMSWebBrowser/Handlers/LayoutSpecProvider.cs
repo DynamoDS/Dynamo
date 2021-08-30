@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Dynamo.Interfaces;
 using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers

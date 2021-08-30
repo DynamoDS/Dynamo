@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -28,6 +29,9 @@ namespace Dynamo
         protected TestPathResolver pathResolver;
         protected IPreferences dynamoSettings;
 
+        // Some tests override the static property PathManager.BuiltinPackagesDirectory, so we need a way to reset it after each test.
+        private string originalBuiltinPackagesDirectory;
+
         protected override DynamoModel GetModel()
         {
             return CurrentDynamoModel;
@@ -37,6 +41,9 @@ namespace Dynamo
         public override void Setup()
         {
             base.Setup();
+
+            // Store a copy of the PathManager.BuiltinPackagesDirectory so that we can reset it after each DynamoModelTest
+            originalBuiltinPackagesDirectory = originalBuiltinPackagesDirectory ?? PathManager.BuiltinPackagesDirectory;
             StartDynamo(dynamoSettings);
         }
 
@@ -52,6 +59,8 @@ namespace Dynamo
                     CurrentDynamoModel.ShutDown(false);
                     CurrentDynamoModel = null;
                 }
+
+                PathManager.BuiltinPackagesDirectory = originalBuiltinPackagesDirectory;
             }
             catch (Exception ex)
             {

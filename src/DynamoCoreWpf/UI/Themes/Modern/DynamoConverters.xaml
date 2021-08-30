@@ -8,6 +8,8 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
 
+    <controls:ToolTipFirstLineOnly x:Key="ToolTipFirstLine" />
+    <controls:ToolTipAllLinesButFirst x:Key="ToolTipFirstLineNot" />
     <controls:WorkspaceTypeConverter x:Key="WorkspaceTypeConverter" />
     <controls:WorkspaceBackgroundColorConverter
         x:Key="WorkspaceBackgroundColorConverter"
@@ -23,7 +25,7 @@
     <controls:BooleanToBrushConverter
         x:Key="BooleanToBrushConverter"
         FalseBrush="Black"
-        TrueBrush="#4192D9" />
+        TrueBrush="#6AC0E7" />
 
     <controls:BooleanToBrushConverter
         x:Key="PortConnectedBooleanToBrushConverter"
@@ -33,17 +35,17 @@
     <controls:BooleanToSelectionColorConverter
         x:Key="BooleanToSelectionColorConverter"
         False="#444"
-        True="#4192D9" />
+        True="#6AC0E7" />
 
     <controls:ConnectionStateToColorConverter
         x:Key="ConnectionStateToColorConverter"
         ExecutionPreview="#F2930C"
         None="#444"
-        Selection="#4192D9" />
+        Selection="#6AC0E7" />
 
     <controls:ConnectionStateToBrushConverter x:Key="ConnectionStateToBrushConverter"
                                               ExecutionPreviewBrush="#F2930C"
-                                              SelectionBrush="#4192D9"
+                                              SelectionBrush="#6AC0E7"
                                               NoneBrush="#444">
     </controls:ConnectionStateToBrushConverter>
 

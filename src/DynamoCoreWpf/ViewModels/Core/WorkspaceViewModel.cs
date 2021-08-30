@@ -529,11 +529,13 @@ namespace Dynamo.ViewModels
 
             Notes.ToList().ForEach(noteViewModel => noteViewModel.Dispose());
             Connectors.ToList().ForEach(connectorViewmModel => connectorViewmModel.Dispose());
+            Annotations.ToList().ForEach(AnnotationViewModel => AnnotationViewModel.Dispose());
             Nodes.Clear();
             Notes.Clear();
             Pins.Clear();
             Connectors.Clear();
             Errors.Clear();
+            Annotations.Clear();
             InCanvasSearchViewModel.Dispose();
             NodeAutoCompleteSearchViewModel.Dispose();
         }
@@ -692,11 +694,18 @@ namespace Dynamo.ViewModels
 
         private void Model_AnnotationRemoved(AnnotationModel annotation)
         {
-            Annotations.Remove(Annotations.First(x => x.AnnotationModel == annotation));
+            var matchingAnnotation = Annotations.First(x => x.AnnotationModel == annotation);
+            Annotations.Remove(matchingAnnotation);
+            matchingAnnotation.Dispose();
+           
         }
 
         private void Model_AnnotationsCleared()
         {
+            foreach (var annotationViewModel in Annotations)
+            {
+                annotationViewModel.Dispose();
+            }
             Annotations.Clear();
         }
 
@@ -1420,6 +1429,40 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");
             RaisePropertyChanged("SelectionArgumentLacing");            
+        }
+
+        /// <summary>
+        /// Returns ViewModelBase by GUID
+        /// </summary>
+        /// <param name="modelGuid">Identifier of the requested model.</param>
+        /// <returns>Found <see cref="ViewModelBase"/> object.</returns>
+        internal ViewModelBase GetViewModelInternal(Guid modelGuid)
+        {
+            ViewModelBase foundModel = (Connectors.FirstOrDefault(c => c.ConnectorModel.GUID == modelGuid)
+                ?? Nodes.FirstOrDefault(node => node.NodeModel.GUID == modelGuid) as ViewModelBase)
+                ?? (Notes.FirstOrDefault(note => note.Model.GUID == modelGuid)
+                ?? Annotations.FirstOrDefault(annotation => annotation.AnnotationModel.GUID == modelGuid) as ViewModelBase);
+
+            return foundModel;
+        }
+
+        /// <summary>
+        /// Gets viewModels by their GUIDs
+        /// </summary>
+        /// <param name="modelGuids">Identifiers of the requested models.</param>
+        /// <returns>All found <see cref="ViewModelBase"/> objects.</returns>
+        internal IEnumerable<ViewModelBase> GetViewModelsInternal(IEnumerable<Guid> modelGuids)
+        {
+            var foundModels = new List<ViewModelBase>();
+
+            foreach (var modelGuid in modelGuids)
+            {
+                var foundModel = GetViewModelInternal(modelGuid);
+                if (foundModel != null)
+                    foundModels.Add(foundModel);
+            }
+
+            return foundModels;
         }
 
     }

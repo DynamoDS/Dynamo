@@ -179,7 +179,7 @@ namespace Dynamo.Graph.Nodes
                             // Special case because code block outputs are smaller than regular outputs.
                             // This ensures the output port of the first code block output aligns with
                             // the first input port of any node.
-                            return new Point2D(Owner.X + Owner.Width, y + 12.7);
+                            return new Point2D(Owner.X + Owner.Width, y + 12.8);
                         }
                         return new Point2D(Owner.X + Owner.Width, y);
                 }
@@ -514,6 +514,22 @@ namespace Dynamo.Graph.Nodes
             }
 
             return null;
+        }
+    }
+
+    /// <summary>
+    /// This currently doesn't do anything other than copy the portmodel it receives.
+    /// Keeping it here for now as we might add to it when a decision about how to 
+    /// move forward has been made.
+    /// </summary>
+    internal class ProxyPortModel : PortModel
+    {
+        /// <summary>
+        /// Creates a new ProxyPortModel (TBD how this should be implemented)
+        /// </summary>
+        /// <param name="portModel"></param>
+        public ProxyPortModel(PortModel portModel) : base(portModel.PortType, portModel.Owner, new PortData(portModel.Name, portModel.ToolTip))
+        {
         }
     }
 

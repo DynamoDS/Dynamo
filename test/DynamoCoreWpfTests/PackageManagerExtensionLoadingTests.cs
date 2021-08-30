@@ -63,7 +63,7 @@ namespace DynamoCoreWpfTests
                     {
                         "Documentation Browser", 
                         "DynamoManipulationExtension",
-                        "LibraryUI", 
+                        "LibraryUI - MSWebBrowser", 
                         "Notifications", 
                         "Workspace References", 
                         "Sample View Extension",

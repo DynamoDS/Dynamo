@@ -33,14 +33,14 @@
                 FontFamily="{StaticResource CourierPrime}"
                 FontSize="14px"
                 Foreground="#DCDCDC"
-                LineNumbersForeground="#DCDCDC"
+                LineNumbersForeground="#AAAAAA"
                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
                 WordWrap="False" />
         </Border>
         <TextBlock
             x:Name="WatermarkLabel"
-            Margin="3,5,3,0"
+            Margin="3,10,3,0"
             Padding="8,3"
                    FontFamily="{StaticResource CourierPrime}"
             FontSize="14px"

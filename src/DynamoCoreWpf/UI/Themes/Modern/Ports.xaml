@@ -79,7 +79,7 @@
                                    FontFamily="{StaticResource ArtifaktElementRegular}"
                                    FontSize="17px"
                                    FontWeight="Medium"
-                                   Foreground="White"
+                                   Foreground="#DCDCDC"
                                    IsHitTestVisible="False"
                                    Text="{Binding Path=PortName}">
                             <TextBlock.Style>
@@ -317,13 +317,11 @@
                                     <Setter Property="Margin" Value="0,0,8,0" />
                                 </DataTrigger>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Fill"
-                                            Value="#E5E2DE" />
+                                    <Setter Property="Fill" Value="#E5E2DE" />
                                     <Setter Property="Opacity" Value="0.3" />
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="False">
-                                    <Setter Property="Fill"
-                                            Value="#E5E2DE" />
+                                    <Setter Property="Fill" Value="#E5E2DE" />
                                     <Setter Property="Opacity" Value="0.0" />
                                 </Trigger>
                             </Style.Triggers>
@@ -432,10 +430,10 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Path Grid.Column="0"
-                              Stroke="#999999"
-                              Fill="White"
                               Margin="1,0,0,0"
-                              Data="M 0,10 L 12,5 12,15 Z" />
+                              Data="M 0,10 L 12,5 12,15 Z"
+                              Fill="White"
+                              Stroke="#999999" />
                         <Border Grid.Column="1"
                                 Padding="5"
                                 Background="White"
@@ -466,20 +464,17 @@
                                           Visibility="{Binding UseDefaultValueCheckBoxVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                                 <Button Margin="0,3"
                                         HorizontalAlignment="Left"
+                                        Command="{Binding Path=BreakConnectionsCommand}"
                                         Content="{x:Static p:Resources.BreakConnectionPopupMenuItem}"
-                                        IsEnabled="{Binding OutputPortBreakConnectionsButtonEnabled}"
+                                        IsEnabled="{Binding OutputPortBreakConnectionsButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource PopupButtonStyle}"
-                                        Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                        Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                </Button>
                                 <Button Margin="0,3"
                                         HorizontalAlignment="Left"
-                                        Content="{x:Static p:Resources.HideWiresPopupMenuItem}"
-                                        IsEnabled="{Binding HideWiresButtonEnabled}"
-                                        Style="{StaticResource PopupButtonStyle}"
-                                        Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                                <Button Margin="0,3"
-                                        HorizontalAlignment="Left"
-                                        Content="{x:Static p:Resources.UnhideWiresPopupMenuItem}"
-                                        IsEnabled="{Binding UnhideWiresButtonEnabled}"
+                                        Command="{Binding Path=HideConnectionsCommand}"
+                                        Content="{Binding ShowHideWiresButtonContent, UpdateSourceTrigger=PropertyChanged}"
+                                        IsEnabled="{Binding HideWiresButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource PopupButtonStyle}"
                                         Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                             </StackPanel>
