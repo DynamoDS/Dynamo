@@ -233,7 +233,7 @@ namespace Dynamo.Graph.Workspaces
         ZeroTouch,
         DSFile,
         //TODO - This is already covered by the older Dependencies property
-        DYFFILE
+        DYFFile
     }
 
 

@@ -724,7 +724,7 @@ namespace Dynamo.Graph.Workspaces
                             }
 
                             nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
-                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.DYFFILE;
+                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.DYFFile;
                         }
                         else if (node is DSFunctionBase functionNode)
                         {
@@ -756,7 +756,7 @@ namespace Dynamo.Graph.Workspaces
             {
                 foreach (var dependency in value)
                 {
-                    if (dependency.ReferenceType == ReferenceType.DYFFILE || dependency.ReferenceType == ReferenceType.ZeroTouch)
+                    if (dependency.ReferenceType == ReferenceType.DYFFile || dependency.ReferenceType == ReferenceType.ZeroTouch)
                     {
                         foreach (var node in dependency.Nodes)
                         {

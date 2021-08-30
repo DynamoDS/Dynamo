@@ -141,7 +141,7 @@ namespace Dynamo.WorkspaceDependency
             {
                 try
                 {
-                    if (info.ReferenceType == ReferenceType.DYFFILE)
+                    if (info.ReferenceType == ReferenceType.DYFFile)
                     {
                         // Try to get the Custom node information if possible. 
                         string customNodeName = info.Name.Replace(customNodeExtension, "");
@@ -491,7 +491,7 @@ namespace Dynamo.WorkspaceDependency
 
                 switch (DependencyInfo.ReferenceType)
                 {
-                    case ReferenceType.DYFFILE:
+                    case ReferenceType.DYFFile:
                         bitmap = Properties.Resources.CustomNodeReferenceIcon;
                         break;
 

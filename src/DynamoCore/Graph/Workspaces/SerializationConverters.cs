@@ -1087,8 +1087,8 @@ namespace Dynamo.Graph.Workspaces
                 case ReferenceType.Package:
                     depInfo = new PackageDependencyInfo(name, version);
                     break;
-                case ReferenceType.DYFFILE:
-                    depInfo = new LocalDefinitionInfo(name, ReferenceType.DYFFILE);
+                case ReferenceType.DYFFile:
+                    depInfo = new LocalDefinitionInfo(name, ReferenceType.DYFFile);
 
                     break;
                 case ReferenceType.ZeroTouch:
