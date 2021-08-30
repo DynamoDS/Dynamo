@@ -493,7 +493,7 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("InitialTop", this.InitialTop);
             helper.SetAttribute("InitialHeight", this.InitialHeight);
             helper.SetAttribute("TextblockHeight", this.TextBlockHeight);
-            helper.SetAttribute("background", (this.Background == null ? "" : this.Background.ToString()));
+            helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
             foreach (var guids in this.Nodes.Select(x => x.GUID))
@@ -518,7 +518,7 @@ namespace Dynamo.Graph.Annotations
             this.Y = helper.ReadDouble("top", DoubleValue);
             this.width = helper.ReadDouble("width", DoubleValue);
             this.height = helper.ReadDouble("height", DoubleValue);
-            this.background = helper.ReadString("background", "");
+            this.background = helper.ReadString("backgrouund", "");
             this.fontSize = helper.ReadDouble("fontSize", fontSize);
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
