@@ -2596,4 +2596,7 @@ Delete the following packages: {2}?
   <data name="UnloadFailureMessageBoxTitle" xml:space="preserve">
     <value>Unload Failure</value>
   </data>
+  <data name="PackageFilter_Name_All" xml:space="preserve">
+    <value>All</value>
+  </data>
 </root>

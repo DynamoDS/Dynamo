@@ -35,7 +35,7 @@ namespace Dynamo.ViewModels
                     case PackageLoadState.StateTypes.Loaded: return Resources.PackageStateLoaded;
                     case PackageLoadState.StateTypes.Error: return Resources.PackageStateError;
                     default:
-                        return "All";
+                        return Resources.PackageFilter_Name_All;
                 }
             }
         }
