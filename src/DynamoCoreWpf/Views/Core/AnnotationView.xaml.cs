@@ -50,7 +50,6 @@ namespace Dynamo.Nodes
         }
 
         //Set the max width of text area based on the width of the longest word in the text
-        //Set the max width of text area based on the width of the longest word in the text
         private void SetTextMaxWidth()
         {
             Console.WriteLine($"Text:{ViewModel.AnnotationText}");
