@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Dynamo.Wpf.Views.GuidedTour;
@@ -123,6 +124,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 if (nextStep.StepType == Step.StepTypes.TOOLTIP && nextStep.HostPopupInfo != null)
                     SetupBackgroundHole(nextStep);
+                else
+                    GuideBackgroundElement.HoleRect = new Rect();
 
                 if (nextStep != null)
                 {
@@ -188,6 +191,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     if (prevStep.StepType == Step.StepTypes.TOOLTIP && prevStep.HostPopupInfo != null)
                         SetupBackgroundHole(prevStep);
+                    else
+                        GuideBackgroundElement.HoleRect = new Rect();
 
                     prevStep.Show();
                 }

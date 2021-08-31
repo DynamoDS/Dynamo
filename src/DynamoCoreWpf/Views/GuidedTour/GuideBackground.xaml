@@ -5,9 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dynamo.Wpf.Views.GuidedTour"
              mc:Ignorable="d">
-    
+
     <Grid>
-        <Canvas 
+        <Canvas
+            Panel.ZIndex="1"
             Background="Transparent"
             Name="RootLayout" >
             <Path Stroke="Black" StrokeThickness="1" Fill="Black" Opacity="0.5">

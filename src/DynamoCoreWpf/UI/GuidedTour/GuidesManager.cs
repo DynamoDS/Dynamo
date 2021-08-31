@@ -77,6 +77,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     Visibility = Visibility.Hidden
                 };
 
+                
+
                 Grid mainGrid = Guide.FindChild(root, "mainGrid") as Grid;
                 mainGrid.Children.Add(guideBackgroundElement);
                 Grid.SetColumnSpan(guideBackgroundElement, 5);
@@ -237,6 +239,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             UIElement hostUIElement = Guide.FindChild(mainRootElement, popupInfo.HostUIElementString);
             if (hostUIElement != null)
                 popupInfo.HostUIElement = hostUIElement;
+
+            Canvas.SetZIndex(popupInfo.HostUIElement, 0);
 
             return popupInfo;
         }
