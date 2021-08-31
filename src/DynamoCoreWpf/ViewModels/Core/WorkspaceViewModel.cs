@@ -529,11 +529,13 @@ namespace Dynamo.ViewModels
 
             Notes.ToList().ForEach(noteViewModel => noteViewModel.Dispose());
             Connectors.ToList().ForEach(connectorViewmModel => connectorViewmModel.Dispose());
+            Annotations.ToList().ForEach(AnnotationViewModel => AnnotationViewModel.Dispose());
             Nodes.Clear();
             Notes.Clear();
             Pins.Clear();
             Connectors.Clear();
             Errors.Clear();
+            Annotations.Clear();
             InCanvasSearchViewModel.Dispose();
             NodeAutoCompleteSearchViewModel.Dispose();
         }
@@ -692,11 +694,18 @@ namespace Dynamo.ViewModels
 
         private void Model_AnnotationRemoved(AnnotationModel annotation)
         {
-            Annotations.Remove(Annotations.First(x => x.AnnotationModel == annotation));
+            var matchingAnnotation = Annotations.First(x => x.AnnotationModel == annotation);
+            Annotations.Remove(matchingAnnotation);
+            matchingAnnotation.Dispose();
+           
         }
 
         private void Model_AnnotationsCleared()
         {
+            foreach (var annotationViewModel in Annotations)
+            {
+                annotationViewModel.Dispose();
+            }
             Annotations.Clear();
         }
 

@@ -577,9 +577,6 @@
     <None Include="UI\Fonts\CourierPrime-Regular.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="UI\Fonts\CourierPrime-Regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="UI\Fonts\OpenSans-Bold.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1392,11 +1389,11 @@
     <Resource Include="UI\Images\menu_grey_48px.png" />
     <Resource Include="UI\Images\NodeIcon_placeholder.png" />
     <Resource Include="UI\Images\error.png" />
+    <Resource Include="UI\Images\warning.png" />
     <Resource Include="UI\Images\info.png" />
     <Resource Include="UI\Images\hidden.png" />
     <Resource Include="UI\Images\default-node-icon.png" />
     <Resource Include="UI\Images\more-vertical.png" />
-    <Resource Include="UI\Images\warning.png" />
     <Resource Include="UI\Images\pin_default_16_16.png" />
     <Resource Include="UI\Images\watch_default_16_16.png" />
     <Resource Include="UI\Images\wire_anchor_12_12.png" />

@@ -212,7 +212,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 HostUIElementString = jsonStepInfo.HostPopupInfo.HostUIElementString,
                 HostUIElement = mainRootElement,
                 VerticalPopupOffSet = jsonStepInfo.HostPopupInfo.VerticalPopupOffSet,
-                HorizontalPopupOffSet = jsonStepInfo.HostPopupInfo.HorizontalPopupOffSet
+                HorizontalPopupOffSet = jsonStepInfo.HostPopupInfo.HorizontalPopupOffSet,
+                HighlightColor = jsonStepInfo.HostPopupInfo.HighlightColor
             };
 
             //The host_ui_element read from the json file need to exists otherwise the host will be null

@@ -676,6 +676,11 @@ namespace Dynamo.ViewModels
 
         #region constructors
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="workspaceViewModel"></param>
+        /// <param name="logic"></param>
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic)
         {
             WorkspaceViewModel = workspaceViewModel;
@@ -716,7 +721,10 @@ namespace Dynamo.ViewModels
             ZIndex = ++StaticZIndex;
             ++NoteViewModel.StaticZIndex;
 
-            if(workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource)) ImageSource = imgSource;
+            if (workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource))
+            {
+                ImageSource = imgSource;
+            }
 
             // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
             ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeWarnings_CollectionChanged;
@@ -762,7 +770,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         public override void Dispose()
         {
-            this.NodeModel.PropertyChanged -= logic_PropertyChanged;
+            NodeModel.PropertyChanged -= logic_PropertyChanged;
+            NodeModel.InPorts.CollectionChanged -= inports_collectionChanged;
+            NodeModel.OutPorts.CollectionChanged -= outports_collectionChanged;
 
             DynamoViewModel.Model.PropertyChanged -= Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged -= DebugSettings_PropertyChanged;
@@ -781,6 +791,8 @@ namespace Dynamo.ViewModels
                 p.Dispose();
             }
 
+            NodeModel.NodeMessagesClearing -= Logic_NodeMessagesClearing;
+            ErrorBubble.DismissedMessages.CollectionChanged -= DismissedNodeWarnings_CollectionChanged;
             ErrorBubble.Dispose();
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();

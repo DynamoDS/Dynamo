@@ -238,6 +238,12 @@ namespace Dynamo.ViewModels
             OnRequestDispose(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="connectorViewModel"></param>
+        /// <param name="dynamoModel"></param>
+        /// <param name="tooltipText"></param>
         public ConnectorAnchorViewModel(ConnectorViewModel connectorViewModel, DynamoModel dynamoModel, string tooltipText)
         {
             ViewModel = connectorViewModel;
@@ -249,6 +255,14 @@ namespace Dynamo.ViewModels
 
             IsHalftone = false;
             connectorViewModel.PropertyChanged += OnConnectorViewModelPropertyChanged;
+        }
+
+        /// <summary>
+        /// Dispose function
+        /// </summary>
+        public void Dispose()
+        {
+            ViewModel.PropertyChanged -= OnConnectorViewModelPropertyChanged;
         }
 
         private void OnConnectorViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -306,14 +320,14 @@ namespace Dynamo.ViewModels
 
         private void PlacePinsOnWires(NodeModel startNode, NodeModel watchNodeModel, IEnumerable<Point> connectorPinLocations)
         {
-            ///Collect ports & connectors of newly connected nodes
-            ///so that old pins (that need to remain) can be transferred over correctly.
+            // Collect ports & connectors of newly connected nodes
+            // so that old pins (that need to remain) can be transferred over correctly.
             PortModel startNodePort = startNode.OutPorts[0];
             PortModel watchNodePort = watchNodeModel.OutPorts[0];
             Graph.Connectors.ConnectorModel[] connectors = new Graph.Connectors.ConnectorModel[2];
             connectors[0] = startNodePort.Connectors[0];
             connectors[1] = watchNodePort.Connectors[0];
-            /// Place each pin where required on the newly connected connectors.
+            // Place each pin where required on the newly connected connectors.
             foreach (var connectorPinLocation in connectorPinLocations)
             {
                 int wireIndex = ConnectorSegmentIndex(CurrentPosition, connectorPinLocation);

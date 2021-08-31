@@ -39,7 +39,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         /// Rect with the size of the Dynamo Window regularly updating its size depending the window's size. Those are represented by 
         /// SystemParameters.PrimaryScreenWidth and SystemParameters.PrimaryScreenHeight
         /// </summary>
-        public Rect WindowsRect { get { return new Rect(0, 0, SystemParameters.PrimaryScreenWidth, SystemParameters.PrimaryScreenHeight); } }
+        public Rect WindowsRect { get { return new Rect(0, 0, SystemParameters.PrimaryScreenWidth, SystemParameters.PrimaryScreenHeight) ; } }
 
         /// <summary>
         /// Rect used to cut the hole on the guide background 
