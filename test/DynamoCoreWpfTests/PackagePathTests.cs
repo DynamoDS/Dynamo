@@ -250,7 +250,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             Assert.AreEqual(19, installedPackagesView.SearchResultsListBox.Items.Count);
-
+            Assert.AreEqual(2, installedPackagesView.Filters.Items.Count);
         }
 
         [Test]

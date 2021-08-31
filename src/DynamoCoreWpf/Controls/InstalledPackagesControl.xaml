@@ -30,10 +30,11 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ItemsControl  Grid.Column="0" Grid.Row="0"
-                   ItemsSource="{Binding Path=Filters}" 
-                   Background="Transparent"
-                   Padding="0,5,0,10">
+        <ItemsControl Name="Filters"
+                      Grid.Column="0" Grid.Row="0"
+                      ItemsSource="{Binding Path=Filters}" 
+                      Background="Transparent"
+                      Padding="0,5,0,10">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" IsItemsHost="True"/>
