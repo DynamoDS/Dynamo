@@ -8,17 +8,32 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
 {
+    /// <summary>
+    /// Package Filter model
+    /// </summary>
     public class PackageFilter : NotificationObject
     {
         private bool isChecked;
 
+        /// <summary>
+        /// Create a package filter
+        /// </summary>
+        /// <param name="loadState">Load State to filter</param>
+        /// <param name="viewModel">Back pointer to parent view model</param>
         public PackageFilter(PackageLoadState loadState, InstalledPackagesViewModel viewModel)
         {
             LoadState = loadState;
             ViewModel = viewModel;
         }
 
+        /// <summary>
+        /// Load state used for filtering
+        /// </summary>
         public PackageLoadState LoadState { get; private set; }
+        
+        /// <summary>
+        /// Filter name
+        /// </summary>
         public string Name
         {
             get
@@ -42,8 +57,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Back pointer to owner view model
+        /// </summary>
         public InstalledPackagesViewModel ViewModel { get; private set; }
 
+        /// <summary>
+        /// True if this filter is active
+        /// </summary>
         public bool IsChecked
         {
             get => isChecked;
@@ -58,15 +79,33 @@ namespace Dynamo.ViewModels
         }
     }
 
+    /// <summary>
+    /// View model for installed package control
+    /// </summary>
     public class InstalledPackagesViewModel : NotificationObject
     {
+        /// <summary>
+        /// The current filtered list of local packages
+        /// </summary>
         public ObservableCollection<PackageViewModel> LocalPackages { get; } = new ObservableCollection<PackageViewModel>();
 
+        /// <summary>
+        /// Possible filters to use for the filtered list of packages
+        /// </summary>
         public ObservableCollection<PackageFilter> Filters { get; } = new ObservableCollection<PackageFilter>();
 
         private readonly DynamoViewModel dynamoViewModel;
+
+        /// <summary>
+        /// Back pointer to the Package Loader
+        /// </summary>
         public PackageLoader Model { get; private set; }
 
+        /// <summary>
+        /// Create a new view model for installed packages
+        /// </summary>
+        /// <param name="dynamoViewModel">Back pointer to the dynamo view model</param>
+        /// <param name="model">Back pointer to the package loader</param>
         public InstalledPackagesViewModel(DynamoViewModel dynamoViewModel, PackageLoader model)
         {
             this.Model = model;
@@ -76,6 +115,9 @@ namespace Dynamo.ViewModels
             PopulateFilters();
         }
 
+        /// <summary>
+        /// Filter the list of local packages based on the current filter selection
+        /// </summary>
         internal void ApplyPackageFilter()
         {
             ClearPackagesViewModel();
@@ -93,6 +135,27 @@ namespace Dynamo.ViewModels
                      .Select(NewPackageViewModel).ToObservableCollection());
             }
             RaisePropertyChanged(nameof(LocalPackages));
+        }
+
+        /// <summary>
+        /// Populate the list of available filters based on the packages currently known by the dynamo view model
+        /// </summary>
+        internal void PopulateFilters()
+        {
+            var currentSelection = CurrentFilterSelection;
+            Filters.Clear();
+            var loadStates = Model.LocalPackages.Select(pkg => pkg.LoadState)
+                .GroupBy(f => new { f.State, f.ScheduledState }).Select(f => f.FirstOrDefault());
+            Filters.AddRange(loadStates.Select(f => new PackageFilter(f, this)).ToObservableCollection());
+
+            if (Filters.Any())
+            {
+                Filters.Insert(0, new PackageFilter(new PackageLoadState(), this));
+            }
+
+            ResetCurrentSelection(currentSelection);
+
+            RaisePropertyChanged(nameof(Filters));
         }
 
         private PackageLoadState CurrentFilterSelection => Filters.FirstOrDefault(f => f.IsChecked)?.LoadState;
@@ -172,24 +235,6 @@ namespace Dynamo.ViewModels
                 PopulateFilters();
                 ApplyPackageFilter();
             }
-        }
-
-        internal void PopulateFilters()
-        {
-            var currentSelection = CurrentFilterSelection;
-            Filters.Clear();
-            var loadStates = Model.LocalPackages.Select(pkg => pkg.LoadState)
-                .GroupBy(f => new { f.State, f.ScheduledState }).Select(f => f.FirstOrDefault());
-            Filters.AddRange(loadStates.Select(f => new PackageFilter(f, this)).ToObservableCollection());
-
-            if (Filters.Any())
-            {
-                Filters.Insert(0, new PackageFilter(new PackageLoadState(), this));
-            }
-
-            ResetCurrentSelection(currentSelection);
-
-            RaisePropertyChanged(nameof(Filters));
         }
 
         private void ResetCurrentSelection(PackageLoadState selection)
