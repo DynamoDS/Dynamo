@@ -103,6 +103,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ZeroTouchNodeReferenceIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CustomNodeReferenceIcon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <ItemGroup>
