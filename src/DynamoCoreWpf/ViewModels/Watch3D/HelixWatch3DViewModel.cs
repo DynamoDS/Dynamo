@@ -2580,19 +2580,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             var camData = new CameraData
             {
-                NearPlaneDistance = camera.NearPlaneDistance,
-                FarPlaneDistance = camera.FarPlaneDistance,
+                //NearPlaneDistance = camera.NearPlaneDistance,
+                //FarPlaneDistance = camera.FarPlaneDistance,
 
-                Name = name,
-                EyeX = camera.Position.X,
-                EyeY = camera.Position.Y,
-                EyeZ = camera.Position.Z,
-                LookX = camera.LookDirection.X,
-                LookY = camera.LookDirection.Y,
-                LookZ = camera.LookDirection.Z,
-                UpX = camera.UpDirection.X,
-                UpY = camera.UpDirection.Y,
-                UpZ = camera.UpDirection.Z
+                //Name = name,
+                //EyeX = camera.Position.X,
+                //EyeY = camera.Position.Y,
+                //EyeZ = camera.Position.Z,
+                //LookX = camera.LookDirection.X,
+                //LookY = camera.LookDirection.Y,
+                //LookZ = camera.LookDirection.Z,
+                //UpX = camera.UpDirection.X,
+                //UpY = camera.UpDirection.Y,
+                //UpZ = camera.UpDirection.Z
             };
 
             return camData;

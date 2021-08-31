@@ -42,6 +42,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         public GuideBackground GuideBackgroundElement { get; set; }
 
+        /// <summary>
+        /// This variable represents the Guide Background Element to manipulate it's hole rect
+        /// </summary>
+        public UIElement LibraryView { get; set; }
+
         public Guide()
         {
             GuideSteps = new List<Step>();
@@ -92,7 +97,24 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public void Initialize()
         {
             TotalSteps = GuideSteps.Count;
+
+            var libraryStep = GuideSteps.FirstOrDefault(x => x.StepType == Step.StepTypes.LIBRARY );
+            LibraryView = libraryStep?.HostPopupInfo?.HostUIElement;
+
+            SetLibraryViewVisible(false);   
+
             SubscribeFlowEvents();
+        }
+
+        private void SetLibraryViewVisible(bool visible)
+        {
+            if(LibraryView != null)
+            {
+                if (visible)
+                    LibraryView.Visibility = Visibility.Visible;
+                else
+                    LibraryView.Visibility = Visibility.Hidden;
+            }
         }
 
         /// <summary>
@@ -101,6 +123,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public void ClearGuide()
         {
             UnsubscribeFlowEvents();
+
+            if(LibraryView != null)
+                LibraryView.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -122,13 +147,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 nextStep = (from step in GuideSteps where step.Sequence == args.StepSequence + 1 select step).FirstOrDefault();
 
-                if (nextStep.StepType == Step.StepTypes.TOOLTIP && nextStep.HostPopupInfo != null)
-                    SetupBackgroundHole(nextStep);
-                else
-                    GuideBackgroundElement.HoleRect = new Rect();
-
                 if (nextStep != null)
                 {
+                    SetLibraryViewVisible(nextStep.StepType == Step.StepTypes.LIBRARY);
+
+                    if (nextStep.StepType != Step.StepTypes.WELCOME &&
+                        nextStep.StepType != Step.StepTypes.SURVEY
+                        && nextStep.HostPopupInfo != null)
+                        SetupBackgroundHole(nextStep);
+                    else
+                        GuideBackgroundElement.HoleRect = new Rect();
+
                     nextStep.Show();
                 }
             }                        
@@ -189,7 +218,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 prevStep = (from step in GuideSteps where step.Sequence == args.StepSequence - 1 select step).FirstOrDefault();
                 if (prevStep != null)
                 {
-                    if (prevStep.StepType == Step.StepTypes.TOOLTIP && prevStep.HostPopupInfo != null)
+                    SetLibraryViewVisible(prevStep.StepType == Step.StepTypes.LIBRARY);
+
+                    if (prevStep.StepType != Step.StepTypes.WELCOME &&
+                        prevStep.StepType != Step.StepTypes.SURVEY
+                        && prevStep.HostPopupInfo != null)
                         SetupBackgroundHole(prevStep);
                     else
                         GuideBackgroundElement.HoleRect = new Rect();

@@ -22,7 +22,7 @@
 			{
 				"Sequence": 1,
 				"Name": "library",
-				"Type": "tooltip",
+				"Type": "library",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
 				"Height": 250,

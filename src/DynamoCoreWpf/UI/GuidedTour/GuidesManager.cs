@@ -66,6 +66,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             dynamoViewModel = dynViewModel;
             guideBackgroundElement = Guide.FindChild(root, "GuidesBackground") as GuideBackground;            
             Guides = new List<Guide>();
+                       
 
             if (guideBackgroundElement == null)
             {
@@ -76,8 +77,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     VerticalAlignment = VerticalAlignment.Top,
                     Visibility = Visibility.Hidden
                 };
-
-                
 
                 Grid mainGrid = Guide.FindChild(root, "mainGrid") as Grid;
                 mainGrid.Children.Add(guideBackgroundElement);
@@ -154,6 +153,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 //Hide guide background overlay
                 guideBackgroundElement.Visibility = Visibility.Hidden;
+                
 
             }
 
@@ -192,6 +192,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 totalTooltips = (from step in guide.GuideSteps
                                  where step.StepType == Step.StepTypes.TOOLTIP ||
+                                        step.StepType == Step.StepTypes.LIBRARY ||
                                        step.StepType == Step.StepTypes.SURVEY
                                  select step).Count();
 
@@ -284,13 +285,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             switch (jsonStepInfo.StepType)
             {
+                case Step.StepTypes.LIBRARY:
                 case Step.StepTypes.TOOLTIP:
                     newStep = new Tooltip(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height, jsonStepInfo.TooltipPointerDirection)
                     {
                         Name = jsonStepInfo.Name,
                         Sequence = jsonStepInfo.Sequence,
                         TotalTooltips = totalTooltips,
-                        StepType = Step.StepTypes.TOOLTIP,
+                        StepType = jsonStepInfo.StepType,
                         StepContent = new Content()
                         {
                             FormattedText = formattedText,

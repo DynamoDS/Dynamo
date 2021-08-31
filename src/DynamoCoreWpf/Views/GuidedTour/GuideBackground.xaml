@@ -6,9 +6,10 @@
              xmlns:local="clr-namespace:Dynamo.Wpf.Views.GuidedTour"
              mc:Ignorable="d">
 
+
+
     <Grid>
         <Canvas
-            Panel.ZIndex="1"
             Background="Transparent"
             Name="RootLayout" >
             <Path Stroke="Black" StrokeThickness="1" Fill="Black" Opacity="0.5">
@@ -32,4 +33,6 @@
             </Path>
         </Canvas>
     </Grid>
+
+    
 </UserControl>
