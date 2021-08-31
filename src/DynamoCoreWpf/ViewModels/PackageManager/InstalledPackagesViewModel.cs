@@ -60,11 +60,9 @@ namespace Dynamo.ViewModels
 
     public class InstalledPackagesViewModel : NotificationObject
     {
-        private ObservableCollection<PackageViewModel> _localPackages = new ObservableCollection<PackageViewModel>();
-        public ObservableCollection<PackageViewModel> LocalPackages { get { return _localPackages; } }
+        public ObservableCollection<PackageViewModel> LocalPackages { get; } = new ObservableCollection<PackageViewModel>();
 
-        private ObservableCollection<PackageFilter> _filters = new ObservableCollection<PackageFilter>();
-        public ObservableCollection<PackageFilter> Filters => _filters;
+        public ObservableCollection<PackageFilter> Filters { get; } = new ObservableCollection<PackageFilter>();
 
         private readonly DynamoViewModel dynamoViewModel;
         public PackageLoader Model { get; private set; }
@@ -88,30 +86,24 @@ namespace Dynamo.ViewModels
             }
             else
             {
-               var filter = CurrentFilterSelection;
-               LocalPackages.AddRange(Model.LocalPackages
-                    .Where(pkg =>
-                        pkg.LoadState.State == filter.State && pkg.LoadState.ScheduledState == filter.ScheduledState)
-                    .Select(NewPackageViewModel).ToObservableCollection());
+                var filter = CurrentFilterSelection;
+                LocalPackages.AddRange(Model.LocalPackages
+                     .Where(pkg =>
+                         pkg.LoadState.State == filter.State && pkg.LoadState.ScheduledState == filter.ScheduledState)
+                     .Select(NewPackageViewModel).ToObservableCollection());
             }
             RaisePropertyChanged(nameof(LocalPackages));
         }
 
-        private PackageLoadState CurrentFilterSelection
-        {
-            get
-            {
-                return Filters.FirstOrDefault(f => f.IsChecked)?.LoadState;
-            }
-        }
+        private PackageLoadState CurrentFilterSelection => Filters.FirstOrDefault(f => f.IsChecked)?.LoadState;
 
         private bool NoActiveFilterSelected
         {
             get
             {
                 var currentFilter = CurrentFilterSelection;
-                return currentFilter.State == PackageLoadState.StateTypes.None &&
-                                             currentFilter.ScheduledState == PackageLoadState.ScheduledTypes.None;
+                return currentFilter == null || (currentFilter.State == PackageLoadState.StateTypes.None &&
+                                                 currentFilter.ScheduledState == PackageLoadState.ScheduledTypes.None);
             }
         }
 
@@ -148,7 +140,7 @@ namespace Dynamo.ViewModels
         {
             ClearPackagesViewModel();
             LocalPackages.AddRange(Model.LocalPackages.Select(pkg => NewPackageViewModel(pkg)).ToObservableCollection());
-            
+
             Model.PackageAdded += (pkg) =>
             {
                 if (IsPackageVisible(pkg))
@@ -187,9 +179,13 @@ namespace Dynamo.ViewModels
             var currentSelection = CurrentFilterSelection;
             Filters.Clear();
             var loadStates = Model.LocalPackages.Select(pkg => pkg.LoadState)
-                .GroupBy(f => new {f.State, f.ScheduledState}).Select(f => f.FirstOrDefault());
+                .GroupBy(f => new { f.State, f.ScheduledState }).Select(f => f.FirstOrDefault());
             Filters.AddRange(loadStates.Select(f => new PackageFilter(f, this)).ToObservableCollection());
-            Filters.Insert(0, new PackageFilter(new PackageLoadState(), this));
+
+            if (Filters.Any())
+            {
+                Filters.Insert(0, new PackageFilter(new PackageLoadState(), this));
+            }
 
             ResetCurrentSelection(currentSelection);
 
@@ -198,6 +194,11 @@ namespace Dynamo.ViewModels
 
         private void ResetCurrentSelection(PackageLoadState selection)
         {
+            if (!Filters.Any())
+            {
+                return;
+            }
+
             if (selection == null)
             {
                 Filters[0].IsChecked = true;
