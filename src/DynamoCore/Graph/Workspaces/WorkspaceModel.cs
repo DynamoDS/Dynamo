@@ -234,6 +234,7 @@ namespace Dynamo.Graph.Workspaces
         private HashSet<Guid> dependencies = new HashSet<Guid>();
 
         private int delayGraphExecutionCounter = 0;
+        private readonly string customNodeExtension = ".dyf";
 
         /// <summary>
         /// Whether or not to delay graph execution.
@@ -697,7 +698,7 @@ namespace Dynamo.Graph.Workspaces
                 foreach (var dependency in value)
                 {
                     //handle package dependencies
-                    if(dependency.ReferenceType == ReferenceType.Package 
+                    if (dependency.ReferenceType == ReferenceType.Package
                         && dependency is PackageDependencyInfo)
                     {
                         foreach (var node in dependency.Nodes)
@@ -705,14 +706,83 @@ namespace Dynamo.Graph.Workspaces
                             nodePackageDictionary[node] = (dependency as PackageDependencyInfo).PackageInfo;
                         }
                     }
-                   
                 }
 
                 RaisePropertyChanged(nameof(NodeLibraryDependencies));
             }
         }
 
+        internal List<INodeLibraryDependencyInfo> NodeLocalDefinitions
+        {
+            get
+            {
+               var nodeLocalDefinitions = new Dictionary<object, LocalDefinitionInfo>();
+
+                foreach (var node in Nodes)
+                {
+                    var collected = GetNodePackage(node);
+                    
+                    if (!nodePackageDictionary.ContainsKey(node.GUID) && collected == null)
+                    {
+                        string localDefinitionName;
+
+                        if (node.IsCustomFunction)
+                        {
+                            localDefinitionName = node.Name + customNodeExtension;
+
+                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName)) 
+                            {
+                                nodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName);
+                            }
+
+                            nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
+                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.DYFFile;
+                        }
+                        else if (node is DSFunctionBase functionNode)
+                        {
+                            string assemblyPath = functionNode.Controller.Definition.Assembly;
+                            localDefinitionName = Path.GetFileName(assemblyPath);
+
+                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
+                            {
+                                nodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName, assemblyPath);
+                            }
+
+                            nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
+                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.ZeroTouch;
+                        }
+                        else if (node is DummyNode)
+                        {
+                            // Read the serialized value if the node is not resolved.
+                            if (localDefinitionsDictionary.TryGetValue(node.GUID, out var localDefinitionInfo))
+                            {
+                                nodeLocalDefinitions[localDefinitionInfo.Name] = localDefinitionInfo;
+                            }
+                        }
+                    }
+                }
+
+                return nodeLocalDefinitions.Values.ToList<INodeLibraryDependencyInfo>();
+            }
+            set
+            {
+                foreach (var dependency in value)
+                {
+                    if (dependency.ReferenceType == ReferenceType.DYFFile || dependency.ReferenceType == ReferenceType.ZeroTouch)
+                    {
+                        foreach (var node in dependency.Nodes)
+                        {
+                            localDefinitionsDictionary[node] = dependency as LocalDefinitionInfo;
+                        }
+                    }
+                }
+
+                RaisePropertyChanged(nameof(NodeLocalDefinitions));
+            }
+        }
+
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
+        private Dictionary<Guid, LocalDefinitionInfo> localDefinitionsDictionary = new Dictionary<Guid, LocalDefinitionInfo>();
 
 
         /// <summary>
@@ -1054,6 +1124,7 @@ namespace Dynamo.Graph.Workspaces
             this.annotations = new List<AnnotationModel>(annotations);
 
             this.NodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            this.NodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -1812,7 +1883,12 @@ namespace Dynamo.Graph.Workspaces
             nodePackageDictionary.Remove(nodeID);
         }
 
-        private PackageInfo GetNodePackage(NodeModel node)
+        /// <summary>
+        /// Gets the PackageInfo from a node in the current WorkspaceModel
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        internal PackageInfo GetNodePackage(NodeModel node)
         {
             // Collect package dependencies for custom node
             if (node is Function)

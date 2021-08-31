@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Shapes;
+using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.UI.GuidedTour
@@ -33,6 +36,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         public int TotalSteps { get; set; }
 
+        /// <summary>
+        /// This variable represents the Guide Background Element to manipulate it's hole rect
+        /// </summary>
+        public GuideBackground GuideBackgroundElement { get; set; }
+
         public Guide()
         {
             GuideSteps = new List<Step>();
@@ -62,7 +70,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             GuideFlowEvents.GuidedTourNextStep += Next;
             GuideFlowEvents.GuidedTourPrevStep += Back;
-
         }
 
         /// <summary>
@@ -105,15 +112,64 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (args.StepSequence < TotalSteps)
             {
                 nextStep = (from step in GuideSteps where step.Sequence == args.StepSequence + 1 select step).FirstOrDefault();
+
+                if (nextStep.HostPopupInfo != null)
+                    SetupBackgroundHole(nextStep);
+
                 if (nextStep != null)
+                {
                     nextStep.Show();
+                }
             }
 
             CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
             if (CurrentStep != null)
+            {
                 CurrentStep.Hide();
+            }
         }
 
+        /// <summary>
+        /// This method styles the bacground in every step
+        /// </summary>
+        /// <param name="step">This parameter represents the step with informations of the element and color of the border</param>
+        private void SetupBackgroundHole(Step step)
+        {
+            SetupBackgroundHoleSize(step.HostPopupInfo.HostUIElement);
+            SetupBackgroundHoleBorderColor(step.HostPopupInfo.HighlightColor);
+        }
+
+        /// <summary>
+        /// This method will set the border color with there is any configured
+        /// </summary>
+        /// <param name="highlightColor">This parameter represents the color in hexadecimal</param>
+        private void SetupBackgroundHoleBorderColor(string highlightColor)
+        {
+            if (string.IsNullOrEmpty(highlightColor))
+            {
+                GuideBackgroundElement.HolePath.Stroke = Brushes.Black;
+            }
+            else
+            {
+                var converter = new BrushConverter();
+                var brush = (Brush)converter.ConvertFromString(highlightColor);
+                GuideBackgroundElement.HolePath.Stroke = brush;
+            }
+        }
+
+        /// <summary>
+        /// This method will update the hole size everytime that the step change
+        /// </summary>
+        /// <param name="hostElement">Element for size and position reference</param>
+        private void SetupBackgroundHoleSize(UIElement hostElement)
+        {
+            Point relativePoint = hostElement.TransformToAncestor(Application.Current.MainWindow)
+                              .Transform(new Point(0, 0));
+
+            GuideBackgroundElement.HoleRect = new Rect(relativePoint.X, relativePoint.Y,
+                            hostElement.DesiredSize.Width, hostElement.DesiredSize.Height);
+
+        }
 
         /// <summary>
         /// This event method will be executed then the user press the Back button in the tooltip/popup
@@ -127,12 +183,19 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 prevStep = (from step in GuideSteps where step.Sequence == args.StepSequence - 1 select step).FirstOrDefault();
                 if (prevStep != null)
+                {
+                    if (prevStep.HostPopupInfo != null)
+                        SetupBackgroundHole(prevStep);
+
                     prevStep.Show();
+                }
             }
 
             CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
             if (CurrentStep != null)
+            {
                 CurrentStep.Hide();
+            }
         }
 
         /// <summary>

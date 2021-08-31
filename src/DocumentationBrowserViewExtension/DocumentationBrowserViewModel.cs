@@ -157,10 +157,12 @@ namespace Dynamo.DocumentationBrowser
                 switch (e)
                 {
                     case OpenNodeAnnotationEventArgs openNodeAnnotationEventArgs:
-                        var mdLink = packageManagerDoc.GetAnnotationDoc(openNodeAnnotationEventArgs.MinimumQualifiedName);
+                        var mdLink = packageManagerDoc.GetAnnotationDoc(
+                            openNodeAnnotationEventArgs.MinimumQualifiedName, 
+                            openNodeAnnotationEventArgs.PackageName);
+
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
-
                         break;
 
                     case OpenDocumentationLinkEventArgs openDocumentationLink:
@@ -254,7 +256,7 @@ namespace Dynamo.DocumentationBrowser
                 writer.WriteLine(nodeDocumentation);
 
                 // Convert the markdown file to html
-                MarkdownHandlerInstance.ParseToHtml(ref writer, e.MinimumQualifiedName);
+                MarkdownHandlerInstance.ParseToHtml(ref writer, e.MinimumQualifiedName, e.PackageName);
 
                 writer.Flush();
                 var output = writer.ToString();

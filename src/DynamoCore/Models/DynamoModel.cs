@@ -2014,7 +2014,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     OnRequestWorkspaceBackUpSave(savePath, true);
                     backupFilesDict[workspace.Guid] = savePath;
-                    Logger.Log("Backup file is saved: " + savePath);
+                    Logger.Log(Resources.BackupSavedMsg + ": " + savePath);
                 }
                 PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);
             });
