@@ -39,15 +39,15 @@
                                 <Setter Property="ToolTipService.IsEnabled" Value="False"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Path=IsVisible, Mode=OneWay}" Value="True">
-                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/Pin_16_16.png"/>
+                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_48_48.png"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
-                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_selected_16_16.png"/>
+                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_selected_48_48.png"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Path=IsPartlyVisible, Mode=OneWay}" Value="True">
-                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_hidden_16_16.png"/>
+                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_hidden_48_48.png"/>
                                 <Setter Property="Opacity" Value="1.0"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                             </DataTrigger>
@@ -57,7 +57,7 @@
                                     <Condition Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True"/>
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
-                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_selected_16_16.png"/>
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_selected_48_48.png"/>
                                     <Setter Property="Opacity" Value="0.6"/>
                                     <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                                 </MultiDataTrigger.Setters>
@@ -68,7 +68,7 @@
             </Image>
         </Grid>
         <Canvas.RenderTransform>
-            <TranslateTransform X="{Binding HalfWidth, Mode=OneWay}" Y="{Binding HalfWidth, Mode=OneWay}" />
+            <TranslateTransform X="{Binding HalfWidth, Mode=OneWay}" Y="10" />
         </Canvas.RenderTransform>
     </Canvas>
 </UserControl>
