@@ -879,6 +879,14 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Init all package filters
+        /// </summary>
+        internal void InitPackageListFilters()
+        {
+            installedPackagesViewModel.PopulateFilters();
+        }
+
+        /// <summary>
         /// Listen for the PropertyChanged event and updates the saved changes label accordingly
         /// </summary>
         private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)

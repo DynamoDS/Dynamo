@@ -174,7 +174,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void PopulateFilters()
+        internal void PopulateFilters()
         {
             var currentSelection = CurrentFilterSelection;
             Filters.Clear();
