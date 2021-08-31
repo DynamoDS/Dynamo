@@ -10,6 +10,8 @@ namespace Dynamo.ViewModels
 {
     public class PackageFilter : NotificationObject
     {
+        private bool isChecked;
+
         public PackageFilter(PackageLoadState loadState, InstalledPackagesViewModel viewModel)
         {
             LoadState = loadState;
@@ -42,7 +44,18 @@ namespace Dynamo.ViewModels
 
         public InstalledPackagesViewModel ViewModel { get; private set; }
 
-        public bool IsChecked { get; set; }
+        public bool IsChecked
+        {
+            get => isChecked;
+            set
+            {
+                if (isChecked != value)
+                {
+                    isChecked = value;
+                    RaisePropertyChanged(nameof(IsChecked));
+                }
+            }
+        }
     }
 
     public class InstalledPackagesViewModel : NotificationObject
