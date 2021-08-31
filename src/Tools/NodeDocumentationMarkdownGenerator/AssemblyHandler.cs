@@ -342,7 +342,7 @@ namespace NodeDocumentationMarkdownGenerator
 
         private static FunctionDescriptorParams FunctionParamsFromFunction(FunctionDefinitionNode funcDefinitionNode, string location, string className)
         {
-            FunctionType type;
+            FunctionType type = FunctionType.GenericFunction;
             var name = funcDefinitionNode.Name;
 
             if (CoreUtils.IsGetter(name))
@@ -363,11 +363,12 @@ namespace NodeDocumentationMarkdownGenerator
                 {
                     type = FunctionType.StaticMethod;
                 }
-                else
+                else if (!string.IsNullOrEmpty(className))
                 {
                     type = FunctionType.InstanceMethod;
                 }
             }
+
 
 
             var functionParams = new FunctionDescriptorParams

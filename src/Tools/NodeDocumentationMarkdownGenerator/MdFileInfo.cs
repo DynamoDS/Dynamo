@@ -88,7 +88,7 @@ namespace NodeDocumentationMarkdownGenerator
             var nodeName = header.Name;
             var nodeNamspace = header.Category;
             var fullCategory = $"{header.Category}.{header.Name}";
-            return new MdFileInfo(nodeName, nodeNamspace, fullCategory, header.Category, nodeNamspace);
+            return new MdFileInfo(nodeName, nodeNamspace, fullCategory, header.Category, fullCategory);
         }
 
         internal static bool TryGetMdFileInfoFromSearchEntry(NodeSearchElement entry, out MdFileInfo info)
@@ -113,7 +113,11 @@ namespace NodeDocumentationMarkdownGenerator
                     // Create the filename from the nodes className + nodeName
                     // We need the filename to be structured like this as this is
                     // how Dynamo matches the file with the correct node.
-                    fileName = $"{searchElement.Descriptor.ClassName}.{nodeName}";
+
+                    //if this type is really a global ds function - classname will be null.
+                    var classNameEmpty = string.IsNullOrEmpty(searchElement.Descriptor.ClassName);
+                    var seperator = classNameEmpty ? string.Empty : ".";
+                    fileName = $"{searchElement.Descriptor.ClassName}{seperator}{nodeName}";
                 }
                 else
                 {
