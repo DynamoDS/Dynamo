@@ -1045,15 +1045,6 @@ namespace Dynamo.Properties {
                 return ResourceManager.GetString("NewNoteString", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show all errors.
-        /// </summary>
-        public static string NodeInformationalStateShowAllErrors {
-            get {
-                return ResourceManager.GetString("NodeInformationalStateShowAllErrors", resourceCulture);
-            }
-        }
 
         ///   Looks up a localized string similar to Node &apos;{0}&apos; is now deprecated..
         /// </summary>
