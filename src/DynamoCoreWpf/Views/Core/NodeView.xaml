@@ -254,15 +254,15 @@
                           ItemsSource="{Binding DismissedAlerts, UpdateSourceTrigger=PropertyChanged}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate>
-                            <Grid Width="200"
+                            <Grid Width="220"
                                   Height="30"
                                   Margin="-15,0,0,0"
-                                  HorizontalAlignment="Stretch"
+                                  HorizontalAlignment="Left"
                                   VerticalAlignment="Stretch"
                                   Background="Transparent"
                                   MouseDown="UnDismissMessage_Click">
                                 <TextBlock HorizontalAlignment="Stretch"
-                                        Margin="15,0"
+                                        Margin="15,0,0,0"
                                         IsHitTestVisible="False"
                                         VerticalAlignment="Center"                                        
                                         Text="{Binding Converter={StaticResource NodeWarningConverter}}"
