@@ -60,9 +60,11 @@ namespace Dynamo.ViewModels
 
     public class InstalledPackagesViewModel : NotificationObject
     {
-        public ObservableCollection<PackageViewModel> LocalPackages { get; } = new ObservableCollection<PackageViewModel>();
+        private ObservableCollection<PackageViewModel> _localPackages = new ObservableCollection<PackageViewModel>();
+        public ObservableCollection<PackageViewModel> LocalPackages { get { return _localPackages; } }
 
-        public ObservableCollection<PackageFilter> Filters { get; } = new ObservableCollection<PackageFilter>();
+        private ObservableCollection<PackageFilter> _filters = new ObservableCollection<PackageFilter>();
+        public ObservableCollection<PackageFilter> Filters => _filters;
 
         private readonly DynamoViewModel dynamoViewModel;
         public PackageLoader Model { get; private set; }
@@ -95,15 +97,21 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged(nameof(LocalPackages));
         }
 
-        private PackageLoadState CurrentFilterSelection => Filters.FirstOrDefault(f => f.IsChecked)?.LoadState;
+        private PackageLoadState CurrentFilterSelection
+        {
+            get
+            {
+                return Filters.FirstOrDefault(f => f.IsChecked)?.LoadState;
+            }
+        }
 
         private bool NoActiveFilterSelected
         {
             get
             {
                 var currentFilter = CurrentFilterSelection;
-                return currentFilter == null || (currentFilter.State == PackageLoadState.StateTypes.None &&
-                                                 currentFilter.ScheduledState == PackageLoadState.ScheduledTypes.None);
+                return currentFilter.State == PackageLoadState.StateTypes.None &&
+                                             currentFilter.ScheduledState == PackageLoadState.ScheduledTypes.None;
             }
         }
 
@@ -181,11 +189,7 @@ namespace Dynamo.ViewModels
             var loadStates = Model.LocalPackages.Select(pkg => pkg.LoadState)
                 .GroupBy(f => new {f.State, f.ScheduledState}).Select(f => f.FirstOrDefault());
             Filters.AddRange(loadStates.Select(f => new PackageFilter(f, this)).ToObservableCollection());
-
-            if (Filters.Any())
-            {
-                Filters.Insert(0, new PackageFilter(new PackageLoadState(), this));
-            }
+            Filters.Insert(0, new PackageFilter(new PackageLoadState(), this));
 
             ResetCurrentSelection(currentSelection);
 
@@ -194,11 +198,6 @@ namespace Dynamo.ViewModels
 
         private void ResetCurrentSelection(PackageLoadState selection)
         {
-            if (!Filters.Any())
-            {
-                return;
-            }
-
             if (selection == null)
             {
                 Filters[0].IsChecked = true;
