@@ -611,7 +611,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
-    <Resource Include="UI\Images\caret_up.png" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
@@ -1402,6 +1401,7 @@
     <Resource Include="UI\Images\Pin_NoBackground_16_16.png" />
     <Resource Include="UI\Images\menu_16_16.png" />
     <Resource Include="UI\Images\caret_down.png" />
+    <Resource Include="UI\Images\caret_up.png" />
     <Resource Include="UI\Images\PackageManager\close_16_16.png" />
     <Resource Include="UI\Images\PackageManager\down_16_16.png" />
     <Resource Include="UI\Images\PackageManager\folder_16_16.png" />
