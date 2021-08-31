@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -1023,47 +1025,76 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        private void DismissAllInfoButton_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Retrieves all of a node's dismissed messages of a particular style.
+        /// </summary>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        private ObservableCollection<InfoBubbleDataPacket> GetDismissedMessagesOfStyle(InfoBubbleViewModel.Style style)
         {
-            // Clearing all existing info-level messages from the dismissed collection.
-            for (int i = ViewModel.DismissedMessages.Count - 1; i >= 0; i--)
-            {
-                if (ViewModel.DismissedMessages[i].Style != InfoBubbleViewModel.Style.Info) continue;
+            return ViewModel.DismissedMessages.Where(x => x.Style == style).ToObservableCollection();
+        }
 
+        /// <summary>
+        /// Clears out the node's collection of all dismissed messages of a particular style (e.g. Error).
+        /// </summary>
+        /// <param name="style"></param>
+        private void ClearDismissedMessagesOfStyle(InfoBubbleViewModel.Style style)
+        {
+            ObservableCollection<InfoBubbleDataPacket> messagesToDismiss = GetDismissedMessagesOfStyle(style);
+            
+            for (int i = messagesToDismiss.Count - 1; i >= 0; i--)
+            {
                 ViewModel.DismissedMessages.RemoveAt(i);
             }
+        }
 
-            // Recreating all info-level messages from scratch.
+        /// <summary>
+        /// Repopulates the node's collection of dismissed messages.
+        /// </summary>
+        /// <param name="style"></param>
+        private void RecreateDismissedMessagesOfStyle(InfoBubbleViewModel.Style style)
+        {
             foreach (InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeMessages)
             {
-                if (infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.Info) continue;
-
+                if (infoBubbleDataPacket.Style != style) continue;
                 ViewModel.DismissedMessages.Add(infoBubbleDataPacket);
             }
+        }
+
+        /// <summary>
+        /// Combines the clearing and repopulation functions of a node's dismissed messages collection.
+        /// </summary>
+        private void RefreshDismissedMessages(InfoBubbleViewModel.Style style)
+        {
+            ClearDismissedMessagesOfStyle(style);
+            RecreateDismissedMessagesOfStyle(style);
+        }
+
+        /// <summary>
+        /// Click event handler for when the user clicks 'Dismiss All' on a node's info messages.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DismissAllInfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Clearing and recreating all existing info-level messages from the dismissed collection.
+            RefreshDismissedMessages(InfoBubbleViewModel.Style.Info);
 
             ViewModel.RefreshNodeInformationalStateDisplay();
         }
 
+        /// <summary>
+        /// Click event handler for when the user clicks 'Dismiss All' on a node's warnings.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DismissAllWarningsButton_Click(object sender, RoutedEventArgs e)
         {
-            // Clearing all existing warning-level messages from the dismissed collection.
-            for (int i = ViewModel.DismissedMessages.Count - 1; i >= 0; i--)
-            {
-                if (ViewModel.DismissedMessages[i].Style != InfoBubbleViewModel.Style.Warning &&
-                    ViewModel.DismissedMessages[i].Style != InfoBubbleViewModel.Style.WarningCondensed) continue;
-
-                ViewModel.DismissedMessages.RemoveAt(i);
-            }
+            // Clearing and recreating all existing warning-level messages from the dismissed collection.
+            RefreshDismissedMessages(InfoBubbleViewModel.Style.Warning);
+            RefreshDismissedMessages(InfoBubbleViewModel.Style.WarningCondensed);
             
-            // Recreating all warning-level messages from scratch.
-            foreach (InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeMessages)
-            {
-                if (infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.Warning &&
-                    infoBubbleDataPacket.Style != InfoBubbleViewModel.Style.WarningCondensed) continue;
-                
-                ViewModel.DismissedMessages.Add(infoBubbleDataPacket);
-            }
-
             ViewModel.RefreshNodeInformationalStateDisplay();
         }
         
