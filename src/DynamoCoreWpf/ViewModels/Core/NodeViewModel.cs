@@ -748,8 +748,6 @@ namespace Dynamo.ViewModels
                 p.Dispose();
             }
 
-            NodeModel.NodeMessagesClearing -= Logic_NodeMessagesClearing;
-            ErrorBubble.DismissedMessages.CollectionChanged -= DismissedNodeWarnings_CollectionChanged;
             ErrorBubble.Dispose();
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
