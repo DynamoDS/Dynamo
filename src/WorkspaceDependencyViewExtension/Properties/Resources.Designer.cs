@@ -61,6 +61,16 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap CustomNodeReferenceIcon {
+            get {
+                object obj = ResourceManager.GetObject("CustomNodeReferenceIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error from WorkspaceDependencyViewExtension: {0}.
         /// </summary>
         public static string DependencyViewExtensionErrorTemplate {
@@ -142,11 +152,29 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Local Definitions.
+        /// </summary>
+        public static string LocalDefinitionsHeaderText {
+            get {
+                return ResourceManager.GetString("LocalDefinitionsHeaderText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Workspace References.
         /// </summary>
         public static string MenuItemString {
             get {
                 return ResourceManager.GetString("MenuItemString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string NameHeader {
+            get {
+                return ResourceManager.GetString("NameHeader", resourceCulture);
             }
         }
         
@@ -181,15 +209,6 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name.
-        /// </summary>
-        public static string PackageHeaderName {
-            get {
-                return ResourceManager.GetString("PackageHeaderName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Packages.
         /// </summary>
         public static string PackageHeaderText {
@@ -201,9 +220,9 @@ namespace Dynamo.WorkspaceDependency.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Path.
         /// </summary>
-        public static string PackagePathText {
+        public static string PathHeader {
             get {
-                return ResourceManager.GetString("PackagePathText", resourceCulture);
+                return ResourceManager.GetString("PathHeader", resourceCulture);
             }
         }
         
@@ -244,11 +263,30 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string SizeHeader {
+            get {
+                return ResourceManager.GetString("SizeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version.
         /// </summary>
-        public static string VersionHeaderText {
+        public static string VersionHeader {
             get {
-                return ResourceManager.GetString("VersionHeaderText", resourceCulture);
+                return ResourceManager.GetString("VersionHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ZeroTouchNodeReferenceIcon {
+            get {
+                object obj = ResourceManager.GetObject("ZeroTouchNodeReferenceIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
