@@ -1693,6 +1693,10 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Truncates a node's warning messages to 30 characters. Used on the node's context menu
+    /// when un-dismissing a node's warnings.
+    /// </summary>
     public class NodeWarningConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
