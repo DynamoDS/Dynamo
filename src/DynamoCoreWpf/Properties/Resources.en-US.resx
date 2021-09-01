@@ -2505,12 +2505,6 @@ Uninstall the following packages: {0}?</value>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
   </data>
-  <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group description&gt;</value>
-  </data>
-  <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
-  </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>Add group to group</value>
   </data>
@@ -2663,5 +2657,11 @@ Delete the following packages: {2}?
   <data name="ContextMenu" xml:space="preserve">
     <value>Node Options</value>
     <comment>Node context menu</comment>
+  </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>&lt;Double click here to edit group description&gt;</value>
+  </data>
+  <data name="GroupNameDefaultText" xml:space="preserve">
+    <value>&lt;Double click here to edit group title&gt;</value>
   </data>
 </root>

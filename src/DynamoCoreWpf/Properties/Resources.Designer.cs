@@ -2784,15 +2784,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add group to group.
-        /// </summary>
-        public static string GroupContextMenuAddGroupToGroup {
-            get {
-                return ResourceManager.GetString("GroupContextMenuAddGroupToGroup", resourceCulture);
-            }
-        }
-        
-        /// <summary>   
         ///   Looks up a localized string similar to The selected save location path is too long. Please change the save location and try again..
         /// </summary>
         public static string GraphIssuesOnSavePath_Description {
@@ -2816,6 +2807,15 @@ namespace Dynamo.Wpf.Properties {
         public static string GraphIssuesOnSavePath_Title {
             get {
                 return ResourceManager.GetString("GraphIssuesOnSavePath_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add group to group.
+        /// </summary>
+        public static string GroupContextMenuAddGroupToGroup {
+            get {
+                return ResourceManager.GetString("GroupContextMenuAddGroupToGroup", resourceCulture);
             }
         }
         
@@ -2865,7 +2865,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Click here to edit the group description&gt;.
+        ///   Looks up a localized string similar to &lt;Double click here to edit group description&gt;.
         /// </summary>
         public static string GroupDefaultText {
             get {
@@ -2874,7 +2874,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Click here to edit the group title&gt;.
+        ///   Looks up a localized string similar to &lt;Double click here to edit group title&gt;.
         /// </summary>
         public static string GroupNameDefaultText {
             get {
