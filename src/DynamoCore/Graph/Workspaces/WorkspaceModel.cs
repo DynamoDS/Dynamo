@@ -43,9 +43,10 @@ namespace Dynamo.Graph.Workspaces
         public IEnumerable<ExtraNodeViewInfo> NodeViews;
         public IEnumerable<ExtraNoteViewInfo> Notes;
         public IEnumerable<ExtraAnnotationViewInfo> Annotations;
+        public IEnumerable<ExtraConnectorPinInfo> ConnectorPins;
         public double X;
         public double Y;
-        public double Zoom;        
+        public double Zoom;
     }
 
     /// <summary>
@@ -78,6 +79,17 @@ namespace Dynamo.Graph.Workspaces
 
         // TODO, QNTM-1099: Figure out if this is necessary
         // public int ZIndex;
+    }
+
+    /// <summary>
+    /// Container for connector pin view information 
+    /// required to fully construct a WorkspaceViewModel from JSON
+    /// </summary>
+    public class ExtraConnectorPinInfo
+    {
+        public string ConnectorGuid;
+        public double Left;
+        public double Top;
     }
 
     /// <summary>
@@ -1120,8 +1132,7 @@ namespace Dynamo.Graph.Workspaces
             X = info.X;
             Y = info.Y;
             FileName = info.FileName;
-            Zoom = info.Zoom; 
-
+            Zoom = info.Zoom;
 
             HasUnsavedChanges = false;
             IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
@@ -2112,6 +2123,9 @@ namespace Dynamo.Graph.Workspaces
             //            ensure that any contained notes are contained properly
             LoadNotesFromAnnotations(workspaceViewInfo.Annotations);
 
+            ///This function loads ConnectorPins to the corresponding connector models.
+            LoadConnectorPins(workspaceViewInfo.ConnectorPins);
+
             // This function loads annotations from the Annotations array in the JSON format
             // that have a non-empty nodes collection
             LoadAnnotations(workspaceViewInfo.Annotations);
@@ -2210,14 +2224,27 @@ namespace Dynamo.Graph.Workspaces
                 {
                     this.AddNote(noteModel);
                 }
-           
+            }
+        }
+
+        private void LoadConnectorPins(IEnumerable<ExtraConnectorPinInfo> pinInfo)
+        {
+            if (pinInfo == null) {return;}
+
+            foreach (ExtraConnectorPinInfo pinViewInfo in pinInfo)
+            {
+                var connectorGuid = IdToGuidConverter(pinViewInfo.ConnectorGuid);
+
+                var matchingConnector = Connectors.FirstOrDefault(x => x.GUID == connectorGuid);
+                if (matchingConnector is null) {return;}
+
+                matchingConnector.AddPin(pinViewInfo.Left, pinViewInfo.Top);
             }
         }
 
         private void LoadAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
         {
-            if (annotationViews == null)
-              return;
+            if (annotationViews == null) {return;}
 
             foreach (ExtraAnnotationViewInfo annotationViewInfo in annotationViews)
             {

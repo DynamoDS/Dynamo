@@ -1,12 +1,14 @@
-﻿<UserControl x:Class="PythonNodeModelsWpf.Controls.EngineLabel"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:PythonNodeModelsWpf.Controls"
-             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+    x:Class="PythonNodeModelsWpf.Controls.EngineLabel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PythonNodeModelsWpf.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -16,16 +18,17 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right">
+    <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom">
         <Grid.RowDefinitions>
             <RowDefinition Height="15" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Foreground="{StaticResource headerForegroundInactive}"
-                    Grid.Row="1"
-                   Name="currentEngine"
-                   Text="{Binding NodeModel.Engine}"
-                   FontSize="8" />
+        <TextBlock
+            Name="currentEngine"
+            Grid.Row="1"
+            FontSize="8"
+            Foreground="{StaticResource PrimaryCharcoal100Brush}"
+            Text="{Binding NodeModel.Engine}" />
     </Grid>
 </UserControl>
