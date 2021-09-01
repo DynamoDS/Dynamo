@@ -139,8 +139,12 @@ namespace Dynamo.ViewModels
         {
             var currentSelection = CurrentFilterSelection;
             Filters.Clear();
-            var filterNames = Model.LocalPackages.Select(pkg => new PackageViewModel(dynamoViewModel, pkg))
-                .Select(vm => vm.PackageLoadStateText).Distinct();
+            var filterNames = Model.LocalPackages
+                .Where(pkg =>
+                    !(pkg.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.None &&
+                      pkg.LoadState.State == PackageLoadState.StateTypes.None))
+                .Select(pkg => new PackageViewModel(dynamoViewModel, pkg)).Select(vm => vm.PackageLoadStateText)
+                .Distinct();
             Filters.AddRange(filterNames.Select(f => new PackageFilter(f, this)));
 
             if (Filters.Any())
@@ -207,6 +211,11 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(LocalPackages));
                     PopulateFilters();
                 }
+            };
+
+            Model.PackgeLoaded += pkg =>
+            {
+                PopulateFilters();
             };
 
             Model.PackageRemoved += (pkg) =>
