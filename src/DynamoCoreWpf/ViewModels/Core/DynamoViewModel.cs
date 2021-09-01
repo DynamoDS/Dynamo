@@ -2092,7 +2092,7 @@ namespace Dynamo.ViewModels
         {
             if (ClearHomeWorkspaceInternal())
             {
-                var t = new DelegateBasedAsyncTask(model.Scheduler, () => model.ResetForNewWorkspace());
+                var t = new DelegateBasedAsyncTask(model.Scheduler, () => model.ResetEngine());
                 model.Scheduler.ScheduleForExecution(t);
 
                 ShowStartPage = false; // Hide start page if there's one.

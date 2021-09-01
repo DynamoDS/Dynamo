@@ -1573,20 +1573,6 @@ namespace Dynamo.Models
                 RegisterCustomNodeDefinitionWithEngine(def);
         }
 
-        internal void ResetForNewWorkspace()
-        {
-            // Create a core which is used for parsing code and loading libraries
-            var libraryCore = new ProtoCore.Core(new Options())
-            {
-                ParsingMode = ParseMode.AllowNonAssignment
-            };
-            libraryCore.Compilers.Add(Language.Associative, new Compiler(libraryCore));
-            libraryCore.Compilers.Add(Language.Imperative, new ProtoImperative.Compiler(libraryCore));
-
-            LibraryServices.LibraryManagementCore = libraryCore;
-            ResetEngine();
-        }
-
         private void EngineController_RequestCustomNodeRegistration(object sender, EventArgs e)
         {
             foreach (var def in CustomNodeManager.LoadedDefinitions)
