@@ -384,7 +384,7 @@
                    Margin="7,7,10,0"
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Top"
-                   Panel.ZIndex="4"
+                   Panel.ZIndex="14"
                    FlowDirection="LeftToRight">
             <!--  The Icon for this Node  -->
             <Ellipse Name="nodeIcon"
@@ -561,13 +561,15 @@
                            Style="{StaticResource SZoomFadeLabel}" />
                 </Border>
                 <Grid.Style>
-                    <Style>
-                        <Setter Property="Grid.MinWidth" Value="20" />
-                        <Setter Property="Grid.Margin" Value="0,0,6,0" />
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Setter Property="MinWidth" Value="20" />
+                        <Setter Property="Margin" Value="3,0,0,0" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding NumberOfDismissedAlerts}" Value="0">
                                 <Setter Property="Grid.MinWidth" Value="0" />
                                 <Setter Property="Grid.Margin" Value="0" />
+                                <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
