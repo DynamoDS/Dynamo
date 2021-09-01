@@ -129,6 +129,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 //Show background overlay
                 guideBackgroundElement.Visibility = Visibility.Visible;
                 currentGuide.GuideBackgroundElement = guideBackgroundElement;
+                currentGuide.LibraryView = Guide.FindChild(mainRootElement, "Browser");
                 currentGuide.Initialize();
                 currentGuide.Play();
             }
@@ -190,7 +191,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 totalTooltips = (from step in guide.GuideSteps
                                  where step.StepType == Step.StepTypes.TOOLTIP ||
-                                        step.StepType == Step.StepTypes.LIBRARY ||
                                        step.StepType == Step.StepTypes.SURVEY
                                  select step).Count();
 
@@ -239,8 +239,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (hostUIElement != null)
                 popupInfo.HostUIElement = hostUIElement;
 
-            Canvas.SetZIndex(popupInfo.HostUIElement, 0);
-
             return popupInfo;
         }
 
@@ -283,7 +281,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             switch (jsonStepInfo.StepType)
             {
-                case Step.StepTypes.LIBRARY:
                 case Step.StepTypes.TOOLTIP:
                     newStep = new Tooltip(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height, jsonStepInfo.TooltipPointerDirection)
                     {
@@ -291,6 +288,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         Sequence = jsonStepInfo.Sequence,
                         TotalTooltips = totalTooltips,
                         StepType = jsonStepInfo.StepType,
+                        ShowLibrary = jsonStepInfo.ShowLibrary,
                         StepContent = new Content()
                         {
                             FormattedText = formattedText,

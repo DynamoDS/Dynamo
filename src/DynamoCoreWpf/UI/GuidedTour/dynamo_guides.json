@@ -22,7 +22,8 @@
 			{
 				"Sequence": 1,
 				"Name": "library",
-				"Type": "library",
+				"Type": "tooltip",
+				"ShowLibrary":  true,
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
 				"Height": 250,
@@ -71,7 +72,7 @@
 					"HostUIElementString": "shortcutsBarGrid",
 					"HighlightColor": "#ef9362",
 					"VerticalPopupOffset": -60,
-					"HorizontalPopupOffset": 200
+					"HorizontalPopupOffset": 225
 				}
 			},
 			{

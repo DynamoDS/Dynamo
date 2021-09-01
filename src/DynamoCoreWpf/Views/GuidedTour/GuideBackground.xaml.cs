@@ -24,7 +24,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         private Rect windowsRect;
 
         /// <summary>
-        /// Rect with the size of the Dynamo Window regularly updating its size depending the window's size. Those are represented by 
+        /// Rect with the size of the Dynamo Window regularly updating its size depending the window's size
         /// </summary>
         public Rect WindowsRect { 
             get { 

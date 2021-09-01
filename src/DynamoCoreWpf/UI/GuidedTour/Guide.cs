@@ -98,10 +98,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             TotalSteps = GuideSteps.Count;
 
-            //Searches for the library step 
-            var libraryStep = GuideSteps.FirstOrDefault(x => x.StepType == Step.StepTypes.LIBRARY );
-            LibraryView = libraryStep?.HostPopupInfo?.HostUIElement;
-
             SetLibraryViewVisible(false);   
 
             SubscribeFlowEvents();
@@ -128,9 +124,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public void ClearGuide()
         {
             UnsubscribeFlowEvents();
-
-            if(LibraryView != null)
-                LibraryView.Visibility = Visibility.Visible;
+            SetLibraryViewVisible(true);
         }
 
         /// <summary>
@@ -154,7 +148,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 if (nextStep != null)
                 {
-                    SetLibraryViewVisible(nextStep.StepType == Step.StepTypes.LIBRARY);
+                    SetLibraryViewVisible(nextStep.ShowLibrary);
 
                     if (nextStep.StepType != Step.StepTypes.WELCOME &&
                         nextStep.StepType != Step.StepTypes.SURVEY
@@ -223,7 +217,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 prevStep = (from step in GuideSteps where step.Sequence == args.StepSequence - 1 select step).FirstOrDefault();
                 if (prevStep != null)
                 {
-                    SetLibraryViewVisible(prevStep.StepType == Step.StepTypes.LIBRARY);
+                    SetLibraryViewVisible(prevStep.ShowLibrary);
 
                     if (prevStep.StepType != Step.StepTypes.WELCOME &&
                         prevStep.StepType != Step.StepTypes.SURVEY
