@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Properties;
@@ -18,44 +19,29 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Create a package filter
         /// </summary>
-        /// <param name="loadState">Load State to filter</param>
+        /// <param name="name">Name of filter</param>
         /// <param name="viewModel">Back pointer to parent view model</param>
-        public PackageFilter(PackageLoadState loadState, InstalledPackagesViewModel viewModel)
+        public PackageFilter(string name, InstalledPackagesViewModel viewModel)
         {
-            LoadState = loadState;
+            Name = name;
             ViewModel = viewModel;
         }
 
         /// <summary>
-        /// Load state used for filtering
+        /// Create a package filter for All
         /// </summary>
-        public PackageLoadState LoadState { get; private set; }
-        
+        /// <param name="viewModel">Back pointer to parent view model</param>
+        public PackageFilter(InstalledPackagesViewModel viewModel)
+        {
+            Name = Resources.PackageFilter_Name_All;
+            ViewModel = viewModel;
+        }
+
+
         /// <summary>
         /// Filter name
         /// </summary>
-        public string Name
-        {
-            get
-            {
-                switch (LoadState.ScheduledState)
-                {
-                    case PackageLoadState.ScheduledTypes.ScheduledForUnload: return Resources.PackageStateScheduledForUnload;
-                    case PackageLoadState.ScheduledTypes.ScheduledForDeletion: return Resources.PackageStateScheduledForDeletion;
-                    default:
-                        break;
-                }
-
-                switch (LoadState.State)
-                {
-                    case PackageLoadState.StateTypes.Unloaded: return Resources.PackageStateUnloaded;
-                    case PackageLoadState.StateTypes.Loaded: return Resources.PackageStateLoaded;
-                    case PackageLoadState.StateTypes.Error: return Resources.PackageStateError;
-                    default:
-                        return Resources.PackageFilter_Name_All;
-                }
-            }
-        }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Back pointer to owner view model
@@ -122,17 +108,26 @@ namespace Dynamo.ViewModels
         {
             ClearPackagesViewModel();
 
+
             if (NoActiveFilterSelected)
             {
-                LocalPackages.AddRange(Model.LocalPackages.Select(NewPackageViewModel).ToObservableCollection());
+                LocalPackages.AddRange(Model.LocalPackages.Select(NewPackageViewModel));
             }
             else
             {
-                var filter = CurrentFilterSelection;
-                LocalPackages.AddRange(Model.LocalPackages
-                     .Where(pkg =>
-                         pkg.LoadState.State == filter.State && pkg.LoadState.ScheduledState == filter.ScheduledState)
-                     .Select(NewPackageViewModel).ToObservableCollection());
+                var currentFilter = CurrentFilterSelection;
+                foreach (var pkg in Model.LocalPackages)
+                {
+                    var viewModel = NewPackageViewModel(pkg);
+                    if (viewModel.PackageLoadStateText == currentFilter)
+                    {
+                        LocalPackages.Add(viewModel);
+                    }
+                    else
+                    {
+                        ClearPackageViewModel(viewModel);
+                    }
+                }
             }
             RaisePropertyChanged(nameof(LocalPackages));
         }
@@ -144,13 +139,13 @@ namespace Dynamo.ViewModels
         {
             var currentSelection = CurrentFilterSelection;
             Filters.Clear();
-            var loadStates = Model.LocalPackages.Select(pkg => pkg.LoadState)
-                .GroupBy(f => new { f.State, f.ScheduledState }).Select(f => f.FirstOrDefault());
-            Filters.AddRange(loadStates.Select(f => new PackageFilter(f, this)).ToObservableCollection());
+            var filterNames = Model.LocalPackages.Select(pkg => new PackageViewModel(dynamoViewModel, pkg))
+                .Select(vm => vm.PackageLoadStateText).Distinct();
+            Filters.AddRange(filterNames.Select(f => new PackageFilter(f, this)));
 
             if (Filters.Any())
             {
-                Filters.Insert(0, new PackageFilter(new PackageLoadState(), this));
+                Filters.Insert(0, new PackageFilter(this));
             }
 
             ResetCurrentSelection(currentSelection);
@@ -158,23 +153,22 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged(nameof(Filters));
         }
 
-        private PackageLoadState CurrentFilterSelection => Filters.FirstOrDefault(f => f.IsChecked)?.LoadState;
+        private string CurrentFilterSelection => Filters.FirstOrDefault(f => f.IsChecked)?.Name;
 
         private bool NoActiveFilterSelected
         {
             get
             {
                 var currentFilter = CurrentFilterSelection;
-                return currentFilter == null || (currentFilter.State == PackageLoadState.StateTypes.None &&
-                                                 currentFilter.ScheduledState == PackageLoadState.ScheduledTypes.None);
+                return currentFilter == null || currentFilter == Resources.PackageFilter_Name_All;
             }
         }
 
         private bool IsPackageVisible(Package pkg)
         {
             var currentFilter = CurrentFilterSelection;
-            return NoActiveFilterSelected || (pkg.LoadState.State == currentFilter.State &&
-                   pkg.LoadState.ScheduledState == currentFilter.ScheduledState);
+            var pkgViewModel = new PackageViewModel(dynamoViewModel, pkg);
+            return NoActiveFilterSelected || pkgViewModel.PackageLoadStateText == currentFilter;
         }
 
         private PackageViewModel NewPackageViewModel(Package pkg)
@@ -202,7 +196,7 @@ namespace Dynamo.ViewModels
         private void InitializeLocalPackages()
         {
             ClearPackagesViewModel();
-            LocalPackages.AddRange(Model.LocalPackages.Select(pkg => NewPackageViewModel(pkg)).ToObservableCollection());
+            LocalPackages.AddRange(Model.LocalPackages.Select(NewPackageViewModel));
 
             Model.PackageAdded += (pkg) =>
             {
@@ -237,7 +231,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void ResetCurrentSelection(PackageLoadState selection)
+        private void ResetCurrentSelection(string selection)
         {
             if (!Filters.Any())
             {
@@ -250,8 +244,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            var selected = Filters.FirstOrDefault(f =>
-                f.LoadState.State == selection.State && f.LoadState.ScheduledState == selection.ScheduledState);
+            var selected = Filters.FirstOrDefault(f => f.Name == selection);
             if (selected != null)
             {
                 selected.IsChecked = true;
