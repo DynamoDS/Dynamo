@@ -37,7 +37,7 @@
                       Padding="0,5,0,10">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" IsItemsHost="True"/>
+                    <WrapPanel Orientation="Horizontal" IsItemsHost="True" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
@@ -57,7 +57,7 @@
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
                                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                                <Setter Property="Margin" Value="5,0,0,0"/>
+                                <Setter Property="Margin" Value="5,0,0,5"/>
                                 <Setter Property="Padding" Value="5,0,5,0"/>
                             </Style>
                         </RadioButton.Resources>
