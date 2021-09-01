@@ -231,8 +231,8 @@ namespace Dynamo.Models
         private void CreateAnnotationImpl(CreateAnnotationCommand command)
         {
             AnnotationModel annotationModel = currentWorkspace.AddAnnotation(
+                command.AnnotationText,
                 command.AnnotationDescriptionText, 
-                command.AnnotationText, 
                 command.ModelGuid);
     
             CurrentWorkspace.RecordCreatedModel(annotationModel);

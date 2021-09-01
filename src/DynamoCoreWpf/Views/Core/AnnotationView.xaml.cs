@@ -103,8 +103,10 @@ namespace Dynamo.Nodes
                 this.GroupTextBlock.FontSize,
                 Brushes.Black);
 
-            this.ViewModel.AnnotationModel.Width = formattedText.Width;
-            this.ViewModel.AnnotationModel.TextMaxWidth = formattedText.Width;
+            var margin = this.TextBlockGrid.Margin.Right + this.TextBlockGrid.Margin.Left;
+
+            this.ViewModel.AnnotationModel.Width = formattedText.Width + margin;
+            this.ViewModel.AnnotationModel.TextMaxWidth = formattedText.Width + margin;
         }
 
         private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -311,7 +313,7 @@ namespace Dynamo.Nodes
             //Record the value here, this is useful when title is popped from stack during undo
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
-                    Guid.Empty, ViewModel.AnnotationModel.GUID, "GroupNameTextBlockText",
+                    Guid.Empty, ViewModel.AnnotationModel.GUID, "GroupDescriptionTextBlockText",
                     GroupDescriptionTextBox.Text));
 
             ViewModel.WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
@@ -332,7 +334,6 @@ namespace Dynamo.Nodes
         {
             if (ViewModel is null || !IsLoaded) return;
 
-            SetTextMaxWidth();
             SetTextHeight();
             ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
 

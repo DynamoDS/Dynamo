@@ -175,7 +175,7 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <ContentPresenter Grid.Column="0"
+                                    <ContentPresenter Grid.ColumnSpan="3"
                                                       Margin="4"
                                                       ContentSource="Header"
                                                       RecognizesAccessKey="True"
@@ -283,66 +283,6 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-
-    <UserControl.Triggers>
-        <EventTrigger  SourceName="GroupNameControl"
-                       RoutedEvent="ContentControl.MouseDoubleClick">
-            <BeginStoryboard>
-                <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Duration="0"
-                                                   Storyboard.TargetName="GroupTextBlock"
-                                                   Storyboard.TargetProperty="(TextBlock.Visibility)">
-                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
-                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextblock}">
-                        </DiscreteObjectKeyFrame>
-                    </ObjectAnimationUsingKeyFrames>
-
-                    <ObjectAnimationUsingKeyFrames Duration="0"
-                                                   Storyboard.TargetName="GroupTextBox"
-                                                   Storyboard.TargetProperty="(TextBox.Visibility)">
-                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
-                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextbox}" />
-                    </ObjectAnimationUsingKeyFrames>
-
-                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupTextBox"
-                                                    Storyboard.TargetProperty="(TextBox.Focusable)">
-                        <DiscreteBooleanKeyFrame KeyTime="0"
-                                                 Value="True" />
-                    </BooleanAnimationUsingKeyFrames>
-                </Storyboard>
-            </BeginStoryboard>
-        </EventTrigger>
-        <EventTrigger SourceName="GroupDescriptionControls"
-                      RoutedEvent="ContentControl.MouseDoubleClick">
-            <BeginStoryboard>
-                <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Duration="0"
-                                                   Storyboard.TargetName="GroupDescriptionTextBlock"
-                                                   Storyboard.TargetProperty="(TextBlock.Visibility)">
-                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
-                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextblock}">
-                        </DiscreteObjectKeyFrame>
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Duration="0"
-                                                   Storyboard.TargetName="GroupDescriptionTextBox"
-                                                   Storyboard.TargetProperty="(TextBox.Visibility)">
-                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
-                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextbox}" />
-                    </ObjectAnimationUsingKeyFrames>
-
-                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupDescriptionTextBox"
-                                                    Storyboard.TargetProperty="(TextBox.Focusable)">
-                        <DiscreteBooleanKeyFrame KeyTime="0"
-                                                 Value="True" />
-                    </BooleanAnimationUsingKeyFrames>
-                </Storyboard>
-            </BeginStoryboard>
-        </EventTrigger>
-    </UserControl.Triggers>
 
     <Grid Name="AnnotationGrid"
           Height="Auto"
@@ -515,30 +455,31 @@
                       Margin="5,0,5,0"
                       VerticalAlignment="Top">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition x:Name="GroupNameRow"
+                                       Height="Auto" />
+                        <RowDefinition x:Name="GroupDescriptionRow"
+                                       Height="Auto" />
                     </Grid.RowDefinitions>
                     <ContentControl x:Name="GroupNameControl"
-                                    Grid.Row="0">
+                                    Grid.Row="0"
+                                    Width="{Binding Width}"
+                                    MinHeight="20"
+                                    Margin="0,0,0,10">
                         <Grid>
                             <TextBlock x:Name="GroupTextBlock"
                                        Text="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBlock'}"
-                                       MaxWidth="{Binding Width}"
-                                       MinHeight="20"
                                        FontFamily="Trebuchet"
                                        FontSize="{Binding FontSize}"
                                        LineStackingStrategy="BlockLineHeight"
                                        TextWrapping="Wrap"
-                                       Visibility="Visible"
-                                       Margin="0,0,0,0">
+                                       Visibility="Visible">
                             </TextBlock>
                             <TextBox Name="GroupTextBox"
+                                     Grid.Column="0"
                                      MaxLength="30"
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationText,Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBox'}"
                                      TextWrapping="Wrap"
-                                     MaxWidth="{Binding Width}"
-                                     MinHeight="20"
                                      FontFamily="Trebuchet"
                                      FontSize="{Binding FontSize}"
                                      IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
@@ -551,13 +492,12 @@
                     </ContentControl>
 
                     <ContentControl x:Name="GroupDescriptionControls"
-                                    Grid.Row="1">
+                                    Grid.Row="1"
+                                    MinHeight="20"
+                                    Margin="0,-10,30,0">
                         <Grid>
                             <TextBlock x:Name="GroupDescriptionTextBlock"
-                                       Grid.Row="1"
                                        Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
-                                       MaxWidth="{Binding Width}"
-                                       MinHeight="20"
                                        FontFamily="Trebuchet"
                                        FontSize="12"
                                        LineStackingStrategy="BlockLineHeight"
@@ -567,12 +507,9 @@
                             </TextBlock>
                             <TextBox Name="GroupDescriptionTextBox"
                                      MaxLength="280"
-                                     Grid.Row="1"
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
                                      TextWrapping="Wrap"
-                                     MaxWidth="{Binding Width}"
-                                     MinHeight="20"
                                      FontFamily="Trebuchet"
                                      FontSize="12"
                                      IsVisibleChanged="GroupDescriptionTextBox_OnIsVisibleChanged"
@@ -604,6 +541,67 @@
                         </ContentControl.Style>
                     </ContentControl>
                     <Grid.Triggers>
+
+                        <EventTrigger  SourceName="GroupNameControl"
+                                       RoutedEvent="ContentControl.MouseDoubleClick">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupTextBlock"
+                                                                   Storyboard.TargetProperty="(TextBlock.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
+                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextblock}">
+                                        </DiscreteObjectKeyFrame>
+                                    </ObjectAnimationUsingKeyFrames>
+
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupTextBox"
+                                                                   Storyboard.TargetProperty="(TextBox.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
+                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextbox}" />
+                                    </ObjectAnimationUsingKeyFrames>
+
+                                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupTextBox"
+                                                                    Storyboard.TargetProperty="(TextBox.Focusable)">
+                                        <DiscreteBooleanKeyFrame KeyTime="0"
+                                                                 Value="True" />
+                                    </BooleanAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+
+                        <EventTrigger SourceName="GroupDescriptionControls"
+                                      RoutedEvent="ContentControl.MouseDoubleClick">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupDescriptionTextBlock"
+                                                                   Storyboard.TargetProperty="(TextBlock.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
+                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextblock}">
+                                        </DiscreteObjectKeyFrame>
+                                    </ObjectAnimationUsingKeyFrames>
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupDescriptionTextBox"
+                                                                   Storyboard.TargetProperty="(TextBox.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
+                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextbox}" />
+                                    </ObjectAnimationUsingKeyFrames>
+
+                                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupDescriptionTextBox"
+                                                                    Storyboard.TargetProperty="(TextBox.Focusable)">
+                                        <DiscreteBooleanKeyFrame KeyTime="0"
+                                                                 Value="True" />
+                                    </BooleanAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+
+
                         <EventTrigger  SourceName="GroupTextBox"
                                        RoutedEvent="TextBox.LostKeyboardFocus">
                             <BeginStoryboard>
