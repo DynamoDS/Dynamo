@@ -47,7 +47,7 @@ namespace Dynamo.Engine
         /// <summary>
         /// Returns core which is used for parsing code and loading libraries
         /// </summary>
-        public ProtoCore.Core LibraryManagementCore { get; private set; }
+        public ProtoCore.Core LibraryManagementCore { get; internal set; }
 
         private class UpgradeHint
         {

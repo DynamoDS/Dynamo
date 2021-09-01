@@ -137,11 +137,12 @@ namespace ProtoCore.Utils
 
         private static Core CodeBlockParserCore()
         {
-            var core = new Core(new Options());
-            core.Options.ExecutionMode = ExecutionMode.Serial;
-            core.ParsingMode = ParseMode.AllowNonAssignment;
-            core.IsParsingCodeBlockNode = true;
-            core.IsParsingPreloadedAssembly = false;
+            var core = new Core(new Options())
+            {
+                ParsingMode = ParseMode.AllowNonAssignment,
+                IsParsingCodeBlockNode = true,
+                IsParsingPreloadedAssembly = false
+            };
             return core;
         }
 
