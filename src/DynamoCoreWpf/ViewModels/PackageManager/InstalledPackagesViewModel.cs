@@ -213,11 +213,6 @@ namespace Dynamo.ViewModels
                 }
             };
 
-            Model.PackgeLoaded += pkg =>
-            {
-                PopulateFilters();
-            };
-
             Model.PackageRemoved += (pkg) =>
             {
                 if (IsPackageVisible(pkg))

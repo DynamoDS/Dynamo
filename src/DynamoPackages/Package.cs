@@ -545,6 +545,12 @@ namespace Dynamo.PackageManager
             }
         }
 
+        internal void SetAsLoaded()
+        {
+            LoadState.SetAsLoaded();
+            RaisePropertyChanged(nameof(LoadState));
+        }
+
         internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
         {
             if (LoadedAssemblies.Any())

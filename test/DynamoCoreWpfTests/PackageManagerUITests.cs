@@ -335,6 +335,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, conflictingPkg.LoadState.ScheduledState);
             Assert.IsTrue(conflictingPkg.LoadedAssemblies.Count() > 0);
 
+            ViewModel.PreferencesViewModel.InitPackageListFilters();
             var filters = ViewModel.PreferencesViewModel.Filters;
             Assert.AreEqual(3, filters.Count);
             Assert.AreEqual(@"All", filters[0].Name);
@@ -384,6 +385,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
+            ViewModel.PreferencesViewModel.InitPackageListFilters();
             var filters = ViewModel.PreferencesViewModel.Filters;
             Assert.AreEqual(2, filters.Count);
             Assert.AreEqual(@"All", filters[0].Name);
@@ -444,6 +446,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(PackageLoadState.StateTypes.Unloaded, builtInPkgViewModel.Model.LoadState.State);
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
+            ViewModel.PreferencesViewModel.InitPackageListFilters();
             var filters = ViewModel.PreferencesViewModel.Filters;
             Assert.AreEqual(2, filters.Count);
             Assert.AreEqual(@"All", filters[0].Name);
