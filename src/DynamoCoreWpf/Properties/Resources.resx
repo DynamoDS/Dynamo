@@ -701,8 +701,16 @@
     <comment>Context menu for selected node - delete selected node</comment>
   </data>
   <data name="NodeContextMenuHelp" xml:space="preserve">
-    <value>Help...</value>
+    <value>Help</value>
     <comment>Display help message for this node</comment>
+  </data>
+  <data name="ContextMenuGroups" xml:space="preserve">
+    <value>Groups</value>
+    <comment>Context menu for group-based operations</comment>
+  </data>
+  <data name="ContextMenu" xml:space="preserve">
+    <value>Node Options</value>
+    <comment>Node context menu</comment>
   </data>
   <data name="ContextMenuLacing" xml:space="preserve">
     <value>Lacing</value>
@@ -729,7 +737,7 @@
     <comment>Context menu item - preview geometry</comment>
   </data>
   <data name="NodeContextMenuRenameNode" xml:space="preserve">
-    <value>Rename Node...</value>
+    <value>Rename</value>
     <comment>Context menu item - rename this node</comment>
   </data>
   <data name="NodeContextMenuShowLabels" xml:space="preserve">
@@ -2062,6 +2070,15 @@ Next assemblies were loaded several times:
   <data name="UseLevelPopupMenuItem" xml:space="preserve">
     <value>Use Levels</value>
   </data>
+  <data name="BreakConnectionPopupMenuItem" xml:space="preserve">
+    <value>Break Connection</value>
+  </data>
+  <data name="HideWiresPopupMenuItem" xml:space="preserve">
+    <value>Hide Wires</value>
+  </data>
+  <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
+    <value>Unhide Wires</value>
+  </data>
   <data name="DirectoryNotFound" xml:space="preserve">
     <value>Directory Not Found</value>
   </data>
@@ -2314,6 +2331,18 @@ Uninstall the following packages: {0}?</value>
     <value>_Extensions</value>
     <comment>Extensions menu</comment>
   </data>
+  <data name="ConnectorContextMenuHeaderBreakConnections" xml:space="preserve">
+    <value>Break Connections</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
+    <value>Pin Wire</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderSelectConnected" xml:space="preserve">
+    <value>Select Connected</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderUnpinConnector" xml:space="preserve">
+    <value>Unpin Wire</value>
+  </data>
   <data name="PreferencesViewPython" xml:space="preserve">
     <value>Python</value>
     <comment>Preferences | Features | Python</comment>
@@ -2555,11 +2584,11 @@ This package will be deleted after the next Dynamo restart.</value>
   <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
     <value>Remove the scheduled unload status</value>
   </data>
-  <data name="PackageViewContextMenuLoadText">
-      <value>Load</value>
+  <data name="PackageViewContextMenuLoadText" xml:space="preserve">
+    <value>Load</value>
   </data>
-  <data name="PackageViewContextMenuLoadTooltip">
-      <value>Load this package into Dynamo. Other packages with the same name will be automatically deleted</value>
+  <data name="PackageViewContextMenuLoadTooltip" xml:space="preserve">
+    <value>Load this package into Dynamo. Other packages with the same name will be automatically deleted</value>
   </data>
   <data name="CannotLoadPackageMessageBoxTitle" xml:space="preserve">
     <value>Cannot Load Package</value>
@@ -2596,5 +2625,8 @@ Delete the following packages: {2}?
   </data>
   <data name="UnloadFailureMessageBoxTitle" xml:space="preserve">
     <value>Unload Failure</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
+    <value>_Show Tooltip</value>
   </data>
 </root>

@@ -273,6 +273,10 @@ namespace Dynamo.ViewModels
         // Do not serialize notes, they will be converted to annotations during serialization
         [JsonIgnore]
         public ObservableCollection<NoteViewModel> Notes { get; } = new ObservableCollection<NoteViewModel>();
+
+        [JsonIgnore]
+        public ObservableCollection<ConnectorPinViewModel> Pins { get; } = new ObservableCollection<ConnectorPinViewModel>();
+
         [JsonIgnore]
         public ObservableCollection<InfoBubbleViewModel> Errors { get; } = new ObservableCollection<InfoBubbleViewModel>();
         public ObservableCollection<AnnotationViewModel> Annotations { get; } = new ObservableCollection<AnnotationViewModel>();
@@ -429,6 +433,9 @@ namespace Dynamo.ViewModels
             var notesColl = new CollectionContainer { Collection = Notes };
             WorkspaceElements.Add(notesColl);
 
+            var pinsColl = new CollectionContainer { Collection = Pins };
+            WorkspaceElements.Add(pinsColl);
+
             var errorsColl = new CollectionContainer { Collection = Errors };
             WorkspaceElements.Add(errorsColl);
 
@@ -461,17 +468,21 @@ namespace Dynamo.ViewModels
             DynamoViewModel.CopyCommand.CanExecuteChanged += CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged += CopyPasteChanged;
 
-            // sync collections
 
-            foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
-            foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
-            foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
-            foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
 
+            // InCanvasSearchViewModel needs to happen before the nodes are created
+            // as we rely upon it to retrieve node icon images
             InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel)
             {
                 Visible = true
             };
+
+            // sync collections
+            foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
+            foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
+            foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
+            foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
+            
             NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
             {
                 Visible = true
@@ -518,10 +529,13 @@ namespace Dynamo.ViewModels
 
             Notes.ToList().ForEach(noteViewModel => noteViewModel.Dispose());
             Connectors.ToList().ForEach(connectorViewmModel => connectorViewmModel.Dispose());
+            Annotations.ToList().ForEach(AnnotationViewModel => AnnotationViewModel.Dispose());
             Nodes.Clear();
             Notes.Clear();
+            Pins.Clear();
             Connectors.Clear();
             Errors.Clear();
+            Annotations.Clear();
             InCanvasSearchViewModel.Dispose();
             NodeAutoCompleteSearchViewModel.Dispose();
         }
@@ -610,19 +624,19 @@ namespace Dynamo.ViewModels
             var viewBlock = obj["View"];
             if (viewBlock == null)
               return null;
-           
-            var settings = new JsonSerializerSettings
-            {
-                Error = (sender, args) =>
-                {
-                    args.ErrorContext.Handled = true;
-                    Console.WriteLine(args.ErrorContext.Error);
-                },
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Newtonsoft.Json.Formatting.Indented,
-                Culture = CultureInfo.InvariantCulture
-            };
+
+           var settings = new JsonSerializerSettings
+           {
+               Error = (sender, args) =>
+               {
+                   args.ErrorContext.Handled = true;
+                   Console.WriteLine(args.ErrorContext.Error);
+               },
+               ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+               TypeNameHandling = TypeNameHandling.Auto,
+               Formatting = Newtonsoft.Json.Formatting.Indented,
+               Culture = CultureInfo.InvariantCulture
+           };
 
             return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
@@ -680,11 +694,18 @@ namespace Dynamo.ViewModels
 
         private void Model_AnnotationRemoved(AnnotationModel annotation)
         {
-            Annotations.Remove(Annotations.First(x => x.AnnotationModel == annotation));
+            var matchingAnnotation = Annotations.First(x => x.AnnotationModel == annotation);
+            Annotations.Remove(matchingAnnotation);
+            matchingAnnotation.Dispose();
+           
         }
 
         private void Model_AnnotationsCleared()
         {
+            foreach (var annotationViewModel in Annotations)
+            {
+                annotationViewModel.Dispose();
+            }
             Annotations.Clear();
         }
 
@@ -799,7 +820,6 @@ namespace Dynamo.ViewModels
                     break;
 
             }
-            
         }
 
         void ModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -873,7 +893,9 @@ namespace Dynamo.ViewModels
         {
             var fullyEnclosed = !isCrossSelect;
             var selection = DynamoSelection.Instance.Selection;
-            var childlessModels = Model.Nodes.Concat<ModelBase>(Model.Notes);
+            var childlessModels = Model.Nodes
+                .Concat<ModelBase>(Model.Notes)
+                .Concat<ModelBase>(Pins.Select(c=>c.Model));
 
             foreach (var n in childlessModels)
             {

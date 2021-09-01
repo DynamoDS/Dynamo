@@ -368,8 +368,23 @@ namespace Dynamo.ViewModels
             set
             {
                 model.IsShowingConnectors = value;
-
-                RaisePropertyChanged("IsShowingConnectors");
+                RaisePropertyChanged(nameof(IsShowingConnectors));
+            }
+        }
+        /// <summary>
+        /// Relaying the flag `IsShowingConnectorTooltip' coming from
+        /// the Dynamo model.
+        /// </summary>
+        public bool IsShowingConnectorTooltip
+        {
+            get
+            {
+                return model.IsShowingConnectorTooltip;
+            }
+            set
+            {
+                model.IsShowingConnectorTooltip = value;
+                RaisePropertyChanged(nameof(IsShowingConnectorTooltip));
             }
         }
 
@@ -2348,15 +2363,6 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanSelectNeighbors(object parameters)
-        {
-            return true;
-        }
-
-        public void ShowConnectors(object parameter)
-        {
-        }
-
-        internal bool CanShowConnectors(object parameter)
         {
             return true;
         }

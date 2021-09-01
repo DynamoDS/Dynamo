@@ -122,6 +122,7 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="ColorPaletteTests.cs" />
+    <Compile Include="ConnectorViewModelTests.cs" />
     <Compile Include="ConverterViewModelTests.cs" />
     <Compile Include="GuidedTourTests.cs" />
     <Compile Include="InfoBubbleTests.cs" />
