@@ -34,7 +34,7 @@
                       Grid.Column="0" Grid.Row="0"
                       ItemsSource="{Binding Path=Filters}" 
                       Background="Transparent"
-                      Padding="0,5,0,10">
+                      Padding="0,5,0,5">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" IsItemsHost="True" />
