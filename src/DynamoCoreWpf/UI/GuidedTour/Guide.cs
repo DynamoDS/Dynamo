@@ -43,7 +43,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public GuideBackground GuideBackgroundElement { get; set; }
 
         /// <summary>
-        /// This variable represents the Guide Background Element to manipulate it's hole rect
+        /// This variable represents the element of the LibraryView 
         /// </summary>
         public UIElement LibraryView { get; set; }
 
@@ -98,6 +98,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             TotalSteps = GuideSteps.Count;
 
+            //Searches for the library step 
             var libraryStep = GuideSteps.FirstOrDefault(x => x.StepType == Step.StepTypes.LIBRARY );
             LibraryView = libraryStep?.HostPopupInfo?.HostUIElement;
 
@@ -106,6 +107,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
             SubscribeFlowEvents();
         }
 
+        /// <summary>
+        /// Sets library to visible or hidden 
+        /// </summary>
+        /// <param name="visible">This parameter will contain a boolean to define if the library should be visible or not</param>
         private void SetLibraryViewVisible(bool visible)
         {
             if(LibraryView != null)

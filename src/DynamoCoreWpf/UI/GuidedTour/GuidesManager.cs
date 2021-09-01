@@ -153,8 +153,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 //Hide guide background overlay
                 guideBackgroundElement.Visibility = Visibility.Hidden;
-                
-
             }
 
         }

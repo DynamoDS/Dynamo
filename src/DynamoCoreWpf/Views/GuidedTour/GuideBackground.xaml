@@ -5,9 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dynamo.Wpf.Views.GuidedTour"
              mc:Ignorable="d">
-
-
-
     <Grid>
         <Canvas
             Background="Transparent"
