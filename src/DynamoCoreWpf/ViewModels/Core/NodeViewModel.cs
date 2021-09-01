@@ -331,6 +331,8 @@ namespace Dynamo.ViewModels
             {
                 zIndex = value;
                 RaisePropertyChanged("ZIndex");
+                if (ErrorBubble == null) return;
+                ErrorBubble.ZIndex = zIndex + 1;
             }
         }
 
@@ -623,6 +625,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// A collection of error/warning/info messages, dismissed via a sub-menu in the node Context Menu.
         /// </summary>
+        [JsonIgnore]
         public ObservableCollection<string> DismissedAlerts => nodeLogic.DismissedAlerts;
         
         #endregion
@@ -700,9 +703,8 @@ namespace Dynamo.ViewModels
             DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
 
             ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
+            ErrorBubble.ZIndex = ZIndex + 1;
             UpdateBubbleContent();
-
-            ErrorBubble.ZIndex = 1000;
 
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor

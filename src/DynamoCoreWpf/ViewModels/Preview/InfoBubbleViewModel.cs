@@ -60,7 +60,7 @@ namespace Dynamo.ViewModels
 
         // Each new node placed on the canvas has an incremented ZIndex
         // In order to stay above these, we need a high ZIndex value. 
-        private double zIndex = 1000;
+        private double zIndex;
         private Style infoBubbleStyle;
         
         [Obsolete]
@@ -180,8 +180,12 @@ namespace Dynamo.ViewModels
 
         public double ZIndex
         {
-            get { return zIndex; }
-            set { zIndex = value; RaisePropertyChanged(nameof(ZIndex)); }
+            get => zIndex; 
+            set
+            {
+                zIndex = value;
+                RaisePropertyChanged(nameof(ZIndex));
+            }
         }
 
         /// <summary>
