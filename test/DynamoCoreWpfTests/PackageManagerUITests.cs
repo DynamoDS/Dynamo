@@ -335,6 +335,12 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, conflictingPkg.LoadState.ScheduledState);
             Assert.IsTrue(conflictingPkg.LoadedAssemblies.Count() > 0);
 
+            var filters = ViewModel.PreferencesViewModel.Filters;
+            Assert.AreEqual(3, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Loaded", filters[1].Name);
+            Assert.AreEqual(@"Unloaded", filters[2].Name);
+
             builtInPkgViewModel.LoadCommand.Execute();
 
             Assert.AreEqual(PackageLoadState.StateTypes.Unloaded, builtInPkgViewModel.Model.LoadState.State);
@@ -342,6 +348,12 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, conflictingPkg.LoadState.State);
             Assert.AreEqual(PackageLoadState.ScheduledTypes.ScheduledForDeletion, conflictingPkg.LoadState.ScheduledState);
+
+            Assert.AreEqual(4, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Loaded", filters[1].Name);
+            Assert.AreEqual(@"Scheduled for Delete", filters[2].Name);
+            Assert.AreEqual(@"Unloaded", filters[3].Name);
         }
 
         [Test]
@@ -372,6 +384,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
+            var filters = ViewModel.PreferencesViewModel.Filters;
+            Assert.AreEqual(2, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Loaded", filters[1].Name);
+
             builtInPkgViewModel.UninstallCommand.Execute();
 
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
@@ -379,11 +396,20 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
 
+            Assert.AreEqual(2, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Scheduled for Unload", filters[1].Name);
+
             builtInPkgViewModel.UnmarkForUninstallationCommand.Execute();
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
             Assert.IsFalse(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
+
+            Assert.AreEqual(2, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Loaded", filters[1].Name);
+
         }
 
         [Test]
@@ -418,6 +444,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(PackageLoadState.StateTypes.Unloaded, builtInPkgViewModel.Model.LoadState.State);
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
+            var filters = ViewModel.PreferencesViewModel.Filters;
+            Assert.AreEqual(2, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Unloaded", filters[1].Name);
+
             builtInPkgViewModel.LoadCommand.Execute();
 
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
@@ -425,6 +456,10 @@ namespace DynamoCoreWpfTests
 
             Assert.IsFalse(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
             Assert.IsTrue(currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
+
+            Assert.AreEqual(2, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Loaded", filters[1].Name);
         }
 
         public void PackageContainingNodeViewOnlyCustomization_AddsCustomizationToCustomizationLibrary()
