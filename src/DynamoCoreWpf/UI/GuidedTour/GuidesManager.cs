@@ -34,11 +34,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private RealTimeInfoWindow exitTourPopup;
 
+        //Checks if the tour has already finished
+        private static bool tourStarted;
+
         //The ExitTour popup will be shown at the top-right section of the Dynamo window (at the left side of the statusBarPanel element) only when the tour is closed
         //The ExitTourVerticalOffset is used to move vertically the popup (using as a reference the statusBarPanel position)
         private const double ExitTourVerticalOffset = 10;
         //The ExitTourHorizontalOffset is used to move horizontally the popup (using as a reference the statusBarPanel position)
         private const double ExitTourHorizontalOffset = 110;
+
+        
 
         public static string GuidesExecutingDirectory
         {
@@ -114,7 +119,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="tourName"></param>
         public void LaunchTour(string tourName)
         {
-            GuideFlowEvents.OnGuidedTourStart(tourName);
+            if (!tourStarted)
+                GuideFlowEvents.OnGuidedTourStart(tourName);
         }
 
         /// <summary>
@@ -123,6 +129,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="args">This parameter will contain the GuideName as a string</param>
         private void TourStarted(GuidedTourStateEventArgs args)
         {
+            tourStarted = true;
+
             currentGuide = (from guide in Guides where guide.Name.Equals(args.GuideName) select guide).FirstOrDefault();
             if (currentGuide != null)
             {
@@ -154,6 +162,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 //Hide guide background overlay
                 guideBackgroundElement.Visibility = Visibility.Hidden;
+
+                tourStarted = false;
             }
 
         }
