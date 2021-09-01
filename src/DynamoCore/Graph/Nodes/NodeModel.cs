@@ -71,7 +71,7 @@ namespace Dynamo.Graph.Nodes
 
         #endregion
 
-        internal const double HeaderHeight = 25;
+        internal const double HeaderHeight = 55;
 
         #region public members
 
@@ -882,7 +882,7 @@ namespace Dynamo.Graph.Nodes
                     {
                         MarkDownStreamNodesAsModified(this);
                         OnNodeModified();
-                        RaisePropertyChanged("IsFrozen");
+                        RaisePropertyChanged(nameof(IsFrozen));
                     }
                 }
                 //If the node is frozen, then do not execute the graph immediately.
@@ -891,6 +891,7 @@ namespace Dynamo.Graph.Nodes
                 {
                     ComputeUpstreamOnDownstreamNodes();
                     OnUpdateASTCollection();
+                    RaisePropertyChanged(nameof(IsFrozen));
                 }
             }
         }
@@ -1990,21 +1991,23 @@ namespace Dynamo.Graph.Nodes
 
         private void OnPortConnected(PortModel port, ConnectorModel connector)
         {
-
-            if (port.PortType != PortType.Input) return;
+            if (port.PortType != PortType.Input)
+            {
+                port.RaisePortIsConnectedChanged();
+                return;
+            }
 
             var data = InPorts.IndexOf(port);
             var startPort = connector.Start;
             var outData = startPort.Owner.OutPorts.IndexOf(startPort);
             ConnectInput(data, outData, startPort.Owner);
             startPort.Owner.ConnectOutput(outData, data, this);
-
+            
             var handler = PortConnected;
             if (null != handler) handler(port, connector);
-
             OnConnectorAdded(connector);
-
             OnNodeModified();
+            port.RaisePortIsConnectedChanged();
         }
 
         private void OnPortDisconnected(PortModel port, ConnectorModel connector)
@@ -2012,14 +2015,18 @@ namespace Dynamo.Graph.Nodes
             var handler = PortDisconnected;
             if (null != handler) handler(port);
 
-            if (port.PortType != PortType.Input) return;
+            if (port.PortType != PortType.Input)
+            {
+                port.RaisePortIsConnectedChanged();
+                return;
+            }
 
             var data = InPorts.IndexOf(port);
             var startPort = connector.Start;
             DisconnectInput(data);
             startPort.Owner.DisconnectOutput(startPort.Owner.OutPorts.IndexOf(startPort), data, this);
-
             OnNodeModified();
+            port.RaisePortIsConnectedChanged();
         }
 
         #endregion
