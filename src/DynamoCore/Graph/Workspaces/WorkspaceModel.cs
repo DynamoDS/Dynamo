@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -100,18 +99,11 @@ namespace Dynamo.Graph.Workspaces
     public class ExtraAnnotationViewInfo
     {
         public string Title;
-        public string DescriptionText;
-        [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public bool IsExpanded;
         public IEnumerable<string> Nodes;
-        public bool HasNestedGroups;
         public double FontSize;
         public string Background;
         public string Id;
         public string PinnedNode;
-        public double WidthAdjustment;
-        public double HeightAdjustment;
 
         // TODO, Determine if these are required
         public double Left;
@@ -133,13 +125,9 @@ namespace Dynamo.Graph.Workspaces
             return other != null &&
                 this.Id == other.Id &&
                 this.Title == other.Title &&
-                this.DescriptionText == other.DescriptionText &&
                 this.Nodes.SequenceEqual(other.Nodes) &&
-                this.HasNestedGroups == other.HasNestedGroups &&
                 this.FontSize == other.FontSize &&
-                this.Background == other.Background &&
-                this.WidthAdjustment == other.WidthAdjustment &&
-                this.HeightAdjustment == other.HeightAdjustment;
+                this.Background == other.Background;
 
                 //TODO try to get rid of these if possible
                 //needs investigation if we are okay letting them get 
@@ -1527,45 +1515,20 @@ namespace Dynamo.Graph.Workspaces
             var selectedNodes = this.Nodes == null ? null:this.Nodes.Where(s => s.IsSelected);
             var selectedNotes = this.Notes == null ? null: this.Notes.Where(s => s.IsSelected);
 
-            if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
+            if (!CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
             {
-                return null;
+                var annotationModel = new AnnotationModel(selectedNodes, selectedNotes)
+                {
+                    GUID = id,
+                    AnnotationText = text
+                };
+                annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
+                annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
+                AddNewAnnotation(annotationModel);
+                HasUnsavedChanges = true;
+                return annotationModel;
             }
-
-            return CreateAndSubcribeAnnotationModel(selectedNodes, selectedNotes, id, text);
-        }
-
-        internal AnnotationModel AddAnnotation(string titleText, string text, Guid id)
-        {
-            var selectedNodes = this.Nodes == null ? null : this.Nodes.Where(s => s.IsSelected);
-            var selectedNotes = this.Notes == null ? null : this.Notes.Where(s => s.IsSelected);
-
-            if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
-            {
-                return null;
-            }
-
-            return CreateAndSubcribeAnnotationModel(selectedNodes, selectedNotes, id, titleText, text);
-        }
-
-        private AnnotationModel CreateAndSubcribeAnnotationModel(
-            IEnumerable<NodeModel> nodes, 
-            IEnumerable<NoteModel> notes, 
-            Guid id, 
-            string titel, 
-            string description = "")
-        {
-            var annotationModel = new AnnotationModel(nodes, notes)
-            {
-                GUID = id,
-                AnnotationDescriptionText = description,
-                AnnotationText = titel
-            };
-            annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
-            annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
-            AddNewAnnotation(annotationModel);
-            HasUnsavedChanges = true;
-            return annotationModel;
+            return null;
         }
 
         /// <summary>
@@ -2281,99 +2244,64 @@ namespace Dynamo.Graph.Workspaces
 
         private void LoadAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
         {
-            if (annotationViews == null) return;
+            if (annotationViews == null) {return;}
 
-            var annotationQueue = new Queue<ExtraAnnotationViewInfo>(annotationViews);
-            while (annotationQueue.Any())
+            foreach (ExtraAnnotationViewInfo annotationViewInfo in annotationViews)
             {
-                var annotationViewInfo = annotationQueue.Dequeue();
-                // Before creating this group we need to create
-                // any group belonging to this group.
-                if (annotationViewInfo.HasNestedGroups &&
-                    !annotationQueue.All(x=>x.HasNestedGroups))
-                {
-                    annotationQueue.Enqueue(annotationViewInfo);
+                if (annotationViewInfo.Nodes == null)
                     continue;
+
+                // If count is zero, this is a note, not an annotation
+                if (annotationViewInfo.Nodes.Count() == 0)
+                    continue;
+
+                var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
+                var text = annotationViewInfo.Title;
+
+                // Create a collection of nodes in the given annotation
+                var nodes = new List<NodeModel>();
+                foreach (string nodeId in annotationViewInfo.Nodes)
+                {
+                    var guidValue = IdToGuidConverter(nodeId);
+                    if (guidValue == null)
+                      continue;
+
+                    // NOTE: Some nodes may be annotations and not be found here
+                    var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
+                    if (nodeModel == null)
+                      continue;
+
+                    nodes.Add(nodeModel);
                 }
 
-                LoadAnnotation(annotationViewInfo);
-            }
-        }
+                // Create a collection of notes in the given annotation
+                var notes = new List<NoteModel>();
+                foreach (string noteId in annotationViewInfo.Nodes)
+                {
+                    var guidValue = IdToGuidConverter(noteId);
+                    if (guidValue == null)
+                      continue;
 
-        private void LoadAnnotation(ExtraAnnotationViewInfo annotationViewInfo)
-        {
-            var annotationGuidValue = IdToGuidConverter(annotationViewInfo.Id);
+                    // NOTE: Some nodes may not be annotations and not be found here
+                    var noteModel = Notes.FirstOrDefault(note => note.GUID == guidValue);
+                    if (noteModel == null)
+                      continue;
 
-            if (annotationViewInfo.Nodes == null || Annotations.Any(x => x.GUID == annotationGuidValue))
-            {
-                return;
-            }
+                    notes.Add(noteModel);
+                }
 
-            // If count is zero, this is a note, not an annotation
-            if (annotationViewInfo.Nodes.Count() == 0) return;
+                var annotationModel = new AnnotationModel(nodes, notes);
+                annotationModel.AnnotationText = text;
+                annotationModel.FontSize = annotationViewInfo.FontSize;
+                annotationModel.Background = annotationViewInfo.Background;
+                annotationModel.GUID = annotationGuidValue;
 
-
-            var text = annotationViewInfo.Title;
-
-            // Create a collection of nodes in the given annotation
-            var nodes = new List<NodeModel>();
-            foreach (string nodeId in annotationViewInfo.Nodes)
-            {
-                var guidValue = IdToGuidConverter(nodeId);
-                if (guidValue == null)
-                    continue;
-
-                // NOTE: Some nodes may be annotations and not be found here
-                var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
-                if (nodeModel == null)
-                    continue;
-
-                nodes.Add(nodeModel);
-            }
-
-            // Create a collection of notes in the given annotation
-            var notes = new List<NoteModel>();
-            foreach (string noteId in annotationViewInfo.Nodes)
-            {
-                var guidValue = IdToGuidConverter(noteId);
-                if (guidValue == null)
-                    continue;
-
-                // NOTE: Some nodes may not be annotations and not be found here
-                var noteModel = Notes.FirstOrDefault(note => note.GUID == guidValue);
-                if (noteModel == null)
-                    continue;
-
-                notes.Add(noteModel);
-            }
-
-            var groups = new List<AnnotationModel>();
-            foreach (var groupId in annotationViewInfo.Nodes)
-            {
-                var guidValue = IdToGuidConverter(groupId);
-                if (guidValue == null) continue;
-
-                var group = Annotations.FirstOrDefault(g => g.GUID == guidValue);
-                if (group == null) continue;
-
-                groups.Add(group);
-            }
-
-            var annotationModel = new AnnotationModel(nodes, notes, groups);
-            annotationModel.AnnotationText = text;
-            annotationModel.AnnotationDescriptionText = annotationViewInfo.DescriptionText;
-            annotationModel.IsExpanded = annotationViewInfo.IsExpanded;
-            annotationModel.FontSize = annotationViewInfo.FontSize;
-            annotationModel.Background = annotationViewInfo.Background;
-            annotationModel.GUID = annotationGuidValue;
-            annotationModel.HeightAdjustment = annotationViewInfo.HeightAdjustment;
-            annotationModel.WidthAdjustment = annotationViewInfo.WidthAdjustment;
-
-            //if this group/annotation does not exist, add it to the workspace.
-            var matchingAnnotation = this.Annotations.FirstOrDefault(x => x.GUID == annotationModel.GUID);
-            if (matchingAnnotation == null)
-            {
-                this.AddNewAnnotation(annotationModel);
+                //if this group/annotation does not exist, add it to the workspace.
+                var matchingAnnotation = this.Annotations.FirstOrDefault(x => x.GUID == annotationModel.GUID);
+                if (matchingAnnotation == null)
+                {
+                    this.AddNewAnnotation(annotationModel);
+                }
             }
         }
 

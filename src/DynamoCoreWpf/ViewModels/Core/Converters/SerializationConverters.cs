@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Linq;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
-using Dynamo.Graph.Workspaces;
 using Dynamo.ViewModels;
 using Newtonsoft.Json;
 using Type = System.Type;
@@ -119,14 +117,6 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteValue(anno.GUID.ToString("N"));
             writer.WritePropertyName("Title");
             writer.WriteValue(anno.AnnotationText);
-            writer.WritePropertyName("DescriptionText");
-            writer.WriteValue(anno.AnnotationDescriptionText);
-            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.IsExpanded));
-            writer.WriteValue(anno.IsExpanded);
-            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.WidthAdjustment));
-            writer.WriteValue(anno.WidthAdjustment);
-            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.HeightAdjustment));
-            writer.WriteValue(anno.HeightAdjustment);
             writer.WritePropertyName("Nodes");
             writer.WriteStartArray();
             foreach (var m in anno.Nodes)
@@ -134,8 +124,6 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
                 writer.WriteValue(m.GUID.ToString("N"));
             }
             writer.WriteEndArray();
-            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.HasNestedGroups));
-            writer.WriteValue(anno.HasNestedGroups);
             writer.WritePropertyName("Left");
             writer.WriteValue(anno.X);
             writer.WritePropertyName("Top");

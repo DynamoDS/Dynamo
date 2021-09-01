@@ -703,20 +703,11 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Click here to edit the group description&gt;.
+        ///   Looks up a localized string similar to &lt;Click here to edit the group title&gt;.
         /// </summary>
         public static string GroupDefaultText {
             get {
                 return ResourceManager.GetString("GroupDefaultText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;Click here to edit the group title&gt;.
-        /// </summary>
-        public static string GroupNameDefaultText {
-            get {
-                return ResourceManager.GetString("GroupNameDefaultText", resourceCulture);
             }
         }
         

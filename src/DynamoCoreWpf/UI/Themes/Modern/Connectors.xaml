@@ -76,8 +76,7 @@
     </Style>
     
     <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
-        <Grid x:Name="MainGrid"
-              Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
+        <Grid x:Name="MainGrid">
             <Grid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnections}" Command="{Binding BreakConnectionCommand}"/>

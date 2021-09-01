@@ -613,15 +613,6 @@ namespace Dynamo.ViewModels
             set { NodeModel.UserDescription = value; }
         }
 
-        public override bool IsCollapsed
-        {
-            get => base.IsCollapsed;
-            set
-            {
-                base.IsCollapsed = value;
-            }
-        }
-
         #endregion
 
         #region events
