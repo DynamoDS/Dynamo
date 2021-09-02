@@ -12,6 +12,7 @@
              MouseEnter="OnNodeViewMouseEnter"
              MouseLeave="OnNodeViewMouseLeave"
              MouseLeftButtonDown="topControl_MouseLeftButtonDown"
+             MouseRightButtonDown="topControl_MouseRightButtonDown"
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              PreviewMouseMove="OnNodeViewMouseMove">
 
@@ -23,7 +24,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" MinHeight="8" />
+            <RowDefinition Height="Auto" MinHeight="24" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <!--  Sets grid to 70% opacity when node is frozen  -->
@@ -38,7 +39,7 @@
         </Grid.Style>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" MinWidth="40" />
+            <ColumnDefinition Width="*" MinWidth="20" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
@@ -55,7 +56,7 @@
                             <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
                             <Setter Property="Height" Value="30" />
                             <Setter Property="Width" Value="240" />
-                            <Setter Property="Padding" Value="15,0,0,0" />
+                            <Setter Property="Padding" Value="20,0,20,0" />
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type MenuItem}">
@@ -64,7 +65,7 @@
                                                    Background="Transparent"
                                                    SnapsToDevicePixels="true">
                                             <Label x:Name="checkBox"
-                                                   Margin="10,0,-10,0"
+                                                   Margin="2,0,-20,0"
                                                    HorizontalAlignment="Left"
                                                    VerticalAlignment="Center"
                                                    HorizontalContentAlignment="Center"
@@ -85,7 +86,8 @@
                                             <Border x:Name="dismissedAlertsBadge"
                                                     Height="15"
                                                     MinWidth="15"
-                                                    Margin="7,0,0,1"
+                                                    Margin="-15,0,0,1"
+                                                    HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     Background="{StaticResource NodeDismissedWarningsGlyphBackground}"
                                                     CornerRadius="7.5"
@@ -102,7 +104,7 @@
                                                        Foreground="{StaticResource NodeDismissedWarningsGlyphForeground}" />
                                             </Border>
                                             <Label x:Name="subMenuArrow"
-                                                   Margin="0,0,15,7"
+                                                   Margin="0,0,20,7"
                                                    Padding="0"
                                                    VerticalAlignment="Center"
                                                    Content="&gt;"
@@ -178,7 +180,7 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type Separator}">
                                         <Border Height="1"
-                                                Margin="15,8,15,8"
+                                                Margin="20,8,20,8"
                                                 Background="{StaticResource NodeContextMenuSeparatorColor}" />
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -278,7 +280,7 @@
                                     <Border x:Name="Border"
                                             Background="{StaticResource NodeContextMenuBackground}"
                                             BorderThickness="0px">
-                                        <StackPanel Margin="0,5"
+                                        <StackPanel Margin="0,10"
                                                     ClipToBounds="True"
                                                     IsItemsHost="True"
                                                     Orientation="Vertical" />
@@ -328,10 +330,10 @@
         <!--  Node Body Background  -->
         <Border Name="nodeBackground"
                 Grid.Row="1"
-                Grid.RowSpan="3"
+                Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
                 Background="{StaticResource DarkerGreyBrush}"
-                Canvas.ZIndex="10"
+                Canvas.ZIndex="3"
                 CornerRadius="8,8,0,0" />
 
         <!--  Node Header Background  -->
@@ -341,7 +343,7 @@
                 Grid.ColumnSpan="3"
                 Height="46px"
                 Background="{StaticResource DarkMidGreyBrush}"
-                Canvas.ZIndex="12"
+                Canvas.ZIndex="4"
                 CornerRadius="8,8,0,0">
             <Rectangle Fill="Transparent"
                        IsHitTestVisible="True"
@@ -379,15 +381,15 @@
         <DockPanel Name="nodeHeaderContent"
                    Grid.Row="1"
                    Grid.ColumnSpan="3"
-                   Margin="7,7,10,0"
+                   Margin="6"
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Top"
                    Panel.ZIndex="14"
                    FlowDirection="LeftToRight">
             <!--  The Icon for this Node  -->
             <Ellipse Name="nodeIcon"
-                     Width="30"
-                     Height="30">
+                     Width="34"
+                     Height="34">
                 <Ellipse.Style>
                     <Style TargetType="Ellipse">
                         <Setter Property="Fill">
@@ -410,7 +412,7 @@
             </Ellipse>
 
             <TextBlock Name="NameBlock"
-                       Margin="6,4,20,0"
+                       Margin="6,3,20,0"
                        VerticalAlignment="Center"
                        Background="{x:Null}"
                        FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -430,7 +432,7 @@
                 <Ellipse Name="nodeRenamedBlueDot"
                          Width="9"
                          Height="9"
-                         Margin="5"
+                         Margin="6"
                          Fill="{StaticResource Blue300Brush}"
                          Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <Grid.ToolTip>
@@ -453,7 +455,7 @@
         <ItemsControl Name="inputPortControl"
                       Grid.Row="2"
                       Grid.Column="0"
-                      Margin="0,8,0,0"
+                      Margin="0,3,0,0"
                       VerticalAlignment="Top"
                       HorizontalContentAlignment="Stretch"
                       Canvas.ZIndex="20"
@@ -474,7 +476,7 @@
         <Grid Name="centralGrid"
               Grid.Row="2"
               Grid.Column="1"
-              Margin="10,0,10,0"
+              Margin="6,6,6,3"
               VerticalAlignment="Top"
               Canvas.ZIndex="20">
 
@@ -488,26 +490,23 @@
 
             <Grid Name="inputGrid"
                   MinHeight="{Binding Source={x:Static configuration:Configurations.PortHeightInPixels}}"
-                  Margin="0,5,0,0"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                   x:FieldModifier="public"
                   Canvas.ZIndex="21"
                   IsEnabled="{Binding Path=IsInteractionEnabled}" />
-
         </Grid>
 
         <StackPanel Name="GlyphStackPanel"
                     Grid.Row="3"
                     Grid.Column="0"
                     Grid.ColumnSpan="3"
-                    Margin="0,4,6,6"
+                    Margin="0,0,6,2"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Canvas.ZIndex="43"
                     FlowDirection="RightToLeft"
-                    Orientation="Horizontal"
-                    Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    Orientation="Horizontal">
             <Button x:Name="OptionsButton"
                     Click="OptionsButton_Click"
                     ToolTip="{x:Static p:Resources.ContextMenu}">
@@ -518,13 +517,13 @@
                                 <ControlTemplate TargetType="{x:Type Button}">
                                     <Grid>
                                         <Border x:Name="DotsBackgroundBorder"
-                                                Width="29"
-                                                Height="29"
+                                                Width="24"
+                                                Height="24"
                                                 Background="Transparent"
                                                 CornerRadius="2" />
-                                        <Image Width="24px"
-                                               Height="24px"
-                                               Margin="0,1,0,0"
+                                        <Image Width="16px"
+                                               Height="16px"
+                                               Margin="0,0,1.5,0"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                Source="/DynamoCoreWpf;component/UI/Images/more-vertical.png" />
@@ -574,7 +573,7 @@
                 </Grid.Style>
             </Grid>
             <Label x:Name="LacingIconGlyph"
-                   Margin="0,0,0,0"
+                   Margin="0,1,0,-1"
                    HorizontalContentAlignment="Center"
                    VerticalContentAlignment="Center"
                    Content="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
@@ -584,9 +583,7 @@
                    Style="{StaticResource SZoomFadeLabel}"
                    ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
                    Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}" />
-            <Grid x:Name="HiddenEyeGlyph"
-                  Margin="2,0,0,0"
-                  Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}">
+            <Grid x:Name="HiddenEyeGlyph" Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}">
                 <Image Width="24px"
                        Height="24px"
                        HorizontalAlignment="Center"
@@ -596,30 +593,33 @@
         </StackPanel>
 
         <Grid Name="PresentationGrid"
-              Grid.Row="3"
-              Grid.Column="0"
-              Grid.ColumnSpan="3"
-              Margin="10,0,10,10"
+              Grid.Row="2"
+              Grid.RowSpan="2"
+              Grid.Column="1"
+              Margin="6,6,6,3"
               HorizontalAlignment="Left"
               VerticalAlignment="Bottom"
               x:FieldModifier="public"
               Visibility="Collapsed"
-              ZIndex="50">
+              ZIndex="3">
             <!--  DO NOT ERASE THIS GRID TO BE USED FOR PRESENTING IMAGES, 3D VIEWS, ETC.  -->
         </Grid>
 
-        <Rectangle Name="nodeBorder"
-                   Grid.Row="1"
-                   Grid.RowSpan="3"
-                   Grid.ColumnSpan="3"
-                   Canvas.ZIndex="40"
-                   Fill="Transparent"
-                   IsHitTestVisible="False" />
+        <Border Name="nodeBorder"
+                Grid.Row="1"
+                Grid.RowSpan="4"
+                Grid.ColumnSpan="3"
+                Margin="-1"
+                BorderBrush="#F9F9F9"
+                BorderThickness="1"
+                Canvas.ZIndex="4"
+                CornerRadius="8,8,0,0"
+                IsHitTestVisible="False" />
 
         <!--  Displays when the node is frozen  -->
         <Rectangle Name="nodeIsFrozenOverlay"
                    Grid.Row="1"
-                   Grid.RowSpan="3"
+                   Grid.RowSpan="4"
                    Grid.ColumnSpan="3"
                    Margin="-8"
                    Canvas.ZIndex="0"
@@ -651,7 +651,7 @@
         <!--<Rectangle Name="ForceReexecBorder"
                    Grid.Row="1"
                    Grid.ColumnSpan="3"
-                   Grid.RowSpan="3"
+                   Grid.RowSpan="4"
                    Fill="Transparent"
                    Stroke="#FFF000"
                    StrokeThickness="5"
