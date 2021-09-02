@@ -68,7 +68,7 @@
             </Image>
         </Grid>
         <Canvas.RenderTransform>
-            <TranslateTransform X="{Binding HalfWidth, Mode=OneWay}" Y="10" />
+            <TranslateTransform X="{Binding OneThirdWidth, Mode=OneWay}" Y="{Binding OneThirdWidth, Mode=OneWay}" />
         </Canvas.RenderTransform>
     </Canvas>
 </UserControl>

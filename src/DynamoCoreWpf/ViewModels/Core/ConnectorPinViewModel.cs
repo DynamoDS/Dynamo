@@ -92,11 +92,11 @@ namespace Dynamo.ViewModels
         /// so we only need one property that can be used for both.
         /// </summary>
         [JsonIgnore]
-        public double HalfWidth
+        public double OneThirdWidth
         {
             get
             {
-                return Model.Width * 0.5;
+                return Model.Width * 0.33333;
             }
         }
 
