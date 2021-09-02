@@ -681,13 +681,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-
                     <Border x:Name="container"
                             Background="Transparent"
                             BorderBrush="#3c3c3c"
                             BorderThickness="1">
                         <Grid x:Name="inner" Background="#373737">
-
                             <StackPanel Orientation="Horizontal">
                                 <ContentControl Content="{DynamicResource ResourceKey=Shape}" />
                             </StackPanel>
@@ -919,7 +917,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="RadioButton" TargetType="{x:Type RadioButton}">
+   <Style x:Key="RadioButton" TargetType="{x:Type RadioButton}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RadioButton}">
@@ -3315,6 +3313,23 @@
     <SolidColorBrush x:Key="PopupRatingControlBackColor" Color="#F5F5F5" />
 
     <SolidColorBrush x:Key="CheckMarkBackColor" Color="#87B340" />
+    
+    <!-- Style for a self-wrapping ToolTip -->
+    <Style x:Key="ToolTipSelfWrapping" TargetType="ToolTip">
+        <Style.Resources>
+            <Style TargetType="ContentPresenter">
+                <Style.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextWrapping"
+                                Value="Wrap" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </Style.Resources>
+        <Setter Property="MaxWidth"
+                Value="300" />
+    </Style>
+
 
     <!-- Style for a self-wrapping ToolTip -->
     <Style x:Key="ToolTipSelfWrapping"

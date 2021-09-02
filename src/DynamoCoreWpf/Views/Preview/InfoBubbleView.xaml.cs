@@ -108,7 +108,7 @@ namespace Dynamo.Controls
         #endregion
 
         /// <summary>
-        /// Used to present useful/important information to user when the node is in Error or Warning state.         error
+        /// Used to present useful/important information to user when the node is in Error or Warning state.
         /// </summary>
         public InfoBubbleView()
         {
@@ -376,6 +376,7 @@ namespace Dynamo.Controls
             if (ViewModel.Content == "...")
             {
                 #region Draw Icon
+
                 Rectangle r1 = new Rectangle();
                 r1.Fill = Brushes.Black;
                 r1.Height = 1;
@@ -396,12 +397,12 @@ namespace Dynamo.Controls
                 r3.HorizontalAlignment = HorizontalAlignment.Left;
 
                 Grid myGrid = new Grid();
-                myGrid.HorizontalAlignment  = HorizontalAlignment.Stretch;
-                myGrid.VerticalAlignment    = VerticalAlignment.Stretch;
-                myGrid.Background   = Brushes.Transparent;
-                myGrid.Margin       = ContentMargin;
-                myGrid.MaxHeight    = ContentMaxHeight;
-                myGrid.MaxWidth     = contentMaxWidth;
+                myGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+                myGrid.VerticalAlignment = VerticalAlignment.Stretch;
+                myGrid.Background = Brushes.Transparent;
+                myGrid.Margin = ContentMargin;
+                myGrid.MaxHeight = ContentMaxHeight;
+                myGrid.MaxWidth = contentMaxWidth;
 
                 // Create row definitions.
                 RowDefinition rowDefinition1 = new RowDefinition();
@@ -423,6 +424,7 @@ namespace Dynamo.Controls
                 myGrid.UseLayoutRounding = true;
 
                 ContentContainer.Children.Add(myGrid);
+
                 #endregion
             }
             else
@@ -459,23 +461,23 @@ namespace Dynamo.Controls
             textBox.Text = text;
             textBox.TextWrapping = TextWrapping.Wrap;
 
-            textBox.Margin      = ContentMargin;
-            textBox.MaxHeight   = ContentMaxHeight;
-            textBox.MaxWidth    = ContentMaxWidth;
+            textBox.Margin = ContentMargin;
+            textBox.MaxHeight = ContentMaxHeight;
+            textBox.MaxWidth = ContentMaxWidth;
 
-            textBox.Foreground  = ContentForeground;
-            textBox.FontWeight  = ContentFontWeight;
-            textBox.FontSize    = ContentFontSize;
+            textBox.Foreground = ContentForeground;
+            textBox.FontWeight = ContentFontWeight;
+            textBox.FontSize = ContentFontSize;
 
             var font = SharedDictionaryManager.DynamoModernDictionary["OpenSansRegular"];
             textBox.FontFamily = font as FontFamily;
 
-            textBox.Background      = Brushes.Transparent;
-            textBox.IsReadOnly      = true;
+            textBox.Background = Brushes.Transparent;
+            textBox.IsReadOnly = true;
             textBox.BorderThickness = new System.Windows.Thickness(0);
 
             textBox.HorizontalAlignment = HorizontalAlignment.Center;
-            textBox.VerticalAlignment   = VerticalAlignment.Center;
+            textBox.VerticalAlignment = VerticalAlignment.Center;
 
             textBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
 
@@ -599,6 +601,7 @@ namespace Dynamo.Controls
                 pointCollection.Add(new Point(estimatedWidth - arrowWidth, arrowHeight / 2));
 
             }
+
             return pointCollection;
         }
 
@@ -704,11 +707,13 @@ namespace Dynamo.Controls
             double newMaxWidth = deltaPoint.X;
             double newMaxHeight = deltaPoint.Y;
 
-            if (deltaPoint.X != double.MaxValue && newMaxWidth >= Configurations.PreviewMinWidth && newMaxWidth <= Configurations.PreviewMaxWidth)
+            if (deltaPoint.X != double.MaxValue && newMaxWidth >= Configurations.PreviewMinWidth &&
+                newMaxWidth <= Configurations.PreviewMaxWidth)
             {
                 ContentContainer.MaxWidth = newMaxWidth;
                 contentMaxWidth = newMaxWidth - 10;
             }
+
             if (deltaPoint.Y != double.MaxValue && newMaxHeight >= Configurations.PreviewMinHeight)
             {
                 ContentContainer.MaxHeight = newMaxHeight;
@@ -739,6 +744,7 @@ namespace Dynamo.Controls
             {
                 data.Style = InfoBubbleViewModel.Style.Warning;
             }
+
             data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
 
             this.ViewModel.ShowFullContentCommand.Execute(data);
@@ -758,6 +764,7 @@ namespace Dynamo.Controls
             {
                 data.Style = InfoBubbleViewModel.Style.WarningCondensed;
             }
+
             data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
 
             this.ViewModel.ShowCondensedContentCommand.Execute(data);
@@ -836,11 +843,11 @@ namespace Dynamo.Controls
         {
             if (this.IsDisconnected)
                 return;
-                
+
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed ||
                 ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.WarningCondensed)
                 ShowErrorBubbleFullContent();
-            
+
             ShowInfoBubble();
 
             this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
@@ -905,7 +912,7 @@ namespace Dynamo.Controls
         {
             viewModel.PropertyChanged -= ViewModel_PropertyChanged;
             viewModel.RequestAction -= InfoBubbleRequestAction;
-            
+
             // make sure we unsubscribe from handling the hyperlink click event
             if (this.hyperlink != null)
                 this.hyperlink.RequestNavigate -= RequestNavigateToDocumentationLinkHandler;

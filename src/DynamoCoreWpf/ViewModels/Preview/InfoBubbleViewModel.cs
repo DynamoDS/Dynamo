@@ -30,7 +30,7 @@ namespace Dynamo.ViewModels
     {
         public enum Style
         {
-            None,
+            None, 
             Warning,
             WarningCondensed, // Obsolete
             Error,
@@ -61,6 +61,103 @@ namespace Dynamo.ViewModels
 
         #region Properties
 
+        private double zIndex;
+        private Style infoBubbleStyle;
+        public Direction connectingDirection;
+        private string content;
+        private Uri documentationLink;
+        public Point targetTopLeft;
+        public Point targetBotRight;
+        private Direction limitedDirection;
+        private State infoBubbleState;
+        private double bubbleWidth = 300.0;
+        
+        // Determines whether the info/warnings/error iterator is shown e.g. (1/4)
+        private bool nodeInfoIteratorVisible;
+        private bool nodeWarningsIteratorVisible;
+        private bool nodeErrorsIteratorVisible;
+
+        // Determines whether or not the body of each information bubble is shown. 
+        // This relates to the message text box, and any buttons used to dismiss/display messages.
+        private bool nodeInfoSectionExpanded;
+        private bool nodeWarningsSectionExpanded;
+        private bool nodeErrorsSectionExpanded;
+
+        // Determines whether the info, warnings and errors are displaying just an icon, a single error message
+        // or all messages at once.
+        private NodeMessageVisibility nodeInfoVisibilityState = NodeMessageVisibility.Icon;
+        private NodeMessageVisibility nodeWarningsVisibilityState = NodeMessageVisibility.Icon;
+        private NodeMessageVisibility nodeErrorsVisibilityState = NodeMessageVisibility.Icon;
+        
+        // Relates to whether the info/warning/error message bodies display a button saying
+        // 'show more' or 'show less'.
+        private bool nodeInfoShowLessMessageVisible;
+        private bool nodeWarningsShowLessMessageVisible;
+        private bool nodeErrorsShowLessMessageVisible;
+
+        /// <summary>
+        /// Determines whether the show more/show less buttons are visible to the user at the Info Message level
+        /// </summary>
+        public bool NodeInfoShowMoreButtonVisible => NodeInfoSectionExpanded && NodeInfoIteratorVisible;
+
+        /// <summary>
+        /// Determines whether the show more/show less buttons are visible to the user at the Warning level
+        /// </summary>
+        public bool NodeWarningsShowMoreButtonVisible => NodeWarningsSectionExpanded && NodeWarningsIteratorVisible;
+        
+        /// <summary>
+        /// Determines whether the show more/show less buttons are visible to the user at the Error level
+        /// </summary>
+        public bool NodeErrorsShowMoreButtonVisible => NodeErrorsSectionExpanded && NodeErrorsIteratorVisible;
+
+        /// <summary>
+        /// Determines what the show more/show less buttons say at the Info Message level, which depends on whether
+        /// the NodeMessageVisibility at this level is set to CollapseMessages or ShowAllMessages.
+        /// </summary>
+        public bool NodeInfoShowLessMessageVisible
+        {
+            get => nodeInfoShowLessMessageVisible;
+            set
+            {
+                nodeInfoShowLessMessageVisible = value;
+                RaisePropertyChanged(nameof(NodeInfoShowLessMessageVisible));
+            }
+        }
+
+        /// <summary>
+        /// Determines what the show more/show less buttons say at the Warning level, which depends on whether
+        /// the NodeMessageVisibility at this level is set to CollapseMessages or ShowAllMessages.
+        /// </summary>
+        public bool NodeWarningsShowLessMessageVisible
+        {
+            get => nodeWarningsShowLessMessageVisible;
+            set
+            {
+                nodeWarningsShowLessMessageVisible = value;
+                RaisePropertyChanged(nameof(NodeWarningsShowLessMessageVisible));
+            }
+        }
+
+        /// <summary>
+        /// Determines what the show more/show less buttons say at the Error Message level, which depends on whether
+        /// the NodeMessageVisibility at this level is set to CollapseMessages or ShowAllMessages.
+        /// </summary>
+        public bool NodeErrorsShowLessMessageVisible
+        {
+            get => nodeErrorsShowLessMessageVisible;
+            set
+            {
+                nodeErrorsShowLessMessageVisible = value;
+                RaisePropertyChanged(nameof(NodeErrorsShowLessMessageVisible));
+            }
+        }
+
+        public string Content
+        {
+            get { return content; }
+            set { content = value; RaisePropertyChanged("Content"); }
+        }
+
         public DynamoViewModel DynamoViewModel { get; private set; }
 
         private double zIndex;
@@ -76,6 +173,7 @@ namespace Dynamo.ViewModels
         }
 
         private Style infoBubbleStyle;
+      
 
         public Style InfoBubbleStyle
         {
@@ -383,6 +481,94 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// A collection of formatted, user-visible strings relating to the node's information state
+        /// </summary>
+        public ObservableCollection<InfoBubbleDataPacket> NodeInfoToDisplay { get; set; } = new ObservableCollection<InfoBubbleDataPacket>();
+
+        /// <summary>
+        /// A collection of formatted, user-visible strings relating to the node's warning state
+        /// </summary>
+        public ObservableCollection<InfoBubbleDataPacket> NodeWarningsToDisplay { get; set; } = new ObservableCollection<InfoBubbleDataPacket>();
+
+        /// <summary>
+        /// A collection of formatted, user-visible strings relating to the node's error state
+        /// </summary>
+        public ObservableCollection<InfoBubbleDataPacket> NodeErrorsToDisplay { get; set; } = new ObservableCollection<InfoBubbleDataPacket>();
+        
+
+        /// <summary>
+        /// A collection of InfoBubbleDataPacket objects that are received when the node executes
+        /// and its state changes to reflect errors or warnings that have been detected.
+        /// </summary>
+        public ObservableCollection<InfoBubbleDataPacket> NodeMessages { get; set; } = new ObservableCollection<InfoBubbleDataPacket>();
+        
+        /// <summary>
+        /// A collection of messages this node has received that have been manually dismissed by the user.
+        /// </summary>
+        public ObservableCollection<InfoBubbleDataPacket> DismissedMessages { get; set; } = new ObservableCollection<InfoBubbleDataPacket>();
+
+        /// <summary>
+        /// Used to determine whether the UI container for node Info is visible
+        /// </summary>
+        public bool NodeInfoVisible => NodeInfoToDisplay.Count > 0;
+
+        /// <summary>
+        /// Used to determine whether the UI container for node Warnings is visible
+        /// </summary>
+        public bool NodeWarningsVisible => NodeWarningsToDisplay.Count > 0;
+        
+        /// <summary>
+        /// Used to determine whether the UI container for node Errors is visible
+        /// </summary>
+        public bool NodeErrorsVisible => NodeErrorsToDisplay.Count > 0;
+        
+
+        /// <summary>
+        /// Used to determine whether the UI container for node Info is expanded
+        /// </summary>
+        public bool NodeInfoSectionExpanded
+        {
+            get => nodeInfoSectionExpanded;
+            set
+            {
+                nodeInfoSectionExpanded = value;
+                RaisePropertyChanged(nameof(NodeInfoSectionExpanded));
+            }
+        }
+
+        /// <summary>
+        /// Used to determine whether the UI container for node Warnings is expanded
+        /// </summary>
+        public bool NodeWarningsSectionExpanded
+        {
+            get => nodeWarningsSectionExpanded;
+            set
+            {
+                nodeWarningsSectionExpanded = value;
+                RaisePropertyChanged(nameof(NodeWarningsSectionExpanded));
+            }
+        }
+
+        /// <summary>
+        /// Used to determine whether the UI container for node Errors is expanded
+        /// </summary>
+        public bool NodeErrorsSectionExpanded
+        {
+            get => nodeErrorsSectionExpanded;
+            set
+            {
+                nodeErrorsSectionExpanded = value;
+                RaisePropertyChanged(nameof(NodeErrorsSectionExpanded));
+            }
+        }
+
+        /// <summary>
+        /// Represents whether a node information state (e.g. warnings) are displaying just the
+        /// warning icon, a condensed summary of all messages at this level or fully-displaying each message
+        /// </summary>
+        internal enum NodeMessageVisibility { Icon, CollapseMessages, ShowAllMessages }
+
+        /// <summary>
         /// Determines whether the node infos are showing just an icon, a condensed summary of messages or
         /// displaying each message in turn.
         /// </summary>
@@ -393,7 +579,6 @@ namespace Dynamo.ViewModels
             {
                 nodeInfoVisibilityState = value;
                 RaisePropertyChanged(nameof(NodeInfoVisibilityState));
-
                 RefreshNodeInformationalStateDisplay();
             }
         }
@@ -460,7 +645,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool NodeErrorsIteratorVisible => GetMessagesOfStyle(NodeMessages, Style.Error).Count > 1;
 
-        #endregion
+#endregion
 
         #region Event Handlers
 
@@ -489,7 +674,8 @@ namespace Dynamo.ViewModels
             ConnectingDirection = Direction.None;
             Content = string.Empty;
             DocumentationLink = null;
-            ZIndex = 3;
+            // To appear above any NodeView elements
+            ZIndex = 7; 
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
 
@@ -509,7 +695,6 @@ namespace Dynamo.ViewModels
         {
             RefreshNodeInformationalStateDisplay();
         }
-
 
         #region Command Methods
 
@@ -701,8 +886,6 @@ namespace Dynamo.ViewModels
         }
 
         #endregion
-
-
         #endregion
 
         #region Private Helper Method
@@ -732,6 +915,286 @@ namespace Dynamo.ViewModels
         }
 
         #endregion
+
+        /// <summary>
+        /// Checks whether to show/hide all user facing collections.
+        /// </summary>
+        private void UpdateUserFacingCollectionVisibility()
+        {
+            RaisePropertyChanged(nameof(NodeInfoVisible));
+            RaisePropertyChanged(nameof(NodeWarningsVisible));
+            RaisePropertyChanged(nameof(NodeErrorsVisible));
+        }
+
+        /// <summary>
+        /// Clears all collections of user-facing info/warning/errors.
+        /// </summary>
+        private void ClearUserFacingCollections()
+        {
+            NodeErrorsToDisplay.Clear();
+            NodeWarningsToDisplay.Clear();
+            NodeInfoToDisplay.Clear();
+        }
+
+        /// <summary>
+        /// Determines whether to display the message body to the user.
+        /// </summary>
+        private void SetMessageSectionsExpansion()
+        {
+            NodeInfoSectionExpanded = nodeInfoVisibilityState != NodeMessageVisibility.Icon;
+            NodeWarningsSectionExpanded = nodeWarningsVisibilityState != NodeMessageVisibility.Icon;
+            NodeErrorsSectionExpanded = nodeErrorsVisibilityState != NodeMessageVisibility.Icon;
+        }
+
+        /// <summary>
+        /// Filters a collection of InfoBubbleDataPackets by whether they have a given style (e.g. Error).
+        /// </summary>
+        /// <param name="infoBubbleDataPackets"></param>
+        /// <param name="style">The style of messages to be returned</param>
+        /// <param name="secondStyle">A second (optional) style.</param>
+        /// <returns></returns>
+        private List<InfoBubbleDataPacket> GetMessagesOfStyle(ObservableCollection<InfoBubbleDataPacket> infoBubbleDataPackets, Style style)
+        {
+            Style secondStyle = GetAlternativeStyle(style);
+            return infoBubbleDataPackets.Where(x => x.Style == style || x.Style == secondStyle).ToList();
+        }
+
+        /// <summary>
+        /// Determines whether the 'show more/less' button says 'show more' or 'show less' for each section.
+        /// </summary>
+        private void UpdateShowMoreButtonText()
+        {
+            NodeInfoShowLessMessageVisible = NodeInfoShowMoreButtonVisible && NodeInfoVisibilityState == NodeMessageVisibility.ShowAllMessages;
+            NodeWarningsShowLessMessageVisible = NodeWarningsShowMoreButtonVisible && NodeWarningsVisibilityState == NodeMessageVisibility.ShowAllMessages;
+            NodeErrorsShowLessMessageVisible = NodeErrorsShowMoreButtonVisible && NodeErrorsVisibilityState == NodeMessageVisibility.ShowAllMessages;
+        }
+
+        /// <summary>
+        /// Determines whether the 'Show More' button is visible to the user, which displays when
+        /// the node is in a CollapsedMessages visibility state and there is more than one message to show
+        /// at this particular message level (e.g. Warning).
+        /// </summary>
+        private void UpdateShowMoreButtonVisibility()
+        {
+            RaisePropertyChanged(nameof(NodeInfoShowMoreButtonVisible));
+            RaisePropertyChanged(nameof(NodeWarningsShowMoreButtonVisible));
+            RaisePropertyChanged(nameof(NodeErrorsShowMoreButtonVisible));
+        }
+
+        private void UpdateNodeMessageIteratorsVisibility()
+        {
+            RaisePropertyChanged(nameof(NodeInfoIteratorVisible));
+            RaisePropertyChanged(nameof(NodeWarningsIteratorVisible));
+            RaisePropertyChanged(nameof(NodeErrorsIteratorVisible));
+        }
+
+        /// <summary>
+        /// A UX refinement; if a user dismisses a message and one remains, we need to switch off the iterator (to stop it saying 1/1)
+        /// and auto-collapse that section back to CollapseMessages if it was on ShowAllMessages.
+        /// </summary>
+        /// <param name="nonDismissedInfoMessageCount"></param>
+        /// <param name="nonDismissedWarningMessageCount"></param>
+        /// <param name="errorsCount"></param>
+        private void AutoCollapseSections(int nonDismissedInfoMessageCount, int nonDismissedWarningMessageCount, int errorsCount)
+        {
+            if (NodeInfoVisibilityState == NodeMessageVisibility.ShowAllMessages && nonDismissedInfoMessageCount < 2)
+            {
+                NodeInfoVisibilityState = NodeMessageVisibility.CollapseMessages;
+                RaisePropertyChanged(nameof(NodeInfoIteratorVisible));
+            }
+            if (NodeWarningsVisibilityState == NodeMessageVisibility.ShowAllMessages && nonDismissedWarningMessageCount < 2)
+            {
+                NodeWarningsVisibilityState = NodeMessageVisibility.CollapseMessages;
+                RaisePropertyChanged(nameof(NodeWarningsIteratorVisible));
+            }
+            if (NodeErrorsVisibilityState == NodeMessageVisibility.ShowAllMessages && errorsCount < 2)
+            {
+                NodeErrorsVisibilityState = NodeMessageVisibility.CollapseMessages;
+                RaisePropertyChanged(nameof(NodeErrorsIteratorVisible));
+            }
+        }
+
+        /// <summary>
+        /// Refreshes all of the user-facing Node Informational State UI.
+        /// </summary>
+        public void RefreshNodeInformationalStateDisplay()
+        {
+            ClearUserFacingCollections();
+
+            // Messages arriving at the node
+            List<InfoBubbleDataPacket> infoMessages = GetMessagesOfStyle(NodeMessages, Style.Info);
+            List<InfoBubbleDataPacket> warningMessages = GetMessagesOfStyle(NodeMessages, Style.Warning);
+            List<InfoBubbleDataPacket> errorMessages = GetMessagesOfStyle(NodeMessages, Style.Error);
+
+            // Messages which have already been dismissed by the user
+            List<InfoBubbleDataPacket> dismissedInfoMessages = GetMessagesOfStyle(DismissedMessages, Style.Info);
+            List<InfoBubbleDataPacket> dismissedWarningMessages = GetMessagesOfStyle(DismissedMessages, Style.Warning);
+
+            // The number of messages to actually show the user: messages received minus messages dismissed.
+            int nonDismissedInfoMessageCount = infoMessages.Count - dismissedInfoMessages.Count;
+            int nonDismissedWarningMessageCount = warningMessages.Count - dismissedWarningMessages.Count;
+
+            // Updates whether each section has been expanded or not; determines whether to display the message body.
+            SetMessageSectionsExpansion();
+            
+            // Generating the user-facing display objects.
+            SetDisplayMessages(infoMessages, NodeInfoVisibilityState);
+            SetDisplayMessages(warningMessages, NodeWarningsVisibilityState);
+            SetDisplayMessages(errorMessages, NodeErrorsVisibilityState);
+            
+            // A UI refinement; if there are fewer than 2 messages to show at a particular level, we collapse the sections.
+            AutoCollapseSections(nonDismissedInfoMessageCount, nonDismissedWarningMessageCount, errorMessages.Count);
+            // If there are fewer than 2 messages to show at a level, we don't display the iterating count.
+            UpdateNodeMessageIteratorsVisibility();
+            // If there are fewer than 2 message to show at a level, we don't display a button with 'show more'.
+            UpdateShowMoreButtonVisibility();
+            // If the section is already expanded, the 'show more' button says 'show less' instead.
+            UpdateShowMoreButtonText();
+            // If there are no items to show at a particular message level, the bubble's visibility is collapsed.
+            UpdateUserFacingCollectionVisibility();
+        }
+
+        /// <summary>
+        /// Takes in a style and determines what the corresponding collection of display messages is.
+        /// </summary>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        private ObservableCollection<InfoBubbleDataPacket> GetTargetCollection(Style style)
+        {
+            switch (style)
+            {
+                case Style.None:
+                    return null;
+                case Style.Warning:
+                case Style.WarningCondensed:
+                    return NodeWarningsToDisplay;
+                case Style.Error:
+                case Style.ErrorCondensed:
+                    return NodeErrorsToDisplay;
+                case Style.Info:
+                    return NodeInfoToDisplay;
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// Used for handling the old InfoBubble APIs, which kept track of
+        /// condensed and expanded styles for errors and warnings.
+        /// </summary>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        private Style GetAlternativeStyle(Style style)
+        {
+            switch (style)
+            {
+                case Style.None:
+                    return Style.None;
+                case Style.Warning:
+                    return Style.WarningCondensed;
+                case Style.WarningCondensed:
+                    return Style.Warning;
+                case Style.Error:
+                    return Style.ErrorCondensed;
+                case Style.ErrorCondensed:
+                    return Style.Error;
+                case Style.Info:
+                    return Style.None;
+                default:
+                    return Style.None;
+            }
+        }
+
+        /// <summary>
+        /// Creates a new object with the same properties as the original InfoBubbleDataPacket.
+        /// Needed so that we can display certain properties in a user, formatted in a certain way
+        /// without polluting the original object.
+        /// </summary>
+        /// <param name="infoBubbleDataPacketToCopy"></param>
+        /// <returns></returns>
+        private InfoBubbleDataPacket DuplicateInfoBubbleDataPacket(InfoBubbleDataPacket infoBubbleDataPacketToCopy)
+        {
+            return new InfoBubbleDataPacket
+            {
+                Text = infoBubbleDataPacketToCopy.Text,
+                Message = infoBubbleDataPacketToCopy.Message,
+                Link = infoBubbleDataPacketToCopy.Link,
+                LinkText = infoBubbleDataPacketToCopy.Link != null ? infoBubbleDataPacketToCopy.Link.ToString() : "",
+                Style = infoBubbleDataPacketToCopy.Style
+            };
+        }
+
+        /// <summary>
+        /// Takes in a list of messages and their corresponding NodeMessageVisibility state and returns
+        /// NodeMessage objects for display to the user, with an iterating count where necessary.
+        /// </summary>
+        /// <param name="infoBubbleDataPackets"></param>
+        /// <param name="nodeMessageVisibility"></param>
+        /// <returns></returns>
+        private void SetDisplayMessages(List<InfoBubbleDataPacket> infoBubbleDataPackets, NodeMessageVisibility nodeMessageVisibility)
+        {
+            if (infoBubbleDataPackets.Count < 1) return;
+
+            Style messageStyle = infoBubbleDataPackets.First().Style;
+            ObservableCollection<InfoBubbleDataPacket> targetCollection = GetTargetCollection(messageStyle);
+
+            List<InfoBubbleDataPacket> displayMessages = new List<InfoBubbleDataPacket>();
+            
+            // Filtering the collection of dismissed messages based on the message type, e.g. Warning
+            // Note: We're selecting the Text property here, since this is not affected by UI formatted requirements
+            // unlike the Message property, which is.
+            List<string> dismissedMessageStrings = GetMessagesOfStyle(DismissedMessages, messageStyle)
+                .Select(x => x.Text)
+                .ToList();
+
+            int nonDismissedMessageCount = GetMessagesOfStyle(NodeMessages, messageStyle).Count - dismissedMessageStrings.Count;
+
+            // If there are no messages to display to the user, return
+            if (nonDismissedMessageCount < 1) return;
+            
+            // Formats user-facing information to suit the redesigned Node Informational State design.
+            InfoBubbleDataPacket infoBubbleDataPacket;
+
+            switch (nodeMessageVisibility)
+            {
+                // The user just sees the icon, no messages.
+                case NodeMessageVisibility.Icon:
+                    infoBubbleDataPacket = DuplicateInfoBubbleDataPacket(infoBubbleDataPackets[0]);
+                    infoBubbleDataPacket.MessageNumber = "";
+                    displayMessages.Add(infoBubbleDataPacket);
+                    break;
+                // The user just sees the first message, with a count displaying the total number of collapsed messages at this level.
+                case NodeMessageVisibility.CollapseMessages:
+                    if (dismissedMessageStrings.Contains(infoBubbleDataPackets[0].Text)) break;
+
+                    infoBubbleDataPacket = DuplicateInfoBubbleDataPacket(infoBubbleDataPackets[0]);
+                    infoBubbleDataPacket.MessageNumber = nonDismissedMessageCount < 2 ? "" : $"1/{nonDismissedMessageCount} ";
+                    displayMessages.Add(infoBubbleDataPacket);
+                    break;
+                // The user sees all messages, with an interating counter displayed next to each message.
+                case NodeMessageVisibility.ShowAllMessages:
+                    // Otherwise we display the iterator
+                    int messageIterator = 1;
+                    for (int i = 0; i < infoBubbleDataPackets.Count; i++)
+                    {
+                        if (dismissedMessageStrings.Contains(infoBubbleDataPackets[i].Text)) continue;
+
+                        infoBubbleDataPacket = DuplicateInfoBubbleDataPacket(infoBubbleDataPackets[i]);
+                        infoBubbleDataPacket.MessageNumber = $"{messageIterator}/{nonDismissedMessageCount} ";
+                        displayMessages.Add(infoBubbleDataPacket);
+                        messageIterator++;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(nodeMessageVisibility), nodeMessageVisibility, null);
+            }
+            
+            if (targetCollection == null) return;
+            
+            // Adding the messages to the user-facing collection
+            for (int i = 0; i < displayMessages.Count; i++) targetCollection.Add(displayMessages[i]);
+        }
+    }
 
         /// <summary>
         /// Checks whether to show/hide all user facing collections.
@@ -882,7 +1345,7 @@ namespace Dynamo.ViewModels
             // If there are no items to show at a particular message level, the bubble's visibility is collapsed.
             UpdateUserFacingCollectionVisibility();
 
-            RaisePropertyChanged(nameof(DoesNodeDisplayMessages));
+            RaisePropertyChanged(nameof(DoesNodeDisplayMessages));     
         }
 
         /// <summary>
@@ -1068,8 +1531,7 @@ namespace Dynamo.ViewModels
             /// The string representation of a URI pointing to a markdown file which is opened when the user clicks 'Read More' on
             /// a particular info message / warning / error which displays this functionality.
             /// </summary>
-            public string LinkText { get; set; }
-            
+            public string LinkText { get; set; }           
 
             public InfoBubbleDataPacket(
                 InfoBubbleViewModel.Style style,

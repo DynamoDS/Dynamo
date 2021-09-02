@@ -930,5 +930,4 @@
                      Visibility="Collapsed" />
         </Grid>
     </Canvas>
-
 </UserControl>

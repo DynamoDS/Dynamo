@@ -819,4 +819,7 @@ This package has not been loaded because another conflicting package was loaded 
   <data name="NodeUnhandledMsg" xml:space="preserve">
     <value>Unhandled 'DummyNode.NodeNature' value: {0}</value>
   </data>
+  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
+    <value>Show all errors</value>
+  </data>
 </root>

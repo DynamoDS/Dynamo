@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Configuration;
@@ -56,6 +57,7 @@ namespace Dynamo.ViewModels
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
         private bool isRenamed = false;
+        private ObservableCollection<MenuItem> dismissedAlerts = new ObservableCollection<MenuItem>();
         #endregion
 
         #region public members
@@ -258,8 +260,10 @@ namespace Dynamo.ViewModels
             get { return nodeLogic.State; }
         }
 
+        /// <summary>
         /// The total number of info/warnings/errors dismissed by the user on this node.
         /// This is displayed on the node by a little icon beside the Context Menu button.
+        /// </summary>
         [JsonIgnore]
         public int NumberOfDismissedAlerts
         {
@@ -488,7 +492,7 @@ namespace Dynamo.ViewModels
 
         private bool isNodeNewlyAdded;
         private ImageSource imageSource;
-
+        
         [JsonIgnore]
         public bool IsNodeAddedRecently
         {
@@ -615,6 +619,20 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public ObservableCollection<string> DismissedAlerts => nodeLogic.DismissedAlerts;
 
+        /// <summary>
+        /// A collection of MenuItems used by the node's Context Menu, since errors/warnings are undismissed via a sub-menu.
+        /// </summary>
+        [JsonIgnore]
+        public ObservableCollection<MenuItem> DismissedAlerts
+        {
+            get => dismissedAlerts;
+            set
+            {
+                dismissedAlerts = value;
+                RaisePropertyChanged(nameof(DismissedAlerts));
+            }
+        }
+
         #endregion
 
         #region events
@@ -692,7 +710,7 @@ namespace Dynamo.ViewModels
             ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
             ErrorBubble.ZIndex = ZIndex + 1;
             UpdateBubbleContent();
-
+            
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -751,8 +769,8 @@ namespace Dynamo.ViewModels
             }
             RaisePropertyChanged(nameof(DismissedAlerts));
             RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
-        }
-
+        }       
+        
         /// <summary>
         /// Dispose function
         /// </summary>
@@ -925,6 +943,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "Width":
                     RaisePropertyChanged("Width");
+                    UpdateErrorBubbleWidth();
                     UpdateErrorBubblePosition();
                     break;
                 case "Height":
@@ -954,6 +973,14 @@ namespace Dynamo.ViewModels
                     RaiseFrozenPropertyChanged();
                     break;
             }
+        }
+
+        /// <summary>
+        /// Updates the width of the node's Warning/Error bubbles, in case the width of the node changes.
+        /// </summary>
+        private void UpdateErrorBubbleWidth()
+        {
+            ErrorBubble.BubbleWidth = NodeModel.Width;
         }
 
         public void UpdateBubbleContent()
@@ -998,6 +1025,7 @@ namespace Dynamo.ViewModels
                 }
 
                 ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
+
             }
         }
 
