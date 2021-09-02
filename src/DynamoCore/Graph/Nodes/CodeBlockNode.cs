@@ -45,6 +45,7 @@ namespace Dynamo.Graph.Nodes
         private readonly LibraryServices libraryServices;
 
         private bool shouldFocus = true;
+        internal ParseParam ParseParam { get; private set; }
 
         /// <summary>
         /// The NodeType property provides a name which maps to the 
@@ -619,6 +620,59 @@ namespace Dynamo.Graph.Nodes
             OnNodeModified();
         }
 
+        internal void ComputeParseParams()
+        {
+            code = CodeBlockUtils.FormatUserText(code);
+            ParseParam = new ParseParam(GUID, code, ElementResolver);
+
+            CompilerUtils.ComputeParseParams(libraryServices.LibraryManagementCore, ParseParam);
+        }
+
+        internal bool CompileFunctionDefinitionAST()
+        {
+            BuildStatus buildStatus = null;
+            try
+            {
+                int blockId = Constants.kInvalidIndex;
+                var core = libraryServices.LibraryManagementCore;
+
+                bool parsingPreloadFlag = core.IsParsingPreloadedAssembly;
+                bool parsingCbnFlag = core.IsParsingPreloadedAssembly;
+
+                core.IsParsingPreloadedAssembly = false;
+                core.IsParsingCodeBlockNode = true;
+
+                core.ResetForPrecompilation();
+
+                var astNodes = ParseParam.ParsedNodes.OfType<FunctionDefinitionNode>();
+
+                // Clone a disposable copy of AST nodes for PreCompile() as Codegen mutates AST's
+                // while performing SSA transforms and we want to keep the original AST's
+                var codeblock = new CodeBlockNode();
+                var nodes = astNodes.Select(NodeUtils.Clone).ToList();
+                codeblock.Body.AddRange(nodes);
+
+                buildStatus = CompilerUtils.PreCompile(string.Empty, core, codeblock, out blockId);
+
+                core.IsParsingCodeBlockNode = parsingCbnFlag;
+                core.IsParsingPreloadedAssembly = parsingPreloadFlag;
+
+                ParseParam.AppendErrors(buildStatus.Errors);
+                ParseParam.AppendWarnings(buildStatus.Warnings);
+
+                if (buildStatus.ErrorCount > 0)
+                {
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                buildStatus = null;
+                return false;
+            }
+        }
+
         private void ProcessCode(ref string errorMessage, ref string warningMessage,
             ElementResolver workspaceElementResolver = null)
         {
@@ -632,16 +686,16 @@ namespace Dynamo.Graph.Nodes
             {
                 // During loading of CBN from file, the elementResolver from the workspace is unavailable
                 // in which case, a local copy of the ER obtained from the CBN is used
-                var resolver = workspaceElementResolver ?? this.ElementResolver;
-                var parseParam = new ParseParam(GUID, code, resolver);
+                var resolver = workspaceElementResolver ?? ElementResolver;
+                ParseParam = new ParseParam(GUID, code, resolver);
                 var priorNames = libraryServices.GetPriorNames();
 
-                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam, priorNames))
+                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ParseParam, priorNames))
                 {
-                    if (parseParam.ParsedNodes != null)
+                    if (ParseParam.ParsedNodes != null)
                     {
                         // Create an instance of statement for each code statement written by the user
-                        foreach (var parsedNode in parseParam.ParsedNodes)
+                        foreach (var parsedNode in ParseParam.ParsedNodes)
                         {
                             // Create a statement variable from the generated nodes
                             codeStatements.Add(Statement.CreateInstance(parsedNode));
@@ -649,16 +703,16 @@ namespace Dynamo.Graph.Nodes
                     }
                 }
 
-                if (parseParam.Errors.Any())
+                if (ParseParam.Errors.Any())
                 {
-                    errorMessage = string.Join("\n", parseParam.Errors.Select(m => m.Message));
+                    errorMessage = string.Join("\n", ParseParam.Errors.Select(m => m.Message));
                     ProcessError();
                     CreateInputOutputPorts();
 
                     return;
                 }
 
-                if (parseParam.Warnings != null)
+                if (ParseParam.Warnings != null)
                 {
                     // Unbound identifiers in CBN will have input slots.
                     // 
@@ -666,7 +720,7 @@ namespace Dynamo.Graph.Nodes
                     // CBN to find out if it has been defined yet. Now just
                     // skip this warning.
                     var warnings =
-                        parseParam.Warnings.Where(
+                        ParseParam.Warnings.Where(
                             w =>
                                 w.ID != WarningID.IdUnboundIdentifier
                                     && w.ID != WarningID.FunctionAlreadyDefined);
@@ -677,13 +731,13 @@ namespace Dynamo.Graph.Nodes
                     }
                 }
 
-                if (parseParam.UnboundIdentifiers != null)
+                if (ParseParam.UnboundIdentifiers != null)
                 {
                     inputIdentifiers = new List<string>();
                     inputPortNames = new List<string>();
 
                     var definedVariables = new HashSet<string>(CodeBlockUtils.GetStatementVariables(codeStatements).SelectMany(s => s));
-                    foreach (var kvp in parseParam.UnboundIdentifiers)
+                    foreach (var kvp in ParseParam.UnboundIdentifiers)
                     {
                         if (!definedVariables.Contains(kvp.Value))
                         {
@@ -703,7 +757,7 @@ namespace Dynamo.Graph.Nodes
                 // variable defined in code block node or in on the right hand side of 
                 // expression as an input variable, a variable may not be renamed properly
                 // if SetPreviewVariable() is called before gathering input identifiers.
-                SetPreviewVariable(parseParam.ParsedNodes);
+                SetPreviewVariable(ParseParam.ParsedNodes);
             }
             catch (Exception e)
             {

@@ -126,32 +126,28 @@ namespace ProtoCore.Utils
 
         public void AppendParsedNodes(IEnumerable<AssociativeNode> parsedNodes)
         {
-            if (parsedNodes == null || !parsedNodes.Any())
-                return;
+            if (parsedNodes == null || !parsedNodes.Any()) return;
 
             this.parsedNodes.AddRange(parsedNodes);
         }
 
         public void AppendErrors(IEnumerable<ProtoCore.BuildData.ErrorEntry> errors)
         {
-            if (errors == null || (errors.Count() <= 0))
-                return;
+            if (errors == null || !errors.Any()) return;
 
             this.errors.AddRange(errors);
         }
 
         public void AppendWarnings(IEnumerable<ProtoCore.BuildData.WarningEntry> warnings)
         {
-            if (warnings == null || !warnings.Any())
-                return;
+            if (warnings == null || !warnings.Any()) return;
 
             this.warnings.AddRange(warnings);
         }
 
         public void AppendComments(IEnumerable<AssociativeNode> commentNodes)
         {
-            if (commentNodes == null || !commentNodes.Any())
-                return;
+            if (commentNodes == null || !commentNodes.Any()) return;
 
             this.commentNodes.AddRange(commentNodes);
         }
@@ -266,6 +262,7 @@ namespace ProtoCore.Utils
             return status.ErrorCount == 0;
         }
 
+        [Obsolete("This method will be deprecated in Dynamo 3.0")]
         /// <summary>
         /// Pre-compiles DS code in code block node, 
         /// checks for syntax, converts non-assignments to assignments,
@@ -278,6 +275,20 @@ namespace ProtoCore.Utils
         /// <returns> true if code compilation succeeds, false otherwise </returns>
         public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams, IDictionary<string, string> priorNames = null)
         {
+            return PreCompileCodeBlock(core, parseParams, priorNames);
+        }
+
+        internal static bool PreCompileCodeBlock(Core core, ParseParam parseParams, IDictionary<string, string> priorNames = null)
+        {
+            if (!ComputeParseParams(core, parseParams)) return false;
+
+            // Compile the code to get the resultant unboundidentifiers  
+            // and any errors or warnings that were caught by the compiler and cache them in parseParams
+            return CompileCodeBlockAST(core, parseParams, priorNames);
+        }
+
+        internal static bool ComputeParseParams(Core core, ParseParam parseParams)
+        {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
             // Parse code to generate AST and add temporaries to non-assignment nodes
@@ -285,7 +296,7 @@ namespace ProtoCore.Utils
             List<AssociativeNode> comments;
             ParseUserCode(core, parseParams.OriginalCode, postfixGuid, out astNodes, out comments);
             parseParams.AppendErrors(core.BuildStatus.Errors);
-            if (parseParams.Errors.Count() > 0)
+            if (parseParams.Errors.Any())
             {
                 return false;
             }
@@ -299,9 +310,7 @@ namespace ProtoCore.Utils
             parseParams.AppendParsedNodes(astNodes.Where(n => !n.skipMe));
             parseParams.AppendComments(comments);
 
-            // Compile the code to get the resultant unboundidentifiers  
-            // and any errors or warnings that were caught by the compiler and cache them in parseParams
-            return CompileCodeBlockAST(core, parseParams, priorNames);
+            return true;
         }
 
         private static bool CompileCodeBlockAST(Core core, ParseParam parseParams, IDictionary<string, string> priorNames)
@@ -321,7 +330,7 @@ namespace ProtoCore.Utils
 
                 core.ResetForPrecompilation();
 
-                var astNodes = parseParams.ParsedNodes;
+                var astNodes = parseParams.ParsedNodes.Where(x => !(x is FunctionDefinitionNode));
 
                 // Lookup namespace resolution map in elementResolver to rewrite 
                 // partial classnames with their fully qualified names in ASTs

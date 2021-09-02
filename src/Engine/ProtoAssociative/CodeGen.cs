@@ -1798,11 +1798,8 @@ namespace ProtoAssociative
                     }
                     else
                     {
-                        if (!core.IsParsingCodeBlockNode)
-                        {
-                            string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
-                            buildStatus.LogWarning(WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
-                        }
+                        string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
+                        buildStatus.LogWarning(WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                     }
 
                     inferedType.UID = (int)PrimitiveType.Null;
