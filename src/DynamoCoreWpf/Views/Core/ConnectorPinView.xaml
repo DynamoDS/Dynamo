@@ -6,8 +6,6 @@
              xmlns:local="clr-namespace:Dynamo.Wpf.Views.Preview"
              xmlns:props="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
-             Height="30"
-             Width="30"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:ui="clr-namespace:Dynamo.UI"
              MouseLeftButtonDown="OnPinMouseDown"
@@ -30,7 +28,7 @@
             </Canvas.ContextMenu>
 
         <Grid  x:Name="PinBtn"  Background="Transparent">
-            <Image>
+            <Image Width="{Binding Model.Width}" Height="{Binding Model.Width}">
                 <Image.Style>
                     <Style TargetType="Image">
                         <Style.Triggers>
