@@ -50,9 +50,9 @@
                                  FontFamily="Artifakt Element"
                                  HorizontalAlignment="Center"
                                  BorderThickness="1,1,1,1"
-                                 Background="#CCCCCC"
+                                 Background="{StaticResource PrimaryCharcoal300Brush}"
                                  Checked="ToggleButton_OnChecked"
-                                 Foreground="#4D4D4D">
+                                 Foreground="{StaticResource ExpanderCaretToggleButtonBackground}">
                         <RadioButton.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5"/>
@@ -124,7 +124,7 @@
                                                                 TextAlignment="Left"
                                                                 HorizontalAlignment="Center"
                                                                 Margin="0,3,0,0"
-                                                                Foreground="#EEEEEE"/>
+                                                                Foreground="{StaticResource PrimaryCharcoal100Brush}"/>
                                                     </Border>
                                                 </Grid>
                                             </StackPanel>

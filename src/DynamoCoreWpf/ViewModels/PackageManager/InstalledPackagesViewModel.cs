@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Security.Cryptography;
+
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Properties;
