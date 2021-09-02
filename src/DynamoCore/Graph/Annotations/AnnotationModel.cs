@@ -518,7 +518,7 @@ namespace Dynamo.Graph.Annotations
             this.Y = helper.ReadDouble("top", DoubleValue);
             this.width = helper.ReadDouble("width", DoubleValue);
             this.height = helper.ReadDouble("height", DoubleValue);
-            this.background = helper.ReadString("backgrouund", "");
+            this.background = helper.ReadString("background", "");
             this.fontSize = helper.ReadDouble("fontSize", fontSize);
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);

@@ -2784,6 +2784,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add group to group.
+        /// </summary>
+        public static string GroupContextMenuAddGroupToGroup {
+            get {
+                return ResourceManager.GetString("GroupContextMenuAddGroupToGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>   
         ///   Looks up a localized string similar to The selected save location path is too long. Please change the save location and try again..
         /// </summary>
         public static string GraphIssuesOnSavePath_Description {

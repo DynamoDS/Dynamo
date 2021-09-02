@@ -261,13 +261,17 @@ namespace Dynamo.ViewModels
         }
         
         /// <summary>
-        /// The total number of info/warnings/errors dismissed by the user on this node.
-        /// This is displayed on the node by a little icon beside the Context Menu button.
+        /// This is a UI placeholder for future functionality relating to Alerts
         /// </summary>
         [JsonIgnore]
         public int NumberOfDismissedAlerts
         {
-            get => DismissedAlerts.Count;
+            get => 0;
+            set
+            {
+                NumberOfDismissedAlerts = value;
+                RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
+            }
         }
 
         [JsonIgnore]
@@ -490,7 +494,6 @@ namespace Dynamo.ViewModels
 
         private bool isNodeNewlyAdded;
         private ImageSource imageSource;
-        
         [JsonIgnore]
         public bool IsNodeAddedRecently
         {
@@ -619,12 +622,6 @@ namespace Dynamo.ViewModels
                 base.IsCollapsed = value;
             }
         }
-        /// <summary>
-        /// A collection of MenuItems used by the node's Context Menu, since errors/warnings are undismissed via a sub-menu.
-        /// </summary>
-        [JsonIgnore]
-        public ObservableCollection<MenuItem> DismissedAlerts { get; set; } = new ObservableCollection<MenuItem>();
-        
         #endregion
 
         #region events
@@ -725,30 +722,6 @@ namespace Dynamo.ViewModels
             {
                 ImageSource = imgSource;
             }
-
-            // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
-            ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeWarnings_CollectionChanged;
-            logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
-
-        }
-
-        /// <summary>
-        /// Clears the existing messages on a node before it executes and re-evalutes its warnings/errors. 
-        /// </summary>
-        /// <param name="obj"></param>
-        private void Logic_NodeMessagesClearing(NodeModel obj)
-        {
-            // Because errors are evaluated before the graph/node executes, we need to ensure 
-            // errors aren't being dismissed when the graph runs.
-            if (nodeLogic.State == ElementState.Error) return;
-
-            if (DynamoViewModel.UIDispatcher != null)
-            {
-                DynamoViewModel.UIDispatcher.Invoke(() =>
-                {
-                    ErrorBubble.NodeMessages.Clear();
-                });
-            }
         }
 
         private void DismissedNodeWarnings_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -829,8 +802,6 @@ namespace Dynamo.ViewModels
                 p.Dispose();
             }
 
-            NodeModel.NodeMessagesClearing -= Logic_NodeMessagesClearing;
-            ErrorBubble.DismissedMessages.CollectionChanged -= DismissedNodeWarnings_CollectionChanged;
             ErrorBubble.Dispose();
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
@@ -1042,19 +1013,6 @@ namespace Dynamo.ViewModels
                 var data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
 
                 ErrorBubble.UpdateContentCommand.Execute(data);
-
-                // If running Dynamo with UI, use dispatcher, otherwise not
-                if(DynamoViewModel.UIDispatcher != null)
-                {
-                    DynamoViewModel.UIDispatcher.Invoke(() =>
-                    {
-                        ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                    });
-                }
-                else
-                {
-                    ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                }
 
                 ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
 

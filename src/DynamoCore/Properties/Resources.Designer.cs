@@ -1045,8 +1045,7 @@ namespace Dynamo.Properties {
                 return ResourceManager.GetString("NewNoteString", resourceCulture);
             }
         }
-        
-        /// <summary>
+
         ///   Looks up a localized string similar to Node &apos;{0}&apos; is now deprecated..
         /// </summary>
         public static string NodeDeprecatedMsg {
