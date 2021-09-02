@@ -631,7 +631,7 @@ namespace Dynamo.ViewModels
 
                 if (connectorViewModel == null) continue;
 
-                connectorViewModel.HideConnectorCommand.Execute(null);
+                connectorViewModel.HideConnectorCommand.Execute(AreConnectorsHidden);
             }
             RefreshHideWiresButton();
         }
