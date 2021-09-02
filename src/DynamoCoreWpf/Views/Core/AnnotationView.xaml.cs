@@ -14,6 +14,7 @@ using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
 using TextBox = System.Windows.Controls.TextBox;
 using Dynamo.Wpf.Utilities;
+using Dynamo.Graph.Annotations;
 
 namespace Dynamo.Nodes
 {
@@ -313,7 +314,7 @@ namespace Dynamo.Nodes
             //Record the value here, this is useful when title is popped from stack during undo
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
-                    Guid.Empty, ViewModel.AnnotationModel.GUID, "GroupDescriptionTextBlockText",
+                    Guid.Empty, ViewModel.AnnotationModel.GUID, nameof(AnnotationModel.AnnotationDescriptionText),
                     GroupDescriptionTextBox.Text));
 
             ViewModel.WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
