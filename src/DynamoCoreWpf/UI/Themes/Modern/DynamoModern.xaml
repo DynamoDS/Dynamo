@@ -875,6 +875,50 @@
         </Setter>
     </Style>
 
+    <Style x:Key="DismissButtonStyle"
+           TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Grid Name="ButtonGrid">
+                        <Rectangle Name="ButtonBackground"
+                                   Width="{TemplateBinding Width}"
+                                   Height="{TemplateBinding Height}"
+                                   Fill="White" />
+                        <Path Name="DiagonalLine1"
+                              Data="M 0,0 50,50"
+                              Stretch="UniformToFill"
+                              Stroke="{StaticResource MidGreyBrush}" />
+                        <Path Name="DiagonalLine2"
+                              Data="M 50,0 0,50"
+                              Stretch="UniformToFill"
+                              Stroke="{StaticResource MidGreyBrush}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="ButtonBackground"
+                                    Property="Fill"
+                                    Value="LightGray" />
+                        </Trigger>
+                        <Trigger Property="Button.IsPressed"
+                                 Value="True">
+                            <Setter TargetName="ButtonBackground"
+                                    Property="Fill"
+                                    Value="{StaticResource PrimaryCharcoal100Brush}" />
+                            <Setter TargetName="DiagonalLine1"
+                                    Property="Stroke"
+                                    Value="{StaticResource Blue300Brush}" />
+                            <Setter TargetName="DiagonalLine2"
+                                    Property="Stroke"
+                                    Value="{StaticResource Blue300Brush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="RadioButton" TargetType="{x:Type RadioButton}">
         <Setter Property="Template">
             <Setter.Value>
@@ -3271,6 +3315,23 @@
     <SolidColorBrush x:Key="PopupRatingControlBackColor" Color="#F5F5F5" />
 
     <SolidColorBrush x:Key="CheckMarkBackColor" Color="#87B340" />
+
+    <!-- Style for a self-wrapping ToolTip -->
+    <Style x:Key="ToolTipSelfWrapping"
+           TargetType="ToolTip">
+        <Style.Resources>
+            <Style TargetType="ContentPresenter">
+                <Style.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextWrapping"
+                                Value="Wrap" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </Style.Resources>
+        <Setter Property="MaxWidth"
+                Value="300" />
+    </Style>
 
     <!--  Style for the buttons in a Tooltip part of the Dynamo Guided Tours  -->
     <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">

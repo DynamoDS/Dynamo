@@ -730,7 +730,7 @@ namespace DynamoCoreWpfTests
         {
             InfoBubbleViewModel infoBubble = new InfoBubbleViewModel(this.ViewModel);
             string content = "This is the test infoBubble";
-            InfoBubbleDataPacket inputData_ErrorBubble = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error,
+            InfoBubbleViewModel.InfoBubbleDataPacket inputData_ErrorBubble = new InfoBubbleViewModel.InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error,
                 new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Bottom);
 
             if (infoBubble.UpdateContentCommand.CanExecute(null))

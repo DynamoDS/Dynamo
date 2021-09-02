@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -106,20 +108,7 @@ namespace Dynamo.Controls
         #endregion
 
         /// <summary>
-        /// Used to present useful/important information to user
-        /// Known usages (when this summary is written): DynamoView and NodeView (via DataTemplates.xaml)
-        /// Till date there are 5 major types of info bubble
-        /// 1. LibraryItemPreview:  Displayed when mouse hover over an item in the search view
-        /// 2. NodeTooltip:         Displayed when mouse hover over the title area of a node
-        /// 3. PreviewCondensed:    This is the default state when preview is shown.
-        ///                         Displayed when mouse hover over the little triangle at the bottom of a node
-        ///                         or
-        ///                         when user chooses to show the preview
-        /// 4. Preview:             Displayed when the node has a preview and mouse hover over the condensed preview        
-        /// 5. ErrorCondensed:      This is the default state when error is shown.
-        ///                         Displayed when errors exist for the node
-        /// 6. Error:               Displayed when errors exist for the node and mouse hover over the condensed
-        ///                         error
+        /// Used to present useful/important information to user when the node is in Error or Warning state.         error
         /// </summary>
         public InfoBubbleView()
         {
@@ -695,32 +684,15 @@ namespace Dynamo.Controls
 
         #region Update Position
 
+        /// <summary>
+        /// Ensures that the InfoBubbleView moves in tandem with the node it's attached to.
+        /// </summary>
         private void UpdatePosition()
         {
-            ContentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            double estimatedHeight = ContentContainer.DesiredSize.Height;
-            double estimatedWidth = ContentContainer.DesiredSize.Width;
-
-            switch (ViewModel.InfoBubbleStyle)
-            {
-                case InfoBubbleViewModel.Style.Warning:
-                case InfoBubbleViewModel.Style.WarningCondensed:
-                case InfoBubbleViewModel.Style.Error:
-                case InfoBubbleViewModel.Style.ErrorCondensed:
-                    mainGrid.Margin = GetMargin_Error(estimatedHeight, estimatedWidth);
-                    break;
-            }
+            Canvas.SetTop(mainGrid, ViewModel.TargetTopLeft.Y);
+            Canvas.SetLeft(mainGrid, ViewModel.TargetTopLeft.X);
         }
-
-        private System.Windows.Thickness GetMargin_Error(double estimatedHeight, double estimatedWidth)
-        {
-            System.Windows.Thickness margin = new System.Windows.Thickness();
-            double nodeWidth = ViewModel.TargetBotRight.X - ViewModel.TargetTopLeft.X;
-            margin.Top = -(estimatedHeight) + ViewModel.TargetTopLeft.Y;
-            margin.Left = -((estimatedWidth - nodeWidth) / 2) + ViewModel.TargetTopLeft.X;
-            return margin;
-        }
-
+        
         #endregion
 
         #region Resize
@@ -758,7 +730,7 @@ namespace Dynamo.Controls
             if (this.IsDisconnected)
                 return;
 
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            InfoBubbleViewModel.InfoBubbleDataPacket data = new InfoBubbleViewModel.InfoBubbleDataPacket();
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed)
             {
                 data.Style = InfoBubbleViewModel.Style.Error;
@@ -777,7 +749,7 @@ namespace Dynamo.Controls
             if (this.IsDisconnected)
                 return;
 
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            InfoBubbleViewModel.InfoBubbleDataPacket data = new InfoBubbleViewModel.InfoBubbleDataPacket();
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error)
             {
                 data.Style = InfoBubbleViewModel.Style.ErrorCondensed;
@@ -937,6 +909,185 @@ namespace Dynamo.Controls
             // make sure we unsubscribe from handling the hyperlink click event
             if (this.hyperlink != null)
                 this.hyperlink.RequestNavigate -= RequestNavigateToDocumentationLinkHandler;
+        }
+
+        private void ErrorsBorder_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+            if (ViewModel.NodeErrorsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
+            {
+                ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                ErrorsBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
+            }
+            else
+            {
+                ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
+                ErrorsBorder.HorizontalAlignment = HorizontalAlignment.Left;
+            }
+
+            ViewModel.NodeWarningsShowLessMessageVisible = false;
+        }
+
+        private void WarningsBorder_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+            if (ViewModel.NodeWarningsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
+            {
+                ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                WarningsBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
+            }
+            else
+            {
+                ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
+                WarningsBorder.HorizontalAlignment = HorizontalAlignment.Left;
+            }
+
+            ViewModel.NodeWarningsShowLessMessageVisible = false;
+        }
+
+        private void InfoBorder_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+            if (ViewModel.NodeInfoVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
+            {
+                ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                InfoBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
+            }
+            else
+            {
+                ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
+                InfoBorder.HorizontalAlignment = HorizontalAlignment.Left;
+            }
+
+            ViewModel.NodeWarningsShowLessMessageVisible = false;
+        }
+
+        private void ShowAllErrorsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // If we're already expanded, this button collapses the border
+            if (ViewModel.NodeErrorsVisibilityState ==
+                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
+            {
+                ViewModel.NodeErrorsVisibilityState =
+                    InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                ViewModel.NodeErrorsShowLessMessageVisible = false;
+                return;
+            }
+            ViewModel.NodeErrorsVisibilityState =
+                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
+            ViewModel.NodeErrorsShowLessMessageVisible = true;
+        }
+
+        private void ShowAllWarningsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // If we're already expanded, this button collapses the border
+            if (ViewModel.NodeWarningsVisibilityState ==
+                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
+            {
+                ViewModel.NodeWarningsVisibilityState =
+                    InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                ViewModel.NodeWarningsShowLessMessageVisible = false;
+                return;
+            }
+            ViewModel.NodeWarningsVisibilityState =
+                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
+            ViewModel.NodeWarningsShowLessMessageVisible = true;
+        }
+
+        private void ShowAllInfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            // If we're already expanded, this button collapses the border
+            if (ViewModel.NodeInfoVisibilityState ==
+                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages)
+            {
+                ViewModel.NodeInfoVisibilityState =
+                    InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+                ViewModel.NodeInfoShowLessMessageVisible = false;
+                return;
+            }
+            ViewModel.NodeInfoVisibilityState =
+                InfoBubbleViewModel.NodeMessageVisibility.ShowAllMessages;
+            ViewModel.NodeInfoShowLessMessageVisible = true;
+        }
+
+        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ScrollViewer scv = (ScrollViewer)sender;
+            scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// Retrieves all of a node's dismissed messages of a particular style.
+        /// </summary>
+        /// <param name="style"></param>
+        /// <returns></returns>
+        private ObservableCollection<InfoBubbleViewModel.InfoBubbleDataPacket> GetDismissedMessagesOfStyle(InfoBubbleViewModel.Style style)
+        {
+            return ViewModel.DismissedMessages.Where(x => x.Style == style).ToObservableCollection();
+        }
+
+        /// <summary>
+        /// Clears out the node's collection of all dismissed messages of a particular style (e.g. Error).
+        /// </summary>
+        /// <param name="style"></param>
+        private void ClearDismissedMessagesOfStyle(InfoBubbleViewModel.Style style)
+        {
+            ObservableCollection<InfoBubbleViewModel.InfoBubbleDataPacket> messagesToDismiss = GetDismissedMessagesOfStyle(style);
+
+            for (int i = messagesToDismiss.Count - 1; i >= 0; i--)
+            {
+                ViewModel.DismissedMessages.RemoveAt(i);
+            }
+        }
+
+        /// <summary>
+        /// Repopulates the node's collection of dismissed messages.
+        /// </summary>
+        /// <param name="style"></param>
+        private void RecreateDismissedMessagesOfStyle(InfoBubbleViewModel.Style style)
+        {
+            foreach (InfoBubbleViewModel.InfoBubbleDataPacket infoBubbleDataPacket in ViewModel.NodeMessages)
+            {
+                if (infoBubbleDataPacket.Style != style) continue;
+                ViewModel.DismissedMessages.Add(infoBubbleDataPacket);
+            }
+        }
+
+        /// <summary>
+        /// Combines the clearing and repopulation functions of a node's dismissed messages collection.
+        /// </summary>
+        private void RefreshDismissedMessages(InfoBubbleViewModel.Style style)
+        {
+            ClearDismissedMessagesOfStyle(style);
+            RecreateDismissedMessagesOfStyle(style);
+        }
+
+        /// <summary>
+        /// Click event handler for when the user clicks 'Dismiss All' on a node's info messages.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DismissAllInfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Clearing and recreating all existing info-level messages from the dismissed collection.
+            RefreshDismissedMessages(InfoBubbleViewModel.Style.Info);
+
+            ViewModel.RefreshNodeInformationalStateDisplay();
+        }
+
+        /// <summary>
+        /// Click event handler for when the user clicks 'Dismiss All' on a node's warnings.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DismissAllWarningsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Clearing and recreating all existing warning-level messages from the dismissed collection.
+            RefreshDismissedMessages(InfoBubbleViewModel.Style.Warning);
+            RefreshDismissedMessages(InfoBubbleViewModel.Style.WarningCondensed);
+
+            ViewModel.RefreshNodeInformationalStateDisplay();
         }
 
         #endregion

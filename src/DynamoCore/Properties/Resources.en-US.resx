@@ -813,4 +813,7 @@ This package has not been loaded because another conflicting package was loaded 
   <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
     <value>Unhide Wires</value>
   </data>
+  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
+    <value>Show all errors</value>
+  </data>
 </root>

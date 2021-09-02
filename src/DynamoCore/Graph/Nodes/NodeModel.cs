@@ -146,6 +146,19 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public event Action<NodeModel> NodeExecutionBegin;
 
+        /// <summary>
+        /// Event triggered whenever the node re-executes to clear its warnings and errors.
+        /// </summary>
+        public event Action<NodeModel> NodeMessagesClearing;
+
+        /// <summary>
+        /// Fires on each node that is modified when the graph executes.
+        /// </summary>
+        internal void OnNodeMessagesClearing()
+        {
+            NodeMessagesClearing?.Invoke(this);
+        }
+
         internal void OnNodeExecutionBegin()
         {
             NodeExecutionBegin?.Invoke(this);
@@ -956,7 +969,13 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// A collection of error/warning/info messages, dismissed via a sub-menu in the node Context Menu.
+        [JsonIgnore]
+        public ObservableCollection<string> DismissedAlerts { get; set; } = new ObservableCollection<string>();
+
         #endregion
+
+
 
         #region freeze execution
         /// <summary>
@@ -1581,6 +1600,7 @@ namespace Dynamo.Graph.Nodes
 
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTooltipText();
+            OnNodeMessagesClearing();
         }
 
         /// <summary>
