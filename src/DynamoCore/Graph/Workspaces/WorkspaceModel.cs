@@ -2281,7 +2281,6 @@ namespace Dynamo.Graph.Workspaces
         private void LoadAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
         {
             if (annotationViews == null) return;
-
             var annotationQueue = new Queue<ExtraAnnotationViewInfo>(annotationViews);
             while (annotationQueue.Any())
             {

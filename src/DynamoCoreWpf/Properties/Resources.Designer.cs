@@ -4018,8 +4018,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("NodeInformationalStateDismissedAlerts", resourceCulture);
             }
         }
-        
-        /// <summary>
+
         ///   Looks up a localized string similar to Learn more.
         /// </summary>
         public static string NodeInformationalStateLearnMore {

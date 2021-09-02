@@ -126,7 +126,6 @@
                                            Text="Error"
                                            Visibility="{Binding NodeErrorsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                             </Grid>
-
                             <!--  Error Info  -->
                             <ScrollViewer Grid.Row="1"
                                           MaxHeight="200"

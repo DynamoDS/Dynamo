@@ -255,8 +255,8 @@ namespace Dynamo.ViewModels
         internal NodeViewModel NodeViewModel
         {
             get => _node;
-        }
-        
+        }       
+
         /// <summary>
         /// Shows or hides the Use Levels and Keep List Structure checkboxes
         /// in the node chevron popup menu.

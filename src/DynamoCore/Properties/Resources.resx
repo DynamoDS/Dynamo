@@ -599,6 +599,9 @@ value : bool = false</value>
   <data name="WatermarkLabelText" xml:space="preserve">
     <value>Enter code here</value>
   </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>&lt;Click here to edit the group title&gt;</value>
+  </data>
   <data name="DefaultValue" xml:space="preserve">
     <value>Default value</value>
     <comment>Default value</comment>
@@ -818,5 +821,8 @@ This package has not been loaded because another conflicting package was loaded 
   </data>
   <data name="NodeUnhandledMsg" xml:space="preserve">
     <value>Unhandled 'DummyNode.NodeNature' value: {0}</value>
+  </data>
+  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
+    <value>Show all errors</value>
   </data>
 </root>

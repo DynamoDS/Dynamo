@@ -87,20 +87,20 @@ namespace Dynamo.ViewModels
         private bool nodeInfoIteratorVisible;
         private bool nodeWarningsIteratorVisible;
         private bool nodeErrorsIteratorVisible;
-        
+
         // Determines whether or not the body of each information bubble is shown. 
         // This relates to the message text box, and any buttons used to dismiss/display messages.
         private bool nodeInfoSectionExpanded;
         private bool nodeWarningsSectionExpanded;
         private bool nodeErrorsSectionExpanded;
 
-        // Determines whether the info, warnings and errors are displaying just an icon, a single error message.
+        // Determines whether the info, warnings and errors are displaying just an icon, a single error message,
         // or all messages at once.
         private NodeMessageVisibility nodeInfoVisibilityState = NodeMessageVisibility.Icon;
         private NodeMessageVisibility nodeWarningsVisibilityState = NodeMessageVisibility.Icon;
         private NodeMessageVisibility nodeErrorsVisibilityState = NodeMessageVisibility.Icon;
-        
-        // Relates to whether the info/warning/error message bodies display a button saying.
+
+        // Relates to whether the info/warning/error message bodies display a button saying
         // 'show more' or 'show less'.
         private bool nodeInfoShowLessMessageVisible;
         private bool nodeWarningsShowLessMessageVisible;
@@ -210,7 +210,6 @@ namespace Dynamo.ViewModels
         [Obsolete]
         public string FullContent;
 
-        [Obsolete]
         public Direction ConnectingDirection
         {
             get { return connectingDirection; }
@@ -277,8 +276,8 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// A collection of formatted, user-visible strings relating to the node's error state
         /// </summary>
-        public ObservableCollection<InfoBubbleDataPacket> NodeErrorsToDisplay { get; } = new ObservableCollection<InfoBubbleDataPacket>();
-        
+        public ObservableCollection<InfoBubbleDataPacket> NodeErrorsToDisplay { get; } = new ObservableCollection<InfoBubbleDataPacket>();    
+
         /// <summary>
         /// A collection of InfoBubbleDataPacket objects that are received when the node executes
         /// and its state changes to reflect errors or warnings that have been detected.
@@ -421,7 +420,7 @@ namespace Dynamo.ViewModels
                 return messages.Count - dismissedMessages.Count > 1;
             }
         }
-           
+         
         /// <summary>
         /// Used to switch out the DataTemplate from one that shows an iterator beside each message
         /// to one which doesn't. This is necessary because empty TextBlock Runs are non zero-width
@@ -458,7 +457,6 @@ namespace Dynamo.ViewModels
             ConnectingDirection = Direction.None;
             Content = string.Empty;
             DocumentationLink = null;
-            // To appear above any NodeView elements
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
 
@@ -477,6 +475,7 @@ namespace Dynamo.ViewModels
         {
             RefreshNodeInformationalStateDisplay();
         }
+
         #region Command Methods
 
         [Obsolete]
@@ -589,8 +588,8 @@ namespace Dynamo.ViewModels
             for (int i = 0; i < messageCount; i++)
             {
                 DismissedMessages.Add(infoBubbleDataPacket);
-            }
-            
+            }           
+
             RefreshNodeInformationalStateDisplay();
         }
 
@@ -933,7 +932,7 @@ namespace Dynamo.ViewModels
 
             // If there are no messages to display to the user, return.
             if (denominator < 1) return;
-            
+           
             // Formats user-facing information to suit the redesigned Node Informational State design.
             InfoBubbleDataPacket infoBubbleDataPacket;
 
