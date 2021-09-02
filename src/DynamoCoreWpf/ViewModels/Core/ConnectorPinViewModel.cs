@@ -87,10 +87,11 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(Model));
             }
         }
-        /// <summary>
-        /// In this case width == height for connectorPinModels, 
-        /// so we only need one property that can be used for both.
-        /// </summary>
+      /// <summary>
+      /// This property is used to center the ConnectorPinIcon in views
+      /// as well as to offset the coordinate used for drawing
+      /// bezier connectors through.
+      /// </summary>
         [JsonIgnore]
         public double OneThirdWidth
         {
