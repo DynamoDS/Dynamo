@@ -118,13 +118,13 @@
                         <Style TargetType="{x:Type Image}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=IsHalftone, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/watch_hidden_16_16.png"/>
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/watch_hidden_48_48.png"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=IsHalftone, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
-                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/Watch_16_16.png"/>
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/watch_default_48_48.png"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=WatchIconPreviewOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/watch_default_16_16.png"/>
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/watch_selected_48_48.png"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -151,13 +151,13 @@
                         <Style TargetType="{x:Type Image}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=IsHalftone, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_hidden_16_16.png"/>
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_hidden_48_48.png"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=IsHalftone, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
-                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/Pin_16_16.png"/>
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_default_48_48.png"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=PinIconPreviewOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_default_16_16.png"/>
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_selected_48_48.png"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
