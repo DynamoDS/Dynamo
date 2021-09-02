@@ -71,11 +71,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
             dynamoViewModel = dynViewModel;
             guideBackgroundElement = Guide.FindChild(root, "GuidesBackground") as GuideBackground;            
             Guides = new List<Guide>();
-                       
+            Window mainWindow = Window.GetWindow(mainRootElement);
+
 
             if (guideBackgroundElement == null)
             {
-                guideBackgroundElement = new GuideBackground
+                guideBackgroundElement = new GuideBackground(mainWindow)
                 {
                     Name = "GuideBackground",
                     HorizontalAlignment = HorizontalAlignment.Left,

@@ -9,7 +9,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
     /// </summary>
     public partial class GuideBackground : UserControl, INotifyPropertyChanged
     {
-        public GuideBackground()
+        public GuideBackground(Window mainWindow)
         {
             InitializeComponent();
             DataContext = this;
@@ -17,7 +17,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             //Initializate the background with the current screen size
             WindowsRect = new Rect(0, 0, System.Windows.SystemParameters.PrimaryScreenWidth, System.Windows.SystemParameters.PrimaryScreenHeight);
             //This event is triggered everytime that the main window changes it's size
-            Application.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
+            mainWindow.SizeChanged += MainWindow_SizeChanged;
         }
                 
         private Rect hole;
