@@ -919,7 +919,7 @@ namespace Dynamo.Graph.Workspaces
             return orphans;
         }
 
-        internal void CompileCodeBlockNodes()
+        internal void ReCompileCodeBlockNodesForFunctionDefinitions()
         {
             var cbns = Nodes.OfType<CodeBlockNodeModel>();
 

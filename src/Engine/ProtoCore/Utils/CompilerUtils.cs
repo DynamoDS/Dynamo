@@ -306,7 +306,7 @@ namespace ProtoCore.Utils
             return CompileCodeBlockAST(core, parseParams, priorNames);
         }
 
-        internal static bool CompileCodeBlockAST(Core core, ParseParam parseParams, IDictionary<string, string> priorNames)
+        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams, IDictionary<string, string> priorNames)
         {
             var unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
 
@@ -322,8 +322,6 @@ namespace ProtoCore.Utils
                 core.IsParsingCodeBlockNode = true;
 
                 core.ResetForPrecompilation();
-
-                //var astNodes = parseParams.ParsedNodes.Where(x => !(x is FunctionDefinitionNode));
 
                 // Lookup namespace resolution map in elementResolver to rewrite 
                 // partial classnames with their fully qualified names in ASTs

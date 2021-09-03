@@ -1834,7 +1834,7 @@ namespace Dynamo.Models
             {
                 homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
 
-                homeWorkspace.CompileCodeBlockNodes();
+                homeWorkspace.ReCompileCodeBlockNodesForFunctionDefinitions();
 
                 RunType runType;
                 if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)
