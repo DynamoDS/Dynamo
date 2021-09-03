@@ -120,7 +120,10 @@ namespace Dynamo.Graph.Nodes
         /// <param name="resolver">Responsible for resolving 
         /// a partial class name to its fully resolved name</param>
         public CodeBlockNodeModel(string code, double x, double y, LibraryServices libraryServices, ElementResolver resolver)
-            : this(code, Guid.NewGuid(), x, y, libraryServices, resolver) { }
+            : this(code, Guid.NewGuid(), x, y, libraryServices, resolver) 
+        {
+            ProcessCodeDirect(ProcessCode);
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CodeBlockNodeModel"/> class
