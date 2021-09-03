@@ -313,14 +313,14 @@ namespace ProtoCore.Utils
             return true;
         }
 
-        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams, IDictionary<string, string> priorNames)
+        internal static bool CompileCodeBlockAST(Core core, ParseParam parseParams, IDictionary<string, string> priorNames)
         {
             var unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
 
-            ProtoCore.BuildStatus buildStatus = null;
+            BuildStatus buildStatus = null;
             try
             {
-                int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
+                int blockId = Constants.kInvalidIndex;
                 
 
                 bool parsingPreloadFlag = core.IsParsingPreloadedAssembly;
@@ -363,7 +363,7 @@ namespace ProtoCore.Utils
                 {
                     return false;
                 }
-                IEnumerable<BuildData.WarningEntry> warnings = buildStatus.Warnings;
+                IEnumerable<WarningEntry> warnings = buildStatus.Warnings;
 
                 // Get the unboundIdentifiers from the warnings
                 GetInputLines(parseParams.ParsedNodes, warnings, unboundIdentifiers);

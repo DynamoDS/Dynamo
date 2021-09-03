@@ -934,9 +934,8 @@ namespace Dynamo.Graph.Workspaces
             }
             foreach(var cbn in cbns)
             {
-
+                cbn.ProcessCodeDirect(cbn.CompileCodeBlockAST);
             }
-
         }
 
         internal bool TryGetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)
