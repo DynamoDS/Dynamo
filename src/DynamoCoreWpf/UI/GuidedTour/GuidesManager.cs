@@ -43,7 +43,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         //The ExitTourHorizontalOffset is used to move horizontally the popup (using as a reference the statusBarPanel position)
         private const double ExitTourHorizontalOffset = 110;
 
-        
+        private const string guideBackgroundName = "GuidesBackground";
+        private const string mainGridName = "mainGrid";
+        private const string libraryViewName = "Browser";
+
+
 
         public static string GuidesExecutingDirectory
         {
@@ -69,7 +73,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             mainRootElement = root;
             dynamoViewModel = dynViewModel;
-            guideBackgroundElement = Guide.FindChild(root, "GuidesBackground") as GuideBackground;            
+            guideBackgroundElement = Guide.FindChild(root, guideBackgroundName) as GuideBackground;            
             Guides = new List<Guide>();
             Window mainWindow = Window.GetWindow(mainRootElement);
 
@@ -78,13 +82,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 guideBackgroundElement = new GuideBackground(mainWindow)
                 {
-                    Name = "GuideBackground",
+                    Name = guideBackgroundName,
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Top,
                     Visibility = Visibility.Hidden
                 };
 
-                Grid mainGrid = Guide.FindChild(root, "mainGrid") as Grid;
+                Grid mainGrid = Guide.FindChild(root, mainGridName) as Grid;
                 mainGrid.Children.Add(guideBackgroundElement);
                 Grid.SetColumnSpan(guideBackgroundElement, 5);
                 Grid.SetRowSpan(guideBackgroundElement, 6);
@@ -138,7 +142,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 //Show background overlay
                 guideBackgroundElement.Visibility = Visibility.Visible;
                 currentGuide.GuideBackgroundElement = guideBackgroundElement;
-                currentGuide.LibraryView = Guide.FindChild(mainRootElement, "Browser");
+                currentGuide.LibraryView = Guide.FindChild(mainRootElement, libraryViewName);
                 currentGuide.Initialize();
                 currentGuide.Play();
             }

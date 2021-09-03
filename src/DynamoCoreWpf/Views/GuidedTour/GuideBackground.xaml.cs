@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -7,21 +8,11 @@ namespace Dynamo.Wpf.Views.GuidedTour
     /// <summary>
     /// Interaction logic for GuideBackground.xaml
     /// </summary>
-    public partial class GuideBackground : UserControl, INotifyPropertyChanged
+    public partial class GuideBackground : UserControl, INotifyPropertyChanged, IDisposable
     {
-        public GuideBackground(Window mainWindow)
-        {
-            InitializeComponent();
-            DataContext = this;
-
-            //Initializate the background with the current screen size
-            WindowsRect = new Rect(0, 0, System.Windows.SystemParameters.PrimaryScreenWidth, System.Windows.SystemParameters.PrimaryScreenHeight);
-            //This event is triggered everytime that the main window changes it's size
-            mainWindow.SizeChanged += MainWindow_SizeChanged;
-        }
-                
         private Rect hole;
         private Rect windowsRect;
+        private Window mainWindow;
 
         /// <summary>
         /// Rect with the size of the Dynamo Window regularly updating its size depending the window's size
@@ -60,6 +51,18 @@ namespace Dynamo.Wpf.Views.GuidedTour
             }
         }
 
+        public GuideBackground(Window mainWindow)
+        {
+            InitializeComponent();
+            DataContext = this;
+
+            //Initializate the background with the current screen size
+            WindowsRect = new Rect(0, 0, System.Windows.SystemParameters.PrimaryScreenWidth, System.Windows.SystemParameters.PrimaryScreenHeight);
+            //This event is triggered everytime that the main window changes it's size
+            this.mainWindow = mainWindow;
+            this.mainWindow.SizeChanged += MainWindow_SizeChanged;
+        }
+
         /// <summary>
         /// This method updates the width and height of the background window everytime it resizes
         /// </summary>
@@ -70,6 +73,11 @@ namespace Dynamo.Wpf.Views.GuidedTour
             windowsRect.Width = e.NewSize.Width;
             windowsRect.Height = e.NewSize.Height;
             RaisePropertyChanged(nameof(WindowsRect));
+        }
+
+        public void Dispose()
+        {
+            mainWindow.SizeChanged -= MainWindow_SizeChanged;
         }
     }
 }
