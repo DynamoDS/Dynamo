@@ -704,15 +704,26 @@ namespace Dynamo.Graph.Nodes
             ProcessCode(ref errorMessage, ref warningMessage, null);
         }
 
-        private delegate bool ProcessCodeInternalDelegate(ProtoCore.Core core, ParseParam parseParam, Dictionary<string, string> priorNames);
-        private void ProcessCodeInternal(ref string errorMessage, ref string warningMessage, ProcessCodeInternalDelegate handler)
+        private void ProcessCode(ref string errorMessage, ref string warningMessage,
+            ElementResolver workspaceElementResolver)
         {
+            code = CodeBlockUtils.FormatUserText(code);
+
+            if (string.IsNullOrEmpty(Code))
+            {
+                previewVariable = null;
+            }
+            // During loading of CBN from file, the elementResolver from the workspace is unavailable
+            // in which case, a local copy of the ER obtained from the CBN is used
+            var resolver = workspaceElementResolver ?? ElementResolver;
+            ParseParam = new ParseParam(GUID, code, resolver);
+
             codeStatements.Clear();
             try
             {
                 var priorNames = libraryServices.GetPriorNames();
 
-                if (handler(libraryServices.LibraryManagementCore, ParseParam, priorNames))
+                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ParseParam, priorNames))
                 {
                     if (ParseParam.ParsedNodes != null)
                     {
@@ -791,23 +802,6 @@ namespace Dynamo.Graph.Nodes
 
             // Set the input and output ports based on the statements
             CreateInputOutputPorts();
-        }
-
-        private void ProcessCode(ref string errorMessage, ref string warningMessage,
-            ElementResolver workspaceElementResolver)
-        {
-            code = CodeBlockUtils.FormatUserText(code);
-
-            if (string.IsNullOrEmpty(Code))
-            {
-                previewVariable = null;
-            }
-            // During loading of CBN from file, the elementResolver from the workspace is unavailable
-            // in which case, a local copy of the ER obtained from the CBN is used
-            var resolver = workspaceElementResolver ?? ElementResolver;
-            ParseParam = new ParseParam(GUID, code, resolver);
-
-            ProcessCodeInternal(ref errorMessage, ref warningMessage, CompilerUtils.PreCompileCodeBlock);
         }
 
         private static bool IsTempIdentifier(string name)
