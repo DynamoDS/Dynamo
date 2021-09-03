@@ -505,8 +505,66 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Canvas.ZIndex="43"
-                    FlowDirection="RightToLeft"
+                    FlowDirection="LeftToRight"
                     Orientation="Horizontal">
+            <Grid x:Name="HiddenEyeGlyph"
+                  Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}">
+                <Image Width="24px"
+                       Height="24px"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Source="/DynamoCoreWpf;component/UI/Images/hidden.png" />
+            </Grid>
+            <Label x:Name="LacingIconGlyph"
+                   Margin="0,1,0,-1"
+                   ToolTipService.ShowDuration="30000"
+                   HorizontalContentAlignment="Center"
+                   VerticalContentAlignment="Center"
+                   Content="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
+                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                   FontSize="10px"
+                   Foreground="{StaticResource NodeLacingGlyphBackground}"
+                   Style="{StaticResource SZoomFadeLabel}"
+                   ToolTip="For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3} pattern."
+                   Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}" />
+            <Grid Name="AlertsGlyph"
+                  Width="Auto"
+                  Height="20">
+                <Border Background="{StaticResource NodeDismissedWarningsGlyphBackground}"
+                        CornerRadius="10">
+                    <Label Padding="3,2,3,0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           Content="{Binding NumberOfDismissedAlerts, UpdateSourceTrigger=PropertyChanged}"
+                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                           FontSize="10px"
+                           Foreground="Black"
+                           Style="{StaticResource SZoomFadeLabel}" />
+                </Border>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility"
+                                Value="Visible" />
+                        <Setter Property="MinWidth"
+                                Value="20" />
+                        <Setter Property="Margin"
+                                Value="3,0,0,0" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding NumberOfDismissedAlerts}"
+                                         Value="0">
+                                <Setter Property="Grid.MinWidth"
+                                        Value="0" />
+                                <Setter Property="Grid.Margin"
+                                        Value="0" />
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+            </Grid>
             <Button x:Name="OptionsButton"
                     Click="OptionsButton_Click"
                     ToolTip="{x:Static p:Resources.ContextMenu}">
@@ -523,17 +581,23 @@
                                                 CornerRadius="2" />
                                         <Image Width="16px"
                                                Height="16px"
-                                               Margin="0,0,1.5,0"
+                                               Margin="1.5,0,0,0"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                Source="/DynamoCoreWpf;component/UI/Images/more-vertical.png" />
                                     </Grid>
                                     <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="DotsBackgroundBorder" Property="Background" Value="{StaticResource NodeOptionsButtonBackground}" />
+                                        <Trigger Property="IsMouseOver"
+                                                 Value="True">
+                                            <Setter TargetName="DotsBackgroundBorder"
+                                                    Property="Background"
+                                                    Value="{StaticResource NodeOptionsButtonBackground}" />
                                         </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="False">
-                                            <Setter TargetName="DotsBackgroundBorder" Property="Background" Value="Transparent" />
+                                        <Trigger Property="IsMouseOver"
+                                                 Value="False">
+                                            <Setter TargetName="DotsBackgroundBorder"
+                                                    Property="Background"
+                                                    Value="Transparent" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -542,54 +606,6 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Grid Name="AlertsGlyph"
-                  Width="Auto"
-                  Height="20">
-                <Border Background="{StaticResource NodeDismissedWarningsGlyphBackground}" CornerRadius="10">
-                    <Label Padding="3,2,3,0"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           HorizontalContentAlignment="Center"
-                           VerticalContentAlignment="Center"
-                           Content="{Binding NumberOfDismissedAlerts, UpdateSourceTrigger=PropertyChanged}"
-                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                           FontSize="10px"
-                           Foreground="Black"
-                           Style="{StaticResource SZoomFadeLabel}" />
-                </Border>
-                <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Visible" />
-                        <Setter Property="MinWidth" Value="20" />
-                        <Setter Property="Margin" Value="3,0,0,0" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding NumberOfDismissedAlerts}" Value="0">
-                                <Setter Property="Grid.MinWidth" Value="0" />
-                                <Setter Property="Grid.Margin" Value="0" />
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
-            </Grid>
-            <Label x:Name="LacingIconGlyph"
-                   Margin="0,1,0,-1"
-                   HorizontalContentAlignment="Center"
-                   VerticalContentAlignment="Center"
-                   Content="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
-                   FontFamily="{StaticResource ArtifaktElementRegular}"
-                   FontSize="10px"
-                   Foreground="{StaticResource NodeLacingGlyphBackground}"
-                   Style="{StaticResource SZoomFadeLabel}"
-                   ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
-                   Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}" />
-            <Grid x:Name="HiddenEyeGlyph" Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}">
-                <Image Width="24px"
-                       Height="24px"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Source="/DynamoCoreWpf;component/UI/Images/hidden.png" />
-            </Grid>
         </StackPanel>
 
         <Grid Name="PresentationGrid"
@@ -630,7 +646,7 @@
         <!--  Displays when the node is selected  -->
         <Border Name="selectionBorder"
                 Grid.Row="1"
-                Grid.RowSpan="3"
+                Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
                 Margin="-2"
                 Background="Transparent"
