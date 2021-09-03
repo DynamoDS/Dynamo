@@ -33,7 +33,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         public int TotalTooltips { get; set; }
 
-        public enum StepTypes{ SURVEY, TOOLTIP, WELCOME, EXIT_TOUR };
+        public enum StepTypes{ SURVEY, TOOLTIP, WELCOME, EXIT_TOUR};
 
         /// <summary>
         /// The step type will describe which type of window will be created after reading the json file, it can be  SURVEY, TOOLTIP, WELCOME, EXIT_TOUR
@@ -88,6 +88,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         [JsonProperty("UIAutomation")]
         public StepUIAutomation UIAutomation { get; set; }
+
+        /// <summary>
+        /// This property will show the library if It's set to true
+        /// </summary>
+        [JsonProperty("ShowLibrary")]
+        public bool ShowLibrary { get; set; }
+
 
         public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT };
 
