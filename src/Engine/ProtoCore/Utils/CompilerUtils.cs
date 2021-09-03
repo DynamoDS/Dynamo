@@ -280,15 +280,6 @@ namespace ProtoCore.Utils
 
         internal static bool PreCompileCodeBlock(Core core, ParseParam parseParams, IDictionary<string, string> priorNames = null)
         {
-            if (!ComputeParseParams(core, parseParams)) return false;
-
-            // Compile the code to get the resultant unboundidentifiers  
-            // and any errors or warnings that were caught by the compiler and cache them in parseParams
-            return CompileCodeBlockAST(core, parseParams, priorNames);
-        }
-
-        internal static bool ComputeParseParams(Core core, ParseParam parseParams)
-        {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
             // Parse code to generate AST and add temporaries to non-assignment nodes
@@ -310,7 +301,9 @@ namespace ProtoCore.Utils
             parseParams.AppendParsedNodes(astNodes.Where(n => !n.skipMe));
             parseParams.AppendComments(comments);
 
-            return true;
+            // Compile the code to get the resultant unboundidentifiers  
+            // and any errors or warnings that were caught by the compiler and cache them in parseParams
+            return CompileCodeBlockAST(core, parseParams, priorNames);
         }
 
         internal static bool CompileCodeBlockAST(Core core, ParseParam parseParams, IDictionary<string, string> priorNames)

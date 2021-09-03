@@ -621,19 +621,6 @@ namespace Dynamo.Graph.Nodes
             OnNodeModified();
         }
 
-        internal void ComputeParseParams()
-        {
-            code = CodeBlockUtils.FormatUserText(code);
-            ParseParam = new ParseParam(GUID, code, ElementResolver);
-
-            CompilerUtils.ComputeParseParams(libraryServices.LibraryManagementCore, ParseParam);
-        }
-
-        //internal void CompileCodeBlockAST(ref string errorMessage, ref string warningMessage)
-        //{
-        //    ProcessCodeInternal(ref errorMessage, ref warningMessage, CompilerUtils.CompileCodeBlockAST);
-        //}
-
         internal void RecompileCodeBlockAST(ref string errorMessage, ref string warningMessage)
         {
             BuildStatus buildStatus = null;
