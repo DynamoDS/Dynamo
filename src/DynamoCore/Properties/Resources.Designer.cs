@@ -703,7 +703,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Click here to edit the group description&gt;.
+        ///   Looks up a localized string similar to &lt;Double click here to edit group description&gt;.
         /// </summary>
         public static string GroupDefaultText {
             get {
@@ -712,7 +712,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Click here to edit the group title&gt;.
+        ///   Looks up a localized string similar to &lt;Double click here to edit group title&gt;.
         /// </summary>
         public static string GroupNameDefaultText {
             get {
@@ -1045,12 +1045,22 @@ namespace Dynamo.Properties {
                 return ResourceManager.GetString("NewNoteString", resourceCulture);
             }
         }
-
+        
+        /// <summary>
         ///   Looks up a localized string similar to Node &apos;{0}&apos; is now deprecated..
         /// </summary>
         public static string NodeDeprecatedMsg {
             get {
                 return ResourceManager.GetString("NodeDeprecatedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all errors.
+        /// </summary>
+        public static string NodeInformationalStateShowAllErrors {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowAllErrors", resourceCulture);
             }
         }
         
@@ -1267,6 +1277,82 @@ namespace Dynamo.Properties {
         public static string PackageManagerUserIsNotAMaintainer {
             get {
                 return ResourceManager.GetString("PackageManagerUserIsNotAMaintainer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string PackageStateError {
+            get {
+                return ResourceManager.GetString("PackageStateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        ///This package has not been loaded due to an unexpected error..
+        /// </summary>
+        public static string PackageStateErrorTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateErrorTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded.
+        /// </summary>
+        public static string PackageStateLoaded {
+            get {
+                return ResourceManager.GetString("PackageStateLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded.
+        ///This package is loaded and ready to be used..
+        /// </summary>
+        public static string PackageStateLoadedTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateLoadedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled to be unloaded.
+        /// </summary>
+        public static string PackageStatePendingUnload {
+            get {
+                return ResourceManager.GetString("PackageStatePendingUnload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled to be unloaded.
+        ///This package will be unloaded after the next Dynamo restart..
+        /// </summary>
+        public static string PackageStatePendingUnloadTooltip {
+            get {
+                return ResourceManager.GetString("PackageStatePendingUnloadTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        /// </summary>
+        public static string PackageStateUnloaded {
+            get {
+                return ResourceManager.GetString("PackageStateUnloaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        ///This package has not been loaded because another conflicting package was loaded before it..
+        /// </summary>
+        public static string PackageStateUnloadedTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateUnloadedTooltip", resourceCulture);
             }
         }
         

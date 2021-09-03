@@ -2506,10 +2506,10 @@ Uninstall the following packages: {0}?</value>
     <value>Finished</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group description&gt;</value>
+    <value>&lt;Double click here to edit group description&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
+    <value>&lt;Double click here to edit group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>Add group to group</value>
