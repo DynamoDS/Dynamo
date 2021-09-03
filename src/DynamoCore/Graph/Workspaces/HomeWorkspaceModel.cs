@@ -923,18 +923,19 @@ namespace Dynamo.Graph.Workspaces
         {
             var cbns = Nodes.OfType<CodeBlockNodeModel>();
 
-            foreach(var cbn in cbns)
-            {
-                // Parse all CBNs and compute parse params for each.
-                cbn.ComputeParseParams();
+            //foreach(var cbn in cbns)
+            //{
+            //    // Parse all CBNs and compute parse params for each.
+            //    cbn.ComputeParseParams();
 
-                // Once all ASTs have been created, compile only 
-                // DS function definition ASTs for all CBNs.
-                cbn.CompileFunctionDefinitionAST();
-            }
+            //    // Once all ASTs have been created, compile only 
+            //    // DS function definition ASTs for all CBNs.
+            //    cbn.CompileFunctionDefinitionAST();
+            //}
             foreach(var cbn in cbns)
             {
-                cbn.ProcessCodeDirect(cbn.CompileCodeBlockAST);
+                // Compile rest of the code for each CBN.
+                cbn.ProcessCodeDirect(cbn.RecompileCodeBlockAST);
             }
         }
 

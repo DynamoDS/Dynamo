@@ -330,14 +330,14 @@ namespace ProtoCore.Utils
 
                 core.ResetForPrecompilation();
 
-                var astNodes = parseParams.ParsedNodes.Where(x => !(x is FunctionDefinitionNode));
+                //var astNodes = parseParams.ParsedNodes.Where(x => !(x is FunctionDefinitionNode));
 
                 // Lookup namespace resolution map in elementResolver to rewrite 
                 // partial classnames with their fully qualified names in ASTs
                 // before passing them for pre-compilation. If partial class is not found in map, 
                 // update Resolution map in elementResolver with fully resolved name from compiler.
                 var reWrittenNodes = ElementRewriter.RewriteElementNames(core.ClassTable,  
-                    parseParams.ElementResolver, astNodes, core.BuildStatus.LogSymbolConflictWarning);
+                    parseParams.ElementResolver, parseParams.ParsedNodes, core.BuildStatus.LogSymbolConflictWarning);
 
                 if (priorNames != null)
                 {

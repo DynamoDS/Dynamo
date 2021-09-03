@@ -120,10 +120,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="resolver">Responsible for resolving 
         /// a partial class name to its fully resolved name</param>
         public CodeBlockNodeModel(string code, double x, double y, LibraryServices libraryServices, ElementResolver resolver)
-            : this(code, Guid.NewGuid(), x, y, libraryServices, resolver) 
-        {
-            ProcessCodeDirect(ProcessCode);
-        }
+            : this(code, Guid.NewGuid(), x, y, libraryServices, resolver) { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="CodeBlockNodeModel"/> class
@@ -147,7 +144,7 @@ namespace Dynamo.Graph.Nodes
             ShouldFocus = false;
             this.code = userCode;
 
-            //ProcessCodeDirect(ProcessCode);
+            ProcessCodeDirect(ProcessCode);
         }
 
         /// <summary>
@@ -632,12 +629,12 @@ namespace Dynamo.Graph.Nodes
             CompilerUtils.ComputeParseParams(libraryServices.LibraryManagementCore, ParseParam);
         }
 
-        internal void CompileCodeBlockAST(ref string errorMessage, ref string warningMessage)
-        {
-            ProcessCodeInternal(ref errorMessage, ref warningMessage, CompilerUtils.CompileCodeBlockAST);
-        }
+        //internal void CompileCodeBlockAST(ref string errorMessage, ref string warningMessage)
+        //{
+        //    ProcessCodeInternal(ref errorMessage, ref warningMessage, CompilerUtils.CompileCodeBlockAST);
+        //}
 
-        internal bool CompileFunctionDefinitionAST()
+        internal void RecompileCodeBlockAST(ref string errorMessage, ref string warningMessage)
         {
             BuildStatus buildStatus = null;
             try
@@ -653,7 +650,9 @@ namespace Dynamo.Graph.Nodes
 
                 core.ResetForPrecompilation();
 
-                var astNodes = ParseParam.ParsedNodes.OfType<FunctionDefinitionNode>();
+                // FunctionDefinitonNodes have already been compiled.
+                // Recompile the rest of the ASTs with function definitions in place.
+                var astNodes = ParseParam.ParsedNodes.Where(x => !(x is FunctionDefinitionNode));
 
                 // Clone a disposable copy of AST nodes for PreCompile() as Codegen mutates AST's
                 // while performing SSA transforms and we want to keep the original AST's
@@ -668,17 +667,35 @@ namespace Dynamo.Graph.Nodes
 
                 ParseParam.AppendErrors(buildStatus.Errors);
                 ParseParam.AppendWarnings(buildStatus.Warnings);
-
-                if (buildStatus.ErrorCount > 0)
-                {
-                    return false;
-                }
-                return true;
             }
             catch (Exception)
             {
                 buildStatus = null;
-                return false;
+            }
+
+            if (ParseParam.Errors.Any())
+            {
+                errorMessage = string.Join("\n", ParseParam.Errors.Select(m => m.Message));
+                ProcessError();
+                return;
+            }
+            if (ParseParam.Warnings != null)
+            {
+                // Unbound identifiers in CBN will have input slots.
+                // 
+                // To check function redefinition, we need to check other
+                // CBN to find out if it has been defined yet. Now just
+                // skip this warning.
+                var warnings =
+                    ParseParam.Warnings.Where(
+                        w =>
+                            w.ID != WarningID.IdUnboundIdentifier
+                                && w.ID != WarningID.FunctionAlreadyDefined);
+
+                if (warnings.Any())
+                {
+                    warningMessage = string.Join("\n", warnings.Select(m => m.Message));
+                }
             }
         }
 
@@ -782,7 +799,9 @@ namespace Dynamo.Graph.Nodes
             code = CodeBlockUtils.FormatUserText(code);
 
             if (string.IsNullOrEmpty(Code))
+            {
                 previewVariable = null;
+            }
             // During loading of CBN from file, the elementResolver from the workspace is unavailable
             // in which case, a local copy of the ER obtained from the CBN is used
             var resolver = workspaceElementResolver ?? ElementResolver;
@@ -846,8 +865,8 @@ namespace Dynamo.Graph.Nodes
         private void CreateInputOutputPorts()
         {
 
-            if ((codeStatements == null || (codeStatements.Count == 0))
-                && (inputIdentifiers == null || (inputIdentifiers.Count == 0)))
+            if ((codeStatements == null || codeStatements.Count == 0)
+                && (inputIdentifiers == null || inputIdentifiers.Count == 0))
             {
                 RegisterAllPorts();
                 return;
