@@ -51,7 +51,7 @@ namespace Dynamo.ViewModels
         #region Properties
 
         [JsonIgnore]
-        private readonly WorkspaceViewModel WorkspaceViewModel;
+        public readonly WorkspaceViewModel WorkspaceViewModel;
         /// initialize the start Z-Index of a pin to a default
         /// zIndex is mutable depending on mouse behaviour
         private int zIndex = Configurations.NodeStartZIndex; 
@@ -196,6 +196,7 @@ namespace Dynamo.ViewModels
         private void UnpinWireCommandExecute(object parameter)
         {
             OnRequestRemove(this, EventArgs.Empty);
+            WorkspaceViewModel.Model.HasUnsavedChanges = true;
         }
 
         private void InitializeCommands()

@@ -488,6 +488,7 @@ namespace Dynamo.Core
 
                 this.models = new List<ModelBase>(models);
                 existingConnectors = new Dictionary<Guid, XmlElement>();
+                existingPins = new Dictionary<Guid, XmlElement>();
                 remainingConnectors = new Dictionary<Guid, ConnectorModel>();
 
                 var allConnectors = new List<ConnectorModel>();

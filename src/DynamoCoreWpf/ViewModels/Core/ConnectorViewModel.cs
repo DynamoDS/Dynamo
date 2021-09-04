@@ -704,6 +704,7 @@ namespace Dynamo.ViewModels
             {
                 IsPartlyVisible = false;
             }
+            workspaceViewModel.Model.HasUnsavedChanges = true;
         }
         /// <summary>
         /// Selects nodes connected to this wire.
@@ -729,6 +730,7 @@ namespace Dynamo.ViewModels
             var connectorPinModel = new ConnectorPinModel(MousePosition.X, MousePosition.Y, Guid.NewGuid(), model.GUID);
             ConnectorModel.AddPin(connectorPinModel);
             workspaceViewModel.Model.RecordCreatedModel(connectorPinModel);
+            workspaceViewModel.Model.HasUnsavedChanges = true;
         }
 
         /// <summary>
