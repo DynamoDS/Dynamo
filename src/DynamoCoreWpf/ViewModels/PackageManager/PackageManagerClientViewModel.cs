@@ -485,11 +485,11 @@ namespace Dynamo.ViewModels
             return String.Join(", ", pkgs.Select(x => x.Name + " " + x.VersionName));
         }
 
-        internal void ExecutePackageDownload(string name, PackageVersion package, string downloadPath)
+        internal async void ExecutePackageDownload(string name, PackageVersion package, string installPath)
         {
-            string msg = String.IsNullOrEmpty(downloadPath) ?
+            string msg = String.IsNullOrEmpty(installPath) ?
                 String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
-                String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, downloadPath);
+                String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, installPath);
 
             var result = MessageBoxService.Show(msg,
                 Resources.PackageDownloadConfirmMessageBoxTitle,
@@ -499,11 +499,11 @@ namespace Dynamo.ViewModels
             if (result == MessageBoxResult.OK)
             {
                 // get all of the dependency version headers
-                var dependencyVersionHeaders = package.full_dependency_ids.Select((dep, i) =>
+                var dependencyVersionHeaders = package.full_dependency_ids.Select(x=>x).Reverse().Select((dep, i) =>
                 {
                     try
                     {
-                        var depVersion = package.full_dependency_versions[i];
+                        var depVersion = package.full_dependency_versions.Select(x=>x).Reverse().ElementAt(i);
                         return Model.GetPackageVersionHeader(dep._id, depVersion);
                     }
                     catch
@@ -678,14 +678,14 @@ namespace Dynamo.ViewModels
                 }
 
                 // add custom path to custom package folder list
-                if (!String.IsNullOrEmpty(downloadPath))
+                if (!String.IsNullOrEmpty(installPath))
                 {
-                    if (!settings.CustomPackageFolders.Contains(downloadPath))
-                        settings.CustomPackageFolders.Add(downloadPath);
+                    if (!settings.CustomPackageFolders.Contains(installPath))
+                        settings.CustomPackageFolders.Add(installPath);
                 }
 
                 // form header version pairs and download and install all packages
-                dependencyVersionHeaders
+                var downloadTasks = dependencyVersionHeaders
                     .Select((dep) => {
                         return new PackageDownloadHandle()
                         {
@@ -694,9 +694,22 @@ namespace Dynamo.ViewModels
                             Name = dep.name
                         };
                     })
-                    .ToList()
-                    .ForEach(x => DownloadAndInstall(x, downloadPath));
+                    .Select(x => Download(x)).ToArray();
+                //wait for all downloads.
+                await Task.WhenAll(downloadTasks);
+
+                //when above downloads complete, start installing packages in dependency order.
+                foreach(var dep in dependencyVersionHeaders)
+                {
+                    var matchingDownload = downloadTasks.Where(x => x.Result.handle.Id == dep.id).FirstOrDefault();
+                    if(matchingDownload != null)
+                    {
+                        InstallPackage(matchingDownload.Result.handle, matchingDownload.Result.dlpath, installPath);
+                    }
+                   
+                }
             }
+
         }
 
         /// <summary>
@@ -710,19 +723,16 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// This method downloads the package represented by the PackageDownloadHandle,
-        /// uninstalls its current installation if necessary, and installs the package.
         /// 
-        /// Note that, if the package is already installed, it must be uninstallable
         /// </summary>
         /// <param name="packageDownloadHandle">package download handle</param>
-        /// <param name="downloadPath">package download path</param>
-        internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle, string downloadPath)
+        internal async Task<(PackageDownloadHandle handle, string dlpath)> Download(PackageDownloadHandle packageDownloadHandle)
         {
             Downloads.Add(packageDownloadHandle);
 
             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
 
-            Task.Factory.StartNew(() =>
+            return await Task.Factory.StartNew(() =>
             {
                 // Attempt to download package
                 string pathDl;
@@ -732,40 +742,48 @@ namespace Dynamo.ViewModels
                 if (!res.Success)
                 {
                     packageDownloadHandle.Error(res.Error);
-                    return;
+                    return (handle:packageDownloadHandle, dlpath:string.Empty);
                 }
-
-                // if success, proceed to install the package
-                DynamoViewModel.UIDispatcher.BeginInvoke((Action)(() =>
-                {
-                    try
-                    {
-                        packageDownloadHandle.Done(pathDl);
-                        var firstOrDefault = PackageManagerExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
-                        if (firstOrDefault != null)
-                        {
-                            var dynModel = DynamoViewModel.Model;
-                            try
-                            {
-                                firstOrDefault.UninstallCore(dynModel.CustomNodeManager, PackageManagerExtension.PackageLoader, dynModel.PreferenceSettings);
-                            }
-                            catch
-                            {
-                                MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, 
-                                    DynamoViewModel.BrandingResourceProvider.ProductName,
-                                    packageDownloadHandle.Name),
-                                    Resources.DeleteFailureMessageBoxTitle, 
-                                    MessageBoxButton.OK, MessageBoxImage.Error);
-                            }
-                        }
-                        SetPackageState(packageDownloadHandle, downloadPath);
-                    }
-                    catch (Exception e)
-                    {
-                        packageDownloadHandle.Error(e.Message);
-                    }
-                }));
+                return (handle: packageDownloadHandle, dlpath: pathDl);
             });
+        }
+
+        internal void InstallPackage(PackageDownloadHandle packageDownloadHandle, string downloadPath, string installPath)
+        {
+            // if success, proceed to install the package
+            if (string.IsNullOrEmpty(downloadPath))
+            {
+                return;
+            }
+            DynamoViewModel.UIDispatcher.BeginInvoke((Action)(() =>
+            {
+                try
+                {
+                    packageDownloadHandle.Done(downloadPath);
+                    var firstOrDefault = PackageManagerExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
+                    if (firstOrDefault != null)
+                    {
+                        var dynModel = DynamoViewModel.Model;
+                        try
+                        {
+                            firstOrDefault.UninstallCore(dynModel.CustomNodeManager, PackageManagerExtension.PackageLoader, dynModel.PreferenceSettings);
+                        }
+                        catch
+                        {
+                            MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage,
+                                DynamoViewModel.BrandingResourceProvider.ProductName,
+                                packageDownloadHandle.Name),
+                                Resources.DeleteFailureMessageBoxTitle,
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    SetPackageState(packageDownloadHandle, installPath);
+                }
+                catch (Exception e)
+                {
+                    packageDownloadHandle.Error(e.Message);
+                }
+            }));
         }
 
         /// <summary>
