@@ -460,6 +460,7 @@ namespace Dynamo.Graph.Workspaces
             RegisterConnector(obj);
             var handler = ConnectorAdded;
             if (handler != null) handler(obj);
+            RecordCreatedModel(obj);
             //Check if the workspace is loaded, i.e all the nodes are
             //added to the workspace. In that case, compute the Upstream cache for the
             //given node.
@@ -892,6 +893,20 @@ namespace Dynamo.Graph.Workspaces
             }
 
             OnNodesCleared();
+        }
+
+        /// <summary>
+        /// This function records the deletion of a certain connector.
+        /// Has to be in the workspace model because though the original command
+        /// is called in the connectorviewmodel, the action of recording, destroying,
+        /// and recreating itself has to occur outside of it.
+        /// </summary>
+        /// <param name="connectorModel"></param>
+        internal void ClearConnector(ConnectorModel connectorModel)
+        {
+            RecordAndDeleteModels(
+               new List<ModelBase>() { connectorModel });
+            connectorModel.Delete();
         }
 
         /// <summary>

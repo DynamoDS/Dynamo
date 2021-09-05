@@ -685,8 +685,8 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         private void BreakConnectionCommandExecute(object parameter)
         {
-            this.Dispose();
-            ConnectorModel.Delete();
+            // The deletion (and accompanying undo/redo actions) get relayed to the WorkspaceModel.
+            workspaceViewModel.Model.ClearConnector(ConnectorModel);
         }
         /// <summary>
         /// Toggles wire viz on/off. This can be overwritten when a node is selected in hidden mode.
