@@ -8,6 +8,7 @@ using Dynamo.Models;
 using CoreNodeModels;
 using Dynamo.UI.Commands;
 using System;
+using Dynamo.Graph;
 
 namespace Dynamo.ViewModels
 {
@@ -27,6 +28,7 @@ namespace Dynamo.ViewModels
 
         private ConnectorViewModel ViewModel { get; set; }
         private DynamoModel DynamoModel { get; set; }
+        private DynamoViewModel DynamoViewModel { get; set; }
         private Dispatcher Dispatcher { get; set; }
 
         /// <summary>
@@ -244,10 +246,13 @@ namespace Dynamo.ViewModels
         /// <param name="connectorViewModel"></param>
         /// <param name="dynamoModel"></param>
         /// <param name="tooltipText"></param>
-        public ConnectorAnchorViewModel(ConnectorViewModel connectorViewModel, DynamoModel dynamoModel, string tooltipText)
+        public ConnectorAnchorViewModel(ConnectorViewModel connectorViewModel,
+           DynamoViewModel dynamoViewModel,
+           string tooltipText)
         {
             ViewModel = connectorViewModel;
-            DynamoModel = dynamoModel;
+            DynamoViewModel = dynamoViewModel;
+            DynamoModel = DynamoViewModel.Model;
             DataToolTipText = tooltipText;
             InitCommands();
 
