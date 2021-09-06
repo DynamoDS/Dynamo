@@ -2,9 +2,12 @@
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
+using System.Windows.Input;
+using Dynamo.Logging;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Views.PackageManager;
 using DynamoUtilities;
 
 namespace Dynamo.PackageManager.UI
@@ -34,7 +37,7 @@ namespace Dynamo.PackageManager.UI
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(this.SearchTextBox.Text);
+            //(this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(this.SearchTextBox.Text);
         }
 
         /// <summary>
@@ -123,5 +126,25 @@ namespace Dynamo.PackageManager.UI
             }
         }
 
+        private void PreferencesPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            //Drag functionality when the TitleBar is clicked with the left button and dragged to another place
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                this.DragMove();
+                Dynamo.Logging.Analytics.TrackEvent(
+                    Actions.Move,
+                    Categories.PackageManagerOperations);
+            }
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Dynamo.Logging.Analytics.TrackEvent(
+                Actions.Close,
+                Categories.PackageManagerOperations);
+            
+            Close();
+        }
     }
 }
