@@ -12,12 +12,12 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "0..12;",
-      "Id": "f4c5a27b0f52404d8564f6ce420ce60b",
+      "Code": "0..13;",
+      "Id": "286e9f9ab34d4cbd9b154b58627d5b37",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "2af4d60ba9d149ccb28891733f18bc3b",
+          "Id": "ca4252c5e4174be28206765f5ce7d960",
           "Name": "",
           "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
@@ -32,13 +32,13 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "data;",
-      "Id": "5514fdd7864c45e081bd36ff41b2b13e",
+      "Code": "asd;",
+      "Id": "9d43c824812c4562be7a3877a4e865f1",
       "Inputs": [
         {
-          "Id": "c0a6f6c2ba174ce8aa2dc8f4e677e605",
-          "Name": "data",
-          "Description": "data",
+          "Id": "b1f0ee501c7b4c628da090daacf5d73e",
+          "Name": "asd",
+          "Description": "asd",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -47,7 +47,7 @@
       ],
       "Outputs": [
         {
-          "Id": "e666208a7d7944919acac0dc79017753",
+          "Id": "b2849835c1f54b5e8c5f04d0e825bc7f",
           "Name": "",
           "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
@@ -62,9 +62,9 @@
   ],
   "Connectors": [
     {
-      "Start": "2af4d60ba9d149ccb28891733f18bc3b",
-      "End": "c0a6f6c2ba174ce8aa2dc8f4e677e605",
-      "Id": "a10e08feca2a4dda96663aa2dabe19b4",
+      "Start": "ca4252c5e4174be28206765f5ce7d960",
+      "End": "b1f0ee501c7b4c628da090daacf5d73e",
+      "Id": "77f6e15a9d984ad4b6ecfe173920fd2a",
       "IsVisible": "True"
     }
   ],
@@ -109,38 +109,27 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
-    "ConnectorPins": [
-      {
-        "Left": 306.66666666666657,
-        "Top": 325.33333333333331,
-        "ConnectorGuid": "a10e08fe-ca2a-4dda-9666-3aa2dabe19b4"
-      },
-      {
-        "Left": 306.66666666666657,
-        "Top": 325.33333333333331,
-        "ConnectorGuid": "a10e08fe-ca2a-4dda-9666-3aa2dabe19b4"
-      }
-    ],
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "Name": "Code Block",
         "ShowGeometry": true,
-        "Id": "f4c5a27b0f52404d8564f6ce420ce60b",
+        "Id": "286e9f9ab34d4cbd9b154b58627d5b37",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 35.0,
-        "Y": 223.0
+        "X": 62.0,
+        "Y": 184.0
       },
       {
         "Name": "Code Block",
         "ShowGeometry": true,
-        "Id": "5514fdd7864c45e081bd36ff41b2b13e",
+        "Id": "9d43c824812c4562be7a3877a4e865f1",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 478.99999999999983,
-        "Y": 316.0
+        "X": 507.3333333333332,
+        "Y": 281.33333333333331
       }
     ],
     "Annotations": [],

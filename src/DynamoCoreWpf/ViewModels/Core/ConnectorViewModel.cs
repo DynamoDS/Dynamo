@@ -827,8 +827,6 @@ namespace Dynamo.ViewModels
             model.PropertyChanged += HandleConnectorPropertyChanged;
             model.ConnectorPinModels.CollectionChanged += ConnectorPinModelCollectionChanged;
 
-            connectorModel.ConnectorPinModels.CollectionChanged += ConnectorPinModelCollectionChanged;
-
             ConnectorPinViewCollection = new ObservableCollection<ConnectorPinViewModel>();
             ConnectorPinViewCollection.CollectionChanged += HandleCollectionChanged;
 
