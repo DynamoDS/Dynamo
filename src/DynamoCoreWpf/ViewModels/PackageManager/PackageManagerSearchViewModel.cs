@@ -334,6 +334,12 @@ namespace Dynamo.PackageManager
         public DelegateCommand<object> SetSortingDirectionCommand { get; set; }
 
         /// <summary>
+        /// Opens the Package Details ViewExtension
+        /// </summary>
+        public DelegateCommand<object> ViewDetailsCommand { get; set; }
+
+
+        /// <summary>
         ///     Current downloads
         /// </summary>
         public ObservableCollection<PackageDownloadHandle> Downloads
@@ -352,6 +358,7 @@ namespace Dynamo.PackageManager
             SortCommand = new DelegateCommand(Sort, CanSort);
             SetSortingKeyCommand = new DelegateCommand<object>(SetSortingKey, CanSetSortingKey);
             SetSortingDirectionCommand = new DelegateCommand<object>(SetSortingDirection, CanSetSortingDirection);
+            ViewDetailsCommand = new DelegateCommand<object>(ViewPackageDetails);
             SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = string.Empty;
             SortingKey = PackageSortingKey.LastUpdate;
@@ -449,6 +456,15 @@ namespace Dynamo.PackageManager
             }
 
             this.Sort();
+        }
+
+        /// <summary>
+        /// Set the sorting direction.  Used by the associated command.
+        /// </summary>
+        /// <param name="sortingDir"></param>
+        public void ViewPackageDetails(object sortingDir)
+        {
+            MessageBox.Show("To be implemented in incoming PR!");
         }
 
         /// <summary>

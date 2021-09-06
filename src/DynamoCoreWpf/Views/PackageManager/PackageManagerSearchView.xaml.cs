@@ -37,7 +37,7 @@ namespace Dynamo.PackageManager.UI
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //(this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(this.SearchTextBox.Text);
+            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(this.searchTextBox.Text);
         }
 
         /// <summary>

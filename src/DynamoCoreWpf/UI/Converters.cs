@@ -1182,6 +1182,32 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Used in the Dynamo package manager to display whether a package is 'New' or not.
+    /// The threshold for being 'New' is 30 days.
+    /// </summary>
+    public class DateToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is string)) return Visibility.Collapsed;
+            
+            DateTime.TryParse(value.ToString(), out DateTime dateTime);
+
+            if (dateTime == null) return Visibility.Collapsed;
+
+            TimeSpan difference = DateTime.Now - dateTime;
+
+            if (difference.TotalDays >= 30) return Visibility.Collapsed;
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class InverseBoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

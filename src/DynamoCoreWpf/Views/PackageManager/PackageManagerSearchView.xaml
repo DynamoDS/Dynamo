@@ -53,7 +53,6 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="#44000000" />
@@ -64,7 +63,6 @@
                         <Setter Property="FontWeight" Value="Normal" />
                     </Trigger>
                 </Style.Triggers>
-
             </Style>
             <Style x:Key="DownloadVersionButton" TargetType="{x:Type Button}">
                 <Setter Property="Template">
@@ -109,6 +107,7 @@
             </Style>
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
             <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
+            <controls:DateToVisibilityCollapsedConverter x:Key="DateToVisibilityCollapsedConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
             <controls:EmptyDepStringToCollapsedConverter x:Key="EmptyDepStringToCollapsedConverter" />
@@ -127,6 +126,123 @@
             <RowDefinition Height="77px" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        <Grid.Resources>
+            <Style TargetType="{x:Type MenuItem}">
+                <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="Padding" Value="25,0,0,0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type MenuItem}">
+                            <DockPanel x:Name="dockPanel"
+                                       HorizontalAlignment="Stretch"
+                                       Background="Transparent"
+                                       SnapsToDevicePixels="true">
+                                <Label x:Name="checkBox"
+                                       Margin="3,0,-26,0"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Center"
+                                       HorizontalContentAlignment="Center"
+                                       VerticalContentAlignment="Center"
+                                       Content="✓"
+                                       DockPanel.Dock="Left"
+                                       FontSize="11px"
+                                       FontWeight="Bold"
+                                       FontFamily="{StaticResource ArtifaktElementBold}"
+                                       Foreground="#0696D7"
+                                       Visibility="Collapsed" />
+                                <ContentPresenter x:Name="ContentPresenter"
+                                                  Margin="{TemplateBinding Padding}"
+                                                  VerticalAlignment="Center"
+                                                  ContentSource="Header"
+                                                  DockPanel.Dock="Left"
+                                                  RecognizesAccessKey="True"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                  TextBlock.Foreground="#EEEEEE" />
+                                <Label x:Name="subMenuArrow"
+                                       Margin="0,0,15,7"
+                                       Padding="0"
+                                       VerticalAlignment="Center"
+                                       Content="&gt;"
+                                       DockPanel.Dock="Right"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="13px"
+                                       Foreground="{StaticResource Blue300Brush}">
+                                    <Label.RenderTransform>
+                                        <ScaleTransform ScaleX="1" ScaleY="1.5" />
+                                    </Label.RenderTransform>
+                                    <Label.Style>
+                                        <Style TargetType="{x:Type Label}">
+                                            <Setter Property="Visibility" Value="Hidden" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Label.Style>
+                                </Label>
+                                <Popup x:Name="PART_Popup"
+                                       AllowsTransparency="true"
+                                       Focusable="false"
+                                       HorizontalOffset="0"
+                                       IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                       Placement="Left"
+                                       VerticalOffset="-2">
+                                    <Border Background="{TemplateBinding Background}"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="0">
+                                        <ScrollViewer x:Name="SubMenuScrollViewer"
+                                                      CanContentScroll="true"
+                                                      Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
+                                                                                                    TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                            <Grid RenderOptions.ClearTypeHint="Enabled">
+                                                <ItemsPresenter x:Name="ItemsPresenter"
+                                                                Margin="2"
+                                                                Grid.IsSharedSizeScope="true"
+                                                                KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                                KeyboardNavigation.TabNavigation="Cycle"
+                                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                            </Grid>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Popup>
+                            </DockPanel>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
+                                    <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter TargetName="dockPanel" Property="Background" Value="#3C3C3C" />
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Separator}">
+                            <Grid>
+                                <Border Height="1"
+                                        Margin="15,8,15,8"
+                                        Background="#4D4D4D" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
+        <!--  Title + Close Button  -->
         <Border Name="titleBar"
                 Grid.Row="0"
                 Grid.RowSpan="3"
@@ -134,14 +250,14 @@
                 CornerRadius="4"
                 MouseDown="PreferencesPanel_MouseDown">
             <DockPanel HorizontalAlignment="Stretch">
-                <Button x:Name="CloseButton"
+                <Button x:Name="closeButton"
                         Margin="8"
                         VerticalAlignment="Top"
                         Click="CloseButton_Click"
                         DockPanel.Dock="Right"
                         KeyboardNavigation.IsTabStop="False"
                         Style="{DynamicResource CloseButtonStyle}" />
-                <TextBlock x:Name="HeaderTitle"
+                <TextBlock x:Name="headerTitle"
                            Margin="25,16"
                            VerticalAlignment="Top"
                            DockPanel.Dock="Left"
@@ -153,18 +269,61 @@
                            TextAlignment="Left" />
             </DockPanel>
         </Border>
+
+        <!--  Search Bar  -->
         <Border Name="searchBar"
                 Grid.Row="1"
                 Padding="25,18"
                 BorderBrush="#7E7E7E"
                 BorderThickness="0,1,0,0">
             <DockPanel>
-                <Rectangle Name="sortResultsButton"
-                           Width="20"
-                           Height="20"
-                           Margin="10,0,0,0"
-                           DockPanel.Dock="Right"
-                           Fill="#CBCBCB" />
+                <Button Name="sortResultsButton"
+                        Width="20"
+                        Height="20"
+                        Margin="10,0,0,0"
+                        Background="#CBCBCB"
+                        BorderThickness="0"
+                        DockPanel.Dock="Right">
+                    <Button.ContextMenu>
+                        <ContextMenu Width="Auto"
+                                     Background="#3C3C3C"
+                                     Style="{StaticResource ContextMenuStyle}">
+                            <Separator>
+                                <Separator.Template>
+                                    <ControlTemplate TargetType="Separator">
+                                        <StackPanel>
+                                            <TextBlock Margin="10,5"
+                                                       FontSize="11"
+                                                       Foreground="#8C8C8C "
+                                                       Text="SORT BY" />
+                                        </StackPanel>
+                                    </ControlTemplate>
+                                </Separator.Template>
+                            </Separator>
+                            <MenuItem Header="Most Recent Updates"
+                                      IsCheckable="True"
+                                      IsChecked="True" />
+                            <MenuItem Header="Downloads" IsCheckable="True" />
+                            <MenuItem Header="Votes" IsCheckable="True" />
+                            <MenuItem Header="Author" IsCheckable="True" />
+                            <Separator />
+                            <Separator>
+                                <Separator.Template>
+                                    <ControlTemplate TargetType="Separator">
+                                        <StackPanel>
+                                            <TextBlock Margin="10,5"
+                                                       FontSize="11"
+                                                       Foreground="#8C8C8C "
+                                                       Text="ORDER" />
+                                        </StackPanel>
+                                    </ControlTemplate>
+                                </Separator.Template>
+                            </Separator>
+                            <MenuItem Header="Ascending" IsCheckable="True" />
+                            <MenuItem Header="Descending" IsCheckable="True" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
                 <Rectangle Name="filterResultsButton"
                            Width="20"
                            Height="20"
@@ -191,44 +350,52 @@
                                FontSize="14px"
                                Foreground="#F5F5F5"
                                IsHitTestVisible="False"
+                               Opacity="0.5"
                                Text="{Binding SearchBoxPrompt}"
                                Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" />
                 </Grid>
-
             </DockPanel>
         </Border>
+
+        <!--  Results  -->
         <Border Name="results"
                 Grid.Row="2"
                 Margin="0,0,0,3"
                 Background="#2A2A2A">
             <ListBox Name="SearchResultsListBox"
-                     HorizontalAlignment="Stretch"
                      Background="Transparent"
                      BorderThickness="0"
                      ItemsSource="{Binding Path=SearchResults}"
-                     ScrollViewer.VerticalScrollBarVisibility="Visible"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                      SelectedIndex="{Binding Path=SelectedIndex}"
                      VirtualizingPanel.ScrollUnit="Pixel">
-
                 <ListBox.Resources>
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                    <!--  Used to style labels on result, e.g. Number of Installs  -->
                     <Style x:Key="resultLabelStyle" TargetType="TextBlock">
                         <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                         <Setter Property="FontSize" Value="10" />
                         <Setter Property="Foreground" Value="#DFDFDF" />
                         <Setter Property="VerticalAlignment" Value="Center" />
                     </Style>
+
+                    <!--  Style buttons on each result, e.g. Install  -->
                     <Style x:Key="resultButtonStyle" TargetType="Button">
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type Button}">
-                                    <TextBlock VerticalAlignment="Center"
+                                    <TextBlock Name="textBlock"
+                                               Padding="4,4,4,3"
+                                               VerticalAlignment="Center"
                                                FontFamily="{StaticResource ArtifaktElementRegular}"
                                                FontSize="11"
                                                Foreground="#84D7CE"
                                                Text="{TemplateBinding Content}" />
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="textBlock" Property="TextBlock.TextDecorations" Value="Underline" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
@@ -240,7 +407,6 @@
                         <Setter Property="Padding" Value="0" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="Margin" Value="0" />
                     </Style>
                 </ListBox.ItemContainerStyle>
 
@@ -249,51 +415,69 @@
                         <Grid Name="resultItemTemplate" VerticalAlignment="Center">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="30px" />
-                                <RowDefinition Height="30px" />
+                                <RowDefinition Height="35px" />
                             </Grid.RowDefinitions>
+
+                            <!--  Top Row  -->
                             <DockPanel Name="resultTopRow"
                                        Grid.Row="0"
-                                       Margin="25,12,0,0"
+                                       Margin="25,12,15,0"
                                        LastChildFill="False">
-                                <Button Content="Install"
+                                <Button Command="{Binding DownloadLatestCommand}"
+                                        Content="Install"
                                         DockPanel.Dock="Right"
-                                        Margin="6,0"
                                         Style="{StaticResource resultButtonStyle}" />
                                 <Button Content="Requirements"
                                         DockPanel.Dock="Right"
-                                        Style="{StaticResource resultButtonStyle}" />
+                                        Style="{StaticResource resultButtonStyle}"
+                                        ToolTip="{Binding Path=Model.HostsString}" />
                                 <Button Content="View Details"
                                         DockPanel.Dock="Right"
                                         Style="{StaticResource resultButtonStyle}" />
-                                <TextBlock Name="packageName"
-                                           VerticalAlignment="Center"
-                                           DockPanel.Dock="Left"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontSize="14"
-                                           FontWeight="SemiBold"
-                                           Foreground="#DFDFDF"
-                                           Text="Autodesk sample 1" />
-                                <Border Name="newPackageLabel"
-                                        Width="36"
-                                        Height="18"
-                                        Margin="7,-3,7,0"
-                                        VerticalAlignment="Center"
-                                        Background="Transparent"
-                                        BorderBrush="#DFDFDF"
-                                        BorderThickness="1"
-                                        CornerRadius="3">
-                                    <TextBlock Padding="0,2,0,0"
-                                               HorizontalAlignment="Center"
+
+                                <!--  Contains Package Name and New Label  -->
+                                <Grid DockPanel.Dock="Left">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Name="packageName"
+                                               Grid.Column="0"
                                                VerticalAlignment="Center"
                                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                                               FontSize="11"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
                                                Foreground="#DFDFDF"
-                                               Text="New" />
-                                </Border>
+                                               Text="{Binding Path=Model.Name}"
+                                               TextTrimming="CharacterEllipsis"
+                                               TextWrapping="NoWrap" />
+                                    <Border Name="newPackageLabel"
+                                            Grid.Column="1"
+                                            Width="36"
+                                            Height="18"
+                                            Margin="7,-3,7,0"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Background="Transparent"
+                                            BorderBrush="#DFDFDF"
+                                            BorderThickness="1"
+                                            CornerRadius="3"
+                                            Visibility="{Binding Path=Model.LatestVersionCreated, Converter={StaticResource DateToVisibilityCollapsedConverter}}">
+                                        <TextBlock Padding="0,2,0,0"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                   FontSize="11"
+                                                   Foreground="#DFDFDF"
+                                                   Text="New" />
+                                    </Border>
+                                </Grid>
                             </DockPanel>
+
+                            <!--  Bottom Row  -->
                             <DockPanel Name="resultBottomRow"
                                        Grid.Row="1"
-                                       Margin="25,2,0,5"
+                                       Margin="25,2,15,0"
                                        LastChildFill="False">
                                 <Ellipse Width="10"
                                          Height="10"
@@ -306,28 +490,54 @@
                                            DockPanel.Dock="Left"
                                            Foreground="#C7C7C7"
                                            Style="{StaticResource resultLabelStyle}"
-                                           Text="DynamoUser1" />
+                                           Text="{Binding Path=Model.Maintainers}" />
                                 <TextBlock Name="dateLabel"
                                            Margin="5,0"
                                            DockPanel.Dock="Right"
                                            Style="{StaticResource resultLabelStyle}"
-                                           Text="12 January 2021" />
+                                           Text="{Binding Path=Model.LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" />
+                                <Ellipse Width="10"
+                                         Height="10"
+                                         Margin="5,0,0,2"
+                                         VerticalAlignment="Center"
+                                         DockPanel.Dock="Right"
+                                         Fill="#D8D8D8" />
                                 <TextBlock Name="noDownloadsLabel"
                                            Margin="5,0"
                                            DockPanel.Dock="Right"
                                            Style="{StaticResource resultLabelStyle}"
-                                           Text="819" />
+                                           Text="{Binding Path=Model.Downloads}" />
+                                <Ellipse Width="10"
+                                         Height="10"
+                                         Margin="5,0,0,2"
+                                         VerticalAlignment="Center"
+                                         DockPanel.Dock="Right"
+                                         Fill="#D8D8D8" />
                                 <TextBlock Name="noFavoritesLabel"
                                            Margin="5,0"
                                            DockPanel.Dock="Right"
                                            Style="{StaticResource resultLabelStyle}"
-                                           Text="3" />
+                                           Text="{Binding Path=Model.Votes}" />
+                                <Ellipse Width="10"
+                                         Height="10"
+                                         Margin="5,0,0,2"
+                                         VerticalAlignment="Center"
+                                         DockPanel.Dock="Right"
+                                         Fill="#D8D8D8" />
                                 <TextBlock Name="versionLabel"
                                            Margin="5,0"
                                            DockPanel.Dock="Right"
                                            Style="{StaticResource resultLabelStyle}"
-                                           Text="1.0.1" />
+                                           Text="{Binding Path=Model.LatestVersion}" />
+                                <Ellipse Width="10"
+                                         Height="10"
+                                         Margin="5,0,0,2"
+                                         VerticalAlignment="Center"
+                                         DockPanel.Dock="Right"
+                                         Fill="#D8D8D8" />
                             </DockPanel>
+
+                            <!--  Separates List Items  -->
                             <Rectangle Name="separator"
                                        Grid.Row="0"
                                        Height="1"
