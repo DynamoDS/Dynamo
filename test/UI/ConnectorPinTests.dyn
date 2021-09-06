@@ -2,7 +2,7 @@
   "Uuid": "9c0512c2-2085-4fc0-9f7d-1c9a55eecb31",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "Tests",
+  "Name": "ConnectorPinTests",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -13,11 +13,11 @@
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
       "Code": "0..12;",
-      "Id": "816a1d0ccd3241fcbc4ef463f9a3d899",
+      "Id": "f4c5a27b0f52404d8564f6ce420ce60b",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "d3fa03abca0d4508ad1f0af95c8cd693",
+          "Id": "2af4d60ba9d149ccb28891733f18bc3b",
           "Name": "",
           "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
@@ -32,13 +32,13 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "asdl;",
-      "Id": "cbbf78b9c6df4e6a8b1380a16ff3e44e",
+      "Code": "data;",
+      "Id": "5514fdd7864c45e081bd36ff41b2b13e",
       "Inputs": [
         {
-          "Id": "0083db0a4c3e4a6db57a12ec8b5b688e",
-          "Name": "asdl",
-          "Description": "asdl",
+          "Id": "c0a6f6c2ba174ce8aa2dc8f4e677e605",
+          "Name": "data",
+          "Description": "data",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -47,7 +47,7 @@
       ],
       "Outputs": [
         {
-          "Id": "7aaf951b48db4f539998332748186e06",
+          "Id": "e666208a7d7944919acac0dc79017753",
           "Name": "",
           "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
@@ -62,9 +62,10 @@
   ],
   "Connectors": [
     {
-      "Start": "d3fa03abca0d4508ad1f0af95c8cd693",
-      "End": "0083db0a4c3e4a6db57a12ec8b5b688e",
-      "Id": "6269c3d6e2804da3b0b053a1030b43f3"
+      "Start": "2af4d60ba9d149ccb28891733f18bc3b",
+      "End": "c0a6f6c2ba174ce8aa2dc8f4e677e605",
+      "Id": "a10e08feca2a4dda96663aa2dabe19b4",
+      "IsVisible": "True"
     }
   ],
   "Dependencies": [],
@@ -92,7 +93,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.13.0.2135",
+      "Version": "2.13.0.2482",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -108,27 +109,38 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
-    "ConnectorPins": [],
-    "NodeViews": [
+    "ConnectorPins": [
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
-        "Id": "816a1d0ccd3241fcbc4ef463f9a3d899",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 139.0,
-        "Y": 236.0
+        "Left": 306.66666666666657,
+        "Top": 325.33333333333331,
+        "ConnectorGuid": "a10e08fe-ca2a-4dda-9666-3aa2dabe19b4"
       },
       {
-        "ShowGeometry": true,
+        "Left": 306.66666666666657,
+        "Top": 325.33333333333331,
+        "ConnectorGuid": "a10e08fe-ca2a-4dda-9666-3aa2dabe19b4"
+      }
+    ],
+    "NodeViews": [
+      {
         "Name": "Code Block",
-        "Id": "cbbf78b9c6df4e6a8b1380a16ff3e44e",
+        "ShowGeometry": true,
+        "Id": "f4c5a27b0f52404d8564f6ce420ce60b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 611.66666666666652,
-        "Y": 235.66666666666663
+        "X": 35.0,
+        "Y": 223.0
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "5514fdd7864c45e081bd36ff41b2b13e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 478.99999999999983,
+        "Y": 316.0
       }
     ],
     "Annotations": [],
