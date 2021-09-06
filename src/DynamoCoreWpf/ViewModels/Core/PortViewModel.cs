@@ -788,7 +788,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    PortBackgroundColor = new SolidColorBrush(Colors.Transparent);
+                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(60, 60, 60));
                     PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(204, 204, 204));
                 }
             }
