@@ -14,6 +14,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
+using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
@@ -307,6 +308,29 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter,
           CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Determines what the Install button says on the Package Manager Search
+    /// </summary>
+    public class InstalledButtonTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if(!(value is Boolean booleanValue))
+            {
+                return "Error";
+            }
+            
+            return booleanValue ? "Installed" : "Install";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
         {
             return null;
         }

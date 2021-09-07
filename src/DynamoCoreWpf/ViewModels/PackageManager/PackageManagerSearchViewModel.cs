@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Models;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.Utilities;
@@ -280,6 +281,17 @@ namespace Dynamo.PackageManager
             get { return this.SearchResults.Count == 0; }
         }
 
+        /// <summary>
+        /// Checks if the user already has a package by the given name.
+        /// </summary>
+        /// <param name="packageName"></param>
+        /// <returns></returns>
+        internal bool UserAlreadyHasPackageInstalled(string packageName)
+        {
+            PackageManagerExtension packageManagerExtension = PackageManagerClientViewModel.PackageManagerExtension;
+            List<string> localPackageNames = packageManagerExtension.PackageLoader.LocalPackages.Select(x => x.Name).ToList();
+            return localPackageNames.Contains(packageName);
+        }
 
         public PackageSearchState _searchState; // TODO: Set private for 3.0.
 
@@ -423,7 +435,7 @@ namespace Dynamo.PackageManager
             {
                 hostFilter.Add(new FilterEntry(host, this));
             }
-
+            
             return hostFilter;
         }
 
@@ -603,6 +615,7 @@ namespace Dynamo.PackageManager
         private void AddToSearchResults(PackageManagerSearchElementViewModel element)
         {
             element.RequestDownload += this.PackageOnExecuted;
+            element.CheckIfPackageInstalled += this.UserAlreadyHasPackageInstalled;
             this.SearchResults.Add(element);
         }
 
@@ -783,7 +796,7 @@ namespace Dynamo.PackageManager
             if (!String.IsNullOrEmpty(query))
             {
                 list = Filter(SearchDictionary.Search(query)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
+                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin, UserAlreadyHasPackageInstalled))
                     .Take(MaxNumSearchResults))
                     .ToList();
             }
@@ -791,7 +804,7 @@ namespace Dynamo.PackageManager
             {
                 // with null query, don't show deprecated packages
                 list = Filter(LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin)))
+                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin, UserAlreadyHasPackageInstalled)))
                     .ToList();
                 Sort(list, this.SortingKey);
             }

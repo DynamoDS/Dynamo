@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Dynamo.Extensions;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 
@@ -42,7 +42,7 @@ namespace Dynamo.PackageManager
         public int UsedBy { get { return this.Header.used_by.Count; } }
         public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
         public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
-
+        
         /// <summary>
         /// Hosts dependencies specified for latest version of particular package
         /// </summary>

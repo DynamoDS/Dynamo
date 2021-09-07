@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
@@ -21,6 +22,8 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand VisitRepositoryCommand { get; set; }
         public ICommand DownloadLatestToCustomPathCommand { get; set; }
 
+        private Func<string,bool> isPackageInstalled;
+
         public new PackageManagerSearchElement Model { get; internal set; }
 
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : base(element)
@@ -41,6 +44,30 @@ namespace Dynamo.PackageManager.ViewModels
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
+        }
+
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, Func<string,bool> isPackageInstalledFunction) : this(element, canLogin)
+        {
+            this.isPackageInstalled = isPackageInstalledFunction;
+        }
+
+        /// <summary>
+        /// A flag reporting whether or not the user already has this SearchElement's package installed.
+        /// </summary>
+        public bool IsPackageInstalledProperty
+        {
+            get => isPackageInstalledProperty;
+            set
+            {
+                isPackageInstalledProperty = value;
+                RaisePropertyChanged(nameof(IsPackageInstalledProperty));
+            }
+        }
+
+        internal bool IsPackageInstalled(string packageId)
+        {
+            IsPackageInstalledProperty = isPackageInstalled(packageId);
+            return IsPackageInstalledProperty;
         }
 
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
@@ -87,10 +114,22 @@ namespace Dynamo.PackageManager.ViewModels
         }
 
         private List<String> CustomPackageFolders;
+        private bool isPackageInstalledProperty;
 
         public delegate void PackageSearchElementDownloadHandler(
             PackageManagerSearchElement element, PackageVersion version, string downloadPath = null);
         public event PackageSearchElementDownloadHandler RequestDownload;
+
+        public delegate bool CheckIfPackageIsInstalledHandler(string packageId);
+        public event CheckIfPackageIsInstalledHandler CheckIfPackageInstalled;
+
+        /// <summary>
+        /// Checks if the user has installed a package with a given GUID string.
+        /// </summary>
+        public void OnCheckIfPackageInstalled()
+        {
+            CheckIfPackageInstalled?.Invoke(this.Model.Name);
+        }
 
         public void OnRequestDownload(PackageVersion version, bool downloadToCustomPath)
         {
@@ -106,6 +145,8 @@ namespace Dynamo.PackageManager.ViewModels
 
             if (RequestDownload != null)
                 RequestDownload(this.Model, version, downloadPath);
+
+            IsPackageInstalled(this.Model.Name);
         }
 
         /// <summary>
