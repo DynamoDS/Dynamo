@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
@@ -1198,8 +1199,14 @@ namespace Dynamo.ViewModels
             {
                 // For ZeroTouch nodes
                 case DSFunction dsFunction:
-                    nodeTypeName = dsFunction.Controller.Definition.QualifiedName;
-                    assemblyLocation = dsFunction.Controller.Definition.Assembly;
+                    FunctionDescriptor functionDescriptor = dsFunction.Controller.Definition;
+                    assemblyLocation = functionDescriptor.Assembly;
+                    nodeTypeName = Graph.Nodes.Utilities.GetFunctionDescriptorIconName(functionDescriptor);
+                    break;
+                // For DSVarArgFunctions like String.Concat
+                case DSVarArgFunction dsVarArgFunction:
+                    nodeTypeName = dsVarArgFunction.Controller.Definition.QualifiedName;
+                    assemblyLocation = dsVarArgFunction.Controller.Definition.Assembly;
                     break;
                 // For NodeModel nodes
                 case NodeModel nodeModel:
@@ -1217,8 +1224,7 @@ namespace Dynamo.ViewModels
             IconWarehouse currentWarehouse = iconServices.GetForAssembly(assemblyLocation);
             if (currentWarehouse is null) return false;
 
-            string iconName = nodeTypeName + Configurations.SmallIconPostfix;
-            iconSource = currentWarehouse.LoadIconInternal(iconName);
+            iconSource = currentWarehouse.LoadIconInternal(nodeTypeName + Configurations.SmallIconPostfix);
             return !(iconSource is null);
         }
 

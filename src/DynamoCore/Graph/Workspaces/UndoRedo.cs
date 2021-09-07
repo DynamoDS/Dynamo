@@ -282,6 +282,7 @@ namespace Dynamo.Graph.Workspaces
                         var matchingConnector = Connectors.FirstOrDefault(c => c.GUID == connectorPinModel.ConnectorId);
                         if (matchingConnector is null) return;
                         matchingConnector.ConnectorPinModels.Remove(connectorPinModel);
+                        HasUnsavedChanges = true;
                     }
                 }
 
