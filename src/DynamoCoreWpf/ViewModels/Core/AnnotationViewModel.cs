@@ -680,20 +680,16 @@ namespace Dynamo.ViewModels
 
         private List<PortViewModel> CreateProxyPorts(IEnumerable<PortModel> groupPortModels)
         {
-            var proxyModels = groupPortModels
-                .Select(x => new ProxyPortModel(x))
-                .ToList();
-
             var originalPortViewModels = WorkspaceViewModel.Nodes
                 .SelectMany(x => x.InPorts.Concat(x.OutPorts))
                 .Where(x => groupPortModels.Contains(x.PortModel))
                 .ToList();
 
             var newPortViewModels = new List<PortViewModel>();
-            for (int i = 0; i < proxyModels.Count(); i++)
+            for (int i = 0; i < groupPortModels.Count(); i++)
             {
-                var proxyModel = proxyModels[i];
-                newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(proxyModel));
+                var model = groupPortModels.ElementAt(i);
+                newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(model));
             }
 
             return newPortViewModels;

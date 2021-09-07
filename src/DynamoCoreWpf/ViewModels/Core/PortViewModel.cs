@@ -402,9 +402,9 @@ namespace Dynamo.ViewModels
             _node.WorkspaceViewModel.PropertyChanged -= Workspace_PropertyChanged;
         }
 
-        internal PortViewModel CreateProxyPortViewModel(ProxyPortModel proxyPortModel)
+        internal PortViewModel CreateProxyPortViewModel(PortModel portModel)
         {
-            return new PortViewModel(_node, proxyPortModel);
+            return new PortViewModel(_node, portModel);
         }
 
         /// <summary>
