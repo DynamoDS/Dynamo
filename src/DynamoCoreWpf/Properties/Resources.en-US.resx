@@ -2634,4 +2634,7 @@ Delete the following packages: {2}?
     <value>Node Options</value>
     <comment>Node context menu</comment>
   </data>
+  <data name="PackageFilter_Name_All" xml:space="preserve">
+    <value>All</value>
+  </data>
 </root>
