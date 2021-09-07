@@ -720,6 +720,7 @@ namespace Dynamo.Graph.Nodes
 
                 if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ParseParam, priorNames))
                 {
+                    // Check if there are statements in the code statement written by user
                     if (ParseParam.ParsedNodes != null && ParseParam.ParsedNodes.Any())
                     {
                         // Create an instance of statement for each code statement written by the user

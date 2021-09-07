@@ -609,7 +609,7 @@ namespace Dynamo.Engine
             priorNames = libraryServices.GetPriorNames();
         }
 
-        [Obsolete("This method will be deprecated in Dynamo 3.0")]
+        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
         /// <summary>
         /// Pre-compiles Design script code in code block node.
         /// </summary>

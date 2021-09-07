@@ -893,8 +893,7 @@ namespace Dynamo.Graph.Workspaces
         {
             var orphans = new List<ISerializable>();
 
-            if (historicalTraceData == null)
-                return orphans;
+            if (historicalTraceData == null) return orphans;
 
             // If a Guid exists in the historical trace data
             // and there is no corresponding node in the workspace
@@ -925,7 +924,7 @@ namespace Dynamo.Graph.Workspaces
 
             foreach(var cbn in cbns)
             {
-                // Compile rest of the code for each CBN.
+                // Recompile rest of the code against function definitions for each CBN.
                 cbn.ProcessCodeDirect(cbn.RecompileCodeBlockAST);
             }
         }
@@ -933,14 +932,12 @@ namespace Dynamo.Graph.Workspaces
         internal bool TryGetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)
         {
             data = new Dictionary<string, string>();
-            if (!ExtensionData.Any())
-                return false;
+            if (!ExtensionData.Any()) return false;
 
             var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
                 .FirstOrDefault();
 
-            if (extensionData is null)
-                return false;
+            if (extensionData is null) return false;
 
             data = extensionData.Data;
             return true;
@@ -951,8 +948,7 @@ namespace Dynamo.Graph.Workspaces
             var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
                 .FirstOrDefault();
 
-            if (extensionData is null)
-                return;
+            if (extensionData is null) return;
 
             extensionData.Data = data;
         }
