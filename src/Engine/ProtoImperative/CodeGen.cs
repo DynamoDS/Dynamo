@@ -526,7 +526,7 @@ namespace ProtoImperative
                             {
                                 // Log "function not found" warning for CBNs only after compiling all function definition nodes in the first pass
                                 // in CodeBlockNode.RecompileCodeBlockAST(). If not compiling CBNs log these warnings by default.
-                                if (core.IsParsingCodeBlockNode && core.IsParsingWithFunctionDefinitionNode ||
+                                if (core.IsParsingCodeBlockNode && !core.IsCodeBlockNodeFirstPass ||
                                     !core.IsParsingCodeBlockNode)
                                 {
                                     string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);

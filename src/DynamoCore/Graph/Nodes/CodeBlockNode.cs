@@ -120,10 +120,23 @@ namespace Dynamo.Graph.Nodes
         /// <param name="resolver">Responsible for resolving 
         /// a partial class name to its fully resolved name</param>
         public CodeBlockNodeModel(string code, double x, double y, LibraryServices libraryServices, ElementResolver resolver)
-            : this(code, Guid.NewGuid(), x, y, libraryServices, resolver) { }
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            X = x;
+            Y = y;
+            this.libraryServices = libraryServices;
+            ElementResolver = resolver;
+            GUID = Guid.NewGuid();
+            ShouldFocus = false;
+            this.code = code;
+
+            ProcessCodeDirect(ProcessCode);
+        }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CodeBlockNodeModel"/> class
+        ///     Initializes a new instance of the <see cref="CodeBlockNodeModel"/> class.
+        ///     Call this constructor only when a first pass compilation of a CBN is needed
+        ///     without factoring in other CBN function definitions.
         /// </summary>
         /// <param name="userCode">Code block content</param>
         /// <param name="guid">Identifier of the code block</param>
@@ -139,12 +152,12 @@ namespace Dynamo.Graph.Nodes
             X = xPos;
             Y = yPos;
             this.libraryServices = libraryServices;
-            this.ElementResolver = resolver;
+            ElementResolver = resolver;
             GUID = guid;
             ShouldFocus = false;
-            this.code = userCode;
+            code = userCode;
 
-            ProcessCodeDirect(ProcessCode);
+            ProcessCodeDirect(ProcessCode, isCodeBlockNodeFirstPass : true);
         }
 
         /// <summary>
@@ -606,11 +619,12 @@ namespace Dynamo.Graph.Nodes
         #region Private Methods
 
         internal delegate void ProcessCodeDelegate(ref string errorMessage, ref string warningMessage);
-        internal void ProcessCodeDirect(ProcessCodeDelegate handler)
+        internal void ProcessCodeDirect(ProcessCodeDelegate handler, bool isCodeBlockNodeFirstPass = false)
         {
             var errorMessage = string.Empty;
             var warningMessage = string.Empty;
 
+            libraryServices.LibraryManagementCore.IsCodeBlockNodeFirstPass = isCodeBlockNodeFirstPass;
             handler(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
 
@@ -642,7 +656,8 @@ namespace Dynamo.Graph.Nodes
 
                 core.IsParsingPreloadedAssembly = false;
                 core.IsParsingCodeBlockNode = true;
-                core.IsParsingWithFunctionDefinitionNode = true;
+                // This is always the second pass of precompiling a CBN so we need to reset this flag to false here.
+                core.IsCodeBlockNodeFirstPass = false;
 
                 core.ResetForPrecompilation();
 
@@ -660,7 +675,6 @@ namespace Dynamo.Graph.Nodes
 
                 core.IsParsingCodeBlockNode = parsingCbnFlag;
                 core.IsParsingPreloadedAssembly = parsingPreloadFlag;
-                core.IsParsingWithFunctionDefinitionNode = false;
 
                 ParseParam.AppendErrors(buildStatus.Errors);
                 ParseParam.AppendWarnings(buildStatus.Warnings);

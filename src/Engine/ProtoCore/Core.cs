@@ -169,7 +169,7 @@ namespace ProtoCore
         /// <summary>
         /// This flag is set true when we recompile CBNs after function definitions are compiled.
         /// </summary>
-        internal bool IsParsingWithFunctionDefinitionNode { get; set; }
+        internal bool IsCodeBlockNodeFirstPass { get; set; }
         
         // THe ImportModuleHandler owned by the temporary core used in Graph UI precompilation
         // needed to detect if the same assembly is not being imported more than once
