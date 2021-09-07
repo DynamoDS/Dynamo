@@ -159,16 +159,25 @@ namespace ProtoCore
 
         public FunctionTable FunctionTable { get; private set; }
 
-#endregion
+        #endregion
 
-        // This flag is set true when we call GraphUtilities.PreloadAssembly to load libraries in Graph UI
+        /// <summary>
+        /// This flag is set true when we call GraphUtilities.PreloadAssembly to load libraries.
+        /// </summary>
         public bool IsParsingPreloadedAssembly { get; set; }
+
+        /// <summary>
+        /// This flag is set true when we recompile CBNs after function definitions are compiled.
+        /// </summary>
+        internal bool IsParsingWithFunctionDefinitionNode { get; set; }
         
         // THe ImportModuleHandler owned by the temporary core used in Graph UI precompilation
         // needed to detect if the same assembly is not being imported more than once
         public ImportModuleHandler ImportHandler { get; set; }
-        
-        // This is set to true when the temporary core is used for precompilation of CBN's in GraphUI
+
+        /// <summary>
+        /// This is set to true when the temporary core is used for precompilation of CBN's.
+        /// </summary>
         public bool IsParsingCodeBlockNode { get; set; }
 
         // This is the AST node list of default imported libraries needed for Graph Compiler

@@ -524,8 +524,14 @@ namespace ProtoImperative
                             }
                             else
                             {
-                                string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
-                                buildStatus.LogWarning(WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                                // Log "function not found" warning for CBNs only after compiling all function definition nodes in the first pass
+                                // in CodeBlockNode.RecompileCodeBlockAST(). If not compiling CBNs log these warnings by default.
+                                if (core.IsParsingCodeBlockNode && core.IsParsingWithFunctionDefinitionNode ||
+                                    !core.IsParsingCodeBlockNode)
+                                {
+                                    string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
+                                    buildStatus.LogWarning(WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                                }
                             }
                         }
                         inferedType.UID = (int)PrimitiveType.Null;

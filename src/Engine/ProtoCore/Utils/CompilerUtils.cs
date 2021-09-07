@@ -262,7 +262,7 @@ namespace ProtoCore.Utils
             return status.ErrorCount == 0;
         }
 
-        [Obsolete("This method will be deprecated in Dynamo 3.0")]
+        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
         /// <summary>
         /// Pre-compiles DS code in code block node, 
         /// checks for syntax, converts non-assignments to assignments,

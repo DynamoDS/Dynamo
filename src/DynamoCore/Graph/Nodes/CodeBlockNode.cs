@@ -642,6 +642,7 @@ namespace Dynamo.Graph.Nodes
 
                 core.IsParsingPreloadedAssembly = false;
                 core.IsParsingCodeBlockNode = true;
+                core.IsParsingWithFunctionDefinitionNode = true;
 
                 core.ResetForPrecompilation();
 
@@ -659,6 +660,7 @@ namespace Dynamo.Graph.Nodes
 
                 core.IsParsingCodeBlockNode = parsingCbnFlag;
                 core.IsParsingPreloadedAssembly = parsingPreloadFlag;
+                core.IsParsingWithFunctionDefinitionNode = false;
 
                 ParseParam.AppendErrors(buildStatus.Errors);
                 ParseParam.AppendWarnings(buildStatus.Warnings);
