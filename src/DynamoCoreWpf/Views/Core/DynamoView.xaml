@@ -780,7 +780,7 @@
                               Focusable="False">
                         <MenuItem Focusable="False"
                                       Name="DebugModes"
-                                      Header="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
+                                      Header="Debug Modes"
                                       Click="OnDebugModesClick"
                                       IsCheckable="False" />
                     </MenuItem>

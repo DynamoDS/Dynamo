@@ -1,8 +1,7 @@
 ﻿<Window x:Class="Dynamo.Wpf.Views.Debug.DebugModesWindow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             Title="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
+             Title="Debug Modes"
              ResizeMode="NoResize" Width="350" Height="510"
         >
     <StackPanel>
