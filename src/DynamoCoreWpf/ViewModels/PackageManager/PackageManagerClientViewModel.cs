@@ -498,7 +498,7 @@ namespace Dynamo.ViewModels
             var pmExt = DynamoViewModel.Model.GetPackageManagerExtension();
             if (result == MessageBoxResult.OK)
             {
-                package.full_dependency_ids.Count == package.full_dependency_versions.Count
+                System.Diagnostics.Debug.Assert(package.full_dependency_ids.Count == package.full_dependency_versions.Count);
                 // get all of the dependency version headers
                 var dependencyVersionHeaders = package.full_dependency_ids.Select((dep, i) =>
                 {
