@@ -43,9 +43,10 @@ namespace Dynamo.Graph.Workspaces
         public IEnumerable<ExtraNodeViewInfo> NodeViews;
         public IEnumerable<ExtraNoteViewInfo> Notes;
         public IEnumerable<ExtraAnnotationViewInfo> Annotations;
+        public IEnumerable<ExtraConnectorPinInfo> ConnectorPins;
         public double X;
         public double Y;
-        public double Zoom;        
+        public double Zoom;
     }
 
     /// <summary>
@@ -78,6 +79,17 @@ namespace Dynamo.Graph.Workspaces
 
         // TODO, QNTM-1099: Figure out if this is necessary
         // public int ZIndex;
+    }
+
+    /// <summary>
+    /// Container for connector pin view information 
+    /// required to fully construct a WorkspaceViewModel from JSON
+    /// </summary>
+    public class ExtraConnectorPinInfo
+    {
+        public string ConnectorGuid;
+        public double Left;
+        public double Top;
     }
 
     /// <summary>
@@ -222,6 +234,7 @@ namespace Dynamo.Graph.Workspaces
         private HashSet<Guid> dependencies = new HashSet<Guid>();
 
         private int delayGraphExecutionCounter = 0;
+        private readonly string customNodeExtension = ".dyf";
 
         /// <summary>
         /// Whether or not to delay graph execution.
@@ -685,7 +698,7 @@ namespace Dynamo.Graph.Workspaces
                 foreach (var dependency in value)
                 {
                     //handle package dependencies
-                    if(dependency.ReferenceType == ReferenceType.Package 
+                    if (dependency.ReferenceType == ReferenceType.Package
                         && dependency is PackageDependencyInfo)
                     {
                         foreach (var node in dependency.Nodes)
@@ -693,14 +706,83 @@ namespace Dynamo.Graph.Workspaces
                             nodePackageDictionary[node] = (dependency as PackageDependencyInfo).PackageInfo;
                         }
                     }
-                   
                 }
 
                 RaisePropertyChanged(nameof(NodeLibraryDependencies));
             }
         }
 
+        internal List<INodeLibraryDependencyInfo> NodeLocalDefinitions
+        {
+            get
+            {
+               var nodeLocalDefinitions = new Dictionary<object, LocalDefinitionInfo>();
+
+                foreach (var node in Nodes)
+                {
+                    var collected = GetNodePackage(node);
+                    
+                    if (!nodePackageDictionary.ContainsKey(node.GUID) && collected == null)
+                    {
+                        string localDefinitionName;
+
+                        if (node.IsCustomFunction)
+                        {
+                            localDefinitionName = node.Name + customNodeExtension;
+
+                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName)) 
+                            {
+                                nodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName);
+                            }
+
+                            nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
+                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.DYFFile;
+                        }
+                        else if (node is DSFunctionBase functionNode)
+                        {
+                            string assemblyPath = functionNode.Controller.Definition.Assembly;
+                            localDefinitionName = Path.GetFileName(assemblyPath);
+
+                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
+                            {
+                                nodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName, assemblyPath);
+                            }
+
+                            nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
+                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.ZeroTouch;
+                        }
+                        else if (node is DummyNode)
+                        {
+                            // Read the serialized value if the node is not resolved.
+                            if (localDefinitionsDictionary.TryGetValue(node.GUID, out var localDefinitionInfo))
+                            {
+                                nodeLocalDefinitions[localDefinitionInfo.Name] = localDefinitionInfo;
+                            }
+                        }
+                    }
+                }
+
+                return nodeLocalDefinitions.Values.ToList<INodeLibraryDependencyInfo>();
+            }
+            set
+            {
+                foreach (var dependency in value)
+                {
+                    if (dependency.ReferenceType == ReferenceType.DYFFile || dependency.ReferenceType == ReferenceType.ZeroTouch)
+                    {
+                        foreach (var node in dependency.Nodes)
+                        {
+                            localDefinitionsDictionary[node] = dependency as LocalDefinitionInfo;
+                        }
+                    }
+                }
+
+                RaisePropertyChanged(nameof(NodeLocalDefinitions));
+            }
+        }
+
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
+        private Dictionary<Guid, LocalDefinitionInfo> localDefinitionsDictionary = new Dictionary<Guid, LocalDefinitionInfo>();
 
 
         /// <summary>
@@ -1042,6 +1124,7 @@ namespace Dynamo.Graph.Workspaces
             this.annotations = new List<AnnotationModel>(annotations);
 
             this.NodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            this.NodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -1049,8 +1132,7 @@ namespace Dynamo.Graph.Workspaces
             X = info.X;
             Y = info.Y;
             FileName = info.FileName;
-            Zoom = info.Zoom; 
-
+            Zoom = info.Zoom;
 
             HasUnsavedChanges = false;
             IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
@@ -2041,6 +2123,9 @@ namespace Dynamo.Graph.Workspaces
             //            ensure that any contained notes are contained properly
             LoadNotesFromAnnotations(workspaceViewInfo.Annotations);
 
+            ///This function loads ConnectorPins to the corresponding connector models.
+            LoadConnectorPins(workspaceViewInfo.ConnectorPins);
+
             // This function loads annotations from the Annotations array in the JSON format
             // that have a non-empty nodes collection
             LoadAnnotations(workspaceViewInfo.Annotations);
@@ -2139,14 +2224,27 @@ namespace Dynamo.Graph.Workspaces
                 {
                     this.AddNote(noteModel);
                 }
-           
+            }
+        }
+
+        private void LoadConnectorPins(IEnumerable<ExtraConnectorPinInfo> pinInfo)
+        {
+            if (pinInfo == null) {return;}
+
+            foreach (ExtraConnectorPinInfo pinViewInfo in pinInfo)
+            {
+                var connectorGuid = IdToGuidConverter(pinViewInfo.ConnectorGuid);
+
+                var matchingConnector = Connectors.FirstOrDefault(x => x.GUID == connectorGuid);
+                if (matchingConnector is null) {return;}
+
+                matchingConnector.AddPin(pinViewInfo.Left, pinViewInfo.Top);
             }
         }
 
         private void LoadAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
         {
-            if (annotationViews == null)
-              return;
+            if (annotationViews == null) {return;}
 
             foreach (ExtraAnnotationViewInfo annotationViewInfo in annotationViews)
             {

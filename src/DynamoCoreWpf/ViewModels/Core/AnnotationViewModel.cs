@@ -274,7 +274,12 @@ namespace Dynamo.ViewModels
 
             this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynamoModel.SelectModelCommand(guids, Keyboard.Modifiers.AsDynamoType()));
+        }
 
+        public override void Dispose()
+        {
+            annotationModel.PropertyChanged -= model_PropertyChanged;
+            base.Dispose();
         }
     }
 }
