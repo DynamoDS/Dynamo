@@ -717,6 +717,7 @@ namespace Dynamo.ViewModels
                             owningWorkspace.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
                         }
                         dropGroup.NodeHoveringState = false;
+                        dropGroup.SelectAll();
                     }
 
                     SetCurrentState(State.None); // Dragging operation ended.
