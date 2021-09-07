@@ -336,7 +336,12 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Opens the Package Details ViewExtension
         /// </summary>
-        public DelegateCommand<object> ViewDetailsCommand { get; set; }
+        public DelegateCommand<object> ViewPackageDetailsCommand { get; set; }
+
+        /// <summary>
+        /// Clears the search text box and resets the search
+        /// </summary>
+        public DelegateCommand<object> ClearSearchTextBoxCommand { get; set; }
 
 
         /// <summary>
@@ -358,7 +363,8 @@ namespace Dynamo.PackageManager
             SortCommand = new DelegateCommand(Sort, CanSort);
             SetSortingKeyCommand = new DelegateCommand<object>(SetSortingKey, CanSetSortingKey);
             SetSortingDirectionCommand = new DelegateCommand<object>(SetSortingDirection, CanSetSortingDirection);
-            ViewDetailsCommand = new DelegateCommand<object>(ViewPackageDetails);
+            ViewPackageDetailsCommand = new DelegateCommand<object>(ViewPackageDetails);
+            ClearSearchTextBoxCommand = new DelegateCommand<object>(ClearSearchTextBox);
             SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = string.Empty;
             SortingKey = PackageSortingKey.LastUpdate;
@@ -465,6 +471,14 @@ namespace Dynamo.PackageManager
         public void ViewPackageDetails(object sortingDir)
         {
             MessageBox.Show("To be implemented in incoming PR!");
+        }
+
+        /// <summary>
+        /// Clears the search text box and resets the search.
+        /// </summary>
+        public void ClearSearchTextBox(object obj)
+        {
+            SearchText = "";
         }
 
         /// <summary>

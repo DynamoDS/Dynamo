@@ -21,92 +21,7 @@
     </Window.Background>
     <Window.Resources>
         <ResourceDictionary>
-
-            <!--  An unstyled button  -->
-            <Style x:Key="FlatButton" TargetType="Button">
-                <Setter Property="Background" Value="{x:Null}" />
-                <Setter Property="BorderBrush" Value="{x:Null}" />
-
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Button}">
-                            <Border Name="BorderInterior"
-                                    Padding="{TemplateBinding Padding}"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}">
-                                <ContentPresenter Margin="{TemplateBinding Padding}"
-                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                  RecognizesAccessKey="True"
-                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsKeyboardFocused" Value="true" />
-                                <Trigger Property="IsDefaulted" Value="true" />
-                                <Trigger Property="IsPressed" Value="true" />
-                                <Trigger Property="ToggleButton.IsChecked" Value="true" />
-                                <Trigger Property="IsEnabled" Value="false">
-                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#44000000" />
-                        <Setter Property="BorderBrush" Value="{x:Null}" />
-                        <Setter Property="FontWeight" Value="Normal" />
-                    </Trigger>
-                    <Trigger Property="IsFocused" Value="True">
-                        <Setter Property="FontWeight" Value="Normal" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-            <Style x:Key="DownloadVersionButton" TargetType="{x:Type Button}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate>
-
-                            <Border x:Name="container" Background="Transparent">
-                                <TextBlock x:Name="text"
-                                           Margin="4,0"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           FontSize="11"
-                                           FontWeight="Bold"
-                                           Foreground="#BBB"
-                                           Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
-                            </Border>
-
-                            <ControlTemplate.Triggers>
-
-                                <Trigger Property="Button.IsMouseOver" Value="true">
-                                    <Setter TargetName="container" Property="Background" Value="#333333" />
-                                </Trigger>
-
-                                <Trigger Property="IsEnabled" Value="false">
-                                    <Setter TargetName="text" Property="Foreground" Value="#666" />
-                                </Trigger>
-
-                            </ControlTemplate.Triggers>
-
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="DependencyTooltip" TargetType="ToolTip">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ToolTip">
-                            <ContentPresenter />
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
-            <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
             <controls:DateToVisibilityCollapsedConverter x:Key="DateToVisibilityCollapsedConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
@@ -116,7 +31,6 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-
         </ResourceDictionary>
     </Window.Resources>
 
@@ -146,9 +60,9 @@
                                        VerticalContentAlignment="Center"
                                        Content="✓"
                                        DockPanel.Dock="Left"
-                                       FontSize="11px"
-                                       FontWeight="Bold"
                                        FontFamily="{StaticResource ArtifaktElementBold}"
+                                       FontSize="10px"
+                                       FontWeight="Bold"
                                        Foreground="#0696D7"
                                        Visibility="Collapsed" />
                                 <ContentPresenter x:Name="ContentPresenter"
@@ -221,6 +135,10 @@
                                 </Trigger>
                                 <Trigger Property="IsChecked" Value="True">
                                     <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
+                                    <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="1.0" />
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.7" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -234,7 +152,7 @@
                         <ControlTemplate TargetType="{x:Type Separator}">
                             <Grid>
                                 <Border Height="1"
-                                        Margin="15,8,15,8"
+                                        Margin="0,8,0,8"
                                         Background="#4D4D4D" />
                             </Grid>
                         </ControlTemplate>
@@ -277,15 +195,17 @@
                 BorderBrush="#7E7E7E"
                 BorderThickness="0,1,0,0">
             <DockPanel>
+                <!--  Sort Button  -->
                 <Button Name="sortResultsButton"
                         Width="20"
                         Height="20"
                         Margin="10,0,0,0"
                         Background="#CBCBCB"
                         BorderThickness="0"
+                        Click="OnSortButtonClicked"
                         DockPanel.Dock="Right">
                     <Button.ContextMenu>
-                        <ContextMenu Width="Auto"
+                        <ContextMenu Width="180"
                                      Background="#3C3C3C"
                                      Style="{StaticResource ContextMenuStyle}">
                             <Separator>
@@ -300,12 +220,36 @@
                                     </ControlTemplate>
                                 </Separator.Template>
                             </Separator>
-                            <MenuItem Header="Most Recent Updates"
+                            <!--  Name  -->
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                      CommandParameter="Name"
+                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByName}"
                                       IsCheckable="True"
-                                      IsChecked="True" />
-                            <MenuItem Header="Downloads" IsCheckable="True" />
-                            <MenuItem Header="Votes" IsCheckable="True" />
-                            <MenuItem Header="Author" IsCheckable="True" />
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Name, Mode=TwoWay}" />
+                            <!--  Most Recent Update  -->
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                      CommandParameter="LastUpdate"
+                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuSortyByUpdate}"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=LastUpdate, Mode=TwoWay}" />
+                            <!--  Downloads  -->
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                      CommandParameter="Downloads"
+                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByDownloads}"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Downloads, Mode=TwoWay}" />
+                            <!--  Votes  -->
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                      CommandParameter="Votes"
+                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByVotes}"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Votes, Mode=TwoWay}" />
+                            <!--  Author  -->
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                      CommandParameter="Maintainers"
+                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByAuthor}"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Maintainers, Mode=TwoWay}" />
                             <Separator />
                             <Separator>
                                 <Separator.Template>
@@ -319,17 +263,52 @@
                                     </ControlTemplate>
                                 </Separator.Template>
                             </Separator>
-                            <MenuItem Header="Ascending" IsCheckable="True" />
-                            <MenuItem Header="Descending" IsCheckable="True" />
+                            <!--  Ascending  -->
+                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}"
+                                      CommandParameter="Ascending"
+                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderAscending}"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Ascending, Mode=TwoWay}" />
+                            <!--  Descending  -->
+                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}"
+                                      CommandParameter="Descending"
+                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderDescending}"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Descending, Mode=TwoWay}" />
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
-                <Rectangle Name="filterResultsButton"
-                           Width="20"
-                           Height="20"
-                           Margin="25,0,0,0"
-                           DockPanel.Dock="Right"
-                           Fill="#CBCBCB" />
+                <!--  Filter Button  -->
+                <Button Name="filterResultsButton"
+                        Width="20"
+                        Height="20"
+                        Margin="25,0,0,0"
+                        Background="#CBCBCB"
+                        BorderThickness="0"
+                        Click="OnFilterButtonClicked"
+                        DockPanel.Dock="Right"
+                        ToolTip="{x:Static p:Resources.PackageHostDependencyFilter}">
+                    <Button.ContextMenu>
+                        <ContextMenu Name="HostFilter"
+                                     Width="Auto"
+                                     Background="#3C3C3C"
+                                     DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
+                                     DisplayMemberPath="FilterName"
+                                     ItemsSource="{Binding HostFilter}"
+                                     Style="{StaticResource ContextMenuStyle}">
+                            <ContextMenu.ItemContainerStyle>
+                                <Style TargetType="{x:Type MenuItem}">
+                                    <Setter Property="IsCheckable" Value="True" />
+                                    <Setter Property="Command" Value="{Binding FilterCommand}" />
+                                    <Setter Property="CommandParameter" Value="{Binding FilterName}" />
+                                    <Setter Property="IsChecked" Value="{Binding OnChecked}" />
+                                    <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageHostDependencyFilterContextItem}" />
+                                </Style>
+                            </ContextMenu.ItemContainerStyle>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+                <!--  Search Bar  -->
                 <Grid Name="searchBarGrid" DockPanel.Dock="Left">
                     <TextBox Name="searchTextBox"
                              Padding="15,11,5,10"
@@ -353,6 +332,39 @@
                                Opacity="0.5"
                                Text="{Binding SearchBoxPrompt}"
                                Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" />
+                    <!--  Clear Text X Button  -->
+                    <Button Margin="10"
+                            HorizontalAlignment="Right"
+                            Command="{Binding ClearSearchTextBoxCommand}"
+                            Visibility="{Binding Path=SearchText, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Ellipse Name="ellipse"
+                                             Width="20"
+                                             Height="20"
+                                             Fill="#CBCBCB" />
+                                    <Path Name="line1"
+                                          Data="M6,6 14,14"
+                                          Stroke="#353535"
+                                          StrokeThickness="1" />
+                                    <Path Name="line2"
+                                          Data="M6,14 14,6"
+                                          Stroke="#353535"
+                                          StrokeThickness="1" />
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="ellipse" Property="Fill" Value="White" />
+                                    </Trigger>
+                                    <Trigger Property="Button.IsPressed" Value="True">
+                                        <Setter TargetName="line1" Property="Stroke" Value="#84D7CE" />
+                                        <Setter TargetName="line2" Property="Stroke" Value="#84D7CE" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
                 </Grid>
             </DockPanel>
         </Border>
@@ -377,6 +389,11 @@
                         <Setter Property="FontSize" Value="10" />
                         <Setter Property="Foreground" Value="#DFDFDF" />
                         <Setter Property="VerticalAlignment" Value="Center" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="True">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </DataTrigger>
+                        </Style.Triggers>
                     </Style>
 
                     <!--  Style buttons on each result, e.g. Install  -->
@@ -389,12 +406,17 @@
                                                VerticalAlignment="Center"
                                                FontFamily="{StaticResource ArtifaktElementRegular}"
                                                FontSize="11"
-                                               Foreground="#84D7CE"
                                                Text="{TemplateBinding Content}" />
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="textBlock" Property="TextBlock.TextDecorations" Value="Underline" />
                                         </Trigger>
+                                        <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="True">
+                                            <Setter TargetName="textBlock" Property="Foreground" Value="#999999" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
+                                            <Setter TargetName="textBlock" Property="Foreground" Value="#84D7CE" />
+                                        </DataTrigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Setter.Value>
@@ -423,20 +445,24 @@
                                        Grid.Row="0"
                                        Margin="25,12,15,0"
                                        LastChildFill="False">
-                                <Button Command="{Binding DownloadLatestCommand}"
+                                <Button Name="installButton"
+                                        Command="{Binding DownloadLatestCommand}"
                                         Content="Install"
                                         DockPanel.Dock="Right"
                                         Style="{StaticResource resultButtonStyle}" />
-                                <Button Content="Requirements"
+                                <Button Name="requirementsButton"
+                                        Content="Requirements"
                                         DockPanel.Dock="Right"
                                         Style="{StaticResource resultButtonStyle}"
                                         ToolTip="{Binding Path=Model.HostsString}" />
-                                <Button Content="View Details"
+                                <Button Name="viewDetailsButton"
+                                        Command="{Binding ViewPackageDetailsCommand}"
+                                        Content="View Details"
                                         DockPanel.Dock="Right"
                                         Style="{StaticResource resultButtonStyle}" />
 
                                 <!--  Contains Package Name and New Label  -->
-                                <Grid DockPanel.Dock="Left">
+                                <Grid Margin="0,0,10,0" DockPanel.Dock="Left">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
@@ -447,10 +473,22 @@
                                                FontFamily="{StaticResource ArtifaktElementRegular}"
                                                FontSize="14"
                                                FontWeight="SemiBold"
-                                               Foreground="#DFDFDF"
                                                Text="{Binding Path=Model.Name}"
                                                TextTrimming="CharacterEllipsis"
-                                               TextWrapping="NoWrap" />
+                                               TextWrapping="NoWrap">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="True">
+                                                        <Setter Property="Foreground" Value="#999999" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="False">
+                                                        <Setter Property="Foreground" Value="#DFDFDF" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
                                     <Border Name="newPackageLabel"
                                             Grid.Column="1"
                                             Width="36"
@@ -539,16 +577,12 @@
 
                             <!--  Separates List Items  -->
                             <Rectangle Name="separator"
-                                       Grid.Row="0"
+                                       Grid.Row="1"
                                        Height="1"
-                                       VerticalAlignment="Top"
+                                       VerticalAlignment="Bottom"
                                        Fill="#535353" />
+
                         </Grid>
-                        <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
-                                <Setter TargetName="separator" Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
