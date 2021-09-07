@@ -510,7 +510,7 @@ namespace Dynamo.ViewModels
                     catch
                     {
                         MessageBoxService.Show(
-                            String.Format(Resources.MessageFailedToDownloadPackageVersion, dep._id, depVersion),
+                            String.Format(Resources.MessageFailedToDownloadPackageVersion, depVersion, dep._id),
                             Resources.PackageDownloadErrorMessageBoxTitle,
                             MessageBoxButton.OK, MessageBoxImage.Error);
                         return null;
