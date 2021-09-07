@@ -454,7 +454,7 @@
                                         Content="Requirements"
                                         DockPanel.Dock="Right"
                                         Style="{StaticResource resultButtonStyle}"
-                                        ToolTip="{Binding Path=Model.HostsString}" />
+                                        ToolTip="{Binding Path=Model.HostsString, Converter={StaticResource DependencyListToStringConverter}}" />
                                 <Button Name="viewDetailsButton"
                                         Click="ViewDetailsButton_OnClick"
                                         Command="{Binding ViewPackageDetailsCommand}"

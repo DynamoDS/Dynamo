@@ -128,7 +128,7 @@ namespace Dynamo.Controls
                 }
                 return flag ? depString.Remove(depString.Length - 2) : null;
             }
-            return null;
+            return Properties.Resources.PackageManagerPackageHasNoDependencies;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
