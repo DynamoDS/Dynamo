@@ -456,6 +456,7 @@
                                         Style="{StaticResource resultButtonStyle}"
                                         ToolTip="{Binding Path=Model.HostsString}" />
                                 <Button Name="viewDetailsButton"
+                                        Click="ViewDetailsButton_OnClick"
                                         Command="{Binding ViewPackageDetailsCommand}"
                                         Content="View Details"
                                         DockPanel.Dock="Right"
@@ -516,19 +517,7 @@
                             <DockPanel Name="resultBottomRow"
                                        Grid.Row="1"
                                        Margin="25,2,15,0"
-                                       LastChildFill="False">
-                                <Ellipse Width="10"
-                                         Height="10"
-                                         Margin="0,0,0,2"
-                                         VerticalAlignment="Center"
-                                         DockPanel.Dock="Left"
-                                         Fill="#D8D8D8" />
-                                <TextBlock Name="authorName"
-                                           Margin="5,0"
-                                           DockPanel.Dock="Left"
-                                           Foreground="#C7C7C7"
-                                           Style="{StaticResource resultLabelStyle}"
-                                           Text="{Binding Path=Model.Maintainers}" />
+                                       LastChildFill="True">
                                 <TextBlock Name="dateLabel"
                                            Margin="5,0"
                                            DockPanel.Dock="Right"
@@ -539,7 +528,7 @@
                                          Margin="5,0,0,2"
                                          VerticalAlignment="Center"
                                          DockPanel.Dock="Right"
-                                         Fill="#D8D8D8" />
+                                         Fill="Red" />
                                 <TextBlock Name="noDownloadsLabel"
                                            Margin="5,0"
                                            DockPanel.Dock="Right"
@@ -550,7 +539,7 @@
                                          Margin="5,0,0,2"
                                          VerticalAlignment="Center"
                                          DockPanel.Dock="Right"
-                                         Fill="#D8D8D8" />
+                                         Fill="Green" />
                                 <TextBlock Name="noFavoritesLabel"
                                            Margin="5,0"
                                            DockPanel.Dock="Right"
@@ -561,7 +550,7 @@
                                          Margin="5,0,0,2"
                                          VerticalAlignment="Center"
                                          DockPanel.Dock="Right"
-                                         Fill="#D8D8D8" />
+                                         Fill="Teal" />
                                 <TextBlock Name="versionLabel"
                                            Margin="5,0"
                                            DockPanel.Dock="Right"
@@ -572,7 +561,20 @@
                                          Margin="5,0,0,2"
                                          VerticalAlignment="Center"
                                          DockPanel.Dock="Right"
-                                         Fill="#D8D8D8" />
+                                         Fill="Yellow" />
+                                <Ellipse Width="10"
+                                         Height="10"
+                                         Margin="0,0,0,2"
+                                         VerticalAlignment="Center"
+                                         DockPanel.Dock="Left"
+                                         Fill="Purple" />
+                                <TextBlock Name="authorName"
+                                           Margin="5,0"
+                                           DockPanel.Dock="Left"
+                                           Foreground="#C7C7C7"
+                                           TextTrimming="CharacterEllipsis"
+                                           Style="{StaticResource resultLabelStyle}"
+                                           Text="{Binding Path=Model.Maintainers}" />
                             </DockPanel>
 
                             <!--  Separates List Items  -->

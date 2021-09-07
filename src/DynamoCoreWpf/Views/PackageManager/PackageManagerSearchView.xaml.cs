@@ -146,5 +146,11 @@ namespace Dynamo.PackageManager.UI
             
             Close();
         }
+
+        private void ViewDetailsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (!(this.DataContext is PackageManagerSearchViewModel packageManagerSearchViewModel)) return;
+            packageManagerSearchViewModel.ViewPackageDetailsCommand.Execute(null);
+        }
     }
 }
