@@ -40,6 +40,7 @@ using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Views.PackageManager;
 using HelixToolkit.Wpf.SharpDX;
@@ -1787,6 +1788,14 @@ namespace Dynamo.Controls
                 collapsedLibrarySidebar.Visibility = Visibility.Collapsed;
             }
 
+        }
+
+        private void OnDebugModesClick(object sender, RoutedEventArgs e)
+        {
+            var debugModesWindow = new DebugModesWindow();
+            debugModesWindow.Owner = this;
+            debugModesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            debugModesWindow.ShowDialog();
         }
 
         // Show the extensions right side bar when there is atleast one extension

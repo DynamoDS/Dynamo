@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
@@ -65,7 +66,7 @@ namespace Dynamo.Wpf.Services
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
 
-        internal ImageSource LoadIconInternal(string iconKey)
+        internal ImageSource LoadIconInternal(string iconKey, Dynamo.Logging.ILogger logger = null)
         {
             if (cachedIcons.ContainsKey(iconKey))
                 return cachedIcons[iconKey];
@@ -87,7 +88,15 @@ namespace Dynamo.Wpf.Services
                 return null;
             }
 
-            bitmapSource = ResourceUtilities.ConvertToImageSource(source);
+            if (DebugModes.IsEnabled("Disable6"))
+            {
+                if (logger != null)
+                    logger.Log("Disabled calls to ConvertToImageSource");
+            }
+            else
+            {
+                bitmapSource = ResourceUtilities.ConvertToImageSource(source);
+            }
 
             cachedIcons.Add(iconKey, bitmapSource);
             return bitmapSource;

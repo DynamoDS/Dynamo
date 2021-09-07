@@ -176,6 +176,19 @@ namespace Dynamo.ViewModels
             {
                 filteredResults = ToggleSelect(value);
                 RaisePropertyChanged("FilteredResults");
+                RaisePropertyChanged(nameof(EnableSearchResults));
+            }
+        }
+
+        public bool EnableSearchResults
+        {
+            get
+            {
+                if (DebugModes.IsEnabled("Disable7"))
+                {
+                    return false;
+                }
+                return true;
             }
         }
 
@@ -755,12 +768,28 @@ namespace Dynamo.ViewModels
 
         private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
         {
-            var warehouse = iconServices.GetForAssembly(e.IconAssembly, e.UseAdditionalResolutionPaths);
-            ImageSource icon = null;
-            if (warehouse != null)
-                icon = warehouse.LoadIconInternal(e.IconFullPath);
+            if (DebugModes.IsEnabled("Disable4"))
+            {
+                if (Model.logger != null)
+                    Model.logger.Log("Disabled calls to SearchViewModelRequestBitmapSource");
+            }
+            else
+            {
+                var warehouse = iconServices.GetForAssembly(e.IconAssembly, e.UseAdditionalResolutionPaths);
+                if (DebugModes.IsEnabled("Disable5"))
+                {
+                    if (Model.logger != null)
+                        Model.logger.Log("Disabled calls to LoadIconInternal");
+                }
+                else
+                {
+                    ImageSource icon = null;
+                    if (warehouse != null)
+                        icon = warehouse.LoadIconInternal(e.IconFullPath);
 
-            e.SetIcon(icon);
+                    e.SetIcon(icon);
+                }
+            }
         }
 
         // Form a fully qualified name based on nested level of a "NodeCategoryViewModel" object.
@@ -791,7 +820,15 @@ namespace Dynamo.ViewModels
 
             if (!String.IsNullOrEmpty(SearchText.Trim()))
             {
-                SearchAndUpdateResults(SearchText);
+                if (DebugModes.IsEnabled("Disable1"))
+                {
+                    if (Model.logger != null)
+                        Model.logger.Log("Disabled calls to SearchAndUpdateResults");
+                }
+                else
+                {
+                    SearchAndUpdateResults(SearchText);
+                }
             }
 
             RaisePropertyChanged("IsAnySearchResult");
@@ -806,7 +843,15 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
-            Analytics.LogPiiInfo("Search", query);
+            if (DebugModes.IsEnabled("Disable2"))
+            {
+                if (Model.logger != null)
+                    Model.logger.Log("Disabled calls to LogPiiInfo");
+            }
+            else
+            {
+                Analytics.LogPiiInfo("Search", query);
+            }
 
             // if the search query is empty, go back to the default treeview
             if (string.IsNullOrEmpty(query))
@@ -816,7 +861,16 @@ namespace Dynamo.ViewModels
             searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
             FilteredResults = searchResults;
-            UpdateSearchCategories();
+
+            if (DebugModes.IsEnabled("Disable3"))
+            {
+                if (Model.logger != null)
+                    Model.logger.Log("Disabled calls to UpdateSearchCategories");
+            }
+            else
+            {
+                UpdateSearchCategories();
+            }
 
             RaisePropertyChanged("FilteredResults");
         }
