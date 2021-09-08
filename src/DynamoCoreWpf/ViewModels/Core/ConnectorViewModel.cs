@@ -857,6 +857,10 @@ namespace Dynamo.ViewModels
             {
                 case nameof(ConnectorModel.IsVisible):
                     ConnectorModel connector = sender as ConnectorModel;
+                    if (connector is null)
+                    {
+                        return;
+                    }
                     IsVisible = connector.IsVisible;
                     break;
                 default:
