@@ -324,49 +324,54 @@ namespace ProtoCore
             // Update the functiond definition in the codeblocks
             int hash = CoreUtils.GetFunctionHash(functionDef);
 
-            ProcedureNode procNode = null;
+            List<ProcedureNode> procNodes = null;
 
             foreach (CodeBlock block in CodeBlockList)
             {
                 // Update the current function definition in the current block
-                procNode = block.procedureTable.Procedures.FirstOrDefault(p => p.HashID == hash);
-                int index = procNode == null ? Constants.kInvalidIndex: procNode.ID; 
-                if (Constants.kInvalidIndex == index)
-                    continue;
-
-                procNode.IsActive = false;
-
-                // Remove staled graph nodes
-                var graph = block.instrStream.dependencyGraph;
-                graph.GraphList.RemoveAll(g => g.classIndex == ClassIndex && 
-                                               g.procIndex == index);
-                graph.RemoveNodesFromScope(Constants.kGlobalScope, index);
-
-                // Make a copy of all symbols defined in this function
-                var localSymbols = block.symbolTable.symbolList.Values
-                                        .Where(n => 
-                                                n.classScope == Constants.kGlobalScope 
-                                             && n.functionIndex == index)
-                                        .ToList();
-
-                foreach (var symbol in localSymbols)
+                procNodes = block.procedureTable.Procedures.Where(p => p.HashID == hash).ToList();
+                foreach (var procNode in procNodes)
                 {
-                    block.symbolTable.UndefineSymbol(symbol);
-                }
+                    int index = procNode == null ? Constants.kInvalidIndex : procNode.ID;
+                    if (Constants.kInvalidIndex == index)
+                        continue;
 
+                    procNode.IsActive = false;
+
+
+                    // Remove staled graph nodes
+                    var graph = block.instrStream.dependencyGraph;
+                    graph.GraphList.RemoveAll(g => g.classIndex == ClassIndex &&
+                                                   g.procIndex == index);
+                    graph.RemoveNodesFromScope(Constants.kGlobalScope, index);
+
+                    // Make a copy of all symbols defined in this function
+                    var localSymbols = block.symbolTable.symbolList.Values
+                                            .Where(n =>
+                                                    n.classScope == Constants.kGlobalScope
+                                                 && n.functionIndex == index)
+                                            .ToList();
+
+                    foreach (var symbol in localSymbols)
+                    {
+                        block.symbolTable.UndefineSymbol(symbol);
+                    }
+                }
                 break;
             }
-
-            if (null != procNode)
+            foreach (var procNode in procNodes)
             {
-                // Remove codeblock defined in procNode from CodeBlockList and CompleteCodeBlockList
-                foreach (int cbID in procNode.ChildCodeBlocks)
+                if (null != procNode)
                 {
-                    CompleteCodeBlockDict.Remove(cbID);
-
-                    foreach (CodeBlock cb in CodeBlockList)
+                    // Remove codeblock defined in procNode from CodeBlockList and CompleteCodeBlockList
+                    foreach (int cbID in procNode.ChildCodeBlocks)
                     {
-                        cb.children.RemoveAll(x => x.codeBlockId == cbID);
+                        CompleteCodeBlockDict.Remove(cbID);
+
+                        foreach (CodeBlock cb in CodeBlockList)
+                        {
+                            cb.children.RemoveAll(x => x.codeBlockId == cbID);
+                        }
                     }
                 }
             }
