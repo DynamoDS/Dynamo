@@ -121,6 +121,7 @@ limitations under the License.
     <Compile Include="Extensions\ExtensionData.cs" />
     <Compile Include="Extensions\IExtensionStorageAccess.cs" />
     <Compile Include="Extensions\LinterExtensionBase.cs" />
+    <Compile Include="Graph\ConnectorPinModel.cs" />
     <Compile Include="Graph\Workspaces\PackageDependencyInfo.cs" />
     <Compile Include="Graph\Nodes\NodeOutputData.cs" />
     <Compile Include="Graph\Nodes\NodeInputData.cs" />
@@ -131,6 +132,8 @@ limitations under the License.
     <Compile Include="Graph\Workspaces\SerializationExtensions.cs" />
     <Compile Include="Graph\Workspaces\UndoRedo.cs" />
     <Compile Include="Extensions\IServiceManager.cs" />
+    <Compile Include="Interfaces\ILibraryViewCustomization.cs" />
+    <Compile Include="Interfaces\LayoutSpecification.cs" />
     <Compile Include="Linting\Interfaces\RuleEvaluationStatusEnum.cs" />
     <Compile Include="Linting\Interfaces\IRuleEvaluationResult.cs" />
     <Compile Include="Linting\Interfaces\SeverityCodesEnum.cs" />
@@ -159,7 +162,6 @@ limitations under the License.
     <Compile Include="Interfaces\IDynamoModel.cs" />
     <Compile Include="Library\ILibraryLoader.cs" />
     <Compile Include="Graph\Workspaces\ICustomNodeWorkspaceModel.cs" />
-    <Compile Include="Configuration\DebugModes.cs" />
     <Compile Include="Visualization\DefaultGraphicPrimitives.cs" />
     <Compile Include="Visualization\GeometryHolder.cs" />
     <Compile Include="Visualization\IRenderPackageSource.cs" />
