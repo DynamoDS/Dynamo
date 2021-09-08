@@ -4,13 +4,13 @@
              Title="Debug Modes"
              ResizeMode="NoResize" Width="350" Height="510"
         >
-    <StackPanel Background="White">
-        <ListView Name="CheckList" Height="320" Margin="10,0">
+    <StackPanel Background= "#353535">
+        <ListView Name="CheckList" Height="320" Margin="10,0" Background= "#353535">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <WrapPanel>
+                    <WrapPanel Background= "#353535">
                         <CheckBox IsChecked="{Binding Enabled}" Checked="OnClickCheckBox" Unchecked="OnClickCheckBox"/>
-                        <TextBlock Margin="10,0,0,0" Text="{Binding Name}"  />
+                        <TextBlock Margin="10,0,0,0" Text="{Binding Name}" Foreground="White"  />
                     </WrapPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -21,7 +21,7 @@
             </ListView.ItemContainerStyle>
         </ListView>
         <ScrollViewer Margin="10,5,10,0" Height="100">
-            <TextBox IsReadOnly="True" TextWrapping="Wrap" x:Name="SelectedDbgMode" Text="{Binding SelectedDebugMode}">
+            <TextBox Background= "#353535" Foreground="White" IsReadOnly="True" TextWrapping="Wrap" x:Name="SelectedDbgMode" Text="{Binding SelectedDebugMode}">
             </TextBox>
         </ScrollViewer>
     </StackPanel>
