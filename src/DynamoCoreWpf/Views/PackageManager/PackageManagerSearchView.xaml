@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:viewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
         Name="PackageSearch"
@@ -21,20 +22,12 @@
     </Window.Background>
     <Window.Resources>
         <ResourceDictionary>
-            <Style x:Key="DependencyTooltip" TargetType="ToolTip">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ToolTip">
-                            <ContentPresenter />
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
             <controls:DateToVisibilityCollapsedConverter x:Key="DateToVisibilityCollapsedConverter" />
+            <controls:DateToPackageLabelCollapsedConverter x:Key="DateToPackageLabelCollapsedConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
-            <controls:EmptyDepStringToCollapsedConverter x:Key="EmptyDepStringToCollapsedConverter" />
+
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -81,7 +74,7 @@
                                                   DockPanel.Dock="Left"
                                                   RecognizesAccessKey="True"
                                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                  TextBlock.Foreground="#EEEEEE" />
+                                                  TextBlock.Foreground="{StaticResource PrimaryCharcoal100Brush}" />
                                 <Label x:Name="subMenuArrow"
                                        Margin="0,0,15,7"
                                        Padding="0"
@@ -140,7 +133,7 @@
                                     <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="False">
-                                    <Setter TargetName="dockPanel" Property="Background" Value="#3C3C3C" />
+                                    <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource DarkerGreyBrush}" />
                                 </Trigger>
                                 <Trigger Property="IsChecked" Value="True">
                                     <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
@@ -173,7 +166,7 @@
         <Border Name="titleBar"
                 Grid.Row="0"
                 Grid.RowSpan="3"
-                Background="#535353"
+                Background="{StaticResource DarkMidGreyBrush}"
                 CornerRadius="4"
                 MouseDown="PreferencesPanel_MouseDown">
             <DockPanel HorizontalAlignment="Stretch">
@@ -192,7 +185,7 @@
                            FontSize="20px"
                            FontWeight="Regular"
                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                           Text="Search for Packages"
+                           Text="{x:Static p:Resources.PackageSearchHeader}"
                            TextAlignment="Left" />
             </DockPanel>
         </Border>
@@ -209,7 +202,7 @@
                         Width="20"
                         Height="20"
                         Margin="10,0,0,0"
-                        Background="#CBCBCB"
+                        Background="{StaticResource PrimaryCharcoal300Brush}"
                         BorderThickness="0"
                         Click="OnSortButtonClicked"
                         Cursor="Hand"
@@ -225,7 +218,7 @@
                     </Button.Template>
                     <Button.ContextMenu>
                         <ContextMenu Width="180"
-                                     Background="#3C3C3C"
+                                     Background="{StaticResource DarkerGreyBrush}"
                                      Style="{StaticResource ContextMenuStyle}">
                             <Separator>
                                 <Separator.Template>
@@ -234,7 +227,7 @@
                                             <TextBlock Margin="10,5"
                                                        FontSize="11"
                                                        Foreground="#8C8C8C "
-                                                       Text="SORT BY" />
+                                                       Text="{x:Static p:Resources.PackageSearchSortBy}" />
                                         </StackPanel>
                                     </ControlTemplate>
                                 </Separator.Template>
@@ -277,7 +270,7 @@
                                             <TextBlock Margin="10,5"
                                                        FontSize="11"
                                                        Foreground="#8C8C8C "
-                                                       Text="ORDER" />
+                                                       Text="{x:Static p:Resources.PackageSearchOrder}" />
                                         </StackPanel>
                                     </ControlTemplate>
                                 </Separator.Template>
@@ -302,7 +295,7 @@
                         Width="20"
                         Height="20"
                         Margin="25,0,0,0"
-                        Background="#CBCBCB"
+                        Background="{StaticResource PrimaryCharcoal300Brush}"
                         BorderThickness="0"
                         Click="OnFilterButtonClicked"
                         Cursor="Hand"
@@ -319,25 +312,12 @@
                     </Button.Template>
                     <Button.ContextMenu>
                         <ContextMenu Name="HostFilter"
-                                     Width="Auto"
-                                     Background="#3C3C3C"
                                      DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
                                      DisplayMemberPath="FilterName"
+                                     ItemsSource="{Binding HostFilter}"
                                      Style="{StaticResource ContextMenuStyle}">
-                            <MenuItem ItemsSource="{Binding HostFilter}">
-                                <MenuItem.ItemContainerStyle>
-                                    <Style TargetType="{x:Type MenuItem}">
-                                        <Setter Property="IsCheckable" Value="True" />
-                                        <Setter Property="Command" Value="{Binding FilterCommand}" />
-                                        <Setter Property="CommandParameter" Value="{Binding FilterName}" />
-                                        <Setter Property="IsChecked" Value="{Binding OnChecked}" />
-                                        <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageHostDependencyFilterContextItem}" />
-                                    </Style>
-                                </MenuItem.ItemContainerStyle>
-                            </MenuItem>
-                            <MenuItem ItemsSource="{Binding HostFilter}" />
                             <ContextMenu.ItemContainerStyle>
-                                <Style TargetType="{x:Type MenuItem}">
+                                <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="{x:Type MenuItem}">
                                     <Setter Property="IsCheckable" Value="True" />
                                     <Setter Property="Command" Value="{Binding FilterCommand}" />
                                     <Setter Property="CommandParameter" Value="{Binding FilterName}" />
@@ -473,7 +453,7 @@
                                 <Button Name="viewDetailsButton"
                                         Click="ViewDetailsButton_OnClick"
                                         Command="{Binding ViewPackageDetailsCommand}"
-                                        Content="View Details"
+                                        Content="{x:Static p:Resources.PackageSearchResultViewDetails}"
                                         DockPanel.Dock="Right"
                                         Style="{StaticResource resultButtonStyle}" />
                                 <Rectangle Width="10"
@@ -503,11 +483,31 @@
                                     </Rectangle.Style>
                                 </Rectangle>
                                 <Button Name="requirementsButton"
-                                        Content="Requirements"
+                                        Content="{x:Static p:Resources.PackageSearchResultRequirements}"
                                         DockPanel.Dock="Right"
                                         Style="{StaticResource resultButtonStyle}"
-                                        ToolTipService.ShowDuration="30000"
-                                        ToolTip="{Binding Model.Hosts, Converter={StaticResource DependencyListToStringConverter}}">
+                                        ToolTipService.ShowDuration="30000">
+                                    <Button.ToolTip>
+                                        <ToolTip Content="{Binding Model.Hosts, Converter={StaticResource DependencyListToStringConverter}}">
+                                            <ToolTip.Style>
+                                                <Style TargetType="ToolTip">
+                                                    <Setter Property="OverridesDefaultStyle" Value="true" />
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="ToolTip">
+                                                                <Border Padding="10,8" Background="{StaticResource DarkMidGreyBrush}">
+                                                                    <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                                               FontSize="12px"
+                                                                               Foreground="{StaticResource PrimaryCharcoal100Brush}"
+                                                                               Text="{TemplateBinding Content}" />
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </ToolTip.Style>
+                                        </ToolTip>
+                                    </Button.ToolTip>
                                 </Button>
                                 <Rectangle Width="10"
                                            Height="10"
@@ -597,7 +597,7 @@
                                     </TextBlock>
                                     <Border Name="newPackageLabel"
                                             Grid.Column="1"
-                                            Width="36"
+                                            Width="Auto"
                                             Height="18"
                                             Margin="7,-3,7,0"
                                             HorizontalAlignment="Right"
@@ -607,13 +607,14 @@
                                             BorderThickness="1"
                                             CornerRadius="3"
                                             Visibility="{Binding Path=Model.LatestVersionCreated, Converter={StaticResource DateToVisibilityCollapsedConverter}}">
-                                        <TextBlock Padding="0,2,0,0"
+                                        <TextBlock Margin="3,0"
+                                                   Padding="0,2,0,0"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"
                                                    FontFamily="{StaticResource ArtifaktElementRegular}"
                                                    FontSize="11"
                                                    Foreground="#DFDFDF"
-                                                   Text="New" />
+                                                   Text="{Binding Path=Model, Converter={StaticResource DateToPackageLabelCollapsedConverter}}" />
                                     </Border>
                                 </Grid>
                             </DockPanel>
@@ -691,7 +692,6 @@
                                 <TextBlock Name="authorName"
                                            Margin="5,0"
                                            DockPanel.Dock="Left"
-                                           Foreground="#C7C7C7"
                                            Style="{StaticResource resultLabelStyle}"
                                            Text="{Binding Path=Model.Maintainers}"
                                            TextTrimming="CharacterEllipsis" />
@@ -702,7 +702,7 @@
                                        Grid.Row="1"
                                        Height="1"
                                        VerticalAlignment="Bottom"
-                                       Fill="#535353" />
+                                       Fill="{StaticResource DarkMidGreyBrush}" />
 
                         </Grid>
                     </DataTemplate>

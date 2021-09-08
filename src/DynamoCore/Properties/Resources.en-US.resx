@@ -816,4 +816,10 @@ This package has not been loaded because another conflicting package was loaded 
   <data name="PackageManagerPackageHasNoDependencies" xml:space="preserve">
     <value>No dependencies.</value>
   </data>
+  <data name="PackageManagerPackageUpdated" xml:space="preserve">
+    <value>Updated</value>
+  </data>
+  <data name="PackageManagerPackageNew" xml:space="preserve">
+    <value>New</value>
+  </data>
 </root>

@@ -17,9 +17,12 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class PackageManagerSearchView : Window
     {
+        public PackageManagerSearchViewModel PackageManagerSearchViewModel { get;  }
+        
         public PackageManagerSearchView(PackageManagerSearchViewModel pm)
         {
-            this.DataContext = pm;
+            PackageManagerSearchViewModel = pm;
+            this.DataContext = PackageManagerSearchViewModel;
             InitializeComponent();
 
             pm.RequestShowFileDialog += OnRequestShowFileDialog;

@@ -55,9 +55,9 @@
     <Compile Include="Controls\ImageSelector.xaml.cs">
       <DependentUpon>ImageSelector.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\RequiredProperty.cs" />
     <Compile Include="Converters\BooleanInverseConverter.cs" />
     <Compile Include="Converters\BooleansToVisibilityConverter.cs" />
+    <Compile Include="Converters\LinterExtensionDescriptorToVisibilityConverter.cs" />
     <Compile Include="Converters\UriToStringConverter.cs" />
     <Compile Include="GraphMetadataView.xaml.cs">
       <DependentUpon>GraphMetadataView.xaml</DependentUpon>

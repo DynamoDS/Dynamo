@@ -748,6 +748,12 @@ Parameter name: {0}</value>
   <data name="PackageManagerPackageAlreadyExists" xml:space="preserve">
     <value>A package with the given name already exists.</value>
   </data>
+  <data name="PackageManagerPackageUpdated" xml:space="preserve">
+    <value>Updated</value>
+  </data>
+  <data name="PackageManagerPackageNew" xml:space="preserve">
+    <value>New</value>
+  </data>
   <data name="PackageManagerPackageHasNoDependencies" xml:space="preserve">
     <value>No dependencies.</value>
   </data>

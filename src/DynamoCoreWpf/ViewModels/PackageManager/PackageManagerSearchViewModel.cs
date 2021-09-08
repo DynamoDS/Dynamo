@@ -149,8 +149,7 @@ namespace Dynamo.PackageManager
         }
 
         private List<FilterEntry> hostFilter;
-
-
+        
         /// <summary>
         /// Dynamic Filter for package hosts, should include all Dynamo known hosts from PM backend
         ///  e.g. "Advance Steel", "Alias", "Civil 3D", "FormIt", "Revit"
@@ -324,7 +323,7 @@ namespace Dynamo.PackageManager
         public List<string> SelectedHosts { get; set; }
 
         private SearchDictionary<PackageManagerSearchElement> SearchDictionary;
-
+        
         /// <summary>
         ///     Command to clear the completed package downloads
         /// </summary>

@@ -4482,6 +4482,51 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search for packages.
+        /// </summary>
+        public static string PackageSearchHeader {
+            get {
+                return ResourceManager.GetString("PackageSearchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ORDER.
+        /// </summary>
+        public static string PackageSearchOrder {
+            get {
+                return ResourceManager.GetString("PackageSearchOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requirements.
+        /// </summary>
+        public static string PackageSearchResultRequirements {
+            get {
+                return ResourceManager.GetString("PackageSearchResultRequirements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Details.
+        /// </summary>
+        public static string PackageSearchResultViewDetails {
+            get {
+                return ResourceManager.GetString("PackageSearchResultViewDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SORT BY.
+        /// </summary>
+        public static string PackageSearchSortBy {
+            get {
+                return ResourceManager.GetString("PackageSearchSortBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search returned no results!.
         /// </summary>
         public static string PackageSearchStateNoResult {

@@ -114,22 +114,13 @@ namespace Dynamo.Controls
         private readonly string[] PythonEngineList = { PythonNodeModels.PythonEngineVersion.CPython3.ToString(), PythonNodeModels.PythonEngineVersion.IronPython2.ToString() };
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string depString = string.Empty;
-            bool flag = false;
-            if (value != null)
-            {
-                List<string> depList = (List<string>)value;
-                foreach (var dep in depList)
-                {
-                    if (PythonEngineList.IndexOf(dep) != -1)
-                    {
-                        depString += dep + ", ";
-                        flag = true;
-                    }
-                }
-                return flag ? depString.Remove(depString.Length - 2) : null;
-            }
-            return Properties.Resources.PackageManagerPackageHasNoDependencies;
+            if (value == null) return Properties.Resources.PackageManagerPackageHasNoDependencies;
+
+            List<string> depList = (List<string>)value;
+
+            if(depList.Count < 1) return Properties.Resources.PackageManagerPackageHasNoDependencies;
+
+            return string.Join(Environment.NewLine, depList);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1207,7 +1198,7 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Used in the Dynamo package manager to display whether a package is 'New' or not.
+    /// Used in the Dynamo package manager to hide or show a label next to the package's name.
     /// The threshold for being 'New' is 30 days.
     /// </summary>
     public class DateToVisibilityCollapsedConverter : IValueConverter
@@ -1224,6 +1215,33 @@ namespace Dynamo.Controls
 
             if (difference.TotalDays >= 30) return Visibility.Collapsed;
             return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Used to determine the text which appears next to a package when it's eitehr
+    /// brand new or has been recently updated.
+    /// </summary>
+    public class DateToPackageLabelCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is PackageManagerSearchElement packageManagerSearchElement)) return Visibility.Collapsed;
+
+            DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateLastUpdated);
+            TimeSpan difference = DateTime.Now - dateLastUpdated;
+            int numberVersions = packageManagerSearchElement.Header.num_versions;
+
+            if (numberVersions > 1)
+            {
+                return difference.TotalDays >= 30 ? "" : Properties.Resources.PackageManagerPackageUpdated;
+            }
+            return Properties.Resources.PackageManagerPackageNew;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
