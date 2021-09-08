@@ -397,6 +397,19 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
+        <!--Persistent border shows around the entire group at all time-->
+        <Border Name="persistentBorder"
+                Grid.RowSpan="2"
+                BorderThickness="2"
+                CornerRadius="{StaticResource ExpanderCornerRadius}"
+                IsHitTestVisible="False"
+                Canvas.ZIndex="41"
+                Margin="-1">
+            <Border.BorderBrush>
+                <SolidColorBrush Color="{Binding Background}" />
+            </Border.BorderBrush>
+        </Border>
+
         <!--Selection border shows around the entire group when its selected in the workspace-->
         <Border Name="selectionBorder"
                 Grid.RowSpan="2"
