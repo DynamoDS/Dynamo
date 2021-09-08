@@ -295,7 +295,7 @@ namespace Dynamo.PackageManager
                     requestedExtensions.Add(extension);
                 }
 
-                package.LoadState.SetAsLoaded();
+                package.SetAsLoaded();
                 PackgeLoaded?.Invoke(package);
             }
             catch (CustomNodePackageLoadException e)

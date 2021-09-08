@@ -2629,4 +2629,7 @@ Delete the following packages: {2}?
   <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
     <value>_Show Tooltip</value>
   </data>
+  <data name="PackageFilter_Name_All" xml:space="preserve">
+    <value>All</value>
+  </data>
 </root>
