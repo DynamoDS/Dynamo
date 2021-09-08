@@ -518,22 +518,6 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
-    /// This currently doesn't do anything other than copy the portmodel it receives.
-    /// Keeping it here for now as we might add to it when a decision about how to 
-    /// move forward has been made.
-    /// </summary>
-    internal class ProxyPortModel : PortModel
-    {
-        /// <summary>
-        /// Creates a new ProxyPortModel (TBD how this should be implemented)
-        /// </summary>
-        /// <param name="portModel"></param>
-        public ProxyPortModel(PortModel portModel) : base(portModel.PortType, portModel.Owner, new PortData(portModel.Name, portModel.ToolTip))
-        {
-        }
-    }
-
-    /// <summary>
     /// PortData stores information for port. It's used for constructing PortModel.
     /// </summary>
     public class PortData
