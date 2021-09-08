@@ -1790,14 +1790,6 @@ namespace Dynamo.Controls
 
         }
 
-        private void OnDebugModesClick(object sender, RoutedEventArgs e)
-        {
-            var debugModesWindow = new DebugModesWindow();
-            debugModesWindow.Owner = this;
-            debugModesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            debugModesWindow.ShowDialog();
-        }
-
         // Show the extensions right side bar when there is atleast one extension
         private void HideOrShowRightSideBar()
         {
