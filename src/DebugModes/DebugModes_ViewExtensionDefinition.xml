@@ -1,0 +1,4 @@
+<ViewExtensionDefinition>
+  <AssemblyPath>..\DebugModesViewExtension.dll</AssemblyPath>
+  <TypeName>Dynamo.DebugModes.DebugModesViewExtension</TypeName>
+</ViewExtensionDefinition>

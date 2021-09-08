@@ -50,7 +50,7 @@ namespace Dynamo.ViewModels
         /// Position, where canvas was clicked. 
         /// After node will be called, it will be created at the same place.
         /// </summary>
-        public Point InCanvasSearchPosition; 
+        public Point InCanvasSearchPosition;
 
         /// <summary>
         ///     Indicates whether the node browser is visible or not
@@ -365,7 +365,7 @@ namespace Dynamo.ViewModels
                 InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
                 RaisePropertyChanged("BrowserRootCategories");
             };
-             
+
             Model.EntryUpdated += UpdateEntry;
             Model.EntryRemoved += RemoveEntry;
 
@@ -462,20 +462,20 @@ namespace Dynamo.ViewModels
         }
 
         internal void RemoveEntry(NodeSearchElement entry)
-        {            
+        {
             var branch = GetTreeBranchToNode(libraryRoot, entry);
             if (!branch.Any())
                 return;
             var treeStack = new Stack<NodeCategoryViewModel>(branch.Reverse());
 
             var target = treeStack.Pop();
-          
+
             var location = target.Entries.Select((e, i) => new { e.Model, i })
                 .FirstOrDefault(x => entry == x.Model);
             if (location == null)
                 return;
             target.Entries.RemoveAt(location.i);
-           
+
             while (!target.Items.Any() && treeStack.Any())
             {
                 var parent = treeStack.Pop();
@@ -660,7 +660,7 @@ namespace Dynamo.ViewModels
                     {
                         targetClass = new ClassesNodeCategoryViewModel(target);
 
-                        target.SubCategories.Insert(0,targetClass);
+                        target.SubCategories.Insert(0, targetClass);
                         target.SubCategories[0].SubCategories.Add(newTarget);
                         AddEntryToExistingCategory(newTarget, entry);
                         return;
@@ -751,7 +751,7 @@ namespace Dynamo.ViewModels
         private void AddEntryToExistingCategory(NodeCategoryViewModel category,
             NodeSearchElementViewModel entry)
         {
-            category.RequestBitmapSource += SearchViewModelRequestBitmapSource; 
+            category.RequestBitmapSource += SearchViewModelRequestBitmapSource;
             // Check if the category exists already. 
             // ex : clockwork package. For clockwork 
             // package the category names in dyf is different from what we show it 

@@ -1,0 +1,28 @@
+﻿<Window x:Class="Dynamo.DebugModes.DebugModesWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Title="Debug Modes"
+             ResizeMode="NoResize" Width="350" Height="510"
+        >
+    <StackPanel Background="White">
+        <ListView Name="CheckList" Height="320" Margin="10,0">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <WrapPanel>
+                        <CheckBox IsChecked="{Binding Enabled}" Checked="OnClickCheckBox" Unchecked="OnClickCheckBox"/>
+                        <TextBlock Margin="10,0,0,0" Text="{Binding Name}"  />
+                    </WrapPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="OnDebugModeItemClick" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        <ScrollViewer Margin="10,5,10,0" Height="100">
+            <TextBox IsReadOnly="True" TextWrapping="Wrap" x:Name="SelectedDbgMode" Text="{Binding SelectedDebugMode}">
+            </TextBox>
+        </ScrollViewer>
+    </StackPanel>
+</Window>
