@@ -41,6 +41,7 @@
             <RowDefinition Height="58px" />
             <RowDefinition Height="77px" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.Resources>
             <Style TargetType="{x:Type MenuItem}">
@@ -165,7 +166,7 @@
         <!--  Title + Close Button  -->
         <Border Name="titleBar"
                 Grid.Row="0"
-                Grid.RowSpan="3"
+                Grid.RowSpan="4"
                 Background="{StaticResource DarkMidGreyBrush}"
                 CornerRadius="4"
                 MouseDown="PreferencesPanel_MouseDown">
@@ -377,6 +378,7 @@
         <!--  Results  -->
         <Border Name="results"
                 Grid.Row="2"
+                Grid.RowSpan="2"
                 Margin="0,0,0,3"
                 Background="#2A2A2A">
             <ListBox Name="SearchResultsListBox"
@@ -709,5 +711,63 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Border>
+
+        <!--  Download Bar  -->
+        <ListBox Name="DownloadsListBox"
+                 Grid.Row="3"
+                 Padding="0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 BorderThickness="0"
+                 Background="#2A2A2A"
+                 IsHitTestVisible="True"
+                 ItemsSource="{Binding Path=Downloads}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFF" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#FFF" />
+                    </Style.Resources>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="#4E4E4E"
+                            BorderThickness="0"
+                            Padding="10,5"
+                            CornerRadius="3">
+                        <StackPanel Name="SearchEle" Orientation="Horizontal">
+                            <StackPanel Width="300">
+                                <TextBlock Name="name"
+                                           Padding="5"
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           FontSize="14"
+                                           Foreground="#F5F5F5"
+                                           Text="{Binding Path=Name}" />
+                                <TextBlock Name="error"
+                                           Padding="5"
+                                           FontSize="10"
+                                           Foreground="White"
+                                           Text="{Binding Path=ErrorString}" />
+                            </StackPanel>
+                            <StackPanel Width="172">
+                                <TextBlock Name="downloadState"
+                                           Padding="5"
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           FontSize="11"
+                                           Foreground="#F5F5F5"
+                                           Text="{Binding Path=DownloadState, Converter={StaticResource PackageDownloadStateToStringConverter}}" />
+                                <TextBlock Name="version"
+                                           Padding="5"
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           FontSize="11"
+                                           Foreground="#F5F5F5"
+                                           Text="{Binding Path=VersionName}" />
+                                <Button Content="X" Width="15" Height="15"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>
