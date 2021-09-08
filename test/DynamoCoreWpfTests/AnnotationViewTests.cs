@@ -61,6 +61,7 @@ namespace DynamoCoreWpfTests
             Open(@"UI\GroupTest.dyn");
 
             var annotationView = NodeViewWithGuid("a432d63f-7a36-45ad-b30a-7924beb20e90");
+            
             //Raise a click event to check whether the group and the models are selected
             annotationView.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Left)
             {
@@ -69,34 +70,6 @@ namespace DynamoCoreWpfTests
 
             //The group and the node should be selected
             Assert.AreEqual(2, DynamoSelection.Instance.Selection.Count());
-
-            //Clear the selection
-            DynamoSelection.Instance.ClearSelection();
-           
-            //Change the Zoom
-            annotationView.ViewModel.WorkspaceViewModel.SetZoomCommand.Execute(0.4);
-
-            //Group textblock should be collapsed.
-            Assert.IsFalse(annotationView.GroupTextBlock.IsVisible);
-
-            //Change the Zoom
-            annotationView.ViewModel.WorkspaceViewModel.SetZoomCommand.Execute(0.5);
-
-            //Group textblock should be visible.
-            Assert.IsTrue(annotationView.GroupTextBlock.IsVisible);
-
-            //Change the Zoom
-            annotationView.ViewModel.WorkspaceViewModel.SetZoomCommand.Execute(0.4);
-
-            //Group textblock should be collapsed.
-            Assert.IsFalse(annotationView.GroupTextBlock.IsVisible);
-
-            //Now change the font size - note: group textblock is collapsed now
-            annotationView.ViewModel.FontSize = 48;
-
-            //Group textblock should be visible.
-            Assert.IsTrue(annotationView.GroupTextBlock.IsVisible);
-
         }
 
         [Test]
