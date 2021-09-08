@@ -5190,6 +5190,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Preview Bubbles.
+        /// </summary>
+        public static string PreferencesViewShowPreviewBubbles {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowPreviewBubbles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Switchable only when the current workspace is in Manual run mode..
         /// </summary>
         public static string PreferencesViewShowRunPreviewTooltip {

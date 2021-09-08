@@ -2638,4 +2638,8 @@ Delete the following packages: {2}?
   <data name="PackageFilter_Name_All" xml:space="preserve">
     <value>All</value>
   </data>
+  <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
+    <value>Show Preview Bubbles</value>
+    <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
+  </data>
 </root>
