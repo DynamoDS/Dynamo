@@ -371,6 +371,7 @@ namespace ProtoCore
                 }
             }
 
+            if (DSExecutable == null) return;
 
             // Update the function definition in global function tables
             foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in DSExecutable.FunctionTable.GlobalFuncTable)

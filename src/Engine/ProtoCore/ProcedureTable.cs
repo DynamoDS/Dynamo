@@ -412,6 +412,8 @@ namespace ProtoCore.DSASM
                     goto NotMatch;
                 }
 
+                if (!f.IsActive) goto NotMatch;
+
                 if (opts.ParameterTypes != null)
                 {
                     var argNum = f.ArgumentTypes.Count;

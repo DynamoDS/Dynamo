@@ -643,6 +643,24 @@ namespace Dynamo.Graph.Nodes
             OnNodeModified();
         }
 
+        /// <summary>
+        /// Undefine a function definition in a code block node if it has any.
+        /// </summary>
+        internal void UndefineFunctionDefinitions()
+        {
+            var funcDefs = ParseParam.ParsedNodes.OfType<FunctionDefinitionNode>();
+            foreach (var funcDef in funcDefs)
+            {
+                libraryServices.LibraryManagementCore.SetFunctionInactive(funcDef);
+            }
+        }
+
+        /// <summary>
+        /// This method skips parsing and only recompiles a CBN in a second pass after all other function definitions
+        /// have been compiled. It re-uses the ParseParam (ASTs etc.) of the CBN compiled from the first pass.
+        /// </summary>
+        /// <param name="errorMessage"></param>
+        /// <param name="warningMessage"></param>
         internal void RecompileCodeBlockAST(ref string errorMessage, ref string warningMessage)
         {
             BuildStatus buildStatus = null;

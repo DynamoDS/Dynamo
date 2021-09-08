@@ -1818,9 +1818,10 @@ namespace Dynamo.Models
           bool forceManualExecutionMode,
           out WorkspaceModel workspace)
         {
-            CustomNodeManager.AddUninitializedCustomNodesInPath(
-                Path.GetDirectoryName(filePath),
-                IsTestMode);
+            CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filePath), IsTestMode);
+
+            var currentHomeSpace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            currentHomeSpace.UndefineCBNFunctionDefinitions();
 
             // TODO, QNTM-1108: WorkspaceModel.FromJson does not check a schema and so will not fail as long
             // as the fileContents are valid JSON, regardless of if all required data is present or not

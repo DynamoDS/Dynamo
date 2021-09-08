@@ -565,10 +565,21 @@ namespace Dynamo.Graph.Workspaces
         public override void Clear()
         {
             WorkspaceClosed?.Invoke();
+            UndefineCBNFunctionDefinitions();
+
             base.Clear();
             PreloadedTraceData = null;
             RunSettings.Reset();
             EvaluationCount = 0;
+        }
+
+        internal void UndefineCBNFunctionDefinitions()
+        {
+            var cbns = Nodes.OfType<CodeBlockNodeModel>();
+            foreach (var cbn in cbns)
+            {
+                cbn.UndefineFunctionDefinitions();
+            }
         }
 
         /// <summary>
