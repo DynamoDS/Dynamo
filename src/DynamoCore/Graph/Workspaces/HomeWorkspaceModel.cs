@@ -938,6 +938,7 @@ namespace Dynamo.Graph.Workspaces
                 // Recompile rest of the code against function definitions for each CBN.
                 cbn.ProcessCodeDirect(cbn.RecompileCodeBlockAST);
             }
+            HasUnsavedChanges = false;
         }
 
         internal bool TryGetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)

@@ -264,7 +264,7 @@ namespace Dynamo.Graph.Nodes
                 ///ConnectorPins corresponding to outports
                 var outportPins = new OrderedDictionary();
 
-                // disable node modification evnets while mutating the code
+                // disable node modification events while mutating the code
                 this.OnRequestSilenceModifiedEvents(true);
 
                 //Save the connectors so that we can recreate them at the correct positions.
