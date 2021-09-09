@@ -32,6 +32,8 @@ namespace Dynamo.Nodes
 
         public NoteView()
         {
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+
             InitializeComponent();
 
             // update the size of the element when the text changes

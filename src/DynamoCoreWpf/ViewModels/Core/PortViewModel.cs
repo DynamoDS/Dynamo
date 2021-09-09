@@ -252,6 +252,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal NodeViewModel NodeViewModel
+        {
+            get => _node;
+        }
+        
         /// <summary>
         /// Shows or hides the Use Levels and Keep List Structure checkboxes
         /// in the node chevron popup menu.
@@ -395,6 +400,11 @@ namespace Dynamo.ViewModels
             _port.PropertyChanged -= _port_PropertyChanged;
             _node.PropertyChanged -= _node_PropertyChanged;
             _node.WorkspaceViewModel.PropertyChanged -= Workspace_PropertyChanged;
+        }
+
+        internal PortViewModel CreateProxyPortViewModel(PortModel portModel)
+        {
+            return new PortViewModel(_node, portModel);
         }
 
         /// <summary>
@@ -778,7 +788,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    PortBackgroundColor = new SolidColorBrush(Colors.Transparent);
+                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(60, 60, 60));
                     PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(204, 204, 204));
                 }
             }

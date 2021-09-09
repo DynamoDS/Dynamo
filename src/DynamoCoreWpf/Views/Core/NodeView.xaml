@@ -4,6 +4,7 @@
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
              xmlns:ui="clr-namespace:Dynamo.UI"
              Name="topControl"
              Width="Auto"
@@ -17,8 +18,9 @@
              PreviewMouseMove="OnNodeViewMouseMove">
 
     <Grid Name="grid"
-          HorizontalAlignment="Left"
           x:FieldModifier="public"
+          HorizontalAlignment="Left"
+          Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
           ContextMenuService.IsEnabled="false">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -525,7 +527,7 @@
                    FontSize="10px"
                    Foreground="{StaticResource NodeLacingGlyphBackground}"
                    Style="{StaticResource SZoomFadeLabel}"
-                   ToolTip="For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3} pattern."
+                   ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
                    Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}" />
             <Grid Name="AlertsGlyph"
                   Width="Auto"
