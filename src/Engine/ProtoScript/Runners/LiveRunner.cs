@@ -13,7 +13,6 @@ using ProtoFFI;
 using Dynamo.Utilities;
 using System.IO;
 
-
 namespace ProtoScript.Runners
 {
     /// <summary>

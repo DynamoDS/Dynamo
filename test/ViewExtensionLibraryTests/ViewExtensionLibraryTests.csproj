@@ -8,7 +8,7 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
     <Import Project="..\..\src\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets" Condition="Exists('..\..\src\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets')" />
-    <Import Project="..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets" Condition="Exists('..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets')" />
+    <Import Project="..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets" Condition="Exists('..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets')" />   
   </ImportGroup>
   <PropertyGroup>
     <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>

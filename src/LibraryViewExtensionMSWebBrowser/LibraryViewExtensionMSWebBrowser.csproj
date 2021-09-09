@@ -307,7 +307,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Library_ViewExtensionDefinition.xml"/>
+    <Content Include="Library_ViewExtensionDefinition.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dynamo.Extensions;
 using Dynamo.Search.SearchElements;
-using Dynamo.Utilities;
-
 using Greg.Responses;
 
 namespace Dynamo.PackageManager
