@@ -460,7 +460,6 @@ namespace Dynamo.Graph.Workspaces
             RegisterConnector(obj);
             var handler = ConnectorAdded;
             if (handler != null) handler(obj);
-            RecordCreatedModel(obj);
             //Check if the workspace is loaded, i.e all the nodes are
             //added to the workspace. In that case, compute the Upstream cache for the
             //given node.
