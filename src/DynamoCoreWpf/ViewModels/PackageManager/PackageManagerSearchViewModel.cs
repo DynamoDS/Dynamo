@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Greg.Responses;
@@ -366,7 +365,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public ObservableCollection<PackageDownloadHandle> Downloads
         {
-            get => PackageManagerClientViewModel.Downloads;
+            get { return PackageManagerClientViewModel.Downloads; }
         }
 
         #endregion Properties & Fields
@@ -488,7 +487,7 @@ namespace Dynamo.PackageManager
         /// <param name="sortingDir"></param>
         public void ViewPackageDetails(object sortingDir)
         {
-            
+            // to be implemented in future PR   
         }
 
         /// <summary>
@@ -634,7 +633,7 @@ namespace Dynamo.PackageManager
                 }
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
-
+            
         }
 
         private void AddToSearchResults(PackageManagerSearchElementViewModel element)
@@ -699,6 +698,9 @@ namespace Dynamo.PackageManager
             {
                 this.ClearCompletedCommand.RaiseCanExecuteChanged();
             }
+
+            this.RaisePropertyChanged(nameof(HasDownloads));
+
         }
 
         private void SearchResultsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)

@@ -7,7 +7,6 @@ using Dynamo.Logging;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.UI;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Views.PackageManager;
 using DynamoUtilities;
 using Button = System.Windows.Controls.Button;
 

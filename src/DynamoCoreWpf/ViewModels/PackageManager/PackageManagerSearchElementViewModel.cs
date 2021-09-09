@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
@@ -22,6 +21,10 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand VisitRepositoryCommand { get; set; }
         public ICommand DownloadLatestToCustomPathCommand { get; set; }
 
+        /// <summary>
+        /// A function used to determine whether the used has installed this package already.
+        /// Matching occurs via package name.
+        /// </summary>
         private Func<string,bool> isPackageInstalled;
 
         public new PackageManagerSearchElement Model { get; internal set; }
@@ -52,6 +55,14 @@ namespace Dynamo.PackageManager.ViewModels
 
         }
 
+        /// <summary>
+        /// Alternative constructor which takes a Function object in order to
+        /// assist communication between the PackageManagerSearchViewModel
+        /// and the PackageManagerSearchElementViewModel.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="canLogin"></param>
+        /// <param name="isPackageInstalledFunction"></param>
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, Func<string,bool> isPackageInstalledFunction) : this(element, canLogin)
         {
             this.isPackageInstalled = isPackageInstalledFunction;
@@ -59,7 +70,7 @@ namespace Dynamo.PackageManager.ViewModels
         }
 
         /// <summary>
-        /// A flag reporting whether or not the user already has this SearchElement's package installed.
+        /// A Boolean flag reporting whether or not the user already has this SearchElement's package installed.
         /// </summary>
         public bool IsPackageInstalledProperty
         {
@@ -131,7 +142,7 @@ namespace Dynamo.PackageManager.ViewModels
         public event CheckIfPackageIsInstalledHandler CheckIfPackageInstalled;
 
         /// <summary>
-        /// Checks if the user has installed a package with a given GUID string.
+        /// Checks if the user has installed a package with a given name.
         /// </summary>
         public void OnCheckIfPackageInstalled()
         {

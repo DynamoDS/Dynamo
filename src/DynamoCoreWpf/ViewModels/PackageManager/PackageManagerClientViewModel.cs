@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -183,15 +182,8 @@ namespace Dynamo.ViewModels
         ObservableCollection<PackageDownloadHandle> _downloads = new ObservableCollection<PackageDownloadHandle>();
         public ObservableCollection<PackageDownloadHandle> Downloads
         {
-            get
-            {
-                return _downloads;
-            }
-            set
-            {
-                _downloads = value;
-                RaisePropertyChanged(nameof(Downloads));
-            }
+            get { return _downloads; }
+            set { _downloads = value; }
         }
 
         private PackageManagerExtension pmExtension;

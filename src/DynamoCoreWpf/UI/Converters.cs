@@ -305,18 +305,15 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Determines what the Install button says on the Package Manager Search
+    /// Determines what the Install button says on the Package Manager Search.
+    /// If the package is installed it says 'Installed', otherwise 'Install'.
     /// </summary>
     public class InstalledButtonTextConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
             CultureInfo culture)
         {
-            if(!(value is Boolean booleanValue))
-            {
-                return "Error";
-            }
-            
+            if (!(value is bool booleanValue)) return null;
             return booleanValue ? "Installed" : "Install";
         }
 
@@ -1199,7 +1196,6 @@ namespace Dynamo.Controls
 
     /// <summary>
     /// Used in the Dynamo package manager to hide or show a label next to the package's name.
-    /// The threshold for being 'New' is 30 days.
     /// </summary>
     public class DateToVisibilityCollapsedConverter : IValueConverter
     {
@@ -1208,8 +1204,6 @@ namespace Dynamo.Controls
             if (!(value is string)) return Visibility.Collapsed;
             
             DateTime.TryParse(value.ToString(), out DateTime dateTime);
-
-            if (dateTime == null) return Visibility.Collapsed;
 
             TimeSpan difference = DateTime.Now - dateTime;
 
@@ -1224,8 +1218,10 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Used to determine the text which appears next to a package when it's eitehr
+    /// Used to determine the text which appears next to a package when it's either
     /// brand new or has been recently updated.
+    /// If the package was updated in the last 30 days it says 'Updated'.
+    /// If the package is brand new (only has 1 version) and is less than 30 days it says 'New'.
     /// </summary>
     public class DateToPackageLabelCollapsedConverter : IValueConverter
     {
