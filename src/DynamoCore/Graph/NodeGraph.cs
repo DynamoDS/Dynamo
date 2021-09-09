@@ -102,8 +102,11 @@ namespace Dynamo.Graph
                 if (nodes.TryGetValue(guidEnd, out end))
                 {
                     var connector = ConnectorModel.Make(start, end, startIndex, endIndex, guid);
-                    connector.IsDisplayed = isDisplayed;
-                    return connector;
+                    if(connector != null)
+                    {
+                        connector.IsDisplayed = isDisplayed;
+                        return connector;
+                    }
                 }
             }
 
