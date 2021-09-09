@@ -141,6 +141,11 @@ namespace Dynamo.PackageManager.UI
             }
         }
 
+        /// <summary>
+        /// When the use clicks close on this window, closes the window.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Dynamo.Logging.Analytics.TrackEvent(
@@ -150,6 +155,11 @@ namespace Dynamo.PackageManager.UI
             Close();
         }
 
+        /// <summary>
+        /// Executes a command that opens the package details view extension.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ViewDetailsButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (!(this.DataContext is PackageManagerSearchViewModel packageManagerSearchViewModel)) return;

@@ -82,9 +82,14 @@ namespace Dynamo.PackageManager.ViewModels
             }
         }
 
-        internal bool IsPackageInstalled(string packageId)
+        /// <summary>
+        /// Checks whether the user has already installed a package with the given name.
+        /// </summary>
+        /// <param name="packageName"></param>
+        /// <returns></returns>
+        internal bool IsPackageInstalled(string packageName)
         {
-            IsPackageInstalledProperty = isPackageInstalled(packageId);
+            IsPackageInstalledProperty = isPackageInstalled(packageName);
             return IsPackageInstalledProperty;
         }
 

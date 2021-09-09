@@ -721,6 +721,8 @@ namespace Dynamo.ViewModels
             // in the form of toast notifications.
             if (Downloads.Count >= 3)
             {
+                // Iterates backwards through the downloads list and removes items
+                // until there are only 2 remaining, the third is added below.
                 int counter = 0;
 
                 for (int i = Downloads.Count - 1; i >= 0; i--)

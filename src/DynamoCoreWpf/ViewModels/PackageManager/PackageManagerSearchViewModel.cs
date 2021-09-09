@@ -484,8 +484,8 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Set the sorting direction.  Used by the associated command.
         /// </summary>
-        /// <param name="sortingDir"></param>
-        public void ViewPackageDetails(object sortingDir)
+        /// <param name="obj"></param>
+        public void ViewPackageDetails(object obj)
         {
             // to be implemented in future PR   
         }

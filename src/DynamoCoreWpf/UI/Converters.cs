@@ -1223,7 +1223,7 @@ namespace Dynamo.Controls
     /// If the package was updated in the last 30 days it says 'Updated'.
     /// If the package is brand new (only has 1 version) and is less than 30 days it says 'New'.
     /// </summary>
-    public class DateToPackageLabelCollapsedConverter : IValueConverter
+    public class DateToPackageLabelConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
