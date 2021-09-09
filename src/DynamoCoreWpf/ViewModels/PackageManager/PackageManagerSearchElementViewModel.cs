@@ -26,6 +26,11 @@ namespace Dynamo.PackageManager.ViewModels
 
         public new PackageManagerSearchElement Model { get; internal set; }
 
+        /// <summary>
+        /// Determines whether the user can click on the 'Install' button of a package.
+        /// </summary>
+        public bool IsInstallButtonEnabled => !Model.IsDeprecated && !IsPackageInstalledProperty;
+
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : base(element)
         {
             this.Model = element;
@@ -44,11 +49,13 @@ namespace Dynamo.PackageManager.ViewModels
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
+
         }
 
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, Func<string,bool> isPackageInstalledFunction) : this(element, canLogin)
         {
             this.isPackageInstalled = isPackageInstalledFunction;
+            this.IsPackageInstalledProperty = isPackageInstalled(this.Model.Name);
         }
 
         /// <summary>

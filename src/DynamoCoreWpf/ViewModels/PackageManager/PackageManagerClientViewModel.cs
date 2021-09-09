@@ -183,8 +183,15 @@ namespace Dynamo.ViewModels
         ObservableCollection<PackageDownloadHandle> _downloads = new ObservableCollection<PackageDownloadHandle>();
         public ObservableCollection<PackageDownloadHandle> Downloads
         {
-            get { return _downloads; }
-            set { _downloads = value; }
+            get
+            {
+                return _downloads;
+            }
+            set
+            {
+                _downloads = value;
+                RaisePropertyChanged(nameof(Downloads));
+            }
         }
 
         private PackageManagerExtension pmExtension;
@@ -718,6 +725,19 @@ namespace Dynamo.ViewModels
         /// <param name="downloadPath">package download path</param>
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle, string downloadPath)
         {
+            // We only want to display the last 3 downloaded packages to the user
+            // in the form of toast notifications.
+            if (Downloads.Count >= 3)
+            {
+                int counter = 0;
+
+                for (int i = Downloads.Count - 1; i >= 0; i--)
+                {
+                    if (counter > 1) Downloads.RemoveAt(i);
+                    counter++;
+                }
+            }
+
             Downloads.Add(packageDownloadHandle);
 
             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
@@ -766,6 +786,8 @@ namespace Dynamo.ViewModels
                     }
                 }));
             });
+
+            RaisePropertyChanged(nameof(Downloads));
         }
 
         /// <summary>

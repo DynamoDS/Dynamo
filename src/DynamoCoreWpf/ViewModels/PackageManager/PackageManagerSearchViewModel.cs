@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Models;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.Utilities;
@@ -289,7 +288,7 @@ namespace Dynamo.PackageManager
         {
             PackageManagerExtension packageManagerExtension = PackageManagerClientViewModel.PackageManagerExtension;
             List<string> localPackageNames = packageManagerExtension.PackageLoader.LocalPackages.Select(x => x.Name).ToList();
-            return localPackageNames.Contains(packageName);
+            return localPackageNames.Contains(packageName) || Downloads.Select(x => x.Name).Contains(packageName);
         }
 
         public PackageSearchState _searchState; // TODO: Set private for 3.0.
@@ -354,13 +353,20 @@ namespace Dynamo.PackageManager
         /// </summary>
         public DelegateCommand<object> ClearSearchTextBoxCommand { get; set; }
 
+        /// <summary>
+        /// When the user downloads new package via the package search manager, a toast notification
+        /// appears at the base of the window. This command fires when the user clicks to dismiss
+        /// one of these toast notifications.
+        /// </summary>
+        public DelegateCommand<object> ClearDownloadToastNotificationCommand { get; set; }
+
 
         /// <summary>
         ///     Current downloads
         /// </summary>
         public ObservableCollection<PackageDownloadHandle> Downloads
         {
-            get { return PackageManagerClientViewModel.Downloads; }
+            get => PackageManagerClientViewModel.Downloads;
         }
 
         #endregion Properties & Fields
@@ -376,6 +382,7 @@ namespace Dynamo.PackageManager
             SetSortingDirectionCommand = new DelegateCommand<object>(SetSortingDirection, CanSetSortingDirection);
             ViewPackageDetailsCommand = new DelegateCommand<object>(ViewPackageDetails);
             ClearSearchTextBoxCommand = new DelegateCommand<object>(ClearSearchTextBox);
+            ClearDownloadToastNotificationCommand = new DelegateCommand<object>(ClearDownloadToastNotification);
             SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = string.Empty;
             SortingKey = PackageSortingKey.LastUpdate;
@@ -492,6 +499,25 @@ namespace Dynamo.PackageManager
             SearchText = "";
         }
 
+        /// <summary>
+        /// When the user downloads new package via the package search manager, a toast notification
+        /// appears at the base of the window. This command fires when the user clicks to dismiss
+        /// one of these toast notifications.
+        /// </summary>
+        /// <param name="obj"></param>
+        public void ClearDownloadToastNotification(object obj)
+        {
+            if (!(obj is PackageDownloadHandle packageDownloadHandle)) return;
+
+            PackageDownloadHandle packageDownloadHandleToRemove = PackageManagerClientViewModel.Downloads
+                .FirstOrDefault(x => x.Id == packageDownloadHandle.Id);
+
+            if (packageDownloadHandleToRemove == null) return;
+
+            PackageManagerClientViewModel.Downloads.Remove(packageDownloadHandleToRemove);
+            RaisePropertyChanged(nameof(Downloads));
+        }
+        
         /// <summary>
         /// Set the associated key
         /// </summary>
@@ -673,9 +699,6 @@ namespace Dynamo.PackageManager
             {
                 this.ClearCompletedCommand.RaiseCanExecuteChanged();
             }
-
-            this.RaisePropertyChanged("HasDownloads");
-
         }
 
         private void SearchResultsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)

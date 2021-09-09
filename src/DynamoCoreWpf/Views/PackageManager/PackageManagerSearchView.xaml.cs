@@ -9,6 +9,7 @@ using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views.PackageManager;
 using DynamoUtilities;
+using Button = System.Windows.Controls.Button;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -154,6 +155,19 @@ namespace Dynamo.PackageManager.UI
         {
             if (!(this.DataContext is PackageManagerSearchViewModel packageManagerSearchViewModel)) return;
             packageManagerSearchViewModel.ViewPackageDetailsCommand.Execute(null);
+        }
+
+        /// <summary>
+        /// Fires when the user clicks the 'X' button to dismiss a package download toast notification.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CloseDownloadToastButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            
+            if (!(button.DataContext is PackageDownloadHandle packageDownloadHandle)) return;
+            PackageManagerSearchViewModel.ClearDownloadToastNotificationCommand.Execute(packageDownloadHandle);
         }
     }
 }

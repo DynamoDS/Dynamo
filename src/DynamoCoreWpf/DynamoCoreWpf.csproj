@@ -1379,6 +1379,11 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\checkmark - grey.png" />
+    <Resource Include="UI\Images\package_error.png" />
+    <Resource Include="UI\Images\close.png" />
+    <Resource Include="UI\Images\icon-shape.png" />
+    <Resource Include="UI\Images\Progress circle.png" />
     <Resource Include="UI\Images\Requirements - disabled.png" />
     <Resource Include="UI\Images\View details - disabled.png" />
     <Resource Include="UI\Images\Add - default.png" />
