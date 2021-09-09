@@ -488,7 +488,7 @@ namespace Dynamo.PackageManager
         /// <param name="sortingDir"></param>
         public void ViewPackageDetails(object sortingDir)
         {
-            MessageBox.Show("To be implemented in incoming PR!");
+            
         }
 
         /// <summary>
