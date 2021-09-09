@@ -694,11 +694,26 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="parameter"></param>
         private void HideConnectorCommandExecute(object parameter)
-        { 
-            bool inverse = !ConnectorModel.IsDisplayed;
+        {
+            bool? usedFlag = null;
+            //port's flag used
+            if (parameter!= null)
+            {
+                usedFlag = Convert.ToBoolean(parameter);
+            }
+            //inverse of current connector's state
+            else
+            {
+                usedFlag = !ConnectorModel.IsDisplayed;
+            }
+            if(usedFlag is null)
+            {
+                return;
+            }
+                
             workspaceViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.UpdateModelValueCommand(System.Guid.Empty, ConnectorModel.GUID,
-                   nameof(ConnectorModel.IsDisplayed), inverse.ToString()));
+                   nameof(ConnectorModel.IsDisplayed), usedFlag.ToString()));
 
             workspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
 
