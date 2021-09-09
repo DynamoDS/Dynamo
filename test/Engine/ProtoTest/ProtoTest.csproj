@@ -82,6 +82,7 @@
     <Compile Include="CompileAndExecute.cs" />
     <Compile Include="CoreUnitTests\StaticMirrorTest.cs" />
     <Compile Include="DebugTests\BasicTests.cs" />
+    <Compile Include="DSASM\ProcedureTableTests.cs" />
     <Compile Include="NamespaceConflictTest.cs" />
     <Compile Include="DebugTests\RunEqualityTests.cs" />
     <Compile Include="DebugTests\RunWatchTestsIncluded.cs">
