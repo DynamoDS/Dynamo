@@ -695,21 +695,12 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         private void HideConnectorCommandExecute(object parameter)
         {
-            bool? usedFlag = null;
-            //port's flag used
-            if (parameter!= null)
-            {
-                usedFlag = Convert.ToBoolean(parameter);
-            }
-            //inverse of current connector's state
-            else
-            {
-                usedFlag = !ConnectorModel.IsDisplayed;
-            }
-            if(usedFlag is null)
-            {
-                return;
-            }
+            // Use the inverse of the current visibility state,
+            // unless the command is coming from the port, in
+            // which case use that parameter it is specifying.
+            bool usedFlag = parameter != null?
+                Convert.ToBoolean(parameter):
+                !ConnectorModel.IsDisplayed;
                 
             workspaceViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.UpdateModelValueCommand(System.Guid.Empty, ConnectorModel.GUID,
