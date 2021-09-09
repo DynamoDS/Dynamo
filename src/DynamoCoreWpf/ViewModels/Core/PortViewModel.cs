@@ -645,7 +645,7 @@ namespace Dynamo.ViewModels
                 .FirstOrDefault(x => x.Nodevm.NodeModel.GUID == _port.Owner.GUID);
 
             if (connectorViewModel == null) return false;
-            return !connectorViewModel.IsVisible;
+            return !connectorViewModel.IsDisplayed;
         }
 
 

@@ -35,8 +35,8 @@ namespace Dynamo.ViewModels
         private PortModel activeStartPort;
         private ConnectorModel model;
         private bool isConnecting = false;
-        private bool isVisible = true;
-        private bool isPartlyVisible = false;
+        private bool isDisplayed = true;
+        private bool isTemporarilyVisible = false;
         private string connectorDataToolTip;
         private bool canShowConnectorTooltip = true;
         private bool mouseHoverOn;
@@ -152,31 +152,31 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Controls connector visibility: on/off. When wire is off, additional styling xaml turns off tooltips.
         /// </summary>
-        public bool IsVisible
+        public bool IsDisplayed
         {
-            get { return isVisible; }
+            get { return isDisplayed; }
             set
             {
-                isVisible = value;
-                RaisePropertyChanged(nameof(IsVisible));
-                SetVisibilityOfPins(IsVisible);
+                isDisplayed = value;
+                RaisePropertyChanged(nameof(IsDisplayed));
+                SetVisibilityOfPins(IsDisplayed);
             }
         }
 
         /// <summary>
-        /// Property which overrides 'isVisible==false' condition. When this prop is set to true, wires are set to 
+        /// Property which overrides 'isDisplayed==false' condition. When this prop is set to true, wires are set to 
         /// 40% opacity.
         /// </summary>
-        public bool IsPartlyVisible
+        public bool IsTemporarilyDisplayed
         {
-            get { return isPartlyVisible; }
+            get { return isTemporarilyVisible; }
             set
             {
-                isPartlyVisible = value;
-                RaisePropertyChanged(nameof(IsPartlyVisible));
-                SetPartialVisibilityOfPins(isPartlyVisible);
+                isTemporarilyVisible = value;
+                RaisePropertyChanged(nameof(IsTemporarilyDisplayed));
+                SetPartialVisibilityOfPins(isTemporarilyVisible);
                 if (connectorAnchorViewModel != null)
-                    connectorAnchorViewModel.IsPartlyVisible = isPartlyVisible;
+                    connectorAnchorViewModel.IsPartlyVisible = isTemporarilyVisible;
             }
         }
 
@@ -621,7 +621,7 @@ namespace Dynamo.ViewModels
             {
                 CanShowTooltip = CanShowConnectorTooltip,
                 CurrentPosition = MousePosition,
-                IsHalftone = !IsVisible,
+                IsHalftone = !IsDisplayed,
                 IsDataFlowCollection = IsDataFlowCollection
             };
             ConnectorAnchorViewModel.RequestDispose += DisposeAnchor;
@@ -695,21 +695,21 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         private void HideConnectorCommandExecute(object parameter)
         { 
-            bool inverse = !ConnectorModel.IsVisible;
+            bool inverse = !ConnectorModel.IsDisplayed;
             workspaceViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.UpdateModelValueCommand(System.Guid.Empty, ConnectorModel.GUID,
-                   "IsVisible", inverse.ToString()));
+                   nameof(ConnectorModel.IsDisplayed), inverse.ToString()));
 
             workspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
 
             bool adjacentNodeSelected = model.Start.Owner.IsSelected || model.End.Owner.IsSelected;
-            if (adjacentNodeSelected && ConnectorModel.IsVisible == false)
+            if (adjacentNodeSelected && ConnectorModel.IsDisplayed == false)
             {
-                IsPartlyVisible = true;
+                IsTemporarilyDisplayed = true;
             }
             else
             {
-                IsPartlyVisible = false;
+                IsTemporarilyDisplayed = false;
             }
             workspaceViewModel.Model.HasUnsavedChanges = true;
         }
@@ -789,7 +789,7 @@ namespace Dynamo.ViewModels
             ConnectorPinViewCollection = new ObservableCollection<ConnectorPinViewModel>();
             ConnectorPinViewCollection.CollectionChanged += HandleCollectionChanged;
 
-            IsVisible = workspaceViewModel.DynamoViewModel.IsShowingConnectors;
+            IsDisplayed = workspaceViewModel.DynamoViewModel.IsShowingConnectors;
             IsConnecting = true;
             MouseHoverOn = false;
             activeStartPort = port;
@@ -820,8 +820,8 @@ namespace Dynamo.ViewModels
         {
             this.workspaceViewModel = workspace;
             model = connectorModel;
-            IsVisible = model.IsVisible;
-            IsVisible = ConnectorModel.IsVisible;
+            IsDisplayed = model.IsDisplayed;
+            IsDisplayed = ConnectorModel.IsDisplayed;
             MouseHoverOn = false;
 
             model.PropertyChanged += HandleConnectorPropertyChanged;
@@ -855,13 +855,13 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case nameof(ConnectorModel.IsVisible):
+                case nameof(ConnectorModel.IsDisplayed):
                     ConnectorModel connector = sender as ConnectorModel;
                     if (connector is null)
                     {
                         return;
                     }
-                    IsVisible = connector.IsVisible;
+                    IsDisplayed = connector.IsDisplayed;
                     break;
                 default:
                     break;
@@ -924,8 +924,8 @@ namespace Dynamo.ViewModels
         {
             var pinViewModel = new ConnectorPinViewModel(this.workspaceViewModel, pinModel)
             {
-                IsVisible = IsVisible,
-                IsPartlyVisible = isPartlyVisible
+                IsVisible = IsDisplayed,
+                IsPartlyVisible = isTemporarilyVisible
             };
             pinViewModel.PropertyChanged += PinViewModelPropertyChanged;
 
@@ -960,7 +960,7 @@ namespace Dynamo.ViewModels
         private void HandleRequestSelected(object sender, EventArgs e)
         {
             ConnectorPinViewModel pinViewModel = sender as ConnectorPinViewModel;
-            IsPartlyVisible = pinViewModel.IsSelected && IsVisible == false;
+            IsTemporarilyDisplayed = pinViewModel.IsSelected && IsDisplayed == false;
         }
         /// <summary>
         /// Handles ConnectorPin 'Unpin' command.
@@ -1033,7 +1033,7 @@ namespace Dynamo.ViewModels
             {
                 case nameof(NodeModel.IsSelected):
                     RaisePropertyChanged(nameof(PreviewState));
-                    IsPartlyVisible = model.Start.Owner.IsSelected && IsVisible == false ? true : false;
+                    IsTemporarilyDisplayed = model.Start.Owner.IsSelected && IsDisplayed == false ? true : false;
                     break;
                 case nameof(NodeModel.Position):
                     RaisePropertyChanged(nameof(CurvePoint0));
@@ -1066,7 +1066,7 @@ namespace Dynamo.ViewModels
             {
                 case nameof(NodeModel.IsSelected):
                     RaisePropertyChanged(nameof(PreviewState));
-                    IsPartlyVisible = model.End.Owner.IsSelected && IsVisible == false ? true : false;
+                    IsTemporarilyDisplayed = model.End.Owner.IsSelected && IsDisplayed == false ? true : false;
                     break;
                 case nameof(NodeModel.Position):
                     RaisePropertyChanged(nameof(CurvePoint0));
@@ -1090,13 +1090,13 @@ namespace Dynamo.ViewModels
                     if (workspaceViewModel.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
                     {
                         BezVisibility = true;
-                        SetVisibilityOfPins(ConnectorModel.IsVisible);
+                        SetVisibilityOfPins(ConnectorModel.IsDisplayed);
                         PlineVisibility = false;
                     }
                     else
                     {
                         BezVisibility = false;
-                        SetVisibilityOfPins(ConnectorModel.IsVisible);
+                        SetVisibilityOfPins(ConnectorModel.IsDisplayed);
                         PlineVisibility = true;
                     }
 
@@ -1104,15 +1104,15 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(DynamoViewModel.IsShowingConnectors):
                     var dynModel = sender as DynamoViewModel;
-                    ConnectorModel.IsVisible = dynModel.IsShowingConnectors;
+                    ConnectorModel.IsDisplayed = dynModel.IsShowingConnectors;
                     bool adjacentNodeSelected = model.Start.Owner.IsSelected || model.End.Owner.IsSelected;
-                    if (adjacentNodeSelected && ConnectorModel.IsVisible == false)
+                    if (adjacentNodeSelected && ConnectorModel.IsDisplayed == false)
                     {
-                        IsPartlyVisible = true;
+                        IsTemporarilyDisplayed = true;
                     }
                     else
                     {
-                        IsPartlyVisible = false;
+                        IsTemporarilyDisplayed = false;
                     }
                     break;
                 case nameof(DynamoViewModel.IsShowingConnectorTooltip):

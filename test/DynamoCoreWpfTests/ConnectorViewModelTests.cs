@@ -105,10 +105,10 @@ namespace DynamoCoreWpfTests
         {
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
-            bool initialVisibility = connectorViewModel.IsVisible;
+            bool initialVisibility = connectorViewModel.IsDisplayed;
             ///Toggles hide (visibility == off)
             connectorViewModel.HideConnectorCommand.Execute(null);
-            Assert.AreEqual(connectorViewModel.IsVisible, !initialVisibility);
+            Assert.AreEqual(connectorViewModel.IsDisplayed, !initialVisibility);
         }
 
         /// <summary>
@@ -120,13 +120,13 @@ namespace DynamoCoreWpfTests
         {
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
-            bool initialVisibility = connectorViewModel.IsVisible;
+            bool initialVisibility = connectorViewModel.IsDisplayed;
             ///Toggles hide (visibility == off)
             connectorViewModel.HideConnectorCommand.Execute(null);
-            Assert.AreEqual(connectorViewModel.IsVisible, !initialVisibility);
+            Assert.AreEqual(connectorViewModel.IsDisplayed, !initialVisibility);
             ///Toggles hide on/off (visibility == on)
             connectorViewModel.HideConnectorCommand.Execute(null);
-            Assert.AreEqual(connectorViewModel.IsVisible, initialVisibility);
+            Assert.AreEqual(connectorViewModel.IsDisplayed, initialVisibility);
         }
 
         /// <summary>

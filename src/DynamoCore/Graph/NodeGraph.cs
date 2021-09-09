@@ -90,7 +90,7 @@ namespace Dynamo.Graph
             var guidEnd = helper.ReadGuid("end");
             int startIndex = helper.ReadInteger("start_index");
             int endIndex = helper.ReadInteger("end_index");
-            bool isVisible = helper.ReadBoolean(nameof(ConnectorModel.IsVisible));
+            bool isVisible = helper.ReadBoolean(nameof(ConnectorModel.IsDisplayed));
 
             //find the elements to connect
             NodeModel start;
@@ -100,7 +100,7 @@ namespace Dynamo.Graph
                 if (nodes.TryGetValue(guidEnd, out end))
                 {
                     var connector = ConnectorModel.Make(start, end, startIndex, endIndex, guid);
-                    connector.IsVisible = isVisible;
+                    connector.IsDisplayed = isVisible;
                     return connector;
                 }
             }

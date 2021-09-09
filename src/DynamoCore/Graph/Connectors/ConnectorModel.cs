@@ -32,18 +32,18 @@ namespace Dynamo.Graph.Connectors
     public class ConnectorModel : ModelBase
     {
         #region properties
-        private bool isVisible = true;
+        private bool isDisplayed = true;
 
         /// <summary>
-        /// IsVisible flag controlling the visibility of a connector
+        /// IsDisplayed flag controlling the visibility of a connector
         /// </summary>
-        public bool IsVisible
+        public bool IsDisplayed
         {
-            get { return isVisible; }
+            get { return isDisplayed; }
             set
             {
-                isVisible = value;
-                RaisePropertyChanged(nameof(IsVisible));
+                isDisplayed = value;
+                RaisePropertyChanged(nameof(IsDisplayed));
             }
         }
         /// <summary>
@@ -251,8 +251,8 @@ namespace Dynamo.Graph.Connectors
 
             switch (name)
             {
-                case nameof(IsVisible):
-                    IsVisible = Convert.ToBoolean(value);
+                case nameof(IsDisplayed):
+                    IsDisplayed = Convert.ToBoolean(value);
                     break;
                 default:
                     break;
@@ -268,14 +268,14 @@ namespace Dynamo.Graph.Connectors
             helper.SetAttribute("start_index", Start.Index);
             helper.SetAttribute("end", End.Owner.GUID);
             helper.SetAttribute("end_index", End.Index);
-            helper.SetAttribute(nameof(IsVisible), IsVisible);
+            helper.SetAttribute(nameof(IsDisplayed), IsDisplayed);
             //helper.SetAttribute("portType", ((int) End.PortType));
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             var helper = new XmlElementHelper(nodeElement);
-            IsVisible = helper.ReadBoolean(nameof(IsVisible));
+            IsDisplayed = helper.ReadBoolean(nameof(IsDisplayed));
             //This is now handled via NodeGraph.LoadConnectorFromXml
         }
 
