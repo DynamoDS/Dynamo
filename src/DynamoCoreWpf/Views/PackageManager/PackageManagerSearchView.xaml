@@ -23,7 +23,7 @@
         <ResourceDictionary>
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
             <controls:DateToVisibilityCollapsedConverter x:Key="DateToVisibilityCollapsedConverter" />
-            <controls:DateToPackageLabelCollapsedConverter x:Key="DateToPackageLabelCollapsedConverter" />
+            <controls:DateToPackageLabelConverter x:Key="DateToPackageLabelCollapsedConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
 
