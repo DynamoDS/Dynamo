@@ -929,6 +929,11 @@ namespace Dynamo.Graph.Workspaces
             return orphans;
         }
 
+        /// <summary>
+        /// Recompile all CBNs in home workspace in a second pass after all other function definitions
+        /// have been compiled. 
+        /// Note: This method is intended to be called only during opening of an existing workspace.
+        /// </summary>
         internal void ReCompileCodeBlockNodesForFunctionDefinitions()
         {
             var cbns = Nodes.OfType<CodeBlockNodeModel>();
@@ -938,6 +943,10 @@ namespace Dynamo.Graph.Workspaces
                 // Recompile rest of the code against function definitions for each CBN.
                 cbn.ProcessCodeDirect(cbn.RecompileCodeBlockAST);
             }
+            // This method is intended to be called only during opening of an existing workspace
+            // and therefore if the workspace is set as dirty on account of CBN precompilation, 
+            // the workspace should be reverted to a clean state as it's undesirable to have unsaved
+            // changes for a workspace that is newly opened.
             HasUnsavedChanges = false;
         }
 

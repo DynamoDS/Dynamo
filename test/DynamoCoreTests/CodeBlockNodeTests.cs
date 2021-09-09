@@ -430,6 +430,13 @@ b = c[w][x][y][z];";
             Assert.IsNotNull(cbn);
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
             Assert.AreNotEqual(string.Empty, cbn.ToolTipText);
+
+            var core = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
+            var procedureNodes = core.CodeBlockList[0].procedureTable.Procedures;
+            var procNode = procedureNodes.Where(x => x.Name == "testfunc").FirstOrDefault();
+
+            Assert.NotNull(procNode);
+            Assert.False(procNode.IsActive);
         }
 
         [Test]
@@ -453,6 +460,37 @@ b = c[w][x][y][z];";
             Assert.IsNotNull(cbn);
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
             Assert.AreNotEqual(string.Empty, cbn.ToolTipText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCallCBN_AfterFunctionDef_NoWarning()
+        {
+            var cbn1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(cbn1, "def test(x:int = 1, y:int= 2){return = x + y;}");
+
+            var cbn2 = CreateCodeBlockNode();
+
+            (CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel).RunSettings = 
+                new RunSettings(RunType.Manual, RunSettings.DefaultRunPeriod);
+            UpdateCodeBlockNodeContent(cbn2, "test();");
+
+            Assert.AreEqual(ElementState.Active, cbn2.State);
+            Assert.AreEqual(string.Empty, cbn2.ToolTipText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCallCBN_NoFunctionDef_Warning()
+        {
+            var cbn1 = CreateCodeBlockNode();
+
+            (CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel).RunSettings =
+                new RunSettings(RunType.Manual, RunSettings.DefaultRunPeriod);
+            UpdateCodeBlockNodeContent(cbn1, "test();");
+
+            Assert.AreEqual(ElementState.PersistentWarning, cbn1.State);
+            Assert.AreNotEqual(string.Empty, cbn1.ToolTipText);
         }
 
         [Test]
