@@ -76,10 +76,10 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <Exec Condition=" '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True'"
-              Command="if not exist $(SharedOutputPath) mkdir $(SharedOutputPath)"/>
+		Command="if not exist $(SharedOutputPath) mkdir $(SharedOutputPath)"/>
     <!-- the ILMergePath property points to the location of ILMerge.exe console application -->
     <Exec Condition=" '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True'"
-              Command="$(ILMergeConsolePath) $(OutputPath)Md2Html.exe ^
+		Command="$(ILMergeConsolePath) $(OutputPath)Md2Html.exe ^
 		/allowDup ^
 		/lib:$(OutputPath) ^
 		/out:$(SharedOutputPath)Md2Html.exe ^
@@ -94,8 +94,8 @@
 		System.Runtime.CompilerServices.Unsafe.dll ^
 		System.Text.Encoding.CodePages.dll " />
     <Exec Condition=" '!$([MSBuild]::IsOSPlatform(`Windows`))' == 'True' "
-              Command="mkdir -p $(SharedOutputPath)"/>
+		Command="mkdir -p $(SharedOutputPath)"/>
     <Exec Condition=" '!$([MSBuild]::IsOSPlatform(`Windows`))' == 'True' "
-              Command="cp $(OutputPath)*.* $(SharedOutputPath)"/>
+		Command="cp $(OutputPath)*.* $(SharedOutputPath)"/>
   </Target>
 </Project>
