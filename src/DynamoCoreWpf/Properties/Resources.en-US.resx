@@ -853,10 +853,6 @@ You will get a chance to save your work.</value>
     <value>Geometry Scaling...</value>
     <comment>Settings menu | Geometry Scaling</comment>
   </data>
-  <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
-    <value>Show Preview Bubbles</value>
-    <comment>Settings menu | Show preview bubbles</comment>
-  </data>
   <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
     <value>Visualization Settings</value>
   </data>

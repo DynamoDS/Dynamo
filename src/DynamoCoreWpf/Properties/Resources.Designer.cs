@@ -2016,15 +2016,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Preview Bubbles.
-        /// </summary>
-        public static string DynamoViewSettingsMenuShowPreviewBubbles {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuShowPreviewBubbles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Visualization Settings.
         /// </summary>
         public static string DynamoViewSettingsMenuVisualizationSettings {

@@ -1746,10 +1746,6 @@ Do you want to install the latest Dynamo update?</value>
   <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
     <value>Presets</value>
   </data>
-  <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
-    <value>Show Preview Bubbles</value>
-    <comment>Settings menu | Show preview bubbles</comment>
-  </data>
   <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
     <value>Visualization Settings</value>
   </data>
