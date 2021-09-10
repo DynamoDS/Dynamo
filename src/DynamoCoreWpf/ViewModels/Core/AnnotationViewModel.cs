@@ -532,6 +532,13 @@ namespace Dynamo.ViewModels
             ViewModelBases.OfType<AnnotationViewModel>()
                 .ToList()
                 .ForEach(x => AddToCutGeometryDictionary(x));
+
+            if (!IsExpanded)
+            {
+                SetGroupInputPorts();
+                SetGroupOutPorts();
+                CollapseGroupContents(true);
+            }
         }
 
         /// <summary>
@@ -732,6 +739,11 @@ namespace Dynamo.ViewModels
 
         private void CollapseConnectors()
         {
+            if (originalInPorts is null)
+            {
+                return;
+            }
+
             var excludedPorts = originalInPorts.Concat(originalOutPorts);
 
             var allNodes = this.Nodes

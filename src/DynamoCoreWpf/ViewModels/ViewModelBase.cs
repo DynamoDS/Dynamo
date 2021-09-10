@@ -21,6 +21,7 @@ namespace Dynamo.ViewModels
         }
 
         private bool isCollapsed;
+        [JsonIgnore]
         public virtual bool IsCollapsed
         {
             get => isCollapsed;
