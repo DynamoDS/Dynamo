@@ -47,6 +47,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         public UIElement LibraryView { get; set; }
 
+        /// <summary>
+        /// This variable represents the element of the MainWindow 
+        /// </summary>
+        public UIElement MainWindow { get; set; }
+
         public Guide()
         {
             GuideSteps = new List<Step>();
@@ -149,6 +154,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (nextStep != null)
                 {
                     SetLibraryViewVisible(nextStep.ShowLibrary);
+                    CurrentStep = nextStep;
 
                     if (nextStep.StepType != Step.StepTypes.WELCOME &&
                         nextStep.StepType != Step.StepTypes.SURVEY
@@ -196,7 +202,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="hostElement">Element for size and position reference</param>
         private void SetupBackgroundHoleSize(UIElement hostElement)
         {
-            Point relativePoint = hostElement.TransformToAncestor(Application.Current.MainWindow)
+            Point relativePoint = hostElement.TransformToAncestor(MainWindow)
                               .Transform(new Point(0, 0));
 
             GuideBackgroundElement.HoleRect = new Rect(relativePoint.X, relativePoint.Y,
@@ -212,6 +218,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public void Back(GuidedTourMovementEventArgs args)
         {
             Step prevStep = null;
+
+            CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
+            if (CurrentStep != null)
+            {
+                CurrentStep.Hide();
+            }
+
             if (args.StepSequence > 0)
             {
                 prevStep = (from step in GuideSteps where step.Sequence == args.StepSequence - 1 select step).FirstOrDefault();
@@ -226,15 +239,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     else
                         GuideBackgroundElement.HoleRect = new Rect();
 
+                    CurrentStep = prevStep;
                     prevStep.Show();
                 }
             }
 
-            CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
-            if (CurrentStep != null)
-            {
-                CurrentStep.Hide();
-            }
         }
 
         /// <summary>

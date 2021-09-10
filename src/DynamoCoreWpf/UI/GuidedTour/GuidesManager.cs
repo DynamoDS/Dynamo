@@ -94,7 +94,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 Grid.SetRowSpan(guideBackgroundElement, 6);
             }
 
-
+            guideBackgroundElement.HoleRect = new Rect();
             CreateGuideSteps(GuidesJsonFilePath);
 
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
@@ -142,6 +142,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 //Show background overlay
                 guideBackgroundElement.Visibility = Visibility.Visible;
                 currentGuide.GuideBackgroundElement = guideBackgroundElement;
+                currentGuide.MainWindow = mainRootElement;
                 currentGuide.LibraryView = Guide.FindChild(mainRootElement, libraryViewName);
                 currentGuide.Initialize();
                 currentGuide.Play();
