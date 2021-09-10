@@ -304,16 +304,19 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Indicates whether this port's connectors are visible or not.
-        /// This can be affected by the HideConnectorsCommand in the output port context menu.
+        /// Sets the visibility of the connectors from the port. This will overwrite the 
+        /// individual visibility of the connectors. However when visibility is controlled 
+        /// from the connector, that connector's visibility will overwrite its previous state.
+        /// In order to overwrite visibility of all connectors associated with a port, us this 
+        /// flag again.
         /// </summary>
-        public bool AreConnectorsHidden
+        public bool SetConnectorsVisibility
         {
             get => areConnectorsHidden;
             set
             {
                 areConnectorsHidden = value; 
-                RaisePropertyChanged(nameof(AreConnectorsHidden));
+                RaisePropertyChanged(nameof(SetConnectorsVisibility));
             }
         }
 
@@ -337,9 +340,9 @@ namespace Dynamo.ViewModels
         private void RefreshHideWiresButton()
         {
             HideWiresButtonEnabled = _port.Connectors.Count > 0;
-            AreConnectorsHidden = CheckIfConnectorsAreHidden();
+            SetConnectorsVisibility = CheckIfConnectorsAreHidden();
 
-            ShowHideWiresButtonContent = AreConnectorsHidden
+            ShowHideWiresButtonContent = SetConnectorsVisibility
                 ? Properties.Resources.UnhideWiresPopupMenuItem
                 : Properties.Resources.HideWiresPopupMenuItem;
 
@@ -641,7 +644,7 @@ namespace Dynamo.ViewModels
 
                 if (connectorViewModel == null) continue;
 
-                connectorViewModel.HideConnectorCommand.Execute(null);
+                connectorViewModel.HideConnectorCommand.Execute(SetConnectorsVisibility);
             }
             RefreshHideWiresButton();
         }
