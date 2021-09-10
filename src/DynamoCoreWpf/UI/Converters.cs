@@ -14,7 +14,6 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
-using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
