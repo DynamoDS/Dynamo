@@ -17,12 +17,12 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class PackageManagerSearchView : Window
     {
-        public PackageManagerSearchViewModel PackageManagerSearchViewModel { get;  }
+        public PackageManagerSearchViewModel ViewModel { get;  }
         
         public PackageManagerSearchView(PackageManagerSearchViewModel pm)
         {
-            PackageManagerSearchViewModel = pm;
-            this.DataContext = PackageManagerSearchViewModel;
+            ViewModel = pm;
+            this.DataContext = ViewModel;
             InitializeComponent();
 
             pm.RequestShowFileDialog += OnRequestShowFileDialog;
@@ -162,8 +162,7 @@ namespace Dynamo.PackageManager.UI
         /// <param name="e"></param>
         private void ViewDetailsButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (!(this.DataContext is PackageManagerSearchViewModel packageManagerSearchViewModel)) return;
-            packageManagerSearchViewModel.ViewPackageDetailsCommand.Execute(null);
+            this.ViewModel.ViewPackageDetailsCommand.Execute(null);
         }
 
         /// <summary>
@@ -176,7 +175,7 @@ namespace Dynamo.PackageManager.UI
             Button button = sender as Button;
             
             if (!(button.DataContext is PackageDownloadHandle packageDownloadHandle)) return;
-            PackageManagerSearchViewModel.ClearDownloadToastNotificationCommand.Execute(packageDownloadHandle);
+            ViewModel.ClearDownloadToastNotificationCommand.Execute(packageDownloadHandle);
         }
     }
 }

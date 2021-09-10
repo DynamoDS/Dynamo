@@ -111,7 +111,6 @@ namespace Dynamo.Controls
     /// </summary>
     public class DependencyListToStringConverter : IValueConverter
     {
-        private readonly string[] PythonEngineList = { PythonNodeModels.PythonEngineVersion.CPython3.ToString(), PythonNodeModels.PythonEngineVersion.IronPython2.ToString() };
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null) return Properties.Resources.PackageManagerPackageHasNoDependencies;
@@ -314,7 +313,10 @@ namespace Dynamo.Controls
             CultureInfo culture)
         {
             if (!(value is bool booleanValue)) return null;
-            return booleanValue ? "Installed" : "Install";
+            
+            return booleanValue
+                ? Properties.Resources.PackageManagerInstalled
+                : Properties.Resources.PackageManagerInstall;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -1195,7 +1197,9 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Used in the Dynamo package manager to hide or show a label next to the package's name.
+    /// Used in the Dynamo package manager search window to hide or show a label next to each package's name.
+    /// The label only appears if the package has been recently created/updated (in the last 30 days).
+    /// Label text is set via the DateToPackageLabelConverter.
     /// </summary>
     public class DateToVisibilityCollapsedConverter : IValueConverter
     {

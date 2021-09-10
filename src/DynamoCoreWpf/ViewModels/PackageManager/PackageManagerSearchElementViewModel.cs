@@ -22,7 +22,7 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand DownloadLatestToCustomPathCommand { get; set; }
 
         /// <summary>
-        /// A function used to determine whether the used has installed this package already.
+        /// A function used to determine whether the user has installed this package already.
         /// Matching occurs via package name.
         /// </summary>
         private Func<string,bool> isPackageInstalled;
@@ -32,7 +32,7 @@ namespace Dynamo.PackageManager.ViewModels
         /// <summary>
         /// Determines whether the user can click on the 'Install' button of a package.
         /// </summary>
-        public bool IsInstallButtonEnabled => !Model.IsDeprecated && !IsPackageInstalledProperty;
+        public bool IsInstallButtonEnabled => !Model.IsDeprecated && !IsInstalled;
 
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : base(element)
         {
@@ -60,37 +60,38 @@ namespace Dynamo.PackageManager.ViewModels
         /// assist communication between the PackageManagerSearchViewModel
         /// and the PackageManagerSearchElementViewModel.
         /// </summary>
-        /// <param name="element"></param>
-        /// <param name="canLogin"></param>
-        /// <param name="isPackageInstalledFunction"></param>
+        /// <param name="element">A PackageManagerSearchElement</param>
+        /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
+        /// <param name="isPackageInstalledFunction">A function that we pass to this constructor which takes a string and returns a Boolean.</param>
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, Func<string,bool> isPackageInstalledFunction) : this(element, canLogin)
         {
             this.isPackageInstalled = isPackageInstalledFunction;
-            this.IsPackageInstalledProperty = isPackageInstalled(this.Model.Name);
+            this.IsInstalled = isPackageInstalled(this.Model.Name);
         }
+
+        private bool isInstalled;
 
         /// <summary>
         /// A Boolean flag reporting whether or not the user already has this SearchElement's package installed.
         /// </summary>
-        public bool IsPackageInstalledProperty
+        public bool IsInstalled
         {
-            get => isPackageInstalledProperty;
+            get => isInstalled;
             set
             {
-                isPackageInstalledProperty = value;
-                RaisePropertyChanged(nameof(IsPackageInstalledProperty));
+                isInstalled = value;
+                RaisePropertyChanged(nameof(IsInstalled));
             }
         }
 
         /// <summary>
         /// Checks whether the user has already installed a package with the given name.
         /// </summary>
-        /// <param name="packageName"></param>
-        /// <returns></returns>
-        internal bool IsPackageInstalled(string packageName)
+        /// <returns>A Boolean indicating whether the user already has a package installed with the given name.</returns>
+        internal bool IsPackageInstalled()
         {
-            IsPackageInstalledProperty = isPackageInstalled(packageName);
-            return IsPackageInstalledProperty;
+            IsInstalled = isPackageInstalled(this.Model.Name);
+            return IsInstalled;
         }
 
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
@@ -137,22 +138,10 @@ namespace Dynamo.PackageManager.ViewModels
         }
 
         private List<String> CustomPackageFolders;
-        private bool isPackageInstalledProperty;
-
+        
         public delegate void PackageSearchElementDownloadHandler(
             PackageManagerSearchElement element, PackageVersion version, string downloadPath = null);
         public event PackageSearchElementDownloadHandler RequestDownload;
-
-        public delegate bool CheckIfPackageIsInstalledHandler(string packageId);
-        public event CheckIfPackageIsInstalledHandler CheckIfPackageInstalled;
-
-        /// <summary>
-        /// Checks if the user has installed a package with a given name.
-        /// </summary>
-        public void OnCheckIfPackageInstalled()
-        {
-            CheckIfPackageInstalled?.Invoke(this.Model.Name);
-        }
 
         public void OnRequestDownload(PackageVersion version, bool downloadToCustomPath)
         {
@@ -169,7 +158,7 @@ namespace Dynamo.PackageManager.ViewModels
             if (RequestDownload != null)
                 RequestDownload(this.Model, version, downloadPath);
 
-            IsPackageInstalled(this.Model.Name);
+            IsPackageInstalled();
         }
 
         /// <summary>

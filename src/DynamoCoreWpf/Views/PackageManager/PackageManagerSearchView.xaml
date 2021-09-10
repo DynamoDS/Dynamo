@@ -494,7 +494,6 @@
                                        LastChildFill="False">
                                 <Button Name="viewDetailsButton"
                                         Click="ViewDetailsButton_OnClick"
-                                        Command="{Binding ViewPackageDetailsCommand}"
                                         Content="{x:Static p:Resources.PackageSearchResultViewDetails}"
                                         DockPanel.Dock="Right"
                                         Style="{StaticResource resultButtonStyle}" />
@@ -579,7 +578,7 @@
                                 </Rectangle>
                                 <Button Name="installButton"
                                         Command="{Binding DownloadLatestCommand}"
-                                        Content="{Binding IsPackageInstalledProperty, Converter={StaticResource InstalledButtonTextConverter}}"
+                                        Content="{Binding IsInstalled, Converter={StaticResource InstalledButtonTextConverter}}"
                                         DockPanel.Dock="Right"
                                         IsEnabled="{Binding IsInstallButtonEnabled, UpdateSourceTrigger=PropertyChanged}">
                                     <Button.Style>
@@ -601,7 +600,7 @@
                                                             <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
                                                                 <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding IsPackageInstalledProperty}" Value="True">
+                                                            <DataTrigger Binding="{Binding IsInstalled}" Value="True">
                                                                 <Setter Property="TextBlock.Foreground" Value="#999999" />
                                                             </DataTrigger>
                                                         </ControlTemplate.Triggers>
@@ -633,7 +632,7 @@
                                                         </Setter.Value>
                                                     </Setter>
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=IsPackageInstalledProperty}" Value="True">
+                                                <DataTrigger Binding="{Binding Path=IsInstalled}" Value="True">
                                                     <Setter Property="Fill">
                                                         <Setter.Value>
                                                             <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/checkmark - grey.png" />
