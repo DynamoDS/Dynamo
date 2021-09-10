@@ -19,6 +19,7 @@ using SystemTestServices;
 using Dynamo.Wpf.Views;
 using Dynamo.Core;
 using Dynamo.Extensions;
+using System.Reflection;
 
 namespace DynamoCoreWpfTests
 {
@@ -424,6 +425,57 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
             Assert.IsFalse(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
+            Assert.IsTrue(currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
+        }
+
+        [Test]
+        [Description("User tries to re-add a package path. Should not see any duplicate nodes")]
+        public void PackageManagerNoDuplicatesOnPathIsRemovedThenAdded()
+        {
+            var currentDynamoModel = ViewModel.Model;
+
+            currentDynamoModel.PreferenceSettings.DisableBuiltinPackages = true;
+            currentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>() { };
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = currentDynamoModel.PreferenceSettings,
+            };
+
+            var libraryLoader = new ExtensionLibraryLoader(currentDynamoModel);
+
+            var loader = currentDynamoModel.GetPackageManagerExtension().PackageLoader;
+
+            loader.LoadAll(loadPackageParams);
+            Assert.AreEqual(0, loader.LocalPackages.Count());
+
+            var vm = new PackagePathViewModel(loader, loadPackageParams, Model.CustomNodeManager);
+
+            vm.RequestShowFileDialog += (sender, args) => { args.Path = Path.Combine(TestDirectory, "bltin_packages_restart"); };
+            //add a new path to SignedPackage2
+            vm.AddPathCommand.Execute(null);
+
+            //save the new path 
+            vm.SaveSettingCommand.Execute(null);
+
+            Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
+            Assert.IsTrue(currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
+
+            // remove the path to SignedPackage2
+            vm.DeletePathCommand.Execute(vm.RootLocations.Count - 1);
+
+            // save
+            vm.SaveSettingCommand.Execute(null);
+
+            Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
+            Assert.IsTrue(currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
+
+            // re-add the path to SignedPackage2
+            vm.AddPathCommand.Execute(null);
+
+            //save the new path 
+            vm.SaveSettingCommand.Execute(null);
+
+            Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
             Assert.IsTrue(currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
         }
 

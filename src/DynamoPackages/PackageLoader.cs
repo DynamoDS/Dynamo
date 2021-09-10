@@ -369,7 +369,6 @@ namespace Dynamo.PackageManager
         /// <param name="packages"></param>
         public void LoadPackages(IEnumerable<Package> packages)
         {
-            List<Assembly> loadedAssemblies = new List<Assembly>();
             foreach (var pkg in packages)
             {
                 // If the pkg is null, then don't load that package into the Library.
