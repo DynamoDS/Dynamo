@@ -579,8 +579,7 @@
                                 <Button Name="installButton"
                                         Command="{Binding DownloadLatestCommand}"
                                         Content="{Binding IsInstalled, Converter={StaticResource InstalledButtonTextConverter}}"
-                                        DockPanel.Dock="Right"
-                                        IsEnabled="{Binding IsInstallButtonEnabled, UpdateSourceTrigger=PropertyChanged}">
+                                        DockPanel.Dock="Right">
                                     <Button.Style>
                                         <Style BasedOn="{StaticResource resultButtonStyle}" TargetType="Button">
                                             <Setter Property="Template">
@@ -594,9 +593,9 @@
                                                                    FontSize="11"
                                                                    Text="{TemplateBinding Content}" />
                                                         <ControlTemplate.Triggers>
-                                                            <DataTrigger Binding="{Binding IsInstallButtonEnabled}" Value="False">
+                                                            <Trigger Property="IsEnabled" Value="False">
                                                                 <Setter Property="TextBlock.Foreground" Value="#999999" />
-                                                            </DataTrigger>
+                                                            </Trigger>
                                                             <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
                                                                 <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
                                                             </DataTrigger>
@@ -618,17 +617,10 @@
                                     <Rectangle.Style>
                                         <Style TargetType="Rectangle">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=IsInstallButtonEnabled}" Value="False">
+                                                <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="True">
                                                     <Setter Property="Fill">
                                                         <Setter.Value>
                                                             <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - disabled.png" />
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="False">
-                                                    <Setter Property="Fill">
-                                                        <Setter.Value>
-                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
                                                         </Setter.Value>
                                                     </Setter>
                                                 </DataTrigger>
@@ -639,6 +631,17 @@
                                                         </Setter.Value>
                                                     </Setter>
                                                 </DataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Path=Model.IsDeprecated}" Value="False" />
+                                                        <Condition Binding="{Binding Path=IsInstalled}" Value="False" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Fill">
+                                                        <Setter.Value>
+                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </MultiDataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Rectangle.Style>

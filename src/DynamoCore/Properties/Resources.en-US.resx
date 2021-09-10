@@ -825,4 +825,12 @@ This package has not been loaded because another conflicting package was loaded 
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>New</value>
   </data>
+  <data name="PackageManagerInstalled" xml:space="preserve">
+    <value>Installed</value>
+    <comment>Used on the package manager search result card. If the package is already installed, the button will say 'Installed'.</comment>
+  </data>
+  <data name="PackageManagerInstall" xml:space="preserve">
+    <value>Install</value>
+    <comment>Used on the package manager search result card. If the package is not installed, the button will say 'Install'.</comment>
+  </data>
 </root>

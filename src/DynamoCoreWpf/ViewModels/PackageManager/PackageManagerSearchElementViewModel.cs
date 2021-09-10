@@ -29,10 +29,6 @@ namespace Dynamo.PackageManager.ViewModels
 
         public new PackageManagerSearchElement Model { get; internal set; }
 
-        /// <summary>
-        /// Determines whether the user can click on the 'Install' button of a package.
-        /// </summary>
-        public bool IsInstallButtonEnabled => !Model.IsDeprecated && !IsInstalled;
 
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : base(element)
         {
@@ -40,7 +36,9 @@ namespace Dynamo.PackageManager.ViewModels
 
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded );
 
-            this.DownloadLatestCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), false));
+            this.DownloadLatestCommand = new DelegateCommand(
+                () => OnRequestDownload(Model.Header.versions.Last(), false),
+                () => !Model.IsDeprecated && !IsInstalled);
             this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), true));
 
             this.UpvoteCommand = new DelegateCommand(Model.Upvote, () => canLogin);
@@ -142,6 +140,8 @@ namespace Dynamo.PackageManager.ViewModels
         public delegate void PackageSearchElementDownloadHandler(
             PackageManagerSearchElement element, PackageVersion version, string downloadPath = null);
         public event PackageSearchElementDownloadHandler RequestDownload;
+        public delegate bool CheckIfPackageIsInstalledHandler(string packageName);
+        public event CheckIfPackageIsInstalledHandler CheckIfPackageInstalled;
 
         public void OnRequestDownload(PackageVersion version, bool downloadToCustomPath)
         {
