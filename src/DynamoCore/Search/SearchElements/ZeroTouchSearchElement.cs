@@ -100,7 +100,7 @@ namespace Dynamo.Search.SearchElements
 
             }
 
-            iconName = GetIconName();
+            iconName = Graph.Nodes.Utilities.GetFunctionDescriptorIconName(functionDescriptor);
         }
 
         protected override NodeModel ConstructNewNodeModel()
@@ -108,32 +108,6 @@ namespace Dynamo.Search.SearchElements
             if (functionDescriptor.IsVarArg)
                 return new DSVarArgFunction(functionDescriptor);
             return new DSFunction(functionDescriptor);
-        }
-
-        private string GetIconName()
-        {
-            string name = Graph.Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.QualifiedName);
-
-            if (string.IsNullOrEmpty(name))
-                name = Graph.Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.FunctionName);
-
-            // Usual case.
-            if (!functionDescriptor.IsOverloaded)
-                return name;
-
-            // Case for overloaded methods.
-            if (name == functionDescriptor.QualifiedName)
-            {
-                return Graph.Nodes.Utilities.TypedParametersToString(functionDescriptor);
-            }
-            else
-            {
-                // Some nodes contain names with invalid symbols like %, <, >, etc. In this 
-                // case the value of "FunctionDescriptor.Name" property should be used. For 
-                // an example, "DynamoUnits.SUnit.%" to be renamed as "DynamoUnits.SUnit.mod".
-                string shortName = Graph.Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.FunctionName);
-                return Graph.Nodes.Utilities.TypedParametersToString(functionDescriptor, name + shortName);
-            }
         }
     }
 }

@@ -1628,7 +1628,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Run started with new working range...</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
+    <value>&lt;Double click here to edit group description&gt;</value>
   </data>
   <data name="GroupContextMenuBackground" xml:space="preserve">
     <value>Select Background</value>
@@ -2521,6 +2521,12 @@ Uninstall the following packages: {0}?</value>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
   </data>
+  <data name="GroupNameDefaultText" xml:space="preserve">
+    <value>&lt;Double click here to edit group title&gt;</value>
+  </data>
+  <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
+    <value>Add group to group</value>
+  </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this guide later from the Help menu.</value>
   </data>
@@ -2628,5 +2634,8 @@ Delete the following packages: {2}?
   </data>
   <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
     <value>_Show Tooltip</value>
+  </data>
+  <data name="PackageFilter_Name_All" xml:space="preserve">
+    <value>All</value>
   </data>
 </root>

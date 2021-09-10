@@ -1075,9 +1075,6 @@ Failed to publish file(s):
   <data name="GroupContextMenuUngroup" xml:space="preserve">
     <value>Ungroup</value>
   </data>
-  <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
-  </data>
   <data name="HideClassicNodeLibrary" xml:space="preserve">
     <value>Hide Classic Node Library</value>
   </data>
@@ -2509,7 +2506,13 @@ Uninstall the following packages: {0}?</value>
     <value>Finished</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group description&gt;</value>
+    <value>&lt;Double click here to edit group description&gt;</value>
+  </data>
+  <data name="GroupNameDefaultText" xml:space="preserve">
+    <value>&lt;Double click here to edit group title&gt;</value>
+  </data>
+  <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
+    <value>Add group to group</value>
   </data>
   <data name="BreakConnectionPopupMenuItem" xml:space="preserve">
     <value>Break Connection</value>
@@ -2633,5 +2636,8 @@ Delete the following packages: {2}?
   <data name="ContextMenu" xml:space="preserve">
     <value>Node Options</value>
     <comment>Node context menu</comment>
+  </data>
+  <data name="PackageFilter_Name_All" xml:space="preserve">
+    <value>All</value>
   </data>
 </root>

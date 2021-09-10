@@ -1430,6 +1430,40 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("SelectionArgumentLacing");            
         }
 
+        /// <summary>
+        /// Returns ViewModelBase by GUID
+        /// </summary>
+        /// <param name="modelGuid">Identifier of the requested model.</param>
+        /// <returns>Found <see cref="ViewModelBase"/> object.</returns>
+        internal ViewModelBase GetViewModelInternal(Guid modelGuid)
+        {
+            ViewModelBase foundModel = (Connectors.FirstOrDefault(c => c.ConnectorModel.GUID == modelGuid)
+                ?? Nodes.FirstOrDefault(node => node.NodeModel.GUID == modelGuid) as ViewModelBase)
+                ?? (Notes.FirstOrDefault(note => note.Model.GUID == modelGuid)
+                ?? Annotations.FirstOrDefault(annotation => annotation.AnnotationModel.GUID == modelGuid) as ViewModelBase);
+
+            return foundModel;
+        }
+
+        /// <summary>
+        /// Gets viewModels by their GUIDs
+        /// </summary>
+        /// <param name="modelGuids">Identifiers of the requested models.</param>
+        /// <returns>All found <see cref="ViewModelBase"/> objects.</returns>
+        internal IEnumerable<ViewModelBase> GetViewModelsInternal(IEnumerable<Guid> modelGuids)
+        {
+            var foundModels = new List<ViewModelBase>();
+
+            foreach (var modelGuid in modelGuids)
+            {
+                var foundModel = GetViewModelInternal(modelGuid);
+                if (foundModel != null)
+                    foundModels.Add(foundModel);
+            }
+
+            return foundModels;
+        }
+
     }
 
     public class ViewModelEventArgs : EventArgs

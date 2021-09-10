@@ -152,6 +152,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
 
+        /// <summary>
+        /// Returns all available filters
+        /// </summary>
+        public ObservableCollection<PackageFilter> Filters => installedPackagesViewModel.Filters;
+
         //This includes all the properties that can be set on the General tab
         #region General Properties
         /// <summary>
@@ -874,6 +879,14 @@ namespace Dynamo.ViewModels
             PackagePathsForInstall = null;
             SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
             PackagePathsViewModel.RootLocations.CollectionChanged += PackagePathsViewModel_RootLocations_CollectionChanged;
+        }
+
+        /// <summary>
+        /// Init all package filters
+        /// </summary>
+        internal void InitPackageListFilters()
+        {
+            installedPackagesViewModel.PopulateFilters();
         }
 
         /// <summary>
