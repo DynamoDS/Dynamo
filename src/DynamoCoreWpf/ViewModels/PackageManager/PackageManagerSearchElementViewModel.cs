@@ -140,9 +140,7 @@ namespace Dynamo.PackageManager.ViewModels
         public delegate void PackageSearchElementDownloadHandler(
             PackageManagerSearchElement element, PackageVersion version, string downloadPath = null);
         public event PackageSearchElementDownloadHandler RequestDownload;
-        public delegate bool CheckIfPackageIsInstalledHandler(string packageName);
-        public event CheckIfPackageIsInstalledHandler CheckIfPackageInstalled;
-
+        
         public void OnRequestDownload(PackageVersion version, bool downloadToCustomPath)
         {
             string downloadPath = String.Empty;

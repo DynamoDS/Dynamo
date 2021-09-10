@@ -639,7 +639,6 @@ namespace Dynamo.PackageManager
         private void AddToSearchResults(PackageManagerSearchElementViewModel element)
         {
             element.RequestDownload += this.PackageOnExecuted;
-            element.CheckIfPackageInstalled += this.UserAlreadyHasPackageInstalled;
             this.SearchResults.Add(element);
         }
 
