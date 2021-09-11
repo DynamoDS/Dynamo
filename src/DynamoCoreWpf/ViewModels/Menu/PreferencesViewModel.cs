@@ -54,6 +54,7 @@ namespace Dynamo.ViewModels
         private bool enableTSpline;
         private bool showEdges;
         private bool isolateSelectedGeometry;
+        private bool showPreviewBubbles;
         private bool showCodeBlockLineNumber;
         private RunType runSettingsIsChecked;
         private Dictionary<string, TabSettings> preferencesTabs;
@@ -486,6 +487,26 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        public bool ShowPreviewBubbles
+        {
+            get
+            {
+                return preferenceSettings.ShowPreviewBubbles;
+            }
+            set
+            {
+                preferenceSettings.ShowPreviewBubbles = value;
+                showPreviewBubbles = value;
+                RaisePropertyChanged(nameof(ShowPreviewBubbles));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if line numbers should be displayed on code block nodes.
+        /// </summary>
         public bool ShowCodeBlockLineNumber
         {
             get
@@ -945,6 +966,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(EnableTSplineIsChecked):
                     description = Res.PreferencesViewEnableTSplineNodes;
+                    goto default;
+                case nameof(ShowPreviewBubbles):
+                    description = Res.PreferencesViewShowPreviewBubbles;
                     goto default;
                 case nameof(ShowCodeBlockLineNumber):
                     description = Res.PreferencesViewShowCodeBlockNodeLineNumber;

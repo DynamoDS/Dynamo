@@ -1746,10 +1746,6 @@ Do you want to install the latest Dynamo update?</value>
   <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
     <value>Presets</value>
   </data>
-  <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
-    <value>Show Preview Bubbles</value>
-    <comment>Settings menu | Show preview bubbles</comment>
-  </data>
   <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
     <value>Visualization Settings</value>
   </data>
@@ -2637,5 +2633,9 @@ Delete the following packages: {2}?
   </data>
   <data name="PackageFilter_Name_All" xml:space="preserve">
     <value>All</value>
+  </data>
+  <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
+    <value>Show Preview Bubbles</value>
+    <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
   </data>
 </root>
