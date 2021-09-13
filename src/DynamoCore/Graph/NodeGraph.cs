@@ -90,6 +90,9 @@ namespace Dynamo.Graph
             var guidEnd = helper.ReadGuid("end");
             int startIndex = helper.ReadInteger("start_index");
             int endIndex = helper.ReadInteger("end_index");
+            bool isDisplayed = helper.HasAttribute(nameof(ConnectorModel.IsDisplayed)) ?
+                helper.ReadBoolean(nameof(ConnectorModel.IsDisplayed)):
+                true;
 
             //find the elements to connect
             NodeModel start;
@@ -98,7 +101,12 @@ namespace Dynamo.Graph
                 NodeModel end;
                 if (nodes.TryGetValue(guidEnd, out end))
                 {
-                    return ConnectorModel.Make(start, end, startIndex, endIndex, guid);
+                    var connector = ConnectorModel.Make(start, end, startIndex, endIndex, guid);
+                    if(connector != null)
+                    {
+                        connector.IsDisplayed = isDisplayed;
+                        return connector;
+                    }
                 }
             }
 
@@ -128,6 +136,20 @@ namespace Dynamo.Graph
         {
             var instance = new NoteModel(0, 0, string.Empty, Guid.NewGuid());
             instance.Deserialize(note as XmlElement, SaveContext.Save);
+            return instance;
+        }
+
+        /// <summary>
+        /// Method used to reconstruct a pin from xml when it has been deleted (undo/redo operations).
+        /// </summary>
+        /// <param name="pin">The xml representation of a ConnectorPinModel</param>
+        /// <returns>A reconstructed instance of type ConnectorPinModel</returns>
+        internal static ConnectorPinModel LoadPinFromXml(XmlElement pin)
+        {
+            var helper = new XmlElementHelper(pin);
+            var guid = helper.ReadGuid("guid", Guid.NewGuid());
+            var instance = new ConnectorPinModel(0, 0, guid, Guid.Empty);
+            instance.Deserialize(pin as XmlElement, SaveContext.Save);
             return instance;
         }
 

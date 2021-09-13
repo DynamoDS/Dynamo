@@ -498,18 +498,19 @@ namespace Dynamo.ViewModels
             var pmExt = DynamoViewModel.Model.GetPackageManagerExtension();
             if (result == MessageBoxResult.OK)
             {
+                System.Diagnostics.Debug.Assert(package.full_dependency_ids.Count == package.full_dependency_versions.Count);
                 // get all of the dependency version headers
                 var dependencyVersionHeaders = package.full_dependency_ids.Select(x=>x).Reverse().Select((dep, i) =>
                 {
+                    var depVersion = package.full_dependency_versions.Select(x => x).Reverse().ElementAt(i);
                     try
                     {
-                        var depVersion = package.full_dependency_versions.Select(x=>x).Reverse().ElementAt(i);
                         return Model.GetPackageVersionHeader(dep._id, depVersion);
                     }
                     catch
                     {
                         MessageBoxService.Show(
-                            String.Format(Resources.MessageFailedToDownloadPackageVersion, dep._id),
+                            String.Format(Resources.MessageFailedToDownloadPackageVersion, depVersion, dep._id),
                             Resources.PackageDownloadErrorMessageBoxTitle,
                             MessageBoxButton.OK, MessageBoxImage.Error);
                         return null;

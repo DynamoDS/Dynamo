@@ -32,6 +32,34 @@ using Thickness = System.Windows.Thickness;
 
 namespace Dynamo.Controls
 {
+    public class ToolTipFirstLineOnly : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string incomingString = value as string;
+            return incomingString.Split(new[] { '\r', '\n' }, 2)[0].Trim();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ToolTipAllLinesButFirst : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string incomingString = value as string;
+            return incomingString.Split(new[] { '\r', '\n' }, 2)[1].Trim();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class TooltipLengthTruncater : IValueConverter
     {
         private const int MaxChars = 100;
@@ -343,27 +371,7 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
-
-    public class PortNameConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter,
-          CultureInfo culture)
-        {
-            if (value is string && !string.IsNullOrEmpty(value as string))
-            {
-                return value as string;
-            }
-
-            return ">";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter,
-          CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
+    
     public class SnapRegionMarginConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter,
@@ -568,6 +576,7 @@ namespace Dynamo.Controls
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
+            if (value == null) return FalseBrush;
             bool condition = (bool)value;
             if (condition)
             {
@@ -692,153 +701,7 @@ namespace Dynamo.Controls
             return null;
         }
     }
-
-    public class StateToColorConverter : IValueConverter
-    {
-        // http://stackoverflow.com/questions/3238590/accessing-colors-in-a-resource-dictionary-from-a-value-converter
-
-        public SolidColorBrush HeaderBackgroundInactive { get; set; }
-        public SolidColorBrush HeaderForegroundInactive { get; set; }
-        public SolidColorBrush HeaderBorderInactive { get; set; }
-        public SolidColorBrush OuterBorderInactive { get; set; }
-        public SolidColorBrush BodyBackgroundInactive { get; set; }
-        public SolidColorBrush HeaderBackgroundActive { get; set; }
-        public SolidColorBrush HeaderForegroundActive { get; set; }
-        public SolidColorBrush HeaderBorderActive { get; set; }
-        public SolidColorBrush OuterBorderActive { get; set; }
-        public SolidColorBrush BodyBackgroundActive { get; set; }
-        public SolidColorBrush HeaderBackgroundWarning { get; set; }
-        public SolidColorBrush HeaderForegroundWarning { get; set; }
-        public SolidColorBrush HeaderBorderWarning { get; set; }
-        public SolidColorBrush OuterBorderWarning { get; set; }
-        public SolidColorBrush BodyBackgroundWarning { get; set; }
-        public SolidColorBrush HeaderBackgroundError { get; set; }
-        public SolidColorBrush HeaderForegroundError { get; set; }
-        public SolidColorBrush HeaderBorderError { get; set; }
-        public SolidColorBrush OuterBorderError { get; set; }
-        public SolidColorBrush BodyBackgroundError { get; set; }
-        public SolidColorBrush HeaderBackgroundBroken { get; set; }
-        public SolidColorBrush HeaderForegroundBroken { get; set; }
-        public SolidColorBrush HeaderBorderBroken { get; set; }
-        public SolidColorBrush OuterBorderBroken { get; set; }
-        public SolidColorBrush BodyBackgroundBroken { get; set; }
-        public SolidColorBrush OuterBorderSelection { get; set; }
-
-        public enum NodePart
-        {
-            HeaderBackground,
-            HeaderForeground,
-            HeaderBorder,
-            OuterBorder,
-            BodyBackground
-        }
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            ElementState elementState = ((ElementState)value);
-            switch ((NodePart)Enum.Parse(typeof(NodePart), parameter.ToString()))
-            {
-                case NodePart.HeaderBackground:
-                    return GetHeaderBackground(elementState);
-                case NodePart.HeaderForeground:
-                    return GetHeaderForeground(elementState);
-                case NodePart.HeaderBorder:
-                    return GetHeaderBorder(elementState);
-                case NodePart.OuterBorder:
-                    return GetOuterBorder(elementState);
-                case NodePart.BodyBackground:
-                    return GetBodyBackground(elementState);
-            }
-
-            throw new NotImplementedException();
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-
-        private SolidColorBrush GetHeaderBackground(ElementState elementState)
-        {
-            switch (elementState)
-            {
-                case ElementState.Dead: return HeaderBackgroundInactive;
-                case ElementState.Active: return HeaderBackgroundActive;
-                case ElementState.Warning:
-                case ElementState.PersistentWarning:
-                    return HeaderBackgroundWarning;
-                case ElementState.Error: return HeaderBackgroundError;
-                case ElementState.AstBuildBroken: return HeaderBackgroundBroken;
-            }
-
-            throw new NotImplementedException();
-        }
-
-        private SolidColorBrush GetHeaderForeground(ElementState elementState)
-        {
-            switch (elementState)
-            {
-                case ElementState.Dead: return HeaderForegroundInactive;
-                case ElementState.Active: return HeaderForegroundActive;
-                case ElementState.Warning:
-                case ElementState.PersistentWarning:
-                    return HeaderForegroundWarning;
-                case ElementState.Error: return HeaderForegroundError;
-                case ElementState.AstBuildBroken: return HeaderForegroundBroken;
-            }
-
-            throw new NotImplementedException();
-        }
-
-        private SolidColorBrush GetHeaderBorder(ElementState elementState)
-        {
-            switch (elementState)
-            {
-                case ElementState.Dead: return HeaderBorderInactive;
-                case ElementState.Active: return HeaderBorderActive;
-                case ElementState.Warning:
-                case ElementState.PersistentWarning:
-                    return HeaderBorderWarning;
-                case ElementState.Error: return HeaderBorderError;
-                case ElementState.AstBuildBroken: return HeaderBorderBroken;
-            }
-
-            throw new NotImplementedException();
-        }
-
-        private SolidColorBrush GetOuterBorder(ElementState elementState)
-        {
-            switch (elementState)
-            {
-                case ElementState.Dead: return OuterBorderInactive;
-                case ElementState.Active: return OuterBorderActive;
-                case ElementState.Warning:
-                case ElementState.PersistentWarning:
-                    return OuterBorderWarning;
-                case ElementState.Error: return OuterBorderError;
-                case ElementState.AstBuildBroken: return OuterBorderBroken;
-            }
-
-            throw new NotImplementedException();
-        }
-
-        private SolidColorBrush GetBodyBackground(ElementState elementState)
-        {
-            switch (elementState)
-            {
-                case ElementState.Dead: return BodyBackgroundInactive;
-                case ElementState.Active: return BodyBackgroundActive;
-                case ElementState.Warning:
-                case ElementState.PersistentWarning:
-                    return BodyBackgroundWarning;
-                case ElementState.Error: return BodyBackgroundError;
-                case ElementState.AstBuildBroken: return BodyBackgroundBroken;
-            }
-
-            throw new NotImplementedException();
-        }
-    }
-
+    
     public class PortCountToHeightConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1380,6 +1243,26 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Used to ensure input and output ports are set to the right height.
+    /// There is a special case for code block output ports: the first code block output port should
+    /// align with the first port on any other node, despite being different sizes. The offset is achieved using the margin.
+    /// </summary>
+    public class NodeOriginalNameToMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            string originalName = value.ToString();
+            if (originalName == "Code Block") return new Thickness(0, 13, 0, 0);
+            return new Thickness(0, 3, 0, 5);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class LacingToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1512,7 +1395,7 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number <= .5)
+            if (number <= 0.4)
                 return false;
 
             return true;

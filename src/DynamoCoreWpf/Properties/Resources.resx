@@ -701,8 +701,16 @@
     <comment>Context menu for selected node - delete selected node</comment>
   </data>
   <data name="NodeContextMenuHelp" xml:space="preserve">
-    <value>Help...</value>
+    <value>Help</value>
     <comment>Display help message for this node</comment>
+  </data>
+  <data name="ContextMenuGroups" xml:space="preserve">
+    <value>Groups</value>
+    <comment>Context menu for group-based operations</comment>
+  </data>
+  <data name="ContextMenu" xml:space="preserve">
+    <value>Node Options</value>
+    <comment>Node context menu</comment>
   </data>
   <data name="ContextMenuLacing" xml:space="preserve">
     <value>Lacing</value>
@@ -729,7 +737,7 @@
     <comment>Context menu item - preview geometry</comment>
   </data>
   <data name="NodeContextMenuRenameNode" xml:space="preserve">
-    <value>Rename Node...</value>
+    <value>Rename</value>
     <comment>Context menu item - rename this node</comment>
   </data>
   <data name="NodeContextMenuShowLabels" xml:space="preserve">
@@ -1620,7 +1628,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Run started with new working range...</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
+    <value>&lt;Double click here to edit group description&gt;</value>
   </data>
   <data name="GroupContextMenuBackground" xml:space="preserve">
     <value>Select Background</value>
@@ -1737,10 +1745,6 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
     <value>Presets</value>
-  </data>
-  <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
-    <value>Show Preview Bubbles</value>
-    <comment>Settings menu | Show preview bubbles</comment>
   </data>
   <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
     <value>Visualization Settings</value>
@@ -2062,6 +2066,15 @@ Next assemblies were loaded several times:
   <data name="UseLevelPopupMenuItem" xml:space="preserve">
     <value>Use Levels</value>
   </data>
+  <data name="BreakConnectionPopupMenuItem" xml:space="preserve">
+    <value>Break Connection</value>
+  </data>
+  <data name="HideWiresPopupMenuItem" xml:space="preserve">
+    <value>Hide Wires</value>
+  </data>
+  <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
+    <value>Unhide Wires</value>
+  </data>
   <data name="DirectoryNotFound" xml:space="preserve">
     <value>Directory Not Found</value>
   </data>
@@ -2314,6 +2327,18 @@ Uninstall the following packages: {0}?</value>
     <value>_Extensions</value>
     <comment>Extensions menu</comment>
   </data>
+  <data name="ConnectorContextMenuHeaderBreakConnections" xml:space="preserve">
+    <value>Break Connections</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
+    <value>Pin Wire</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderSelectConnected" xml:space="preserve">
+    <value>Select Connected</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderUnpinConnector" xml:space="preserve">
+    <value>Unpin Wire</value>
+  </data>
   <data name="PreferencesViewPython" xml:space="preserve">
     <value>Python</value>
     <comment>Preferences | Features | Python</comment>
@@ -2492,6 +2517,12 @@ Uninstall the following packages: {0}?</value>
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>
   </data>
+  <data name="GroupNameDefaultText" xml:space="preserve">
+    <value>&lt;Double click here to edit group title&gt;</value>
+  </data>
+  <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
+    <value>Add group to group</value>
+  </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this guide later from the Help menu.</value>
   </data>
@@ -2555,11 +2586,11 @@ This package will be deleted after the next Dynamo restart.</value>
   <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
     <value>Remove the scheduled unload status</value>
   </data>
-  <data name="PackageViewContextMenuLoadText">
-      <value>Load</value>
+  <data name="PackageViewContextMenuLoadText" xml:space="preserve">
+    <value>Load</value>
   </data>
-  <data name="PackageViewContextMenuLoadTooltip">
-      <value>Load this package into Dynamo. Other packages with the same name will be automatically deleted</value>
+  <data name="PackageViewContextMenuLoadTooltip" xml:space="preserve">
+    <value>Load this package into Dynamo. Other packages with the same name will be automatically deleted</value>
   </data>
   <data name="CannotLoadPackageMessageBoxTitle" xml:space="preserve">
     <value>Cannot Load Package</value>
@@ -2596,5 +2627,15 @@ Delete the following packages: {2}?
   </data>
   <data name="UnloadFailureMessageBoxTitle" xml:space="preserve">
     <value>Unload Failure</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
+    <value>_Show Tooltip</value>
+  </data>
+  <data name="PackageFilter_Name_All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
+    <value>Show Preview Bubbles</value>
+    <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
   </data>
 </root>

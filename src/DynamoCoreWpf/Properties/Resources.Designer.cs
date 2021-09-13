@@ -214,6 +214,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Break Connection.
+        /// </summary>
+        public static string BreakConnectionPopupMenuItem {
+            get {
+                return ResourceManager.GetString("BreakConnectionPopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browse....
         /// </summary>
         public static string BrowserNodeButtonLabel {
@@ -412,6 +421,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Break Connections.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderBreakConnections {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderBreakConnections", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pin Wire.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderPinConnector {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderPinConnector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Connected.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderSelectConnected {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderSelectConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unpin Wire.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderUnpinConnector {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderUnpinConnector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to I agree to data collection in desktop products for Autodesk analytics programs..
         /// </summary>
         public static string ConsentFormADPAnalyticsCheckBoxContent {
@@ -444,6 +489,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextCreateGroupFromSelection {
             get {
                 return ResourceManager.GetString("ContextCreateGroupFromSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Options.
+        /// </summary>
+        public static string ContextMenu {
+            get {
+                return ResourceManager.GetString("ContextMenu", resourceCulture);
             }
         }
         
@@ -498,6 +552,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextMenuGeometryView {
             get {
                 return ResourceManager.GetString("ContextMenuGeometryView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Groups.
+        /// </summary>
+        public static string ContextMenuGroups {
+            get {
+                return ResourceManager.GetString("ContextMenuGroups", resourceCulture);
             }
         }
         
@@ -1953,15 +2016,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Preview Bubbles.
-        /// </summary>
-        public static string DynamoViewSettingsMenuShowPreviewBubbles {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuShowPreviewBubbles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Visualization Settings.
         /// </summary>
         public static string DynamoViewSettingsMenuVisualizationSettings {
@@ -2075,6 +2129,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewViewMenuConnector {
             get {
                 return ResourceManager.GetString("DynamoViewViewMenuConnector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Show Tooltip.
+        /// </summary>
+        public static string DynamoViewViewMenuConnectorShowTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuConnectorShowTooltip", resourceCulture);
             }
         }
         
@@ -2739,6 +2802,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add group to group.
+        /// </summary>
+        public static string GroupContextMenuAddGroupToGroup {
+            get {
+                return ResourceManager.GetString("GroupContextMenuAddGroupToGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Background.
         /// </summary>
         public static string GroupContextMenuBackground {
@@ -2784,11 +2856,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Click here to edit the group title&gt;.
+        ///   Looks up a localized string similar to &lt;Double click here to edit group description&gt;.
         /// </summary>
         public static string GroupDefaultText {
             get {
                 return ResourceManager.GetString("GroupDefaultText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;Double click here to edit group title&gt;.
+        /// </summary>
+        public static string GroupNameDefaultText {
+            get {
+                return ResourceManager.GetString("GroupNameDefaultText", resourceCulture);
             }
         }
         
@@ -2798,6 +2879,15 @@ namespace Dynamo.Wpf.Properties {
         public static string HideClassicNodeLibrary {
             get {
                 return ResourceManager.GetString("HideClassicNodeLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide Wires.
+        /// </summary>
+        public static string HideWiresPopupMenuItem {
+            get {
+                return ResourceManager.GetString("HideWiresPopupMenuItem", resourceCulture);
             }
         }
         
@@ -3786,7 +3876,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Help....
+        ///   Looks up a localized string similar to Help.
         /// </summary>
         public static string NodeContextMenuHelp {
             get {
@@ -3822,7 +3912,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rename Node....
+        ///   Looks up a localized string similar to Rename.
         /// </summary>
         public static string NodeContextMenuRenameNode {
             get {
@@ -4171,6 +4261,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageDuplicateAssemblyWarningTitle {
             get {
                 return ResourceManager.GetString("PackageDuplicateAssemblyWarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string PackageFilter_Name_All {
+            get {
+                return ResourceManager.GetString("PackageFilter_Name_All", resourceCulture);
             }
         }
         
@@ -5078,6 +5177,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewShowCodeBlockNodeLineNumber {
             get {
                 return ResourceManager.GetString("PreferencesViewShowCodeBlockNodeLineNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Preview Bubbles.
+        /// </summary>
+        public static string PreferencesViewShowPreviewBubbles {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowPreviewBubbles", resourceCulture);
             }
         }
         
@@ -6198,6 +6306,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UndeprecatingPackageMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UndeprecatingPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unhide Wires.
+        /// </summary>
+        public static string UnhideWiresPopupMenuItem {
+            get {
+                return ResourceManager.GetString("UnhideWiresPopupMenuItem", resourceCulture);
             }
         }
         

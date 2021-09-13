@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views.GuidedTour;
@@ -33,11 +34,20 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private RealTimeInfoWindow exitTourPopup;
 
+        //Checks if the tour has already finished
+        private static bool tourStarted;
+
         //The ExitTour popup will be shown at the top-right section of the Dynamo window (at the left side of the statusBarPanel element) only when the tour is closed
         //The ExitTourVerticalOffset is used to move vertically the popup (using as a reference the statusBarPanel position)
         private const double ExitTourVerticalOffset = 10;
         //The ExitTourHorizontalOffset is used to move horizontally the popup (using as a reference the statusBarPanel position)
         private const double ExitTourHorizontalOffset = 110;
+
+        private const string guideBackgroundName = "GuidesBackground";
+        private const string mainGridName = "mainGrid";
+        private const string libraryViewName = "Browser";
+
+
 
         public static string GuidesExecutingDirectory
         {
@@ -63,10 +73,28 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             mainRootElement = root;
             dynamoViewModel = dynViewModel;
-            guideBackgroundElement = Guide.FindChild(root, "GuidesBackground") as GuideBackground;            
-
+            guideBackgroundElement = Guide.FindChild(root, guideBackgroundName) as GuideBackground;            
             Guides = new List<Guide>();
-            
+            Window mainWindow = Window.GetWindow(mainRootElement);
+
+
+            if (guideBackgroundElement == null)
+            {
+                guideBackgroundElement = new GuideBackground(mainWindow)
+                {
+                    Name = guideBackgroundName,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Visibility = Visibility.Hidden
+                };
+
+                Grid mainGrid = Guide.FindChild(root, mainGridName) as Grid;
+                mainGrid.Children.Add(guideBackgroundElement);
+                Grid.SetColumnSpan(guideBackgroundElement, 5);
+                Grid.SetRowSpan(guideBackgroundElement, 6);
+            }
+
+            guideBackgroundElement.HoleRect = new Rect();
             CreateGuideSteps(GuidesJsonFilePath);
 
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
@@ -96,7 +124,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="tourName"></param>
         public void LaunchTour(string tourName)
         {
-            GuideFlowEvents.OnGuidedTourStart(tourName);
+            if (!tourStarted)
+                GuideFlowEvents.OnGuidedTourStart(tourName);
         }
 
         /// <summary>
@@ -105,12 +134,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="args">This parameter will contain the GuideName as a string</param>
         private void TourStarted(GuidedTourStateEventArgs args)
         {
+            tourStarted = true;
+
             currentGuide = (from guide in Guides where guide.Name.Equals(args.GuideName) select guide).FirstOrDefault();
             if (currentGuide != null)
             {
                 //Show background overlay
                 guideBackgroundElement.Visibility = Visibility.Visible;
                 currentGuide.GuideBackgroundElement = guideBackgroundElement;
+                currentGuide.MainWindow = mainRootElement;
+                currentGuide.LibraryView = Guide.FindChild(mainRootElement, libraryViewName);
                 currentGuide.Initialize();
                 currentGuide.Play();
             }
@@ -136,6 +169,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 //Hide guide background overlay
                 guideBackgroundElement.Visibility = Visibility.Hidden;
 
+                tourStarted = false;
             }
 
         }
@@ -269,7 +303,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         Name = jsonStepInfo.Name,
                         Sequence = jsonStepInfo.Sequence,
                         TotalTooltips = totalTooltips,
-                        StepType = Step.StepTypes.TOOLTIP,
+                        StepType = jsonStepInfo.StepType,
+                        ShowLibrary = jsonStepInfo.ShowLibrary,
                         StepContent = new Content()
                         {
                             FormattedText = formattedText,

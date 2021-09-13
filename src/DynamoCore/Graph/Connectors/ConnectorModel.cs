@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Xml;
 using Dynamo.Graph.Nodes;
@@ -30,7 +32,20 @@ namespace Dynamo.Graph.Connectors
     public class ConnectorModel : ModelBase
     {
         #region properties
+        private bool isDisplayed = true;
 
+        /// <summary>
+        /// IsDisplayed flag controlling the visibility of a connector
+        /// </summary>
+        public bool IsDisplayed
+        {
+            get { return isDisplayed; }
+            set
+            {
+                isDisplayed = value;
+                RaisePropertyChanged(nameof(IsDisplayed));
+            }
+        }
         /// <summary>
         /// Returns start port model.
         /// </summary>
@@ -40,6 +55,35 @@ namespace Dynamo.Graph.Connectors
         /// Returns end port model.
         /// </summary>
         public PortModel End { get; private set; }
+
+        /// <summary>
+        /// Collection of ConnectorPinModels associated with this Connector.
+        /// </summary>
+        public ObservableCollection<ConnectorPinModel> ConnectorPinModels { get; private set; }
+
+        /// <summary>
+        /// Handles adding a new ConnectorPin to the collection of CollectorPins associated with this connector.
+        /// This function is called after deserializing and is responsible for reconstructing the pins corresponding
+        /// to each connector.
+        /// </summary>
+        /// <param name="x">'x' location on the canvas where this new pin will be added.</param>
+        /// <param name="y">'y' location on the canvas where this new pin will be added.</param>
+        internal void AddPin(double x, double y)
+        {
+            ConnectorPinModels.Add(new ConnectorPinModel(x, y, Guid.NewGuid(),this.GUID));
+        }
+        /// <summary>
+        /// Handles adding a new ConnectorPin to the collection of ConnectorPins associated with this connector.
+        /// This function is called after placing a new watch node in a connector and preserving pin locations during 
+        /// the re-wire of affected connectors. It is also called during undo/redo operations.
+        /// to each connector.
+        /// </summary>
+        /// <param name="connectorPinModel"> Previous ConnectorPinModel to be re-added to the collection of pins corresponding
+        /// to a connector. </param>
+        internal void AddPin(ConnectorPinModel connectorPinModel)
+        {
+            ConnectorPinModels.Add(connectorPinModel);
+        }
 
         /// <summary>
         /// ID of the Connector, which is unique within the graph.
@@ -95,6 +139,7 @@ namespace Dynamo.Graph.Connectors
         /// <param name="guid">The unique identifier for the <see cref="ConnectorModel"/>.</param>
         public ConnectorModel(PortModel start, PortModel end, Guid guid)
         {
+            ConnectorPinModels = new ObservableCollection<ConnectorPinModel>();
             Debug.WriteLine("Creating a connector between ports {0}(owner:{1}) and {2}(owner:{3}).", 
                 start.GUID, start.Owner == null?"null":start.Owner.Name, end.GUID, end.Owner == null?"null":end.Owner.Name);
             Start = start;
@@ -106,14 +151,13 @@ namespace Dynamo.Graph.Connectors
         private ConnectorModel(
             NodeModel start, NodeModel end, int startIndex, int endIndex, Guid guid)
         {
+            ConnectorPinModels = new ObservableCollection<ConnectorPinModel>();
             GUID = guid;
             Start = start.OutPorts[startIndex];
-
             PortModel endPort = end.InPorts[endIndex];
 
             Debug.WriteLine("Creating a connector between ports {0}(owner:{1}) and {2}(owner:{3}).",
                 start.GUID, Start.Owner == null ? "null" : Start.Owner.Name, end.GUID, endPort.Owner == null ? "null" : endPort.Owner.Name);
-
             Start.Connectors.Add(this);
             Connect(endPort);
         }
@@ -200,7 +244,22 @@ namespace Dynamo.Graph.Connectors
         }
 
         #region Serialization/Deserialization Methods
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
 
+            switch (name)
+            {
+                case nameof(IsDisplayed):
+                    IsDisplayed = Convert.ToBoolean(value);
+                    break;
+                default:
+                    break;
+            }
+
+            return base.UpdateValueCore(updateValueParams);
+        }
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             var helper = new XmlElementHelper(element);
@@ -209,11 +268,14 @@ namespace Dynamo.Graph.Connectors
             helper.SetAttribute("start_index", Start.Index);
             helper.SetAttribute("end", End.Owner.GUID);
             helper.SetAttribute("end_index", End.Index);
+            helper.SetAttribute(nameof(IsDisplayed), IsDisplayed);
             //helper.SetAttribute("portType", ((int) End.PortType));
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            var helper = new XmlElementHelper(nodeElement);
+            IsDisplayed = helper.ReadBoolean(nameof(IsDisplayed));
             //This is now handled via NodeGraph.LoadConnectorFromXml
         }
 

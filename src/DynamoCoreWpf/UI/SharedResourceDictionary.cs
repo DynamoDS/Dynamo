@@ -184,7 +184,7 @@ namespace Dynamo.UI
         {
             get {
                 return _connectorsDictionary ??
-                       (_connectorsDictionary = new ResourceDictionary() {Source = ConnectorsDictionaryUri});
+                       (_connectorsDictionary = new ResourceDictionary() {Source = ConnectorsDictionaryUri});            
             }
         }
 

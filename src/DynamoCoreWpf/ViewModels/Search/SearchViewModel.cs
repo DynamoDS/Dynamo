@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -1180,6 +1184,48 @@ namespace Dynamo.ViewModels
                     break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Attempts to find the node's icon, which is the same as its type name plus a Postfix, such as '.Small'.
+        /// </summary>
+        /// <returns>An ImageSource object pointing to the icon image for the NodeViewModel</returns>
+        internal bool TryGetNodeIcon(NodeViewModel nodeViewModel, out ImageSource iconSource)
+        {
+            string nodeTypeName;
+            string assemblyLocation;
+
+            switch (nodeViewModel.NodeModel)
+            {
+                // For ZeroTouch nodes
+                case DSFunction dsFunction:
+                    FunctionDescriptor functionDescriptor = dsFunction.Controller.Definition;
+                    assemblyLocation = functionDescriptor.Assembly;
+                    nodeTypeName = Graph.Nodes.Utilities.GetFunctionDescriptorIconName(functionDescriptor);
+                    break;
+                // For DSVarArgFunctions like String.Concat
+                case DSVarArgFunction dsVarArgFunction:
+                    nodeTypeName = dsVarArgFunction.Controller.Definition.QualifiedName;
+                    assemblyLocation = dsVarArgFunction.Controller.Definition.Assembly;
+                    break;
+                // For NodeModel nodes
+                case NodeModel nodeModel:
+                    nodeTypeName = nodeModel.GetType().FullName;
+                    assemblyLocation = nodeModel.GetType().Assembly.Location;
+                    break;
+                default:
+                    nodeTypeName = "";
+                    assemblyLocation = "";
+                    break;
+            }
+
+            iconSource = null;
+
+            IconWarehouse currentWarehouse = iconServices.GetForAssembly(assemblyLocation);
+            if (currentWarehouse is null) return false;
+
+            iconSource = currentWarehouse.LoadIconInternal(nodeTypeName + Configurations.SmallIconPostfix);
+            return !(iconSource is null);
         }
 
         #endregion
