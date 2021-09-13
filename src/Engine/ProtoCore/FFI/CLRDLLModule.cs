@@ -1320,84 +1320,7 @@ namespace ProtoFFI
 
         [Obsolete("This method is deprecated and will be removed in Dynamo 3.0. Use FFIMethodAttributes(MethodBase method, Dictionary<MethodInfo, Attribute[]> getterAttributes = null) instead.")]
         public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes)
-        {
-            if (method == null)
-                throw new ArgumentNullException("method");
-
-            FFIClassAttributes baseAttributes = null;
-            Type type = method.DeclaringType;
-            if (!CLRModuleType.TryGetTypeAttributes(type, out baseAttributes))
-            {
-                baseAttributes = new FFIClassAttributes(type);
-                CLRModuleType.SetTypeAttributes(type, baseAttributes);
-            }
-
-            if (null != baseAttributes)
-            {
-                HiddenInLibrary = baseAttributes.HiddenInLibrary;
-            }
-
-            Attribute[] atts = null;
-            if (getterAttributes.TryGetValue(method, out atts))
-            {
-                attributes = atts;
-            }
-            else
-            {   
-                attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
-            }
-            
-            foreach (var attr in attributes)
-            {
-                if (attr is AllowRankReductionAttribute)
-                {
-                    AllowRankReduction = true;
-                }
-                else if (attr is RuntimeRequirementAttribute)
-                {
-                    RequireTracing = (attr as RuntimeRequirementAttribute).RequireTracing;
-                }
-                else if (attr is MultiReturnAttribute)
-                {
-                    var multiReturnAttr = (attr as MultiReturnAttribute);
-                    returnKeys = multiReturnAttr.ReturnKeys.ToList();
-                }
-                else if(attr.HiddenInDynamoLibrary())
-                {
-                    HiddenInLibrary = true;
-                }
-                else if (attr is IsVisibleInDynamoLibraryAttribute)
-                {
-                    HiddenInLibrary = false;
-                }
-                else if (attr is IsObsoleteAttribute)
-                {
-                    HiddenInLibrary = true;
-                    ObsoleteMessage = (attr as IsObsoleteAttribute).Message;
-                    if (string.IsNullOrEmpty(ObsoleteMessage))
-                        ObsoleteMessage = "Obsolete";
-                }
-                else if (attr is ObsoleteAttribute)
-                {
-                    HiddenInLibrary = true;
-                    ObsoleteMessage = (attr as ObsoleteAttribute).Message;
-                    if (string.IsNullOrEmpty(ObsoleteMessage))
-                        ObsoleteMessage = "Obsolete";
-                }
-                else if (attr is CanUpdatePeriodicallyAttribute)
-                {
-                    CanUpdatePeriodically = (attr as CanUpdatePeriodicallyAttribute).CanUpdatePeriodically;
-                }
-                else if (attr is IsLacingDisabledAttribute)
-                {
-                    IsLacingDisabled = true; 
-                }
-                else if (attr is AllowArrayPromotionAttribute)
-                {
-                    AllowArrayPromotion = (attr as AllowArrayPromotionAttribute).IsAllowed;
-                }
-            }
-        }
+            : this(method as MethodBase, getterAttributes) { }
 
         public FFIMethodAttributes(MethodBase method, Dictionary<MethodInfo, Attribute[]> getterAttributes = null)
         {
@@ -1418,7 +1341,7 @@ namespace ProtoFFI
             }
 
             Attribute[] atts;
-            if (method is MethodInfo mInfo && getterAttributes.TryGetValue(mInfo, out atts))
+            if (method is MethodInfo mInfo && getterAttributes != null && getterAttributes.TryGetValue(mInfo, out atts))
             {
                 attributes = atts;
             }
