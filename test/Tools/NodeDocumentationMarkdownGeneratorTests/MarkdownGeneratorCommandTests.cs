@@ -317,7 +317,6 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 "Examples.PeriodicUpdateExample.PointField.md",
                 "Examples.TransformableExample.ByGeometry.md",
                 "Examples.TransformableExample.Geometry.md",
-                "Examples.TransformableExample.TransformableExample.md",
                 "Examples.TransformableExample.TransformObject.md",
                 "SampleLibraryUI.Examples.ButtonCustomNodeModel.md",
                 "SampleLibraryUI.Examples.DropDownExample.md",

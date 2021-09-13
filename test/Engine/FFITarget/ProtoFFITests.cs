@@ -972,6 +972,14 @@ namespace FFITarget
     {
         public class Point
         {
+            [IsVisibleInDynamoLibrary(false)]
+            public Point()
+            {
+                dX = 0;
+                dY = 0;
+                dZ = 0;
+            }
+
             public static Point XYZ(double x, double y, double z)
             {
                 var p = new Point { dX = x, dY = y, dZ = z };
