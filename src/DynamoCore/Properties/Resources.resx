@@ -599,9 +599,6 @@ value : bool = false</value>
   <data name="WatermarkLabelText" xml:space="preserve">
     <value>Enter code here</value>
   </data>
-  <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
-  </data>
   <data name="DefaultValue" xml:space="preserve">
     <value>Default value</value>
     <comment>Default value</comment>
@@ -795,8 +792,14 @@ This package is loaded and ready to be used.</value>
     <value>Unloaded.
 This package has not been loaded because another conflicting package was loaded before it.</value>
   </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>&lt;Double click here to edit group description&gt;</value>
+  </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
+    <value>&lt;Double click here to edit group title&gt;</value>
+  </data>
+  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
+    <value>Show all errors</value>
   </data>
   <data name="BackupSavedMsg" xml:space="preserve">
     <value>Backup file is saved</value>

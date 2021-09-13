@@ -252,6 +252,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal NodeViewModel NodeViewModel
+        {
+            get => _node;
+        }
+        
         /// <summary>
         /// Shows or hides the Use Levels and Keep List Structure checkboxes
         /// in the node chevron popup menu.
@@ -299,16 +304,19 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Indicates whether this port's connectors are visible or not.
-        /// This can be affected by the HideConnectorsCommand in the output port context menu.
+        /// Sets the visibility of the connectors from the port. This will overwrite the 
+        /// individual visibility of the connectors. However when visibility is controlled 
+        /// from the connector, that connector's visibility will overwrite its previous state.
+        /// In order to overwrite visibility of all connectors associated with a port, us this 
+        /// flag again.
         /// </summary>
-        public bool AreConnectorsHidden
+        public bool SetConnectorsVisibility
         {
             get => areConnectorsHidden;
             set
             {
                 areConnectorsHidden = value; 
-                RaisePropertyChanged(nameof(AreConnectorsHidden));
+                RaisePropertyChanged(nameof(SetConnectorsVisibility));
             }
         }
 
@@ -332,9 +340,9 @@ namespace Dynamo.ViewModels
         private void RefreshHideWiresButton()
         {
             HideWiresButtonEnabled = _port.Connectors.Count > 0;
-            AreConnectorsHidden = CheckIfConnectorsAreHidden();
+            SetConnectorsVisibility = CheckIfConnectorsAreHidden();
 
-            ShowHideWiresButtonContent = AreConnectorsHidden
+            ShowHideWiresButtonContent = SetConnectorsVisibility
                 ? Properties.Resources.UnhideWiresPopupMenuItem
                 : Properties.Resources.HideWiresPopupMenuItem;
 
@@ -395,6 +403,11 @@ namespace Dynamo.ViewModels
             _port.PropertyChanged -= _port_PropertyChanged;
             _node.PropertyChanged -= _node_PropertyChanged;
             _node.WorkspaceViewModel.PropertyChanged -= Workspace_PropertyChanged;
+        }
+
+        internal PortViewModel CreateProxyPortViewModel(PortModel portModel)
+        {
+            return new PortViewModel(_node, portModel);
         }
 
         /// <summary>
@@ -631,7 +644,7 @@ namespace Dynamo.ViewModels
 
                 if (connectorViewModel == null) continue;
 
-                connectorViewModel.HideConnectorCommand.Execute(null);
+                connectorViewModel.HideConnectorCommand.Execute(SetConnectorsVisibility);
             }
             RefreshHideWiresButton();
         }
@@ -645,7 +658,7 @@ namespace Dynamo.ViewModels
                 .FirstOrDefault(x => x.Nodevm.NodeModel.GUID == _port.Owner.GUID);
 
             if (connectorViewModel == null) return false;
-            return !connectorViewModel.IsVisible;
+            return !connectorViewModel.IsDisplayed;
         }
 
 
@@ -778,7 +791,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    PortBackgroundColor = new SolidColorBrush(Colors.Transparent);
+                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(60, 60, 60));
                     PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(204, 204, 204));
                 }
             }

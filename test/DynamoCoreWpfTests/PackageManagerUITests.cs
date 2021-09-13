@@ -336,6 +336,13 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, conflictingPkg.LoadState.ScheduledState);
             Assert.IsTrue(conflictingPkg.LoadedAssemblies.Count() > 0);
 
+            ViewModel.PreferencesViewModel.InitPackageListFilters();
+            var filters = ViewModel.PreferencesViewModel.Filters;
+            Assert.AreEqual(3, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Loaded", filters[1].Name);
+            Assert.AreEqual(@"Unloaded", filters[2].Name);
+
             builtInPkgViewModel.LoadCommand.Execute();
 
             Assert.AreEqual(PackageLoadState.StateTypes.Unloaded, builtInPkgViewModel.Model.LoadState.State);
@@ -343,6 +350,12 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, conflictingPkg.LoadState.State);
             Assert.AreEqual(PackageLoadState.ScheduledTypes.ScheduledForDeletion, conflictingPkg.LoadState.ScheduledState);
+
+            Assert.AreEqual(4, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Loaded", filters[1].Name);
+            Assert.AreEqual(@"Scheduled for Delete", filters[2].Name);
+            Assert.AreEqual(@"Unloaded", filters[3].Name);
         }
 
         [Test]
@@ -373,6 +386,12 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
+            ViewModel.PreferencesViewModel.InitPackageListFilters();
+            var filters = ViewModel.PreferencesViewModel.Filters;
+            Assert.AreEqual(2, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Loaded", filters[1].Name);
+
             builtInPkgViewModel.UninstallCommand.Execute();
 
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
@@ -380,11 +399,20 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
 
+            Assert.AreEqual(2, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Scheduled for Unload", filters[1].Name);
+
             builtInPkgViewModel.UnmarkForUninstallationCommand.Execute();
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
             Assert.IsFalse(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
+
+            Assert.AreEqual(2, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Loaded", filters[1].Name);
+
         }
 
         [Test]
@@ -419,6 +447,12 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(PackageLoadState.StateTypes.Unloaded, builtInPkgViewModel.Model.LoadState.State);
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
+            ViewModel.PreferencesViewModel.InitPackageListFilters();
+            var filters = ViewModel.PreferencesViewModel.Filters;
+            Assert.AreEqual(2, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Unloaded", filters[1].Name);
+
             builtInPkgViewModel.LoadCommand.Execute();
 
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, builtInPkgViewModel.Model.LoadState.State);
@@ -426,6 +460,10 @@ namespace DynamoCoreWpfTests
 
             Assert.IsFalse(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
             Assert.IsTrue(currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
+
+            Assert.AreEqual(2, filters.Count);
+            Assert.AreEqual(@"All", filters[0].Name);
+            Assert.AreEqual(@"Loaded", filters[1].Name);
         }
 
         [Test]
@@ -510,6 +548,54 @@ namespace DynamoCoreWpfTests
             loader.RequestLoadNodeLibrary -= libraryLoader.LoadNodeLibrary;
         }
 
+        [Test]
+        [Description("User tries to download packages which throws an error")]
+        public void PackageManagerDownloadError()
+        {
+            var pathMgr = ViewModel.Model.PathManager;
+            var pkgLoader = GetPackageLoader();
+
+            // Simulate the user downloading the same package from PM
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Throws(new Exception("Failed to get your package!"));
+
+            var client = new Dynamo.PackageManager.PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmVm = new PackageManagerClientViewModel(ViewModel, client);
+
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<HeaderVersionDownload>())).Throws(new Exception());
+
+            {
+                var name = "Test";
+                var version = "0.0.1";
+                var id = "test-123";
+                var deps = new List<Dependency>() { new Dependency() { _id = id, name = name } };
+                var depVers = new List<string>() { version };
+
+                var pkgVer = new PackageVersion()
+                {
+                    version = version,
+                    engine_version = "2.1.1",
+                    name = name,
+                    id = id,
+                    full_dependency_ids = deps,
+                    full_dependency_versions = depVers
+                };
+
+                pmVm.ExecutePackageDownload(id, pkgVer, "");
+
+                // Users should get 2 warnings :
+                // 1. To confirm that they want to download the specified package.
+                // 2. That a package with the same name and version already exists as part of the BuiltinPackages.
+                dlgMock.Verify(x => x.Show(string.Format(Dynamo.Wpf.Properties.Resources.MessageFailedToDownloadPackageVersion, version, id),
+                            Dynamo.Wpf.Properties.Resources.PackageDownloadErrorMessageBoxTitle,
+                            MessageBoxButton.OK, MessageBoxImage.Error), Times.Exactly(1));
+            }
+        }
         #endregion
 
         #region PackageManagerSearchView

@@ -60,15 +60,15 @@
                 <Setter Property="StrokeDashArray" Value="2"/>
                 <Setter Property="Opacity" Value="0.5"/>
             </DataTrigger>
-            <DataTrigger Binding="{Binding Path=IsVisible, Mode=OneWay}" Value="True">
+            <DataTrigger Binding="{Binding Path=IsDisplayed, Mode=OneWay}" Value="True">
                 <Setter Property="Opacity" Value="1.0"/>
                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
             </DataTrigger>
-            <DataTrigger Binding="{Binding Path=IsVisible, Mode=OneWay}" Value="False">
+            <DataTrigger Binding="{Binding Path=IsDisplayed, Mode=OneWay}" Value="False">
                 <Setter Property="Opacity" Value="0.0"/>
                 <Setter Property="ToolTipService.IsEnabled" Value="False"/>
             </DataTrigger>
-            <DataTrigger Binding="{Binding Path=IsPartlyVisible, Mode=OneWay}" Value="True">
+            <DataTrigger Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="True">
                 <Setter Property="Opacity" Value="0.4"/>
                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
             </DataTrigger>
@@ -76,7 +76,8 @@
     </Style>
     
     <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
-        <Grid x:Name="MainGrid">
+        <Grid x:Name="MainGrid"
+              Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
             <Grid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnections}" Command="{Binding BreakConnectionCommand}"/>
@@ -86,10 +87,10 @@
                             <Style TargetType="MenuItem">
                                 <Setter Property="IsChecked" Value="False"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsVisible}" Value="True">
+                                    <DataTrigger Binding="{Binding IsDisplayed}" Value="True">
                                         <Setter Property="Header" Value="Hide Wire"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                                    <DataTrigger Binding="{Binding IsDisplayed}" Value="False">
                                         <Setter Property="Header" Value="Show Wire"/>
                                     </DataTrigger>
                                 </Style.Triggers>

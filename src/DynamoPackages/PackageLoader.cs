@@ -292,7 +292,7 @@ namespace Dynamo.PackageManager
                     requestedExtensions.Add(extension);
                 }
 
-                package.LoadState.SetAsLoaded();
+                package.SetAsLoaded();
                 PackgeLoaded?.Invoke(package);
                 PackagesLoaded?.Invoke(loadedAssemblies);
             }

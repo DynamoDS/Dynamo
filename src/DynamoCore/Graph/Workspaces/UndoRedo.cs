@@ -251,8 +251,8 @@ namespace Dynamo.Graph.Workspaces
                                     matchingConnector.ConnectorPinModels.Remove(connectorPin);
                                 }
                             }
-                            conn.Delete();
                             undoRecorder.RecordDeletionForUndo(conn);
+                            conn.Delete();
                         }
 
                         node.RaisesModificationEvents = silentFlag;
@@ -282,6 +282,7 @@ namespace Dynamo.Graph.Workspaces
                         var matchingConnector = Connectors.FirstOrDefault(c => c.GUID == connectorPinModel.ConnectorId);
                         if (matchingConnector is null) return;
                         matchingConnector.ConnectorPinModels.Remove(connectorPinModel);
+                        HasUnsavedChanges = true;
                     }
                 }
 
@@ -367,10 +368,33 @@ namespace Dynamo.Graph.Workspaces
             {
                 ///The equivalent of 'deleting' a connectorPin
                 var matchingConnector = Connectors.FirstOrDefault(connector => connector.GUID == connectorPin.ConnectorId);
+                if (matchingConnector is null)
+                {
+                    return;
+                }
                 matchingConnector.ConnectorPinModels.Remove(connectorPin);
             }
             else if (model is NodeModel)
             {
+                var node = model as NodeModel;
+                // Note that AllConnectors is duplicated as a separate list
+                // by calling its "ToList" method. This is the because the
+                // "Connectors.Remove" will modify "AllConnectors", causing
+                // the Enumerator in this "foreach" to become invalid.
+                foreach (var conn in node.AllConnectors.ToList())
+                {
+                    if (conn.ConnectorPinModels.Count > 0)
+                    {
+                        foreach (var connPin in conn.ConnectorPinModels.ToList())
+                        {
+                            var matchingConnector = Connectors.FirstOrDefault(c => c.GUID == connPin.ConnectorId);
+                            if (matchingConnector is null) return;
+                            matchingConnector.ConnectorPinModels.Remove(connPin);
+                        }
+                    }
+                    conn.Delete();
+                }
+
                 RemoveAndDisposeNode(model as NodeModel);
             }
             else if(model == null)

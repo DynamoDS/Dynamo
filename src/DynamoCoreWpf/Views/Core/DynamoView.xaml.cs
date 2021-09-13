@@ -2350,8 +2350,15 @@ namespace Dynamo.Controls
         private void ShowGetStartedGuidedTour()
         {
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
-            mainGuideManager = new GuidesManager(_this, dynamoViewModel);
-            mainGuideManager.LaunchTour(Res.GetStartedGuide);
+            try
+            {
+                mainGuideManager = new GuidesManager(_this, dynamoViewModel);
+                mainGuideManager.LaunchTour(Res.GetStartedGuide);
+            }
+            catch (Exception)
+            {
+                sidebarGrid.Visibility = Visibility.Visible;
+            }
         }
 
         private void RightExtensionSidebar_DragCompleted(object sender, DragCompletedEventArgs e)
