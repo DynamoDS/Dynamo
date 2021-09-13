@@ -565,10 +565,21 @@ namespace Dynamo.Graph.Workspaces
         public override void Clear()
         {
             WorkspaceClosed?.Invoke();
+            UndefineCBNFunctionDefinitions();
+
             base.Clear();
             PreloadedTraceData = null;
             RunSettings.Reset();
             EvaluationCount = 0;
+        }
+
+        internal void UndefineCBNFunctionDefinitions()
+        {
+            var cbns = Nodes.OfType<CodeBlockNodeModel>();
+            foreach (var cbn in cbns)
+            {
+                cbn.UndefineFunctionDefinitions();
+            }
         }
 
         /// <summary>
@@ -893,8 +904,7 @@ namespace Dynamo.Graph.Workspaces
         {
             var orphans = new List<ISerializable>();
 
-            if (historicalTraceData == null)
-                return orphans;
+            if (historicalTraceData == null) return orphans;
 
             // If a Guid exists in the historical trace data
             // and there is no corresponding node in the workspace
@@ -919,17 +929,36 @@ namespace Dynamo.Graph.Workspaces
             return orphans;
         }
 
+        /// <summary>
+        /// Recompile all CBNs in home workspace in a second pass after all other function definitions
+        /// have been compiled. 
+        /// Note: This method is intended to be called only during opening of an existing workspace.
+        /// </summary>
+        internal void ReCompileCodeBlockNodesForFunctionDefinitions()
+        {
+            var cbns = Nodes.OfType<CodeBlockNodeModel>();
+
+            foreach(var cbn in cbns)
+            {
+                // Recompile rest of the code against function definitions for each CBN.
+                cbn.ProcessCodeDirect(cbn.RecompileCodeBlockAST);
+            }
+            // This method is intended to be called only during opening of an existing workspace
+            // and therefore if the workspace is set as dirty on account of CBN precompilation, 
+            // the workspace should be reverted to a clean state as it's undesirable to have unsaved
+            // changes for a workspace that is newly opened.
+            HasUnsavedChanges = false;
+        }
+
         internal bool TryGetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)
         {
             data = new Dictionary<string, string>();
-            if (!ExtensionData.Any())
-                return false;
+            if (!ExtensionData.Any()) return false;
 
             var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
                 .FirstOrDefault();
 
-            if (extensionData is null)
-                return false;
+            if (extensionData is null) return false;
 
             data = extensionData.Data;
             return true;
@@ -940,8 +969,7 @@ namespace Dynamo.Graph.Workspaces
             var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
                 .FirstOrDefault();
 
-            if (extensionData is null)
-                return;
+            if (extensionData is null) return;
 
             extensionData.Data = data;
         }
