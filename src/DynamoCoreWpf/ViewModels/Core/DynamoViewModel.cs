@@ -282,6 +282,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
+        [Obsolete("This was moved to PreferencesViewModel.cs")]
         public bool ShowPreviewBubbles
         {
             get

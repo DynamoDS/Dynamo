@@ -907,6 +907,20 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// This function records the deletion of a certain connector.
+        /// Has to be in the workspace model because though the original command
+        /// is called in the connectorviewmodel, the action of recording, destroying,
+        /// and recreating itself has to occur outside of it.
+        /// </summary>
+        /// <param name="connectorModel"></param>
+        internal void ClearConnector(ConnectorModel connectorModel)
+        {
+            RecordAndDeleteModels(
+               new List<ModelBase>() { connectorModel });
+            connectorModel.Delete();
+        }
+
+        /// <summary>
         ///     All of the connectors currently in the workspace.
         /// </summary>
         public IEnumerable<ConnectorModel> Connectors
@@ -1777,6 +1791,7 @@ namespace Dynamo.Graph.Workspaces
                             connector.SetAttribute("start_index", c.Start.Index.ToString());
                             connector.SetAttribute("end", c.End.Owner.GUID.ToString());
                             connector.SetAttribute("end_index", c.End.Index.ToString());
+                            connector.SetAttribute(nameof(ConnectorModel.IsDisplayed), c.IsDisplayed.ToString());
 
                             if (c.End.PortType == PortType.Input)
                                 connector.SetAttribute("portType", "0");
