@@ -58,6 +58,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
             //Initializate the background with the current screen size
             WindowsRect = new Rect(0, 0, System.Windows.SystemParameters.PrimaryScreenWidth, System.Windows.SystemParameters.PrimaryScreenHeight);
+
             //This event is triggered everytime that the main window changes it's size
             this.mainWindow = mainWindow;
             this.mainWindow.SizeChanged += MainWindow_SizeChanged;

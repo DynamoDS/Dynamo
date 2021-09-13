@@ -19,33 +19,38 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This list will contain all the steps per guide read from a json file
         /// </summary>
         [JsonProperty("GuideSteps")]
-        public List<Step> GuideSteps;
+        internal List<Step> GuideSteps { get; set; }
 
         /// <summary>
         /// This property represent the name of the Guide, e.g. "Get Started", "Packages"
         /// </summary>
         [JsonProperty("Name")]
-        public string Name { get; set; }
+        internal string Name { get; set; }
 
         /// <summary>
         /// This variable will contain the current step according to the steps flow in the Guide
         /// </summary>
-        public Step CurrentStep { get; set; }
+        internal Step CurrentStep { get; set; }
 
         /// <summary>
         /// This variable represents the total number of steps that the guide has (every guide can have a different number of steps).
         /// </summary>
-        public int TotalSteps { get; set; }
+        internal int TotalSteps { get; set; }
 
         /// <summary>
         /// This variable represents the Guide Background Element to manipulate it's hole rect
         /// </summary>
-        public GuideBackground GuideBackgroundElement { get; set; }
+        internal GuideBackground GuideBackgroundElement { get; set; }
 
         /// <summary>
         /// This variable represents the element of the LibraryView 
         /// </summary>
-        public UIElement LibraryView { get; set; }
+        internal UIElement LibraryView { get; set; }
+
+        /// <summary>
+        /// This variable represents the element of the MainWindow 
+        /// </summary>
+        internal UIElement MainWindow { get; set; }
 
         public Guide()
         {
@@ -81,7 +86,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This method will be called by the Guide client and this will show the first Step popup in the list
         /// </summary>
-        public void Play()
+        internal void Play()
         {
             if (GuideSteps.Any())
             {
@@ -94,7 +99,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This method will be called by the Guide client and basically subscribe the handlers for the events OnGuidedTourNext and OnGuidedTourPrev
         /// </summary>
-        public void Initialize()
+        internal void Initialize()
         {
             TotalSteps = GuideSteps.Count;
 
@@ -121,7 +126,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This method unsubcribe from the corresponding event the Prev and Next handlers, this method is called when the OnGuidedTourFinish event is raised 
         /// </summary>
-        public void ClearGuide()
+        internal void ClearGuide()
         {
             UnsubscribeFlowEvents();
             SetLibraryViewVisible(true);
@@ -132,7 +137,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// basically it searchs the next step in the list, show it and hides the current one.
         /// </summary>
         /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
-        public void Next(GuidedTourMovementEventArgs args)
+        internal void Next(GuidedTourMovementEventArgs args)
         {
             Step nextStep = null;
 
@@ -149,6 +154,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (nextStep != null)
                 {
                     SetLibraryViewVisible(nextStep.ShowLibrary);
+                    CurrentStep = nextStep;
 
                     if (nextStep.StepType != Step.StepTypes.WELCOME &&
                         nextStep.StepType != Step.StepTypes.SURVEY
@@ -196,7 +202,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="hostElement">Element for size and position reference</param>
         private void SetupBackgroundHoleSize(UIElement hostElement)
         {
-            Point relativePoint = hostElement.TransformToAncestor(Application.Current.MainWindow)
+            Point relativePoint = hostElement.TransformToAncestor(MainWindow)
                               .Transform(new Point(0, 0));
 
             GuideBackgroundElement.HoleRect = new Rect(relativePoint.X, relativePoint.Y,
@@ -209,9 +215,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// basically it searchs the previous step in the list, show it and hides the current one.
         /// </summary>
         /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the previous Step from the list</param>
-        public void Back(GuidedTourMovementEventArgs args)
+        internal void Back(GuidedTourMovementEventArgs args)
         {
             Step prevStep = null;
+
+            CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
+            if (CurrentStep != null)
+            {
+                CurrentStep.Hide();
+            }
+
             if (args.StepSequence > 0)
             {
                 prevStep = (from step in GuideSteps where step.Sequence == args.StepSequence - 1 select step).FirstOrDefault();
@@ -226,15 +239,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     else
                         GuideBackgroundElement.HoleRect = new Rect();
 
+                    CurrentStep = prevStep;
                     prevStep.Show();
                 }
             }
 
-            CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
-            if (CurrentStep != null)
-            {
-                CurrentStep.Hide();
-            }
         }
 
         /// <summary>
@@ -244,7 +253,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="childName">Name of child to be found in the VisualTree </param>
         /// <returns>The first parent item that matches the submitted type parameter. 
         /// If not matching item can be found, a null parent is being returned.</returns>
-        public static UIElement FindChild(DependencyObject parent, string childName)
+        internal static UIElement FindChild(DependencyObject parent, string childName)
         {
             // Confirm parent is valid. 
             if (parent == null) return null;
