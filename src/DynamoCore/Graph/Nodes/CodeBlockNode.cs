@@ -271,7 +271,7 @@ namespace Dynamo.Graph.Nodes
                 SaveAndDeleteConnectors(inportConnections, outportConnections, inportPins, outportPins);
 
                 code = newCode;
-                ProcessCode(ref errorMessage, ref warningMessage, workspaceElementResolver);
+                ProcessCode(out errorMessage, out warningMessage, workspaceElementResolver);
 
                 //Recreate connectors that can be reused
                 LoadAndCreateConnectors(inportConnections, outportConnections, inportPins, outportPins, SaveContext.None);
@@ -618,14 +618,15 @@ namespace Dynamo.Graph.Nodes
 
         #region Private Methods
 
-        internal delegate void ProcessCodeDelegate(ref string errorMessage, ref string warningMessage);
+        internal delegate void ProcessCodeDelegate(out string errorMessage, out string warningMessage);
         internal void ProcessCodeDirect(ProcessCodeDelegate handler, bool isCodeBlockNodeFirstPass = false)
         {
-            var errorMessage = string.Empty;
-            var warningMessage = string.Empty;
-
             libraryServices.LibraryManagementCore.IsCodeBlockNodeFirstPass = isCodeBlockNodeFirstPass;
-            handler(ref errorMessage, ref warningMessage);
+
+            string warningMessage;
+            string errorMessage;
+            handler(out errorMessage, out warningMessage);
+
             RaisePropertyChanged("Code");
 
             ClearErrorsAndWarnings();
@@ -661,8 +662,10 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <param name="warningMessage"></param>
-        internal void RecompileCodeBlockAST(ref string errorMessage, ref string warningMessage)
+        internal void RecompileCodeBlockAST(out string errorMessage, out string warningMessage)
         {
+            errorMessage = string.Empty;
+            warningMessage = string.Empty;
             BuildStatus buildStatus = null;
             try
             {
@@ -728,14 +731,17 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        private void ProcessCode(ref string errorMessage, ref string warningMessage)
+        private void ProcessCode(out string errorMessage, out string warningMessage)
         {
-            ProcessCode(ref errorMessage, ref warningMessage, null);
+            ProcessCode(out errorMessage, out warningMessage, null);
         }
 
-        private void ProcessCode(ref string errorMessage, ref string warningMessage,
+        private void ProcessCode(out string errorMessage, out string warningMessage,
             ElementResolver workspaceElementResolver)
         {
+            errorMessage = string.Empty;
+            warningMessage = string.Empty;
+
             code = CodeBlockUtils.FormatUserText(code);
 
             if (string.IsNullOrEmpty(Code))

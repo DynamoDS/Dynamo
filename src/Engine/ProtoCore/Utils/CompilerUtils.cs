@@ -269,15 +269,25 @@ namespace ProtoCore.Utils
         /// stores list of AST nodes, errors and warnings
         /// Evaluates and stores list of unbound identifiers
         /// </summary>
-        /// <param name="priorNames"></param>
+        /// <param name="core"></param>
         /// <param name="parseParams"> container for compilation related parameters </param>
-        /// <param name="elementResolver"> classname resolver </param>
+        /// <param name="priorNames"></param>
         /// <returns> true if code compilation succeeds, false otherwise </returns>
         public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams, IDictionary<string, string> priorNames = null)
         {
             return PreCompileCodeBlock(core, parseParams, priorNames);
         }
 
+        /// <summary>
+        /// Pre-compiles DS code in code block node, 
+        /// checks for syntax, converts non-assignments to assignments,
+        /// stores list of AST nodes, errors and warnings
+        /// Evaluates and stores list of unbound identifiers
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="parseParams"> container for compilation related parameters </param>
+        /// <param name="priorNames"></param>
+        /// <returns> true if code compilation succeeds, false otherwise </returns>
         internal static bool PreCompileCodeBlock(Core core, ParseParam parseParams, IDictionary<string, string> priorNames = null)
         {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
