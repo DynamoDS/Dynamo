@@ -2169,6 +2169,19 @@ namespace Dynamo.Models
 
         }
 
+        internal void AddGroupToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid)
+        {
+            var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
+            var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
+            if (selectedGroup is null) return;
+
+            foreach (var model in modelsToAdd)
+            {
+                CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
+                selectedGroup.AddToSelectedModels(model);
+            }
+        }
+
         internal void DumpLibraryToXml(object parameter)
         {
             string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
@@ -2392,7 +2405,12 @@ namespace Dynamo.Models
             var nodes = ClipBoard.OfType<NodeModel>();
             var connectors = ClipBoard.OfType<ConnectorModel>();
             var notes = ClipBoard.OfType<NoteModel>();
-            var annotations = ClipBoard.OfType<AnnotationModel>();
+            // we only want to get groups that either has nested groups
+            // or does not belong to a group here.
+            // We handle creation of nested groups when creating the
+            // parent group.
+            var annotations = ClipBoard.OfType<AnnotationModel>()
+                .Where(x=>x.HasNestedGroups || !currentWorkspace.Annotations.ContainsModel(x));
 
             var xmlDoc = new XmlDocument();
 
@@ -2508,35 +2526,16 @@ namespace Dynamo.Models
                 var newAnnotations = new List<AnnotationModel>();
                 foreach (var annotation in annotations)
                 {
-                    var annotationNodeModel = new List<NodeModel>();
-                    var annotationNoteModel = new List<NoteModel>();
-                    // some models can be deleted after copying them,
-                    // so they need to be in pasted annotation as well
-                    var modelsToRestore = annotation.DeletedModelBases.Intersect(ClipBoard);
-                    var modelsToAdd = annotation.Nodes.Concat(modelsToRestore);
-                    // checked condition here that supports pasting of multiple groups
-                    foreach (var models in modelsToAdd)
+                    // If this group has nested group we need to create them first
+                    if (annotation.HasNestedGroups)
                     {
-                        ModelBase mbase;
-                        modelLookup.TryGetValue(models.GUID, out mbase);
-                        if (mbase is NodeModel)
+                        foreach (var group in annotation.Nodes.OfType<AnnotationModel>())
                         {
-                            annotationNodeModel.Add(mbase as NodeModel);
-                        }
-                        if (mbase is NoteModel)
-                        {
-                            annotationNoteModel.Add(mbase as NoteModel);
+                            newAnnotations.Add(CreateAnnotationModel(group, modelLookup));
                         }
                     }
 
-                    var annotationModel = new AnnotationModel(annotationNodeModel, annotationNoteModel)
-                    {
-                        GUID = Guid.NewGuid(),
-                        AnnotationText = annotation.AnnotationText,
-                        Background = annotation.Background,
-                        FontSize = annotation.FontSize
-                    };
-
+                    var annotationModel = CreateAnnotationModel(annotation, modelLookup);
                     newAnnotations.Add(annotationModel);
                 }
 
@@ -2557,6 +2556,50 @@ namespace Dynamo.Models
                 // Record models that are created as part of the command.
                 CurrentWorkspace.RecordCreatedModels(createdModels);
             }
+        }
+
+        private AnnotationModel CreateAnnotationModel(
+            AnnotationModel model, Dictionary<Guid, ModelBase> modelLookup)
+        {
+            var annotationNodeModel = new List<NodeModel>();
+            var annotationNoteModel = new List<NoteModel>();
+            var annotationAnnotationModels = new List<AnnotationModel>();
+            // some models can be deleted after copying them,
+            // so they need to be in pasted annotation as well
+            var modelsToRestore = model.DeletedModelBases.Intersect(ClipBoard);
+            var modelsToAdd = model.Nodes.Concat(modelsToRestore);
+            // checked condition here that supports pasting of multiple groups
+            foreach (var models in modelsToAdd)
+            {
+                ModelBase mbase;
+                modelLookup.TryGetValue(models.GUID, out mbase);
+                if (mbase is NodeModel nodeBase)
+                {
+                    annotationNodeModel.Add(nodeBase);
+                }
+                else if (mbase is NoteModel noteBase)
+                {
+                    annotationNoteModel.Add(noteBase);
+                }
+                else if (mbase is AnnotationModel annotationM)
+                {
+                    annotationAnnotationModels.Add(annotationM);
+                }
+            }
+
+            var annotationModel = new AnnotationModel(annotationNodeModel, annotationNoteModel, annotationAnnotationModels)
+            {
+                GUID = Guid.NewGuid(),
+                AnnotationText = model.AnnotationText,
+                AnnotationDescriptionText = model.AnnotationDescriptionText,
+                HeightAdjustment = model.HeightAdjustment,
+                WidthAdjustment = model.WidthAdjustment,
+                Background = model.Background,
+                FontSize = model.FontSize,
+            };
+
+            modelLookup.Add(model.GUID, annotationModel);
+            return annotationModel;
         }
 
         /// <summary>

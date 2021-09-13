@@ -597,7 +597,7 @@ namespace DynamoCoreWpfTests
             var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeModels.PythonNodeBase;
             Assert.NotNull(nodeModel);
 
-            var engineLabel = nodeView.PresentationGrid
+            var engineLabel = nodeView.grid
                 .Children
                 .Cast<UIElement>()
                 .Where(x=>x.GetType() == typeof(PythonNodeModelsWpf.Controls.EngineLabel))
@@ -616,7 +616,7 @@ namespace DynamoCoreWpfTests
             var engineLabelTextAfterChange = currentEngineTextBlock.Text;
 
             // Assert
-            Assert.IsTrue(nodeView.PresentationGrid.IsVisible);
+            Assert.IsTrue(nodeView.grid.IsVisible);
             Assert.AreEqual(expectedDefaultEngineLabelText, defaultEngineLabelText);
             Assert.AreEqual(engineChange.ToString(), engineLabelTextAfterChange);
             DispatcherUtil.DoEvents();

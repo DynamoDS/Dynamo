@@ -54,6 +54,7 @@ namespace Dynamo.ViewModels
         private bool enableTSpline;
         private bool showEdges;
         private bool isolateSelectedGeometry;
+        private bool showPreviewBubbles;
         private bool showCodeBlockLineNumber;
         private RunType runSettingsIsChecked;
         private Dictionary<string, TabSettings> preferencesTabs;
@@ -151,6 +152,11 @@ namespace Dynamo.ViewModels
         /// Returns all installed packages
         /// </summary>
         public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
+
+        /// <summary>
+        /// Returns all available filters
+        /// </summary>
+        public ObservableCollection<PackageFilter> Filters => installedPackagesViewModel.Filters;
 
         //This includes all the properties that can be set on the General tab
         #region General Properties
@@ -481,6 +487,26 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        public bool ShowPreviewBubbles
+        {
+            get
+            {
+                return preferenceSettings.ShowPreviewBubbles;
+            }
+            set
+            {
+                preferenceSettings.ShowPreviewBubbles = value;
+                showPreviewBubbles = value;
+                RaisePropertyChanged(nameof(ShowPreviewBubbles));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if line numbers should be displayed on code block nodes.
+        /// </summary>
         public bool ShowCodeBlockLineNumber
         {
             get
@@ -877,6 +903,14 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Init all package filters
+        /// </summary>
+        internal void InitPackageListFilters()
+        {
+            installedPackagesViewModel.PopulateFilters();
+        }
+
+        /// <summary>
         /// Listen for the PropertyChanged event and updates the saved changes label accordingly
         /// </summary>
         private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -932,6 +966,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(EnableTSplineIsChecked):
                     description = Res.PreferencesViewEnableTSplineNodes;
+                    goto default;
+                case nameof(ShowPreviewBubbles):
+                    description = Res.PreferencesViewShowPreviewBubbles;
                     goto default;
                 case nameof(ShowCodeBlockLineNumber):
                     description = Res.PreferencesViewShowCodeBlockNodeLineNumber;

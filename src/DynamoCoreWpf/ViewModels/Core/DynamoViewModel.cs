@@ -282,6 +282,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
+        [Obsolete("This was moved to PreferencesViewModel.cs")]
         public bool ShowPreviewBubbles
         {
             get
@@ -1170,7 +1171,7 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
 
-            var command = new DynamoModel.CreateAnnotationCommand(Guid.NewGuid(), null, 0, 0, true);
+            var command = new DynamoModel.CreateAnnotationCommand(Guid.NewGuid(), null, null, 0, 0, true);
             this.ExecuteCommand(command);
         }
 
@@ -1232,6 +1233,19 @@ namespace Dynamo.ViewModels
                 var message = "Internal error, argument must be null";
                 throw new ArgumentException(message, "parameters");
             }
+
+            // If only an AnnotationModel is selected that means
+            // we are trying to remove a group from another group
+            if (DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Count() == DynamoSelection.Instance.Selection.Count())
+            {
+                foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>().ToList())
+                {
+                    var command = new DynamoModel.UngroupModelCommand(modelb.GUID);
+                    this.ExecuteCommand(command);
+                    return;
+                }
+            }
+
             //Check for multiple groups - Delete the group and not the nodes.
             foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>().ToList())
             {
@@ -1270,6 +1284,24 @@ namespace Dynamo.ViewModels
                     this.ExecuteCommand(command);
                 }
             }  
+        }
+
+        internal void AddGroupToGroup(object hostGroupGuid)
+        {
+            if (!(hostGroupGuid is Guid hostGroupId))
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+            //Check for multiple groups - Delete the group and not the nodes.
+            foreach (var annotationModel in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
+            {
+                if (!(annotationModel.GUID == hostGroupId))
+                {
+                    var command = new DynamoModel.AddGroupToGroupCommand(annotationModel.GUID, hostGroupId);
+                    this.ExecuteCommand(command);
+                }
+            }
         }
 
         private void WorkspaceAdded(WorkspaceModel item)

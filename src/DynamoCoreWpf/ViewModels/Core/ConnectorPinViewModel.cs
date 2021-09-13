@@ -196,6 +196,7 @@ namespace Dynamo.ViewModels
         private void UnpinWireCommandExecute(object parameter)
         {
             OnRequestRemove(this, EventArgs.Empty);
+            WorkspaceViewModel.Model.HasUnsavedChanges = true;
         }
 
         private void InitializeCommands()

@@ -32,7 +32,20 @@ namespace Dynamo.Graph.Connectors
     public class ConnectorModel : ModelBase
     {
         #region properties
+        private bool isDisplayed = true;
 
+        /// <summary>
+        /// IsDisplayed flag controlling the visibility of a connector
+        /// </summary>
+        public bool IsDisplayed
+        {
+            get { return isDisplayed; }
+            set
+            {
+                isDisplayed = value;
+                RaisePropertyChanged(nameof(IsDisplayed));
+            }
+        }
         /// <summary>
         /// Returns start port model.
         /// </summary>
@@ -231,7 +244,22 @@ namespace Dynamo.Graph.Connectors
         }
 
         #region Serialization/Deserialization Methods
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
 
+            switch (name)
+            {
+                case nameof(IsDisplayed):
+                    IsDisplayed = Convert.ToBoolean(value);
+                    break;
+                default:
+                    break;
+            }
+
+            return base.UpdateValueCore(updateValueParams);
+        }
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             var helper = new XmlElementHelper(element);
@@ -240,11 +268,14 @@ namespace Dynamo.Graph.Connectors
             helper.SetAttribute("start_index", Start.Index);
             helper.SetAttribute("end", End.Owner.GUID);
             helper.SetAttribute("end_index", End.Index);
+            helper.SetAttribute(nameof(IsDisplayed), IsDisplayed);
             //helper.SetAttribute("portType", ((int) End.PortType));
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            var helper = new XmlElementHelper(nodeElement);
+            IsDisplayed = helper.ReadBoolean(nameof(IsDisplayed));
             //This is now handled via NodeGraph.LoadConnectorFromXml
         }
 
