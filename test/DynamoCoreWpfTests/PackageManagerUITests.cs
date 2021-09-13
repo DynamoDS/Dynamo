@@ -495,8 +495,8 @@ namespace DynamoCoreWpfTests
             //save the new path 
             vm.SaveSettingCommand.Execute(null);
 
-            Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
-            Assert.IsTrue(currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
+            Assert.AreEqual(1, loader.LocalPackages.Count(x => x.Name == "SignedPackage"));
+            Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
 
             // remove the path to SignedPackage2
             vm.DeletePathCommand.Execute(vm.RootLocations.Count - 1);
@@ -504,8 +504,8 @@ namespace DynamoCoreWpfTests
             // save
             vm.SaveSettingCommand.Execute(null);
 
-            Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
-            Assert.IsTrue(currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
+            Assert.AreEqual(1, loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
+            Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
 
             // re-add the path to SignedPackage2
             vm.AddPathCommand.Execute(null);
@@ -513,8 +513,8 @@ namespace DynamoCoreWpfTests
             //save the new path 
             vm.SaveSettingCommand.Execute(null);
 
-            Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
-            Assert.IsTrue(currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
+            Assert.AreEqual(1, loader.LocalPackages.Count(x => x.Name == "SignedPackage"));
+            Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
         }
 
         public void PackageContainingNodeViewOnlyCustomization_AddsCustomizationToCustomizationLibrary()
