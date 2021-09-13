@@ -129,6 +129,7 @@
     <Compile Include="Libraries\LabelTests.cs" />
     <Compile Include="ListAtLevelTest.cs" />
     <Compile Include="MediatoDSColorConverterTest.cs" />
+    <Compile Include="PackageManager\PackageManagerSearchElementViewModelTests.cs" />
     <Compile Include="PreferencesGeometryScalingTests.cs" />
     <Compile Include="PreferencesViewModelTests.cs" />
     <Compile Include="UnitsUITests.cs" />

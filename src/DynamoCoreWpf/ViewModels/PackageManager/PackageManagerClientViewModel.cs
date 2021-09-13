@@ -489,7 +489,7 @@ namespace Dynamo.ViewModels
             string msg = String.IsNullOrEmpty(downloadPath) ?
                 String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
                 String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, downloadPath);
-
+            
             var result = MessageBoxService.Show(msg,
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);

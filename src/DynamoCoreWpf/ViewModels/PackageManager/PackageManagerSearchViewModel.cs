@@ -652,7 +652,7 @@ namespace Dynamo.PackageManager
             this.SearchResults.Clear();
         }
 
-        private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
+        internal void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
         {
             this.PackageManagerClientViewModel.ExecutePackageDownload(element.Name, version, downloadPath);
         }
