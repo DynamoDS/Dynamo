@@ -2656,6 +2656,7 @@ Delete the following packages: {2}?
   <data name="PackageSearchOrder" xml:space="preserve">
     <value>ORDER</value>
     <comment>Header in Package Search 'Sort By' Button Context Menu</comment>
+  </data>
   <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
     <value>Show Preview Bubbles</value>
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
