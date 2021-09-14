@@ -30,7 +30,42 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ScrollViewer  
+        <ItemsControl Name="Filters"
+                      Grid.Column="0" Grid.Row="0"
+                      ItemsSource="{Binding Path=Filters}" 
+                      Background="Transparent"
+                      Padding="0,5,0,5">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <RadioButton Content="{Binding Path=Name, Mode=OneWay}" 
+                                 GroupName="PackageFilters"
+                                 IsChecked="{Binding Path=IsChecked, Mode=TwoWay}"
+                                 Style="{StaticResource {x:Type ToggleButton}}"
+                                 FontSize="10"
+                                 FontFamily="Artifakt Element"
+                                 HorizontalAlignment="Center"
+                                 BorderThickness="1,1,1,1"
+                                 Background="{StaticResource PrimaryCharcoal300Brush}"
+                                 Checked="ToggleButton_OnChecked"
+                                 Foreground="{StaticResource ExpanderCaretToggleButtonBackground}">
+                        <RadioButton.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                <Setter Property="Margin" Value="5,0,0,5"/>
+                                <Setter Property="Padding" Value="5,0,5,0"/>
+                            </Style>
+                        </RadioButton.Resources>
+                    </RadioButton>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ScrollViewer Grid.Row="1"  
             VerticalScrollBarVisibility="Auto" 
             Background="{StaticResource PreferencesWindowBackgroundColor}" 
             MaxHeight="290">
@@ -89,7 +124,7 @@
                                                                 TextAlignment="Left"
                                                                 HorizontalAlignment="Center"
                                                                 Margin="0,3,0,0"
-                                                                Foreground="#EEEEEE"/>
+                                                                Foreground="{StaticResource PrimaryCharcoal100Brush}"/>
                                                     </Border>
                                                 </Grid>
                                             </StackPanel>

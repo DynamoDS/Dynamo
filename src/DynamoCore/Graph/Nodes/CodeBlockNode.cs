@@ -45,6 +45,7 @@ namespace Dynamo.Graph.Nodes
         private readonly LibraryServices libraryServices;
 
         private bool shouldFocus = true;
+        internal ParseParam ParseParam { get; private set; }
 
         /// <summary>
         /// The NodeType property provides a name which maps to the 
@@ -105,7 +106,7 @@ namespace Dynamo.Graph.Nodes
             this.libraryServices = libraryServices;
             this.ElementResolver = new ElementResolver();
 
-            ProcessCodeDirect();
+            ProcessCodeDirect(ProcessCode);
         }
 
         /// <summary>
@@ -119,10 +120,23 @@ namespace Dynamo.Graph.Nodes
         /// <param name="resolver">Responsible for resolving 
         /// a partial class name to its fully resolved name</param>
         public CodeBlockNodeModel(string code, double x, double y, LibraryServices libraryServices, ElementResolver resolver)
-            : this(code, Guid.NewGuid(), x, y, libraryServices, resolver) { }
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            X = x;
+            Y = y;
+            this.libraryServices = libraryServices;
+            ElementResolver = resolver;
+            GUID = Guid.NewGuid();
+            ShouldFocus = false;
+            this.code = code;
+
+            ProcessCodeDirect(ProcessCode);
+        }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CodeBlockNodeModel"/> class
+        ///     Initializes a new instance of the <see cref="CodeBlockNodeModel"/> class.
+        ///     Call this constructor only when a first pass compilation of a CBN is needed
+        ///     without factoring in other CBN function definitions.
         /// </summary>
         /// <param name="userCode">Code block content</param>
         /// <param name="guid">Identifier of the code block</param>
@@ -138,12 +152,12 @@ namespace Dynamo.Graph.Nodes
             X = xPos;
             Y = yPos;
             this.libraryServices = libraryServices;
-            this.ElementResolver = resolver;
+            ElementResolver = resolver;
             GUID = guid;
             ShouldFocus = false;
-            this.code = userCode;
+            code = userCode;
 
-            ProcessCodeDirect();
+            ProcessCodeDirect(ProcessCode, isCodeBlockNodeFirstPass : true);
         }
 
         /// <summary>
@@ -250,14 +264,14 @@ namespace Dynamo.Graph.Nodes
                 ///ConnectorPins corresponding to outports
                 var outportPins = new OrderedDictionary();
 
-                // disable node modification evnets while mutating the code
+                // disable node modification events while mutating the code
                 this.OnRequestSilenceModifiedEvents(true);
 
                 //Save the connectors so that we can recreate them at the correct positions.
                 SaveAndDeleteConnectors(inportConnections, outportConnections, inportPins, outportPins);
 
                 code = newCode;
-                ProcessCode(ref errorMessage, ref warningMessage, workspaceElementResolver);
+                ProcessCode(out errorMessage, out warningMessage, workspaceElementResolver);
 
                 //Recreate connectors that can be reused
                 LoadAndCreateConnectors(inportConnections, outportConnections, inportPins, outportPins, SaveContext.None);
@@ -401,7 +415,7 @@ namespace Dynamo.Graph.Nodes
                 }));
             }
 
-            ProcessCodeDirect();
+            ProcessCodeDirect(ProcessCode);
             //Recreate connectors that can be reused
             LoadAndCreateConnectors(inportConnections, outportConnections, inportPins, outportPins, SaveContext.Undo);
         }
@@ -604,12 +618,15 @@ namespace Dynamo.Graph.Nodes
 
         #region Private Methods
 
-        internal void ProcessCodeDirect()
+        internal delegate void ProcessCodeDelegate(out string errorMessage, out string warningMessage);
+        internal void ProcessCodeDirect(ProcessCodeDelegate handler, bool isCodeBlockNodeFirstPass = false)
         {
-            var errorMessage = string.Empty;
-            var warningMessage = string.Empty;
+            libraryServices.LibraryManagementCore.IsCodeBlockNodeFirstPass = isCodeBlockNodeFirstPass;
 
-            ProcessCode(ref errorMessage, ref warningMessage);
+            string warningMessage;
+            string errorMessage;
+            handler(out errorMessage, out warningMessage);
+
             RaisePropertyChanged("Code");
 
             ClearErrorsAndWarnings();
@@ -627,30 +644,127 @@ namespace Dynamo.Graph.Nodes
             OnNodeModified();
         }
 
-        private void ProcessCode(ref string errorMessage, ref string warningMessage,
-            ElementResolver workspaceElementResolver = null)
+        /// <summary>
+        /// Undefine a function definition in a code block node if it has any.
+        /// </summary>
+        internal void UndefineFunctionDefinitions()
         {
-            code = CodeBlockUtils.FormatUserText(code);
-            codeStatements.Clear();
+            var funcDefs = ParseParam.ParsedNodes.OfType<FunctionDefinitionNode>();
+            foreach (var funcDef in funcDefs)
+            {
+                libraryServices.LibraryManagementCore.SetFunctionInactive(funcDef);
+            }
+        }
 
-            if (string.IsNullOrEmpty(Code))
-                previewVariable = null;
-
+        /// <summary>
+        /// This method skips parsing and only recompiles a CBN in a second pass after all other function definitions
+        /// have been compiled. It re-uses the ParseParam (ASTs etc.) of the CBN compiled from the first pass.
+        /// </summary>
+        /// <param name="errorMessage"></param>
+        /// <param name="warningMessage"></param>
+        internal void RecompileCodeBlockAST(out string errorMessage, out string warningMessage)
+        {
+            errorMessage = string.Empty;
+            warningMessage = string.Empty;
+            BuildStatus buildStatus = null;
             try
             {
-                // During loading of CBN from file, the elementResolver from the workspace is unavailable
-                // in which case, a local copy of the ER obtained from the CBN is used
-                var resolver = workspaceElementResolver ?? this.ElementResolver;
-                var parseParam = new ParseParam(GUID, code, resolver);
+                int blockId = Constants.kInvalidIndex;
+                var core = libraryServices.LibraryManagementCore;
+
+                bool parsingPreloadFlag = core.IsParsingPreloadedAssembly;
+                bool parsingCbnFlag = core.IsParsingPreloadedAssembly;
+
+                core.IsParsingPreloadedAssembly = false;
+                core.IsParsingCodeBlockNode = true;
+                // This is always the second pass of precompiling a CBN so we need to reset this flag to false here.
+                core.IsCodeBlockNodeFirstPass = false;
+
+                core.ResetForPrecompilation();
+
+                // FunctionDefinitonNodes have already been compiled.
+                // Recompile the rest of the ASTs with function definitions in place.
+                var astNodes = ParseParam.ParsedNodes.Where(x => !(x is FunctionDefinitionNode));
+
+                // Clone a disposable copy of AST nodes for PreCompile() as Codegen mutates AST's
+                // while performing SSA transforms and we want to keep the original AST's
+                var codeblock = new CodeBlockNode();
+                var nodes = astNodes.Select(NodeUtils.Clone).ToList();
+                codeblock.Body.AddRange(nodes);
+
+                buildStatus = CompilerUtils.PreCompile(string.Empty, core, codeblock, out blockId);
+
+                core.IsParsingCodeBlockNode = parsingCbnFlag;
+                core.IsParsingPreloadedAssembly = parsingPreloadFlag;
+
+                ParseParam.AppendErrors(buildStatus.Errors);
+                ParseParam.AppendWarnings(buildStatus.Warnings);
+            }
+            catch (Exception)
+            {
+                buildStatus = null;
+            }
+
+            if (ParseParam.Errors.Any())
+            {
+                errorMessage = string.Join("\n", ParseParam.Errors.Select(m => m.Message));
+                ProcessError();
+                return;
+            }
+            if (ParseParam.Warnings != null)
+            {
+                // Unbound identifiers in CBN will have input slots.
+                // 
+                // To check function redefinition, we need to check other
+                // CBN to find out if it has been defined yet. Now just
+                // skip this warning.
+                var warnings =
+                    ParseParam.Warnings.Where(
+                        w =>
+                            w.ID != WarningID.IdUnboundIdentifier
+                                && w.ID != WarningID.FunctionAlreadyDefined);
+
+                if (warnings.Any())
+                {
+                    warningMessage = string.Join("\n", warnings.Select(m => m.Message));
+                }
+            }
+        }
+
+        private void ProcessCode(out string errorMessage, out string warningMessage)
+        {
+            ProcessCode(out errorMessage, out warningMessage, null);
+        }
+
+        private void ProcessCode(out string errorMessage, out string warningMessage,
+            ElementResolver workspaceElementResolver)
+        {
+            errorMessage = string.Empty;
+            warningMessage = string.Empty;
+
+            code = CodeBlockUtils.FormatUserText(code);
+
+            if (string.IsNullOrEmpty(Code))
+            {
+                previewVariable = null;
+            }
+            // During loading of CBN from file, the elementResolver from the workspace is unavailable
+            // in which case, a local copy of the ER obtained from the CBN is used
+            var resolver = workspaceElementResolver ?? ElementResolver;
+            ParseParam = new ParseParam(GUID, code, resolver);
+
+            codeStatements.Clear();
+            try
+            {
                 var priorNames = libraryServices.GetPriorNames();
-                
-                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam, priorNames))
+
+                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ParseParam, priorNames))
                 {
                     // Check if there are statements in the code statement written by user
-                    if (parseParam.ParsedNodes != null && parseParam.ParsedNodes.Any())
-                    {                        
+                    if (ParseParam.ParsedNodes != null && ParseParam.ParsedNodes.Any())
+                    {
                         // Create an instance of statement for each code statement written by the user
-                        foreach (var parsedNode in parseParam.ParsedNodes)
+                        foreach (var parsedNode in ParseParam.ParsedNodes)
                         {
                             // Create a statement variable from the generated nodes
                             codeStatements.Add(Statement.CreateInstance(parsedNode));
@@ -665,16 +779,16 @@ namespace Dynamo.Graph.Nodes
                     }
                 }
 
-                if (parseParam.Errors.Any())
+                if (ParseParam.Errors.Any())
                 {
-                    errorMessage = string.Join("\n", parseParam.Errors.Select(m => m.Message));
+                    errorMessage = string.Join("\n", ParseParam.Errors.Select(m => m.Message));
                     ProcessError();
                     CreateInputOutputPorts();
 
                     return;
                 }
 
-                if (parseParam.Warnings != null)
+                if (ParseParam.Warnings != null)
                 {
                     // Unbound identifiers in CBN will have input slots.
                     // 
@@ -682,7 +796,7 @@ namespace Dynamo.Graph.Nodes
                     // CBN to find out if it has been defined yet. Now just
                     // skip this warning.
                     var warnings =
-                        parseParam.Warnings.Where(
+                        ParseParam.Warnings.Where(
                             w =>
                                 w.ID != WarningID.IdUnboundIdentifier
                                     && w.ID != WarningID.FunctionAlreadyDefined);
@@ -693,13 +807,13 @@ namespace Dynamo.Graph.Nodes
                     }
                 }
 
-                if (parseParam.UnboundIdentifiers != null)
+                if (ParseParam.UnboundIdentifiers != null)
                 {
                     inputIdentifiers = new List<string>();
                     inputPortNames = new List<string>();
 
                     var definedVariables = new HashSet<string>(CodeBlockUtils.GetStatementVariables(codeStatements).SelectMany(s => s));
-                    foreach (var kvp in parseParam.UnboundIdentifiers)
+                    foreach (var kvp in ParseParam.UnboundIdentifiers)
                     {
                         if (!definedVariables.Contains(kvp.Value))
                         {
@@ -719,7 +833,7 @@ namespace Dynamo.Graph.Nodes
                 // variable defined in code block node or in on the right hand side of 
                 // expression as an input variable, a variable may not be renamed properly
                 // if SetPreviewVariable() is called before gathering input identifiers.
-                SetPreviewVariable(parseParam.ParsedNodes);
+                SetPreviewVariable(ParseParam.ParsedNodes);
             }
             catch (Exception e)
             {
@@ -788,8 +902,8 @@ namespace Dynamo.Graph.Nodes
         private void CreateInputOutputPorts()
         {
 
-            if ((codeStatements == null || (codeStatements.Count == 0))
-                && (inputIdentifiers == null || (inputIdentifiers.Count == 0)))
+            if ((codeStatements == null || codeStatements.Count == 0)
+                && (inputIdentifiers == null || inputIdentifiers.Count == 0))
             {
                 RegisterAllPorts();
                 return;

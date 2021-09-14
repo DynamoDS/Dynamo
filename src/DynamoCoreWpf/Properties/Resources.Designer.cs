@@ -2016,15 +2016,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Preview Bubbles.
-        /// </summary>
-        public static string DynamoViewSettingsMenuShowPreviewBubbles {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuShowPreviewBubbles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Visualization Settings.
         /// </summary>
         public static string DynamoViewSettingsMenuVisualizationSettings {
@@ -2811,6 +2802,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add group to group.
+        /// </summary>
+        public static string GroupContextMenuAddGroupToGroup {
+            get {
+                return ResourceManager.GetString("GroupContextMenuAddGroupToGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Background.
         /// </summary>
         public static string GroupContextMenuBackground {
@@ -2856,11 +2856,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Click here to edit the group title&gt;.
+        ///   Looks up a localized string similar to &lt;Double click here to edit group description&gt;.
         /// </summary>
         public static string GroupDefaultText {
             get {
                 return ResourceManager.GetString("GroupDefaultText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;Double click here to edit group title&gt;.
+        /// </summary>
+        public static string GroupNameDefaultText {
+            get {
+                return ResourceManager.GetString("GroupNameDefaultText", resourceCulture);
             }
         }
         
@@ -4256,6 +4265,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string PackageFilter_Name_All {
+            get {
+                return ResourceManager.GetString("PackageFilter_Name_All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to
         ///{0}.
         /// </summary>
@@ -5159,6 +5177,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewShowCodeBlockNodeLineNumber {
             get {
                 return ResourceManager.GetString("PreferencesViewShowCodeBlockNodeLineNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Preview Bubbles.
+        /// </summary>
+        public static string PreferencesViewShowPreviewBubbles {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowPreviewBubbles", resourceCulture);
             }
         }
         
