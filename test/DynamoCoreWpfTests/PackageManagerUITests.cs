@@ -494,8 +494,8 @@ namespace DynamoCoreWpfTests
 
             //save the new path 
             vm.SaveSettingCommand.Execute(null);
-            Console.WriteLine("loadPackageParams.Preferences.CustomPackageFolders: " + loadPackageParams.Preferences.CustomPackageFolders);
-            Console.WriteLine("loader.LocalPackages: " + loader.LocalPackages);
+            Console.WriteLine("loadPackageParams.Preferences.CustomPackageFolders: " + string.Join("|", loadPackageParams.Preferences.CustomPackageFolders.Select(x => x)));
+            Console.WriteLine("loader.LocalPackages: " + string.Join("|", loader.LocalPackages.Select(x => x.Name)));
 
             var pkg = loader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(pkg, "Expected Signed package to be valid");
