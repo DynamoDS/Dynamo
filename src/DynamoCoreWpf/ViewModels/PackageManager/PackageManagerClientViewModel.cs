@@ -727,13 +727,13 @@ namespace Dynamo.ViewModels
         /// 
         /// </summary>
         /// <param name="packageDownloadHandle">package download handle</param>
-        internal async Task<(PackageDownloadHandle handle, string dlpath)> Download(PackageDownloadHandle packageDownloadHandle)
+        internal virtual Task<(PackageDownloadHandle handle, string dlpath)> Download(PackageDownloadHandle packageDownloadHandle)
         {
             Downloads.Add(packageDownloadHandle);
 
             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
 
-            return await Task.Factory.StartNew(() =>
+            return Task.Factory.StartNew(() =>
             {
                 // Attempt to download package
                 string pathDl;
@@ -749,10 +749,10 @@ namespace Dynamo.ViewModels
             });
         }
 
-        internal void InstallPackage(PackageDownloadHandle packageDownloadHandle, string downloadPath, string installPath)
+        internal virtual void InstallPackage(PackageDownloadHandle packageDownloadHandle, string downloadPath, string installPath)
         {
             // if success, proceed to install the package
-            if (string.IsNullOrEmpty(downloadPath))
+            if (string.IsNullOrEmpty(downloadPath) || packageDownloadHandle.DownloadState == PackageDownloadHandle.State.Error)
             {
                 return;
             }
