@@ -395,11 +395,19 @@ namespace Dynamo.PackageManager
                 customNodeManager.AddUninitializedCustomNodesInPath(dir, false, false);
             }
 
+            var blt_restart = loadPackageParams.NewPaths.Any(x => x.Contains("bltin_packages_restart"));
+
             foreach (var path in loadPackageParams.NewPaths)
             {
+                if (blt_restart)
+                    Console.WriteLine("Found bltin_packages_restart");
+
                 var packageDirectory = pathManager.PackagesDirectories.Where(x => x.StartsWith(path)).FirstOrDefault();
                 if (packageDirectory != null)
                 {
+                    if (blt_restart)
+                        Console.WriteLine("Found bltin_packages_restart pkg dir " + packageDirectory);
+
                     ScanPackageDirectories(packageDirectory, loadPackageParams.Preferences);
                 }
             }
@@ -412,18 +420,25 @@ namespace Dynamo.PackageManager
                     {
                         pathManager.AddResolutionPath(pkg.BinaryDirectory);
                     }
-
                 }
             }
 
             if (LocalPackages.Any())
             {
+                if (blt_restart)
+                    Console.WriteLine("Found LocalPackages");
+
                 // Load only those recently addeed local packages (that are located in any of the new paths)
                 var newPackages = LocalPackages.Where(x => loadPackageParams.NewPaths.Any(y => x.RootDirectory.Contains(y)));
                 if (newPackages.Any())
                 {
                     LoadPackages(newPackages);
                 }
+            }
+            else
+            {
+                if (blt_restart)
+                    Console.WriteLine("did not find LocalPackages");
             }
         }
 

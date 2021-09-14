@@ -492,10 +492,15 @@ namespace DynamoCoreWpfTests
             //add a new path to SignedPackage2
             vm.AddPathCommand.Execute(null);
 
+            Console.WriteLine("RootLocations before commit: " + string.Join("|", vm.RootLocations.Select(x => x)));
+            Console.WriteLine("RootLocations before commit: " + string.Join("|", vm.RootLocations.Select(x => x)));
+            Console.WriteLine("CustomPackageFolders before commit: " + string.Join("|", loadPackageParams.Preferences.CustomPackageFolders));
+
             //save the new path 
             vm.SaveSettingCommand.Execute(null);
-            Console.WriteLine("loadPackageParams.Preferences.CustomPackageFolders: " + string.Join("|", loadPackageParams.Preferences.CustomPackageFolders.Select(x => x)));
-            Console.WriteLine("loader.LocalPackages: " + string.Join("|", loader.LocalPackages.Select(x => x.Name)));
+            Console.WriteLine("CustomPackageFolders after commit: " + string.Join("|", loadPackageParams.Preferences.CustomPackageFolders));
+            Console.WriteLine("loader.LocalPackages after commit: " + string.Join("|", loader.LocalPackages.Select(x => x.Name)));
+            Console.WriteLine("loadPackageParams.NewPaths after commit: " + string.Join("|", loadPackageParams.NewPaths ?? new List<string>()));
 
             var pkg = loader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(pkg, "Expected Signed package to be valid");
