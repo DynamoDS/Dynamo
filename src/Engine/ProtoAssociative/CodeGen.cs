@@ -330,7 +330,8 @@ namespace ProtoAssociative
             return null;
         }
 
-        private bool CyclicDependencyTest(ProtoCore.AssociativeGraph.GraphNode node, ref SymbolNode cyclicSymbol1, ref SymbolNode cyclicSymbol2)
+        // Returns true if there is no cyclic dependency, returns false otherwise.
+        private bool CyclicDependencyTest(GraphNode node, ref SymbolNode cyclicSymbol1, ref SymbolNode cyclicSymbol2)
         {
             if (null == node || node.updateNodeRefList.Count == 0)
             {
@@ -339,16 +340,15 @@ namespace ProtoAssociative
 
             var indexMap = new Dictionary<GraphNode, int>();
             var lowlinkMap = new Dictionary<GraphNode, int>();
-            var S = new Stack<GraphNode>();
+            var s = new Stack<GraphNode>();
             int index = 0;
 
-            for (int n = 0; n < codeBlock.instrStream.dependencyGraph.GraphList.Count; ++n)
+            foreach (var subNode in codeBlock.instrStream.dependencyGraph.GraphList)
             {
-                ProtoCore.AssociativeGraph.GraphNode subNode = codeBlock.instrStream.dependencyGraph.GraphList[n];
                 indexMap[subNode] = Constants.kInvalidIndex;
             }
 
-            var dependencyList = StrongConnectComponent(node, ref index, lowlinkMap, indexMap, S);
+            var dependencyList = StrongConnectComponent(node, ref index, lowlinkMap, indexMap, s);
             if (dependencyList == null)
             {
                 return true;
@@ -360,7 +360,7 @@ namespace ProtoAssociative
 
                 foreach (var n in dependencyList.GroupBy(x => x.guid).Select(y => y.First()))
                 {
-                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency,
+                    core.BuildStatus.LogWarning(WarningID.InvalidStaticCyclicDependency,
                         ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency, core.CurrentDSFileName, graphNode: n);
                 }
                 firstNode.isCyclic = true;
@@ -1788,18 +1788,24 @@ namespace ProtoAssociative
             }
             else
             {
-                if (depth <= 0 && procName != ProtoCore.DSASM.Constants.kFunctionPointerCall)
+                if (depth <= 0 && procName != Constants.kFunctionPointerCall)
                 {
                     string property;
                     if (CoreUtils.TryGetPropertyName(procName, out property))
                     {
                         string message = String.Format(ProtoCore.Properties.Resources.kPropertyNotFound, property);
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.PropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                        buildStatus.LogWarning(WarningID.PropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                     }
                     else
                     {
-                        string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
-                        buildStatus.LogWarning(ProtoCore.BuildData.WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                        // Log "function not found" warning for CBNs only after compiling all function definition nodes in the first pass
+                        // in CodeBlockNode.RecompileCodeBlockAST(). If not compiling CBNs log these warnings by default.
+                        if (core.IsParsingCodeBlockNode && !core.IsCodeBlockNodeFirstPass ||
+                            !core.IsParsingCodeBlockNode)
+                        {
+                            string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
+                            buildStatus.LogWarning(WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                        }
                     }
 
                     inferedType.UID = (int)PrimitiveType.Null;
@@ -5495,7 +5501,6 @@ namespace ProtoAssociative
                             Validity.Assert(null != cyclicSymbol1);
                             Validity.Assert(null != cyclicSymbol2);
 
-                            //
                             // Set the first symbol that triggers the cycle to null
                             ProtoCore.AssociativeGraph.GraphNode nullAssignGraphNode1 = new ProtoCore.AssociativeGraph.GraphNode();
                             nullAssignGraphNode1.updateBlock.startpc = pc;

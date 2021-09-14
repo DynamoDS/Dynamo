@@ -52,7 +52,7 @@ namespace DynamoCoreWpfTests
                 // Delete node group
                 var workspaceVM = ViewModel.Workspaces.First() as HomeWorkspaceViewModel;
                 var groupVM = workspaceVM.Annotations.First(a => a.AnnotationText == "Delete causes errors");
-                groupVM.Select();
+                groupVM.SelectAll();
                 groupVM.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
 
                 // The graph run successfully and, more importantly, execution did not cause a crash.

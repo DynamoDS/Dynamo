@@ -421,7 +421,7 @@ namespace Dynamo.Core
         /// <param name="isTestMode">
         ///     Flag specifying whether or not this should operate in "test mode".
         /// </param>
-        /// <param name="PackageInfo">
+        /// <param name="packageInfo">
         ///     Info about the package that requested this customNode to be loaded or to which the customNode belongs.
         ///     Is PackageMember property will be true if this property is not null.
         /// </param>

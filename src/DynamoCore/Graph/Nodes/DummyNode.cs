@@ -433,12 +433,12 @@ namespace Dynamo.Graph.Nodes
             {
                 if (string.IsNullOrEmpty(FunctionName))
                 {
-                    const string format = "Node of type '{0}',from assembly '{1}', is now deprecated.";
+                    string format = Properties.Resources.NodeOfTypeDeprecatedMsg;
                     return string.Format(format, TypeName, LegacyAssembly);
                 }
                 else
                 {
-                    const string format = "Node '{0}' is now deprecated";
+                    string format = Properties.Resources.NodeDeprecatedMsg;
                     return string.Format(format, FunctionName);
                 }
             }
@@ -447,17 +447,17 @@ namespace Dynamo.Graph.Nodes
             {
                 if (string.IsNullOrEmpty(FunctionName))
                 {
-                    const string format = "Node of type '{0}', from assembly '{1}', cannot be resolved.";
+                    string format = Properties.Resources.NodeOfTypeNotResolvedMsg;
                     return string.Format(format, TypeName, LegacyAssembly);
                 }
                 else
                 {
-                    const string format = "Node '{0}' cannot be resolved.";
+                    string format = Properties.Resources.NodeNotResolvedMsg;
                     return string.Format(format, FunctionName);
                 }
             }
 
-            const string message = "Unhandled 'DummyNode.NodeNature' value: {0}";
+            string message = Properties.Resources.NodeUnhandledMsg;
             throw new InvalidOperationException(string.Format(message, NodeNature));
         }
 

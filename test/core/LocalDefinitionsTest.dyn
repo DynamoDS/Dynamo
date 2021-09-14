@@ -1,0 +1,158 @@
+{
+  "Uuid": "42620606-28d7-479a-a849-3b142a418fa1",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "LocalDefinitionsTest",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "9c989a2a-a53b-4556-8972-cd2f66c1903e",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "b9aa509cf9734bfd891d1f652581fa86",
+      "Inputs": [],
+      "Outputs": [],
+      "Replication": "Auto",
+      "Description": ""
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DLL.ColorRange.CustomizeView@DLL.ColorRange,var",
+      "Id": "b9282544cce14e759aca92f45bfd996f",
+      "Inputs": [
+        {
+          "Id": "313cf395c1d3470cb22871dd4a8a4eac",
+          "Name": "colorRange",
+          "Description": "DLL.ColorRange",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5e3f8d75f9764236bbf4fecd25eec7aa",
+          "Name": "model",
+          "Description": "ColorRange",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b265c0ce8e3e4c809c859a6ca73c1913",
+          "Name": "view",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1b6bd812a5c14d04b3c2e0dc45041daa",
+          "Name": "void",
+          "Description": "void",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "ColorRange.CustomizeView (model: ColorRange, view: var): void"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [
+    "9c989a2a-a53b-4556-8972-cd2f66c1903e"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "RootNode.dyf",
+      "ReferenceType": "DYFFile",
+      "Nodes": [
+        "b9aa509cf9734bfd891d1f652581fa86"
+      ]
+    },
+    {
+      "Name": "DLL.dll",
+      "ReferenceType": "ZeroTouch",
+      "Nodes": [
+        "b9282544cce14e759aca92f45bfd996f"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.0.2415",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "RootNode",
+        "Id": "b9aa509cf9734bfd891d1f652581fa86",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 258.0,
+        "Y": 91.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "ColorRange.CustomizeView",
+        "Id": "b9282544cce14e759aca92f45bfd996f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 392.5,
+        "Y": 235.25
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

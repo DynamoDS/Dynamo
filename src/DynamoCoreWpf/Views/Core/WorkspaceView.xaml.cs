@@ -766,6 +766,7 @@ namespace Dynamo.Views
             var selection = DynamoSelection.Instance.Selection;
             var nodes = selection.OfType<NodeModel>();
             var notes = selection.OfType<NoteModel>();
+            var pins = selection.OfType<ConnectorPinModel>();
             var annotations = selection.OfType<AnnotationModel>();
 
             var connectors = nodes.SelectMany(n =>
@@ -774,6 +775,7 @@ namespace Dynamo.Views
 
             // set list of selected viewmodels
             draggedData = connectors.Select(c => (ViewModelBase)new ConnectorViewModel(ViewModel, c))
+                .Concat(pins.Select(p=> new ConnectorPinViewModel(ViewModel, p)))
                 .Concat(notes.Select(n => new NoteViewModel(ViewModel, n)))
                 .Concat(annotations.Select(a => new AnnotationViewModel(ViewModel, a)))
                 .Concat(nodes.Select(n =>
@@ -788,8 +790,8 @@ namespace Dynamo.Views
                     // so that they will correspond to origin nodes
                     return new NodeViewModel(ViewModel, n, size);
                 })).ToList();
-            
-            var locatableModels = nodes.Concat<ModelBase>(notes);
+
+            var locatableModels = nodes.Concat<ModelBase>(notes).Concat<ModelBase>(pins);
             var minX = locatableModels.Any() ? locatableModels.Min(mb => mb.X) : 0;
             var minY = locatableModels.Any() ? locatableModels.Min(mb => mb.Y) : 0;
             // compute offset to correctly place selected items right under mouse cursor 

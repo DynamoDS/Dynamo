@@ -47,6 +47,14 @@ namespace DynamoCoreWpfTests
                 Preferences = new PreferenceSettings() { CustomPackageFolders = new List<string>() { this.PackagesDirectory } }
             };
         }
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("BuiltIn.ds");
+            libraries.Add("FunctionObject.ds");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
 
         [Test]
         public void DocsExtensionAddsMenuItem()
@@ -451,7 +459,7 @@ namespace DynamoCoreWpfTests
             var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
             var nodeName = "+";
             var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
-            var expectedNodeDocumentationNamespace = "<p><i>.%add</i></p>";
+            var expectedNodeDocumentationNamespace = $"<p><i>{nodeName}</i></p>";
             var expectedAddtionalNodeDocumentation = @"<h2 id=""no-further-documentation-provided-for-this-node"">No further documentation provided for this node.</h2>";
        
             // Act
@@ -531,12 +539,125 @@ namespace DynamoCoreWpfTests
         public void CanGetNodeDocumentationMarkdownFromPackageDocumentationManager()
         {
             // Arrange
+            var packageName = "Package";
             var nodeWithDocumentation = "Package.Package.Hello";
             var nodeWithoutDocumentation = "Package.Package.Package";
 
             // Assert
-            Assert.That(PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithDocumentation));
-            Assert.That(!PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithoutDocumentation));
+            Assert.That(PackageDocumentationManager.Instance.ContainsAnnotationDoc(Path.Combine(packageName, nodeWithDocumentation)));
+            Assert.That(!PackageDocumentationManager.Instance.ContainsAnnotationDoc(Path.Combine(packageName, nodeWithoutDocumentation)));
+        }
+
+        [Test]
+        public void DocsCanBeLoadedForDSNonPackageNodesFrom_FallBackPath()
+        {
+            //setup the docs browser to point to our fake fallback folder.
+            var testFallbackDocsPath = Path.Combine(GetTestDirectory(this.ExecutingDirectory), "Tools", "docGeneratorTestFiles", "fallback_docs");
+            PackageDocumentationManager.Instance.dynamoCoreFallbackDocPath = new DirectoryInfo(testFallbackDocsPath);
+
+            //make a request for a node we've generated docs for
+            RaiseLoadedEvent(this.View);
+
+            var nodeName = "List.Rank";
+            this.ViewModel.ExecuteCommand(
+            new DynamoModel.CreateNodeCommand(
+                Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+            );
+            var node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+            var htmlContent = RequestNodeDocs(node);
+
+            Assert.IsTrue(htmlContent.Contains("list.rank sample docs"));
+
+            ViewModel.Model.CurrentWorkspace.RemoveAndDisposeNode(node);
+
+            //next node
+            nodeName = "LoopWhile";
+            this.ViewModel.ExecuteCommand(
+            new DynamoModel.CreateNodeCommand(
+              Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+          );
+             node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+             htmlContent = RequestNodeDocs(node);
+
+            Assert.IsTrue(htmlContent.Contains("loopwhile sample docs"));
+        }
+        [Test]
+        public void DocsAreLoadedFromHostPathBeforeCorePath()
+        {
+            //setup the docs browser to point to our fake fallback folder.
+            var testFallbackDocsPath = Path.Combine(GetTestDirectory(this.ExecutingDirectory), "Tools", "docGeneratorTestFiles", "fallback_docs");
+            var testHostFallbackDocsPath = Path.Combine(GetTestDirectory(this.ExecutingDirectory), "Tools", "docGeneratorTestFiles", "host_fallback_docs");
+
+            PackageDocumentationManager.Instance.dynamoCoreFallbackDocPath = new DirectoryInfo(testFallbackDocsPath);
+            PackageDocumentationManager.Instance.hostDynamoFallbackDocPath = new DirectoryInfo(testHostFallbackDocsPath);
+
+            //make a request for a node we've generated docs for
+            RaiseLoadedEvent(this.View);
+
+            var nodeName = "List.Rank";
+            this.ViewModel.ExecuteCommand(
+            new DynamoModel.CreateNodeCommand(
+                Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+            );
+            var node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+            var htmlContent = RequestNodeDocs(node);
+
+            Assert.IsTrue(htmlContent.Contains("list.rank sample docs from host path"));
+        } 
+
+        [Test]
+        public void DocsCanBeLoadedForCoreNodeModelNodesFrom_FallBackPath()
+        {
+            //setup the docs browser to point to our fake fallback folder.
+            var testFallbackDocsPath = Path.Combine(GetTestDirectory(this.ExecutingDirectory), "Tools", "docGeneratorTestFiles", "fallback_docs");
+            PackageDocumentationManager.Instance.dynamoCoreFallbackDocPath = new DirectoryInfo(testFallbackDocsPath);
+
+            //make a request for a node we've generated docs for
+            RaiseLoadedEvent(this.View);
+
+            var nodeName = "CoreNodeModels.Watch";
+            this.ViewModel.ExecuteCommand(
+            new DynamoModel.CreateNodeCommand(
+                Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+            );
+            var node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+            var htmlContent = RequestNodeDocs(node);
+
+            Assert.IsTrue(htmlContent.Contains("corenodemodels.watch sample docs"));
+
+            ViewModel.Model.CurrentWorkspace.RemoveAndDisposeNode(node);
+
+            //next node
+            nodeName = "CoreNodeModels.Logic.RefactoredIf";
+            this.ViewModel.ExecuteCommand(
+            new DynamoModel.CreateNodeCommand(
+              Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+          );
+            node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+            htmlContent = RequestNodeDocs(node);
+
+            Assert.IsTrue(htmlContent.Contains("corenodemodels.logic.refactoredif sample docs"));
+
+            ViewModel.Model.CurrentWorkspace.RemoveAndDisposeNode(node);
+
+            //next node
+            nodeName = "CoreNodeModels.HigherOrder.Map";
+            this.ViewModel.ExecuteCommand(
+            new DynamoModel.CreateNodeCommand(
+              Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+          );
+            node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+            htmlContent = RequestNodeDocs(node);
+
+            Assert.IsTrue(htmlContent.Contains("corenodemodels.higherorder.map sample docs"));
+        }
+
+        private string RequestNodeDocs(Dynamo.Graph.Nodes.NodeModel node)
+        {
+            var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
+            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
+            docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
+            return GetSidebarDocsBrowserContents();
         }
 
         #region Helpers

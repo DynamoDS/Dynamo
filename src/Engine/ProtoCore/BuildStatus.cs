@@ -663,10 +663,6 @@ namespace ProtoCore
             };
             warnings.Add(entry);
 
-            if (core.Options.IsDeltaExecution)
-            {
-            }
-
             if (LogWarnings)
             {
 #if DEBUG

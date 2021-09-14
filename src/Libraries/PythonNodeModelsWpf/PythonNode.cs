@@ -36,11 +36,13 @@ namespace PythonNodeModelsWpf
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             workspaceModel = nodeView.ViewModel.WorkspaceViewModel.Model;
 
-            nodeView.MainContextMenu.Items.Add(editWindowItem);
+            Separator separator = new Separator();
+            nodeView.MainContextMenu.Items.Insert(8, separator);
+            nodeView.MainContextMenu.Items.Insert(9, editWindowItem);
             editWindowItem.Click += EditScriptContent;
 
             var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
-            nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
+            nodeView.MainContextMenu.Items.Insert(10, pythonEngineVersionMenu);
             pythonEngine2Item.Click += UpdateToPython2Engine;
             // Bind menu item check state to the Engine property in the ViewModel.
             // By doing this, we make sure the check status is in sync with the ViewModel,
@@ -63,7 +65,7 @@ namespace PythonNodeModelsWpf
             learnMoreItem.Click += OpenPythonLearningMaterial;
             pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
             pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
-            nodeView.MainContextMenu.Items.Add(learnMoreItem);
+            nodeView.MainContextMenu.Items.Insert(11, learnMoreItem);
 
             nodeView.UpdateLayout();
 
@@ -71,8 +73,14 @@ namespace PythonNodeModelsWpf
             nodeModel.DeletionStarted += NodeModel_DeletionStarted;
             nodeModel.Disposed += NodeModel_Disposed;
 
-            nodeView.PresentationGrid.Visibility = Visibility.Visible;
-            nodeView.PresentationGrid.Children.Add(new EngineLabel(nodeModel));
+            EngineLabel engineLabel = new EngineLabel(nodeModel);
+            Canvas.SetZIndex(engineLabel, 5);
+            engineLabel.HorizontalAlignment = HorizontalAlignment.Left;
+            engineLabel.VerticalAlignment = VerticalAlignment.Bottom;
+            engineLabel.Margin = new Thickness(14, -4, 0, 4);
+            nodeView.grid.Children.Add(engineLabel);
+            Grid.SetColumn(engineLabel, 0);
+            Grid.SetRow(engineLabel, 3);
         }
 
         /// <summary>

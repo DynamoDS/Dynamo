@@ -99,5 +99,22 @@ namespace Dynamo.Tests.Engine.CodeCompletion
             Assert.AreEqual(overloads.Count(), 0);
 
         }
+
+
+        [Test]
+        public void Constructor_WithIsVisibleFalseAttribute_HiddenFromSearch()
+        {
+            var className = @"FFITarget.DesignScript.Point";
+
+            var cm = new ClassMirror(className, libraryServicesCore);
+            var ctors = cm.GetConstructors();
+            var ctorNames = ctors.Select(x => x.MethodName);
+            var found = false;
+            foreach(var name in ctorNames)
+            {
+                if (name == nameof(FFITarget.DesignScript.Point)) found = true;
+            }
+            Assert.False(found);
+        }
     }
 }
