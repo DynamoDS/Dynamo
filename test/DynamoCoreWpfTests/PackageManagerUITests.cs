@@ -472,6 +472,7 @@ namespace DynamoCoreWpfTests
         {
             var currentDynamoModel = ViewModel.Model;
 
+            PathManager.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
             currentDynamoModel.PreferenceSettings.DisableBuiltinPackages = true;
             currentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>() { };
             var loadPackageParams = new LoadPackageParams
@@ -485,7 +486,6 @@ namespace DynamoCoreWpfTests
 
             loader.LoadAll(loadPackageParams);
             Assert.AreEqual(0, loader.LocalPackages.Count());
-
             var vm = new PackagePathViewModel(loader, loadPackageParams, Model.CustomNodeManager);
 
             vm.RequestShowFileDialog += (sender, args) => { args.Path = Path.Combine(TestDirectory, "bltin_packages_restart"); };
@@ -495,7 +495,9 @@ namespace DynamoCoreWpfTests
             //save the new path 
             vm.SaveSettingCommand.Execute(null);
 
-            Assert.AreEqual(1, loader.LocalPackages.Count(x => x.Name == "SignedPackage"));
+            var pkg = loader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
+            Assert.IsNotNull(pkg, "Expected Signed package to be valid");
+            Assert.AreEqual(PackageLoadState.StateTypes.Loaded, pkg.LoadState.State);
             Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
 
             // remove the path to SignedPackage2
@@ -504,7 +506,7 @@ namespace DynamoCoreWpfTests
             // save
             vm.SaveSettingCommand.Execute(null);
 
-            Assert.AreEqual(1, loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 1);
+            Assert.AreEqual(1, loader.LocalPackages.Count(x => x.Name == "SignedPackage"));
             Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
 
             // re-add the path to SignedPackage2
