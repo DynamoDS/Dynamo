@@ -250,7 +250,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Description Missing].
+        ///   Looks up a localized string similar to A dropdown menu with customizable values.
         /// </summary>
         public static string CustomSelectionNodeDescription {
             get {
@@ -259,7 +259,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Tags Missing].
+        ///   Looks up a localized string similar to dropdown;custom;custom dropdown;enum;custom enum.
         /// </summary>
         public static string CustomSelectionSearchTags {
             get {
