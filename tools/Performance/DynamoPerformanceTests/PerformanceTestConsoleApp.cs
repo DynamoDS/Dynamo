@@ -3,11 +3,18 @@ using System.IO;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
 using NDesk.Options;
+using System.Linq;
 
 namespace DynamoPerformanceTests
 {
     public class Program
     {
+        private enum ExitCode
+        {
+            ComparisonOK = 0,
+            ComparisonFailure = 1
+        }
+
         private enum Command
         {
             Benchmark,
@@ -17,6 +24,12 @@ namespace DynamoPerformanceTests
             ModelOnlyBenchmark,
             StandardConfigModelOnlyBenchmark
         }
+
+        private static readonly string modelTestBaseReport = "DynamoPerformanceTests.DynamoModelPerformanceTestBase-report.csv";
+        private static readonly string modelTestComparison = "DynamoPerformanceTests.Comparison-Model.csv";
+
+        private static readonly string viewTestBaseReport = "DynamoPerformanceTests.DynamoViewPerformanceTestBase-report.csv";
+        private static readonly string viewTestComparison = "DynamoPerformanceTests.Comparison-View.csv";
 
         public static void Main(string[] args)
         {
@@ -118,19 +131,54 @@ namespace DynamoPerformanceTests
                 return;
             }
 
-            // Create Model comparer
-            Console.WriteLine("\nComparison of Model tests: \n");
-            var baseModelPath = Path.Combine(PerformanceTestHelper.GetFullPath(baseResultsPath), "DynamoPerformanceTests.DynamoModelPerformanceTestBase-report.csv");
-            var newModelPath = Path.Combine(PerformanceTestHelper.GetFullPath(newResultsPath), "DynamoPerformanceTests.DynamoModelPerformanceTestBase-report.csv");
-            var modelSavePath = Path.Combine(PerformanceTestHelper.GetFullPath(savePath), "DynamoPerformanceTests.Comparison-Model.csv");
-            var modelComparer = new ResultsComparer(baseModelPath, newModelPath, modelSavePath);
+            ResultsComparer modelComparer = null;
+            ResultsComparer viewComparer = null;
 
-            // Create View comparer
-            Console.WriteLine("\nComparison of View tests: \n");
-            var baseViewPath = Path.Combine(PerformanceTestHelper.GetFullPath(baseResultsPath), "DynamoPerformanceTests.DynamoViewPerformanceTestBase-report.csv");
-            var newViewPath = Path.Combine(PerformanceTestHelper.GetFullPath(newResultsPath), "DynamoPerformanceTests.DynamoViewPerformanceTestBase-report.csv");
-            var viewSavePath = Path.Combine(PerformanceTestHelper.GetFullPath(savePath), "DynamoPerformanceTests.Comparison-View.csv");
-            var viewComparer = new ResultsComparer(baseViewPath, newViewPath, viewSavePath);
+            try
+            {
+
+                // Create Model comparer
+                Console.WriteLine("\nComparison of Model tests: \n");
+                var baseModelPath = Path.Combine(PerformanceTestHelper.GetFullPath(baseResultsPath), modelTestBaseReport  );
+                var newModelPath = Path.Combine(PerformanceTestHelper.GetFullPath(newResultsPath),modelTestBaseReport);
+                var modelSavePath = Path.Combine(PerformanceTestHelper.GetFullPath(savePath),modelTestComparison );
+
+                modelComparer = new ResultsComparer(baseModelPath, newModelPath, modelSavePath);
+
+                // Create View comparer
+                Console.WriteLine("\nComparison of View tests: \n");
+                var baseViewPath = Path.Combine(PerformanceTestHelper.GetFullPath(baseResultsPath),viewTestBaseReport );
+                var newViewPath = Path.Combine(PerformanceTestHelper.GetFullPath(newResultsPath), viewTestBaseReport);
+                var viewSavePath = Path.Combine(PerformanceTestHelper.GetFullPath(savePath),viewTestComparison );
+
+                viewComparer = new ResultsComparer(baseViewPath, newViewPath, viewSavePath);
+            }
+            //catch here - likely we could not create a view comparer if view comparison did not run.
+            catch(Exception e)
+            {
+                Console.WriteLine($"exception while comparing results {e} {Environment.NewLine} {e.Message}");
+
+            }
+
+            //return result of comparison
+            if (modelComparer != null)
+            {
+                if(modelComparer.ComparisonData.Any(x=>x.ResultState == ResultsComparer.ComparisonResultState.FAIL))
+                {
+                    Console.WriteLine("Comparison failed, some model performance benchmarks failed. Please see log above for details.");
+                    Environment.Exit((int)ExitCode.ComparisonFailure );
+                }
+            }
+
+            if (viewComparer != null)
+            {
+                if (viewComparer.ComparisonData.Any(x => x.ResultState == ResultsComparer.ComparisonResultState.FAIL))
+                {
+                    Console.WriteLine("Comparison failed, some view performance benchmarks failed. Please see log above for details.");
+                    Environment.Exit((int)ExitCode.ComparisonFailure);
+                }
+            }
+
         }
     }
 }

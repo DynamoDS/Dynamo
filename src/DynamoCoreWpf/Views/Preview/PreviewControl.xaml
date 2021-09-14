@@ -11,6 +11,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"  Canvas.Top="-20"
              MouseEnter="PreviewControl_MouseEnter"
              MouseLeave="PreviewControl_MouseLeave">
@@ -63,7 +64,13 @@
               Grid.Row="1"
               Name="centralizedGrid"
               Visibility="Hidden"
-              VerticalAlignment="Top">
+              VerticalAlignment="Top"
+              Background="Transparent">
+            <Grid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{x:Static p:Resources.ContextMenuCopy}" Click="OnCopyToClipboardClick"/>
+                </ContextMenu>
+            </Grid.ContextMenu>
             <Border Background="White"
                     BorderThickness="1"
                     BorderBrush="{StaticResource BubblePreviewBorderColor}" />

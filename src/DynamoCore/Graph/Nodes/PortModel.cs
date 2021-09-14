@@ -2,10 +2,14 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using Dynamo.Configuration;
+using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
@@ -22,7 +26,7 @@ namespace Dynamo.Graph.Nodes
     /// <summary>
     /// PortModel represents Dynamo ports.
     /// </summary>
-    public class PortModel : ModelBase
+    public class PortModel : ModelBase, IEquatable<PortModel>
     {
         #region private fields
         ObservableCollection<ConnectorModel> connectors = new ObservableCollection<ConnectorModel>();
@@ -32,6 +36,7 @@ namespace Dynamo.Graph.Nodes
         private bool keepListStructure = false;
         private int level = 1;
         private string toolTip;
+
         #endregion
 
         #region public members
@@ -160,16 +165,22 @@ namespace Dynamo.Graph.Nodes
             get
             {
                 double halfHeight = Height * 0.5;
-                const double headerHeight = 25;
 
                 double offset = Owner.GetPortVerticalOffset(this);
-                double y = Owner.Y + headerHeight + 5 + halfHeight + offset;
+                double y = Owner.Y + NodeModel.HeaderHeight + halfHeight + offset + 9;
 
                 switch (PortType)
                 {
                     case PortType.Input:
                         return new Point2D(Owner.X, y);
                     case PortType.Output:
+                        if (Owner is CodeBlockNodeModel)
+                        {
+                            // Special case because code block outputs are smaller than regular outputs.
+                            // This ensures the output port of the first code block output aligns with
+                            // the first input port of any node.
+                            return new Point2D(Owner.X + Owner.Width, y + 9);
+                        }
                         return new Point2D(Owner.X + Owner.Width, y);
                 }
 
@@ -187,9 +198,12 @@ namespace Dynamo.Graph.Nodes
             get { return usingDefaultValue; }
             set
             {
-                usingDefaultValue = value;
-                RaisePropertyChanged("UsingDefaultValue");
-                RaisePropertyChanged("ToolTip");
+                if (usingDefaultValue != value)
+                {
+                    usingDefaultValue = value;
+                    RaisePropertyChanged("UsingDefaultValue");
+                    RaisePropertyChanged("ToolTip");
+                }
             }
         }
 
@@ -200,7 +214,7 @@ namespace Dynamo.Graph.Nodes
         public AssociativeNode DefaultValue
         {
             get;
-            internal set;
+            set;
         }
 
         /// <summary>
@@ -296,7 +310,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
         #endregion
-
+        
         [JsonConstructor]
         internal PortModel(string name, string toolTip)
         {
@@ -309,7 +323,6 @@ namespace Dynamo.Graph.Nodes
             LineIndex = -1;
             this.toolTip = toolTip;
             this.Name = name;
-
             MarginThickness = new Thickness(0);
             Height = Math.Abs(Height) < 0.001 ? Configurations.PortHeightInPixels : Height;
         }
@@ -339,6 +352,11 @@ namespace Dynamo.Graph.Nodes
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
         }
 
+        internal void RaisePortIsConnectedChanged()
+        {
+            RaisePropertyChanged(nameof(IsConnected));
+        }
+        
         /// <summary>
         /// Deletes all connectors attached to this PortModel.
         /// </summary>
@@ -369,6 +387,134 @@ namespace Dynamo.Graph.Nodes
         }
 
         #endregion
+
+        public bool Equals(PortModel other)
+        {
+            if (other == null) return false;
+
+            if (this == other) return true;
+
+            if (GUID == other.GUID) return true;
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return GUID.GetHashCode();
+        }
+
+        /// <summary>
+        /// Returns the string representation of the fully qualified typename
+        /// where possible for the port if it's an input port. This method currently
+        /// returns a valid type for only Zero Touch, Builtin and NodeModel nodes,
+        /// and returns null otherwise. The string representation of the type also
+        /// contains the rank information of the type, e.g. Point[], or var[]..[]. 
+        /// </summary>
+        /// <returns>input port type</returns>
+        internal string GetInputPortType()
+        {
+            if (PortType == PortType.Output) return null;
+
+            if (Owner is DSFunction ztNode)
+            {
+                var fd = ztNode.Controller.Definition;
+                string type;
+                // In the case of a node for an instance method, the first port
+                // type is the declaring class type of the method itself.
+                if (fd.Type == FunctionType.InstanceMethod || fd.Type == FunctionType.InstanceProperty)
+                {
+                    if (Index > 0)
+                    {
+                        var param = fd.Parameters.ElementAt(Index - 1);
+                        type = param.Type.ToString();
+                    }
+                    else
+                    {
+                        type = fd.ClassName;
+                    }
+                }
+                else
+                {
+                    var param = fd.Parameters.ElementAt(Index);
+                    type = param.Type.ToString();
+                }
+                return type;
+            }
+          
+            if (Owner is CustomNodes.Function cusNode)
+            {
+                var cd = cusNode.Controller.Definition;
+                var param = cd.Parameters.ElementAt(Index);
+                string type = param.Type.ToString();
+                
+                return type;
+            }
+
+            if (Owner is NodeModel nmNode)
+            {
+                var classType = nmNode.GetType();
+                var inPortAttribute = classType.GetCustomAttributes().OfType<InPortTypesAttribute>().FirstOrDefault();
+
+                try
+                {
+                    return inPortAttribute?.PortTypes.ElementAt(Index);
+                }
+                catch (Exception e)
+                {
+                    Log(e.Message);
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the string representation of the fully qualified typename
+        /// where possible for the port if it's an output port. This method currently
+        /// returns a valid type for only Zero Touch, Builtin and NodeModel nodes,
+        /// and returns null otherwise. The string representation of the type also
+        /// contains the rank information of the type, e.g. Point[], or var[]..[]. 
+        /// </summary>
+        /// <returns>output port type</returns>
+        internal string GetOutPortType()
+        {
+            if (PortType == PortType.Input) return null;
+
+            if (Owner is DSFunction ztNode)
+            {
+                var fd = ztNode.Controller.Definition;
+
+                string type = fd.ReturnType.ToString();
+              
+                return type;
+            }
+
+            if (Owner is CustomNodes.Function cusNode)
+            {
+                var cd = cusNode.Controller.Definition;
+                string type = cd.Returns.ElementAt(Index).Item1;
+
+                return type;
+            }
+
+            if (Owner is NodeModel nmNode)
+            {
+                var classType = nmNode.GetType();
+
+                var outPortAttribute = classType.GetCustomAttributes().OfType<OutPortTypesAttribute>().FirstOrDefault();
+
+                try
+                {
+                    return outPortAttribute?.PortTypes.ElementAt(Index);
+                }
+                catch(Exception e)
+                {
+                   Log(e.Message);
+                }
+            }
+
+            return null;
+        }
     }
 
     /// <summary>

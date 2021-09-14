@@ -1,16 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using Dynamo.Configuration;
 using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
+using Dynamo.Logging;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.ViewModels
 {
     public partial class NoteViewModel: ViewModelBase
     {
+        private int DISTANCE_TO_PINNED_NODE = 16;
+        private int DISTANCE_TO_PINNED_NODE_WITH_WARNING = 36;
+
         #region Events
 
         public event EventHandler RequestsSelection;
@@ -37,8 +46,8 @@ namespace Dynamo.ViewModels
         public NoteModel Model
         {
             get { return _model; }
-            set 
-            { 
+            set
+            {
                 _model = value;
                 RaisePropertyChanged("Model");
             }
@@ -77,7 +86,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         [JsonIgnore]
         public int ZIndex
-         {
+        {
 
             get { return zIndex; }
             set { zIndex = value; RaisePropertyChanged("ZIndex"); }
@@ -96,6 +105,42 @@ namespace Dynamo.ViewModels
             get { return _model.IsSelected; }
         }
 
+        private bool isOnEditMode;
+
+        /// <summary>
+        /// Property determines if note is being edited, 
+        /// is set to true when double clicking the note
+        /// is set to false when note's textbox looses focus
+        /// </summary>
+        [JsonIgnore]
+        public bool IsOnEditMode
+        {
+            get { return isOnEditMode; }
+            set { isOnEditMode = value; RaisePropertyChanged(nameof(IsOnEditMode)); }
+        }
+
+        /// <summary>
+        /// NodeViewModel which this Note is pinned to
+        /// When using the pin to node command  
+        /// note and node become entangled so that 
+        /// if you select and move one the other one 
+        /// moves as well.
+        /// </summary>
+        public NodeViewModel PinnedNode
+        {
+            get
+            {
+                if (Model.PinnedNode==null)
+                {
+                    return null;
+                }
+
+                return WorkspaceViewModel.Nodes
+                    .Where(x => x.Id == Model.PinnedNode.GUID)
+                    .FirstOrDefault();
+            }
+        }
+
         #endregion
 
         public NoteViewModel(WorkspaceViewModel workspaceViewModel, NoteModel model)
@@ -105,10 +150,20 @@ namespace Dynamo.ViewModels
             model.PropertyChanged += note_PropertyChanged;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             ZIndex = ++StaticZIndex; // places the note on top of all nodes/notes
+
+            if (Model.PinnedNode != null)
+            {
+                SubscribeToPinnedNode();
+            }
+            IsOnEditMode = false;
         }
 
         public override void Dispose()
         {
+            if (Model.PinnedNode != null)
+            {
+                UnsuscribeFromPinnedNode();
+            }
             _model.PropertyChanged -= note_PropertyChanged;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
         }
@@ -118,6 +173,7 @@ namespace Dynamo.ViewModels
             CreateGroupCommand.RaiseCanExecuteChanged();
             AddToGroupCommand.RaiseCanExecuteChanged();
             UngroupCommand.RaiseCanExecuteChanged();
+            PinToNodeCommand.RaiseCanExecuteChanged();
         }
 
         private void Select(object parameter)
@@ -127,7 +183,7 @@ namespace Dynamo.ViewModels
 
         public void UpdateSizeFromView(double w, double h)
         {
-            this._model.SetSize(w,h);     
+            this._model.SetSize(w,h);
         }
 
         private bool CanSelect(object parameter)
@@ -155,6 +211,10 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
+                    break;
+                case nameof(NoteModel.PinnedNode):
+                    RaisePropertyChanged(nameof(this.PinnedNode));
+                    PinToNodeCommand.RaiseCanExecuteChanged();
                     break;
 
             }
@@ -218,6 +278,137 @@ namespace Dynamo.ViewModels
                 return !(groups.ContainsModel(Model.GUID));
             }
             return false;
+        }
+
+        private void PinToNode(object parameters)
+        {
+
+            var nodeToPin = DynamoSelection.Instance.Selection
+                .OfType<NodeModel>()
+                .FirstOrDefault();
+
+            if (nodeToPin == null)
+            {
+                return;
+            }
+
+            Model.PinnedNode = nodeToPin;
+
+            MoveNoteAbovePinnedNode();
+
+            SubscribeToPinnedNode();
+
+        }
+
+        private bool CanPinToNode(object parameters)
+        {
+            // Go over all elements selected and get the first NodeModel,
+            // If there is no nodeModel or there is already a node pinned
+            // Note cannot be pinned to any node
+
+            var nodeSelection = DynamoSelection.Instance.Selection
+                    .OfType<NodeModel>();
+
+            var noteSelection = DynamoSelection.Instance.Selection
+                    .OfType<NoteModel>();
+
+            if (nodeSelection == null || noteSelection == null || 
+                nodeSelection.Count() != 1 || noteSelection.Count() != 1)
+                return false;
+
+            var nodeToPin = nodeSelection.FirstOrDefault();
+
+            var nodeAlreadyPinned = WorkspaceViewModel.Notes
+                .Where(n => n.PinnedNode != null)
+                .Any(n => n.PinnedNode.NodeModel.GUID == nodeToPin.GUID);
+
+            if (nodeToPin == null || Model.PinnedNode != null || nodeAlreadyPinned)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private void UnpinFromNode(object parameters)
+        {
+            UnsuscribeFromPinnedNode();
+            Model.PinnedNode = null;
+        }
+
+        private void SubscribeToPinnedNode()
+        {
+            // Subscribe to PinnedNode (model and viewmodel) Property_Changed
+            // so that note moves above and behind node every time
+            // NodeModel.State, NodeModel.Position, or NodeViewModel.ZIndex change
+            Model.PinnedNode.PropertyChanged += PinnedNodeModel_PropertyChanged;
+            PinnedNode.PropertyChanged += PinnedNodeViewModel_PropertyChanged;
+
+            // Subscribe to pinnedNode.RequestSelection (fires before node is selected)
+            // so that this note is added to the selection
+            PinnedNode.Selected += PinnedNodeViewModel_OnPinnedNodeSelected;
+
+            Analytics.TrackEvent(
+                Actions.Pin,
+                Categories.NoteOperations, Model.PinnedNode.Name);
+        }
+
+        private void UnsuscribeFromPinnedNode()
+        {
+            Model.PinnedNode.PropertyChanged -= PinnedNodeModel_PropertyChanged;
+            if (PinnedNode != null)
+            {
+                PinnedNode.PropertyChanged -= PinnedNodeViewModel_PropertyChanged;
+                PinnedNode.RequestsSelection -= PinnedNodeViewModel_OnPinnedNodeSelected;
+
+                Analytics.TrackEvent(
+                    Actions.Unpin,
+                    Categories.NoteOperations, Model.PinnedNode.Name);
+            }
+        }
+
+        private void PinnedNodeModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(NodeModel.State)
+                || e.PropertyName == nameof(NodeModel.Position))
+            {
+                MoveNoteAbovePinnedNode();
+            }
+        }
+
+        private void PinnedNodeViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ZIndex))
+            {
+                MoveNoteAbovePinnedNode();
+            }
+        }
+
+        private void PinnedNodeViewModel_OnPinnedNodeSelected(object sender, EventArgs e)
+        {
+
+            if (!(sender is NodeViewModel node)
+                || Model.PinnedNode == null
+                || node.Id != Model.PinnedNode.GUID)
+            {
+                return;
+            }
+
+            DynamoSelection.Instance.Selection.AddUnique(Model);
+        }
+
+        private void MoveNoteAbovePinnedNode()
+        {
+            var distanceToNode = DISTANCE_TO_PINNED_NODE;
+            if (Model.PinnedNode.State == ElementState.Error ||
+                Model.PinnedNode.State == ElementState.Warning)
+            {
+                distanceToNode = DISTANCE_TO_PINNED_NODE_WITH_WARNING;
+            }
+            Model.CenterX = Model.PinnedNode.CenterX;
+            Model.CenterY = Model.PinnedNode.CenterY - (Model.PinnedNode.Height * 0.5) - (Model.Height * 0.5) - distanceToNode;
+
+            ZIndex = Convert.ToInt32(PinnedNode.ErrorBubble.ZIndex - 1);
         }
     }
 }

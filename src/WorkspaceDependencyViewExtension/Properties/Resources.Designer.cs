@@ -19,10 +19,10 @@ namespace Dynamo.WorkspaceDependency.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dynamo.WorkspaceDependency.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,11 +61,232 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Graph Package Dependency.
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static string MenuItemString {
+        public static System.Drawing.Bitmap CustomNodeReferenceIcon {
+            get {
+                object obj = ResourceManager.GetObject("CustomNodeReferenceIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error from WorkspaceDependencyViewExtension: {0}.
+        /// </summary>
+        public static string DependencyViewExtensionErrorTemplate {
+            get {
+                return ResourceManager.GetString("DependencyViewExtensionErrorTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. Instead you have a different version of {0} installed, would you keep the installed version?.
+        /// </summary>
+        public static string DetailsMessageIncorrectVersion {
+            get {
+                return ResourceManager.GetString("DetailsMessageIncorrectVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {1} is installed and loaded..
+        /// </summary>
+        public static string DetailsMessageLoaded {
+            get {
+                return ResourceManager.GetString("DetailsMessageLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This graph depends on {0} {1}. Would you like to download and install this package?.
+        /// </summary>
+        public static string DetailsMessageMissing {
+            get {
+                return ResourceManager.GetString("DetailsMessageMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The package needs to be uninstalled before you can install a different version of it. Please restart Dynamo and then install the specified version..
+        /// </summary>
+        public static string DetailsMessageRequireRestart {
+            get {
+                return ResourceManager.GetString("DetailsMessageRequireRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. You may have a different version of {0} installed, or you may have a different package which resolves these nodes..
+        /// </summary>
+        public static string DetailsMessageWarning {
+            get {
+                return ResourceManager.GetString("DetailsMessageWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workspace References.
+        /// </summary>
+        public static string ExtensionName {
+            get {
+                return ResourceManager.GetString("ExtensionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install Specified Version.
+        /// </summary>
+        public static string InstallButtonText {
+            get {
+                return ResourceManager.GetString("InstallButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep Installed Version.
+        /// </summary>
+        public static string KeepLocalButtonText {
+            get {
+                return ResourceManager.GetString("KeepLocalButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local Definitions.
+        /// </summary>
+        public static string LocalDefinitionsHeaderText {
+            get {
+                return ResourceManager.GetString("LocalDefinitionsHeaderText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Workspace References.
+        /// </summary>
+        public static string MenuItemString {
             get {
                 return ResourceManager.GetString("MenuItemString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string NameHeader {
+            get {
+                return ResourceManager.GetString("NameHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap NodeLibraryDependency_Loaded {
+            get {
+                object obj = ResourceManager.GetObject("NodeLibraryDependency_Loaded", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap NodeLibraryDependency_Missing {
+            get {
+                object obj = ResourceManager.GetObject("NodeLibraryDependency_Missing", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap NodeLibraryDependency_Warning {
+            get {
+                object obj = ResourceManager.GetObject("NodeLibraryDependency_Warning", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packages.
+        /// </summary>
+        public static string PackageHeaderText {
+            get {
+                return ResourceManager.GetString("PackageHeaderText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path.
+        /// </summary>
+        public static string PathHeader {
+            get {
+                return ResourceManager.GetString("PathHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide Feedback.
+        /// </summary>
+        public static string ProvideFeedbackButton {
+            get {
+                return ResourceManager.GetString("ProvideFeedbackButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not redirect to the Dynamo forum page for feedback:.
+        /// </summary>
+        public static string ProvideFeedbackError {
+            get {
+                return ResourceManager.GetString("ProvideFeedbackError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to recalculate workspace references..
+        /// </summary>
+        public static string RefreshButtonTooltipText {
+            get {
+                return ResourceManager.GetString("RefreshButtonTooltipText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An installed package is marked for uninstall. To complete the uninstall, please restart Dynamo..
+        /// </summary>
+        public static string RestartBannerMessage {
+            get {
+                return ResourceManager.GetString("RestartBannerMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string SizeHeader {
+            get {
+                return ResourceManager.GetString("SizeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version.
+        /// </summary>
+        public static string VersionHeader {
+            get {
+                return ResourceManager.GetString("VersionHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ZeroTouchNodeReferenceIcon {
+            get {
+                object obj = ResourceManager.GetObject("ZeroTouchNodeReferenceIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

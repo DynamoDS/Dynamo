@@ -7,6 +7,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
+using System.Threading;
 
 namespace Dynamo.Tests
 {
@@ -147,6 +148,69 @@ namespace Dynamo.Tests
             {
                 node.NodeExecutionBegin -= onNodeExectuionBegin;
                 node.NodeExecutionEnd -= onNodeExectuionEnd;
+            }
+        }
+
+        [Test]
+        public void StartTimeResetsWhenNodeIsReExecuted()
+        {
+            // Note: This test file is saved in manual run mode
+            string openPath = Path.Combine(TestDirectory, @"core\profiling\createSomePoints.dyn");
+            OpenModel(openPath);
+
+            // Enable profiling
+            var engineController = CurrentDynamoModel.EngineController;
+            var homeWorkspace = CurrentDynamoModel.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            engineController.EnableProfiling(true, homeWorkspace, nodes);
+            var profilingData = engineController.ProfilingSession.ProfilingData;
+
+            // Assert no profiling data has been created for any node yet
+            foreach (var node in nodes)
+            {
+                var time = profilingData.NodeExecutionTime(node);
+                Assert.IsNull(time);
+            }
+
+            // First run
+            BeginRun();
+
+            // Gather first run data and assert it is not null
+            var firstRunTimes = new List<TimeSpan>();
+            foreach (var node in nodes)
+            {
+                var time = profilingData.NodeExecutionTime(node);
+                Assert.IsNotNull(time);
+                firstRunTimes.Add((TimeSpan)time);
+            }
+
+            // Wait a few seconds so we can later confirm that the start time gets reset after this pause
+            var pauseTime = new TimeSpan(0, 0, 0, 5); // 5 seconds
+            Thread.Sleep(pauseTime);
+
+            // Mark ONLY the most upstream node as modified
+            var codeBlockGuid = "87794137f78d4d809814e73d977e46fb";
+            foreach (var node in nodes)
+            {
+                if (node.GUID == Guid.Parse(codeBlockGuid))
+                {
+                    node.MarkNodeAsModified();
+                }
+            }
+
+            // Second run / Re-execute
+            BeginRun();
+
+            // Gather second run data
+            var secondRunTimes = new List<TimeSpan>();
+            foreach (var node in nodes)
+            {
+                var executionTime = (TimeSpan)profilingData.NodeExecutionTime(node);
+                Assert.IsNotNull(executionTime);
+                secondRunTimes.Add(executionTime);
+                // Assert the execution time is less than the 5 second pause time
+                // i.e. The start time has been reset since before we paused for 5 seconds
+                Assert.Less(executionTime.TotalMilliseconds, pauseTime.TotalMilliseconds);
             }
         }
     }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -40,9 +41,11 @@ namespace Dynamo.Graph.Nodes
         private bool canUpdatePeriodically;
         private string name;
         private ElementState state;
-        private string toolTipText = "";
+        private string toolTipText = string.Empty;
         private string description;
-        private string persistentWarning = "";
+        private string persistentWarning = string.Empty;
+        private string transientWarning = string.Empty;
+
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
 
@@ -63,12 +66,14 @@ namespace Dynamo.Graph.Nodes
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
 
-        #endregion
-
-        #region public members
-
         private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
         private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
+
+        #endregion
+
+        internal const double HeaderHeight = 46;
+
+        #region public members
 
         /// <summary>
         /// The unique name that was created the node by
@@ -221,7 +226,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Input nodes are used in Customizer and Presets. Input nodes can be numbers, number sliders,
-        /// strings, bool, code blocks and custom nodes, which don't specify path. This property
+        /// strings, bool, code blocks, custom nodes and color palette node. This property
         /// is true for nodes that are potential inputs for Customizers and Presets.
         /// </summary>
         [JsonIgnore]
@@ -372,6 +377,7 @@ namespace Dynamo.Graph.Nodes
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
+            [IsObsolete("Property setter will be deprecated in Dynamo 3.0")]
             set
             {
                 inPorts = value;
@@ -386,6 +392,7 @@ namespace Dynamo.Graph.Nodes
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
+            [IsObsolete("Property setter will be deprecated in Dynamo 3.0")]
             set
             {
                 outPorts = value;
@@ -692,6 +699,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        [JsonConverter(typeof(DescriptionConverter))]
         /// <summary>
         ///     Description of this Node.
         /// </summary>
@@ -707,6 +715,16 @@ namespace Dynamo.Graph.Nodes
                 description = value;
                 RaisePropertyChanged("Description");
             }
+        }
+
+        /// <summary>
+        /// Node description that can be customized by the user.
+        /// </summary>
+        [JsonIgnore]
+        internal string UserDescription
+        {
+            get;
+            set;
         }
 
         [JsonIgnore]
@@ -864,7 +882,7 @@ namespace Dynamo.Graph.Nodes
                     {
                         MarkDownStreamNodesAsModified(this);
                         OnNodeModified();
-                        RaisePropertyChanged("IsFrozen");
+                        RaisePropertyChanged(nameof(IsFrozen));
                     }
                 }
                 //If the node is frozen, then do not execute the graph immediately.
@@ -873,6 +891,7 @@ namespace Dynamo.Graph.Nodes
                 {
                     ComputeUpstreamOnDownstreamNodes();
                     OnUpdateASTCollection();
+                    RaisePropertyChanged(nameof(IsFrozen));
                 }
             }
         }
@@ -902,7 +921,7 @@ namespace Dynamo.Graph.Nodes
         [JsonIgnore]
         public virtual NodeInputData InputData
         {
-           get { return null; }
+            get { return null; }
         }
 
         [JsonIgnore]
@@ -914,18 +933,18 @@ namespace Dynamo.Graph.Nodes
                 // Current enum supports String, Integer, Float, Boolean, and unknown
                 // When CachedValue is null, type is set to unknown
                 // When Concrete type is dictionary or other type not expressed in enum, type is set to unknown
-                object returnObj = CachedValue?.Data?? new object();
+                object returnObj = CachedValue?.Data ?? new object();
                 var returnType = NodeOutputData.getNodeOutputTypeFromType(returnObj.GetType());
                 var returnValue = String.Empty;
 
                 // IntialValue is returned when the Type enum does not equal unknown
-                if(returnType != NodeOutputTypes.unknownOutput)
+                if (returnType != NodeOutputTypes.unknownOutput)
                 {
                     var formattableReturnObj = returnObj as IFormattable;
                     returnValue = formattableReturnObj != null ? formattableReturnObj.ToString(null, CultureInfo.InvariantCulture) : returnObj.ToString();
                 }
 
-                
+
                 return new NodeOutputData()
                 {
                     Id = this.GUID,
@@ -1043,6 +1062,7 @@ namespace Dynamo.Graph.Nodes
         {
             inputNodes = new Dictionary<int, Tuple<int, NodeModel>>();
             outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
+            FindPortData(inPorts, outPorts);
 
             // Initialize the port events
             // Note: It is important that this occurs before the ports are added next
@@ -1077,6 +1097,51 @@ namespace Dynamo.Graph.Nodes
             RaisesModificationEvents = true;
         }
 
+        /// <summary>
+        /// Here we try to find the correct port names and tooltips.
+        /// ideally we'd use the runtime information to correctly update or localize
+        /// the port info, if we can't find it for any of the ports of the current node we fallback to the deserialized data
+        /// for all the ports.
+        /// Other strategies for port data lookup can be added here in the future.
+        /// </summary>
+        /// <param name="inPorts"></param>
+        /// <param name="outPorts"></param>
+        private void FindPortData(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        {
+            //try to get portData from attributes on the nodeModel type.
+            //to assign the correct tooltips.
+            //This might fail because some nodes don't use attributes to define 
+            //port data and instead add them using PortModel constructors.
+            var inportDatas = GetPortDataFromAttributes(PortType.Input).ToList();
+            var outportDatas = GetPortDataFromAttributes(PortType.Output).ToList();
+
+            // if the above attempt failed, for example because the node type does not have any port data attributes
+            // then give up for all ports.
+            if (inportDatas.Count() != inPorts.Count() || outportDatas.Count() != outPorts.Count())
+            {
+                return;
+            }
+
+            for (var i = 0; i < outPorts.Count(); i++)
+            {
+                var portData = outportDatas.ElementAt(i);
+                var port = outPorts.ElementAt(i);
+                port.Name = portData.Name == string.Empty ? port.Name : portData.Name;
+                port.ToolTip = portData.ToolTipString == string.Empty ? port.ToolTip : portData.ToolTipString;
+
+            }
+
+            for (var i = 0; i < inPorts.Count(); i++)
+            {
+
+                var portData = inportDatas.ElementAt(i);
+                var port = inPorts.ElementAt(i);
+                port.Name = portData.Name == string.Empty ? port.Name : portData.Name;
+                port.ToolTip = portData.ToolTipString == string.Empty ? port.ToolTip : portData.ToolTipString;
+
+            }
+        }
+
         protected NodeModel()
         {
             inputNodes = new Dictionary<int, Tuple<int, NodeModel>>();
@@ -1086,7 +1151,7 @@ namespace Dynamo.Graph.Nodes
             ShouldDisplayPreviewCore = true;
             executionHint = ExecutionHints.Modified;
 
-            PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
+            PropertyChanged += delegate (object sender, PropertyChangedEventArgs args)
             {
                 switch (args.PropertyName)
                 {
@@ -1115,7 +1180,7 @@ namespace Dynamo.Graph.Nodes
             {
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
                     ConfigureSnapEdges(sender == InPorts ? InPorts : OutPorts);
-                    foreach(PortModel p in e.NewItems)
+                    foreach (PortModel p in e.NewItems)
                     {
                         p.Connectors.CollectionChanged += (coll, args) =>
                         {
@@ -1129,7 +1194,7 @@ namespace Dynamo.Graph.Nodes
                     }
                     break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-                    foreach(PortModel p in e.OldItems)
+                    foreach (PortModel p in e.OldItems)
                     {
                         p.PropertyChanged -= OnPortPropertyChanged;
 
@@ -1148,7 +1213,7 @@ namespace Dynamo.Graph.Nodes
             switch (e.Action)
             {
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                    foreach(ConnectorModel c in e.NewItems)
+                    foreach (ConnectorModel c in e.NewItems)
                     {
                         OnPortConnected(p, c);
                     }
@@ -1295,7 +1360,7 @@ namespace Dynamo.Graph.Nodes
                 // If any exception from BuildOutputAst(), we emit
                 // a function call "var_guid = %nodeAstFailed(full.node.name)"
                 // for this node, set the state of node to AstBuildBroken and
-                // disply the corresponding error message.
+                // display the corresponding error message.
                 //
                 // The return value of function %nodeAstFailed() is always
                 // null.
@@ -1332,7 +1397,7 @@ namespace Dynamo.Graph.Nodes
             // var_ast_identifier = {"outport1" : var_ast_identifier_out1, ..., "outportn" : var_ast_identifier_outn};
             var kvps = OutPorts.Select((outNode, index) =>
                 new KeyValuePair<StringNode, IdentifierNode>
-                    (new StringNode {Value = outNode.Name}, GetAstIdentifierForOutputIndex(index)));
+                    (new StringNode { Value = outNode.Name }, GetAstIdentifierForOutputIndex(index)));
 
             var dict = new DictionaryExpressionBuilder();
             foreach (var kvp in kvps)
@@ -1512,9 +1577,37 @@ namespace Dynamo.Graph.Nodes
         {
             State = ElementState.Dead;
             ClearPersistentWarning();
+            transientWarning = string.Empty;
 
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTooltipText();
+        }
+
+        /// <summary>
+        /// Clears the transient warning only if the current state is ElementState.Warning.
+        /// If an argument is specified, then the transient warning will be cleared only if it matches the argument value.
+        /// If no argument is specified (i.e null or empty value), then the transient warning will be cleared no matter its value.
+        /// PersistentWarning warnings will be kept. If no persistent warnings are found, then the default state will be assigned. 
+        /// </summary>
+        internal void ClearTransientWarning(string t = null)
+        {
+            if (State == ElementState.Warning)
+            {
+                if (string.IsNullOrEmpty(t) || string.Compare(t, transientWarning) == 0)
+                {// Called with null (or empty argument) or argument matched the existing transient warning
+                    transientWarning = string.Empty;// Reset the transient warning
+                    if (!string.IsNullOrEmpty(persistentWarning))
+                    {// Still have persistent warnings then switch to the PersistentWarning state
+                        State = ElementState.PersistentWarning;
+                        ToolTipText = persistentWarning;
+                    }
+                    else
+                    {// No persistent warnings, go to default
+                        State = ElementState.Dead;
+                        ClearErrorsAndWarnings();
+                    }
+                } 
+            }
         }
 
         public void SelectNeighbors()
@@ -1527,6 +1620,33 @@ namespace Dynamo.Graph.Nodes
 
             foreach (var c in inConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.Start.Owner)))
                 DynamoSelection.Instance.Selection.Add(c.Start.Owner);
+        }
+
+        /// <summary>
+        /// Recursively selects all nodes downstream to this node
+        /// </summary>
+        public void SelectDownstreamNeighbours()
+        {
+            var downstream = this.AllDownstreamNodes(new List<NodeModel>());
+            DynamoSelection.Instance.Selection.AddRange(downstream);
+        }
+
+        /// <summary>
+        /// Recursively selects all nodes upstream to this node
+        /// </summary>
+        public void SelectUpstreamNeighbours()
+        {
+            var upstream = this.AllUpstreamNodes(new List<NodeModel>());
+            DynamoSelection.Instance.Selection.AddRange(upstream);
+        }
+
+        /// <summary>
+        /// Recursively selects all nodes upstream and downstream to this node
+        /// </summary>
+        public void SelectUpstreamAndDownstreamNeighbours()
+        {
+            SelectUpstreamNeighbours();
+            SelectDownstreamNeighbours();
         }
 
         #region Node State
@@ -1587,8 +1707,8 @@ namespace Dynamo.Graph.Nodes
             else
             {
                 State = ElementState.Warning;
-                ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.Format("{0}\n{1}", persistentWarning, p);
-                ClearPersistentWarning();
+                transientWarning = p;
+                ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.IsNullOrEmpty(p) ? persistentWarning : $"{persistentWarning}\n{p}";
             }
         }
 
@@ -1871,21 +1991,23 @@ namespace Dynamo.Graph.Nodes
 
         private void OnPortConnected(PortModel port, ConnectorModel connector)
         {
-          
-            if (port.PortType != PortType.Input) return;
+            if (port.PortType != PortType.Input)
+            {
+                port.RaisePortIsConnectedChanged();
+                return;
+            }
 
             var data = InPorts.IndexOf(port);
             var startPort = connector.Start;
             var outData = startPort.Owner.OutPorts.IndexOf(startPort);
             ConnectInput(data, outData, startPort.Owner);
             startPort.Owner.ConnectOutput(outData, data, this);
-
+            
             var handler = PortConnected;
             if (null != handler) handler(port, connector);
-
             OnConnectorAdded(connector);
-
             OnNodeModified();
+            port.RaisePortIsConnectedChanged();
         }
 
         private void OnPortDisconnected(PortModel port, ConnectorModel connector)
@@ -1893,14 +2015,18 @@ namespace Dynamo.Graph.Nodes
             var handler = PortDisconnected;
             if (null != handler) handler(port);
 
-            if (port.PortType != PortType.Input) return;
+            if (port.PortType != PortType.Input)
+            {
+                port.RaisePortIsConnectedChanged();
+                return;
+            }
 
             var data = InPorts.IndexOf(port);
             var startPort = connector.Start;
             DisconnectInput(data);
             startPort.Owner.DisconnectOutput(startPort.Owner.OutPorts.IndexOf(startPort), data, this);
-
             OnNodeModified();
+            port.RaisePortIsConnectedChanged();
         }
 
         #endregion
@@ -1913,16 +2039,17 @@ namespace Dynamo.Graph.Nodes
         ///     Creates a Scheme representation of this dynNode and all connected dynNodes.
         /// </summary>
         /// <returns>S-Expression</returns>
+        [Obsolete("PrintExpression is deprecated and will be removed, please refer to the Node2Code functionality instead for conversion to DesignScript code.")]
         public virtual string PrintExpression()
         {
             string nick = Name.Replace(' ', '_');
 
-            if (!InPorts.Any(p=>p.IsConnected))
+            if (!InPorts.Any(p => p.IsConnected))
                 return nick;
 
             string s = "";
 
-            if (InPorts.All(p=>p.IsConnected))
+            if (InPorts.All(p => p.IsConnected))
             {
                 s += "(" + nick;
                 foreach (int data in Enumerable.Range(0, InPorts.Count))
@@ -2089,6 +2216,30 @@ namespace Dynamo.Graph.Nodes
                         }
                     }
                     return true;
+
+                case nameof(DisplayLabels):
+                    bool newDisplayLabels;
+                    if (bool.TryParse(value, out newDisplayLabels))
+                    {
+                        DisplayLabels = newDisplayLabels;
+                    }
+                    return true;
+
+                case nameof(IsSetAsInput):
+                    bool newIsSetAsInput;
+                    if (bool.TryParse(value, out newIsSetAsInput))
+                    {
+                        IsSetAsInput = newIsSetAsInput;
+                    }
+                    return true;
+
+                case nameof(IsSetAsOutput):
+                    bool newIsSetAsOutput;
+                    if (bool.TryParse(value, out newIsSetAsOutput))
+                    {
+                        IsSetAsOutput = newIsSetAsOutput;
+                    }
+                    return true;
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -2107,13 +2258,13 @@ namespace Dynamo.Graph.Nodes
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)
         {
-            foreach(var p in OutPorts)
+            foreach (var p in OutPorts)
             {
                 p.Owner = this;
                 p.PortType = PortType.Output;
             }
 
-            foreach(var p in InPorts)
+            foreach (var p in InPorts)
             {
                 p.Owner = this;
                 p.PortType = PortType.Input;
@@ -2138,6 +2289,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("x", X);
             helper.SetAttribute("y", Y);
             helper.SetAttribute("isVisible", IsVisible);
+            helper.SetAttribute(nameof(DisplayLabels), DisplayLabels);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSetAsInput.ToString());
             helper.SetAttribute("isSelectedOutput", IsSetAsOutput.ToString());
@@ -2169,7 +2321,9 @@ namespace Dynamo.Graph.Nodes
                 helper.SetAttribute("nodeState", state.ToString());
             }
 
-            if (context == SaveContext.File)
+            if (context == SaveContext.File ||
+                context == SaveContext.Save ||
+                context == SaveContext.SaveAs)
                 OnSave();
         }
 
@@ -2196,10 +2350,11 @@ namespace Dynamo.Graph.Nodes
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
             isVisible = helper.ReadBoolean("isVisible", true);
+            displayLabels = helper.ReadBoolean(nameof(DisplayLabels), false);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSetAsInput = helper.ReadBoolean("isSelectedInput", false);
             IsSetAsOutput = helper.ReadBoolean("isSelectedOutput", false);
-            isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
+            IsFrozen = helper.ReadBoolean("IsFrozen", false);
             PreviewPinned = helper.ReadBoolean("isPinned", false);
 
             var portInfoProcessed = new HashSet<int>();
@@ -2266,16 +2421,11 @@ namespace Dynamo.Graph.Nodes
                 // in different ways and their views will always be up-to-date with
                 // respect to their models.
                 RaisePropertyChanged("InteractionEnabled");
-                RaisePropertyChanged("State");
-                RaisePropertyChanged("Name");
-                RaisePropertyChanged("ArgumentLacing");
-                RaisePropertyChanged("IsVisible");
-                 
-                //we need to modify the downstream nodes manually in case the
-                //undo is for toggling freeze. This is ONLY modifying the execution hint.
-                // this does not run the graph.
-                RaisePropertyChanged("IsFrozen");
-                MarkDownStreamNodesAsModified(this);
+                RaisePropertyChanged(nameof(State));
+                RaisePropertyChanged(nameof(Name));
+                RaisePropertyChanged(nameof(ArgumentLacing));
+                RaisePropertyChanged(nameof(IsVisible));
+                RaisePropertyChanged(nameof(DisplayLabels));
 
                 // Notify listeners that the position of the node has changed,
                 // then all connected connectors will also redraw themselves.
@@ -2343,15 +2493,6 @@ namespace Dynamo.Graph.Nodes
         ///
         internal void RequestValueUpdate(EngineController engine)
         {
-            // A NodeModel should have its cachedMirrorData reset when it is
-            // requested to update its value. When the QueryMirrorDataAsyncTask
-            // returns, it will update cachedMirrorData with the latest value.
-            //
-            lock (cachedValueMutex)
-            {
-                cachedValue = null;
-            }
-
             // Do not have an identifier for preview right now. For an example,
             // this can be happening at the beginning of a code block node creation.
             var variableName = AstIdentifierForPreview.Value;
@@ -2359,10 +2500,7 @@ namespace Dynamo.Graph.Nodes
                 return;
 
             var runtimeMirror = engine.GetMirror(variableName);
-            if (runtimeMirror != null)
-            {
-                CachedValue = runtimeMirror.GetData();
-            }
+            CachedValue = runtimeMirror?.GetData();
         }
 
         /// <summary>
@@ -2444,7 +2582,7 @@ namespace Dynamo.Graph.Nodes
         /// with visualization manager for all the output ports of the given node.
         /// </summary>
         /// <returns>List of Drawable Ids</returns>
-        private IEnumerable<KeyValuePair<Guid, string>> GetDrawableIdMap()
+        private IEnumerable<KeyValuePair<Guid, string>> GetDrawableIdMap()
         {
             var idMap = new Dictionary<Guid, string>();
             for (int index = 0; index < OutPorts.Count; ++index)

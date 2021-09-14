@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -16,6 +17,13 @@ namespace DynamoCoreWpfTests
     public class NodeViewTests : DynamoTestUIBase
     {
         // adapted from: http://stackoverflow.com/questions/9336165/correct-method-for-using-the-wpf-dispatcher-in-unit-tests
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("FunctionObject.ds");
+            libraries.Add("BuiltIn.ds");
+            libraries.Add("FFITarget.dll");
+        }
 
         public override void Open(string path)
         {
@@ -228,6 +236,141 @@ namespace DynamoCoreWpfTests
 
             // Delete temp file
             File.Delete(tempPath);
+        }
+
+        [Test]
+        public void SettingOriginalNodeName()
+        {
+            Open(@"core\originalNodeNameTests\originalNodeName.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid("37749b95-916a-4dfe-b69b-b516b2ccafe9");
+
+            // Get a reference to the current workspace
+            NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
+
+            string expectedOriginalName = "List Create";
+
+            Assert.AreEqual(false, nodeViewModel.IsRenamed);
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+
+            string newName = "NewName";
+            nodeViewModel.Name = newName;
+            Assert.AreEqual(nodeViewModel.IsRenamed, true);
+            Assert.AreEqual(nodeViewModel.Name, newName);
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+        }
+
+        [Test]
+        public void CheckDummyNodeName()
+        {
+            Open(@"core\originalNodeNameTests\originalNodeName.dyn");
+
+            // Get the node view for the dummy node in the graph
+            NodeView nodeView = NodeViewWithGuid("94e8d6a8-5463-483c-9fe6-ace668670fae");
+            // Get a reference to the dummy node view model
+            NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
+
+            Assert.AreEqual(false, nodeViewModel.IsRenamed);
+            string expectedOriginalName = "Colors.GetAllColors_V1";
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+        }
+
+        [Test]
+        public void CheckNotLoadedCustomNodeOriginalName()
+        {
+            // Custom node inside is not loaded this case so that renamed tag will be disabled
+            Open(@"core\originalNodeNameTests\originalNodeName.dyn");
+
+            // Get the node view for the not loaded custom node in the graph
+            NodeView nodeView = NodeViewWithGuid("5795dc19-47c9-4084-a5da-df248e03edc4");
+
+            // Get a reference to the custom node view model
+            NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
+
+            Assert.AreEqual(false, nodeViewModel.IsRenamed);
+            string expectedOriginalName = "RootNode_V1";
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+        }
+
+        [Test]
+        public void CheckLoadedCustomNodeOriginalName()
+        {
+            // Opening the dyf first will make sure the custom node is loaded
+            // so that rename tag can function correctly in this case
+            Open(@"core\custom_node_dep_test\RootNode.dyf");
+            Open(@"core\originalNodeNameTests\originalNodeName.dyn");
+
+            // Get the node view for the not loaded custom node in the graph
+            NodeView nodeView = NodeViewWithGuid("5795dc19-47c9-4084-a5da-df248e03edc4");
+
+            // Get a reference to the custom node view model
+            NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
+
+            Assert.AreEqual(true, nodeViewModel.IsRenamed);
+            string expectedNewOriginalName = "RootNode";
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedNewOriginalName);
+        }
+
+        [Test]
+        public void SettingOriginalNodeNameOnCustomNode()
+        {
+            Open(@"core\originalNodeNameTests\originalNodeNameCustomNode.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("d0b81747d16f48cfbc9992182783d229").ToString());
+
+            // Get a reference to the current workspace
+            NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
+
+            string expectedOriginalName = "NestedNode";
+
+            Assert.AreEqual(nodeViewModel.IsRenamed, false);
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+
+            string newName = "NewName";
+            nodeViewModel.Name = newName;
+            Assert.AreEqual(nodeViewModel.IsRenamed, true);
+            Assert.AreEqual(nodeViewModel.Name, newName);
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+        }
+
+        [Test]
+        public void InputPortType_NodeModelNode_AreCorrect()
+        {
+            Open(@"UI\CoreUINodes.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("9dedd5c5c8b14fbebaea28194fd38c9a").ToString());
+
+            var inPorts = nodeView.ViewModel.InPorts;
+            Assert.AreEqual(1, inPorts.Count());
+
+            var port = inPorts[0].PortModel;
+            var type = port.GetInputPortType();
+            Assert.AreEqual("System.Drawing.Bitmap", type);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void GettingNodeNameDoesNotTriggerPropertyChangeCycle()
+        {
+            //add a node
+            var numNode = new CoreNodeModels.Input.DoubleInput();
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(numNode, true);
+
+            //subscribe to all property changes
+            var nvm = ViewModel.CurrentSpaceViewModel.Nodes.First();
+            nvm.PropertyChanged += NodeNameTest_PropChangedHandler;
+            //get the node name.
+            var temp = nvm.Name;
+            nvm.PropertyChanged -= NodeNameTest_PropChangedHandler;
+        }
+
+        private void NodeNameTest_PropChangedHandler(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            //get the name,this will sometimes cause another propertyChanged event
+             var temp = (sender as NodeViewModel).Name;
         }
     }
 }

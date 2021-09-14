@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,20 +21,17 @@ namespace Dynamo.Wpf.Extensions
     {
         private readonly DynamoView dynamoView;
         private readonly DynamoViewModel dynamoViewModel;
+
+        /// <summary>
+        /// A reference to the Dynamo main menu control
+        /// </summary>
         public readonly Menu dynamoMenu;
-        private readonly ViewStartupParams viewStartupParams;
 
         /// <summary>
         /// A reference to the <see cref="ViewStartupParams"/> class.
         /// Useful if this extension will be loaded from a package, as its startup method will not be called.
         /// </summary>
-        public ViewStartupParams ViewStartupParams
-        {
-            get
-            {
-                return viewStartupParams;
-            }
-        }
+        public ViewStartupParams ViewStartupParams { get; }
 
         /// <summary>
         /// A reference to the background preview viewmodel for geometry selection,
@@ -47,6 +45,23 @@ namespace Dynamo.Wpf.Extensions
         public IRenderPackageFactory RenderPackageFactory
         {
             get { return dynamoViewModel.RenderPackageFactoryViewModel.Factory; }
+        }
+
+        /// <summary>
+        /// A reference to package install operations on the package manager
+        /// </summary>
+        public IPackageInstaller PackageInstaller
+        {
+            get { return dynamoViewModel.PackageManagerClientViewModel; }
+        }
+
+        private ViewModelCommandExecutive viewModelCommandExecutive;
+        /// <summary>
+        /// Class used for executing commands on the DynamoViewModel and current WorkspaceViewModel
+        /// </summary>
+        public ViewModelCommandExecutive ViewModelCommandExecutive
+        {
+            get { return viewModelCommandExecutive ?? (viewModelCommandExecutive = new ViewModelCommandExecutive(dynamoViewModel)); }
         }
 
         /// <summary>
@@ -67,13 +82,34 @@ namespace Dynamo.Wpf.Extensions
             dynamoView = dynamoV;
             dynamoViewModel = dynamoVM;
             dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
-            viewStartupParams = new ViewStartupParams(dynamoVM);
+            ViewStartupParams = new ViewStartupParams(dynamoVM);
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
         }
 
+        [Obsolete("Method will be deprecated in Dynamo 3.0, please use AddExtensionMenuItem")]
         public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
         {
             AddItemToMenu(type, menuItem, index);
+        }
+
+        /// <summary>
+        /// Adds a menu item to the extensions menu
+        /// Items will be ordered alphabetically
+        /// </summary>
+        /// <param name="menuItem">Menu item for the extension to be added</param>
+        public void AddExtensionMenuItem(MenuItem menuItem)
+        {
+            if (dynamoMenu == null) return;
+
+            var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
+            var dynamoItem = dynamoMenuItems.First(item => item.Header.ToString() == Properties.Resources.DynamoViewExtensionsMenu);
+
+            if (dynamoItem == null) return;
+            if (!dynamoItem.IsEnabled) dynamoItem.IsEnabled = true;
+
+            dynamoItem.Items.Add(menuItem);
+            //Orders the menu items alphabetically 
+            dynamoItem.Items.SortDescriptions.Add(new SortDescription("Header", ListSortDirection.Ascending));
         }
 
         /// <summary>
@@ -82,11 +118,11 @@ namespace Dynamo.Wpf.Extensions
         /// <param name="viewExtension">Instance of the view extension object that is being added to the extensions side bar.</param>
         /// <param name="contentControl">Control UI element with a single piece of content of any type.</param>
         /// <returns></returns>
-        internal void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
+        public void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
         {
-            TabItem tabItem  = dynamoView.AddTabItem(viewExtension, contentControl);
+            bool added  = dynamoView.AddOrFocusExtensionControl(viewExtension, contentControl);
 
-            if (tabItem != null)
+            if (added)
             {
                 dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.ExtensionAdded);
             }
@@ -94,6 +130,16 @@ namespace Dynamo.Wpf.Extensions
             {
                 dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.ExtensionAlreadyPresent);
             }
+        }
+
+        /// <summary>
+        /// Close the tab for extension UI control element in the extensions side bar.
+        /// </summary>
+        /// <param name="viewExtension">Instance of the view extension object that is being added to the extensions side bar.</param>
+        /// <returns></returns>
+        public void CloseExtensioninInSideBar(IViewExtension viewExtension)
+        {
+            dynamoView.CloseExtensionControl(viewExtension);
         }
 
         public void AddSeparator(MenuBarType type, Separator separatorObj, int index = -1)
@@ -141,14 +187,52 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
-        /// Searchs for dynamo parent menu item. Parent item can be:
-        /// file menu, edit menu, view menu and help mebu bars.
+        /// Searches for dynamo parent menu item. Parent item can be:
+        /// file menu, edit menu, view menu and help menu bars.
         /// </summary>
-        /// <param name="menuBarType">File, Edit, View or Help.</param>
+        /// <param name="type">File, Edit, View or Help.</param>
         private MenuItem SearchForMenuItem(MenuBarType type)
         {
             var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
             return dynamoMenuItems.First(item => item.Header.ToString() == type.ToDisplayString());
+        }
+
+        /// <summary>
+        /// Event raised when a component inside Dynamo raises an error with a documentation link or directly requests a documentation link to be opened.
+        /// Extensions should subscribe to this event to be able to handle RequestOpenDocumentationLink events from Dynamo.
+        /// </summary>
+        public event RequestOpenDocumentationLinkHandler RequestOpenDocumentationLink
+        {
+            // we provide a transparent passthrough to underlying event
+            // so that the ViewLoadedParams class itself doesn't appear as a subscriber to the event
+            add
+            {
+                this.dynamoViewModel.RequestOpenDocumentationLink += value;
+            }
+            remove
+            {
+                this.dynamoViewModel.RequestOpenDocumentationLink -= value;
+            }
+        }
+
+        /// <summary>
+        /// Request to open a view extension in the side panel by name.
+        /// </summary>
+        /// <param name="extensionName"></param>
+        public void OpenViewExtension(string extensionName)
+        {
+            dynamoViewModel.OnViewExtensionOpenRequest(extensionName);
+        }
+        
+        /// <summary>
+        /// Event raised when a component inside Dynamo raises a request to open a view extension.
+        /// </summary>
+        public event Action<string> ViewExtensionOpenRequest
+        {
+            // we provide a transparent passthrough to underlying event
+            // so that the ViewLoadedParams class itself doesn't appear as a subscriber to the event
+            add => dynamoViewModel.ViewExtensionOpenRequest += value;
+            remove => dynamoViewModel.ViewExtensionOpenRequest -= value;
         }
 
     }
@@ -156,6 +240,7 @@ namespace Dynamo.Wpf.Extensions
     /// An enum that represents the different possible 
     /// MenuBars which ViewExtensions may add items to.
     /// </summary>
+    /// TODO: Remove in Dynamo 3.0
     public enum MenuBarType
     {
         File,

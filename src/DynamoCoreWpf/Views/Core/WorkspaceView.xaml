@@ -136,11 +136,22 @@
 
         <controls:InfiniteGridView x:Name="infiniteGridView"
                                    IsHitTestVisible="False">
-            <controls:InfiniteGridView.Visibility>
-                <Binding Path="DataContext.BackgroundPreviewActive"
-                         Converter="{StaticResource InverseBoolToVisibilityConverter}"
-                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
-            </controls:InfiniteGridView.Visibility>
+            <controls:InfiniteGridView.Style>
+                <Style TargetType="controls:InfiniteGridView">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="True" Binding="{Binding Path=DataContext.PreferenceSettings.IsBackgroundGridVisible,
+                                           RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                                <Condition Value="False" Binding="{Binding Path=DataContext.BackgroundPreviewViewModel.Active,
+                                           RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </controls:InfiniteGridView.Style>
         </controls:InfiniteGridView>
 
         <!-- Assigning a ZoomBorder.Background so that it can receive mouse input -->
@@ -297,9 +308,8 @@
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.Command>
                 <ui:ImageCheckBox.IsChecked>
-                    <Binding Path="DataContext.BackgroundPreviewViewModel.IsPanning"
-                             Mode="OneWay"
-                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                    <Binding Path="IsPanning"
+                             Mode="OneWay" />
                 </ui:ImageCheckBox.IsChecked>
             </ui:ImageCheckBox>
 
@@ -314,9 +324,8 @@
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.Command>
                 <ui:ImageCheckBox.IsChecked>
-                    <Binding Path="DataContext.BackgroundPreviewViewModel.IsOrbiting"
-                             Mode="OneWay"
-                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                    <Binding Path="IsOrbiting"
+                             Mode="OneWay" />
                 </ui:ImageCheckBox.IsChecked>
                 <ui:ImageCheckBox.Visibility>
                     <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
@@ -334,6 +343,15 @@
                Placement="MousePoint"
                DataContext="{Binding InCanvasSearchViewModel}">
             <ui:InCanvasSearchControl RequestShowInCanvasSearch="ShowHideInCanvasControl" />
+        </Popup>
+
+        <Popup Name="NodeAutoCompleteSearchBar"
+               StaysOpen="True"
+               AllowsTransparency="True"
+               IsOpen="False"
+               Placement="Custom"
+               DataContext="{Binding NodeAutoCompleteSearchViewModel}">
+            <ui:NodeAutoCompleteSearchControl RequestShowNodeAutoCompleteSearch="ShowHideNodeAutoCompleteControl" />
         </Popup>
 
         <Popup Name="ContextMenuPopup" Style="{StaticResource WorkspaceContextMenuStylePopup}"

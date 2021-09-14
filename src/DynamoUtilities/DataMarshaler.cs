@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace Dynamo.Utilities
 {
@@ -24,6 +25,20 @@ namespace Dynamo.Utilities
                 {
                     // Dictionary<TKey, TValue> and IronPython.Runtime.PythonDictionary both implement IDictionary
                     return dict.Keys.Cast<object>().ToDictionary(key => Marshal(key), key => Marshal(dict[key]));
+                });
+            RegisterMarshaler(
+                (BigInteger bigInt) =>
+                {
+                    long int64;
+                    try
+                    {
+                        int64 = (long)bigInt;
+                    }
+                    catch (OverflowException)
+                    {
+                        return bigInt;
+                    }
+                    return int64;
                 });
         }
 
@@ -86,7 +101,9 @@ namespace Dynamo.Utilities
             var applicable = marshalers.Where(pair => pair.Key.IsAssignableFrom(targetType));
 
             if (!applicable.Any())
+            {
                 return obj;
+            }
 
             // Find the marshaler that operates on the closest base type of the target type.
             var dispatchedMarshaler =

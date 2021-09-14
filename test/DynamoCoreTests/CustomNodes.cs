@@ -998,6 +998,39 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void UpdateCBNInCustomNodeDef_DoesNotCrash()
+        {
+            var basePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
+
+            OpenModel(Path.Combine(basePath, "cbn_customnode_crash.dyn"));
+
+            // Assert custom node instance executes successfully
+            AssertPreviewValue("12d33f2a354a4e65ac06a3c783a7e679", "this is a custom node");
+
+            var customWorkspace = CurrentDynamoModel.CustomNodeManager.LoadedWorkspaces.FirstOrDefault(x => x != null);
+
+            // Navigate to custom node workspace
+            CurrentDynamoModel.AddWorkspace(customWorkspace);
+
+            // Extract cbn from custom node WS
+            var cbn = customWorkspace.Nodes.FirstOrDefault(x => x is CodeBlockNodeModel) as CodeBlockNodeModel;
+
+            // Edit CBN in custom node definition to introduce syntax error,
+            // update custom node definition and re-execute 
+            Assert.DoesNotThrow(() =>
+            {
+                CurrentDynamoModel.ExecuteCommand(
+                    new DynamoModel.UpdateModelValueCommand(
+                        customWorkspace.Guid,
+                        cbn.GUID,
+                        "Code",
+                        "1...10"));
+            });
+
+            AssertPreviewValue("12d33f2a-354a-4e65-ac06-a3c783a7e679", null);
+        }
+
+        [Test]
         public void TestGroupsOnCustomNodes()
         {
             string openPath = Path.Combine(TestDirectory, @"core\collapse\collapse.dyn");

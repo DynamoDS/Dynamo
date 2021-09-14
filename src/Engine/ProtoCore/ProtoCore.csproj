@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>ProtoCore</RootNamespace>
     <AssemblyName>ProtoCore</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>

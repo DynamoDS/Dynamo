@@ -1001,9 +1001,9 @@ namespace Dynamo.Tests
             var node =
                 new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double"));
             CurrentDynamoModel.ExecuteCommand(new Dynamo.Models.DynamoModel.CreateNodeCommand(node, 0, 0, true, false));
-            Assert.IsTrue(node.InPorts[0].ToolTip.Equals("double\nDefault value : 0"));
+            Assert.IsTrue(node.InPorts[0].ToolTip.Equals("X coordinate\n\ndouble\nDefault value : 0"));
             node.InPorts[0].UsingDefaultValue = false;
-            Assert.IsTrue(node.InPorts[0].ToolTip.Equals("double\nDefault value : 0 (disabled)"));
+            Assert.IsTrue(node.InPorts[0].ToolTip.Equals("X coordinate\n\ndouble\nDefault value : 0 (disabled)"));
         }
         [Test]
         public void Reorder_7573()
@@ -1088,7 +1088,7 @@ namespace Dynamo.Tests
             // change to
             // def foo() { return = 42; }
             var cbnGuid = Guid.Parse("6a260ba7-d658-4350-a777-49511f725454");
-            var command = new Models.DynamoModel.UpdateModelValueCommand(Guid.Empty, cbnGuid, "Code", @"def foo() { return = 42; }");
+            var command = new Dynamo.Models.DynamoModel.UpdateModelValueCommand(Guid.Empty, cbnGuid, "Code", @"def foo() { return = 42; }");
             CurrentDynamoModel.ExecuteCommand(command);
             RunCurrentModel();
 
@@ -1196,7 +1196,7 @@ namespace Dynamo.Tests
             var guidCodeBlock = Guid.Parse("b9dec880d99347eb8a203783f54763e6");
             AssertPreviewValue(guidCurveLength, new object[] { new object[] { }, new object[] { 6.283185 } });
 
-            var command = new Models.DynamoModel.UpdateModelValueCommand(Guid.Empty, guidCodeBlock, "Code", @"[[c],[]]");
+            var command = new Dynamo.Models.DynamoModel.UpdateModelValueCommand(Guid.Empty, guidCodeBlock, "Code", @"[[c],[]]");
             CurrentDynamoModel.ExecuteCommand(command);
             RunCurrentModel();
             AssertPreviewValue(guidCurveLength, new object[] { new object[] { 6.283185 }, new object[] { } });
@@ -1372,6 +1372,26 @@ namespace Dynamo.Tests
             var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\10015.dyn");
             RunModel(dynFilePath);
             AssertPreviewValue("deb457c6-1b4b-4703-9476-db312b34a8e2", new object[] { null, null, null, null });
+        }
+
+        [Test]
+        public void LogicUINodesDeleted()
+        {
+            RunModel(@"core\dsevaluation\testuilogicnodes.dyn");
+            this.CurrentDynamoModel.CurrentWorkspace.RequestRun();
+            var codeblock = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name == "Code Block").First();
+            var uiANDnode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name == "And").First();
+            var ztANDnode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name == "&&").First();
+            AssertPreviewValue(ztANDnode.GUID.ToString(),  true);
+
+
+            //delete binary expression AND node
+            this.CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(uiANDnode);
+            this.CurrentDynamoModel.CurrentWorkspace.RequestRun();
+
+            //assert other node value is still valid
+            AssertPreviewValue(ztANDnode.GUID.ToString(), true);
+            AssertPreviewValue(codeblock.GUID.ToString(), true);
         }
     }
 

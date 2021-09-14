@@ -120,11 +120,15 @@ namespace ProtoCore.Lang
                 Validity.Assert(formalParameters[thisPtrIndex].IsPointer ||
                                 formalParameters[thisPtrIndex].IsDefaultArgument);
 
-                svThisPtr = formalParameters[thisPtrIndex];
+                // Make sure we to pass a pointer to unmarshal.
+                if (formalParameters[thisPtrIndex].IsPointer)
+                {
+                    svThisPtr = formalParameters[thisPtrIndex];
+                }
 
                 formalParameters.RemoveAt(thisPtrIndex);
             }
-            
+
             formalParameters.Add(svThisPtr);
 
             Object ret = mFunctionPointer.Execute(c, mInterpreter, formalParameters);

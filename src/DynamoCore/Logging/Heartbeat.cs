@@ -88,9 +88,6 @@ namespace Dynamo.Logging
                 {
                     StabilityCookie.WriteUptimeBeat(DateTime.Now.Subtract(startTime));
 
-                    //Disable heartbeat to avoid 150 event/session limit
-                    //InstrumentationLogger.LogAnonymousEvent("Heartbeat", "ApplicationLifeCycle", GetVersionString());
-
                     String usage = PackFrequencyDict(ComputeNodeFrequencies());
                     String errors = PackFrequencyDict(ComputeErrorFrequencies());
 
@@ -114,7 +111,7 @@ namespace Dynamo.Logging
                 // The following call will return "true" if the event is 
                 // signaled, which can only happen when "DestroyInternal" 
                 // is called as the application is shutting down. Otherwise,
-                // when the wait time ellapsed, the loop continues to log 
+                // when the wait time elapsed, the loop continues to log 
                 // the next set of information.
                 // 
                 if (shutdownEvent.WaitOne(HEARTBEAT_INTERVAL_MS))

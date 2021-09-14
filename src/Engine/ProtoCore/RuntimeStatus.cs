@@ -37,6 +37,7 @@ namespace ProtoCore
             MoreThanOneDominantList,
             RunOutOfMemory,
             InvalidArrayIndexType,
+            IntegerOverflow
         }
 
         public struct WarningEntry
@@ -356,8 +357,6 @@ namespace ProtoCore
                                                List<StackValue> arguments = null)
         {
             string message;
-            string propertyName;
-            Operator op;
 
             var qualifiedMethodName = methodName;
 
@@ -366,12 +365,22 @@ namespace ProtoCore
 
             if (classScope != Constants.kGlobalScope)
             {
+                if (methodName == nameof(DesignScript.Builtin.Get.ValueAtIndex))
+                {
+                    if (arguments.Count == 2 && arguments[0].IsInteger && arguments[1].IsInteger)
+                    {
+                        LogWarning(WarningID.IndexOutOfRange, Resources.IndexIntoNonArrayObject);
+                        return;
+                    }
+                }
                 var classNode = runtimeCore.DSExecutable.classTable.ClassNodes[classScope];
                 className = classNode.Name;
                 classNameSimple = className.Split('.').Last();
                 qualifiedMethodName = classNameSimple + "." + methodName;
             }
 
+            Operator op;
+            string propertyName;
             if (CoreUtils.TryGetPropertyName(methodName, out propertyName))
             {
                 if (classScope != Constants.kGlobalScope)
@@ -408,7 +417,7 @@ namespace ProtoCore
                 var argsJoined = string.Join(", ", arguments.Select(GetTypeName));
                 
                 var fep = funcGroup.FunctionEndPoints[0];
-                var formalParamsJoined = string.Join(", ", fep.FormalParams.Select(x => x.ToShortString()));
+                var formalParamsJoined = string.Join(", ", fep.FormalParams);
 
                 message = string.Format(Resources.NonOverloadMethodResolutionError, qualifiedMethodName, formalParamsJoined, argsJoined);
             }

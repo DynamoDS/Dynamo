@@ -1,0 +1,166 @@
+{
+  "Uuid": "2e91ad24-6e28-41c3-bc4a-2d6371439de8",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "pythonFromString2to3Test",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonStringNode, PythonNodeModels",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "bad59bc89b4947b699ee34fa8dca91ae",
+      "Inputs": [
+        {
+          "Id": "272349b4be5c4c5684550aef43e0b0b1",
+          "Name": "script",
+          "Description": "Python script to run.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bdc69f166fee41f099b531b1f58f2048",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs a Python script from a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "isum = 2019 + 1\r\nstrHello = \"Hello World \"\r\nOUT = strHello + str(isum)",
+      "Id": "891d50b820b64288908e78eebe2cf87f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0e657cbf45d547b0a84e77438ae81db2",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "971220846c1b4d54aa11cca81f417c2b",
+      "Inputs": [
+        {
+          "Id": "b9ac1b0d4d2843c382b63641ecddba40",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "16bdd065aab747d0a7922dc5769b0dc7",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "bdc69f166fee41f099b531b1f58f2048",
+      "End": "b9ac1b0d4d2843c382b63641ecddba40",
+      "Id": "67e0868aaec54fd1b5e4d8eaa726f0eb"
+    },
+    {
+      "Start": "0e657cbf45d547b0a84e77438ae81db2",
+      "End": "272349b4be5c4c5684550aef43e0b0b1",
+      "Id": "f31bbbc338484db99cb2cf1c902938ec"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.9.0.2666",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script From String",
+        "Id": "bad59bc89b4947b699ee34fa8dca91ae",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 345.66666666666674,
+        "Y": 209.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "891d50b820b64288908e78eebe2cf87f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 100.5,
+        "Y": 211.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "971220846c1b4d54aa11cca81f417c2b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 607.5,
+        "Y": 210.5
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

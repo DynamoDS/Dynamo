@@ -39,6 +39,11 @@ namespace Dynamo.Engine
         public event AstBuiltEventHandler AstBuilt;
 
         /// <summary>
+        /// The event notifies client that the VMLibraries have been reset and the VM is now ready to run the new code. 
+        /// </summary>
+        internal static event Action VMLibrariesReset;
+
+        /// <summary>
         /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
         /// </summary>
         internal event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
@@ -137,6 +142,7 @@ namespace Dynamo.Engine
             this.libraryServices = libraryServices;
             libraryServices.LibraryLoaded += LibraryLoaded;
             CompilationServices = new CompilationServices(libraryServices);
+            codeCompletionServices = new CodeCompletionServices(libraryServices.LibraryManagementCore);
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
 
@@ -499,10 +505,7 @@ namespace Dynamo.Engine
         {
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
 
-            // The LiveRunner core is newly instantiated whenever a new library is imported
-            // due to which a new instance of CodeCompletionServices needs to be created with the new Core
-            codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
-            libraryServices.SetLiveCore(LiveRunnerCore);
+            VMLibrariesReset?.Invoke();
         }
 
         /// <summary>
@@ -510,7 +513,16 @@ namespace Dynamo.Engine
         /// </summary>
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
-            OnLibraryLoaded();
+            if (e.LibraryPaths.Any())
+            {
+                OnLibraryLoaded();
+            }
+        }
+
+        internal event EventHandler RequestCustomNodeRegistration;
+        internal void OnRequestCustomNodeRegistration()
+        {
+            RequestCustomNodeRegistration?.Invoke(this, EventArgs.Empty);
         }
 
         #region Implement IAstNodeContainer interface
@@ -597,6 +609,7 @@ namespace Dynamo.Engine
             priorNames = libraryServices.GetPriorNames();
         }
 
+        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
         /// <summary>
         /// Pre-compiles Design script code in code block node.
         /// </summary>
@@ -604,7 +617,17 @@ namespace Dynamo.Engine
         /// <returns>true if code compilation succeeds, false otherwise</returns>
         public bool PreCompileCodeBlock(ref ParseParam parseParams)
         {
-            return CompilerUtils.PreCompileCodeBlock(compilationCore, ref parseParams, priorNames);
+            return CompilerUtils.PreCompileCodeBlock(compilationCore, parseParams, priorNames);
+        }
+
+        /// <summary>
+        /// Pre-compiles Design script code in code block node.
+        /// </summary>
+        /// <param name="parseParams">Container for compilation related parameters</param>
+        /// <returns>true if code compilation succeeds, false otherwise</returns>
+        internal bool PreCompileCodeBlock(ParseParam parseParams)
+        {
+            return CompilerUtils.PreCompileCodeBlock(compilationCore, parseParams, priorNames);
         }
     }
 

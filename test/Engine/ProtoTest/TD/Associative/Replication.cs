@@ -2572,6 +2572,34 @@ test3 = a1.X[0][0];
         }
 
         [Test]
+        [Category("Replication")]
+        public void DotOperationShouldIdentifyTheTypeOfArraysWithSomeEmptyItems()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+a = TestObjectA.TestObjectA(1);
+array1 = [[],[a]];
+test1 = array1.a;
+array2 = [[a],[]];
+test2 = array2.a;
+array3 = [[[[]]],[[[],[]],[[],[a]]]];
+test3 = array3.a;
+";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("test1", new object[] { new object[0], new object[] { 1 } });
+            thisTest.Verify("test2", new object[] { new object[] { 1 }, new object[0] });
+            thisTest.Verify("test3", new object[] {
+                new object[] { new object[] { new object[0] } },
+                new object[]
+                {
+                    new object[] { new object[0], new object[0] },
+                    new object[] { new object[0], new object[] { 1 } }
+                }
+            });
+        }
+
+        [Test]
         public void T67_Defect_1460965_ExpressionInParenthesis01()
         {
             string code = @"
@@ -4939,6 +4967,32 @@ px2 = DummyPoint2D.X(l2);
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("px1", new object[] { new object[] { }, new object[] { 0 } });
             thisTest.Verify("px2", new object[] { new object[] { 0 }, new object[] { } });
+        }
+
+        [Test]
+        public void TestReplicationWithNestedEmptyLists()
+        {
+            string code =
+@"
+def foo( x:var[] )
+{
+    return x;
+}
+
+a = [[],[]];
+b = [[1],[]];
+c = [[],[1]];
+d = [null,[]];
+out1 = foo(a);
+out2 = foo(b);
+out3 = foo(c);
+out4 = foo(d);
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("out1", new object[] { new object[] { }, new object[] { } });
+            thisTest.Verify("out2", new object[] { new object[] { 1 }, new object[] { } });
+            thisTest.Verify("out3", new object[] { new object[] { }, new object[] { 1 } });
+            thisTest.Verify("out4", new object[] { null, new object[] { } });
         }
 
         // This tests the case 4 block in the computeFeps method (CallSite.cs)

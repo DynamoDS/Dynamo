@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.DynamoSandbox.Properties
-{
-
-
+namespace Dynamo.DynamoSandbox.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -57,6 +57,24 @@ namespace Dynamo.DynamoSandbox.Properties
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Goto the Dynamo builds wiki site({0}) for more information..
+        /// </summary>
+        internal static string SandboxBuildsPageDialogMessage {
+            get {
+                return ResourceManager.GetString("SandboxBuildsPageDialogMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not start DynamoSandbox, unhandled exception..
+        /// </summary>
+        internal static string SandboxCrashMessage {
+            get {
+                return ResourceManager.GetString("SandboxCrashMessage", resourceCulture);
             }
         }
         

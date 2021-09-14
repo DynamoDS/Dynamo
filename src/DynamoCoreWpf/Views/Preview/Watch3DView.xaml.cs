@@ -10,7 +10,6 @@ using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
-using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using Point = System.Windows.Point;
 
 namespace Dynamo.Controls
@@ -30,6 +29,7 @@ namespace Dynamo.Controls
 
         #region public properties
 
+        [Obsolete("Do not use! This will change its type in a future version of Dynamo.")]
         public Viewport3DX View
         {
             get { return watch_view; }
@@ -46,6 +46,7 @@ namespace Dynamo.Controls
             InitializeComponent();
             Loaded += ViewLoadedHandler;
             Unloaded += ViewUnloadedHandler;
+
         }
 
         #endregion
@@ -62,13 +63,40 @@ namespace Dynamo.Controls
 
             UnRegisterViewEventHandlers();
 
-            ViewModel.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
             ViewModel.RequestCreateModels -= RequestCreateModelsHandler;
             ViewModel.RequestRemoveModels -= RequestRemoveModelsHandler;
             ViewModel.RequestViewRefresh -= RequestViewRefreshHandler;
             ViewModel.RequestClickRay -= GetClickRay;
             ViewModel.RequestCameraPosition -= GetCameraPosition;
             ViewModel.RequestZoomToFit -= ViewModel_RequestZoomToFit;
+            this.DataContext = null;
+            if(watch_view != null)
+            {
+                watch_view.Items.Clear();
+                watch_view.DataContext = null;
+                watch_view.Dispose();
+            }
+        
+        }
+
+        private void RegisterEventHandlers()
+        {
+            CompositionTarget.Rendering += CompositionTargetRenderingHandler;
+
+            RegisterButtonHandlers();
+
+            RegisterViewEventHandlers();
+
+            ViewModel.RequestCreateModels += RequestCreateModelsHandler;
+            ViewModel.RequestRemoveModels += RequestRemoveModelsHandler;
+            ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
+            ViewModel.RequestClickRay += GetClickRay;
+            ViewModel.RequestCameraPosition += GetCameraPosition;
+            ViewModel.RequestZoomToFit += ViewModel_RequestZoomToFit;
+
+            ViewModel.UpdateUpstream();
+            ViewModel.OnWatchExecution();
+
         }
 
         private void RegisterButtonHandlers()
@@ -81,40 +109,36 @@ namespace Dynamo.Controls
 
         private void RegisterViewEventHandlers()
         {
-            watch_view.MouseDown += (sender, args) =>
-            {
-                ViewModel.OnViewMouseDown(sender, args);
-            };
+            watch_view.MouseDown += ViewModel.OnViewMouseDown;
+            watch_view.MouseUp += WatchViewMouseUphandler;
+            watch_view.MouseMove += ViewModel.OnViewMouseMove;
+            watch_view.CameraChanged += WatchViewCameraChangedHandler;
+          
+        }
 
-            watch_view.MouseUp += (sender, args) =>
+        private void WatchViewCameraChangedHandler(object sender, RoutedEventArgs e)
+        {
+            var view = sender as Viewport3DX;
+            if (view != null)
             {
-                ViewModel.OnViewMouseUp(sender, args);
-                //Call update on completion of user manipulation of the scene
-                runUpdateClipPlane = true;
-            };
+                e.Source = view.GetCameraPosition();
+            }
+            ViewModel.OnViewCameraChanged(sender, e);
+        }
 
-            watch_view.MouseMove += (sender, args) =>
-            {
-                ViewModel.OnViewMouseMove(sender, args);
-            };
-
-            watch_view.CameraChanged += (sender, args) =>
-            {
-                var view = sender as Viewport3DX;
-                if (view != null)
-                {
-                    args.Source = view.GetCameraPosition();
-                }
-                ViewModel.OnViewCameraChanged(sender, args);
-            };
+        private void WatchViewMouseUphandler(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.OnViewMouseUp(sender, e);
+            //Call update on completion of user manipulation of the scene
+            runUpdateClipPlane = true;
         }
 
         private void UnRegisterViewEventHandlers()
         {
             watch_view.MouseDown -= ViewModel.OnViewMouseDown;
-            watch_view.MouseUp -= ViewModel.OnViewMouseUp;
+            watch_view.MouseUp -= WatchViewMouseUphandler;
             watch_view.MouseMove -= ViewModel.OnViewMouseMove;
-            watch_view.CameraChanged -= ViewModel.OnViewCameraChanged;
+            watch_view.CameraChanged -= WatchViewCameraChangedHandler;
          }		         
 
         private void UnregisterButtonHandlers()
@@ -132,6 +156,8 @@ namespace Dynamo.Controls
         private void ViewUnloadedHandler(object sender, RoutedEventArgs e)
         {
             UnregisterEventHandlers();
+            Loaded -= ViewLoadedHandler;
+            Unloaded -= ViewUnloadedHandler;
         }
 
         private void ViewLoadedHandler(object sender, RoutedEventArgs e)
@@ -140,22 +166,7 @@ namespace Dynamo.Controls
 
             if (ViewModel == null) return;
 
-            CompositionTarget.Rendering += CompositionTargetRenderingHandler;
-
-            RegisterButtonHandlers();
-
-            RegisterViewEventHandlers();
-
-            ViewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
-            ViewModel.RequestCreateModels += RequestCreateModelsHandler;
-            ViewModel.RequestRemoveModels += RequestRemoveModelsHandler;
-            ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
-            ViewModel.RequestClickRay += GetClickRay;
-            ViewModel.RequestCameraPosition += GetCameraPosition;
-            ViewModel.RequestZoomToFit += ViewModel_RequestZoomToFit;
-
-            ViewModel.UpdateUpstream();
-            ViewModel.OnWatchExecution();
+            RegisterEventHandlers();
         }
 
         private void ViewModel_RequestZoomToFit(BoundingBox bounds)
@@ -191,14 +202,6 @@ namespace Dynamo.Controls
             else
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => ViewModel.DeleteGeometryForNode(node)));
-            }
-        }
-
-        private void ViewModelRequestAttachToSceneHandler(Model3D model3D)
-        {
-            if (!model3D.IsAttached && View != null && View.RenderHost != null)
-            {
-                model3D.Attach(View.RenderHost);
             }
         }
 

@@ -1,0 +1,16 @@
+<Workspace Version="0.8.1.1693" X="30" Y="317.661577705156" zoom="2.86056644880174" Name="Color.Black" ID="0e7c0890-d604-4180-ab3f-804a1df8a7d6" Description="Returns the colour black." Category="Clockwork.Core.Color.Create">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="DSCore.Color" resolvedName="DSCore.Color" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.Output guid="d6c98772-88dc-4dfc-8106-d8ad5fe3fcb1" type="Dynamo.Nodes.Output" nickname="Output" x="393" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="0,0,0" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="a5354de1-1fdc-4843-8b7b-7b7ce31e0a86" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="0" y="4.21833333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="DSCore.Color.ByARGB(255,0,0,0);" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a5354de1-1fdc-4843-8b7b-7b7ce31e0a86" start_index="0" end="d6c98772-88dc-4dfc-8106-d8ad5fe3fcb1" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

@@ -12,9 +12,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FFITarget</RootNamespace>
     <AssemblyName>FFITarget</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <SonarQubeTestProject>true</SonarQubeTestProject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,6 +25,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>..\..\..\bin\AnyCPU\Debug\en-US\FFITarget.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,6 +38,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,8 +52,10 @@
     <Compile Include="AbstractDisposeTracert.cs" />
     <Compile Include="AtLevelTestClass.cs" />
     <Compile Include="ClassFunctionality.cs" />
+    <Compile Include="ClassWithMigratedMembers.cs" />
     <Compile Include="ClassWithRefParams.cs" />
     <Compile Include="CodeCompletionClass.cs" />
+    <Compile Include="CustomLabel.cs" />
     <Compile Include="DefaultArguments.cs" />
     <Compile Include="DisposeTest.cs" />
     <Compile Include="DummyMath.cs" />
@@ -59,6 +64,7 @@
     <Compile Include="GlobalClass.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NamespaceConflictResolution.cs" />
     <Compile Include="ReferenceThisTest.cs" />
     <Compile Include="ReplicationTest.cs" />
     <Compile Include="TestCSharpAttribute.cs" />
@@ -92,6 +98,11 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FFITarget.Migrations.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

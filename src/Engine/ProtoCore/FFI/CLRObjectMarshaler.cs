@@ -159,7 +159,7 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            if (dsObject.DoubleValue > MaxValue || dsObject.DoubleValue < MinValue)
+            if (dsObject.DoubleValue > MaxValue || dsObject.DoubleValue < MinValue || double.IsNaN(dsObject.DoubleValue))
             {
                 string message = String.Format(Resources.kFFIInvalidCast, dsObject.DoubleValue, type.Name, MinValue, MaxValue);
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.TypeMismatch, message);
@@ -612,6 +612,9 @@ namespace ProtoFFI
     class CLRObjectMarshaler : FFIObjectMarshaler
     {
         private static readonly Dictionary<Type, FFIObjectMarshaler> mPrimitiveMarshalers;
+        private Type mCachedObjType;
+        private int mCachedType;
+
         static CLRObjectMarshaler()
         {
             mPrimitiveMarshalers = new Dictionary<Type, FFIObjectMarshaler>();
@@ -1105,20 +1108,27 @@ namespace ProtoFFI
         {
             //We are here, because we want to create DS object of user defined type.
             var runtimeCore = dsi.runtime.RuntimeCore;
-            var classTable = runtimeCore.DSExecutable.classTable;
             Type objType = GetPublicType(obj.GetType());
-            int type = classTable.IndexOf(GetTypeName(objType));
-            //Recursively get the base class type if available.
-            while (type == -1 && objType != null)
+
+            if (mCachedObjType != objType)
             {
-                objType = objType.BaseType;
-                if (null != objType)
-                    type = classTable.IndexOf(GetTypeName(objType));
+                mCachedObjType = objType;
+
+                var classTable = runtimeCore.DSExecutable.classTable;
+                mCachedType = classTable.IndexOf(GetTypeName(objType));
+                
+                //Recursively get the base class type if available.
+                while (mCachedType == -1 && objType != null)
+                {
+                    objType = objType.BaseType;
+                    if (null != objType)
+                        mCachedType = classTable.IndexOf(GetTypeName(objType));
+                }
             }
 
             MetaData metadata;
-            metadata.type = type;
-            StackValue retval = runtimeCore.RuntimeMemory.Heap.AllocatePointer(classTable.ClassNodes[type].Size, metadata);
+            metadata.type = mCachedType;
+            StackValue retval = runtimeCore.RuntimeMemory.Heap.AllocatePointer(0, metadata);
             BindObjects(obj, retval);
             return retval;
         }
@@ -1246,21 +1256,28 @@ namespace ProtoFFI
 
             if (clrObject != null)
             {
-                if (!DumpXmlProperties)
+                try
                 {
-                    return clrObject.ToString();
-                }
-                else
-                {
-                    XmlWriterSettings settings = new XmlWriterSettings { Indent = false, OmitXmlDeclaration = true };
-                    using (StringWriter sw = new StringWriter())
+                    if (!DumpXmlProperties)
                     {
-                        using (XmlWriter xw = XmlTextWriter.Create(sw, settings))
-                        {
-                            GeneratePrimaryPropertiesAsXml(clrObject, xw);
-                        }
-                        return sw.ToString();
+                        return clrObject.ToString();
                     }
+                    else
+                    {
+                        XmlWriterSettings settings = new XmlWriterSettings { Indent = false, OmitXmlDeclaration = true };
+                        using (StringWriter sw = new StringWriter())
+                        {
+                            using (XmlWriter xw = XmlTextWriter.Create(sw, settings))
+                            {
+                                GeneratePrimaryPropertiesAsXml(clrObject, xw);
+                            }
+                            return sw.ToString();
+                        }
+                    }
+                }
+                catch
+                {
+                    return string.Empty;
                 }
             }
             else

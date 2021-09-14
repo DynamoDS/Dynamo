@@ -1,0 +1,85 @@
+{
+  "Uuid": "5081ba8c-bb9d-436c-a554-282d3801275f",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "ShortestQualifiedNameReplacerWithStaticPropertyInDefaultArgument",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.ElementResolverTarget.StaticMethod2@FFITarget.ElementResolverTarget",
+      "Id": "ffea39e040bc4215910f06e086f22d49",
+      "Inputs": [
+        {
+          "Id": "5b85265dd7b84f2095d69b30a77b0437",
+          "Name": "ert",
+          "Description": "ElementResolverTarget\nDefault value : FFITarget.ElementResolverTarget.StaticProperty.StaticProperty2.Method(FFITarget.ElementResolverTarget.Create())",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "09fef4970b4c4043a0daa6cfc81e451e",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "ElementResolverTarget.StaticMethod2 (ert: ElementResolverTarget = FFITarget.ElementResolverTarget.StaticProperty.StaticProperty2.Method(FFITarget.ElementResolverTarget.Create())): int"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.7.0.8390",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "ElementResolverTarget.StaticMethod2",
+        "Id": "ffea39e040bc4215910f06e086f22d49",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 420.0,
+        "Y": 243.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

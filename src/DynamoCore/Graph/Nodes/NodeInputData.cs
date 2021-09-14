@@ -21,8 +21,13 @@ namespace Dynamo.Graph.Nodes
         colorInput,
         [EnumMember(Value = "date")]
         dateInput,
+        [Obsolete("Use hostSelection or dropdownSelection instead")]
         [EnumMember(Value = "selection")]
-        selectionInput
+        selectionInput,
+        [EnumMember(Value = "hostSelection")]
+        hostSelection,
+        [EnumMember(Value = "dropdownSelection")]
+        dropdownSelection
     };
 
 
@@ -53,7 +58,7 @@ namespace Dynamo.Graph.Nodes
 
         //optional properties, might be null
         /// <summary>
-        /// If this input is a selection type a list of choices a user can select.
+        /// If this input is a dropdownSelection type a list of choices a user can select.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<string> Choices { get; set; }
@@ -82,6 +87,12 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Description { get; set; }
+
+        /// <summary>
+        /// The index of the selected item.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public int SelectedIndex { get; set; }
 
         private static Dictionary<Type, NodeInputTypes> dotNetTypeToNodeInputType = new Dictionary<Type, NodeInputTypes>
         {

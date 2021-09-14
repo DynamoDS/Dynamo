@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
+using Dynamo.Models;
 
 namespace Dynamo.Configuration
 {
@@ -15,11 +16,12 @@ namespace Dynamo.Configuration
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings are saved back into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference
+    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences
     {
         private string numberFormat;
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
+        private bool isBackgroundGridVisible;
 
         #region Constants
         /// <summary>
@@ -60,12 +62,22 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Indicates whether usage reporting is approved or not.
         /// </summary>
-        public bool IsUsageReportingApproved { get; set; }
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
+        public bool IsUsageReportingApproved { get { return false; } set { } }
 
         /// <summary>
-        /// Indicates whether analytics reporting is approved or not.
+        /// Indicates whether Google analytics reporting is approved or not.
         /// </summary>
         public bool IsAnalyticsReportingApproved { get; set; }
+
+        /// <summary>
+        /// Indicates whether ADP analytics reporting is approved or not.
+        /// </summary>
+        [XmlIgnore]
+        public bool IsADPAnalyticsReportingApproved { 
+            get { return Logging.AnalyticsService.IsADPOptedIn; }
+            set { Logging.AnalyticsService.IsADPOptedIn = value; } 
+        }
         #endregion
 
         #region UI & Graphics settings
@@ -86,9 +98,19 @@ namespace Dynamo.Configuration
         public bool ShowPreviewBubbles { get; set; }
 
         /// <summary>
+        /// Indicates if code block node line numbers should  be displayed.
+        /// </summary>
+        public bool ShowCodeBlockLineNumber { get; set; }
+
+        /// <summary>
         /// Should connectors be visible?
         /// </summary>
         public bool ShowConnector { get; set; }
+
+        /// <summary>
+        /// Should connector tooltip be visible?
+        /// </summary>
+        public bool ShowConnectorToolTip { get; set; }
 
         /// <summary>
         /// The types of connector: Bezier or Polyline.
@@ -140,7 +162,21 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Should the background grid be shown?
         /// </summary>
-        public bool IsBackgroundGridVisible { get; set; }
+        public bool IsBackgroundGridVisible
+        {
+            get
+            {
+                return isBackgroundGridVisible;
+            }
+            set
+            {
+                if (value == isBackgroundGridVisible) return;
+                isBackgroundGridVisible = value;
+
+                RaisePropertyChanged(nameof(IsBackgroundGridVisible));
+            }
+        }
+
 
         /// <summary>
         /// Indicates whether background preview is active or not.
@@ -247,7 +283,7 @@ namespace Dynamo.Configuration
         public List<string> BackupFiles { get; set; }
 
         /// <summary>
-        /// A list of folders containing zero-touch nodes and custom nodes.
+        /// A list of folders packages, custom nodes or direct paths to .dll and .ds files.
         /// </summary>
         public List<string> CustomPackageFolders { get; set; }
 
@@ -294,6 +330,70 @@ namespace Dynamo.Configuration
         public bool OpenFileInManualExecutionMode { get; set; }
 
         /// <summary>
+        /// This defines if user wants to see the Iron Python Extension Dialog box on every new session.
+        /// </summary>
+        public bool IsIronPythonDialogDisabled { get; set; }
+
+        /// <summary>
+        /// This defines if user wants to see the whitespaces and tabs in python script editor.
+        /// </summary>
+        public bool ShowTabsAndSpacesInScriptEditor { get; set; }
+
+        /// <summary>
+        /// This defines if user wants to see the enabled node Auto Complete feature for port interaction.
+        /// </summary>
+        public bool EnableNodeAutoComplete { get; set; }
+
+        /// <summary>
+        /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
+        /// </summary>
+        public string DefaultPythonEngine
+        {
+            get
+            {
+                return defaultPythonEngine;
+            }
+            set
+            {
+                defaultPythonEngine = value;
+            }
+        }
+
+        /// <summary>
+        /// Static field backing the DefaultPythonEngine setting property.
+        /// </summary>
+        private static string defaultPythonEngine;
+
+        internal event Func<string> RequestUserDataFolder;
+        internal string OnRequestUserDataFolder()
+        {
+            return RequestUserDataFolder?.Invoke();
+        }
+
+        private string selectedPackagePathForInstall;
+        // TODO: Add this to IPreferences in Dynamo 3.0
+        /// <summary>
+        /// Currently selected package path where all packages downloaded from the Package Manager
+        /// will be installed. The default package path for install is the user data directory
+        /// currently used by the Dynamo environment.
+        /// </summary>
+        public string SelectedPackagePathForInstall 
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(selectedPackagePathForInstall))
+                {
+                    selectedPackagePathForInstall = OnRequestUserDataFolder();
+                }
+                return selectedPackagePathForInstall;
+            }
+            set
+            {
+                selectedPackagePathForInstall = value;
+            }
+        }
+
+        /// <summary>
         /// Indicates (if any) which namespaces should not be displayed in the Dynamo node library.
         /// String format: "[library name]:[fully qualified namespace]"
         /// </summary>
@@ -305,6 +405,27 @@ namespace Dynamo.Configuration
         [XmlIgnore]
         public bool NamespacesToExcludeFromLibrarySpecified { get; set; }
 
+        /// <summary>
+        /// Settings that apply to view extensions.
+        /// </summary>
+        public List<ViewExtensionSettings> ViewExtensionSettings { get; set; }
+        /// <summary>
+        /// If enabled Dynamo Built-In Packages will not be loaded.
+        /// </summary>
+        public bool DisableBuiltinPackages { get; set; }
+        /// <summary>
+        /// If enabled user's custom package locations will not be loaded.
+        /// </summary>
+        public bool DisableCustomPackageLocations { get; set; }
+        /// <summary>
+        /// Defines the default run type when opening a workspace
+        /// </summary>
+        public RunType DefaultRunType { get; set; }
+
+        /// <summary>
+        /// Show Run Preview flag.
+        /// </summary>
+        public bool ShowRunPreview { get; set; }
         #endregion
 
         /// <summary>
@@ -321,12 +442,13 @@ namespace Dynamo.Configuration
 
             // Default Settings
             IsFirstRun = true;
-            IsUsageReportingApproved = false;
             IsAnalyticsReportingApproved = true;
             LibraryWidth = 304;
             ConsoleHeight = 0;
             ShowPreviewBubbles = true;
+            ShowCodeBlockLineNumber = true;
             ShowConnector = true;
+            ShowConnectorToolTip = true;
             ConnectorType = ConnectorType.BEZIER;
             IsBackgroundGridVisible = true;
             PackageDirectoriesToUninstall = new List<string>();
@@ -339,6 +461,7 @@ namespace Dynamo.Configuration
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
+            DefaultRunType = RunType.Automatic;
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
@@ -346,6 +469,12 @@ namespace Dynamo.Configuration
 
             CustomPackageFolders = new List<string>();
             PythonTemplateFilePath = "";
+            IsIronPythonDialogDisabled = false;
+            ShowTabsAndSpacesInScriptEditor = false;
+            EnableNodeAutoComplete = true;
+            DefaultPythonEngine = string.Empty;
+            ViewExtensionSettings = new List<ViewExtensionSettings>();
+
         }
 
         /// <summary>
@@ -420,6 +549,7 @@ namespace Dynamo.Configuration
             catch (Exception) { }
 
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
+            MigrateStdLibTokenToBuiltInToken(settings);
 
             return settings;
         }
@@ -434,6 +564,15 @@ namespace Dynamo.Configuration
             return pythonTemplateFilePath;
         }
 
+        /// <summary>
+        /// Provides access to the DefaultPythonEngine setting in a static context. Used from PythonNodeBase.
+        /// </summary>
+        /// <returns>DefaultPythonEngine setting value</returns>
+        internal static string GetDefaultPythonEngine()
+        {
+            return defaultPythonEngine;
+        }
+
         internal void InitializeNamespacesToExcludeFromLibrary()
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
@@ -442,6 +581,19 @@ namespace Dynamo.Configuration
                     "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
                 );
                 NamespacesToExcludeFromLibrarySpecified = true;
+            }
+        }
+
+        //migrate old path token to new path token
+        private static void MigrateStdLibTokenToBuiltInToken(PreferenceSettings settings)
+        {
+            for(var i = 0; i< settings.CustomPackageFolders.Count;i++)
+            {
+                var path = settings.CustomPackageFolders[i];
+                if (path == DynamoModel.StandardLibraryToken)
+                {
+                    settings.CustomPackageFolders[i] = DynamoModel.BuiltInPackagesToken;
+                }
             }
         }
     }

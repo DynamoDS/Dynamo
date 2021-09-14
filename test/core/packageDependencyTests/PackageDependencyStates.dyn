@@ -1,0 +1,242 @@
+{
+  "Uuid": "78df28fc-b886-46e8-ab28-b257e4a49b93",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "PackageDependencyStates",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.Dynamo.MeshToolkit.Display.MeshDisplay.ByMeshColor@Autodesk.Dynamo.MeshToolkit.Mesh,DSCore.Color[]",
+      "Id": "308aa46591fc4c6ab66e32e32ca7a903",
+      "Inputs": [
+        {
+          "Id": "a9898340ee4544d59313471d257300be",
+          "Name": "mesh",
+          "Description": "Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "856101dabda846eaa189ea0e13d782ff",
+          "Name": "meshColoring",
+          "Description": "single color, triangle colors, or vertex colors\n\nColor[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c87765df9a9f49a48dac19cd75bf37aa",
+          "Name": "MeshDisplay",
+          "Description": "MeshDisplay",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Display mesh by single color, triangle colors, or vertex colors\n\nMeshDisplay.ByMeshColor (mesh: Mesh, meshColoring: Color[]): MeshDisplay"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "82ef267e-5ca1-4150-80ad-7eb2d995c85b",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "350fcd0232ef4d5aa4b5c13dee735657",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9b61cc7da5f8408a8d211c2195072026",
+          "Name": "0,255,255",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the colour aqua."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "0e7c0890-d604-4180-ab3f-804a1df8a7d6",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "adfa5ed1381e42929f53c086928cd07e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "719bb2cc9c1c4982b58d1c5358b770a2",
+          "Name": "0,0,0",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the colour black."
+    },
+    {
+      "ConcreteType": "SampleLibraryUI.Examples.ButtonCustomNodeModel, SampleLibraryUI",
+      "ButtonText": "Default Button Text",
+      "WindowText": "Default Window Text",
+      "NodeType": "ExtensionNode",
+      "Id": "73f814ac558b430fa1050fca82f00f2b",
+      "Inputs": [
+        {
+          "Id": "5bdb9084a83f4a68876e48a3c55f441d",
+          "Name": "inputString",
+          "Description": "a string value displayed on our button",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8291c0770fcc4b3997c903327242eafc",
+          "Name": "button value",
+          "Description": "returns the string value displayed on our button",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1b68990b945341539000cff4159e896c",
+          "Name": "window value",
+          "Description": "returns the string value displayed in our window when button is pressed",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A sample UI node which displays custom UI."
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [
+    "82ef267e-5ca1-4150-80ad-7eb2d995c85b",
+    "0e7c0890-d604-4180-ab3f-804a1df8a7d6"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "2.0.1",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "308aa46591fc4c6ab66e32e32ca7a903"
+      ]
+    },
+    {
+      "Name": "Clockwork for Dynamo 2.x",
+      "Version": "2.1.2",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "350fcd0232ef4d5aa4b5c13dee735657"
+      ]
+    },
+    {
+      "Name": "Clockwork for Dynamo 1.x",
+      "Version": "1.33.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "adfa5ed1381e42929f53c086928cd07e"
+      ]
+    },
+    {
+      "Name": "Dynamo Samples",
+      "Version": "2.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "73f814ac558b430fa1050fca82f00f2b"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.4.0.5606",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "MeshDisplay.ByMeshColor",
+        "Id": "308aa46591fc4c6ab66e32e32ca7a903",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 119.0,
+        "Y": 192.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Color.Aqua",
+        "Id": "350fcd0232ef4d5aa4b5c13dee735657",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 272.0,
+        "Y": 381.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Color.Black",
+        "Id": "adfa5ed1381e42929f53c086928cd07e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 451.0,
+        "Y": 402.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Button Custom Node Model",
+        "Id": "73f814ac558b430fa1050fca82f00f2b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 384.0,
+        "Y": 210.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

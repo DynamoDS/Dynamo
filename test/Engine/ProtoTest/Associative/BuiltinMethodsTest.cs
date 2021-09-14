@@ -1098,7 +1098,7 @@ r2 = Dictionary.ValueAtKey(c, ""out"");
             thisTest.Verify("r2", new object[] { new object[] { new object[] { 24 } }, 42 });
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestTryGetValuesFromDictionary11()
         {
             string code = @"

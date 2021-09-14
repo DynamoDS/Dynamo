@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
-using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
@@ -17,6 +17,7 @@ using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
+
 
 namespace Dynamo.Controls
 {
@@ -134,6 +135,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeHelp -= ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
+            ViewModel.RequestAutoCompletePopupPlacementTarget -= ViewModel_RequestAutoCompletePopupPlacementTarget;
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded -= NodeModel_ConnectorAdded;
             MouseLeave -= NodeView_MouseLeave;
@@ -146,6 +148,7 @@ namespace Dynamo.Controls
                 expansionBay.Children.Remove(previewControl);
                 previewControl = null;
             }
+            nodeBorder.SizeChanged -= OnSizeChanged;
         }
 
         #endregion
@@ -208,6 +211,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeHelp += ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
+            ViewModel.RequestAutoCompletePopupPlacementTarget += ViewModel_RequestAutoCompletePopupPlacementTarget;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded += NodeModel_ConnectorAdded;
             MouseLeave += NodeView_MouseLeave;
@@ -280,6 +284,14 @@ namespace Dynamo.Controls
             }));
         }
 
+        private void ViewModel_RequestAutoCompletePopupPlacementTarget(Popup popup)
+        {
+            popup.PlacementTarget = this;
+
+            ViewModel.ActualHeight = ActualHeight;
+            ViewModel.ActualWidth = ActualWidth;
+        }
+
         void ViewModel_RequestsSelection(object sender, EventArgs e)
         {
             if (!ViewModel.NodeLogic.IsSelected)
@@ -331,11 +343,8 @@ namespace Dynamo.Controls
 
             e.Handled = true;
 
-            var helpDialog = new NodeHelpPrompt(e.Model);
-            helpDialog.Owner = Window.GetWindow(this);
-
-            helpDialog.Show();
-
+            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(viewModel.NodeModel, viewModel.DynamoViewModel);
+            ViewModel.DynamoViewModel.OpenDocumentationLink(nodeAnnotationEventArgs);
         }
 
         void NodeLogic_DispatchedToUI(object sender, UIDispatcherEventArgs e)
@@ -399,11 +408,15 @@ namespace Dynamo.Controls
 
             var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
             ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
+
             view.mainGrid.Focus();
 
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
+
+            viewModel.OnSelected(this, EventArgs.Empty);
+
             if (e.ClickCount == 2)
             {
                 if (ViewModel.GotoWorkspaceCommand.CanExecute(null))
@@ -413,16 +426,7 @@ namespace Dynamo.Controls
                 }
             }
         }
-
-        private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            Guid nodeGuid = ViewModel.NodeModel.GUID;
-            ViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
-            //Debug.WriteLine("Node right selected.");
-            e.Handled = true;
-        }
-
+        
         private void NameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
@@ -489,7 +493,7 @@ namespace Dynamo.Controls
             ViewModel.ZIndex = oldZIndex;
 
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
-            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen ||
+            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen || IsMouseInsidePreview(e) ||
                 (Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
 
             // If it's expanded, then first condense it.
@@ -632,11 +636,32 @@ namespace Dynamo.Controls
                     {
                         isInside = true;
                     }
-
                     return HitTestFilterBehavior.Stop;
                 },
                 ht => HitTestResultBehavior.Stop,
                 new PointHitTestParameters(mousePosition));
+            return isInside;
+        }
+
+        /// <summary>
+        /// Checks whether a mouse event occurred at a position matching the preview.
+        /// Alternatives attempted:
+        /// - PreviewControl.IsMouseOver => This is always false
+        /// - HitTest on NodeView => Anomalous region that skips right part of preview if larger than node
+        /// - HitTest on Preview => Bounds become irreversible larger than "mouse over area" after preview is expanded
+        /// </summary>
+        /// <param name="e">A mouse event</param>
+        /// <returns>Whether the mouse is over the preview or not</returns>
+        private bool IsMouseInsidePreview(MouseEventArgs e)
+        {
+            var isInside = false;
+            if (previewControl != null)
+            {
+                var bounds = new Rect(0, 0, previewControl.ActualWidth, previewControl.ActualHeight);
+                var mousePosition = e.GetPosition(previewControl);
+                isInside = bounds.Contains(mousePosition);
+            }
+
             return isInside;
         }
 
@@ -662,5 +687,21 @@ namespace Dynamo.Controls
 
         #endregion
 
+        private void OptionsButton_Click(object sender, RoutedEventArgs e)
+        {
+            Guid nodeGuid = ViewModel.NodeModel.GUID;
+            ViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
+
+            grid.ContextMenu.DataContext = viewModel;
+            grid.ContextMenu.IsOpen = true;
+        }
+
+        private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!(ViewModel.WorkspaceViewModel.Zoom < 0.4)) return;
+            grid.ContextMenu.IsOpen = true;
+            e.Handled = true;
+        }
     }
 }

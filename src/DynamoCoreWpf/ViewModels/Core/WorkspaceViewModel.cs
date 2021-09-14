@@ -20,6 +20,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
@@ -158,9 +159,14 @@ namespace Dynamo.ViewModels
         private void OnRequestShowInCanvasSearch(object param)
         {
             var flag = (ShowHideFlags)param;
+            RequestShowInCanvasSearch?.Invoke(flag);
+        }
 
-            if (RequestShowInCanvasSearch != null)
-                RequestShowInCanvasSearch(flag);
+        internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
+
+        internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag)
+        {
+            RequestNodeAutoCompleteSearch?.Invoke(flag);
         }
 
         #endregion
@@ -221,13 +227,19 @@ namespace Dynamo.ViewModels
         /// of Graph.Json.
         /// </summary>
         [JsonProperty("Camera")]
-        public CameraData Camera => DynamoViewModel.BackgroundPreviewViewModel.GetCameraInformation() ?? new CameraData();
+        public CameraData Camera => DynamoViewModel.BackgroundPreviewViewModel?.GetCameraInformation() ?? new CameraData();
 
         /// <summary>
         /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
         /// </summary>
         [JsonIgnore]
         public SearchViewModel InCanvasSearchViewModel { get; private set; }
+
+        /// <summary>
+        /// ViewModel that is used in NodeAutoComplete feature in context menu and called by Shift+DoubleClick.
+        /// </summary>
+        [JsonIgnore]
+        public NodeAutoCompleteSearchViewModel NodeAutoCompleteSearchViewModel { get; private set; }
 
         /// <summary>
         /// Cursor Property Binding for WorkspaceView
@@ -251,29 +263,23 @@ namespace Dynamo.ViewModels
             set { isCursorForced = value; RaisePropertyChanged("IsCursorForced"); }
         }
 
-        private CompositeCollection _workspaceElements = new CompositeCollection();
         [JsonIgnore]
-        public CompositeCollection WorkspaceElements { get { return _workspaceElements; } }
-        
-        ObservableCollection<ConnectorViewModel> _connectors = new ObservableCollection<ConnectorViewModel>();
+        public CompositeCollection WorkspaceElements { get; } = new CompositeCollection();
         [JsonIgnore]
-        public ObservableCollection<ConnectorViewModel> Connectors { get { return _connectors; } }
+        public ObservableCollection<ConnectorViewModel> Connectors { get; } = new ObservableCollection<ConnectorViewModel>();
 
-        ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
         [JsonProperty("NodeViews")]
-        public ObservableCollection<NodeViewModel> Nodes { get { return _nodes; } }
-
+        public ObservableCollection<NodeViewModel> Nodes { get; } = new ObservableCollection<NodeViewModel>();
         // Do not serialize notes, they will be converted to annotations during serialization
-        ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
         [JsonIgnore]
-        public ObservableCollection<NoteViewModel> Notes { get { return _notes; } }
+        public ObservableCollection<NoteViewModel> Notes { get; } = new ObservableCollection<NoteViewModel>();
 
-        ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
         [JsonIgnore]
-        public ObservableCollection<InfoBubbleViewModel> Errors { get { return _errors; } }
+        public ObservableCollection<ConnectorPinViewModel> Pins { get; } = new ObservableCollection<ConnectorPinViewModel>();
 
-        ObservableCollection<AnnotationViewModel> _annotations = new ObservableCollection<AnnotationViewModel>();
-        public ObservableCollection<AnnotationViewModel> Annotations { get { return _annotations; } }
+        [JsonIgnore]
+        public ObservableCollection<InfoBubbleViewModel> Errors { get; } = new ObservableCollection<InfoBubbleViewModel>();
+        public ObservableCollection<AnnotationViewModel> Annotations { get; } = new ObservableCollection<AnnotationViewModel>();
 
         [JsonIgnore]
         public string Name
@@ -419,19 +425,22 @@ namespace Dynamo.ViewModels
             stateMachine = new StateMachine(this);
 
             var nodesColl = new CollectionContainer { Collection = Nodes };
-            _workspaceElements.Add(nodesColl);
+            WorkspaceElements.Add(nodesColl);
 
             var connColl = new CollectionContainer { Collection = Connectors };
-            _workspaceElements.Add(connColl);
+            WorkspaceElements.Add(connColl);
 
             var notesColl = new CollectionContainer { Collection = Notes };
-            _workspaceElements.Add(notesColl);
+            WorkspaceElements.Add(notesColl);
+
+            var pinsColl = new CollectionContainer { Collection = Pins };
+            WorkspaceElements.Add(pinsColl);
 
             var errorsColl = new CollectionContainer { Collection = Errors };
-            _workspaceElements.Add(errorsColl);
+            WorkspaceElements.Add(errorsColl);
 
             var annotationsColl = new CollectionContainer {Collection = Annotations};
-            _workspaceElements.Add(annotationsColl);
+            WorkspaceElements.Add(annotationsColl);
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
@@ -459,15 +468,25 @@ namespace Dynamo.ViewModels
             DynamoViewModel.CopyCommand.CanExecuteChanged += CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged += CopyPasteChanged;
 
-            // sync collections
 
+
+            // InCanvasSearchViewModel needs to happen before the nodes are created
+            // as we rely upon it to retrieve node icon images
+            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel)
+            {
+                Visible = true
+            };
+
+            // sync collections
             foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
             foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
             foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
             foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
-
-            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
-            InCanvasSearchViewModel.Visible = true;
+            
+            NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
+            {
+                Visible = true
+            };
         }
         /// <summary>
         /// This event is triggered from Workspace Model. Used in instrumentation
@@ -485,7 +504,6 @@ namespace Dynamo.ViewModels
             Model.NodeAdded -= Model_NodeAdded;
             Model.NodeRemoved -= Model_NodeRemoved;
             Model.NodesCleared -= Model_NodesCleared;
-
             Model.NoteAdded -= Model_NoteAdded;
             Model.NoteRemoved -= Model_NoteRemoved;
             Model.NotesCleared -= Model_NotesCleared;
@@ -510,10 +528,15 @@ namespace Dynamo.ViewModels
 
             Notes.ToList().ForEach(noteViewModel => noteViewModel.Dispose());
             Connectors.ToList().ForEach(connectorViewmModel => connectorViewmModel.Dispose());
+            Annotations.ToList().ForEach(AnnotationViewModel => AnnotationViewModel.Dispose());
             Nodes.Clear();
             Notes.Clear();
+            Pins.Clear();
             Connectors.Clear();
-            
+            Errors.Clear();
+            Annotations.Clear();
+            InCanvasSearchViewModel.Dispose();
+            NodeAutoCompleteSearchViewModel.Dispose();
         }
 
         internal void ZoomInInternal()
@@ -537,7 +560,7 @@ namespace Dynamo.ViewModels
         /// <param name="filePath"></param>
         /// <param name="engine"></param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
-        internal void Save(string filePath, bool isBackup = false, EngineController engine = null)
+        internal void Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
         {
             if (String.IsNullOrEmpty(filePath))
             {
@@ -546,6 +569,11 @@ namespace Dynamo.ViewModels
 
             try
             {
+                if (!isBackup)
+                {
+                    Model.OnSaving(saveContext);
+                }
+
                 //set the name before serializing model.
                 this.Model.setNameBasedOnFileName(filePath, isBackup);
                 // Stage 1: Serialize the workspace.
@@ -595,19 +623,19 @@ namespace Dynamo.ViewModels
             var viewBlock = obj["View"];
             if (viewBlock == null)
               return null;
-           
-            var settings = new JsonSerializerSettings
-            {
-                Error = (sender, args) =>
-                {
-                    args.ErrorContext.Handled = true;
-                    Console.WriteLine(args.ErrorContext.Error);
-                },
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Newtonsoft.Json.Formatting.Indented,
-                Culture = CultureInfo.InvariantCulture
-            };
+
+           var settings = new JsonSerializerSettings
+           {
+               Error = (sender, args) =>
+               {
+                   args.ErrorContext.Handled = true;
+                   Console.WriteLine(args.ErrorContext.Error);
+               },
+               ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+               TypeNameHandling = TypeNameHandling.Auto,
+               Formatting = Newtonsoft.Json.Formatting.Indented,
+               Culture = CultureInfo.InvariantCulture
+           };
 
             return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
@@ -621,16 +649,16 @@ namespace Dynamo.ViewModels
         void Connectors_ConnectorAdded(ConnectorModel c)
         {
             var viewModel = new ConnectorViewModel(this, c);
-            if (_connectors.All(x => x.ConnectorModel != c))
-                _connectors.Add(viewModel);
+            if (Connectors.All(x => x.ConnectorModel != c))
+                Connectors.Add(viewModel);
         }
 
         void Connectors_ConnectorDeleted(ConnectorModel c)
         {
-            var connector = _connectors.FirstOrDefault(x => x.ConnectorModel == c);
+            var connector = Connectors.FirstOrDefault(x => x.ConnectorModel == c);
             if (connector != null)
             {
-                _connectors.Remove(connector);
+                Connectors.Remove(connector);
                 connector.Dispose();
             }
         }
@@ -638,49 +666,59 @@ namespace Dynamo.ViewModels
         private void Model_NoteAdded(NoteModel note)
         {
             var viewModel = new NoteViewModel(this, note);
-            _notes.Add(viewModel);
+            Notes.Add(viewModel);
         }
 
         private void Model_NoteRemoved(NoteModel note)
         {
-            var matchingNoteViewModel = _notes.First(x => x.Model == note);
-            _notes.Remove(matchingNoteViewModel);
+            var matchingNoteViewModel = Notes.First(x => x.Model == note);
+            Notes.Remove(matchingNoteViewModel);
             matchingNoteViewModel.Dispose();
         }
 
         private void Model_NotesCleared()
         {
-            foreach (var noteViewModel in _notes)
+            foreach (var noteViewModel in Notes)
             {
                 noteViewModel.Dispose();
             }
-            _notes.Clear();
+            Notes.Clear();
         }
 
         private void Model_AnnotationAdded(AnnotationModel annotation)
         {
             var viewModel = new AnnotationViewModel(this, annotation);
-            _annotations.Add(viewModel);
+            Annotations.Add(viewModel);
         }
 
         private void Model_AnnotationRemoved(AnnotationModel annotation)
         {
-            _annotations.Remove(_annotations.First(x => x.AnnotationModel == annotation));
+            var matchingAnnotation = Annotations.First(x => x.AnnotationModel == annotation);
+            Annotations.Remove(matchingAnnotation);
+            matchingAnnotation.Dispose();
+           
         }
 
         private void Model_AnnotationsCleared()
         {
-            _annotations.Clear();
+            foreach (var annotationViewModel in Annotations)
+            {
+                annotationViewModel.Dispose();
+            }
+            Annotations.Clear();
         }
 
         void Model_NodesCleared()
         {
-            foreach(var nodeViewModel in _nodes)
+            lock (Nodes)
             {
-                this.unsubscribeNodeEvents(nodeViewModel);
-                nodeViewModel.Dispose();
+                foreach (var nodeViewModel in Nodes)
+                {
+                    this.unsubscribeNodeEvents(nodeViewModel);
+                    nodeViewModel.Dispose();
+                }
+                Nodes.Clear();
             }
-            _nodes.Clear();
             Errors.Clear();
 
             PostNodeChangeActions();
@@ -694,9 +732,13 @@ namespace Dynamo.ViewModels
 
         void Model_NodeRemoved(NodeModel node)
         {
-            NodeViewModel nodeViewModel = _nodes.First(x => x.NodeLogic == node);
-            Errors.Remove(nodeViewModel.ErrorBubble);
-            _nodes.Remove(nodeViewModel);
+            NodeViewModel nodeViewModel;
+            lock (Nodes)
+            {
+                nodeViewModel = Nodes.First(x => x.NodeLogic == node);
+                Errors.Remove(nodeViewModel.ErrorBubble);
+                Nodes.Remove(nodeViewModel);
+            }
             //unsub the events we attached below in NodeAdded.
             this.unsubscribeNodeEvents(nodeViewModel);
             nodeViewModel.Dispose();
@@ -709,7 +751,10 @@ namespace Dynamo.ViewModels
             var nodeViewModel = new NodeViewModel(this, node);
             nodeViewModel.SnapInputEvent += nodeViewModel_SnapInputEvent;
             nodeViewModel.NodeLogic.Modified += OnNodeModified;
-            _nodes.Add(nodeViewModel);
+            lock (Nodes)
+            {
+                Nodes.Add(nodeViewModel);
+            }
             Errors.Add(nodeViewModel.ErrorBubble);
             nodeViewModel.UpdateBubbleContent();
 
@@ -774,7 +819,6 @@ namespace Dynamo.ViewModels
                     break;
 
             }
-            
         }
 
         void ModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -848,7 +892,9 @@ namespace Dynamo.ViewModels
         {
             var fullyEnclosed = !isCrossSelect;
             var selection = DynamoSelection.Instance.Selection;
-            var childlessModels = Model.Nodes.Concat<ModelBase>(Model.Notes);
+            var childlessModels = Model.Nodes
+                .Concat<ModelBase>(Model.Notes)
+                .Concat<ModelBase>(Pins.Select(c=>c.Model));
 
             foreach (var n in childlessModels)
             {
@@ -1107,8 +1153,10 @@ namespace Dynamo.ViewModels
 
         private void SetArgumentLacing(object parameter)
         {
-            var modelGuids = DynamoSelection.Instance.Selection.
-                OfType<NodeModel>().Select(n => n.GUID);
+            var modelGuids = DynamoSelection.Instance.Selection
+                .OfType<NodeModel>()
+                .Where(n => n.ArgumentLacing != LacingStrategy.Disabled)
+                .Select(n => n.GUID);
 
             if (!modelGuids.Any())
                 return;
@@ -1222,8 +1270,8 @@ namespace Dynamo.ViewModels
             else
             {   
                 // no selection, fitview all nodes and notes
-                var nodes = _nodes.Select(x => x.NodeModel);
-                var notes = _notes.Select(x => x.Model);
+                var nodes = Nodes.Select(x => x.NodeModel);
+                var notes = Notes.Select(x => x.Model);
                 var models = nodes.Concat<ModelBase>(notes);
 
                 if (!models.Any()) return;
@@ -1381,6 +1429,41 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("AnyNodeVisible");
             RaisePropertyChanged("SelectionArgumentLacing");            
         }
+
+        /// <summary>
+        /// Returns ViewModelBase by GUID
+        /// </summary>
+        /// <param name="modelGuid">Identifier of the requested model.</param>
+        /// <returns>Found <see cref="ViewModelBase"/> object.</returns>
+        internal ViewModelBase GetViewModelInternal(Guid modelGuid)
+        {
+            ViewModelBase foundModel = (Connectors.FirstOrDefault(c => c.ConnectorModel.GUID == modelGuid)
+                ?? Nodes.FirstOrDefault(node => node.NodeModel.GUID == modelGuid) as ViewModelBase)
+                ?? (Notes.FirstOrDefault(note => note.Model.GUID == modelGuid)
+                ?? Annotations.FirstOrDefault(annotation => annotation.AnnotationModel.GUID == modelGuid) as ViewModelBase);
+
+            return foundModel;
+        }
+
+        /// <summary>
+        /// Gets viewModels by their GUIDs
+        /// </summary>
+        /// <param name="modelGuids">Identifiers of the requested models.</param>
+        /// <returns>All found <see cref="ViewModelBase"/> objects.</returns>
+        internal IEnumerable<ViewModelBase> GetViewModelsInternal(IEnumerable<Guid> modelGuids)
+        {
+            var foundModels = new List<ViewModelBase>();
+
+            foreach (var modelGuid in modelGuids)
+            {
+                var foundModel = GetViewModelInternal(modelGuid);
+                if (foundModel != null)
+                    foundModels.Add(foundModel);
+            }
+
+            return foundModels;
+        }
+
     }
 
     public class ViewModelEventArgs : EventArgs

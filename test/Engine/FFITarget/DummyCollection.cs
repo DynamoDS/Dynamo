@@ -12,6 +12,11 @@ namespace FFITarget
             return data.ToList();
         }
 
+        public static IEnumerable ReturnIEnumerable(IEnumerable data)
+        {
+            return data;
+        }
+
         public static IEnumerable<int> ReturnIEnumerableOfInt(IEnumerable<int> data)
         {
             return data;
@@ -147,6 +152,11 @@ namespace FFITarget
         public static IDictionary AcceptTypedDictionary(Dictionary<string, DummyCollection> dictionary)
         {
             return dictionary;
+        }
+
+        public static int[] MakeArray(params int[] values)
+        {
+            return values;
         }
     }
 }

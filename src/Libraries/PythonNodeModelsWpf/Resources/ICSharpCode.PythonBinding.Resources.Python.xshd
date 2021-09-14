@@ -12,8 +12,8 @@
     <FoldMarker bold="false" italic="false" color="Gray" bgcolor="#242424" />
     <SelectedFoldLine bold="false" italic="false" color="Gray" />
     <EOLMarkers bold="false" italic="false" color="#999999" />
-    <SpaceMarkers bold="false" italic="false" color="#999999" />
-    <TabMarkers bold="false" italic="false" color="#999999" />
+    <SpaceMarkers bold="false" italic="false" color="#75715E" />
+    <TabMarkers bold="false" italic="false" color="#75715E" />
   </Environment>
   <Properties>
     <Property name="LineComment" value="#" />

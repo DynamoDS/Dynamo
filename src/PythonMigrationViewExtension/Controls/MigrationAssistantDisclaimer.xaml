@@ -1,0 +1,109 @@
+﻿<Window x:Class="Dynamo.PythonMigration.Controls.MigrationAssistantDisclaimer"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+        xmlns:p="clr-namespace:Dynamo.PythonMigration.Properties;assembly=PythonMigrationViewExtension"
+        xmlns:local="clr-namespace:Dynamo.PythonMigration.Controls"
+        Width="660"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="{x:Static p:Resources.MigrationAssistantDisclaimerWindowTitle}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="#444444">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <Image Name="DialogIcon"
+               Width="100"
+               Height="35"
+               Margin="15,60,15,0"
+               VerticalAlignment="Top"
+               HorizontalAlignment="Center"
+               Source="/DynamoCoreWpf;component/UI/Images/python-logo.png"
+               Grid.Column="0">
+        </Image>
+
+        <StackPanel Margin="15,25,15,25"
+                    Grid.Row="0"
+                    Grid.Column="1">
+
+            <TextBlock Name="SummaryText"
+                       Text="{x:Static p:Resources.MigrationAssistantDisclaimerHeader}"
+                       FontSize="16"
+                       Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
+                       HorizontalAlignment="Stretch"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,5">
+            </TextBlock>
+
+            <TextBlock Name="DescriptionText"
+                       Text="{x:Static p:Resources.MigrationAssistantDisclaimerMessage}"
+                       FontSize="13"
+                       Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
+                       HorizontalAlignment="Stretch"
+                       TextWrapping="Wrap">
+            </TextBlock>
+        </StackPanel>
+
+        <StackPanel Name="DisableAlertCheckboxStackPanel"
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    Margin="15,0,10,10">
+            <CheckBox x:Name="DisableMigrationAssistantDisclaimerDialogCheck"
+                      Grid.Row="1"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="2"
+                      VerticalAlignment="Center"
+                      FontSize="12"
+                      Background="White"
+                      IsChecked="False">
+                <TextBlock Text="{x:Static p:Resources.MigrationAssistantDisclaimerDisable}"
+                           Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
+                           HorizontalAlignment="Stretch"
+                           TextWrapping="Wrap"
+                           Name="IronPythonDisableAlertTextBlock" />
+            </CheckBox>
+        </StackPanel>
+
+        <StackPanel Name="RightButtonStackPanel"
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="10,0,10,10">
+            <Button Content="{x:Static p:Resources.MigrationAssistantDisclaimerContinueButtonContent}"
+                    Name="AcceptBtn"
+                    Style="{StaticResource STextButton}"
+                    Visibility="Visible"
+                    Click="AcceptBtn_Click" />
+            <Button Content="{x:Static p:Resources.MigrationAssistantDisclaimerDecline}"
+                    Name="DeclineBtn"
+                    Style="{StaticResource STextButton}"
+                    Visibility="Visible"
+                    Click="DeclineBtn_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

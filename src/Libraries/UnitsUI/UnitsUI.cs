@@ -71,9 +71,14 @@ namespace UnitsUI
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            tb.OnChangeCommitted += () => model.OnNodeModified();
+            tb.OnChangeCommitted += TextChangehandler; 
 
             (nodeView.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
+        }
+
+        private void TextChangehandler()
+        {
+            mesBaseModel.OnNodeModified();
         }
 
         void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -108,7 +113,7 @@ namespace UnitsUI
 
         public void Dispose()
         {
-            tb.OnChangeCommitted += () => mesBaseModel.OnNodeModified();
+            tb.OnChangeCommitted -= TextChangehandler;
         }
     }
 
@@ -222,7 +227,7 @@ namespace UnitsUI
         {
             Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData(Resources.LengthFromStringPortDataLengthToolTip, Resources.LengthFromStringPortDataLengthToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("double", Resources.LengthFromStringPortDataLengthToolTip)));
             RegisterAllPorts();
         }
 
@@ -323,7 +328,7 @@ namespace UnitsUI
         private VolumeFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
         {
             Measure = Volume.FromDouble(0.0, VolumeUnit.CubicMeter);
-            Warning("AreaFromString is obsolete.", true);
+            Warning("VolumeFromString is obsolete.", true);
         }
 
         public VolumeFromString()
@@ -332,7 +337,7 @@ namespace UnitsUI
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("volume", Resources.VolumeFromStringPortDataVolumeToolTip)));
             RegisterAllPorts();
 
-            Warning("AreaFromString is obsolete.", true);
+            Warning("VolumeFromString is obsolete.", true);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)

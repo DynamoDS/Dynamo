@@ -21,10 +21,10 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
 using NUnit.Framework;
+using ProtoCore;
 using PythonNodeModels;
 using SystemTestServices;
 using TestServices;
-using IntegerSlider = CoreNodeModels.Input.IntegerSlider;
 
 namespace DynamoCoreWpfTests
 {
@@ -46,7 +46,7 @@ namespace DynamoCoreWpfTests
         protected WorkspaceModel workspace = null;
         protected WorkspaceViewModel workspaceViewModel = null;
         protected double tolerance = 1e-6;
-        protected double codeBlockPortHeight = Configurations.CodeBlockPortHeightInPixels;
+        protected double codeBlockPortHeight = Configurations.PortHeightInPixels;
 
         public override void Setup()
         {
@@ -1562,6 +1562,36 @@ namespace DynamoCoreWpfTests
             });
         }
 
+        [Test, RequiresSTA]
+        public void TestUnresolvedCodeBlockNodeUndo()
+        {
+            bool undo_1 = false;
+            bool undo_2 = false;
+            bool undo_3 = false;
+            RunCommandsFromFile("TestUnresolvedCodeBlockNodeUndo.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                Assert.IsNotNull(workspace);
+
+                if (commandTag == "Undo_1")
+                {
+                    undo_1 = true;
+                }
+                else if (commandTag == "Undo_2")
+                {
+                    undo_2 = true;
+                }
+                else if (commandTag == "Undo_3")
+                {
+                    undo_3 = true;
+                }
+            });
+
+            Assert.IsTrue(undo_1);
+            Assert.IsTrue(undo_2);
+            Assert.IsTrue(undo_3);
+        }
+
         /// <summary>
         /// Creates a Code Block Node with a single line comment and multi line comment 
         /// checks if the ports are created properly and at the correct height
@@ -2771,6 +2801,63 @@ namespace DynamoCoreWpfTests
         }
 
         [Test, RequiresSTA]
+        public void TestNodeToCallsitesObjMapModifyInputConnection()
+        {
+            Guid callsiteIdFirstCall = new Guid();
+            Guid callsiteIdSecondCall = new Guid();
+            Guid functionCallNodeGuid = new Guid("16e960e5-8a24-44e7-ac81-3759aaf11d25");
+
+            preloadGeometry = true;
+            RunCommandsFromFile("TestCallsiteMapModifyModifyInputConnection.xml", (commandTag) =>
+            {
+                ProtoCore.RuntimeCore core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
+                if (commandTag == "ModifyX_FirstTime")
+                {
+                    // There must only be 1 node at this point
+                    Assert.AreEqual(1, core.RuntimeData.NodeToCallsiteObjectMap.Count);
+
+                    // Verify that the map contains the node guid
+                    List<CallSite> callSites;
+                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteObjectMap.TryGetValue(functionCallNodeGuid, out callSites);
+                    Assert.AreEqual(true, containsNodeGuid);
+
+                    // There must only be 1 callsite at this point
+                    Assert.AreEqual(1, callSites.Count);
+
+                    // Get the callsite id
+                    foreach (var cs in callSites)
+                    {
+                        callsiteIdFirstCall = cs.CallSiteID;
+                    }
+                }
+                else if (commandTag == "ModifyX_SecondTime")
+                {
+                    // There must only be 1 callsite at this point
+                    Assert.AreEqual(1, core.RuntimeData.NodeToCallsiteObjectMap.Count);
+
+                    // Verify that the map contains the node guid
+                    List<CallSite> callSites;
+                    bool containsNodeGuid = core.RuntimeData.NodeToCallsiteObjectMap.TryGetValue(functionCallNodeGuid, out callSites);
+                    Assert.AreEqual(true, containsNodeGuid);
+
+                    // There must still only be 1 callsite at this point
+                    Assert.AreEqual(1, callSites.Count);
+
+                    // Get the callsite id
+                    foreach (var cs in callSites)
+                    {
+                        callsiteIdSecondCall = cs.CallSiteID;
+                    }
+
+                    // The callsite guid must match 
+                    // This means that that the callsite was cached and reused
+                    Assert.AreEqual(callsiteIdFirstCall, callsiteIdSecondCall);
+                }
+
+            });
+        }
+
+        [Test, RequiresSTA]
         [Category("RegressionTests")]
 
         //Details for steps can be found in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2521
@@ -3620,7 +3707,7 @@ namespace DynamoCoreWpfTests
 
                     //Check the CBN for input/output ports
                     Assert.AreNotEqual(ElementState.Error, cbn.State);
-                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(0, cbn.OutPorts.Count);
                     Assert.AreEqual(0, cbn.InPorts.Count);
 
                 }
@@ -4197,7 +4284,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(3, workspace.Nodes.Count());
 
             var number = GetNode("31f48bb5-4bdf-4066-b343-5df0f6f4337f") as DoubleInput;
-            var slider = GetNode("ff4d4e43-8932-4588-95ed-f41c7f322ad0") as IntegerSlider;
+            var slider = GetNode("ff4d4e43-8932-4588-95ed-f41c7f322ad0") as IntegerSlider64Bit;
             var codeblock = GetNode("d7e88a85-d32f-416c-b449-b22f099c5471") as CodeBlockNodeModel;
 
             Assert.IsNotNull(number);
@@ -4214,8 +4301,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, codeblock.OutPorts.Count);
 
             AssertPreviewValue("d7e88a85-d32f-416c-b449-b22f099c5471", 80);
-
-            //Assert.Inconclusive("Porting : DoubleInput");
         }
 
         [Test]
@@ -5614,6 +5699,8 @@ namespace DynamoCoreWpfTests
                     Assert.IsNotNull(node);
                     Assert.IsTrue(node.IsInErrorState);
                     Assert.AreEqual(1, node.AllConnectors.Count());
+
+                    AssertPreviewValue("44115db6-bf0b-478a-90f6-2719eb65b70d", null);
                 }
             });
         }

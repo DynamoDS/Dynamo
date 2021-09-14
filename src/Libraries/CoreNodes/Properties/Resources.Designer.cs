@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DSCore.Properties
-{
-
-
+namespace DSCore.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,7 +19,7 @@ namespace DSCore.Properties
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -178,6 +178,24 @@ namespace DSCore.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The operation resulted in an integer overflow. Its result may be unexpected..
+        /// </summary>
+        internal static string IntegerOverflow {
+            get {
+                return ResourceManager.GetString("IntegerOverflow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid destination file path used as copy path..
+        /// </summary>
+        internal static string InvalidDestinationPathErrorMessage {
+            get {
+                return ResourceManager.GetString("InvalidDestinationPathErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One or more input types are not matching. Lists as keys are not supported..
         /// </summary>
         internal static string InvalidKeysErrorMessage {
@@ -187,7 +205,7 @@ namespace DSCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of items does not match the number of keys..
+        ///   Looks up a localized string similar to Number of items does not match the number of keys. href=InvalidKeysLenghtErrorMessage.html.
         /// </summary>
         internal static string InvalidKeysLenghtErrorMessage {
             get {
@@ -201,6 +219,15 @@ namespace DSCore.Properties
         internal static string LoadImageFromPathObsolete {
             get {
                 return ResourceManager.GetString("LoadImageFromPathObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected Python engine could not be found.
+        /// </summary>
+        internal static string MissingPythonEngine {
+            get {
+                return ResourceManager.GetString("MissingPythonEngine", resourceCulture);
             }
         }
         

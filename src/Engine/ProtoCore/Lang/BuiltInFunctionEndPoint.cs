@@ -307,72 +307,14 @@ namespace ProtoCore.Lang
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.InlineConditional:
                     {
-                        StackValue svCondition = formalParameters[0];
-                        if (!svCondition.IsBoolean)
-                        {
-                            // Comment Jun: Perhaps we can allow coercion?
-                            Type booleanType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0);
-                            svCondition = TypeSystem.Coerce(svCondition, booleanType, runtimeCore);
-                            if (svCondition.IsNull)
-                            {
-                                svCondition = StackValue.False;
-                            }
-                        }
-
-                        StackValue svTrue = formalParameters[1];
-                        StackValue svFalse = formalParameters[2];
-
-                        // If run in delta execution environment, we don't 
-                        // create language blocks for true and false branch, 
-                        // so directly return the value.
-                        if (runtimeCore.Options.GenerateSSA)
-                            return svCondition.BooleanValue ? svTrue : svFalse;
-
-                        Validity.Assert(svTrue.IsInteger);
-                        Validity.Assert(svFalse.IsInteger);
-                        int blockId = svCondition.BooleanValue ? (int)svTrue.IntegerValue : (int)svFalse.IntegerValue;
-                        int oldRunningBlockId = runtimeCore.RunningBlock;
-                        runtimeCore.RunningBlock = blockId;
-
-                        int returnAddr = stackFrame.ReturnPC;
-
-                        int ci = ProtoCore.DSASM.Constants.kInvalidIndex;
-                        int fi = ProtoCore.DSASM.Constants.kInvalidIndex;
-                        if (interpreter.runtime.rmem.Stack.Count >= ProtoCore.DSASM.StackFrame.StackFrameSize)
-                        {
-                            ci = stackFrame.ClassScope;
-                            fi = stackFrame.FunctionScope;
-                        }
-
-                        // The class scope does not change for inline conditional calls
-                        StackValue svThisPtr = stackFrame.ThisPtr;
-
-
-                        int blockDecl = 0;
-                        int blockCaller = oldRunningBlockId;
-                        StackFrameType type = StackFrameType.LanguageBlock;
-                        int depth = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.FrameIndexStackFrameDepth).IntegerValue;
-                        int framePointer = rmem.FramePointer;
-
-                        // Comment Jun: Calling convention data is stored on the TX register
-                        StackValue svCallconvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
-                        interpreter.runtime.TX = svCallconvention;
-
-                        List<StackValue> registers = interpreter.runtime.GetRegisters();
-
-                        // Comment Jun: the caller type is the current type in the stackframe
-                        StackFrameType callerType = stackFrame.StackFrameType;
-
-                        
-                        blockCaller = runtimeCore.DebugProps.CurrentBlockId;
-                        StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, 0, registers, 0);
-
-                        ret = interpreter.runtime.Bounce(blockId, 0, bounceStackFrame, 0, false, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
-
-                        runtimeCore.RunningBlock = oldRunningBlockId;
+                        ret = InlineConditionalMethod(formalParameters, stackFrame, runtimeCore, interpreter);
                         break;
                     }
-
+                case ProtoCore.Lang.BuiltInMethods.MethodID.ConditionalIf:
+                    {
+                        ret = InlineConditionalMethod(formalParameters, stackFrame, runtimeCore, interpreter);
+                        break;
+                    }
                 case ProtoCore.Lang.BuiltInMethods.MethodID.Dot:
                     ret = DotMethod(formalParameters[0], stackFrame, interpreter.runtime, c);
                     break;
@@ -541,6 +483,75 @@ namespace ProtoCore.Lang
                     throw new ProtoCore.Exceptions.CompilerInternalException("Unknown built-in method. {AAFAE85A-2AEB-4E8C-90D1-BCC83F27C852}");
             }
 
+            return ret;
+        }
+
+        private StackValue InlineConditionalMethod(List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, RuntimeCore runtimeCore, ProtoCore.DSASM.Interpreter interpreter)
+        {
+            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
+            StackValue svCondition = formalParameters[0];
+            if (!svCondition.IsBoolean)
+            {
+                // Comment Jun: Perhaps we can allow coercion?
+                Type booleanType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0);
+                svCondition = TypeSystem.Coerce(svCondition, booleanType, runtimeCore);
+                if (svCondition.IsNull)
+                {
+                    svCondition = StackValue.False;
+                }
+            }
+
+            StackValue svTrue = formalParameters[1];
+            StackValue svFalse = formalParameters[2];
+
+            // If run in delta execution environment, we don't 
+            // create language blocks for true and false branch, 
+            // so directly return the value.
+            if (runtimeCore.Options.GenerateSSA)
+                return svCondition.BooleanValue ? svTrue : svFalse;
+
+            Validity.Assert(svTrue.IsInteger);
+            Validity.Assert(svFalse.IsInteger);
+            int blockId = svCondition.BooleanValue ? (int)svTrue.IntegerValue : (int)svFalse.IntegerValue;
+            int oldRunningBlockId = runtimeCore.RunningBlock;
+            runtimeCore.RunningBlock = blockId;
+
+            int returnAddr = stackFrame.ReturnPC;
+
+            int ci = ProtoCore.DSASM.Constants.kInvalidIndex;
+            int fi = ProtoCore.DSASM.Constants.kInvalidIndex;
+            if (interpreter.runtime.rmem.Stack.Count >= ProtoCore.DSASM.StackFrame.StackFrameSize)
+            {
+                ci = stackFrame.ClassScope;
+                fi = stackFrame.FunctionScope;
+            }
+
+            // The class scope does not change for inline conditional calls
+            StackValue svThisPtr = stackFrame.ThisPtr;
+
+
+            int blockDecl = 0;
+            int blockCaller = oldRunningBlockId;
+            StackFrameType type = StackFrameType.LanguageBlock;
+            int depth = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.FrameIndexStackFrameDepth).IntegerValue;
+            int framePointer = rmem.FramePointer;
+
+            // Comment Jun: Calling convention data is stored on the TX register
+            StackValue svCallconvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
+            interpreter.runtime.TX = svCallconvention;
+
+            List<StackValue> registers = interpreter.runtime.GetRegisters();
+
+            // Comment Jun: the caller type is the current type in the stackframe
+            StackFrameType callerType = stackFrame.StackFrameType;
+
+
+            blockCaller = runtimeCore.DebugProps.CurrentBlockId;
+            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, 0, registers, 0);
+
+            StackValue ret = interpreter.runtime.Bounce(blockId, 0, bounceStackFrame, 0, false, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
+
+            runtimeCore.RunningBlock = oldRunningBlockId;
             return ret;
         }
 
@@ -2429,6 +2440,10 @@ namespace ProtoCore.Lang
                     is2DArray = true;
                     numOfCols = Math.Max(elementArray.Count, numOfCols);
                 }
+                else
+                {
+                    numOfCols = Math.Max(1, numOfCols);
+                }
             }
             if (is2DArray == false)
                 return sv;
@@ -2575,30 +2590,15 @@ namespace ProtoCore.Lang
 
     class StackValueComparerForDouble : IComparer<StackValue>
     {
-        private bool mbAscending = true;
+        private readonly bool mbAscending = true;
         public StackValueComparerForDouble(bool ascending)
         {
             mbAscending = ascending;
         }
 
-        bool Equals(StackValue sv1, StackValue sv2)
-        {
-            bool sv1null = !sv1.IsNumeric;
-            bool sv2null = !sv2.IsNumeric; 
-            if ( sv1null && sv2null)
-                return true;
-            if (sv1null || sv2null)
-                return false;
-
-            var v1 = sv1.IsDouble ? sv1.DoubleValue: sv1.IntegerValue;
-            var v2 = sv2.IsDouble ? sv2.DoubleValue: sv2.IntegerValue;
-
-            return MathUtils.Equals(v1, v2);
-        }
-
         public int Compare(StackValue sv1, StackValue sv2)
         {
-            if (Equals(sv1, sv2))
+            if (!sv1.IsNumeric && !sv2.IsNumeric)
                 return 0;
 
             if (!sv1.IsNumeric)
@@ -2613,10 +2613,7 @@ namespace ProtoCore.Lang
             double x = mbAscending ? value1 : value2;
             double y = mbAscending ? value2 : value1; 
 
-            if (x > y)
-                return 1;
-            else
-                return -1;
+            return x.CompareTo(y);
         }
     }
 }

@@ -1,0 +1,5 @@
+<ViewExtensionDefinition>
+  <AssemblyPath>..\NodeAutoCompleteViewExtension.dll</AssemblyPath>
+  <TypeName>Dynamo.NodeAutoComplete.NodeAutoCompleteViewExtension</TypeName>
+  <IsEnabled>False</IsEnabled>
+</ViewExtensionDefinition>

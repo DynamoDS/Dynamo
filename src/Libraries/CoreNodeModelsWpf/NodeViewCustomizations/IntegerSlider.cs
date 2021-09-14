@@ -19,4 +19,19 @@ namespace CoreNodeModelsWpf.NodeViewCustomizations
 
         public void Dispose() { }
     }
+
+    public class IntegerSlider64BitNodeViewCustomization : INodeViewCustomization<IntegerSlider64Bit>
+    {
+        public void CustomizeView(IntegerSlider64Bit model, NodeView nodeView)
+        {
+            var slider = new DynamoSlider(model, nodeView)
+            {
+                DataContext = new SliderViewModel<long>(model)
+            };
+
+            nodeView.inputGrid.Children.Add(slider);
+        }
+
+        public void Dispose() { }
+    }
 }

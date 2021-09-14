@@ -8,8 +8,13 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    public class libGPreloaderTests
+    public class libGPreloaderTests : UnitTestBase
     {
+        private List<string> LoadListFromCsv(string fileName)
+        {
+            var path = Path.Combine(TestDirectory, @"core\libGPreloader", fileName);
+            return File.ReadAllText(path).Split(';').ToList();
+        }
 
         [Test]
         public void GetInstalledASMVersions2_FindsVersionedLibGFolders()
@@ -18,7 +23,6 @@ namespace Dynamo.Tests
             {
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1),
                     new Version(225,0,0)
             };
 
@@ -66,7 +70,6 @@ namespace Dynamo.Tests
             {
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1),
                     new Version(225,0,0)
             };
 
@@ -116,7 +119,6 @@ namespace Dynamo.Tests
             {
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1),
                     // Notice the lookup version here is different than the actual found version below
                     // because there is no local mocked product with that specific ASM version installed
                     new Version(225,4,0)
@@ -295,7 +297,6 @@ namespace Dynamo.Tests
             {
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1)
             };
 
             versions.Sort();
@@ -312,9 +313,13 @@ namespace Dynamo.Tests
 
             //create some
             var libG22440path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_4_0"));
-            File.WriteAllText(Path.Combine(libG22440path.FullName, "ASMAHL.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22440path.FullName, "ASMAHL224A.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22440path.FullName, "tbb.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22440path.FullName, "tbbmalloc.dll"), "someText");
             var libG22401path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_0_1"));
-            File.WriteAllText(Path.Combine(libG22401path.FullName, "ASMAHL.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22401path.FullName, "ASMAHL224A.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22401path.FullName, "tbb.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22401path.FullName, "tbbmalloc.dll"), "someText");
 
 
             var foundVersion = DynamoShapeManager.Utilities.GetInstalledAsmVersion2(
@@ -336,7 +341,6 @@ namespace Dynamo.Tests
             {
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1)
             };
 
             versions.Sort();
@@ -443,6 +447,33 @@ namespace Dynamo.Tests
             {
                 var preloader = new Preloader(Path.GetTempPath(), new[] { new Version(999, 999, 999) });
             });
+        }
+
+        [Test]
+        public void ASM227InstallationsAreValidated()
+        {
+            var incomplete227List = LoadListFromCsv("incomplete227List.csv");
+            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete227List, 227));
+            // Add missing DLLs. Now the the installation should be valid.
+            incomplete227List.Add("tsplines9A.dll");
+            Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete227List, 227));
+        }
+
+        [Test]
+        public void ASM226InstallationsAreValidated()
+        {
+            var incomplete226List = LoadListFromCsv("incomplete226List.csv");
+            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete226List, 226));
+            // Add missing DLLs. Now the the installation should be valid.
+            incomplete226List.Add("tsplines8A.dll");
+            incomplete226List.Add("AdpSDKUI.dll");
+            Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete226List, 226));
+        }
+
+        [Test]
+        public void UnknownASMVersionInstallationsAreDiscarded()
+        {
+            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(new List<string>(), 0));
         }
     }
 }

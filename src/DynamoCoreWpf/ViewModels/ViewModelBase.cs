@@ -1,4 +1,5 @@
 ﻿using System;
+using Dynamo.Configuration;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
 
@@ -16,6 +17,23 @@ namespace Dynamo.ViewModels
 #else
                 return false;
 #endif
+            }
+        }
+
+        private bool isCollapsed;
+        [JsonIgnore]
+        public virtual bool IsCollapsed
+        {
+            get => isCollapsed;
+            set
+            {
+                if (isCollapsed == value)
+                {
+                    return;
+                }
+
+                isCollapsed = value;
+                RaisePropertyChanged(nameof(IsCollapsed));
             }
         }
 

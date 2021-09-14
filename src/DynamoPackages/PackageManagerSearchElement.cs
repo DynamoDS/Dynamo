@@ -26,6 +26,7 @@ namespace Dynamo.PackageManager
         ///     An event that's invoked when the user has attempted to downvote this
         ///     package.
         /// </summary>
+        [Obsolete("This event will be removed in Dynamo 3.0")]
         public event Func<string, bool> DownvoteRequested;
 
         public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x => x.username)); } }
@@ -60,10 +61,10 @@ namespace Dynamo.PackageManager
                 {
                     foreach (var host in Header.versions.Last().host_dependencies)
                     {
-                        hostsString += host + "  ";
+                        hostsString += host + Environment.NewLine;
                     }
                 }
-                return hostsString;
+                return hostsString.TrimEnd('\r', '\n');
             }
         }
 
@@ -155,6 +156,7 @@ namespace Dynamo.PackageManager
                 , TaskScheduler.FromCurrentSynchronizationContext());
         }
 
+        [Obsolete("This API will no longer decrease package votes and will be removed in Dynamo 3.0")]
         public void Downvote()
         {
             Task<bool>.Factory.StartNew(() => DownvoteRequested(this.Id))
@@ -167,6 +169,7 @@ namespace Dynamo.PackageManager
                 }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
+        [Obsolete("No longer used. Remove in 3.0.")]
         public static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(
             IEnumerable<PackageHeader> headers, PackageVersion version)
         {

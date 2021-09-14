@@ -1,0 +1,247 @@
+{
+  "Uuid": "5288d2f3-2393-4b77-9178-c1bda79e1b24",
+  "IsCustomNode": true,
+  "Category": "Ampersand.[&] Curve",
+  "Description": "Find the convex hull for a planar polycurve",
+  "Name": "[&] PolyCurve.ConvexHull",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Autodesk.Geometry": {
+        "Key": "Autodesk.DesignScript.Geometry.Geometry",
+        "Value": "ProtoGeometry.dll"
+      },
+      "List": {
+        "Key": "DSCore.List",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Plane": {
+        "Key": "Autodesk.DesignScript.Geometry.Plane",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "PolyCurve": {
+        "Key": "Autodesk.DesignScript.Geometry.PolyCurve",
+        "Value": "ProtoGeometry.dll"
+      },
+      "DSCore.List": {
+        "Key": "DSCore.List",
+        "Value": "DSCoreNodes.dll"
+      },
+      "DSCore.List.Count": {
+        "Key": "DSCore.List",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "NodeType": "InputNode",
+      "Parameter": {
+        "Name": "polyCurve",
+        "TypeName": "Autodesk.DesignScript.Geometry.PolyCurve",
+        "TypeRank": 0,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "74c93aae71994d7fa00e1d0f4ee8af6d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "99d0e9ac15694ba88fa07c765077624d",
+          "Name": "",
+          "Description": "Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "polyCurve",
+      "Id": "12bd8af1face4c71b126ebd23b7cf84e",
+      "Inputs": [
+        {
+          "Id": "a87cac47459f4a2d9ac158d77e07994b",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "FindConvexHull(pcrv);",
+      "Id": "4e8048b929da4a76afa88738b9986ccf",
+      "Inputs": [
+        {
+          "Id": "35118382e6a641af8f853fa3cb1b216c",
+          "Name": "pcrv",
+          "Description": "pcrv",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cf649b18e5de408b82f8e9344e8e718d",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "// Iteratively call a function to identify convex\n// vertices of a closed polycurve. Stop when no\n// further concave or straight vertices have been\n// identified and culled.\n//\n// Colin McCrone\n// Twitter:  https://twitter.com/colinmccrone\n// LinkedIn: https://www.linkedin.com/in/colinmccrone\n// Updated:  2019-05-20\n//\ndef FindConvexHull(pCrv:var)\n{\n\tnumVerts = 10;\n\tcount = DSCore.List.Count;\n\treturn = [Imperative]\n\t{\n\t\ts1=null;\n\t\tisHull = false;\n\t\tverts=null;\n\t\ti = 0;\n\t\twhile(!isHull && i < numVerts)\n\t\t{\n\t\t\t// Get convex vertices\n\t\t\ts1 = ConvexVertices(pCrv);\n\t\t\tisHull = s1[0];\n\t\t\tverts = s1[1];\n\t\t\tnumVerts = count(verts);\n\n\t\t\t// Make a polycurve\n\t\t\tpCrv = PolyCurve.ByPoints(verts,true);\n\n\t\t\t// Update counter\n\t\t\ti = i+1;\n\t\t}\n\n\t\treturn = pCrv;\n\t}\n\n};",
+      "Id": "ce38df8c2676416a8e4bd5ac2bc5a3eb",
+      "Inputs": [],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "// Find the winding vector of the direction of the closed polycurve\n// and compare the normalized cross product at each vertex to the\n// winding vector. Those aligned vectors indicate a convex vertex.\n//\n// Colin McCrone\n// Twitter:  https://twitter.com/colinmccrone\n// LinkedIn: https://www.linkedin.com/in/colinmccrone\n// Updated:  2019-05-20\n//\ndef ConvexVertices(pCrv:PolyCurve)\n{\n\t// All vertices\n\tcrvs = pCrv.Explode();\n\tvertices = crvs.PointAtParameter(0);\n\n\t// Normal of the best-fit plane through vertices;\n\t// not necessarily aligned with winding direction of pCrv\n\tplane1 = Plane.ByBestFitThroughPoints(vertices);\n\tnormal = plane1.Normal;\n\n\t// Cross products at each vertex in the order of the\n\t// curve segments\n\tshifted = List.ShiftIndices(crvs, 1);\n\tvec1 = shifted.TangentAtParameter(1);\n\tvec2 = crvs.TangentAtParameter(0);\n\tcrossProd = vec1.Cross(vec2);\n\n\t// Inside angle at each vertex\n\tinAng = Math.Asin(crossProd.Length/(vec1.Length * vec2.Length));\n\n\t// Direction of the vertex cross product compared to\n\t// the plane normal\n\tcrossMag = crossProd.Dot(normal);\n\tcrossSign = Math.Sign(crossMag);\n\n\t// Weighted outside angle at each vertex\n\toutAng = crossSign * (180 - inAng);\n\n\t// Sum of the weighted outside angles: either 180 or -180\n\tsumOutAng = Math.Sum(outAng);\n\n\t// Winding Vector is either the original vector or the reverse\n\tdirection = Math.Sign(sumOutAng);\n\twindVec = normal.Scale(direction);\n\n\t// Compare normalized cross products at each vertex to winding\n\t// vector. Those that are aligned indicate convex vertices\n\tnormCrossProd = crossProd.Normalized();\n\talignment = windVec.Dot(normCrossProd);\n\tisConvex = alignment > 0.001;\n\tisAllConvex = DSCore.List.AllTrue(isConvex);\n\n\t// Identify convex vertex points\n\tt1 = List.FilterByBoolMask(vertices, isConvex);\n\tconvexPts = t1[\"in\"];\n\n\t// Return\n\treturn = [isAllConvex,convexPts];\n};",
+      "Id": "3ca27db23ad24d5d9a8d625794223853",
+      "Inputs": [],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "99d0e9ac15694ba88fa07c765077624d",
+      "End": "35118382e6a641af8f853fa3cb1b216c",
+      "Id": "ab6bdd6b7c134f818f5653405c4507d3"
+    },
+    {
+      "Start": "cf649b18e5de408b82f8e9344e8e718d",
+      "End": "a87cac47459f4a2d9ac158d77e07994b",
+      "Id": "5a3556f047a5471ab18a56a0fad5361c"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.2.6826",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Input",
+        "Id": "74c93aae71994d7fa00e1d0f4ee8af6d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 73.137104315398915,
+        "Y": -38.130116763789857
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "12bd8af1face4c71b126ebd23b7cf84e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1003.078346710492,
+        "Y": -40.859759392145236
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "4e8048b929da4a76afa88738b9986ccf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 646.849000998634,
+        "Y": -39.036795023526651
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "ce38df8c2676416a8e4bd5ac2bc5a3eb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 72.30907667057852,
+        "Y": 99.4565880038167
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "3ca27db23ad24d5d9a8d625794223853",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 567.41264581295434,
+        "Y": 103.60497500648506
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "0de13ca5e0a94fed8c399a6a2164a63c",
+        "Title": "Colin McCrone\r\nTwitter:  @ColinMcCrone\r\nLinkedIn: https://www.linkedin.com/in/colinmccrone\r\nUpdated:  2019-05-20\r\n\r\nAn example Dynamo script for how to use this node can be found in the 'extra' folder where the package files are stored. To find it, go to the Packages Menu and select \"Manage Packages.\" Where Ampersand is listed, open the drop-down menu link at the right and choose \"Show Root Directory.\" Open the \"extra\" folder to find the example file called AmpersandExamples.dyn.",
+        "Nodes": [],
+        "Left": 76.898598474110258,
+        "Top": -278.67503194551307,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 165.46277091888646,
+    "Y": 357.72262668547262,
+    "Zoom": 1.0125092511221079
+  }
+}

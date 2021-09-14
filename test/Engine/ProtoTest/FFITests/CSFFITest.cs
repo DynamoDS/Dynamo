@@ -502,6 +502,23 @@ sum;
         }
 
         [Test]
+        public void TestStaticHiddenFunctionCallResolution()
+        {
+            string code = @"
+                            d = HidesMethodFromClassA.Baz();
+                            b = ClassA.Baz();
+                            ";
+
+            Type dummy = typeof(FFITarget.HidesMethodFromClassA);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            Console.WriteLine(code);
+            ValidationData[] data = { new ValidationData { ValueName = "d", ExpectedValue = 23, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "b", ExpectedValue = 234, BlockIndex = 0 }
+                                    };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
         public void TestInheritanceCtorsVirtualMethods2()
         {
             string code = @"
@@ -1311,7 +1328,7 @@ a12;
             thisTest.Verify("bReadback", null);
 
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.MultipleSymbolFound);
-            string[] classes = thisTest.GetAllMatchingClasses("DupTargetTest");
+            string[] classes = thisTest.GetAllMatchingClasses("B.DupTargetTest");
             Assert.True(classes.Length > 1, "More than one implementation of DupTargetTest class expected");
         }
 
@@ -1337,7 +1354,7 @@ a12;
             thisTest.Verify("cReadback", 2);
 
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.MultipleSymbolFound);
-            string[] classes = thisTest.GetAllMatchingClasses("DupTargetTest");
+            string[] classes = thisTest.GetAllMatchingClasses("B.DupTargetTest");
             Assert.True(classes.Length > 1, "More than one implementation of DupTargetTest class expected");
         }
 

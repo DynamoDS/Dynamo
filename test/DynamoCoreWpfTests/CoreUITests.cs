@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -7,10 +8,13 @@ using System.Windows.Input;
 using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Extensions;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Linting.Interfaces;
+using Dynamo.Linting.Rules;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
@@ -19,8 +23,11 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
 using DynamoCoreWpfTests.Utility;
+using Moq;
+using Moq.Protected;
 using NUnit.Framework;
 using SystemTestServices;
+using WpfResources = Dynamo.Wpf.Properties.Resources;
 
 namespace DynamoCoreWpfTests
 {
@@ -499,6 +506,31 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(WithoutRenderPrecision.RenderPrecision, 128);
         }
 
+        [Test]
+        [Category("DynamoUI")]
+        public void PreferenceSetting_NotAgreeAnalyticsSharing()
+        {
+            // Test deserialization of analytics setting 
+            // Test loading old settings file without agreement 
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-firstrun.xml");
+            var resultSetting = PreferenceSettings.Load(filePath);
+            Assert.AreEqual(false, resultSetting.IsAnalyticsReportingApproved);
+            Assert.AreEqual(false, resultSetting.IsUsageReportingApproved);
+            Assert.DoesNotThrow(() => Dynamo.Logging.AnalyticsService.ShutDown());
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void PreferenceSetting_AgreeAnalyticsSharing()
+        {
+            // Test loading old settings file with agreement 
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-AnalyticsTurnedOn.xml");
+            var resultSetting = PreferenceSettings.Load(filePath);
+            Assert.AreEqual(true, resultSetting.IsAnalyticsReportingApproved);
+            Assert.AreEqual(false, resultSetting.IsUsageReportingApproved);
+            Assert.DoesNotThrow(() => Dynamo.Logging.AnalyticsService.ShutDown());
+        }
+
         #region PreferenceSettings
         [Test, RequiresSTA]
         [Category("DynamoUI")]
@@ -548,10 +580,12 @@ namespace DynamoCoreWpfTests
                 // First time run, check if dynamo did set it back to false after running
                 Assert.AreEqual(false, UsageReportingManager.Instance.FirstRun);
 
-                // CollectionInfoOption To TRUE
+                // CollectionInfoOption To FALSE
                 UsageReportingManager.Instance.SetUsageReportingAgreement(true);
                 RestartTestSetup(startInTestMode: false);
-                Assert.AreEqual(true, UsageReportingManager.Instance.IsUsageReportingApproved);
+                // Because IsUsageReportingApproved is now dominated by IsAnalyticsReportingApproved.
+                // In this case. the value is still false because of IsAnalyticsReportingApproved
+                Assert.AreEqual(false, UsageReportingManager.Instance.IsUsageReportingApproved);
 
                 // CollectionInfoOption To FALSE
                 UsageReportingManager.Instance.SetUsageReportingAgreement(false);
@@ -638,6 +672,17 @@ namespace DynamoCoreWpfTests
             Assert.True(resultSetting.ShowEdges);
         }
 
+        [Test]
+        public void PreferenceSettings_IsFirstRun_And_HideReportOptions()
+        {
+            ViewModel.HideReportOptions = true;
+            ViewModel.Model.PreferenceSettings.IsFirstRun = true;
+            //force the dynamoview's loaded handler to be called again - 
+            View.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            Assert.IsFalse(ViewModel.PreferenceSettings.IsFirstRun);
+        }
+
         private void RestartTestSetup(bool startInTestMode)
         {
             // Shutdown Dynamo and restart it
@@ -673,7 +718,6 @@ namespace DynamoCoreWpfTests
 
             //create the view
             View = new DynamoView(ViewModel);
-
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
         #endregion
@@ -695,6 +739,7 @@ namespace DynamoCoreWpfTests
                 Assert.AreEqual(content, infoBubble.Content);
                 Assert.AreEqual(InfoBubbleViewModel.Style.Error, infoBubble.InfoBubbleStyle);
                 Assert.AreEqual(InfoBubbleViewModel.Direction.Bottom, infoBubble.ConnectingDirection);
+                Assert.IsNull(infoBubble.DocumentationLink);
             }
         }
 
@@ -858,6 +903,102 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(currentWs.WorkspaceLacingMenu.IsSubmenuOpen);
         }
 
+
+        [Test]
+        public void WarningShowsWhenSavingWithLinterWarningsOrErrors()
+        {
+            // Arrange
+            var expectedWindowTitle = WpfResources.GraphIssuesOnSave_Title;
+            var recivedEvents = new List<string>();
+            var savewarnHandler = new Action<SaveWarningOnUnresolvedIssuesArgs>((e) => { recivedEvents.Add(e.TaskDialog.Title); e.TaskDialog.Close(); });
+            ViewModel.SaveWarningOnUnresolvedIssuesShows += savewarnHandler;
+            
+    
+            Mock<LinterExtensionBase> mockLinter = new Mock<LinterExtensionBase>() { CallBase = true };
+            SetupMockLinter(mockLinter);
+
+            var startupParams = new StartupParams(Model.AuthenticationManager.AuthProvider,
+                Model.PathManager, new ExtensionLibraryLoader(Model), Model.CustomNodeManager,
+                Model.GetType().Assembly.GetName().Version, Model.PreferenceSettings, Model.LinterManager);
+
+            mockLinter.Object.InitializeBase(Model.LinterManager);
+            mockLinter.Object.Startup(startupParams);
+            Model.ExtensionManager.Add(mockLinter.Object);
+
+            OpenDynamoDefinition(Path.Combine(GetTestDirectory(ExecutingDirectory), @"UI/SaveWithIssuesWarning.dyn"));
+
+            var failureNode = new DummyNode();
+            Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(failureNode, 0, 0, false, false));
+
+            Model.LinterManager.SetActiveLinter(Model.LinterManager.AvailableLinters
+                .Where(x => x.Id == mockLinter.Object.UniqueId)
+                .FirstOrDefault());
+
+            // Act
+            failureNode.Name = "NewNodeName";
+            Assert.That(Model.LinterManager.RuleEvaluationResults.Count > 0);
+
+            ViewModel.ShowSaveDialogIfNeededAndSaveResult(null);
+
+            // Assert
+            Assert.That(recivedEvents.Count == 1);
+            Assert.That(recivedEvents.First() == expectedWindowTitle);
+            ViewModel.SaveWarningOnUnresolvedIssuesShows -= savewarnHandler;
+            
+        }
+
+   
+
+        private void SetupMockLinter(Mock<LinterExtensionBase> mockLinter)
+        {
+            const string MOCK_LINTER_GUID = "358321af-2633-4697-b475-81632582eba0";
+            const string MOCK_LINTER_NAME = "MockLinter";
+            const string MOCK_RULE_ID = "1";
+
+            Mock<NodeLinterRule> mockRule = new Mock<NodeLinterRule> { CallBase = true };
+
+            // Setup mock rule
+            mockRule.Setup(r => r.Id).Returns(MOCK_RULE_ID);
+
+            // Setup mock LinterExtension
+            mockLinter.Setup(e => e.UniqueId).Returns(MOCK_LINTER_GUID);
+            mockLinter.Setup(e => e.Name).Returns(MOCK_LINTER_NAME);
+
+            mockRule.Setup(x => x.EvaluationTriggerEvents).
+                Returns(new List<string> { nameof(NodeModel.Name) });
+
+            mockRule.Protected().Setup<RuleEvaluationStatusEnum>("EvaluateFunction", ItExpr.IsAny<NodeModel>(), ItExpr.IsAny<string>()).
+                Returns((NodeModel node, string changedEvent) => NodeRuleEvaluateFunction(node, changedEvent));
+
+            mockRule.Protected().Setup<List<Tuple<RuleEvaluationStatusEnum, string>>>("InitFunction", ItExpr.IsAny<WorkspaceModel>()).
+                Returns((WorkspaceModel wm) => NodeRuleInitFuction(wm));
+
+            mockLinter.Object.AddLinterRule(mockRule.Object);
+
+        }
+
+        private RuleEvaluationStatusEnum NodeRuleEvaluateFunction(NodeModel node, string changedEvent)
+        {
+            return node.Name == "NewNodeName" ?
+                RuleEvaluationStatusEnum.Failed :
+                RuleEvaluationStatusEnum.Passed;
+        }
+
+        private List<Tuple<RuleEvaluationStatusEnum, string>> NodeRuleInitFuction(WorkspaceModel wm)
+        {
+            var results = new List<Tuple<RuleEvaluationStatusEnum, string>>();
+            foreach (var node in wm.Nodes)
+            {
+                var evaluationStatus = NodeRuleEvaluateFunction(node, "init");
+                if (evaluationStatus == RuleEvaluationStatusEnum.Passed)
+                    continue;
+
+                var valueTuple = Tuple.Create(evaluationStatus, node.GUID.ToString());
+                results.Add(valueTuple);
+            }
+            return results;
+        }
+
         private void RightClick(IInputElement element)
         {
             element.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Right)
@@ -872,5 +1013,7 @@ namespace DynamoCoreWpfTests
 
             DispatcherUtil.DoEvents();
         }
+
+
     }
 }

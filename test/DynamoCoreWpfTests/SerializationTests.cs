@@ -8,12 +8,14 @@ using CoreNodeModels.Input;
 using Dynamo.Engine;
 using Dynamo.Events;
 using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -27,6 +29,7 @@ namespace DynamoCoreWpfTests
 {
     internal class SerializationTests : DynamoViewModelUnitTest
     {
+
         [Test]
         [Category("UnitTests")]
         public void TestBasicAttributes()
@@ -335,6 +338,36 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void NodeUserDescriptionTest()
+        {
+            // Arrange
+            var userDescription = "Some description set by user...";
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeUserDescriptionDeserilizationTest.dyn");         
+
+            OpenModel(testFile);
+
+            // Act
+            // Stage 1: Serialize the workspace view.
+            var jobject1 = JObject.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            var userDescriptionBefore = jobject1["NodeViews"].FirstOrDefault()["UserDescription"];
+
+            // Stage 2: set UserDescription
+            var nodeViewModel = this.ViewModel.CurrentSpaceViewModel.Nodes.First();
+            nodeViewModel.UserDescription = userDescription;
+
+            // Stage 3: Serialize the workspace view again to make sure UserDescription is now serialized.
+            var jobject2 = JToken.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            var userDescriptionAfter = jobject2["NodeViews"].FirstOrDefault()["UserDescription"];
+
+            // Assert
+            Assert.That(nodeViewModel.UserDescription == userDescription);
+            Assert.That(nodeViewModel.UserDescription == this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault().UserDescription);
+            Assert.That(userDescriptionBefore is null);
+            Assert.AreNotEqual(userDescriptionBefore, userDescriptionAfter);
+            Assert.IsTrue(userDescriptionAfter.ToString() == userDescription);
+        }
+
+        [Test]
         public void TestDummyNodeInternals00()
         {
             var folder = Path.Combine(TestDirectory, @"core\dummy_node\");
@@ -394,7 +427,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNull(dummyNode);
             var xmlDocument = new XmlDocument();
-            var element = dummyNode.Serialize(xmlDocument, SaveContext.File);
+            var element = dummyNode.Serialize(xmlDocument, SaveContext.Save);
 
             // Dummy node should be serialized to its original node
             Assert.AreEqual(element.Name, "Dynamo.Nodes.DSFunction");
@@ -429,6 +462,18 @@ namespace DynamoCoreWpfTests
             // Re-saving the file will update the version number (which can be expected)
             // Setting the version numbers to be equal to stop the deep compare from failing
             jobject2["View"]["Dynamo"]["Version"] = jobject1["View"]["Dynamo"]["Version"];
+
+            // Ignoring the ExtensionWorkspaceData property as this is added after the re-save,
+            // this will cause a difference between jobject1 and jobject2 if it is not ignored.
+            // Same thing goes for the Linting property...
+            // We also need to ignore the new IsCollapsed property on ViewModelBase
+            jobject2.Remove(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
+            jobject2.Remove(LinterManagerConverter.LINTER_START_OBJECT_NAME);
+            foreach(JObject item in jobject2["View"]["NodeViews"])
+            {
+                item.Remove(nameof(ViewModelBase.IsCollapsed));
+            }
+
             var jsonText2 = jobject2.ToString();
 
             Console.WriteLine(jsonText1);
@@ -469,6 +514,8 @@ namespace DynamoCoreWpfTests
 
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
+        private const int MAXNUM_SERIALIZATIONTESTS_TOEXECUTE = 300;
+
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -919,7 +966,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void NewCustomNodeSaveAndLoadPt1()
         {
-
             var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
             //first create a new custom node.
             var ws = this.ViewModel.Model.CustomNodeManager.CreateCustomNode("testnode", "testcategory", "atest", funcguid);
@@ -939,9 +985,15 @@ namespace DynamoCoreWpfTests
             new ConnectorModel(numberNode.OutPorts.FirstOrDefault(), outnode1.InPorts.FirstOrDefault(), Guid.NewGuid());
             new ConnectorModel(numberNode.OutPorts.FirstOrDefault(), outnode2.InPorts.FirstOrDefault(), Guid.NewGuid());
 
+            var saveDir = Path.Combine(Path.GetTempPath(), "NewCustomNodeSaveAndLoad");
+            System.IO.Directory.CreateDirectory(saveDir);
 
-            var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefinitionDirectories.FirstOrDefault(), "NewCustomNodeSaveAndLoad.dyf");
-            //save it to the definitions folder so it gets loaded at startup.
+            var savePath = Path.Combine(saveDir, "NewCustomNodeSaveAndLoad.dyf");
+            if (File.Exists(savePath))
+            {
+                File.Delete(savePath);
+            }
+            //save it to a temp location so that we can safely load it in NewCustomNodeSaveAndLoadPt2
             ws.Save(savePath);
 
             //assert the filesaved
@@ -952,6 +1004,15 @@ namespace DynamoCoreWpfTests
         [Test]
         public void NewCustomNodeSaveAndLoadPt2()
         {
+            this.ViewModel.Model.PreferenceSettings.CustomPackageFolders = new List<string>() { Path.Combine(Path.GetTempPath(), "NewCustomNodeSaveAndLoad") };
+
+            var loader = this.ViewModel.Model.GetPackageManagerExtension().PackageLoader;
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = this.ViewModel.Model.PreferenceSettings,
+                NewPaths = new List<string>() { }
+            };
+            loader.LoadCustomNodesAndPackages(loadPackageParams, this.ViewModel.Model.CustomNodeManager);
             // This unit test is a follow-up of NewCustomNodeSaveAndLoadPt1 test to make sure the newly created
             // custom node will be loaded once DynamoCore restarted
             var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
@@ -966,9 +1027,8 @@ namespace DynamoCoreWpfTests
             Assert.NotNull(nodeingraph);
             Assert.IsTrue(nodeingraph.State == ElementState.Active);
             //remove custom node from definitions folder
-            var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefinitionDirectories.FirstOrDefault(), "NewCustomNodeSaveAndLoad.dyf");
+            var savePath = Path.Combine(Path.GetTempPath(), "NewCustomNodeSaveAndLoad", "NewCustomNodeSaveAndLoad.dyf");
             File.Delete(savePath);
-
         }
 
         [Test]
@@ -1006,7 +1066,7 @@ namespace DynamoCoreWpfTests
             var di = new DirectoryInfo(TestDirectory);
             var fis = new string[] { "*.dyn", "*.dyf" }
             .SelectMany(i => di.GetFiles(i, SearchOption.AllDirectories));
-            return fis.Select(fi => fi.FullName).ToArray();
+            return fis.Select(fi => fi.FullName).Take(MAXNUM_SERIALIZATIONTESTS_TOEXECUTE).ToArray();
         }
 
 
@@ -1067,7 +1127,8 @@ namespace DynamoCoreWpfTests
                         Width = annotation.Width,
                         Height = annotation.Height,
                         InitialTop = annotation.AnnotationModel.InitialTop,
-                        TextBlockHeight = annotation.AnnotationModel.TextBlockHeight
+                        TextBlockHeight = annotation.AnnotationModel.TextBlockHeight,
+                        HasNestedGroups = annotation.AnnotationModel.HasNestedGroups
                     });
                 }
 

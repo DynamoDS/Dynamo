@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using CefSharp;
 using CefSharp.Wpf;
 using Dynamo.Extensions;
+using Dynamo.Interfaces;
 using Dynamo.LibraryUI.Handlers;
 using Dynamo.LibraryUI.ViewModels;
 using Dynamo.LibraryUI.Views;
@@ -109,13 +110,19 @@ namespace Dynamo.LibraryUI
         //if the window is resized toggle visibility of browser to force redraw
         private void DynamoWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            browser.InvalidateVisual();
+            if (browser != null)
+            {
+                browser.InvalidateVisual();
+            }
         }
 
         //if the dynamo window is minimized and then restored, force a layout update.
         private void DynamoWindowStateChanged(object sender, EventArgs e)
         {
-            browser.InvalidateVisual();
+            if (browser != null)
+            {
+                browser.InvalidateVisual();
+            }
         }
 
         /// <summary>
@@ -233,7 +240,10 @@ namespace Dynamo.LibraryUI
         //if the browser window itself is resized, toggle visibility to force redraw.
         private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            browser.InvalidateVisual();
+            if (browser != null)
+            {
+                browser.InvalidateVisual();
+            }
         }
 
         #region Tooltip
@@ -280,7 +290,7 @@ namespace Dynamo.LibraryUI
 
         private NodeSearchElementViewModel FindTooltipContext(String nodeName)
         {
-            return dynamoViewModel.SearchViewModel.FindViewModelForNode(nodeName);
+            return dynamoViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FindViewModelForNode(nodeName);
         }
 
         private void ShowTooltip(String nodeName, double y)

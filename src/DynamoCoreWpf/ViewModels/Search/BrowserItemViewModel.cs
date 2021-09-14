@@ -89,16 +89,13 @@ namespace Dynamo.Wpf.ViewModels
         ElementTypes ElementType { get; }
     }
 
-    public class NodeCategoryViewModel : NotificationObject, ISearchEntryViewModel
+    public class NodeCategoryViewModel : ViewModelBase, ISearchEntryViewModel 
     {
         public ICommand ClickedCommand { get; private set; }
 
         private string name;
         private string fullCategoryName;
         private string assembly;
-        private ObservableCollection<ISearchEntryViewModel> items;
-        private readonly ObservableCollection<NodeSearchElementViewModel> entries;
-        private readonly ObservableCollection<NodeCategoryViewModel> subCategories;
         private bool visibility;
         private bool isExpanded;
         private bool isSelected;
@@ -205,20 +202,11 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        public ObservableCollection<ISearchEntryViewModel> Items
-        {
-            get { return items; }
-        }
+        public ObservableCollection<ISearchEntryViewModel> Items { get; private set; }
 
-        public ObservableCollection<NodeSearchElementViewModel> Entries
-        {
-            get { return entries; }
-        }
+        public ObservableCollection<NodeSearchElementViewModel> Entries { get; private set; }
 
-        public ObservableCollection<NodeCategoryViewModel> SubCategories
-        {
-            get { return subCategories; }
-        }
+        public ObservableCollection<NodeCategoryViewModel> SubCategories { get; private set; }
 
         public bool Visibility
         {
@@ -283,19 +271,29 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name">Category name</param>
         public NodeCategoryViewModel(string name)
             : this(
                 name,
                 Enumerable.Empty<NodeSearchElementViewModel>(),
                 Enumerable.Empty<NodeCategoryViewModel>()) { }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name">Category name</param>
+        /// <param name="entries">Sub elements</param>
+        /// <param name="subs">Sub Categories</param>
         public NodeCategoryViewModel(string name, IEnumerable<NodeSearchElementViewModel> entries, IEnumerable<NodeCategoryViewModel> subs)
         {
             ClickedCommand = new DelegateCommand(Expand);
 
             Name = name;
-            this.entries = new ObservableCollection<NodeSearchElementViewModel>(entries.OrderBy(x => x.Name));
-            subCategories = new ObservableCollection<NodeCategoryViewModel>(subs.OrderBy(x => x.Name));
+            Entries = entries != null? new ObservableCollection<NodeSearchElementViewModel>(entries.OrderBy(x => x.Name)) : new ObservableCollection<NodeSearchElementViewModel>();
+            SubCategories = subs != null ? new ObservableCollection<NodeCategoryViewModel>(subs.OrderBy(x => x.Name)) : new ObservableCollection<NodeCategoryViewModel>();
 
             foreach (var category in SubCategories)
                 category.PropertyChanged += CategoryOnPropertyChanged;
@@ -304,7 +302,7 @@ namespace Dynamo.Wpf.ViewModels
             SubCategories.CollectionChanged += OnCollectionChanged;
             SubCategories.CollectionChanged += SubCategoriesOnCollectionChanged;
 
-            items = new ObservableCollection<ISearchEntryViewModel>(
+            Items = new ObservableCollection<ISearchEntryViewModel>(
                 SubCategories.Cast<ISearchEntryViewModel>().Concat(Entries));
 
             Items.CollectionChanged += ItemsOnCollectionChanged;
@@ -361,15 +359,27 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        public void Dispose()
+        /// <summary>
+        /// Dispose function
+        /// </summary>
+        public override void Dispose()
         {
             foreach (var category in SubCategories)
                 category.PropertyChanged -= CategoryOnPropertyChanged;
 
             foreach (var item in Items)
                 item.PropertyChanged -= ItemOnPropertyChanged;
+
+            Entries.CollectionChanged -= OnCollectionChanged;
+            SubCategories.CollectionChanged -= SubCategoriesOnCollectionChanged;
+            Items.CollectionChanged -= ItemsOnCollectionChanged;
+            base.Dispose();
         }
 
+        /// <summary>
+        /// Dispose the category and all the sub categories.
+        /// note: does not seem to be called in Dynamo
+        /// </summary>
         public void DisposeTree()
         {
             Dispose();
@@ -466,16 +476,16 @@ namespace Dynamo.Wpf.ViewModels
         {
             Items.CollectionChanged -= ItemsOnCollectionChanged;
 
-            foreach (var item in items)
+            foreach (var item in Items)
                 item.PropertyChanged -= ItemOnPropertyChanged;
 
-            items = new ObservableCollection<ISearchEntryViewModel>(
+            Items = new ObservableCollection<ISearchEntryViewModel>(
                 Entries.Cast<ISearchEntryViewModel>().Concat(SubCategories)
                     .OrderBy(x => x.Name));
 
             Items.CollectionChanged += ItemsOnCollectionChanged;
 
-            foreach (var item in items)
+            foreach (var item in Items)
                 item.PropertyChanged += ItemOnPropertyChanged;
         }
 
@@ -499,7 +509,7 @@ namespace Dynamo.Wpf.ViewModels
                 var list = Items.Where(cat => !(cat is ClassesNodeCategoryViewModel));
                 var nextLargerItemIndex = FindInsertionPointByName(list, entry.Name);
 
-                // Nodecategories(i.e. namespaces) should be before members.
+                // Node categories(i.e. namespaces) should be before members.
                 if (entry is NodeSearchElementViewModel)
                 {
                     if (nextLargerItemIndex >= 0)

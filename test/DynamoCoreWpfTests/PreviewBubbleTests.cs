@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -32,6 +33,7 @@ namespace DynamoCoreWpfTests
         {
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -303,7 +305,7 @@ namespace DynamoCoreWpfTests
 
             // preview is expanded, and its size will be slighly larger than the size of node view.
             // See PR: https://github.com/DynamoDS/Dynamo/pull/6799
-            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView, 10));
+            Assert.IsTrue(ElementIsInContainerWithEpsilonCompare(nodeView.PreviewControl.HiddenDummy, nodeView, 10));
         }
 
         [Test]
@@ -311,7 +313,7 @@ namespace DynamoCoreWpfTests
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
             var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
-            Assert.IsTrue(ViewModel.ShowPreviewBubbles, "Preview bubbles are turned off");
+            Assert.IsTrue(ViewModel.PreferencesViewModel.ShowPreviewBubbles, "Preview bubbles are turned off");
 
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
@@ -322,8 +324,8 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsHidden, "Preview bubble is not hidden");
 
             // turn off preview bubbles
-            ViewModel.ShowPreviewBubbles = false;
-            Assert.IsFalse(ViewModel.ShowPreviewBubbles, "Preview bubbles have not been turned off");
+            ViewModel.PreferencesViewModel.ShowPreviewBubbles = false;
+            Assert.IsFalse(ViewModel.PreferencesViewModel.ShowPreviewBubbles, "Preview bubbles have not been turned off");
 
             RaiseMouseEnterOnNode(nodeView);
 
@@ -335,6 +337,30 @@ namespace DynamoCoreWpfTests
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
             var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
+
+            var previewBubble = nodeView.PreviewControl;
+            previewBubble.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+            previewBubble.bubbleTools.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            // open preview bubble
+            RaiseMouseEnterOnNode(nodeView);
+            Assert.IsTrue(previewBubble.IsCondensed, "Compact preview bubble should be shown");
+            Assert.AreEqual(Visibility.Collapsed, previewBubble.bubbleTools.Visibility, "Pin icon should not be shown");
+
+            // hover preview bubble to see pin icon
+            RaiseMouseEnterOnNode(previewBubble);
+            Assert.AreEqual(Visibility.Visible, previewBubble.bubbleTools.Visibility, "Pin icon should be shown");
+
+            // expand preview bubble
+            RaiseMouseEnterOnNode(previewBubble.bubbleTools);
+            Assert.IsTrue(previewBubble.IsExpanded, "Expanded preview bubble should be shown");
+        }
+
+        [Test]
+        public void PreviewBubble_ShowExpandedPreview_MultiReturnNode()
+        {
+            Open(@"core\multireturnnode_preview.dyn");
+            var nodeView = NodeViewWithGuid("587d7494-e764-41fb-8b5d-a4229f7294ee");
 
             var previewBubble = nodeView.PreviewControl;
             previewBubble.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
@@ -368,12 +394,62 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(nodeView.PreviewControl.IsHidden, "Preview bubble for color range should be shown");
         }
 
+        [Test]
+        [Category("Failure")]
+        public void PreviewBubble_CopyToClipboard()
+        {
+            // Arrange
+            Open(@"core\watch\WatchViewModelGetNodeLabelTree.dyn");
+            string singleItemTreeExpected = "Hello, world!";
+            var nodeView = NodeViewWithGuid("d653b1b0-ac60-4e26-b73c-627a39c5694a");
+            Clipboard.SetText($"Resetting clipboard for {nameof(PreviewBubble_CopyToClipboard)} test");
+
+            // Act
+            var previewBubble = nodeView.PreviewControl;
+            previewBubble.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+            previewBubble.bubbleTools.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+            // Open preview bubble
+            RaiseMouseEnterOnNode(nodeView);
+            // Hover preview bubble to see pin icon
+            RaiseMouseEnterOnNode(previewBubble);
+            // Expand preview bubble
+            RaiseMouseEnterOnNode(previewBubble.bubbleTools);
+
+            // Find the MenuItem for Copy in the context menu
+            var grid = previewBubble.bubbleTools.Parent as Grid;
+            var menuItem = grid.ContextMenu.Items
+                .OfType<MenuItem>()
+                .First(x => x.Header.ToString() == Dynamo.Wpf.Properties.Resources.ContextMenuCopy);
+            
+            // Click the MenuItem
+            menuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            DispatcherUtil.DoEvents();
+            string clipboardContent = Clipboard.GetText();
+
+            // Assert
+            Assert.AreEqual(singleItemTreeExpected, clipboardContent);
+        }
+
         private bool ElementIsInContainer(FrameworkElement element, FrameworkElement container, int offset)
         {
             var relativePosition = element.TranslatePoint(new Point(), container);
             relativePosition.X += offset;
             
             return (relativePosition.X == 0) && (element.ActualWidth <= container.ActualWidth);
+        }
+
+        /// <summary>
+        /// Similar to ElementIsInContainer but allows for an epsilon difference
+        /// when comparing equality.
+        /// </summary>
+        private bool ElementIsInContainerWithEpsilonCompare(FrameworkElement element, FrameworkElement container, int offset)
+        {
+            const double Epsilon = 1e-10;
+            Func<double, double, bool> epsilonEqual = (a, b) => a >= b - Epsilon && a <= b + Epsilon;
+            var relativePosition = element.TranslatePoint(new Point(), container);
+            relativePosition.X += offset;
+
+            return epsilonEqual(relativePosition.X, 0) && (element.ActualWidth <= container.ActualWidth);
         }
 
         private void RaiseMouseEnterOnNode(IInputElement nv)

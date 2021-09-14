@@ -1,4 +1,3 @@
 [submodule "boto"]
         path = scripts/autobuild/extern/boto
         url = git://github.com/boto/boto.git
-		url = git@github.com:ramramps/DynamoAPI.git

@@ -510,7 +510,7 @@ namespace ProtoImperative
             }
             else
             {
-                if (depth <= 0 && procName != ProtoCore.DSASM.Constants.kFunctionPointerCall)
+                if (depth <= 0 && procName != Constants.kFunctionPointerCall)
                 {
                     if (!hasLogError)
                     {
@@ -520,12 +520,18 @@ namespace ProtoImperative
                             if (CoreUtils.TryGetPropertyName(procName, out property))
                             {
                                 string message = String.Format(ProtoCore.Properties.Resources.kPropertyNotFound, property);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.PropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                                buildStatus.LogWarning(WarningID.PropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                             }
                             else
                             {
-                                string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                                // Log "function not found" warning for CBNs only after compiling all function definition nodes in the first pass
+                                // in CodeBlockNode.RecompileCodeBlockAST(). If not compiling CBNs log these warnings by default.
+                                if (core.IsParsingCodeBlockNode && !core.IsCodeBlockNodeFirstPass ||
+                                    !core.IsParsingCodeBlockNode)
+                                {
+                                    string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
+                                    buildStatus.LogWarning(WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                                }
                             }
                         }
                         inferedType.UID = (int)PrimitiveType.Null;
@@ -881,25 +887,24 @@ namespace ProtoImperative
                 if (propogateUpdateGraphNode != null)
                 {
                     propogateUpdateGraphNode.languageBlockId = blockId;
-                    CodeBlock childBlock = core.CompleteCodeBlockList[blockId];
+                    bool foundChild = core.CompleteCodeBlockDict.TryGetValue(blockId, out CodeBlock childBlock);
+                    Validity.Assert(foundChild, $"Could find code block with codeBlockId {blockId}");
+
                     foreach (var subGraphNode in childBlock.instrStream.dependencyGraph.GraphList)
                     {
                         foreach (var depentNode in subGraphNode.dependentList)
                         {
-                            if (depentNode.updateNodeRefList != null 
-                                && depentNode.updateNodeRefList.Count > 0 
+                            if (depentNode.updateNodeRefList != null
+                                && depentNode.updateNodeRefList.Count > 0
                                 && depentNode.updateNodeRefList[0].nodeList != null
                                 && depentNode.updateNodeRefList[0].nodeList.Count > 0)
                             {
                                 SymbolNode dependentSymbol = depentNode.updateNodeRefList[0].nodeList[0].symbol;
                                 int symbolBlockId = dependentSymbol.codeBlockId;
-                                if (symbolBlockId != Constants.kInvalidIndex)
+                                if (core.CompleteCodeBlockDict.TryGetValue(symbolBlockId, out CodeBlock symbolBlock) && 
+                                    !symbolBlock.IsMyAncestorBlock(codeBlock.codeBlockId))
                                 {
-                                    CodeBlock symbolBlock = core.CompleteCodeBlockList[symbolBlockId];
-                                    if (!symbolBlock.IsMyAncestorBlock(codeBlock.codeBlockId))
-                                    {
-                                        propogateUpdateGraphNode.PushDependent(depentNode);
-                                    }
+                                    propogateUpdateGraphNode.PushDependent(depentNode);
                                 }
                             }
                         }

@@ -7,39 +7,39 @@ class List extends DSCore.List
 		return __RemoveIfNot(list, type);
 	}
 
-	public static def Equals: bool(objectA: var[]..[], objectB: var[]..[])
+	public static def Equals: bool(object: var[]..[], otherObject: var[]..[])
     {
-        return __Equals(objectA, objectB);
+        return __Equals(object, otherObject);
 	}
 
-	public static def GroupByFunction(list: var[]..[], func: Function)
+	public static def GroupByFunction(list: var[]..[], groupFunction: Function)
 	{
-		return __GroupByFunction(list, func);
+		return __GroupByFunction(list, groupFunction);
 	}
 
-	public static def SortByFunction(list: var[]..[], func: Function)
+	public static def SortByFunction(list: var[]..[], sortFunction: Function)
 	{
-		return __SortByFunction(list, func);
+		return __SortByFunction(list, sortFunction);
 	}
 
-	public static def MaximumItemByKey(list: var[]..[], keyProjector: Function)
+	public static def MaximumItemByKey(list: var[]..[], keyFunction: Function)
 	{
-		return __MaximumItemByKey(list, keyProjector);
+		return __MaximumItemByKey(list, keyFunction);
 	}
 
-	public static def MinimumItemByKey(list: var[]..[], keyProjector: Function)
+	public static def MinimumItemByKey(list: var[]..[], keyFunction: Function)
 	{
-		return __MinimumItemByKey(list, keyProjector);
+		return __MinimumItemByKey(list, keyFunction);
 	}
 
-	public static def TrueForAll: bool(list: var[]..[], predicate: Function)
+	public static def TrueForAll: bool(list: var[]..[], queryFunction: Function)
 	{
-		return __TrueForAll(list, predicate);
+		return __TrueForAll(list, queryFunction);
 	}
 
-	public static def TrueForAny: bool(list: var[]..[], predicate: Function)
+	public static def TrueForAny: bool(list: var[]..[], queryFunction: Function)
 	{
-		return __TrueForAny(list, predicate);
+		return __TrueForAny(list, queryFunction);
 	}
 	public static def Rank : int(list: var[]..[])
   	{		

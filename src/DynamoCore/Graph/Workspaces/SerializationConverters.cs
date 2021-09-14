@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -14,7 +16,9 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Library;
+using Dynamo.Linting;
 using Dynamo.Logging;
+using Dynamo.Properties;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
@@ -96,8 +100,33 @@ namespace Dynamo.Graph.Workspaces
         {
             NodeModel node = null;
 
+            String typeName = String.Empty;
+            String functionName = String.Empty;
+            String assemblyName = String.Empty;
+
             var obj = JObject.Load(reader);
-            var type = Type.GetType(obj["$type"].Value<string>());
+            Type type = null;
+
+            try
+            {
+               type = Type.GetType(obj["$type"].Value<string>());
+               typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
+
+                if (typeName.Equals("Dynamo.Graph.Nodes.ZeroTouch.DSFunction"))
+                {
+                    // If it is a zero touch node, then get the whole function name including the namespace.
+                    functionName = obj["FunctionSignature"].Value<string>().Split('@').FirstOrDefault().Trim();
+                }
+                // we get the assembly name from the type string for the node model nodes. 
+                else
+                {
+                    assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
+                }
+            }
+            catch(Exception e)
+            {
+                nodeFactory?.AsLogger().Log(e);
+            }
             // If we can't find this type - try to look in our load from assemblies,
             // but only during testing - this is required during testing because some dlls are loaded
             // using Assembly.LoadFrom using the assemblyHelper - which loads dlls into loadFrom context - 
@@ -107,9 +136,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 List<Assembly> resultList;
 
-                var typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
                 // This assemblyName does not usually contain version information...
-                var assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
+                assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
                 if (assemblyName != null)
                 {
                     if(this.loadedAssemblies.TryGetValue(assemblyName, out resultList))
@@ -151,7 +179,7 @@ namespace Dynamo.Graph.Workspaces
             // If type is still null at this point return a dummy node
             if (type == null)
             {
-                node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
+                node = CreateDummyNode(obj, typeName, assemblyName, functionName, inPorts, outPorts);
             }
             // Attempt to create a valid node using the type
             else if (type == typeof(Function))
@@ -160,6 +188,8 @@ namespace Dynamo.Graph.Workspaces
 
                 CustomNodeDefinition def = null;
                 CustomNodeInfo info = null;
+                // Skip deserializing the Description Json property as the original one in dyf may 
+                // already be updated without syncing with the dyn
                 bool isUnresolved = !manager.TryGetCustomNodeData(functionId, null, false, out def, out info);
                 Function function = manager.CreateCustomNodeInstance(functionId, null, false, def, info);
                 node = function;
@@ -202,20 +232,13 @@ namespace Dynamo.Graph.Workspaces
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
                 var mangledName = obj["FunctionSignature"].Value<string>();
-                var priorNames = libraryServices.GetPriorNames();
-                var functionDescriptor = libraryServices.GetFunctionDescriptor(mangledName);
-                string newName;
-
-                // Update the function descriptor if a newer migrated version of the node exists
-                if (priorNames.TryGetValue(mangledName, out newName))
-                {
-                    functionDescriptor = libraryServices.GetFunctionDescriptor(newName);
-                }
+                var lookupSignature = libraryServices.GetFunctionSignatureFromFunctionSignatureHint(mangledName) ?? mangledName;
+                var functionDescriptor = libraryServices.GetFunctionDescriptor(lookupSignature);
 
                 // Use the functionDescriptor to try and restore the proper node if possible
                 if (functionDescriptor == null)
                 {
-                    node = CreateDummyNode(obj, assemblyLocation, inPorts, outPorts);
+                    node = CreateDummyNode(obj, assemblyName, functionName, inPorts, outPorts);
                 }
                 else
                 {
@@ -278,7 +301,7 @@ namespace Dynamo.Graph.Workspaces
             return node;
         }
 
-        private DummyNode CreateDummyNode(JObject obj, string assemblyLocation, PortModel[] inPorts, PortModel[] outPorts)
+        private DummyNode CreateDummyNode(JObject obj, string legacyAssembly, string functionName, PortModel[] inPorts, PortModel[] outPorts)
         {
             var inputcount = inPorts.Count();
             var outputcount = outPorts.Count();
@@ -287,7 +310,23 @@ namespace Dynamo.Graph.Workspaces
                 obj["Id"].ToString(),
                 inputcount,
                 outputcount,
-                assemblyLocation,
+                legacyAssembly,
+                functionName,
+                obj);
+        }
+
+        private DummyNode CreateDummyNode(JObject obj, string typeName, string legacyAssembly, string functionName, PortModel[] inPorts, PortModel[] outPorts)
+        {
+            var inputcount = inPorts.Count();
+            var outputcount = outPorts.Count();
+
+            return new DummyNode(
+                obj["Id"].ToString(),
+                inputcount,
+                outputcount,
+                legacyAssembly,
+                functionName,
+                typeName,
                 obj);
         }
 
@@ -376,6 +415,31 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 
+    ///<Summary>
+    ///  Converter for Description property in the NodeModel class.
+    ///</Summary>
+    public class DescriptionConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return (objectType == typeof(String));
+        }
+
+        /// When deserializing, we do not want to read this property from the file
+        /// so null is being returned. This is to convert the Description property
+        /// to the localized language. 
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            return null;
+        }
+
+        /// Serializing the description property. 
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            serializer.Serialize(writer, value);
+        }
+    }
+
     /// <summary>
     /// The WorkspaceConverter is used to serialize and deserialize WorkspaceModels.
     /// Construction of a WorkspaceModel requires things like an EngineController,
@@ -384,6 +448,7 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class WorkspaceReadConverter : JsonConverter
     {
+        LinterManager linterManager;
         DynamoScheduler scheduler;
         EngineController engine;
         NodeFactory factory;
@@ -391,6 +456,8 @@ namespace Dynamo.Graph.Workspaces
         bool verboseLogging;
 
         internal readonly static string NodeLibraryDependenciesPropString = "NodeLibraryDependencies";
+        internal const string EXTENSION_WORKSPACE_DATA = "ExtensionWorkspaceData";
+        internal const string LINTING_PROP_STRING = "Linting";
 
         public WorkspaceReadConverter(EngineController engine, 
             DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
@@ -400,6 +467,13 @@ namespace Dynamo.Graph.Workspaces
             this.factory = factory;
             this.isTestMode = isTestMode;
             this.verboseLogging = verboseLogging;
+        }
+
+        public WorkspaceReadConverter(EngineController engine,
+            DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging, LinterManager linterManager) : 
+            this(engine, scheduler, factory, isTestMode, verboseLogging)
+        {
+            this.linterManager = linterManager;
         }
 
         public override bool CanConvert(Type objectType)
@@ -429,7 +503,7 @@ namespace Dynamo.Graph.Workspaces
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
 
             // Setting Inputs
-            // Required in headless mode by Dynamo Player that NodeModel.Name and NodeModel.IsSetAsInput are set
+            // Required in headless mode by Dynamo Player that certain view properties are set back to NodeModel
             var inputsToken = obj["Inputs"];
             if (inputsToken != null)
             {
@@ -462,49 +536,33 @@ namespace Dynamo.Graph.Workspaces
                     }
                 }
             }
+          
 
             #region Setting Inputs based on view layer info
             // TODO: It is currently duplicating the effort with Input Block parsing which should be cleaned up once
             // Dynamo supports both selection and drop down nodes in Inputs block
             var view = obj["View"];
-            if (view != null)
+            if (view != null && view["NodeViews"] != null)
             {
-                var nodesView = view["NodeViews"];
-                if (nodesView != null)
+                var nodeViews = view["NodeViews"].ToList();
+                foreach (var nodeview in nodeViews)
                 {
-                    var inputsView = nodesView.ToArray().Select(x => x.ToObject<Dictionary<string, string>>()).ToList();
-                    foreach (var inputViewData in inputsView)
+                    Guid nodeGuid;
+                    try
                     {
-                        string isSetAsInput = "";
-                        if (!inputViewData.TryGetValue("IsSetAsInput", out isSetAsInput) || isSetAsInput == bool.FalseString)
+                        nodeGuid = Guid.Parse(nodeview["Id"].Value<string>());
+                        var matchingNode = nodes.Where(x => x.GUID == nodeGuid).FirstOrDefault();
+                        if (matchingNode != null)
                         {
-                            continue;
+                            matchingNode.IsSetAsInput = nodeview["IsSetAsInput"].Value<bool>();
+                            matchingNode.IsSetAsOutput = nodeview["IsSetAsOutput"].Value<bool>();
+                            matchingNode.IsFrozen = nodeview["Excluded"].Value<bool>();
+                            matchingNode.Name = nodeview["Name"].Value<string>();
                         }
-
-                        string inputId = "";
-                        if (inputViewData.TryGetValue("Id", out inputId))
-                        {
-                            Guid inputGuid;
-                            try
-                            {
-                                inputGuid = Guid.Parse(inputId);
-                            }
-                            catch
-                            {
-                                continue;
-                            }
-
-                            var matchingNode = nodes.Where(x => x.GUID == inputGuid).FirstOrDefault();
-                            if (matchingNode != null)
-                            {
-                                matchingNode.IsSetAsInput = true;
-                                string inputName = "";
-                                if (inputViewData.TryGetValue("Name", out inputName))
-                                {
-                                    matchingNode.Name = inputName;
-                                }
-                            }
-                        }
+                    }
+                    catch
+                    {
+                        continue;
                     }
                 }
             }
@@ -527,20 +585,35 @@ namespace Dynamo.Graph.Workspaces
             // relevant ports.
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
-            IEnumerable<INodeLibraryDependencyInfo> nodeLibraryDependencies;
+            IEnumerable<INodeLibraryDependencyInfo> workspaceReferences;
+            var nodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            var nodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+
             if (obj[NodeLibraryDependenciesPropString] != null)
             {
-                nodeLibraryDependencies = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
+                workspaceReferences = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
             }
             else
             {
-                nodeLibraryDependencies = new List<PackageDependencyInfo>();
+                workspaceReferences = new List<INodeLibraryDependencyInfo>();
+            }
+
+            foreach(INodeLibraryDependencyInfo depInfo in workspaceReferences) 
+            {
+                if (depInfo is PackageDependencyInfo)
+                {
+                    nodeLibraryDependencies.Add(depInfo);
+                }
+                else if (depInfo is LocalDefinitionInfo) 
+                {
+                    nodeLocalDefinitions.Add(depInfo);
+                }
             }
 
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
 
             // IsVisibleInDynamoLibrary and Category should be set explicitly for custom node workspace
-            if (obj["View"] != null && obj["View"]["Dynamo"] !=null && obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"] != null)
+            if (obj["View"] != null && obj["View"]["Dynamo"] != null && obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"] != null)
             {
                 info.IsVisibleInDynamoLibrary = obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"].Value<bool>();
             }
@@ -588,21 +661,85 @@ namespace Dynamo.Graph.Workspaces
             WorkspaceModel ws;
             if (isCustomNode)
             {
-                ws = new CustomNodeWorkspaceModel(factory, nodes, notes, annotations, 
+                ws = new CustomNodeWorkspaceModel(factory, nodes, notes, annotations,
                     Enumerable.Empty<PresetModel>(), elementResolver, info);
             }
             else
             {
-                ws = new HomeWorkspaceModel(guid, engine, scheduler, factory,
-                    loadedTraceData, nodes, notes, annotations, 
-                    Enumerable.Empty<PresetModel>(), elementResolver, 
-                    info, verboseLogging, isTestMode);
+                var homeWorkspace = new HomeWorkspaceModel(guid, engine, scheduler, factory,
+                    loadedTraceData, nodes, notes, annotations,
+                    Enumerable.Empty<PresetModel>(), elementResolver,
+                    info, verboseLogging, isTestMode, linterManager);
+
+                // Thumbnail
+                if (obj.TryGetValue(nameof(HomeWorkspaceModel.Thumbnail), StringComparison.OrdinalIgnoreCase, out JToken thumbnail))
+                    homeWorkspace.Thumbnail = thumbnail.ToString();
+
+                // GraphDocumentaionLink
+                if (obj.TryGetValue(nameof(HomeWorkspaceModel.GraphDocumentationURL), StringComparison.OrdinalIgnoreCase, out JToken helpLink))
+                {
+                    if (Uri.TryCreate(helpLink.ToString(), UriKind.Absolute, out Uri uri))
+                        homeWorkspace.GraphDocumentationURL = uri;
+                }
+
+                // ExtensionData
+                homeWorkspace.ExtensionData = GetExtensionData(serializer, obj);
+
+                // If there is a active linter serialized in the graph we set it to the active linter else set the default None.
+                SetActiveLinter(obj);
+
+                ws = homeWorkspace;
             }
 
-            ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
+            ws.NodeLibraryDependencies = nodeLibraryDependencies;
+            ws.NodeLocalDefinitions = nodeLocalDefinitions;
+            if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
+                ws.Author = author.ToString();
 
             return ws;
         }
+
+        private void SetActiveLinter(JObject obj)
+        {
+            while (true)
+            {
+
+                if (linterManager is null ||
+                    !obj.TryGetValue(LINTING_PROP_STRING, StringComparison.OrdinalIgnoreCase, out JToken linter))
+                    break;
+
+                if (!linter.HasValues)
+                    break;
+
+                var activeLinterId = linter.Value<string>(LinterManagerConverter.ACTIVE_LINTER_ID_OBJECT_NAME);
+
+                if (activeLinterId is null)
+                    break;
+
+                var linterDescriptor = linterManager.AvailableLinters
+                    .Where(x => x.Id == activeLinterId)
+                    .FirstOrDefault();
+
+                if (linterDescriptor is null)
+                    break;
+
+                linterManager.SetActiveLinter(linterDescriptor, false);
+                return;
+            }
+
+            linterManager?.SetDefaultLinter();
+        }
+
+        private static List<ExtensionData> GetExtensionData(JsonSerializer serializer, JObject obj)
+        {
+            if (!obj.TryGetValue(EXTENSION_WORKSPACE_DATA, StringComparison.OrdinalIgnoreCase, out JToken extensionData))
+                return new List<ExtensionData>();
+            if (!(extensionData is JArray array))
+                return new List<ExtensionData>();
+
+            return array.ToObject<List<ExtensionData>>(serializer);
+        }
+
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
@@ -703,9 +840,38 @@ namespace Dynamo.Graph.Workspaces
             }
             writer.WriteEndArray();
 
-            // NodeLibraryDependencies
+            // Join NodeLibraryDependencies & NodeLocalDefinitions and serialze them.
             writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
-            serializer.Serialize(writer, ws.NodeLibraryDependencies);
+
+            IEnumerable<INodeLibraryDependencyInfo> referencesList = ws.NodeLibraryDependencies;
+            referencesList = referencesList.Concat(ws.NodeLocalDefinitions);
+            serializer.Serialize(writer, referencesList);
+
+            if (!isCustomNode && ws is HomeWorkspaceModel hws)
+            {
+                // Thumbnail
+                writer.WritePropertyName(nameof(HomeWorkspaceModel.Thumbnail));
+                writer.WriteValue(hws.Thumbnail);
+
+                // GraphDocumentaionLink
+                writer.WritePropertyName(nameof(HomeWorkspaceModel.GraphDocumentationURL));
+                writer.WriteValue(hws.GraphDocumentationURL);
+
+                // ExtensionData
+                writer.WritePropertyName(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
+                serializer.Serialize(writer, hws.ExtensionData);
+            }
+
+            // Graph Author
+            writer.WritePropertyName(nameof(WorkspaceModel.Author));
+            writer.WriteValue(ws.Author);
+
+            // Linter
+            if(!(ws.linterManager is null))
+            {
+                serializer.Serialize(writer, ws.linterManager);
+            }
+
 
             if (engine != null)
             {
@@ -757,6 +923,69 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 
+    public class LinterManagerConverter : JsonConverter
+    {
+        private ILogger logger;
+        internal const string LINTER_START_OBJECT_NAME = "Linting";
+        internal const string ACTIVE_LINTER_OBJECT_NAME = "activeLinter";
+        internal const string ACTIVE_LINTER_ID_OBJECT_NAME = "activeLinterId";
+        internal const string LINTER_WARNING_COUNT = "warningCount";
+        internal const string LINTER_ERROR_COUNT = "errorCount";
+
+        public LinterManagerConverter(Logging.ILogger logger)
+        {
+            this.logger = logger;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(LinterManager);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            if (!(value is LinterManager linterManager))
+            {
+                logger.LogWarning("Unnsuccessful attempt to serialize a LinterManager object.", Logging.WarningLevel.Moderate);
+                return;
+            }
+
+            if (linterManager.ActiveLinter is null)
+            {
+                //logger.LogWarning("Unnsuccessful attempt to serialize a LinterManager object as there is no linter selected.", Logging.WarningLevel.Moderate);
+                return;
+            }
+
+            writer.WritePropertyName(WorkspaceReadConverter.LINTING_PROP_STRING);
+            writer.WriteStartObject();
+            writer.WritePropertyName(ACTIVE_LINTER_OBJECT_NAME);
+            writer.WriteValue(linterManager.ActiveLinter.Name);
+            writer.WritePropertyName(ACTIVE_LINTER_ID_OBJECT_NAME);
+            writer.WriteValue(linterManager.ActiveLinter.Id);
+            writer.WritePropertyName(LINTER_WARNING_COUNT);
+            writer.WriteValue(GetIssueCount(linterManager, Linting.Interfaces.SeverityCodesEnum.Warning));
+            writer.WritePropertyName(LINTER_ERROR_COUNT);
+            writer.WriteValue(GetIssueCount(linterManager, Linting.Interfaces.SeverityCodesEnum.Error));
+            writer.WriteEndObject();
+        }
+
+        private int GetIssueCount(LinterManager linterManager, Linting.Interfaces.SeverityCodesEnum severity)
+        {
+            if (linterManager.RuleEvaluationResults.Count() == 0) return 0;
+
+            var issueCount = linterManager.RuleEvaluationResults
+                .Where(x => x.SeverityCode == severity)
+                .Count();
+
+            return issueCount;
+        }
+    }
+
     /// <summary>
     /// Is used to serialize and deserialize graph workspace node library references
     /// </summary>
@@ -795,8 +1024,10 @@ namespace Dynamo.Graph.Workspaces
                 writer.WriteStartObject();
                 writer.WritePropertyName(NamePropString);
                 writer.WriteValue(p.Name);
-                writer.WritePropertyName(VersionPropString);
-                writer.WriteValue(p.Version.ToString());
+                if (p.Version != null) {
+                    writer.WritePropertyName(VersionPropString);
+                    writer.WriteValue(p.Version.ToString());
+                }
                 writer.WritePropertyName(ReferenceTypePropString);
                 writer.WriteValue(p.ReferenceType.ToString("G"));
                 writer.WritePropertyName(NodesPropString);
@@ -821,16 +1052,6 @@ namespace Dynamo.Graph.Workspaces
             // Get dependency name
             var name = obj["Name"].Value<string>();
 
-            // Try get dependency version
-            var versionString = obj["Version"].Value<string>();
-            Version version;
-            if (!Version.TryParse(versionString, out version))
-            {
-                logger.LogWarning(
-                    string.Format("The version of Package Dependency {0} could not be deserialized.", name), 
-                    Logging.WarningLevel.Moderate);
-            }
-
             //default to package.
             ReferenceType parsedType = ReferenceType.Package;
             JToken referenceTypeToken;
@@ -845,7 +1066,20 @@ namespace Dynamo.Graph.Workspaces
                 }
 
             }
-        
+
+            Version version = null;
+            // Try get dependency version
+            if (obj["Version"] != null)
+            {
+                var versionString = obj["Version"].Value<string>();
+                if (!Version.TryParse(versionString, out version))
+                {
+                    logger.LogWarning(
+                        string.Format("The Version of Dependency: {0}, ReferenceType: {1} could not be deserialized.", name, parsedType),
+                        Logging.WarningLevel.Moderate);
+                }
+            }
+
             INodeLibraryDependencyInfo depInfo;
             //select correct constructor based on referenceType
             switch (parsedType)
@@ -853,16 +1087,17 @@ namespace Dynamo.Graph.Workspaces
                 case ReferenceType.Package:
                     depInfo = new PackageDependencyInfo(name, version);
                     break;
-                /*TODO add other cases: for example
-                 * case ReferenceType.ZeroTouch
-                 * depInfp = new ZeroTouchDependencyInfo(name,version)
-                */
+                case ReferenceType.DYFFile:
+                    depInfo = new LocalDefinitionInfo(name, ReferenceType.DYFFile);
+
+                    break;
+                case ReferenceType.ZeroTouch:
+                    depInfo = new LocalDefinitionInfo(name, ReferenceType.ZeroTouch);
+                    break;
                 default:
-                    depInfo = new PackageDependencyInfo(name, version);
+                    depInfo = new LocalDefinitionInfo(name);
                     break;
             }
-
-           
 
             // Try get dependent node IDs
             var nodes = obj["Nodes"].Values<string>();
@@ -952,6 +1187,11 @@ namespace Dynamo.Graph.Workspaces
             var obj = JObject.Load(reader);
             var startId = obj["Start"].Value<string>();
             var endId = obj["End"].Value<string>();
+            var isDisplayedExists = obj[nameof(ConnectorModel.IsDisplayed)];
+            
+            var isDiplayed = isDisplayedExists != null ?
+                obj[nameof(ConnectorModel.IsDisplayed)].Value<bool>()
+                : true;
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 
@@ -978,7 +1218,9 @@ namespace Dynamo.Graph.Workspaces
             Guid connectorId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
             if(startPort != null && endPort != null)
             {
-                return new ConnectorModel(startPort, endPort, connectorId);
+                var connectorModel = new ConnectorModel(startPort, endPort, connectorId);
+                connectorModel.IsDisplayed = isDiplayed;
+                return connectorModel;
             }
             else
             {
@@ -1005,6 +1247,8 @@ namespace Dynamo.Graph.Workspaces
             writer.WriteValue(connector.End.GUID.ToString("N"));
             writer.WritePropertyName("Id");
             writer.WriteValue(connector.GUID.ToString("N"));
+            writer.WritePropertyName(nameof(ConnectorModel.IsDisplayed));
+            writer.WriteValue(connector.IsDisplayed.ToString());
             writer.WriteEndObject();
         }
     }
@@ -1026,9 +1270,9 @@ namespace Dynamo.Graph.Workspaces
             Guid deterministicGuid;
             if (!Guid.TryParse(obj.Value<string>(), out deterministicGuid))
             {
-                Console.WriteLine("the id was not a guid, converting to a guid");
+                Debug.WriteLine("the id was not a guid, converting to a guid");
                 deterministicGuid = GuidUtility.Create(GuidUtility.UrlNamespace, obj.Value<string>());
-                Console.WriteLine(obj + " becomes " + deterministicGuid);
+                Debug.WriteLine(obj + " becomes " + deterministicGuid);
             }
             return deterministicGuid;
         }
@@ -1090,8 +1334,7 @@ namespace Dynamo.Graph.Workspaces
         {
             if (modelMap.ContainsKey(oldId))
             {
-                throw new InvalidOperationException(@"the map already contains a model with this id, the id must
-                    be unique for the workspace that is currently being deserialized: "+oldId);
+                throw new InvalidOperationException(string.Format(Resources.DuplicatedModelGuidError, oldId));
             }
             modelMap.Add(oldId, newObject);
         }
@@ -1101,8 +1344,7 @@ namespace Dynamo.Graph.Workspaces
             Guid id = new Guid(reference);
             if (models.ContainsKey(id))
             {
-                throw new InvalidOperationException(@"the map already contains a model with this id, the id must
-                    be unique for the workspace that is currently being deserialized :"+id);
+                throw new InvalidOperationException(string.Format(Resources.DuplicatedModelGuidError, id));
             }
             models[id] = value;
         }
@@ -1141,7 +1383,7 @@ namespace Dynamo.Graph.Workspaces
             if (!Guid.TryParse(reference, out id))
             {
                 // If this is not a guid, it won't be in the resolver.
-                Console.WriteLine("not a guid");
+                Debug.WriteLine("not a guid");
                 return null;
             }
             object model;
@@ -1163,7 +1405,7 @@ namespace Dynamo.Graph.Workspaces
             if (!Guid.TryParse(reference, out id))
             {
                 // If this is not a guid, it won't be in the resolver.
-                Console.WriteLine("not a guid");
+                Debug.WriteLine("not a guid");
                 return null;
             }
             object model;

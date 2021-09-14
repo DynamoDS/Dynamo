@@ -1,0 +1,334 @@
+﻿<UserControl x:Class="Dynamo.Wpf.Controls.InstalledPackagesControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type MenuItem}" x:Key="MenuItemCollapseStyle">
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ItemsControl Name="Filters"
+                      Grid.Column="0" Grid.Row="0"
+                      ItemsSource="{Binding Path=Filters}" 
+                      Background="Transparent"
+                      Padding="0,5,0,5">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <RadioButton Content="{Binding Path=Name, Mode=OneWay}" 
+                                 GroupName="PackageFilters"
+                                 IsChecked="{Binding Path=IsChecked, Mode=TwoWay}"
+                                 Style="{StaticResource {x:Type ToggleButton}}"
+                                 FontSize="10"
+                                 FontFamily="Artifakt Element"
+                                 HorizontalAlignment="Center"
+                                 BorderThickness="1,1,1,1"
+                                 Background="{StaticResource PrimaryCharcoal300Brush}"
+                                 Checked="ToggleButton_OnChecked"
+                                 Foreground="{StaticResource ExpanderCaretToggleButtonBackground}">
+                        <RadioButton.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                <Setter Property="Margin" Value="5,0,0,5"/>
+                                <Setter Property="Padding" Value="5,0,5,0"/>
+                            </Style>
+                        </RadioButton.Resources>
+                    </RadioButton>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ScrollViewer Grid.Row="1"  
+            VerticalScrollBarVisibility="Auto" 
+            Background="{StaticResource PreferencesWindowBackgroundColor}" 
+            MaxHeight="290">
+            <ItemsControl Name="SearchResultsListBox"
+                              ItemsSource="{Binding Path=LocalPackages}"
+                              HorizontalContentAlignment="Stretch"
+                              VirtualizingPanel.ScrollUnit="Pixel"
+                              BorderThickness="0"
+                              Padding="0">
+
+                <ItemsControl.ItemTemplate>
+
+                    <DataTemplate>
+                        <!--This border shouldn't be wider then installed packages window.
+                        That's why bind its' width to ItemsPresenter's width. 
+                        ItemsPresenter is UI container for ListBox items.
+                        ItemsPresenter can't be wider then visible part of the window.-->
+                        <Border BorderBrush="{StaticResource PreferencesWindowBackgroundColor}"
+                                BorderThickness="0,0,0,1"
+                                Background="{StaticResource PreferencesWindowBackgroundColor}"
+                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, 
+                                                                            AncestorType={x:Type ItemsPresenter}}}">
+                            <Expander Name="PackageHeader"
+                                              IsExpanded="{Binding Path=Model.TypesVisibleInManager}"
+                                              Style="{StaticResource InstalledPackagesExpanderStyle}">
+                                <Expander.Header>
+                                    <Grid x:Name="PackageGrid" >
+                                        <DockPanel HorizontalAlignment="Stretch"
+                                                       >
+                                            <StackPanel HorizontalAlignment="Left"
+                                                            Orientation="Horizontal"
+                                                            Margin="10,5,5,7">
+                                                <TextBlock Text="{Binding Path=Model.Name}"
+                                                               ToolTip="{Binding Path=Model.Name}"
+                                                               FontSize="11"
+                                                               Width="150"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               Margin="15,0,10,0"
+                                                               Foreground="{StaticResource PreferencesWindowFontColor}"></TextBlock>
+                                                <TextBlock Text="{Binding Path=Model.VersionName}"
+                                                               MinWidth="50"
+                                                               FontSize="11"
+                                                               Foreground="{StaticResource PreferencesWindowFontColor}"></TextBlock>
+                                                <Grid Height="18"
+                                                    MaxWidth="150">
+                                                    <Border Background="DimGray"
+                                                        HorizontalAlignment="Stretch"
+                                                        CornerRadius="5"
+                                                        ToolTip="{Binding Path=PackageLoadStateTooltip}"
+                                                        Margin="5,0,0,0"
+                                                        Padding="5,0,5,0">
+                                                        <TextBlock Text="{Binding Path=PackageLoadStateText}"
+                                                                TextTrimming="CharacterEllipsis"
+                                                                FontSize="10"
+                                                                FontFamily="Artifakt Element"
+                                                                TextAlignment="Left"
+                                                                HorizontalAlignment="Center"
+                                                                Margin="0,3,0,0"
+                                                                Foreground="{StaticResource PrimaryCharcoal100Brush}"/>
+                                                    </Border>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
+                                                <Button Name="MoreButton"
+                                                                Click="MoreButton_OnClick"
+                                                                Width="16"
+                                                                Height="16"
+                                                                Margin="0,0,10,0"
+                                                                Style="{StaticResource FlatIconButtonStyle}">
+                                                    <Image Source="/DynamoCoreWpf;component/UI/Images/menu_16_16.png"/>
+                                                    <Button.ContextMenu>
+                                                        <ContextMenu Style="{StaticResource ContextMenuNoLeftColumnStyle}">
+                                                            <MenuItem Name="GoToRoot"
+                                                                      Style="{StaticResource MenuItemCollapseStyle}"
+                                                                      Command="{Binding Path=GoToRootDirectoryCommand}"
+                                                                      ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDirTooltip}"
+                                                                      Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDir}">
+                                                            </MenuItem>
+                                                            <Separator BorderBrush="{StaticResource ExpanderCaretToggleButtonBackground}" BorderThickness="0 1 0 0"/>
+                                                            <MenuItem Name="UninstallButton"
+                                                                      Style="{StaticResource MenuItemCollapseStyle}"
+                                                                      Command="{Binding Path=UninstallCommand}"
+                                                                      Header="{Binding Path=PackageViewContextMenuUninstallText}"
+                                                                      ToolTip="{Binding Path=PackageViewContextMenuUninstallTooltip}">
+                                                            </MenuItem>
+                                                            <MenuItem Name="UnmarkUninstallButton"
+                                                                              Style="{StaticResource MenuItemCollapseStyle}"
+                                                                              Command="{Binding Path=UnmarkForUninstallationCommand}"
+                                                                              Header="{Binding Path=PackageViewContextMenuUnmarkUninstallText}"
+                                                                              ToolTip="{Binding Path=PackageViewContextMenuUnmarkUninstallTooltip}">
+                                                            </MenuItem>
+                                                            <MenuItem Name="InstallButton"
+                                                                              Style="{StaticResource MenuItemCollapseStyle}"
+                                                                              Command="{Binding Path=LoadCommand}"
+                                                                              Header="{x:Static p:Resources.PackageViewContextMenuLoadText}"
+                                                                              ToolTip="{x:Static p:Resources.PackageViewContextMenuLoadTooltip}">
+                                                            </MenuItem>
+                                                            <Separator BorderBrush="{StaticResource ExpanderCaretToggleButtonBackground}" 
+                                                                       BorderThickness="0 1 0 0"
+                                                                       Visibility="{Binding Path=CanPublish, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
+                                                            <MenuItem Name="MakePackageButton"
+                                                                      Visibility="{Binding Path=CanPublish, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                                      Command="{Binding Path=PublishNewPackageCommand}"
+                                                                      ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishTooltip}"
+                                                                      Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublish}">
+                                                            </MenuItem>
+                                                            <MenuItem Name="MakeNewVersionButton"
+                                                                              Visibility="{Binding Path=CanPublish, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                                              Command="{Binding Path=PublishNewPackageVersionCommand}"
+                                                                              ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersionTooltip}"
+                                                                              Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersion}">
+                                                            </MenuItem>
+                                                            <MenuItem Name="DeprecateButton"
+                                                                              Visibility="{Binding Path=CanPublish, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                                              Command="{Binding Path=DeprecateCommand}"
+                                                                              ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuDeprecateTooltip}"
+                                                                              Header="{x:Static p:Resources.InstalledPackageViewContextMenuDeprecate}">
+                                                            </MenuItem>
+                                                            <MenuItem Name="UndeprecateButton"
+                                                                              Visibility="{Binding Path=CanPublish, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                                              Command="{Binding Path=UndeprecateCommand}"
+                                                                              ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuRemoveDeprecationTooltip}"
+                                                                              Header="{x:Static p:Resources.InstalledPackageViewContextMenuRemoveDeprecation}">
+                                                            </MenuItem>
+                                                        </ContextMenu>
+
+                                                    </Button.ContextMenu>
+                                                </Button>
+                                            </StackPanel>
+                                        </DockPanel>
+                                    </Grid>
+                                </Expander.Header>
+                                <Grid>
+                                    <Border BorderThickness="0,0,0,0"
+                                                BorderBrush="{StaticResource ExpanderCaretToggleButtonSelectedBackground}"
+                                                Background="{StaticResource ExpanderCaretToggleButtonSelectedBackground}"
+                                                >
+
+                                        <StackPanel Margin="25,5,5,10">
+
+                                            <StackPanel Visibility="{Binding Path=HasCustomNodes, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                        Margin="0,0,0,5">
+
+                                                <Label Content="{x:Static p:Resources.InstalledPackageViewCustomNodesLabel}"
+                                                           FontSize="11"
+                                                       Padding="0,5,5,5"
+                                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                <ItemsControl Name="LoadedCustomNodes"
+                                                                  ItemsSource="{Binding Path=Model.LoadedCustomNodes}"
+                                                                  Background="Transparent">
+
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Path=Name}"
+                                                                           Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                                           FontSize="9"
+                                                                           TextTrimming="CharacterEllipsis" />
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+
+                                                </ItemsControl>
+
+                                            </StackPanel>
+
+                                            <StackPanel Visibility="{Binding Path=HasNodeLibraries, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                        Margin="0,0,0,5">
+
+                                                <Label Padding="0,5,5,5" Content="{x:Static p:Resources.InstalledPackageViewNodeLibrariesLabel}"
+                                                           Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                           FontSize="11"></Label>
+                                                <ItemsControl Name="NodeLibraries"
+                                                                      ItemsSource="{Binding Path=Model.LoadedAssemblies}"
+                                                                      Background="Transparent">
+
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Name="Label"
+                                                                           Text="{Binding Path=Name}"
+                                                                           Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                                           FontSize="9"
+                                                                           TextTrimming="CharacterEllipsis" />
+
+                                                            <DataTemplate.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=IsNodeLibrary}"
+                                                                                 Value="false">
+                                                                    <Setter TargetName="Label"
+                                                                                Property="Visibility"
+                                                                                Value="Collapsed"></Setter>
+                                                                </DataTrigger>
+                                                            </DataTemplate.Triggers>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+
+                                                </ItemsControl>
+                                            </StackPanel>
+
+                                            <StackPanel Visibility="{Binding Path=HasAdditionalAssemblies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                        Margin="0,0,0,5">
+
+                                                <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalLabel}"
+                                                           FontSize="11"
+                                                           Padding="0,5,5,5"
+                                                           Foreground="{StaticResource PreferencesWindowFontColor}"></Label>
+                                                <ItemsControl Name="AddAssemblies"
+                                                                  ItemsSource="{Binding Path=Model.LoadedAssemblies}"
+                                                                  Background="Transparent">
+
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Name="Label"
+                                                                           Text="{Binding Path=Name}"
+                                                                           Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                                           FontSize="9"
+                                                                           TextTrimming="CharacterEllipsis" />
+
+                                                            <DataTemplate.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=IsNodeLibrary}"
+                                                                                 Value="true">
+                                                                    <Setter TargetName="Label"
+                                                                                Property="Visibility"
+                                                                                Value="Collapsed"></Setter>
+                                                                </DataTrigger>
+                                                            </DataTemplate.Triggers>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+
+                                                </ItemsControl>
+
+                                            </StackPanel>
+
+                                            <StackPanel Visibility="{Binding Path=HasAdditionalFiles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                        Margin="0,0,0,5">
+
+                                                <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalFileLabel}"
+                                                           FontSize="11"
+                                                       Padding="0,5,5,5"
+                                                           Foreground="{StaticResource PreferencesWindowFontColor}"></Label>
+                                                <ItemsControl Name="AdditionalFiles"
+                                                                  ItemsSource="{Binding Path=Model.AdditionalFiles}"
+                                                                  Background="Transparent">
+
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Path=RelativePath}"
+                                                                           Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                                           FontSize="9"
+                                                                           TextTrimming="CharacterEllipsis" />
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Expander>
+                        </Border>
+                    </DataTemplate>
+
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+
+</UserControl>

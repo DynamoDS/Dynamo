@@ -14,15 +14,13 @@
     <ModelGuid>2dcab9be-7b76-483f-8336-a22e2e047053</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DoubleInput guid="a0e84e1b-3c59-4f0c-9770-16f7488f5b83" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="36" y="168.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="0..42" />
-    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="a0e84e1b-3c59-4f0c-9770-16f7488f5b83" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="36" y="168.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..42;" ShouldFocus="false" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="a0e84e1b-3c59-4f0c-9770-16f7488f5b83" Modifiers="0" />
   <DragSelectionCommand X="523" Y="177" DragOperation="0" />
   <DragSelectionCommand X="86" Y="195" DragOperation="1" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand Name="Value" Value="0..42" WorkspaceGuid="cf68b8ee-7465-4f13-914f-4e5fd936fc19">
+  <UpdateModelValueCommand Name="Code" Value="0..42;" WorkspaceGuid="cf68b8ee-7465-4f13-914f-4e5fd936fc19">
     <ModelGuid>a0e84e1b-3c59-4f0c-9770-16f7488f5b83</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
@@ -80,7 +78,7 @@
   <DragSelectionCommand X="600" Y="177" DragOperation="0" />
   <DragSelectionCommand X="600" Y="177" DragOperation="1" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand Name="Value" Value="1..4" WorkspaceGuid="cf68b8ee-7465-4f13-914f-4e5fd936fc19">
+  <UpdateModelValueCommand Name="Code" Value="1..4;" WorkspaceGuid="cf68b8ee-7465-4f13-914f-4e5fd936fc19">
     <ModelGuid>a0e84e1b-3c59-4f0c-9770-16f7488f5b83</ModelGuid>
   </UpdateModelValueCommand>
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />

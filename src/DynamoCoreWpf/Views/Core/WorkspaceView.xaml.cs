@@ -79,6 +79,9 @@ namespace Dynamo.Views
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public WorkspaceView()
         {
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
@@ -91,9 +94,6 @@ namespace Dynamo.Views
 
             DataContextChanged += OnWorkspaceViewDataContextChanged;
 
-            Loaded += OnWorkspaceViewLoaded;
-            Unloaded += OnWorkspaceViewUnloaded;
-
             // view of items to drag
             draggedSelectionTemplate = (DataTemplate)FindResource("DraggedSelectionTemplate");
             var dictionaries = draggedSelectionTemplate.Resources.MergedDictionaries;
@@ -101,16 +101,6 @@ namespace Dynamo.Views
             // let draggedSelectionTemplate know about views of node, note, annotation, connector
             dictionaries.Add(SharedDictionaryManager.ConnectorsDictionary);
             dictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
-        }
-
-        void OnWorkspaceViewLoaded(object sender, RoutedEventArgs e)
-        {
-            DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
-
-            ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
-            ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
-
-            infiniteGridView.AttachToZoomBorder(zoomBorder);
         }
 
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -127,22 +117,61 @@ namespace Dynamo.Views
             }
         }
 
-        private void removeViewModelsubscriptions(WorkspaceViewModel ViewModel)
+        /// <summary>
+        /// clean up view model subscriptions to prevent memory leak
+        /// </summary>
+        /// <param name="ViewModel"></param>
+        private void RemoveViewModelsubscriptions(WorkspaceViewModel ViewModel)
         {
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
+            ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+           
+            ViewModel.ZoomChanged -= vm_ZoomChanged;
+            ViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
+            ViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
+            ViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
+            ViewModel.RequestCenterViewOnElement -= CenterViewOnElement;
+         
+            ViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
+            ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
+            ViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
+
+            ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
+            ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged -= OnSelectionCollectionChanged;
+            infiniteGridView.DetachFromZoomBorder(zoomBorder);
         }
 
-        void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Attach view model subscriptions
+        /// </summary>
+        /// <param name="ViewModel"></param>
+        private void AttachViewModelsubscriptions(WorkspaceViewModel ViewModel)
         {
-            DynamoSelection.Instance.Selection.CollectionChanged -= OnSelectionCollectionChanged;
+            ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
+            ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
+            ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-            if (ViewModel != null)
-            {
-                removeViewModelsubscriptions(ViewModel);
-            }
+            ViewModel.ZoomChanged += vm_ZoomChanged;
+            ViewModel.RequestZoomToViewportCenter += vm_ZoomAtViewportCenter;
+            ViewModel.RequestZoomToViewportPoint += vm_ZoomAtViewportPoint;
+            ViewModel.RequestZoomToFitView += vm_ZoomToFitView;
+            ViewModel.RequestCenterViewOnElement += CenterViewOnElement;
 
-            infiniteGridView.DetachFromZoomBorder(zoomBorder);
+            ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
+            ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
+            ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+
+            ViewModel.Model.RequestNodeCentered += vm_RequestNodeCentered;
+            ViewModel.Model.CurrentOffsetChanged += vm_CurrentOffsetChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
+            infiniteGridView.AttachToZoomBorder(zoomBorder);
+        }
+
+        private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
+        {            
+            ShowHidePopup(flag, NodeAutoCompleteSearchBar);
         }
 
         private void ShowHideInCanvasControl(ShowHideFlags flag)
@@ -157,14 +186,29 @@ namespace Dynamo.Views
 
         private void ShowHidePopup(ShowHideFlags flag, Popup popup)
         {
+            // Reset popup display state
+            popup.IsOpen = false;
             switch (flag)
             {
                 case ShowHideFlags.Hide:
-                    popup.IsOpen = false;
                     break;
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
-                    popup.IsOpen = DynamoModel.IsTestMode || IsMouseOver;
+                    var displayPopup = DynamoModel.IsTestMode || IsMouseOver;
+                    if (displayPopup && popup == NodeAutoCompleteSearchBar)
+                    {
+                        if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
+                        // Force the Child visibility to change here because
+                        // 1. Popup isOpen change does not necessarily update the child control before it take effect
+                        // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
+                        // 3. This should not be set to in canvas search control
+                        popup.Child.Visibility = Visibility.Collapsed;
+                        ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
+                    }
+                    popup.Child.Visibility = Visibility.Visible;
+                    popup.IsOpen = displayPopup;
+                    popup.CustomPopupPlacementCallback = null;
+
                     ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
                     ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                     break;
@@ -322,34 +366,13 @@ namespace Dynamo.Views
             if (e.OldValue != null)
             {
                 WorkspaceViewModel oldViewModel = (WorkspaceViewModel)e.OldValue;
-
-                oldViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
-                oldViewModel.ZoomChanged -= vm_ZoomChanged;
-                oldViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
-                oldViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
-                oldViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
-                oldViewModel.RequestCenterViewOnElement -= CenterViewOnElement;
-                oldViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
-                oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
-                oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
-                oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
-                this.removeViewModelsubscriptions(oldViewModel);
+                RemoveViewModelsubscriptions(oldViewModel);
             }
 
             if (ViewModel != null)
             {
                 // Adding registration of event listener
-                ViewModel.Model.CurrentOffsetChanged += vm_CurrentOffsetChanged;
-                ViewModel.ZoomChanged +=vm_ZoomChanged;
-                ViewModel.RequestZoomToViewportCenter += vm_ZoomAtViewportCenter;
-                ViewModel.RequestZoomToViewportPoint += vm_ZoomAtViewportPoint;
-                ViewModel.RequestZoomToFitView += vm_ZoomToFitView;
-                ViewModel.RequestCenterViewOnElement += CenterViewOnElement;
-                ViewModel.Model.RequestNodeCentered += vm_RequestNodeCentered;
-                ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
-                ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
-                ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
-
+                AttachViewModelsubscriptions(ViewModel);
                 ViewModel.Loaded();
             }
         }
@@ -654,7 +677,7 @@ namespace Dynamo.Views
             ContextMenuPopup.IsOpen = false;
             if (returnToSearch)
             {
-                ViewModel.DynamoViewModel.SearchViewModel.OnRequestFocusSearch();
+                ViewModel.DynamoViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.OnRequestFocusSearch();
             }
             else if (e.ChangedButton == MouseButton.Right && e.OriginalSource == zoomBorder)
             {
@@ -743,6 +766,7 @@ namespace Dynamo.Views
             var selection = DynamoSelection.Instance.Selection;
             var nodes = selection.OfType<NodeModel>();
             var notes = selection.OfType<NoteModel>();
+            var pins = selection.OfType<ConnectorPinModel>();
             var annotations = selection.OfType<AnnotationModel>();
 
             var connectors = nodes.SelectMany(n =>
@@ -751,6 +775,7 @@ namespace Dynamo.Views
 
             // set list of selected viewmodels
             draggedData = connectors.Select(c => (ViewModelBase)new ConnectorViewModel(ViewModel, c))
+                .Concat(pins.Select(p=> new ConnectorPinViewModel(ViewModel, p)))
                 .Concat(notes.Select(n => new NoteViewModel(ViewModel, n)))
                 .Concat(annotations.Select(a => new AnnotationViewModel(ViewModel, a)))
                 .Concat(nodes.Select(n =>
@@ -765,8 +790,8 @@ namespace Dynamo.Views
                     // so that they will correspond to origin nodes
                     return new NodeViewModel(ViewModel, n, size);
                 })).ToList();
-            
-            var locatableModels = nodes.Concat<ModelBase>(notes);
+
+            var locatableModels = nodes.Concat<ModelBase>(notes).Concat<ModelBase>(pins);
             var minX = locatableModels.Any() ? locatableModels.Min(mb => mb.X) : 0;
             var minY = locatableModels.Any() ? locatableModels.Min(mb => mb.Y) : 0;
             // compute offset to correctly place selected items right under mouse cursor 
@@ -837,12 +862,11 @@ namespace Dynamo.Views
 
                         double deltaX = nodeCenterInOverlay.X - outerCenter.X;
                         double deltaY = nodeCenterInOverlay.Y - outerCenter.Y;
+                        
+                        vm.Model.X -= deltaX;
+                        vm.Model.Y -= deltaY;
 
-                        //var offset = new Point(vm.CurrentOffset.X - deltaX, vm.CurrentOffset.Y - deltaY);
-
-                        //vm.CurrentOffset = offset;
-
-                        zoomBorder.SetTranslateTransformOrigin(new Point2D(vm.Model.X - deltaX, vm.Model.Y - deltaY));
+                        zoomBorder.SetTranslateTransformOrigin(new Point2D(vm.Model.X, vm.Model.Y));
                     }
                 });
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Xml;
@@ -23,7 +24,7 @@ namespace Dynamo.Wpf.Views
         {
             var digitRule = new HighlightingRule();
 
-            Color color = (Color)ColorConverter.ConvertFromString("#2585E5");
+            Color color = (Color)ColorConverter.ConvertFromString("#6ac0e7");
             digitRule.Color = new HighlightingColor()
             {
                 Foreground = new CustomizedBrush(color)
@@ -55,7 +56,7 @@ namespace Dynamo.Wpf.Views
         /// <returns></returns>
         public static HighlightingRule CreateClassHighlightRule(EngineController engineController)
         {
-            Color color = (Color)ColorConverter.ConvertFromString("#2E998F");
+            Color color = (Color)ColorConverter.ConvertFromString("#b7d78c");
             var classHighlightRule = new HighlightingRule
             {
                 Color = new HighlightingColor()
@@ -65,6 +66,8 @@ namespace Dynamo.Wpf.Views
             };
 
             var wordList = engineController.CodeCompletionServices.GetClasses();
+            if (!wordList.Any()) return null;
+
             String regex = String.Format(@"\b({0})\b", String.Join("|", wordList));
             classHighlightRule.Regex = new Regex(regex);
 
@@ -77,7 +80,7 @@ namespace Dynamo.Wpf.Views
         /// <returns></returns>
         public static HighlightingRule CreateMethodHighlightRule(EngineController engineController)
         {
-            Color color = (Color)ColorConverter.ConvertFromString("#417693");
+            Color color = (Color)ColorConverter.ConvertFromString("#84d7ce");
             var methodHighlightRule = new HighlightingRule
             {
                 Color = new HighlightingColor()
@@ -87,6 +90,8 @@ namespace Dynamo.Wpf.Views
             };
 
             var wordList = engineController.CodeCompletionServices.GetGlobals();
+            if (!wordList.Any()) return null;
+
             String regex = String.Format(@"\b({0})\b", String.Join("|", wordList));
             methodHighlightRule.Regex = new Regex(regex);
 
@@ -134,8 +139,12 @@ namespace Dynamo.Wpf.Views
             var rules = editor.SyntaxHighlighting.MainRuleSet.Rules;
 
             rules.Add(CodeHighlightingRuleFactory.CreateNumberHighlightingRule());
-            rules.Add(CodeHighlightingRuleFactory.CreateClassHighlightRule(controller));
-            rules.Add(CodeHighlightingRuleFactory.CreateMethodHighlightRule(controller));
+            
+            var classRule = CodeHighlightingRuleFactory.CreateClassHighlightRule(controller);
+            if(classRule != null) rules.Add(classRule);
+
+            var methodRule = CodeHighlightingRuleFactory.CreateMethodHighlightRule(controller);
+            if(methodRule != null) rules.Add(methodRule);
         }
     }
 }

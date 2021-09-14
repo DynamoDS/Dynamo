@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CoreNodeModels.Properties
-{
-
-
+namespace CoreNodeModels.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,7 +19,7 @@ namespace CoreNodeModels.Properties
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -133,7 +133,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list of colors to include in the range..
+        ///   Looks up a localized string similar to List of colors to include in the range.
         /// </summary>
         public static string ColorRangePortDataColorsToolTip {
             get {
@@ -142,7 +142,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list of values between 0.0 and 1.0 which position the input colors along the range..
+        ///   Looks up a localized string similar to List of values between 0.0 and 1.0 which position the input colors along the range.
         /// </summary>
         public static string ColorRangePortDataIndicesToolTip {
             get {
@@ -151,7 +151,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The selected colors..
+        ///   Looks up a localized string similar to Selected colors.
         /// </summary>
         public static string ColorRangePortDataResultToolTip {
             get {
@@ -160,7 +160,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list of values between 0.0 and 1.0. These values are used to look up the color within the range..
+        ///   Looks up a localized string similar to List of values between 0.0 and 1.0. These values define the colors that are picked along the color range to create the color list..
         /// </summary>
         public static string ColorRangePortDataValueToolTip {
             get {
@@ -178,7 +178,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Combinator.
+        ///   Looks up a localized string similar to Function to use as combinator.
         /// </summary>
         public static string CombinatorPortDataCombToolTip {
             get {
@@ -241,7 +241,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list.
+        ///   Looks up a localized string similar to A list (type: var[]..[]).
         /// </summary>
         public static string CreateListPortDataResultToolTip {
             get {
@@ -286,7 +286,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path to the directory..
+        ///   Looks up a localized string similar to Path to the directory (type: string).
         /// </summary>
         public static string DirectoryObjectPortDataPathToolTip {
             get {
@@ -309,6 +309,15 @@ namespace CoreNodeModels.Properties
         public static string DirectoryPathDescription {
             get {
                 return ResourceManager.GetString("DirectoryPathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory path.
+        /// </summary>
+        public static string DirectoryPathOutputDescription {
+            get {
+                return ResourceManager.GetString("DirectoryPathOutputDescription", resourceCulture);
             }
         }
         
@@ -376,6 +385,52 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Compares if two numbers are equal given a certain tolerance..
+        /// </summary>
+        public static string EqualsWithToleranceDescription {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Integer or double value.
+        /// </summary>
+        public static string EqualsWithToleranceLhsRhsTooltip {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceLhsRhsTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Result of equality check.
+        /// </summary>
+        public static string EqualsWithToleranceOutportTooltip {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceOutportTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to equals;tolerance.
+        /// </summary>
+        public static string EqualsWithToleranceSearchTags {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tolerance permitted for equality check
+        ///Default value: {0}.
+        /// </summary>
+        public static string EqualsWithToleranceTooltip {
+            get {
+                return ResourceManager.GetString("EqualsWithToleranceTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a file object from a path..
         /// </summary>
         public static string FileFromPathDescription {
@@ -403,7 +458,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path to the file..
+        ///   Looks up a localized string similar to Path to the file as string..
         /// </summary>
         public static string FileObjectPortDataPathToolTip {
             get {
@@ -421,11 +476,20 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allows you to select a file on the system to get its filename..
+        ///   Looks up a localized string similar to Allows you to select a file on the system to get its file path..
         /// </summary>
         public static string FilePathDescription {
             get {
                 return ResourceManager.GetString("FilePathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File Path.
+        /// </summary>
+        public static string FilePathOutputDescription {
+            get {
+                return ResourceManager.GetString("FilePathOutputDescription", resourceCulture);
             }
         }
         
@@ -439,7 +503,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Predicate used to determine if an element is filtered in or out..
+        ///   Looks up a localized string similar to Filter function used to determine if an element is filtered in or out.
         /// </summary>
         public static string FilterPortDataConditionToolTip {
             get {
@@ -484,7 +548,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Result of math computation.
+        ///   Looks up a localized string similar to Result from formula.
         /// </summary>
         public static string FormulaPortDataResultToolTip {
             get {
@@ -547,7 +611,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Applies a function to arguments..
+        ///   Looks up a localized string similar to Returns the result of a function with supplied arguments. Ex: arguments of a point and vector are applied to a translate function returning a translated point..
         /// </summary>
         public static string FunctionApplyDescription {
             get {
@@ -556,7 +620,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compose multiple functions..
+        ///   Looks up a localized string similar to Returns a single function from multiple functions. Ex: the modulus and divide functions are composed into a single function to apply to a list..
         /// </summary>
         public static string FunctionComposeDescription {
             get {
@@ -570,6 +634,15 @@ namespace CoreNodeModels.Properties
         public static string IfDescription {
             get {
                 return ResourceManager.GetString("IfDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This node has been updated and will be removed in a future version of Dynamo. Existing behavior is retained, but a new version now supports Empty Lists, Null values and inputs of varying length. Please replace this node if you wish to use this improved behavior..
+        /// </summary>
+        public static string IFNodeWarningMessage {
+            get {
+                return ResourceManager.GetString("IFNodeWarningMessage", resourceCulture);
             }
         }
         
@@ -817,7 +890,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mapped list.
+        ///   Looks up a localized string similar to Mapped list of type: var[]..[].
         /// </summary>
         public static string MapPortDataResultToolTip {
             get {
@@ -844,7 +917,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to False block.
+        ///   Looks up a localized string similar to Returned if test is false.
         /// </summary>
         public static string PortDataFalseBlockToolTip {
             get {
@@ -853,7 +926,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to image.
+        ///   Looks up a localized string similar to Image for visualization.
         /// </summary>
         public static string PortDataImageToolTip {
             get {
@@ -880,7 +953,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to result.
+        ///   Looks up a localized string similar to Result block produced.
         /// </summary>
         public static string PortDataResultToolTip {
             get {
@@ -889,7 +962,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test block.
+        ///   Looks up a localized string similar to Boolean test.
         /// </summary>
         public static string PortDataTestBlockToolTip {
             get {
@@ -898,7 +971,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to True block.
+        ///   Looks up a localized string similar to Returned if test is true.
         /// </summary>
         public static string PortDataTrueBlockToolTip {
             get {
@@ -943,7 +1016,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reduced lists.
+        ///   Looks up a localized string similar to Reduced lists (type: var[]..[]).
         /// </summary>
         public static string ReducePortDataResultToolTip {
             get {
@@ -979,7 +1052,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Predicate used to determine if it should be replaced..
+        ///   Looks up a localized string similar to Replacement function used to determine if an object should be replaced.
         /// </summary>
         public static string ReplacePortDataConditionToolTip {
             get {
@@ -1006,7 +1079,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If condition(item) = True, then &quot;replaceWith&quot; is returned. Otherwise &quot;item&quot; is returned unaltered..
+        ///   Looks up a localized string similar to Item, or list of items where condition was used to replace with item given in &quot;replaceWith&quot;.
         /// </summary>
         public static string ReplacePortDataResultToolTip {
             get {
@@ -1024,7 +1097,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scanned lists.
+        ///   Looks up a localized string similar to Scanned lists (type: var[]..[]).
         /// </summary>
         public static string ScanPortDataResultToolTip {
             get {
@@ -1042,7 +1115,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scoped If statement.
+        ///   Looks up a localized string similar to Returns the result of either True or False input depending on what boolean value is toggled in the test input. Supports recursion which requires that only a single branch be executed. It&apos;s critical that that both True and False branches are isolated and do not interact with each other!.
         /// </summary>
         public static string ScopeIfDescription {
             get {
@@ -1249,7 +1322,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Visualize the output of node..
+        ///   Looks up a localized string similar to Visualize the node&apos;s output.
         /// </summary>
         public static string WatchNodeDescription {
             get {
@@ -1267,7 +1340,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Node to evaluate..
+        ///   Looks up a localized string similar to Node to show output from.
         /// </summary>
         public static string WatchPortDataInputToolTip {
             get {
@@ -1276,7 +1349,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Watch contents..
+        ///   Looks up a localized string similar to Node output.
         /// </summary>
         public static string WatchPortDataResultToolTip {
             get {
@@ -1303,7 +1376,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The result of the web request..
+        ///   Looks up a localized string similar to Content of a web request as a string..
         /// </summary>
         public static string WebRequestPortDataResultToolTip {
             get {
@@ -1312,7 +1385,7 @@ namespace CoreNodeModels.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The url for the web request..
+        ///   Looks up a localized string similar to The url for the web request as a string..
         /// </summary>
         public static string WebRequestPortDataUrlToolTip {
             get {

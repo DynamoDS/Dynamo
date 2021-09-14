@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -130,11 +131,11 @@ namespace Dynamo.PackageManager
                 throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
             }
 
-            PackageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories);
+            PackageLoader = new PackageLoader(startupParams.PathManager);
             PackageLoader.MessageLogged += OnMessageLogged;
             PackageLoader.PackgeLoaded += OnPackageLoaded;
             PackageLoader.PackageRemoved += OnPackageRemoved;
-            RequestLoadNodeLibraryHandler = startupParams.LibraryLoader.LoadNodeLibrary;
+            RequestLoadNodeLibraryHandler = (startupParams.LibraryLoader as ExtensionLibraryLoader).LoadLibraryAndSuppressZTSearchImport;
             //TODO: Add LoadPackages to ILibraryLoader interface in 3.0
             LoadPackagesHandler = (startupParams.LibraryLoader as ExtensionLibraryLoader).LoadPackages;
             customNodeManager = (startupParams.CustomNodeManager as Core.CustomNodeManager);
@@ -160,9 +161,21 @@ namespace Dynamo.PackageManager
             PackageUploadBuilder.SetEngineVersion(startupParams.DynamoVersion);
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 
+            // Align the package upload directory with the package download directory - 
+            // either the one selected by the user or the default directory.
+            string packageUploadDirectory;
+            if (startupParams.Preferences is PreferenceSettings preferences)
+            {
+                packageUploadDirectory = string.IsNullOrEmpty(preferences.SelectedPackagePathForInstall) ? 
+                    startupParams.PathManager.DefaultPackagesDirectory : preferences.SelectedPackagePathForInstall;
+            }
+            else
+            {
+                packageUploadDirectory = startupParams.PathManager.DefaultPackagesDirectory;
+            }
             PackageManagerClient = new PackageManagerClient(
                 new GregClient(startupParams.AuthProvider, url),
-                uploadBuilder, PackageLoader.DefaultPackagesDirectory);
+                uploadBuilder, packageUploadDirectory);
 
             LoadPackages(startupParams.Preferences, startupParams.PathManager);
         }
@@ -184,7 +197,7 @@ namespace Dynamo.PackageManager
 
         public void Shutdown()
         {
-            this.Dispose();
+            //this.Dispose();
         }
 
         #endregion
@@ -198,7 +211,6 @@ namespace Dynamo.PackageManager
             PackageLoader.LoadAll(new LoadPackageParams
             {
                 Preferences = preferences,
-                PathManager = pathManager
             });
         }
 
@@ -292,6 +304,10 @@ namespace Dynamo.PackageManager
                 }
                 CustomNodePackageDictionary[cn.FunctionId].Add(new PackageInfo(package.Name, new Version(package.VersionName)));
             }
+            Dynamo.Logging.Analytics.TrackEvent(
+                Actions.Load,
+                Categories.PackageManagerOperations,
+                package.Name);
         }
 
         private void OnPackageRemoved(Package package)
@@ -327,6 +343,11 @@ namespace Dynamo.PackageManager
                     CustomNodePackageDictionary.Remove(cn.FunctionId);
                 }
             }
+
+            Dynamo.Logging.Analytics.TrackEvent(
+                Actions.Delete,
+                Categories.PackageManagerOperations,
+                package.Name);
         }
 
         #endregion

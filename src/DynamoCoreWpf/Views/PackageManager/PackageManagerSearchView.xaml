@@ -4,7 +4,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:ui="clr-namespace:Dynamo.UI"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:viewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
@@ -92,10 +91,22 @@
                 </Setter>
             </Style>
 
+            <Style x:Key="DependencyTooltip" TargetType="ToolTip">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToolTip">
+                            <ContentPresenter />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
             <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
-
+            <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
+            <controls:EmptyDepStringToCollapsedConverter x:Key="EmptyDepStringToCollapsedConverter" />
+            
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
@@ -140,7 +151,7 @@
                            Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" Foreground="#666" IsHitTestVisible="False">
                 </TextBlock>
 
-                <Button Width="auto" MinWidth="100" Grid.Column="1" Click="OnSortButtonClicked"
+                <Button Width="auto" MinWidth="50" Grid.Column="1" Click="OnSortButtonClicked"
                         Style="{DynamicResource ResourceKey=STextButton}" Content="{x:Static p:Resources.PackageSearchViewSortByButton}">
 
                     <Button.ContextMenu>
@@ -176,11 +187,12 @@
                 </Button>
 
                 <Button Width="Auto" 
+                        MinWidth="50"
                         Grid.Column="2" 
-                        Click="OnFilterButtonClicked" 
-                        fa:Awesome.Content="Filter"
-                        TextElement.FontFamily="pack://application:,,,/FontAwesome.WPF;component/#FontAwesome"
+                        Click="OnFilterButtonClicked"
+                        Margin="2 0 0 0"
                         Style="{DynamicResource ResourceKey=STextButton}"
+                        Content="{x:Static p:Resources.PackageSearchViewFilterByButton}"
                         ToolTip="{x:Static p:Resources.PackageHostDependencyFilter}">
                     <Button.ContextMenu>
                         <ContextMenu Name="HostFilter"
@@ -288,13 +300,22 @@
                                     <StackPanel Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal">
                                             <Button Style="{StaticResource FlatButton}" Command="{Binding ToggleIsExpandedCommand }" Background="#333">
-
                                                 <StackPanel Orientation="Vertical" Width="340" IsHitTestVisible="True" >
                                                    <StackPanel Orientation="Horizontal">
                                                       <TextBlock Width ="Auto" MinWidth="235" FontSize="14"  Name="name" Text="{Binding Path=Model.Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
-                                                      <TextBlock Width ="90" FontSize="10"  Name="HostDependency" Text="{Binding Path=Model.HostsString}" Margin="5,0,0,0" HorizontalAlignment="Right" Foreground="LightBlue" 
-                                                                 VerticalAlignment="Center" ToolTip="{x:Static p:Resources.PackageHostDependencyTooltip}"/>
-                                                   </StackPanel>
+                                                        <TextBlock Width ="90" FontSize="12"  Name="HostDependency" Margin="5,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"  Visibility="{Binding Path=Model.HostsString, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                                            <TextBlock.ToolTip>
+                                                                <ToolTip Style="{StaticResource DependencyTooltip}">
+                                                                    <StackPanel Background="#535353" Height="Auto" Width="100" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                                                                        <TextBlock TextWrapping="Wrap" Padding="8" FontSize="12" Foreground="WhiteSmoke" Text="{Binding Path=Model.HostsString}"/>
+                                                                    </StackPanel>
+                                                                </ToolTip>
+                                                            </TextBlock.ToolTip>
+                                                            <Hyperlink Foreground="LightBlue">
+                                                                <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageDependencies}"></TextBlock>
+                                                            </Hyperlink>
+                                                        </TextBlock>
+                                                    </StackPanel>
                                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
 
                                                         <StackPanel Orientation="Horizontal" Margin="5" Width="100">
@@ -323,25 +344,18 @@
                                                 </StackPanel>
                                             </Button>
 
-                                            <StackPanel Width="55"  Orientation="Vertical" Margin="3,0,0,0">
-                                                <StackPanel Orientation="Horizontal">
+                                            <StackPanel Width="80"  Orientation="Vertical" Margin="3,0,0,0">
+                                                <StackPanel Orientation="Vertical">
                                                     <Button Name="UpvoteButton" 
                                                         FontSize="15" 
                                                         ToolTip="{x:Static p:Resources.PackageSearchViewUpvoteButtonTooltip}"  
                                                         Content="👍"
-                                                        Margin="0,0,8,0"
+                                                        Margin="0,0,0,0"
                                                         Foreground="Gray" 
                                                         Command="{Binding Path=UpvoteCommand}" 
                                                         Style="{StaticResource FlatButton}" />
-                                                    <Button Name="DownvoteButton" 
-                                                        FontSize="15" 
-                                                        ToolTip="{x:Static p:Resources.PackageSearchViewDownvoteButtonTooltip}" 
-                                                        Foreground="Gray" 
-                                                        Content="👎"  
-                                                        Command="{Binding Path=DownvoteCommand}" 
-                                                        Style="{StaticResource FlatButton}" />
+                                                    <TextBlock FontSize="10" TextAlignment="Center" Margin="0,0,0,0" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
                                                 </StackPanel>
-                                                <TextBlock FontSize="10" TextAlignment="Center" Margin="0,0,0,0" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
                                             </StackPanel>
                                         </StackPanel>
 
@@ -368,7 +382,7 @@
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
-                                                        <TextBlock Text="{Binding Path=Item1.created, Converter={StaticResource PrettyDateConverter}}" MinWidth="100" Margin="24,5,5,5"  Foreground="DarkGray" />
+                                                        <TextBlock Text="{Binding Path=Item1.created, Converter={StaticResource PrettyDateConverter}}" MinWidth="100" Margin="24,5,5,5"  Foreground="DarkGray" /> 
 
                                                         <Border Background="#000000" Margin="3">
                                                             <StackPanel Orientation="Horizontal">
@@ -395,9 +409,8 @@
                                                                 </Button>
                                                             </StackPanel>
                                                         </Border>
-
-
-                                                    </StackPanel>
+                                                        <TextBlock FontSize="14" FontWeight="Bold" Text="ⓘ    " Foreground="WhiteSmoke" MinWidth="50" Margin="5 10 5 5" Visibility="{Binding Path=Item1.host_dependencies, Converter={StaticResource EmptyDepStringToCollapsedConverter}}" ToolTip="{Binding Path=Item1.host_dependencies, Converter={StaticResource DependencyListToStringConverter}}" />
+                                                        </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
 
@@ -474,7 +487,7 @@
 
                                 <StackPanel Orientation="Horizontal" Name="SearchEle" >
 
-                                    <StackPanel Width ="270" >
+                                    <StackPanel Width ="300" >
 
                                         <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" Foreground="White" Padding="5"/>
                                         <TextBlock FontSize="10" Name="error" Text="{Binding Path=ErrorString}" Foreground="White"  Padding="5"/>

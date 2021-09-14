@@ -4,18 +4,24 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using CoreNodeModels;
 using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Events;
+using Dynamo.Exceptions;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.Utilities;
+using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using TestUINodes;
 
 namespace Dynamo.Tests
 {
@@ -170,8 +176,12 @@ namespace Dynamo.Tests
                         OutputsMap.Add(n.GUID, n.OutputData);
                     }
 
-                    var portvalues = n.OutPorts.Select(p =>
-                        ProtoCore.Utils.CoreUtils.GetDataOfValue(n.GetValue(p.Index, controller))).ToList();
+                    var portvalues = new List<object>();
+                    if (!n.IsFrozen)
+                    {
+                        portvalues = n.OutPorts.Select(p =>
+                            ProtoCore.Utils.CoreUtils.GetDataOfValue(n.GetValue(p.Index, controller))).ToList();
+                    }
 
                     n.InPorts.ToList().ForEach(p =>
                     {
@@ -212,6 +222,11 @@ namespace Dynamo.Tests
         public static void CompareWorkspaceModels(serializationTestUtils.WorkspaceComparisonData a, serializationTestUtils.WorkspaceComparisonData b, Dictionary<Guid, string> c = null)
         {
             var nodeDiff = a.NodeTypeMap.Except(b.NodeTypeMap);
+
+            // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
+            // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
+            nodeDiff = nodeDiff.Where(nd => nd.Value.FullName != "CoreNodeModels.Input.IntegerSlider");
+
             if (nodeDiff.Any())
             {
                 Assert.Fail("The workspaces don't have the same number of nodes. The json workspace is missing: " + string.Join(",", nodeDiff.Select(i => i.Value.ToString())));
@@ -236,7 +251,21 @@ namespace Dynamo.Tests
             foreach (var portkvp in a.PortDataMap)
             {
                 Assert.IsTrue(b.PortDataMap.ContainsKey(portkvp.Key));
-                Assert.AreEqual(a.PortDataMap[portkvp.Key], b.PortDataMap[portkvp.Key]);
+
+                var aData = a.PortDataMap[portkvp.Key];
+                var bData = b.PortDataMap[portkvp.Key];
+                
+                // With the change to JSON based IntegerSlider nodes returning 64 bit integers,
+                // the description between the old XML and the new JSON based workspaces will be
+                // "Int32" and "Int64" respectively.
+                if (aData.Description == "Int32")
+                {
+                    Assert.IsTrue(bData.Description == "Int32" || bData.Description == "Int64");
+                }
+                else
+                {
+                    Assert.AreEqual(aData, bData);
+                }
             }
 
             foreach (var kvp in a.NodeReplicationMap)
@@ -250,6 +279,14 @@ namespace Dynamo.Tests
             {
                 var valueA = kvp.Value;
                 var valueB = b.NodeDataMap[kvp.Key];
+
+                // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
+                // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
+                if (a.NodeTypeMap[kvp.Key].FullName == "CoreNodeModels.Input.IntegerSlider")
+                {
+                    Assert.AreEqual("CoreNodeModels.Input.IntegerSlider64Bit", b.NodeTypeMap[kvp.Key].FullName);
+                    continue;
+                }
 
                 Assert.AreEqual(a.NodeTypeMap[kvp.Key], b.NodeTypeMap[kvp.Key]);
 
@@ -281,6 +318,11 @@ namespace Dynamo.Tests
             Dictionary<Guid, string> modelGuidsToIDmap)
         {
             var nodeDiff = a.NodeTypeMap.Select(x => x.Value).Except(b.NodeTypeMap.Select(x => x.Value));
+
+            // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
+            // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
+            nodeDiff = nodeDiff.Where(nd => nd.FullName != "CoreNodeModels.Input.IntegerSlider");
+
             if (nodeDiff.Any())
             {
                 Assert.Fail("The workspaces don't have the same number of nodes. The json workspace is missing: " + string.Join(",", nodeDiff.Select(i => i.ToString())));
@@ -315,7 +357,18 @@ namespace Dynamo.Tests
                 Assert.AreEqual(aPort.UseLevels, bPort.UseLevels);
                 Assert.AreEqual(aPort.KeepListStructure, bPort.KeepListStructure);
                 Assert.AreEqual(aPort.Level, bPort.Level);
-                Assert.AreEqual(aPort.Description, bPort.Description);
+
+                // With the change to JSON based IntegerSlider nodes returning 64 bit integers,
+                // the description between the old XML and the new JSON based workspaces will be
+                // "Int32" and "Int64" respectively.
+                if (aPort.Description == "Int32")
+                {
+                    Assert.IsTrue(bPort.Description == "Int32" || bPort.Description == "Int64");
+                }
+                else
+                {
+                    Assert.AreEqual(aPort.Description, bPort.Description);
+                }
             }
 
             foreach (var kvp in a.NodeReplicationMap)
@@ -332,6 +385,14 @@ namespace Dynamo.Tests
                 //convert the old guid to the new guid
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, modelGuidsToIDmap[kvp.Key]);
                 var valueB = b.NodeDataMap[newGuid];
+
+                // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
+                // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
+                if (a.NodeTypeMap[kvp.Key].FullName == "CoreNodeModels.Input.IntegerSlider")
+                {
+                    Assert.AreEqual("CoreNodeModels.Input.IntegerSlider64Bit", b.NodeTypeMap[newGuid].FullName);
+                    continue;
+                }
 
                 Assert.AreEqual(a.NodeTypeMap[kvp.Key], b.NodeTypeMap[newGuid]);
 
@@ -518,6 +579,7 @@ namespace Dynamo.Tests
         public static string jsonNonGuidFolderName = "json_nonGuidIds";
         public static string jsonFolderName = "json";
         public static string jsonFolderNameDifferentCulture = "json_differentCulture";
+        private const int MAXNUM_SERIALIZATIONTESTS_TOEXECUTE = 300;
 
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
@@ -617,6 +679,187 @@ namespace Dynamo.Tests
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
+        [Test]
+        public void NodeDescriptionDeserilizationTest()
+        {
+            // This test is in reference to this task: https://jira.autodesk.com/browse/DYN-2002
+            // The description of the node in the below graph has been updated to a different value. 
+            // We continue to serialize the description property to the json file but we do not want to
+            // read this value back while deserializing. This test will make sure that the description is
+            // not read from the json file and it gets the value from the node's config.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(node.Description, "Makes a new list out of the given inputs");
+        }
+        [Test]
+        public void OutPortDescriptionDeserilizationTest()
+        {
+            //similar to above test, uses a modified graph to assert port tooltips not deserialized when possible.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\PortTooltipDeserilizationTest.dyn");
+            OpenModel(testFile);
+
+            var ztNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("bda3e3e4c18c461dae5598df465035b2")).First();
+            Assert.AreEqual(ztNode.OutPorts.First().ToolTip, "Arc created from three points");
+
+            var nodeModelNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("c848cc3cb24a477f8248e53fc9304cc1")).First();
+            Assert.AreEqual(nodeModelNode.OutPorts.First().ToolTip, "Selected colors");
+        }
+
+        [Test]
+        [Category("Failure")]
+        [Category("TechDebt")]
+        public void OutPortDescriptionDeserilizationTest_VariableInputNodes()
+        {
+            //similar to above test, uses a modified graph to assert port tooltips not deserialized when possible.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\PortTooltipDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var variableInputNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("db8fd7b97be1413e91897316ae75b51a")).First();
+            Assert.AreEqual(variableInputNode.OutPorts.First().ToolTip, "Combined lists");
+        }
+
+        [Test]
+        public void InPortDescriptionDeserilizationTest()
+        {
+            //similar to above test, uses a modified graph to assert port tooltips not deserialized when possible.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\PortTooltipDeserilizationTest.dyn");
+            OpenModel(testFile);
+
+            var ztNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("bda3e3e4c18c461dae5598df465035b2")).First();
+            Assert.AreEqual(ztNode.InPorts.First().ToolTip, "1st point of arc\n\nPoint");
+
+            var nodeModelNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("c848cc3cb24a477f8248e53fc9304cc1")).First();
+            Assert.AreEqual(nodeModelNode.InPorts.First().ToolTip, "List of colors to include in the range");
+
+        }
+        [Test]
+        [Category("Failure")]
+        [Category("TechDebt")]
+        public void InPortDescriptionDeserilizationTest_VariableInputNodes()
+        {
+            //similar to above test, uses a modified graph to assert port tooltips not deserialized when possible.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\PortTooltipDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var variableInputNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("db8fd7b97be1413e91897316ae75b51a")).First();
+            Assert.AreEqual(variableInputNode.InPorts.First().ToolTip, "Function to use as combinator");
+
+            var variableInputNodeWithPortAttributes = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("ddbbd4be7e0b471598151cd09f17f5a1")).First();
+            Assert.AreEqual(variableInputNodeWithPortAttributes.InPorts.First().ToolTip, "Item Index #0");
+            Assert.AreEqual(variableInputNodeWithPortAttributes.InPorts.ElementAt(2).ToolTip, "Item Index #2");
+        }
+
+        [Test]
+        public void NodeFreezeStateDeserilizationTest()
+        {
+            // The freeze state of the node is saved in node view block. However the property on node model
+            // will impact headless Dynamo clients graph run, e.g. DynamoPlayer, Refinery.
+            // This test will make sure that the isFrozenExplicitly is read from the node view block in Json file.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(node.isFrozenExplicitly, true);
+        }
+
+        [Test]
+        public void NodeIsSetAsInputStateDeserilizationTest()
+        {
+            // The IsSetAsInput state of the node is saved in node view block. However the property on node model
+            // will impact headless Dynamo clients graph run, e.g. DynamoPlayer, Refinery.
+            // This test will make sure that the IsSetAsInput is read from the node view block in Json file.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.ToList()[1];
+            Assert.AreEqual(node.IsSetAsInput, true);
+        }
+
+        [Test]
+        public void NodeIsSetAsOutputStateDeserilizationTest()
+        {
+            // The IsSetAsOutput state of the node is saved in node view block. However the property on node model
+            // will impact headless Dynamo clients graph run, e.g. DynamoPlayer, Refinery.
+            // This test will make sure that the IsSetAsOutput is read from the node view block in Json file.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(node.IsSetAsOutput, true);
+        }
+
+        [Test]
+        public void NodeNameDeserilizationTest()
+        {
+            // The name of the node is saved in node view block. However the property on node model
+            // will impact headless Dynamo clients graph run, e.g. DynamoPlayer, Refinery.
+            // This test will make sure that the name is read from the node view block in Json file.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(node.Name, "List Create");
+        }
+
+        [Test]
+        public void DropDownNodesNodeInputDataSerializationTest()
+        {
+            // Arrange
+            var pkgDir = Path.Combine(TestDirectory, "pkgs\\Dynamo Samples");
+            this.LoadPackage(pkgDir);
+
+            var filePath = @"core\NodeInputOutputData\dropDownInputData.dyn";
+
+            // Act
+            // Assert
+            DoWorkspaceOpenAndCompare(
+                filePath, 
+                jsonFolderName, 
+                ConvertCurrentWorkspaceToJsonAndSave, 
+                serializationTestUtils.CompareWorkspaceModels,
+                serializationTestUtils.SaveWorkspaceComparisonData);
+        }
+
+        [Test]
+        public void ColorPaletteNodeInputDataSerializationTest()
+        {
+            // Arrange
+            var filePath = @"core\NodeInputOutputData\colorPaletteInputData.dyn";
+
+            // Act
+            // Assert
+            DoWorkspaceOpenAndCompare(
+                filePath,
+                jsonFolderName,
+                ConvertCurrentWorkspaceToJsonAndSave,
+                serializationTestUtils.CompareWorkspaceModels,
+                serializationTestUtils.SaveWorkspaceComparisonData);
+
+        }
+
+
+        [Test]
+        public void SelectionNodeInputDataSerializationTest()
+        {
+            // Arrange
+            var filePath = Path.Combine(TestDirectory, @"core\NodeInputOutputData\selectionNodeInputData.dyn");
+            if (!File.Exists(filePath))
+            {
+                var savePath = Path.ChangeExtension(filePath, null);
+                var selectionHelperMock = new Mock<IModelSelectionHelper<ModelBase>>(MockBehavior.Strict);
+                var selectionNode = new SelectionConcrete(SelectionType.Many, SelectionObjectType.Element, "testMessage", "testPrefix", selectionHelperMock.Object);
+                selectionNode.Name = "selectionTestName";
+                selectionNode.IsSetAsInput = true;
+
+                this.CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(selectionNode);
+                ConvertCurrentWorkspaceToJsonAndSave(this.CurrentDynamoModel, savePath);
+            }
+
+            // Act
+            // Assert
+            DoWorkspaceOpenAndCompare(
+                filePath,
+                jsonFolderName,
+                ConvertCurrentWorkspaceToJsonAndSave,
+                serializationTestUtils.CompareWorkspaceModels,
+                serializationTestUtils.SaveWorkspaceComparisonData);
+        }
+
         [Test, Category("JsonTestExclude")]
         public void FunctionNodeLoadsWhenSignatureChanges()
         {
@@ -648,7 +891,7 @@ namespace Dynamo.Tests
         {
             var di = new DirectoryInfo(TestDirectory);
             var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
-            return fis.Select(fi => fi.FullName).ToArray();
+            return fis.Select(fi => fi.FullName).Take(MAXNUM_SERIALIZATIONTESTS_TOEXECUTE).ToArray();
         }
 
         /// <summary>
@@ -661,6 +904,7 @@ namespace Dynamo.Tests
         [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
         public void SerializationTest(string filePath)
         {
+            modelsGuidToIdMap.Clear();
             DoWorkspaceOpenAndCompare(filePath, jsonFolderName, ConvertCurrentWorkspaceToJsonAndSave,
                 serializationTestUtils.CompareWorkspaceModels,
                 serializationTestUtils.SaveWorkspaceComparisonData);
@@ -725,6 +969,7 @@ namespace Dynamo.Tests
                 "visualization",
                 "migration",
                 "missing_custom_node",
+                "PackageLoadExceptionTest",
                 "Dummy.dyn",
                 // Tests which require late initialization
                 // of custom nodes...
@@ -769,7 +1014,7 @@ namespace Dynamo.Tests
                                     "of the graph will not execute; skipping test ...");
             }
 
-            if (((HomeWorkspaceModel)ws1).RunSettings.RunType == Models.RunType.Manual)
+            if (((HomeWorkspaceModel)ws1).RunSettings.RunType == Dynamo.Models.RunType.Manual)
             {
                 RunCurrentModel();
             }

@@ -31,9 +31,9 @@ namespace CoreNodeModels.Logic
         {
             _op = op;
 
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("bool0", Resources.PortDataOperandToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("bool1", Resources.PortDataOperandToolTip)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Resources.PortDataResultToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("bool0", Resources.PortDataOperandToolTip + 0)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("bool1", Resources.PortDataOperandToolTip + 1)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("bool", Resources.PortDataResultToolTip)));
             RegisterAllPorts();
         }
 

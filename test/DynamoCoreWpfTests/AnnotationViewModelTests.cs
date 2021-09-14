@@ -1,4 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Input;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -566,7 +570,7 @@ namespace DynamoCoreWpfTests
             //Selecting the Group should select the models within that group
             var vm = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
             Assert.IsNotNull(vm);
-            vm.Select();
+            vm.SelectAll();
             Assert.AreEqual(annotation.Nodes.Count(), annotation.Nodes.Count(x => x.IsSelected));
         }
 
@@ -597,7 +601,7 @@ namespace DynamoCoreWpfTests
             //Selecting the Group should select the models within that group 
             var vm = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
             Assert.IsNotNull(vm);
-            vm.Select();
+            vm.SelectAll();
             Assert.AreEqual(annotation.Nodes.Count(), annotation.Nodes.Count(x => x.IsSelected));
 
             //Execute the delete command - This should delete the entire group and models
@@ -632,7 +636,7 @@ namespace DynamoCoreWpfTests
             //Selecting the Group should select the models within that group 
             var vm = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
             Assert.IsNotNull(vm);
-            vm.Select();
+            vm.SelectAll();
             Assert.AreEqual(annotation.Nodes.Count(), annotation.Nodes.Count(x => x.IsSelected));
 
             //Execute the delete command - This should delete the entire group and models
@@ -747,6 +751,186 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(4, ws.Nodes.Count());
             Assert.AreEqual(1, ws.Annotations.Count());
             Assert.AreEqual(4, ws.Annotations.First().Nodes.Count());
+        }
+
+        [Test]
+        public void CanAddGroupAndGroupedNodesToSelection()
+        {
+            OpenModel("core\\AddGroupToSelection.dyn");
+
+            var ws = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("032c6f2c2867454b856a65293f0c70c2"); ;
+            var vm = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
+
+            // Count before anything is selected
+            var countBefore = DynamoSelection.Instance.Selection.Count;
+            Assert.AreEqual(0, countBefore);
+
+            // Select first the node
+            ws.Select();
+
+            // Add group and nodes to selection
+            vm.AddGroupAndGroupedNodesToSelection();
+
+            var countAfter = DynamoSelection.Instance.Selection.Count;
+            Assert.AreEqual(3, countAfter);
+
+        }
+
+
+        [Test]
+        public void CanAddGroupToOtherGroup()
+        {
+            // Arrange
+            var group1Name = "Group1";
+            var group2Name = "Group2";
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var group1ViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x=>x.AnnotationText == group1Name);
+            var group2ViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x=>x.AnnotationText == group2Name);
+
+            var group1ContentBefore = group1ViewModel.Nodes.ToList();
+
+            // Act
+            //Select both groups
+            var modelGuids = new List<Guid>
+            {
+                group1ViewModel.AnnotationModel.GUID,
+                group2ViewModel.AnnotationModel.GUID
+            };
+
+            ViewModel.ExecuteCommand(
+                new DynamoModel.SelectModelCommand(modelGuids, Keyboard.Modifiers.AsDynamoType()));
+
+            Assert.That(
+                DynamoSelection.Instance.Selection.Contains(group1ViewModel.AnnotationModel) &&
+                DynamoSelection.Instance.Selection.Contains(group2ViewModel.AnnotationModel)
+                );
+
+            group1ViewModel.AddGroupToGroupCommand.Execute(null);
+
+            // Assert
+            Assert.That(group1ContentBefore.Count != group1ViewModel.Nodes.Count());
+            Assert.That(group1ViewModel.Nodes.Contains(group2ViewModel.AnnotationModel));
+        }
+
+        [Test]
+        public void CannotAddGroupToOtherGroupIfTheGroupAlreadyBelongsToAGroup()
+        {
+            // Arrange
+            var group1Name = "Group1";
+            var group2Name = "Group2";
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var group1ViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == group1Name);
+            var group2ViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == group2Name);
+
+            var group1ContentBefore = group1ViewModel.Nodes.ToList();
+
+            // Act
+            // Add group2 to group1
+            var modelGuids = new List<Guid>
+            {
+                group1ViewModel.AnnotationModel.GUID,
+                group2ViewModel.AnnotationModel.GUID
+            };
+
+            ViewModel.ExecuteCommand(
+                new DynamoModel.SelectModelCommand(modelGuids, Keyboard.Modifiers.AsDynamoType()));
+
+            group1ViewModel.AddGroupToGroupCommand.Execute(null);
+
+            //Create 3rd group
+            var dummyNode = new DummyNode();
+            var command = new DynamoModel.CreateNodeCommand(dummyNode, 0, 0, true, false);
+            ViewModel.Model.ExecuteCommand(command);
+
+            ViewModel.ExecuteCommand(
+                new DynamoModel.SelectModelCommand(dummyNode.GUID, Keyboard.Modifiers.AsDynamoType()));
+            ViewModel.AddAnnotationCommand.Execute(null);
+
+            var group3ViewModel = ViewModel.CurrentSpaceViewModel.Annotations
+                .FirstOrDefault(x => x.AnnotationText != group2Name && x.AnnotationText != group1Name);
+
+            // now select group1 and group 3 and assert that 
+            // group3 cannot execute AddGroupToGroupCommand 
+            ViewModel.ExecuteCommand(
+                new DynamoModel.SelectModelCommand(
+                    new List<Guid>
+                    {
+                        group3ViewModel.AnnotationModel.GUID,
+                        group1ViewModel.AnnotationModel.GUID
+                    }, 
+                    Keyboard.Modifiers.AsDynamoType()));
+
+            // Assert
+            Assert.IsFalse(group3ViewModel.AddGroupToGroupCommand.CanExecute(null));
+        }
+
+
+        [Test]
+        public void CollapsingGroupWillCreateInportAndOuportCollections()
+        {
+            // Arrange
+            var groupName = "GroupToCollapse";
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var group1ViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == groupName);
+            var inPortsBefore = group1ViewModel.InPorts.ToList();
+            var outPortsBefore = group1ViewModel.OutPorts.ToList();
+            var inbetweenNodesBefore = group1ViewModel.InbetweenNodesCount;
+
+            var expectedInPortNames = new List<string>
+            {
+                "codeBlock1Input",
+                "codeBlock2Input",
+                "item0",
+                "item1",
+                "item2"
+            };
+
+            var expectedOutPortNames = new List<string>
+            {
+                string.Empty,
+                string.Empty,
+                "list"
+            };
+
+            // Act
+            group1ViewModel.IsExpanded = false;
+
+            // Assert
+            Assert.That(inPortsBefore.Count != group1ViewModel.InPorts.Count);
+            Assert.That(outPortsBefore.Count != group1ViewModel.OutPorts.Count);
+            Assert.That(inbetweenNodesBefore != group1ViewModel.InbetweenNodesCount);
+            CollectionAssert.AreEquivalent(expectedInPortNames, group1ViewModel.InPorts.Select(x => x.PortModel.Name));
+            CollectionAssert.AreEquivalent(expectedOutPortNames, group1ViewModel.OutPorts.Select(x => x.PortModel.Name));
+            Assert.That(group1ViewModel.InbetweenNodesCount == 1);
+
+        }
+
+
+        [Test]
+        public void CollapsingAGroupWillAlsoCollapsAllOfItsNodes()
+        {
+            // Arrange
+            var groupName = "GroupWithGroupedGroup";
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var groupViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == groupName);
+
+            var groupNodesCollapsedStatusBefore = groupViewModel.ViewModelBases
+                .Select(x => x.IsCollapsed)
+                .ToList();
+
+            // Act
+            groupViewModel.IsExpanded = false;
+            var groupNodesCollapsedStatusAfter = groupViewModel.ViewModelBases.Select(x => x.IsCollapsed);
+
+            // Assert
+            CollectionAssert.AreNotEquivalent(groupNodesCollapsedStatusAfter, groupNodesCollapsedStatusBefore);
+            Assert.That(groupNodesCollapsedStatusAfter.All(x => x == true));
         }
 
         #endregion

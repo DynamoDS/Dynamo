@@ -22,6 +22,10 @@ namespace Dynamo.LibraryUI.Views
                 CefSharpSettings.LegacyJavascriptBindingEnabled = true;
                 CefSharpSettings.SubprocessExitIfParentProcessClosed = true;
                 CefSharpSettings.ShutdownOnExit = false;
+                //https://bitbucket.org/chromiumembedded/cef/issues/2214/osr-scroll-is-erratic-after-using-mouse#comment-46738015
+                //https://github.com/cefsharp/CefSharp/issues/2408
+                //TODO remove in 67 or up.
+                settings.DisableTouchpadAndWheelScrollLatching();
 
                 Cef.Initialize(settings);
             }

@@ -117,10 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="_dynamo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\viewmodels\watch3d\resources\_dynamo.bfx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="AboutWindowCannotGetVersion" xml:space="preserve">
     <value>Could not get version.</value>
     <comment>To indicate not abe to get Dynamo version</comment>
@@ -240,10 +236,10 @@
     <value>Compact</value>
   </data>
   <data name="ConsentFormGoogleAnalyticsCheckBoxContent" xml:space="preserve">
-    <value>Yes, I would like to contribute to this program (Google Analytics).</value>
+    <value>I agree to contribute to the Google Analytics program.</value>
   </data>
-  <data name="ConsentFormInstrumentationCheckBoxContent" xml:space="preserve">
-    <value>I give my consent for Autodesk to collect information, using a tool called Instrumentation, on how I use {0}</value>
+  <data name="ConsentFormADPAnalyticsCheckBoxContent" xml:space="preserve">
+    <value>I agree to data collection in desktop products for Autodesk analytics programs.</value>
   </data>
   <data name="ContextAddGroupFromSelection" xml:space="preserve">
     <value>Add To Group</value>
@@ -488,6 +484,10 @@ You will get a chance to save your work.</value>
     <value>Verbose Logging</value>
     <comment>Debug menu | Verbose logging</comment>
   </data>
+  <data name="DynamoViewDebugMenuDebugModes" xml:space="preserve">
+    <value>Debug Modes</value>
+    <comment>Debug menu | Show debug modes</comment>
+  </data>
   <data name="DynamoViewEditMenu" xml:space="preserve">
     <value>_Edit</value>
     <comment>Edit menu</comment>
@@ -583,9 +583,9 @@ You will get a chance to save your work.</value>
     <value>_Undo</value>
     <comment>Edit menu | Undo</comment>
   </data>
-  <data name="DynamoViewFiileMenuExit" xml:space="preserve">
-    <value>_Exit</value>
-    <comment>File menu | Exit Dynamo</comment>
+  <data name="DynamoViewDynamoMenuExit" xml:space="preserve">
+    <value>_Exit Dynamo</value>
+    <comment>Dynamo menu | Exit Dynamo</comment>
   </data>
   <data name="DynamoViewFileMenu" xml:space="preserve">
     <value>_File</value>
@@ -616,7 +616,7 @@ You will get a chance to save your work.</value>
     <comment>FIle menu | New | New custom node</comment>
   </data>
   <data name="DynamoViewFileMenuNewHomeWorkSpace" xml:space="preserve">
-    <value>_Home Workspace...</value>
+    <value>_Home Workspace</value>
     <comment>File menu | New | New home workspace</comment>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
@@ -624,7 +624,7 @@ You will get a chance to save your work.</value>
     <comment>File menu | Open</comment>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
-    <value>_Open Recent Files...</value>
+    <value>_Open Recent Files</value>
     <comment>File menu | Open Recent files</comment>
   </data>
   <data name="DynamoViewFileMenuSave" xml:space="preserve">
@@ -636,26 +636,23 @@ You will get a chance to save your work.</value>
     <comment>File menu | Save as</comment>
   </data>
   <data name="DynamoViewHelpDictionary" xml:space="preserve">
-    <value>Open Dynamo Dictionary</value>
+    <value>Dynamo Dictionary</value>
+    <comment>Help menu | Go to Dynamo Dictionary</comment>
   </data>
   <data name="DynamoViewHelpMenu" xml:space="preserve">
     <value>Help</value>
     <comment>Help menu</comment>
-  </data>
-  <data name="DynamoViewHelpMenuAbout" xml:space="preserve">
-    <value>_About...</value>
-    <comment>Help menu | Display About dialog</comment>
   </data>
   <data name="DynamoViewHelpMenuDisplayStartPage" xml:space="preserve">
     <value>_Display Start Page</value>
     <comment>Help menu | Display start page</comment>
   </data>
   <data name="DynamoViewHelpMenuGotoWebsite" xml:space="preserve">
-    <value>_Go To Project Website</value>
+    <value>_Dynamo Website</value>
     <comment>Help menu | Go go Dynamo website</comment>
   </data>
   <data name="DynamoViewHelpMenuGotoWiki" xml:space="preserve">
-    <value>Go To Project _Wiki</value>
+    <value>Dynamo Project _Wiki</value>
     <comment>Help menu | Go to wiki</comment>
   </data>
   <data name="DynamoViewHelpMenuReportBug" xml:space="preserve">
@@ -712,13 +709,13 @@ You will get a chance to save your work.</value>
   <data name="DynamoViewSamplesMenuShowInFolder" xml:space="preserve">
     <value>Show In Folder</value>
   </data>
-  <data name="DynamoViewSettingEnableTSplineNodes" xml:space="preserve">
-    <value>Enable T-Spline nodes (requires relaunch of Dynamo)</value>
-    <comment>Setting menu | Experimental | Enable T-Spline nodes</comment>
+  <data name="PreferencesViewEnableTSplineNodes" xml:space="preserve">
+    <value>Enable T-Spline nodes</value>
+    <comment>Preferences | Features | Experimental | Enable T-Spline nodes</comment>
   </data>
-  <data name="DynamoViewSettingExperimental" xml:space="preserve">
+  <data name="PreferencesViewExperimentalLabel" xml:space="preserve">
     <value>Experimental</value>
-    <comment>Setting menu | Experimental</comment>
+    <comment>Preferences | Features | Experimental</comment>
   </data>
   <data name="DynamoViewSettingMenu" xml:space="preserve">
     <value>_Settings</value>
@@ -760,25 +757,9 @@ You will get a chance to save your work.</value>
     <value>Decimal Inch</value>
     <comment>Setting menu | Decimal inch</comment>
   </data>
-  <data name="DynamoViewSettingMenuEnableDataReporting" xml:space="preserve">
-    <value>Enable detailed usability data reporting (Instrumentation)</value>
-    <comment>Setting menu | Enable data reporting during usage</comment>
-  </data>
-  <data name="DynamoViewSettingMenuEnableDataReportingTooltip" xml:space="preserve">
-    <value>Detailed reporting sends behaviour data that we use for improving {0}.
-
-It includes the graph being created as well as errors and warnings</value>
-    <comment>Setting menu | Tooltip for enable data reporting during usage menu item</comment>
-  </data>
-  <data name="DynamoViewSettingMenuEnableSummaryReporting" xml:space="preserve">
-    <value>Enable anonymous summary reporting (Google Analytics)</value>
-    <comment>Setting menu | Enable summary reporting</comment>
-  </data>
-  <data name="DynamoViewSettingMenuEnableSummaryReportingTooltip" xml:space="preserve">
-    <value>Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.
-
-It does not contain your graph or any personal data</value>
-    <comment>Setting menu | Tooltip for enable summary reporting during usage menu item</comment>
+  <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
+    <value>Agreement to Collect Usability Data</value>
+    <comment>Setting menu | Show user agreement dialog about data collecting</comment>
   </data>
   <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
     <value>Fractional Foot</value>
@@ -836,9 +817,9 @@ It does not contain your graph or any personal data</value>
     <value>Number Format</value>
     <comment>Setting menu | Number format</comment>
   </data>
-  <data name="DynamoViewSettingMenuRenderPrecision" xml:space="preserve">
-    <value>Render Precision</value>
-    <comment>Setting menu | Render precision</comment>
+  <data name="PreferencesViewSelectedPackagePathForDownload" xml:space="preserve">
+    <value>Selected package path for download</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory | Selected package path for download</comment>
   </data>
   <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
     <value>Square Centimeter</value>
@@ -871,16 +852,6 @@ It does not contain your graph or any personal data</value>
   <data name="DynamoViewSettingsMenuChangeScaleFactor" xml:space="preserve">
     <value>Geometry Scaling...</value>
     <comment>Settings menu | Geometry Scaling</comment>
-  </data>
-  <data name="DynamoViewSettingsMenuIsolationMode" xml:space="preserve">
-    <value>Isolate Selected Geometry</value>
-  </data>
-  <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
-    <value>Show Edges</value>
-  </data>
-  <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
-    <value>Show Preview Bubbles</value>
-    <comment>Settings menu | Show preview bubbles</comment>
   </data>
   <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
     <value>Visualization Settings</value>
@@ -1100,9 +1071,6 @@ Failed to publish file(s):
   <data name="GroupContextMenuUngroup" xml:space="preserve">
     <value>Ungroup</value>
   </data>
-  <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
-  </data>
   <data name="HideClassicNodeLibrary" xml:space="preserve">
     <value>Hide Classic Node Library</value>
   </data>
@@ -1149,12 +1117,6 @@ Failed to publish file(s):
   <data name="InstalledPackageViewAdditionalLabel" xml:space="preserve">
     <value>Additional Libraries</value>
   </data>
-  <data name="InstalledPackageViewContextMenuCancelUninstall" xml:space="preserve">
-    <value>Cancel pending uninstall...</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuCancelUninstallTooltip" xml:space="preserve">
-    <value>Remove the pending uninstall status</value>
-  </data>
   <data name="InstalledPackageViewContextMenuDeprecate" xml:space="preserve">
     <value>Deprecate</value>
   </data>
@@ -1185,23 +1147,11 @@ Failed to publish file(s):
   <data name="InstalledPackageViewContextMenuRemoveDeprecationTooltip" xml:space="preserve">
     <value>Remove package deprecation. Only allowed if you're a current maintainer of the package.</value>
   </data>
-  <data name="InstalledPackageViewContextMenuShowContent" xml:space="preserve">
-    <value>Show Contents</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuShowContentTooltip" xml:space="preserve">
-    <value>See the types loaded by this package</value>
-  </data>
   <data name="InstalledPackageViewContextMenuShowRootDir" xml:space="preserve">
     <value>Show Root Directory</value>
   </data>
   <data name="InstalledPackageViewContextMenuShowRootDirTooltip" xml:space="preserve">
     <value>Go to the root folder of this package</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuUninstall" xml:space="preserve">
-    <value>Uninstall...</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuUninstallTooltip" xml:space="preserve">
-    <value>Uninstall this package, only allowed if none of the types are currently in use</value>
   </data>
   <data name="InstalledPackageViewCustomNodesLabel" xml:space="preserve">
     <value>Custom Nodes</value>
@@ -1301,8 +1251,8 @@ Would you like to save your changes?</value>
     <value>We can't save "{0}" because the file is read-only or contains unresolved or invalid nodes. To keep changes, would you like to "Save As..." with a different name or path?</value>
     <comment>Message box content</comment>
   </data>
-  <data name="MessageConfirmToUninstallPackage" xml:space="preserve">
-    <value>Are you sure you want to uninstall {0} ?  This will delete the packages root directory.
+  <data name="MessageConfirmToDeletePackage" xml:space="preserve">
+    <value>Are you sure you want to delete {0} ?  This will delete the packages root directory.
 
 You can always redownload the package.</value>
   </data>
@@ -1337,6 +1287,9 @@ You can always redownload the package.</value>
     <value>Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems.</value>
     <comment>Message box content</comment>
   </data>
+  <data name="MessageInvalidPackage" xml:space="preserve">
+    <value>Failed to load an invalid package.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No node could be found with that Id.</value>
   </data>
@@ -1347,8 +1300,8 @@ You can always redownload the package.</value>
   <data name="MessageFailedToSaveAsImage" xml:space="preserve">
     <value>Failed to save the Workspace as image.</value>
   </data>
-  <data name="MessageFailedToUninstall" xml:space="preserve">
-    <value>{0} failed to uninstall the package.  You may need to delete the package's root directory manually.</value>
+  <data name="MessageFailedToDelete" xml:space="preserve">
+    <value>{0} failed to delete the package.  You may need to delete the package's root directory manually.</value>
   </data>
   <data name="MessageFailToUninstallPackage" xml:space="preserve">
     <value>{0} failed to uninstall the package: {1}.  The package may need to be reinstalled manually.</value>
@@ -1361,8 +1314,8 @@ You can always redownload the package.</value>
   <data name="MessageLoadingTime" xml:space="preserve">
     <value>{0} elapsed for loading {1} main window.</value>
   </data>
-  <data name="MessageNeedToRestart" xml:space="preserve">
-    <value>{0} and its host application must restart before uninstall takes effect.</value>
+  <data name="MessageNeedToRestartAfterDelete" xml:space="preserve">
+    <value>{0} and its host application must restart before delete takes effect.</value>
   </data>
   <data name="MessageNodeWithNullFunction" xml:space="preserve">
     <value>There is a null function definition for this node.</value>
@@ -1374,11 +1327,7 @@ You can always redownload the package.</value>
     <value>The package or one of its dependencies contains Python scripts or binaries. Do you want to continue?</value>
   </data>
   <data name="MessagePackageNewerDynamo" xml:space="preserve">
-    <value>The following packages use a newer version of {0} than you are currently using:
-
-{1}
-
-Do you want to continue?</value>
+    <value>The package or one of its dependencies use a newer version of {0} than you are currently using. Do you want to continue?</value>
   </data>
   <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
     <value>You must select at least one custom node.</value>
@@ -1452,7 +1401,7 @@ Uninstall the following dependent packages: {1}?</value>
     <comment>Context menu item - preview geometry</comment>
   </data>
   <data name="NodeContextMenuRenameNode" xml:space="preserve">
-    <value>Rename Node...</value>
+    <value>Rename</value>
     <comment>Context menu item - rename this node</comment>
   </data>
   <data name="NodeContextMenuShowLabels" xml:space="preserve">
@@ -1553,9 +1502,6 @@ Next assemblies were loaded several times:
     <value>A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to
 {0}</value>
   </data>
-  <data name="PackageManagerWebSiteButton" xml:space="preserve">
-    <value>Package Manager Website</value>
-  </data>
   <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
     <value>The name of the package cannot contain /,\, or *.</value>
     <comment>ErrorString</comment>
@@ -1578,10 +1524,6 @@ Next assemblies were loaded several times:
   <data name="PackagePathViewSummary1" xml:space="preserve">
     <value>Add paths to make nodes and packages show up in the library.</value>
     <comment>Package path management dialog content</comment>
-  </data>
-  <data name="PackagePathViewSummary2" xml:space="preserve">
-    <value>Top path is the default save location.</value>
-    <comment>Package path management dialog content that describes about the first entry being the default save location.</comment>
   </data>
   <data name="PackagePathViewTitle" xml:space="preserve">
     <value>Manage Node and Package Paths</value>
@@ -1607,10 +1549,10 @@ Next assemblies were loaded several times:
     <value>Package Path Added</value>
   </data>
   <data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
-    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings &gt; Manage Node and Package Paths..."</value>
+    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Preferences &gt; Node and Package Paths..."</value>
   </data>
   <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
-    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings &gt; Manage Node and Package Paths..."</value>
+    <value>The import path "{0}" was added to "Node and Package Paths". If you want to update or remove this path, please open "Dynamo &gt; Preferences &gt;Package Manager &gt; Node and Package Paths..."</value>
   </data>
   <data name="PackageSearchStateNoResult" xml:space="preserve">
     <value>Search returned no results!</value>
@@ -1666,9 +1608,6 @@ Next assemblies were loaded several times:
   <data name="PackageSearchViewDescription" xml:space="preserve">
     <value>Description</value>
     <comment>Package description</comment>
-  </data>
-  <data name="PackageSearchViewDownvoteButtonTooltip" xml:space="preserve">
-    <value>Downvote to voice lack of support for this package</value>
   </data>
   <data name="PackageSearchViewInstallButton" xml:space="preserve">
     <value>⇓ Install</value>
@@ -1951,7 +1890,7 @@ Want to publish a different package?</value>
     <value>Execution preview is not available when running automatically</value>
   </data>
   <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
-    <value>Please update the permissions or go to 'Settings &gt; Manage Node and Package Paths...' to change your default directory.</value>
+    <value>Please update the permissions or go to Preferences &gt;Node and Package Paths...' to change your default directory.</value>
   </data>
   <data name="StartPageAdvancedTutorials" xml:space="preserve">
     <value>Advanced Tutorials</value>
@@ -2058,11 +1997,11 @@ Want to publish a different package?</value>
   <data name="UndeprecatingPackageMessageBoxTitle" xml:space="preserve">
     <value>Removing Package Deprecation</value>
   </data>
-  <data name="UninstallFailureMessageBoxTitle" xml:space="preserve">
-    <value>Uninstall Failure</value>
+  <data name="DeleteFailureMessageBoxTitle" xml:space="preserve">
+    <value>Delete Failure</value>
   </data>
-  <data name="UninstallingPackageMessageBoxTitle" xml:space="preserve">
-    <value>Uninstalling Package</value>
+  <data name="MessageNeedToRestartAfterDeleteTitle" xml:space="preserve">
+    <value>Deleting Package</value>
   </data>
   <data name="UnitAcres" xml:space="preserve">
     <value>Acres</value>
@@ -2207,31 +2146,499 @@ Restart Dynamo to complete the uninstall.
 
 Uninstall the following packages: {0}?</value>
   </data>
-  <data name="ProvideFeedbackButton" xml:space="preserve">
-    <value> Provide Feedback</value>
-  </data>
   <data name="PreviewText" xml:space="preserve">
     <value> This Feature is in Preview! </value>
   </data>
-  <data name="ProvideFeedbackError" xml:space="preserve">
-    <value>Could not re-direct to the Dynamo forum page for feedback:</value>
-  </data>
   <data name="PackageHostDependencyTooltip" xml:space="preserve">
-    <value>This package requires the specified host(s) to run.</value>
+    <value>This package contains node(s) that depend on applications outside Dynamo. To fully utilize node(s) in this package, you will need to have these external applications installed.</value>
   </data>
   <data name="PackageHostDependencyFilter" xml:space="preserve">
-    <value>Filter packages by Dynamo host application.</value>
+    <value>Filter packages that depend on applications outside Dynamo. This feature currently can only filter packages which have been marked manually by package authors during publish.</value>
   </data>
   <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
-    <value>Packages requires the specified host to run.</value>
+    <value>Packages contain node(s)  that depend on specified application outside Dynamo.</value>
   </data>
   <data name="MessageUninstallSamePackage" xml:space="preserve">
     <value>"The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?"</value>
   </data>
+  <data name="MessagePackageNotFound" xml:space="preserve">
+    <value>{0} was not found and could not be downloaded.</value>
+  </data>
+  <data name="MessagePackageVersionNotFound" xml:space="preserve">
+    <value>Version {0} of {1} could not be found.</value>
+  </data>
   <data name="PublishPackageViewPackageHostDependency" xml:space="preserve">
-    <value>Host Dependency (optional)</value>
+    <value>External Dependency (optional)</value>
   </data>
   <data name="PublishPackageViewPackageHostDependencyTooltip" xml:space="preserve">
-    <value>One or multiple host dependencies help to specify this package contains nodes for these integrations, and as a result will only run in these hosts.</value>
+    <value>An indication of what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. Users of your package will need to install these applications to fully utilize your package.</value>
+  </data>
+  <data name="InfoBubbleDocumentationLinkText" xml:space="preserve">
+    <value>Read more...</value>
+  </data>
+  <data name="PackageSearchViewFilterByButton" xml:space="preserve">
+    <value>Filter by</value>
+  </data>
+  <data name="DynamoViewSettingMenuShowDataReportingDialogTooltip" xml:space="preserve">
+    <value>Display the dialog for user to pick agreement on data collecting.</value>
+  </data>
+  <data name="CrashPromptGithubNewIssueTitle" xml:space="preserve">
+    <value>Crash report from Dynamo {0}</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="vsDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="PreferencesViewShowCodeBlockNodeLineNumber" xml:space="preserve">
+    <value>Show CodeBlockNode Line Numbers</value>
+    <comment>Preferences | Visual Settings | Display Settings | Show CodeBlockNode Line Numbers</comment>
+  </data>
+  <data name="PreferencesViewIsIronPythonDialogDisabled" xml:space="preserve">
+    <value>Hide IronPython alerts</value>
+    <comment>Preferences | Features | Python | Hide IronPython Alerts</comment>
+  </data>
+  <data name="MessageFailedToDownloadPackageVersion" xml:space="preserve">
+    <value>Failed to download version {0} of package with id: {1}.  Please try again and report the package if you continue to have problems.</value>
+    <comment>Message box content. {0} = 1.2.3, {1} = 57d576e8f615e7725800001d</comment>
+  </data>
+  <data name="NodeTooltipDescription" xml:space="preserve">
+    <value>Description: </value>
+  </data>
+  <data name="NodeTooltipOriginalName" xml:space="preserve">
+    <value>Original node name: </value>
+  </data>
+  <data name="RenderingMemoryOutageDescription" xml:space="preserve">
+    <value>Please check if you intended to render this amount of geometry, and consider turning off the preview of other nodes within your graph, lowering the amount of Geometry you wish to render, or turning down the render precision.</value>
+  </data>
+  <data name="RenderingMemoryOutageSummary" xml:space="preserve">
+    <value>Dynamo has run out of memory trying to render your geometry. The geometry preview has been disabled.</value>
+  </data>
+  <data name="vsDynamoPointLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoPointLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="psDynamoLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="psDynamoPoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoPoint;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="PreferencesViewShowWhitespaceInPythonEditor" xml:space="preserve">
+    <value>Show Whitespace in Python Editor</value>
+    <comment>Preferences | Features | Python | Show Whitspace Characters in Python editor</comment>
+  </data>
+  <data name="PreferencesViewDefaultPythonEngine" xml:space="preserve">
+    <value>Default Python Engine</value>
+    <comment>Preferences | Features | Python | Default Python Engine</comment>
+  </data>
+  <data name="PreferencesViewPackageDownloadDirectory" xml:space="preserve">
+    <value>New Package Download Directory</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
+  </data>
+  <data name="PreferencesPackageDownloadDirectoryTooltip" xml:space="preserve">
+    <value>Choose a package path from this list to download new packages to.</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
+  </data>
+  <data name="DefaultPythonEngineNone" xml:space="preserve">
+    <value>Use System Default</value>
+    <comment>Preferences | Features | Python | Default Python Engine</comment>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoComplete" xml:space="preserve">
+    <value>Node Autocomplete</value>
+    <comment>Preferences | Features | Experimental | Enable Node Auto Complete</comment>
+  </data>
+  <data name="ErrorLoadingIcon" xml:space="preserve">
+    <value>An error occurred when loading the application icon: {0}</value>
+    <comment>{0} = detailed error message</comment>
+  </data>
+  <data name="PublishPackageSelectNodeLibraries" xml:space="preserve">
+    <value>Select Node Libraries</value>
+  </data>
+  <data name="PublishPackageMoreInfoFile" xml:space="preserve">
+    <value>DynamoCoreWpf;PublishPackageDocumentation.html</value>
+  </data>
+  <data name="DynamoViewDynamoMenu" xml:space="preserve">
+    <value>_Dynamo</value>
+    <comment>Dynamo menu</comment>
+  </data>
+  <data name="DynamoViewDynamoMenuAbout" xml:space="preserve">
+    <value>_About</value>
+    <comment>Dynamo menu | Display About dialog</comment>
+  </data>
+  <data name="DynamoViewDynamoMenuPreferences" xml:space="preserve">
+    <value>_Preferences...</value>
+    <comment>Dynamo menu | Preferences</comment>
+  </data>
+  <data name="DynamoViewFileMenuExport" xml:space="preserve">
+    <value>_Export</value>
+    <comment>File menu | Export</comment>
+  </data>
+  <data name="PublishPackageDocTooltipText" xml:space="preserve">
+    <value>Learn More about publishing a package</value>
+  </data>
+  <data name="PreferencesViewFeaturesTab" xml:space="preserve">
+    <value>Features</value>
+  </data>
+  <data name="PreferencesViewGeneralTab" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="PreferencesViewTitle" xml:space="preserve">
+    <value>Preferences</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsTab" xml:space="preserve">
+    <value>Visual Settings</value>
+  </data>
+  <data name="PreferencesWindowLanguages" xml:space="preserve">
+    <value>English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional</value>
+  </data>
+  <data name="PreferencesViewFontSizeLabel" xml:space="preserve">
+    <value>Node Font Size</value>
+  </data>
+  <data name="PreferencesViewLanguageLabel" xml:space="preserve">
+    <value>Language</value>
+    <comment>Label used in the general tab</comment>
+  </data>
+  <data name="PreferencesViewRunSettingsLabel" xml:space="preserve">
+    <value>Default Run Settings</value>
+    <comment>Label used in the general tab</comment>
+  </data>
+  <data name="DynamoViewExtensionsMenu" xml:space="preserve">
+    <value>_Extensions</value>
+    <comment>Extensions menu</comment>
+  </data>
+  <data name="ConnectorContextMenuHeaderBreakConnections" xml:space="preserve">
+    <value>Break Connections</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
+    <value>Pin Wire</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderSelectConnected" xml:space="preserve">
+    <value>Select Connected</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderUnpinConnector" xml:space="preserve">
+    <value>Unpin Wire</value>
+  </data>
+  <data name="PreferencesViewPython" xml:space="preserve">
+    <value>Python</value>
+    <comment>Preferences | Features | Python</comment>
+  </data>
+  <data name="PreferencesViewRequiresRelaunchOfDynamo" xml:space="preserve">
+    <value>Requires relaunch of Dynamo</value>
+    <comment>Preferences | Features | Python | Requires relaunch of Dynamo</comment>
+  </data>
+  <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
+    <value>{1} has dependencies that conflict with the following Built-In packages : {2}. {0} cannot override packages in the Built-In Packages location.</value>
+  </data>
+  <data name="MessageSamePackageInBuiltinPackages" xml:space="preserve">
+    <value>The package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location.</value>
+  </data>
+  <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
+    <value>A different version of the package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location.</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
+    <value>Geometry Scaling</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
+    <value>Group Styles</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingsRenderPrecision" xml:space="preserve">
+    <value>Render Precision</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewStyleWarning" xml:space="preserve">
+    <value>Style name already in use</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsDisplaySettings" xml:space="preserve">
+    <value>Display Settings</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingShowEdges" xml:space="preserve">
+    <value>Show Edges</value>
+    <comment>Show Edges</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingsIsolateSelectedGeo" xml:space="preserve">
+    <value>Isolate Selected Geometry</value>
+    <comment>Toogle Button Content</comment>
+  </data>
+  <data name="PackagePathViewModel_BuiltInPackages" xml:space="preserve">
+    <value>Dynamo Built-In Packages</value>
+  </data>
+  <data name="PreferencesViewSavedChangesLabel" xml:space="preserve">
+    <value>All changes saved automatically</value>
+  </data>
+  <data name="PreferencesViewSavedChangesTooltip" xml:space="preserve">
+    <value>Last saved:</value>
+  </data>
+  <data name="NodeAutocompleteDocumentationUriString" xml:space="preserve">
+    <value>DynamoCoreWpf;NodeAutocompleteDocumentation.html</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteTooltipText" xml:space="preserve">
+    <value>Learn more about Node Autocomplete feature.</value>
+  </data>
+  <data name="AddStyleButton" xml:space="preserve">
+    <value>Add Style</value>
+  </data>
+  <data name="ResetCPythonButtonText" xml:space="preserve">
+    <value>Reset CPython</value>
+  </data>
+  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
+    <value>Resets CPython environment by reloading modules.</value>
+  </data>
+  <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
+    <value>Cancel and Show Issues</value>
+  </data>
+  <data name="GraphIssuesOnSave_Description" xml:space="preserve">
+    <value>There are unresolved issues with the graph type. If this graph is designed to be used outside of Dynamo, resolve all issues and save the graph again.</value>
+  </data>
+  <data name="GraphIssuesOnSave_ProceedBtn" xml:space="preserve">
+    <value>Save with Issues</value>
+  </data>
+  <data name="GraphIssuesOnSave_Summary" xml:space="preserve">
+    <value>You are trying to save a graph with unresolved issues</value>
+  </data>
+  <data name="GraphIssuesOnSave_Title" xml:space="preserve">
+    <value>Graph Type Issues found</value>
+  </data>
+  <data name="PackagePathsExpanderName" xml:space="preserve">
+    <value>Node and Package Paths</value>
+  </data>
+  <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
+  <data name="PackagePathAddPathButtonName" xml:space="preserve">
+    <value>Add Paths</value>
+  </data>
+  <data name="PackagePathPreferencesTitle" xml:space="preserve">
+    <value>Package/Library Search Paths</value>
+  </data>
+  <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
+    <value>Switchable only when the current workspace is in Manual run mode.</value>
+  </data>
+  <data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
+    <value>Issues found</value>
+  </data>
+  <data name="ContextSelectConnectedDownstream" xml:space="preserve">
+    <value>Downstream</value>
+  </data>
+  <data name="ContextSelectConnectedHeader" xml:space="preserve">
+    <value>Select Connected</value>
+  </data>
+  <data name="ContextSelectConnectedUpstream" xml:space="preserve">
+    <value>Upstream</value>
+  </data>
+  <data name="ContextSelectConnectedUpstreamDownstream" xml:space="preserve">
+    <value>Both</value>
+  </data>
+  <data name="NodeRenamedLabel" xml:space="preserve">
+    <value>Renamed</value>
+  </data>
+  <data name="PackagePathProtected" xml:space="preserve">
+    <value>This path is built-in and cannot be modified.</value>
+  </data>
+  <data name="PackagePathUpdatePathTooltip" xml:space="preserve">
+    <value>Edit Path</value>
+  </data>
+  <data name="GetStartedGuide" xml:space="preserve">
+    <value>Get Started</value>
+    <comment>Get Started Dynamo Tour</comment>
+  </data>
+  <data name="InteractiveGuides" xml:space="preserve">
+    <value>Interactive Guides</value>
+    <comment>Dynamo Guided Tours</comment>
+  </data>
+  <data name="GetStartedGuideLibraryText" xml:space="preserve">
+    <value>The library contains all default functions #(nodes)=https://www.dynamoprimer.com/03_Anatomy-of-a-Dynamo-Definition/3-1_dynamo_nodes.html of Dynamo, as well as custom nodes you may have loaded. \n\nTo find a node, search the library or browse its categories.</value>
+  </data>
+  <data name="GetStartedGuideLibraryTitle" xml:space="preserve">
+    <value>Library</value>
+  </data>
+  <data name="GetStartedGuidePreferencesText" xml:space="preserve">
+    <value>Use Preferences to customize your Dynamo experience. \n\nYou can change language and time zone settings, adjust the visual style of your workspace, and more.</value>
+  </data>
+  <data name="GetStartedGuidePreferencesTitle" xml:space="preserve">
+    <value>Preferences</value>
+  </data>
+  <data name="GetStartedGuideResourcesText" xml:space="preserve">
+    <value>Use the Help menu to access tools and resources to help you get started. \n\nYou can explore sample scripts, browse the Dynamo Dictionary, find other guides, and more.</value>
+  </data>
+  <data name="GetStartedGuideResourcesTitle" xml:space="preserve">
+    <value>Resources</value>
+  </data>
+  <data name="GetStartedGuideRunStatusBarText" xml:space="preserve">
+    <value>Use the Run Status Bar to run a Dynamo graph (a script that contains the logic or algorithm). \n\nYou can select your preferred run type: -Automatic: The graph runs each time you make a change.- -Manual: The graph runs only when you click Run-</value>
+  </data>
+  <data name="GetStartedGuideRunStatusBarTitle" xml:space="preserve">
+    <value>Run Status Bar</value>
+  </data>
+  <data name="GetStartedGuideToolbarText" xml:space="preserve">
+    <value>From the toolbar, you can: -Open a new workspace- -Open a saved Dynamo file- -Save your current Dynamo file- -Undo or redo changes-</value>
+  </data>
+  <data name="GetStartedGuideToolbarTitle" xml:space="preserve">
+    <value>Toolbar</value>
+  </data>
+  <data name="GetStartedGuideWelcomeText" xml:space="preserve">
+    <value>Start your visual programming journey with this short guide. \n\nHere you'll learn some basics about the Dynamo interface and features.</value>
+  </data>
+  <data name="GetStartedGuideWelcomeTitle" xml:space="preserve">
+    <value>Welcome To Dynamo</value>
+  </data>
+  <data name="ContextMenuGroups" xml:space="preserve">
+    <value>Groups</value>
+    <comment>Context menu for group-based operations</comment>
+  </data>
+  <data name="ContextPinToNode" xml:space="preserve">
+    <value>Pin to node</value>
+  </data>
+  <data name="GetStartedGuideRatingTextTitle" xml:space="preserve">
+    <value>Rate this guide</value>
+  </data>
+  <data name="GetStartedGuideSurveyText" xml:space="preserve">
+    <value>Learn more about Dynamo in the #online help=https://primer.dynamobim.org/</value>
+  </data>
+  <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
+    <value>Finished</value>
+  </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>&lt;Double click here to edit group description&gt;</value>
+  </data>
+  <data name="GroupNameDefaultText" xml:space="preserve">
+    <value>&lt;Double click here to edit group title&gt;</value>
+  </data>
+  <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
+    <value>Add group to group</value>
+  </data>
+  <data name="BreakConnectionPopupMenuItem" xml:space="preserve">
+    <value>Break Connection</value>
+  </data>
+  <data name="HideWiresPopupMenuItem" xml:space="preserve">
+    <value>Hide Wires</value>
+  </data>
+  <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
+    <value>Unhide Wires</value>
+  </data>
+  <data name="ExitTourWindowContent" xml:space="preserve">
+    <value>You can return to this guide later from the Help menu.</value>
+  </data>
+  <data name="PackageStatePendingUnload" xml:space="preserve">
+    <value>Scheduled to be unloaded</value>
+  </data>
+  <data name="PackageStateError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="PackageStateLoaded" xml:space="preserve">
+    <value>Loaded</value>
+  </data>
+  <data name="PackageStateUnloaded" xml:space="preserve">
+    <value>Unloaded</value>
+  </data>
+  <data name="PackageStateScheduledForDeletion" xml:space="preserve">
+    <value>Scheduled for Delete</value>
+  </data>
+  <data name="PackageStateScheduledForUnload" xml:space="preserve">
+    <value>Scheduled for Unload</value>
+  </data>
+  <data name="PackageStateErrorTooltip" xml:space="preserve">
+    <value>Error.
+This package has not been loaded due to the following error:
+{0}.</value>
+  </data>
+  <data name="PackageStateLoadedTooltip" xml:space="preserve">
+    <value>Loaded.
+This package is loaded and ready to be used.</value>
+  </data>
+  <data name="PackageStateUnloadedTooltip" xml:space="preserve">
+    <value>Unloaded.
+This package has been marked as unloaded.</value>
+  </data>
+  <data name="PackageStateScheduledForDeletionTooltip" xml:space="preserve">
+    <value>Scheduled for Delete.
+This package will be deleted after the next Dynamo restart.</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageTooltip" xml:space="preserve">
+    <value>Delete this package from the Dynamo package locations. Once deleted, it will not be loaded into Dynamo anymore until it is re-installed</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageText" xml:space="preserve">
+    <value>Unload</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageTooltip" xml:space="preserve">
+    <value>Unload this package so that it will not be loaded into Dynamo. The package will not be deleted from the Dynamo package locations</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageText" xml:space="preserve">
+    <value>Cancel Delete</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageTooltip" xml:space="preserve">
+    <value>Remove the scheduled delete status</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageText" xml:space="preserve">
+    <value>Cancel Unload</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
+    <value>Remove the scheduled unload status</value>
+  </data>
+  <data name="PackageViewContextMenuLoadText" xml:space="preserve">
+    <value>Load</value>
+  </data>
+  <data name="PackageViewContextMenuLoadTooltip" xml:space="preserve">
+    <value>Load this package into Dynamo. Other packages with the same name will be automatically deleted</value>
+  </data>
+  <data name="CannotLoadPackageMessageBoxTitle" xml:space="preserve">
+    <value>Cannot Load Package</value>
+  </data>
+  <data name="MessageLoadBuiltInPackage" xml:space="preserve">
+    <value>To load the built-in package {1}, {0} needs to first delete any conflicting packages.
+
+Delete the following packages: {2}?</value>
+  </data>
+  <data name="MessageLoadBuiltInWithRestartPackage" xml:space="preserve">
+    <value>To load the built-in package {1}, {0} needs to first delete any conflicting packages.
+Restart {0} to complete the deletion, then try and load the built-in pacakge again.
+
+Delete the following packages: {2}?
+    </value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Description" xml:space="preserve">
+    <value>The selected save location path is too long. Please change the save location and try again.</value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Summary" xml:space="preserve">
+    <value>You are trying to save a graph with a path that is too long.</value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Title" xml:space="preserve">
+    <value>Save Path Issues Found</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnload" xml:space="preserve">
+    <value>{0} and its host application must restart before unload takes effect.</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnloadTitle" xml:space="preserve">
+    <value>Unloading Package</value>
+  </data>
+  <data name="MessageFailedToUnload" xml:space="preserve">
+    <value>{0} failed to unload the package.</value>
+  </data>
+  <data name="UnloadFailureMessageBoxTitle" xml:space="preserve">
+    <value>Unload Failure</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
+    <value>_Show Tooltip</value>
+  </data>
+  <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
+    <value>Dismissed Alerts</value>
+  </data>
+  <data name="ContextMenu" xml:space="preserve">
+    <value>Node Options</value>
+    <comment>Node context menu</comment>
+  </data>
+  <data name="PackageFilter_Name_All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
+    <value>Show Preview Bubbles</value>
+    <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
   </data>
 </root>

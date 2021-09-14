@@ -46,19 +46,19 @@ namespace Dynamo.PackageManager.UI
             packageManager.PackageLoader.PackgeLoaded -= packageLoadedHandler;
         }
 
-        public void Loaded(ViewLoadedParams p)
+        public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-           
+            // Do nothing for now
         }
 
-        public void Shutdown()
+            public void Shutdown()
         {
-            Dispose();
+            // Do nothing for now
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(ViewStartupParams viewStartupParams)
         {
-            var packageManager = p.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            var packageManager = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             this.packageManager = packageManager;
 
             //when this extension is started up we should look for all packages,
@@ -69,11 +69,12 @@ namespace Dynamo.PackageManager.UI
                 //attach event which we can use to watch when new packages are fully loaded.
                 packageManager.PackageLoader.PackgeLoaded += packageLoadedHandler;
                 var packagesToCheck = packageManager.PackageLoader.LocalPackages;
-                requestLoadViewExtensionsForLoadedPackages(packagesToCheck);
+                RequestLoadViewExtensionsForLoadedPackages(packagesToCheck);
             }
         }
 
-        private void requestLoadViewExtensionsForLoadedPackages(IEnumerable<Package> packages)
+
+        private void RequestLoadViewExtensionsForLoadedPackages(IEnumerable<Package> packages)
         {
             foreach (var package in packages)
             {
@@ -97,7 +98,7 @@ namespace Dynamo.PackageManager.UI
         private void packageLoadedHandler(Package package)
         {
             //when a package is loaded with packageManager, this extension should inspect it for viewExtensions.
-            this.requestLoadViewExtensionsForLoadedPackages(new List<Package>() { package });
+            this.RequestLoadViewExtensionsForLoadedPackages(new List<Package>() { package });
         }
     }
 }

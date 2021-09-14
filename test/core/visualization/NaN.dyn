@@ -1,0 +1,416 @@
+{
+  "Uuid": "e52798d9-fd21-4278-84e4-bf47f48c4206",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "NaN",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.CustomLabel.ByCoordinatesAndString@double,double,double,string",
+      "Id": "67f883f8278d4dd7a3dfde19cdee1139",
+      "Inputs": [
+        {
+          "Id": "cad6716a6f2d4b3b8b337c386de18846",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "886dcf93078d4b62b507a0ad54a87f02",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f676ae87e74d4c2198aecb95211157b3",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9291de3fd80946ff8dfe2c5c053a61f8",
+          "Name": "label",
+          "Description": "string\nDefault value : \"EMPTY_LABEL\"",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ed2183b535b04cf0b7a0fbef28a3fa3e",
+          "Name": "CustomLabel",
+          "Description": "CustomLabel",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "CustomLabel.ByCoordinatesAndString (x: double = 0, y: double = 0, z: double = 0, label: string = \"EMPTY_LABEL\"): CustomLabel"
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "from System import Double\r\nOUT = Double.NaN",
+      "Engine": "IronPython2",
+      "AvailableEngines": [
+        1,
+        2,
+        1,
+        2,
+        1,
+        2,
+        1,
+        2,
+        1,
+        2
+      ],
+      "VariableInputPorts": true,
+      "Id": "68b4f121d26e4d8aac6d92b6b95f38d4",
+      "Inputs": [
+        {
+          "Id": "b463a208c34d4751a2904b363faf984b",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fc27cb68e4834a769b75d50610ff8c8d",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "from System import Double\r\nOUT = Double.NegativeInfinity",
+      "Engine": "IronPython2",
+      "AvailableEngines": [
+        1,
+        2,
+        1,
+        2,
+        1,
+        2
+      ],
+      "VariableInputPorts": true,
+      "Id": "6def54107e8e4fb98bedb9dd20e01f57",
+      "Inputs": [
+        {
+          "Id": "57800d97a7aa4803a9f9e3786fc7e0b4",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cd66bbb3eaa14a66ba1f4a58d7157e2c",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "from System import Double\r\nOUT = Double.PositiveInfinity",
+      "Engine": "IronPython2",
+      "AvailableEngines": [
+        1,
+        2,
+        1,
+        2,
+        1,
+        2
+      ],
+      "VariableInputPorts": true,
+      "Id": "e2991acae599405cb924058119feb769",
+      "Inputs": [
+        {
+          "Id": "bcc74eb5a4a146568f843a05489fdd9a",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e49405c84619415e82f4b39f29dd6ac3",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.CustomLabel.ByCoordinatesAndString@double,double,double,string",
+      "Id": "eb3747fac9cd496c9418112f3b2976cc",
+      "Inputs": [
+        {
+          "Id": "6e05f6fec466451ba8291efc6f50ff9a",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4b2c5d7095d54d588ca102ddb846b5c1",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "840bc97704c941b8a31c32d7f0c3f5ef",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d01f955f64d54339a38306d5ca829f59",
+          "Name": "label",
+          "Description": "string\nDefault value : \"EMPTY_LABEL\"",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "531941be01374b3bad56f5fd3e62f9d7",
+          "Name": "CustomLabel",
+          "Description": "CustomLabel",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "CustomLabel.ByCoordinatesAndString (x: double = 0, y: double = 0, z: double = 0, label: string = \"EMPTY_LABEL\"): CustomLabel"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.CustomLabel.ByCoordinatesAndString@double,double,double,string",
+      "Id": "62cdc0421ef14b1cb78e56b2d1560422",
+      "Inputs": [
+        {
+          "Id": "f2404f56420641f0b4d7a5da0c1c1c3c",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d5b9481cfc514be29f37033b1f2af5ac",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "00b3dd38af4c450bb58f7aa1bebbf2f3",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b29022a1d1194ac6a095230e21326f44",
+          "Name": "label",
+          "Description": "string\nDefault value : \"EMPTY_LABEL\"",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cff3c28ec8474acbbe6696b7c272391e",
+          "Name": "CustomLabel",
+          "Description": "CustomLabel",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "CustomLabel.ByCoordinatesAndString (x: double = 0, y: double = 0, z: double = 0, label: string = \"EMPTY_LABEL\"): CustomLabel"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "fc27cb68e4834a769b75d50610ff8c8d",
+      "End": "cad6716a6f2d4b3b8b337c386de18846",
+      "Id": "b96d5d34a5074ef78721579aa0131804"
+    },
+    {
+      "Start": "cd66bbb3eaa14a66ba1f4a58d7157e2c",
+      "End": "4b2c5d7095d54d588ca102ddb846b5c1",
+      "Id": "2f952cfb36ef4e18810d51774a966b19"
+    },
+    {
+      "Start": "e49405c84619415e82f4b39f29dd6ac3",
+      "End": "00b3dd38af4c450bb58f7aa1bebbf2f3",
+      "Id": "0772369f78ac4872bffa27d545571e5f"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.9.0.2326",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "NaN",
+        "Id": "67f883f8278d4dd7a3dfde19cdee1139",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 287.66485765699588,
+        "Y": 23.713574720976112
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "68b4f121d26e4d8aac6d92b6b95f38d4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 13.290390180267991,
+        "Y": 24.134411279120116
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "6def54107e8e4fb98bedb9dd20e01f57",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 18.016731162880234,
+        "Y": 286.57314584297984
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "e2991acae599405cb924058119feb769",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 18.608660866372162,
+        "Y": 551.31474156381137
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "NegativeInfinity",
+        "Id": "eb3747fac9cd496c9418112f3b2976cc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 287.59618988966849,
+        "Y": 261.28305094764374
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "PositiveInfinity",
+        "Id": "62cdc0421ef14b1cb78e56b2d1560422",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 285.94835868048472,
+        "Y": 497.99706144757135
+      }
+    ],
+    "Annotations": [],
+    "X": 64.734629178866214,
+    "Y": 64.682278435914981,
+    "Zoom": 0.55271695853825575
+  }
+}

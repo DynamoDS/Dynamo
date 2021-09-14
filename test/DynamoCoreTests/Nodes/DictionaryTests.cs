@@ -58,5 +58,25 @@ namespace Dynamo.Tests.Nodes
             AssertPreviewValue("756519ff963e4353a68535047fd50756", validationData1);
             AssertPreviewValue("48a84d7d9af14873a76a9e76df4f6058", validationData1);
         }
+
+        [Test]
+        public void DictionaryToString()
+        {
+            var dict = Dictionary.ByKeysValues(new string[] { "A", "B", "C", "D" }, new object[] { 1, 2, 3, 4 });
+            var dictAsString = dict.ToString();
+            // Entries can be in any order, so this is a safe way to assert the result.
+            StringAssert.Contains("A:1", dictAsString);
+            StringAssert.Contains("B:2", dictAsString);
+            StringAssert.Contains("C:3", dictAsString);
+            StringAssert.Contains("D:4", dictAsString);
+            StringAssert.IsMatch(@"\{\w:\d,\w:\d,\w:\d,\w:\d\}", dictAsString);
+        }
+
+        [Test]
+        public void EmptyDictionaryToString()
+        {
+            var dict = Dictionary.ByKeysValues(new string[0], new object[0]);
+            Assert.AreEqual(dict.ToString(), "{}");
+        }
     }
 }

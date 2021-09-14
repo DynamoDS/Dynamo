@@ -113,5 +113,13 @@ namespace Dynamo.Engine.Profiling
 
             nodeProfilingData = remainingNodes;
         }
+
+        internal void Reset()
+        {
+            foreach(var node in nodeProfilingData.Values)
+            {
+                node.Reset();
+            }
+        }
     }
 }

@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using Autodesk.DesignScript.Geometry;
-
-using Dynamo.Models;
-using Dynamo.Utilities;
-using DynamoConversions;
-
-using GeometryUI.Properties;
-
-using ProtoCore.AST.AssociativeAST;
 using System.Xml;
-using System.Globalization;
+using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Dynamo.Utilities;
+using DynamoConversions;
+using GeometryUI.Properties;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 
 namespace GeometryUI
 {
@@ -22,6 +16,7 @@ namespace GeometryUI
     [NodeName("ExportToSAT")]
     [NodeDescription("ExportToSATDescripiton", typeof(GeometryUI.Properties.Resources))]
     [NodeSearchTags("ExportWithUnitsSearchTags", typeof(GeometryUI.Properties.Resources))]
+    [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     public class ExportWithUnits : NodeModel
     {

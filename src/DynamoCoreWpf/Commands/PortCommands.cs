@@ -4,7 +4,8 @@ namespace Dynamo.ViewModels
 {
     public partial class PortViewModel
     {
-        private DelegateCommand _connectCommand;
+        private DelegateCommand connectCommand;
+        private DelegateCommand autoCompleteCommand;
         private DelegateCommand portMouseEnterCommand;
         private DelegateCommand portMouseLeaveCommand;
         private DelegateCommand portMouseLeftButtonCommand;
@@ -15,10 +16,24 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if(_connectCommand == null)
-                    _connectCommand = new DelegateCommand(Connect, CanConnect);
+                if(connectCommand == null)
+                    connectCommand = new DelegateCommand(Connect, CanConnect);
 
-                return _connectCommand;
+                return connectCommand;
+            }
+        }
+
+        /// <summary>
+        /// Command to trigger Node Auto Complete from node port interaction
+        /// </summary>
+        public DelegateCommand NodeAutoCompleteCommand
+        {
+            get
+            {
+                if (autoCompleteCommand == null)
+                    autoCompleteCommand = new DelegateCommand(AutoComplete, CanAutoComplete);
+
+                return autoCompleteCommand;
             }
         }
 

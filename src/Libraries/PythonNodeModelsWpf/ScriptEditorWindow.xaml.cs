@@ -3,15 +3,15 @@ using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.Controls;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Python;
 using Dynamo.ViewModels;
-using Dynamo.Logging;
+using Dynamo.Wpf.Windows;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
-using Dynamo.Wpf.Windows;
 
 namespace PythonNodeModelsWpf
 {
@@ -22,39 +22,54 @@ namespace PythonNodeModelsWpf
     {
         private string propertyName = string.Empty;
         private Guid boundNodeId = Guid.Empty;
+        private Guid boundWorkspaceId = Guid.Empty;
         private CompletionWindow completionWindow = null;
-        private readonly IronPythonCompletionProvider completionProvider;
+        private readonly SharedCompletionProvider completionProvider;
         private readonly DynamoViewModel dynamoViewModel;
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
         private string originalScript;
+        public PythonEngineVersion CachedEngine { get; set; }
 
         public ScriptEditorWindow(
-            DynamoViewModel dynamoViewModel, 
-            PythonNode nodeModel, 
+            DynamoViewModel dynamoViewModel,
+            PythonNode nodeModel,
             NodeView nodeView,
             ref ModelessChildWindow.WindowRect windowRect
             ) : base(nodeView, ref windowRect)
         {
+            this.Closed += OnScriptEditorWindowClosed;
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
-            completionProvider = new IronPythonCompletionProvider(dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
+            completionProvider = new SharedCompletionProvider(nodeModel.Engine, dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
+            nodeModel.CodeMigrated += OnNodeModelCodeMigrated;
 
             InitializeComponent();
+            this.DataContext = this;
+
+            EngineSelectorComboBox.Visibility = Visibility.Visible;
 
             Dynamo.Logging.Analytics.TrackScreenView("Python");
         }
 
-        internal void Initialize(Guid nodeGuid, string propName, string propValue)
+        internal void Initialize(Guid workspaceGuid, Guid nodeGuid, string propName, string propValue)
         {
+            boundWorkspaceId = workspaceGuid;
             boundNodeId = nodeGuid;
             propertyName = propName;
 
             // Register auto-completion callbacks
             editText.TextArea.TextEntering += OnTextAreaTextEntering;
             editText.TextArea.TextEntered += OnTextAreaTextEntered;
+
+            // Initialize editor with global settings for show/hide tabs and spaces
+            editText.Options = dynamoViewModel.PythonScriptEditorTextOptions.GetTextOptions();
+
+            // Set options to reflect global settings when python script editor in initialized for the first time.
+            editText.Options.ShowSpaces = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
+            editText.Options.ShowTabs = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
 
             const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
             var elem = GetType().Assembly.GetManifestResourceStream(
@@ -65,6 +80,8 @@ namespace PythonNodeModelsWpf
 
             editText.Text = propValue;
             originalScript = propValue;
+            CachedEngine = nodeModel.Engine;
+            EngineSelectorComboBox.SelectedItem = CachedEngine;
         }
 
         #region Autocomplete Event Handlers
@@ -124,26 +141,42 @@ namespace PythonNodeModelsWpf
 
         #region Private Event Handlers
 
+        private void OnNodeModelCodeMigrated(object sender, PythonCodeMigrationEventArgs e)
+        {
+            originalScript = e.OldCode;
+            editText.Text = e.NewCode;
+            if (CachedEngine != PythonEngineVersion.CPython3)
+            {
+                CachedEngine = PythonEngineVersion.CPython3;
+                EngineSelectorComboBox.SelectedItem = CachedEngine;
+            }
+        }
+
         private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
+            originalScript = editText.Text;
+            nodeModel.Engine = CachedEngine;
             UpdateScript(editText.Text);
-            this.Close();
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Save,
+                Dynamo.Logging.Categories.PythonOperations);
         }
 
         private void OnRevertClicked(object sender, RoutedEventArgs e)
         {
             if (nodeWasModified)
             {
+                editText.Text = originalScript;
+                CachedEngine = nodeModel.Engine;
+                EngineSelectorComboBox.SelectedItem = CachedEngine;
                 UpdateScript(originalScript);
             }
-            
-            this.Close();
         }
 
         private void UpdateScript(string scriptText)
         {
             var command = new DynamoModel.UpdateModelValueCommand(
-                System.Guid.Empty, boundNodeId, propertyName, scriptText);
+                boundWorkspaceId, boundNodeId, propertyName, scriptText);
 
             dynamoViewModel.ExecuteCommand(command);
             this.Focus();
@@ -158,10 +191,51 @@ namespace PythonNodeModelsWpf
             {
                 dynamoViewModel.HomeSpace.Run();
             }
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Run,
+                Dynamo.Logging.Categories.PythonOperations);
+        }
+
+        private void OnMigrationAssistantClicked(object sender, RoutedEventArgs e)
+        {
+            if (nodeModel == null)
+                throw new NullReferenceException(nameof(nodeModel));
+
+            UpdateScript(editText.Text);
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Migration,
+                Dynamo.Logging.Categories.PythonOperations);
+            nodeModel.RequestCodeMigration(e);
+        }
+
+        private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
+        {
+            dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
+        }
+
+        private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (CachedEngine != nodeModel.Engine)
+            {
+                nodeWasModified = true;
+                // Cover what switch did user make. Only track when the new engine option is different with the previous one.
+                Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.Switch,
+                    Dynamo.Logging.Categories.PythonOperations,
+                    CachedEngine.ToString());
+            }
+            editText.Options.ConvertTabsToSpaces = CachedEngine != PythonEngineVersion.IronPython2;
+        }
+
+        private void OnScriptEditorWindowClosed(object sender, EventArgs e)
+        {
+            nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
+            this.Closed -= OnScriptEditorWindowClosed;
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Close,
+                Dynamo.Logging.Categories.PythonOperations);
         }
 
         #endregion
-
-
     }
 }

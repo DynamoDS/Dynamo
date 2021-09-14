@@ -612,6 +612,36 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestShortestQualifiedNameReplacerWithClassConflicts()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\ShortenNodeNameWithClassConflicts.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var asts = result.AstNodes.ToList();
+            Assert.AreEqual(6, asts.Count);
+
+            Assert.IsTrue(asts.Any(x => (x as BinaryExpressionNode).RightNode.ToString() == "Revit.Elements.Parameter.Parameter()"));
+            Assert.IsTrue(asts.Any(x => (x as BinaryExpressionNode).RightNode.ToString() == "RevitFamily.Parameter.Parameter()"));
+            Assert.IsTrue(asts.Any(x => (x as BinaryExpressionNode).RightNode.ToString() == "archilab.Parameter.Parameter()"));
+            Assert.IsTrue(asts.Any(x => (x as BinaryExpressionNode).RightNode.ToString() == "RevitProject.Parameter.Parameter()"));
+            Assert.IsTrue(asts.Any(x => (x as BinaryExpressionNode).RightNode.ToString() == "Revit.Elements.Category.Category()"));
+            Assert.IsTrue(asts.Any(x => (x as BinaryExpressionNode).RightNode.ToString() == "Rhythm.Category.Category()"));
+        }
+
+        [Test]
         public void TestShortestQualifiedNameReplacerTypedIdentiferFFITarget()
         {
             string libraryPath = "FFITarget.dll";
@@ -744,6 +774,33 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestShortestQualifiedNameReplacerWithStaticPropertyInDefaultArgument()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\ShortestQualifiedNameReplacerWithStaticPropertyInDefaultArgument.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var expr1 = result.AstNodes.First() as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr1);
+            Assert.AreEqual(
+                "ElementResolverTarget.StaticMethod2(ElementResolverTarget.StaticProperty.StaticProperty2.Method(ElementResolverTarget.Create()))",
+                expr1.RightNode.ToString());
+        }
+
+        [Test]
         public void TestShortestQualifiedNameReplacerWithStaticProperty()
         {
             string libraryPath = "FFITarget.dll";
@@ -766,10 +823,107 @@ namespace Dynamo.Tests
 
             Assert.IsNotNull(expr1);
 
-            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
-            // node to code generates the shortest unique name, which in this case will be
-            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
             Assert.AreEqual("ElementResolverTarget.StaticProperty", expr1.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestShortestQualifiedNameReplacerWithFFITargetListClass()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\FFITarget.DSCore.List.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var asts = result.AstNodes.ToList();
+            Assert.AreEqual(2, asts.Count);
+
+            var expr = asts[1] as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr);
+
+            Assert.AreEqual("FFITarget.List.Count(l)", expr.RightNode.ToString());
+
+        }
+
+        [Test]
+        public void TestShortestQualifiedNameReplacerWithGlobalClass()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\ShortenNodeNameWithGlobalClass.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var asts = result.AstNodes.ToList();
+            Assert.AreEqual(2, asts.Count);
+
+            var expr1 = asts[0] as BinaryExpressionNode;
+            var expr2 = asts[1] as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr1);
+            Assert.IsNotNull(expr2);
+
+            Assert.AreEqual("DupTargetTest.DupTargetTest()", expr1.RightNode.ToString());
+            Assert.AreEqual("DupTargetTest.Foo(t1)", expr2.RightNode.ToString());
+
+        }
+
+        [Test]
+        public void TestShortestQualifiedNameReplacerWithConflictingClass()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            // This file has a node from FFITarget.C.B.DupTargetTest namespace.
+            // Since this class is marked as hidden from library but is inherited by
+            // global class DupTargetTest, performing a Node2Code on this node, should
+            // emit the global class name in a CBN.
+            OpenModel(@"core\node2code\ShortenNodeNameWithConflictingClass.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var asts = result.AstNodes.ToList();
+            Assert.AreEqual(2, asts.Count);
+
+            var expr1 = asts[0] as BinaryExpressionNode;
+            var expr2 = asts[1] as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr1);
+            Assert.IsNotNull(expr2);
+
+            Assert.AreEqual("DupTargetTest.DupTargetTest()", expr1.RightNode.ToString());
+            Assert.AreEqual("DupTargetTest.Prop(t1)", expr2.RightNode.ToString());
+
         }
 
         [Test]
@@ -957,7 +1111,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void NonUniqueNamespaceConflict_on_node2code_doesNotCrash()
+        public void UniqueNamespace_on_node2code_noConflictWarning()
         {
             string libraryPath = "FFITarget.dll";
             if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
@@ -965,8 +1119,8 @@ namespace Dynamo.Tests
                 CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
             }
 
-            // this graph contains a single "FFITarget.B.DupTargetTest" node that conflicts non-uniquely with namespace "FFITarget.C.B.DupTargetTest"
-            OpenModel(@"core\node2code\NonUniqueNamespaceConflict_throwsNodeWarning.dyn");
+            // this graph contains a single "FFITarget.B.DupTargetTest" node that should not conflict with namespace "FFITarget.C.B.DupTargetTest"
+            OpenModel(@"core\node2code\UniqueNamespace_on_node2code_noConflictWarning.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             SelectAll(nodes);
             var command = new DynamoModel.ConvertNodesToCodeCommand();
@@ -976,8 +1130,7 @@ namespace Dynamo.Tests
             var cbn = nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
             Assert.IsNotNull(cbn);
 
-            var error = "Multiple definitions for 'FFITarget.B.DupTargetTest' are found as FFITarget.C.B.DupTargetTest, FFITarget.B.DupTargetTest";
-            Assert.IsTrue(cbn.ToolTipText.Contains(error));
+            Assert.False(cbn.IsInErrorState);
         }
 
 
@@ -1036,6 +1189,36 @@ namespace Dynamo.Tests
             recorder.RecordCreation(dummyModel);
             recorder.RecordDeletion(dummyModel);
             Assert.AreEqual(0, recorder.ActionCount());
+        }
+
+        [Test]
+        public void TestNodeToCodeStringInputEscaping()
+        {
+            // Arrange
+            OpenModel(@"core\node2code\stringNodesInNeedOfEscaping.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            // Act
+            var nodesToCode = engine.ConvertNodesToCode(nodes, nodes);
+            var results = nodesToCode.AstNodes.OfType<BinaryExpressionNode>()
+                .Where((x, i) => i < 8)
+                .Select(x => x.RightNode.ToString())
+                .ToList();
+
+            // Assert
+            var expect = new List<string>
+            {
+                "\"C:\\\\\"",                // "C:\\"
+                "\"4\\\"\"",                 // "4\""
+                "\"\\\"Hello, world.\\\"\"", // "\"Hello, world.\""
+                "\"Hello\\\\r\\\\nWorld\"",  // "Hello\\r\\nWorld"
+                "\"\\\\tHello World\"",      // "\\tHello World"
+                "\"\\\\u33A1\"",             // "\\u33A1"
+                "\"\\\\u00B2\"",             // "\\u00B2"
+                "\"\\\\\\\\SERVER\\\\PATH\"" // "\\\\SERVER\\PATH"
+            };
+            Assert.AreEqual(expect, results);
         }
 
         [Test]
@@ -1216,6 +1399,24 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestNodeToCodeWithBuiltInAddMethod()
+        {
+            OpenModel(@"core\node2code\builtinAddNode.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+            CurrentDynamoModel.ForceRun();
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            var guid = cbn.GUID.ToString();
+            AssertPreviewValue(guid, 49);
+        }
+
+        [Test]
         [Category("RegressionTests")]
         public void TestMultioutputNode()
         {
@@ -1341,6 +1542,22 @@ namespace Dynamo.Tests
             var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
             Assert.IsNotNull(cbn);
             Assert.IsTrue(cbn.GetAstIdentifierForOutputIndex(0).Value.StartsWith("num"));
+        }
+
+        [Test]
+        public void TestNodeToCodeWithPropertyInCodeBlock()
+        {
+            OpenModel(@"core\node2code\NodeToCode_CodeBlock.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            AssertPreviewValue(cbn.GUID.ToString(), false);
         }
     }
 

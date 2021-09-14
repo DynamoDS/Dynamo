@@ -1,8 +1,13 @@
-﻿using Dynamo.Extensions;
+﻿using System;
+using System.Linq;
+using System.Windows.Controls;
+using Dynamo.Core;
+using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
+using Dynamo.PackageManager;
 using Dynamo.WorkspaceDependency.Properties;
 using Dynamo.Wpf.Extensions;
-using System.Windows.Controls;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -11,23 +16,34 @@ namespace Dynamo.WorkspaceDependency
     /// which tracks graph dependencies (currently only packages) on the Dynamo right panel.
     /// It reacts to workspace modified/ cleared events to refresh.
     /// </summary>
-    public class WorkspaceDependencyViewExtension : IViewExtension
+    public class WorkspaceDependencyViewExtension : ViewExtensionBase, IViewExtension, ILogSource
     {
+        internal MenuItem workspaceReferencesMenuItem;
+        private readonly String extensionName = Properties.Resources.ExtensionName;
+
+        internal WorkspaceDependencyView DependencyView
+        {
+            get;
+            set;
+        }
+
+        internal PackageManagerExtension pmExtension;
+
         /// <summary>
         /// Extension Name
         /// </summary>
-        public string Name
+        public override string Name
         {
             get
             {
-                return "Workspace Dependency ViewExtension";
+                return extensionName;
             }
         }
 
         /// <summary>
         /// GUID of the extension
         /// </summary>
-        public string UniqueId
+        public override string UniqueId
         {
             get
             {
@@ -35,55 +51,71 @@ namespace Dynamo.WorkspaceDependency
             }
         }
 
-        private WorkspaceDependencyView DependencyView
-        {
-            get;
-            set;
-        }
-
-        private ReadyParams ReadyParams;
-
         /// <summary>
         /// Dispose function after extension is closed
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
-
+            DependencyView.Dispose();
         }
 
-       
+
+        [Obsolete("This method is not implemented and will be removed.")]
         public void Ready(ReadyParams readyParams)
         {
-            ReadyParams = readyParams;
         }
 
-        public void Shutdown()
+        public override void Startup(ViewStartupParams viewStartupParams)
         {
-            ReadyParams.CurrentWorkspaceChanged -= DependencyView.OnWorkspaceChanged;
-            ReadyParams.CurrentWorkspaceCleared -= DependencyView.OnWorkspaceCleared;
-            this.Dispose();
+            pmExtension = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
         }
 
-        public void Startup(ViewStartupParams viewLoadedParams)
+        public event Action<ILogMessage> MessageLogged;
+
+        internal void OnMessageLogged(ILogMessage msg)
         {
-
+            this.MessageLogged?.Invoke(msg);
         }
 
-        private MenuItem packageDependencyMenuItem;
-
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
+            // when a package is loaded update the DependencyView 
+            // as we may have installed a missing package.
+
+            DependencyView.CustomNodeManager = (CustomNodeManager)viewLoadedParams.StartupParams.CustomNodeManager;
+
+            pmExtension.PackageLoader.PackgeLoaded += (package) =>
+            {
+                DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
+            };
 
             // Adding a button in view menu to refresh and show manually
-            packageDependencyMenuItem = new MenuItem { Header = Resources.MenuItemString };
-            packageDependencyMenuItem.Click += (sender, args) =>
+            workspaceReferencesMenuItem = new MenuItem { Header = Resources.MenuItemString, IsCheckable = true, IsChecked = false };
+            workspaceReferencesMenuItem.Click += (sender, args) =>
             {
-                // Refresh dependency data
-                DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
-                viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
+                if (workspaceReferencesMenuItem.IsChecked)
+                {
+                    // Refresh dependency data
+                    DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
+                    viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
+                    workspaceReferencesMenuItem.IsChecked = true;
+                }
+                else
+                {
+                    viewLoadedParams.CloseExtensioninInSideBar(this);
+                    workspaceReferencesMenuItem.IsChecked = false;
+                }
             };
-            viewLoadedParams.AddMenuItem(MenuBarType.View, packageDependencyMenuItem);
+            viewLoadedParams.AddExtensionMenuItem(workspaceReferencesMenuItem);
+        }
+
+        public override void Closed()
+        {
+            if (this.workspaceReferencesMenuItem != null) 
+            { 
+                this.workspaceReferencesMenuItem.IsChecked = false;
+            }
         }
     }
 }

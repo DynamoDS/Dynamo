@@ -4,19 +4,47 @@ using System.Collections.Generic;
 namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
-    /// Class containing info about a package
+    /// Enum containing the different types of package dependency states.
     /// </summary>
-    public class PackageInfo
+    public enum PackageDependencyState
+    {
+        Loaded,            // Correct package and version loaded.
+        IncorrectVersion,  // Correct package but incorrect version. 
+        Missing,           // package is completely missing.
+        Warning,           // Actual package is missing but the nodes are resolved by some other package. 
+        RequiresRestart    // Restart needed in order to complete the uninstall of some package. Notice this would be only set when workspace references extension is loaded.
+    }
+
+    /// <summary>
+    /// Interface for types containing info about a package
+    /// </summary>
+    public interface IPackageInfo
     {
         /// <summary>
         /// Name of the package
         /// </summary>
-        internal string Name { get; set; }
+        string Name { get; }
 
         /// <summary>
         /// Version of the package
         /// </summary>
-        internal Version Version { get; set; }
+        Version Version { get; }
+    }
+
+    /// <summary>
+    /// Class containing info about a package
+    /// </summary>
+    public class PackageInfo : IPackageInfo
+    {
+        /// <summary>
+        /// Name of the package
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// Version of the package
+        /// </summary>
+        public Version Version { get; internal set; }
 
         /// <summary>
         /// Create a package info object from the package name and version
@@ -73,13 +101,139 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 
-    internal enum ReferenceType{
+    /// <summary>
+    /// Class containing info about a LocalDefinition
+    /// </summary>
+    internal class LocalDefinitionInfo: INodeLibraryDependencyInfo
+    {
+        /// <summary>
+        /// Name of the LocalDefinition
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// Path of the LocalDefinition
+        /// </summary>
+        public string Path { get; internal set; }
+
+        /// <summary>
+        /// Size of the LocalDefinition
+        /// </summary>
+        public string Size { get; internal set; }
+
+        /// <summary>
+        /// ReferenceType of the LocalDefinition
+        /// </summary>
+        public ReferenceType ReferenceType { get; internal set; }
+
+        private HashSet<Guid> nodes;
+
+        public HashSet<Guid> Nodes
+        {
+            get { return nodes; }
+        }
+
+        public Version Version { get; internal set; }
+
+        /// <summary>
+        /// Indicates whether this LocalDefinition is loaded in the current session
+        /// </summary>
+        [Obsolete("This property is obsolete", false)]
+        public bool IsLoaded { get; set; }
+
+        public PackageDependencyState State { get; internal set; }
+
+        /// <summary>
+        /// Create a LocalDefinition info object from the package Name and Path
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="path"></param>
+        internal LocalDefinitionInfo(string name, string path)
+        {
+            Name = name;
+            Path = path;
+            nodes = new HashSet<Guid>();
+        }
+
+        /// <summary>
+        /// Create a LocalDefinition info object from the package Name and ReferenceType
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="referenceType"></param>
+        internal LocalDefinitionInfo(string name, ReferenceType referenceType)
+        {
+            Name = name;
+            ReferenceType = referenceType;
+            nodes = new HashSet<Guid>();
+        }
+
+        /// <summary>
+        /// Create a LocalDefinition info object from the package name
+        /// </summary>
+        /// <param name="name"></param>
+        internal LocalDefinitionInfo(string name)
+        {
+            Name = name;
+            nodes = new HashSet<Guid>();
+        }
+
+        /// <summary>
+        /// Checks whether two LocalDefinitionInfo's are equal
+        /// They are equal if their Name and Versions are equal
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            if (!(obj is LocalDefinitionInfo))
+            {
+                return false;
+            }
+
+            var other = obj as LocalDefinitionInfo;
+            if (other.Name == this.Name && other.Path == this.Path)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the hashcode for this dependency
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode() ^ Size.GetHashCode();
+        }
+
+        /// <summary>
+        /// Get the string representing this dependency.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return Name + ", Size=" + Size;
+        }
+
+        public void AddDependent(Guid guid)
+        {
+            Nodes.Add(guid);
+        }
+    }
+
+    internal enum ReferenceType
+    {
         NodeModel,
         Package,
         ZeroTouch,
         DSFile,
         //TODO - This is already covered by the older Dependencies property
-        DYFFILE
+        DYFFile
     }
 
 
@@ -118,14 +272,21 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Indicates whether this dependency is loaded in the current session
         /// </summary>
+        [Obsolete("This property is obsolete", false)]
         bool IsLoaded { get; set; }
+
+        /// <summary>
+        /// The state of this dependency
+        /// </summary>
+        PackageDependencyState State { get; }
     }
 
     /// <summary>
     /// Class containing info about a workspace package dependency
     /// </summary>
-    internal class PackageDependencyInfo : INodeLibraryDependencyInfo
+    internal class PackageDependencyInfo : INodeLibraryDependencyInfo, IPackageInfo
     {
+        private PackageDependencyState _state;
         /// <summary>
         /// PackageInfo for this package
         /// </summary>
@@ -137,14 +298,47 @@ namespace Dynamo.Graph.Workspaces
         public string Name => PackageInfo.Name;
 
         /// <summary>
+        /// Package path.
+        /// </summary>
+        public String Path { get; set; }
+
+        /// <summary>
         /// Version of the package
         /// </summary>
-        public Version Version => PackageInfo.Version;
+        public Version Version
+        {
+            get
+            {
+                return PackageInfo.Version;
+            }
+            internal set
+            {
+                if(PackageInfo.Version != value)
+                    PackageInfo.Version = value;
+            }
+        }
 
         /// <summary>
         /// Indicates whether this package is loaded in the current session
         /// </summary>
-        public bool IsLoaded { get; set; }
+        [Obsolete("This property is obsolete, use State property instead", false)]
+        public bool IsLoaded{ get; set;}
+
+        /// <summary>
+        /// State of Package Dependency
+        /// </summary>
+        public PackageDependencyState State {
+            
+            get {
+                return _state;
+            } 
+            set {
+                _state = value;
+                if (_state == PackageDependencyState.Loaded) {
+                    this.IsLoaded = true;
+                }
+            }
+        }
 
         /// <summary>
         /// Guids of nodes in the workspace that are dependent on this package
@@ -153,11 +347,11 @@ namespace Dynamo.Graph.Workspaces
         {
             get { return nodes; }
         }
-
+ 
         public ReferenceType ReferenceType => ReferenceType.Package;
 
         private HashSet<Guid> nodes;
-        
+
         /// <summary>
         /// Create a package dependency from the package name and version
         /// </summary>
@@ -185,28 +379,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="guid"></param>
         public void AddDependent(Guid guid)
         {
-             Nodes.Add(guid);
-        }
-
-        /// <summary>
-        /// Add the Guids of a dependent nodes
-        /// </summary>
-        /// <param name="guids"></param>
-        internal void AddDependents(IEnumerable<Guid> guids)
-        {
-            foreach(var guid in guids)
-            {
-                Nodes.Add(guid);
-            }
-        }
-
-        /// <summary>
-        /// Remove a dependent node
-        /// </summary>
-        /// <param name="guid"></param>
-        internal void RemoveDependent(Guid guid)
-        {
-            Nodes.Remove(guid);
+            Nodes.Add(guid);
         }
 
         /// <summary>

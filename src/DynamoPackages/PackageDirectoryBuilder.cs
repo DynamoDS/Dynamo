@@ -21,6 +21,7 @@ namespace Dynamo.PackageManager
         internal const string CustomNodeDirectoryName = "dyf";
         internal const string BinaryDirectoryName = "bin";
         internal const string ExtraDirectoryName = "extra";
+        internal const string DocumentationDirectoryName = "doc";
         internal const string PackageJsonName = "pkg.json";
 
         private readonly IFileSystem fileSystem;
@@ -51,14 +52,14 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         public IDirectoryInfo BuildDirectory(Package package, string packagesDirectory, IEnumerable<string> files)
         {
-            IDirectoryInfo rootDir, dyfDir, binDir, extraDir;
+            IDirectoryInfo rootDir, dyfDir, binDir, extraDir, docDir;
 
-            FormPackageDirectory(packagesDirectory, package.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
+            FormPackageDirectory(packagesDirectory, package.Name, out rootDir, out  dyfDir, out binDir, out extraDir, out docDir); // shouldn't do anything for pkg versions
             package.RootDirectory = rootDir.FullName;
 
             WritePackageHeader(package, rootDir);
             RemoveUnselectedFiles(files, rootDir);
-            CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
+            CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir, docDir);
             RemoveDyfFiles(files, dyfDir);
             RemapCustomNodeFilePaths(files, dyfDir.FullName);
 
@@ -107,17 +108,22 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void FormPackageDirectory(string packageDirectory, string packageName, out IDirectoryInfo root, out IDirectoryInfo dyfDir, out IDirectoryInfo binDir, out IDirectoryInfo extraDir)
+        private void FormPackageDirectory(string packageDirectory, string packageName, 
+            out IDirectoryInfo root, out IDirectoryInfo dyfDir, 
+            out IDirectoryInfo binDir, out IDirectoryInfo extraDir, 
+            out IDirectoryInfo docDir)
         {
             var rootPath = Path.Combine(packageDirectory, packageName);
             var dyfPath = Path.Combine(rootPath, CustomNodeDirectoryName);
             var binPath = Path.Combine(rootPath, BinaryDirectoryName);
             var extraPath = Path.Combine(rootPath, ExtraDirectoryName);
+            var docPath = Path.Combine(rootPath, DocumentationDirectoryName);
 
             root = fileSystem.TryCreateDirectory(rootPath);
             dyfDir = fileSystem.TryCreateDirectory(dyfPath);
             binDir = fileSystem.TryCreateDirectory(binPath);
             extraDir = fileSystem.TryCreateDirectory(extraPath);
+            docDir = fileSystem.TryCreateDirectory(docPath);
         }
 
         private void WritePackageHeader(Package package, IDirectoryInfo rootDir)
@@ -140,12 +146,14 @@ namespace Dynamo.PackageManager
 
 
         internal void CopyFilesIntoPackageDirectory(IEnumerable<string> files, IDirectoryInfo dyfDir,
-                                                          IDirectoryInfo binDir, IDirectoryInfo extraDir)
+                                                          IDirectoryInfo binDir, IDirectoryInfo extraDir, 
+                                                          IDirectoryInfo docDir)
         {
             // normalize the paths to ensure correct comparison
             var dyfDirPath = NormalizePath(dyfDir.FullName);
             var binDirPath = NormalizePath(binDir.FullName);
             var extraDirPath = NormalizePath(extraDir.FullName);
+            var docDirPath = NormalizePath(docDir.FullName);
 
             foreach (var file in files.Where(x => x != null))
             {
@@ -156,9 +164,13 @@ namespace Dynamo.PackageManager
                 }
 
                 // determine which folder to put the file in
-                string targetFolder = extraDirPath; 
+                string targetFolder = extraDirPath;
 
-                if (file.EndsWith(".dyf"))
+                if (Path.GetDirectoryName(file).EndsWith(DocumentationDirectoryName))
+                {
+                    targetFolder = docDirPath;
+                }
+                else if (file.EndsWith(".dyf"))
                 {
                     targetFolder = dyfDirPath;
                 }

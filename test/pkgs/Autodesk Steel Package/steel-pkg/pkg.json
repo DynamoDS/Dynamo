@@ -1,0 +1,18 @@
+{
+	"license": "",
+	"file_hash": null,
+	"name": "Autodesk Steel Connections 2020",
+	"version": "2020.0.48",
+	"description": "This package enables Dynamo to control steel connection modeling, helping to accelerate modeling of steel buildings in Revit. It can identify similar geometrical conditions for placing standard and custom connections and along with the package you will find several out-of-the box scripts, which can be driven with the Dynamo Player.",
+	"group": "",
+	"keywords": [ "autodesk", "steel", "connection", "connections", "automation", "modelling", "design" ],
+	"dependencies": [],
+	"contents": "",
+	"engine_version": "2.0.1.5065",
+	"engine": "dynamo",
+	"engine_metadata": "",
+	"site_url": "",
+	"repository_url": "",
+	"contains_binaries": true,
+	"node_libraries": [ "AdvanceSteelConnAutoNodes", "AdvanceSteelConnAutoNodesUI" ]
+}

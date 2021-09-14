@@ -153,11 +153,11 @@
     },
     {
       "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
-      "WatchWidth": 220.0,
-      "WatchHeight": 352.0,
-      "WasExecuted": true,
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "WasExecuted": false,
       "Camera": {
-        "Name": "751b37a0-8c55-46b3-90a9-f6b644af185b Preview",
+        "Name": "Background Preview",
         "EyeX": -17.0,
         "EyeY": 24.0,
         "EyeZ": 50.0,
@@ -281,66 +281,6 @@
       ],
       "Replication": "Auto",
       "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Revit.Elements.ModelCurve.ByCurve@Autodesk.DesignScript.Geometry.Curve",
-      "Id": "859b30aef9f042268e0896b5066e31c7",
-      "Inputs": [
-        {
-          "Id": "dd28d907f0234c2db53439cbb991420a",
-          "Name": "curve",
-          "Description": "Curve",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "61186977c639405eaaa6e16d18dc20e1",
-          "Name": "ModelCurve",
-          "Description": "ModelCurve",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Construct a Revit ModelCurve element from a Curve\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Revit.Elements.ReferencePoint.ByPoint@Autodesk.DesignScript.Geometry.Point",
-      "Id": "66c0540b9aa84a589a8eacd89b7a8c37",
-      "Inputs": [
-        {
-          "Id": "ce6eaf70fa194d02b72a2cae6ffa10ed",
-          "Name": "pt",
-          "Description": "Point",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "78abc094085e4297ba90b923fe0bbbe4",
-          "Name": "ReferencePoint",
-          "Description": "ReferencePoint",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Create a Reference Point from a point.\n\nReferencePoint.ByPoint (pt: Point): ReferencePoint"
     }
   ],
   "Connectors": [
@@ -353,11 +293,6 @@
       "Start": "c28c4e4b0ff14ea6875ab92a2c5a7430",
       "End": "ca7dcb578ad642088e0b5b4c383f9d46",
       "Id": "6f755328683b44538dd95f958a0d5a86"
-    },
-    {
-      "Start": "c28c4e4b0ff14ea6875ab92a2c5a7430",
-      "End": "ce6eaf70fa194d02b72a2cae6ffa10ed",
-      "Id": "a6247a4015004066849107f5ace5c405"
     },
     {
       "Start": "89353ce28afb42858938fa6b02ec8c3b",
@@ -378,22 +313,10 @@
       "Start": "e7dd2b37cda04f239b3dcd22561316e1",
       "End": "0562171b3ea441739fd8bcbb8b1ce264",
       "Id": "23392ea01c76432cbdd5cdc0b448f786"
-    },
-    {
-      "Start": "e7dd2b37cda04f239b3dcd22561316e1",
-      "End": "dd28d907f0234c2db53439cbb991420a",
-      "Id": "809d16a764424efc8fd52406a81cfc4a"
     }
   ],
   "Dependencies": [],
-  "Bindings": [
-    {
-      "NodeId": "859b30ae-f9f0-4226-8e08-96b5066e31c7",
-      "Binding": {
-        "ByCurve_InClassDecl-1_InFunctionScope-1_Instance0_859b30ae-f9f0-4226-8e08-96b5066e31c7": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMC4xLjQzNTclMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPnRydWU8L0Jhc2UtMF9IYXNEYXRhPg0KPEJhc2UtMF9EYXRhIGlkPSJyZWYtMyI+UEZOUFFWQXRSVTVXT2tWdWRtVnNiM0JsSUhodGJHNXpPbmh6YVQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0V0YVc1emRHRnVZMlVpSUhodGJHNXpPbmh6WkQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0VpSUhodGJHNXpPbE5QUVZBdFJVNURQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SWdlRzFzYm5NNlUwOUJVQzFGVGxZOUltaDBkSEE2THk5elkyaGxiV0Z6TG5odGJITnZZWEF1YjNKbkwzTnZZWEF2Wlc1MlpXeHZjR1V2SWlCNGJXeHVjenBqYkhJOUltaDBkSEE2THk5elkyaGxiV0Z6TG0xcFkzSnZjMjltZEM1amIyMHZjMjloY0M5bGJtTnZaR2x1Wnk5amJISXZNUzR3SWlCVFQwRlFMVVZPVmpwbGJtTnZaR2x1WjFOMGVXeGxQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SStEUW84VTA5QlVDMUZUbFk2UW05a2VUNE5DanhoTVRwVFpYSnBZV3hwZW1GaWJHVkpaQ0JwWkQwaWNtVm1MVEVpSUhodGJHNXpPbUV4UFNKb2RIUndPaTh2YzJOb1pXMWhjeTV0YVdOeWIzTnZablF1WTI5dEwyTnNjaTl1YzJGemMyVnRMMUpsZG1sMFUyVnlkbWxqWlhNdVVHVnljMmx6ZEdWdVkyVXZVbVYyYVhSVFpYSjJhV05sY3lVeVF5VXlNRlpsY25OcGIyNGxNMFF5TGpBdU1DNDBNell3SlRKREpUSXdRM1ZzZEhWeVpTVXpSRzVsZFhSeVlXd2xNa01sTWpCUWRXSnNhV05MWlhsVWIydGxiaVV6Ukc1MWJHd2lQZzBLUEhOMGNtbHVaMGxFSUdsa1BTSnlaV1l0TXlJK09ETTVZV0kyT0dNdE5EWTNNQzAwTUdWaUxUbGpZMll0WkRReVpXTmxaVFZsT1RVMkxUQXdNREF3T1RjMFBDOXpkSEpwYm1kSlJENE5DanhwYm5SSlJENHlOREl3UEM5cGJuUkpSRDROQ2p3dllURTZVMlZ5YVdGc2FYcGhZbXhsU1dRK0RRbzhMMU5QUVZBdFJVNVdPa0p2WkhrK0RRbzhMMU5QUVZBdFJVNVdPa1Z1ZG1Wc2IzQmxQZzBLPC9CYXNlLTBfRGF0YT4NCjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+DQo8L2ExOkNhbGxTaXRlX3gwMDJCX1RyYWNlU2VyaWFsaXNlckhlbHBlcj4NCjwvU09BUC1FTlY6Qm9keT4NCjwvU09BUC1FTlY6RW52ZWxvcGU+DQo="
-      }
-    }
-  ],
+  "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
@@ -485,26 +408,6 @@
         "Excluded": false,
         "X": 3411.44471222941,
         "Y": 903.145381445443
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "ModelCurve.ByCurve",
-        "Id": "859b30aef9f042268e0896b5066e31c7",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 3971.57078997439,
-        "Y": 931.159124762755
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "ReferencePoint.ByPoint",
-        "Id": "66c0540b9aa84a589a8eacd89b7a8c37",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 3971.57078997439,
-        "Y": 838.913025453543
       }
     ],
     "Annotations": [
@@ -535,24 +438,10 @@
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
         "Background": "#FFC1D676"
-      },
-      {
-        "Id": "201c6ba8057b456e94ed7a3c5211403e",
-        "Title": "Dynamo interacts with Revit with special Revit nodes.  \r\n\r\nDynamo can only create and modify elements that are appropriate to the file that Dynamo is associated with.  For instance, Reference Points can only be made in certain Family environments, while Model Lines can be created almost anywhere.",
-        "Nodes": [],
-        "Left": 4227.2898831632529,
-        "Top": 842.0087651548198,
-        "Width": 0.0,
-        "Height": 0.0,
-        "FontSize": 36.0,
-        "InitialTop": 0.0,
-        "InitialHeight": 0.0,
-        "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
       }
     ],
-    "X": -1767.7522389667902,
-    "Y": -432.417247054431,
-    "Zoom": 0.771050629974184
+    "X": -1034.2538154774497,
+    "Y": -65.679722178152531,
+    "Zoom": 0.37616253525079063
   }
 }

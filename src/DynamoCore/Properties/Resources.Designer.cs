@@ -19,7 +19,7 @@ namespace Dynamo.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -70,11 +70,48 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value cannot be null.
+        ///Parameter name: {0}.
+        /// </summary>
+        public static string ArgumentNullException {
+            get {
+                return ResourceManager.GetString("ArgumentNullException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autocomplete.
+        /// </summary>
+        public static string Autocomplete {
+            get {
+                return ResourceManager.GetString("Autocomplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search Autocomplete Results.
+        /// </summary>
+        public static string AutocompleteSearchTextBlockText {
+            get {
+                return ResourceManager.GetString("AutocompleteSearchTextBlockText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Original file &apos;{0}&apos; gets backed up at &apos;{1}&apos;.
         /// </summary>
         public static string BackUpOriginalFileMessage {
             get {
                 return ResourceManager.GetString("BackUpOriginalFileMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup file is saved.
+        /// </summary>
+        public static string BackupSavedMsg {
+            get {
+                return ResourceManager.GetString("BackupSavedMsg", resourceCulture);
             }
         }
         
@@ -313,7 +350,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom node definition is not loaded!.
+        ///   Looks up a localized string similar to Custom node definition is not loaded! href=CustomNodeNotLoaded.html.
         /// </summary>
         public static string CustomNodeNotLoaded {
             get {
@@ -432,6 +469,33 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The map already contains a model with this id, the id must be unique for the workspace that is currently being deserialized: {0}.
+        /// </summary>
+        public static string DuplicatedModelGuidError {
+            get {
+                return ResourceManager.GetString("DuplicatedModelGuidError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored..
+        /// </summary>
+        public static string DuplicatedNewerPackage {
+            get {
+                return ResourceManager.GetString("DuplicatedNewerPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored..
+        /// </summary>
+        public static string DuplicatedOlderPackage {
+            get {
+                return ResourceManager.GetString("DuplicatedOlderPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate migration type registered for {0}.
         /// </summary>
         public static string DuplicateMigrationTypeRegistered {
@@ -482,6 +546,15 @@ namespace Dynamo.Properties {
         public static string FailedToGetMirrorVariable {
             get {
                 return ResourceManager.GetString("FailedToGetMirrorVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to call Ready() in extension: .
+        /// </summary>
+        public static string FailedToHandleReadyEvent {
+            get {
+                return ResourceManager.GetString("FailedToHandleReadyEvent", resourceCulture);
             }
         }
         
@@ -630,11 +703,20 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Click here to edit the group title&gt;.
+        ///   Looks up a localized string similar to &lt;Double click here to edit group description&gt;.
         /// </summary>
         public static string GroupDefaultText {
             get {
                 return ResourceManager.GetString("GroupDefaultText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;Double click here to edit group title&gt;.
+        /// </summary>
+        public static string GroupNameDefaultText {
+            get {
+                return ResourceManager.GetString("GroupNameDefaultText", resourceCulture);
             }
         }
         
@@ -662,6 +744,15 @@ namespace Dynamo.Properties {
         public static string HeaderQuery {
             get {
                 return ResourceManager.GetString("HeaderQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide Wires.
+        /// </summary>
+        public static string HideWiresPopupMenuItem {
+            get {
+                return ResourceManager.GetString("HideWiresPopupMenuItem", resourceCulture);
             }
         }
         
@@ -738,6 +829,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to input.
+        /// </summary>
+        public static string InputPortAlternativeName {
+            get {
+                return ResourceManager.GetString("InputPortAlternativeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The folder &apos;{0}&apos; does not exist.
         /// </summary>
         public static string InvalidCustomNodeFolderWarning {
@@ -805,6 +905,15 @@ namespace Dynamo.Properties {
         public static string InvalidLibraryFormat {
             get {
                 return ResourceManager.GetString("InvalidLibraryFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The version of the package called {0} found at {1} is invalid (version: &quot;{2}&quot;). Ignoring it..
+        /// </summary>
+        public static string InvalidPackageVersion {
+            get {
+                return ResourceManager.GetString("InvalidPackageVersion", resourceCulture);
             }
         }
         
@@ -893,6 +1002,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} is missing some XML documentation tags..
+        /// </summary>
+        public static string MissingXmlTagConsoleMessage {
+            get {
+                return ResourceManager.GetString("MissingXmlTagConsoleMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UpdateModelValue: Model not found.
+        /// </summary>
+        public static string ModelNotFoundError {
+            get {
+                return ResourceManager.GetString("ModelNotFoundError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SHOW MORE ({0}).
         /// </summary>
         public static string MoreButtonTextFormat {
@@ -920,6 +1047,51 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Node &apos;{0}&apos; is now deprecated..
+        /// </summary>
+        public static string NodeDeprecatedMsg {
+            get {
+                return ResourceManager.GetString("NodeDeprecatedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all errors.
+        /// </summary>
+        public static string NodeInformationalStateShowAllErrors {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowAllErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node &apos;{0}&apos; cannot be resolved..
+        /// </summary>
+        public static string NodeNotResolvedMsg {
+            get {
+                return ResourceManager.GetString("NodeNotResolvedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node of type &apos;{0}&apos;,from assembly &apos;{1}&apos;, is now deprecated..
+        /// </summary>
+        public static string NodeOfTypeDeprecatedMsg {
+            get {
+                return ResourceManager.GetString("NodeOfTypeDeprecatedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node of type &apos;{0}&apos;, from assembly &apos;{1}&apos;, cannot be resolved..
+        /// </summary>
+        public static string NodeOfTypeNotResolvedMsg {
+            get {
+                return ResourceManager.GetString("NodeOfTypeNotResolvedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:.
         /// </summary>
         public static string NodeProblemEncountered {
@@ -934,6 +1106,15 @@ namespace Dynamo.Properties {
         public static string NoDescriptionAvailable {
             get {
                 return ResourceManager.GetString("NoDescriptionAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unhandled &apos;DummyNode.NodeNature&apos; value: {0}.
+        /// </summary>
+        public static string NodeUnhandledMsg {
+            get {
+                return ResourceManager.GetString("NodeUnhandledMsg", resourceCulture);
             }
         }
         
@@ -956,6 +1137,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string NoneLinterDescriptorName {
+            get {
+                return ResourceManager.GetString("NoneLinterDescriptorName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to none.
         /// </summary>
         public static string NoneString {
@@ -965,7 +1155,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nothing is selected..
+        ///   Looks up a localized string similar to Nothing is selected. href=NothingIsSelectedWarning.html.
         /// </summary>
         public static string NothingIsSelectedWarning {
             get {
@@ -1055,11 +1245,114 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to output.
+        /// </summary>
+        public static string OutputPortAlternativeName {
+            get {
+                return ResourceManager.GetString("OutputPortAlternativeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The package was found to be empty and was not installed..
         /// </summary>
         public static string PackageEmpty {
             get {
                 return ResourceManager.GetString("PackageEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A package with the given name already exists..
+        /// </summary>
+        public static string PackageManagerPackageAlreadyExists {
+            get {
+                return ResourceManager.GetString("PackageManagerPackageAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The current user, &apos;{0}&apos;, is not a maintainer of the package &apos;{1}&apos;..
+        /// </summary>
+        public static string PackageManagerUserIsNotAMaintainer {
+            get {
+                return ResourceManager.GetString("PackageManagerUserIsNotAMaintainer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string PackageStateError {
+            get {
+                return ResourceManager.GetString("PackageStateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        ///This package has not been loaded due to an unexpected error..
+        /// </summary>
+        public static string PackageStateErrorTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateErrorTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded.
+        /// </summary>
+        public static string PackageStateLoaded {
+            get {
+                return ResourceManager.GetString("PackageStateLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded.
+        ///This package is loaded and ready to be used..
+        /// </summary>
+        public static string PackageStateLoadedTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateLoadedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled to be unloaded.
+        /// </summary>
+        public static string PackageStatePendingUnload {
+            get {
+                return ResourceManager.GetString("PackageStatePendingUnload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled to be unloaded.
+        ///This package will be unloaded after the next Dynamo restart..
+        /// </summary>
+        public static string PackageStatePendingUnloadTooltip {
+            get {
+                return ResourceManager.GetString("PackageStatePendingUnloadTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        /// </summary>
+        public static string PackageStateUnloaded {
+            get {
+                return ResourceManager.GetString("PackageStateUnloaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        ///This package has not been loaded because another conflicting package was loaded before it..
+        /// </summary>
+        public static string PackageStateUnloadedTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateUnloadedTooltip", resourceCulture);
             }
         }
         
@@ -1163,6 +1456,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 3D preview has been deactivated.
+        /// </summary>
+        public static string Preview3DOutageTitle {
+            get {
+                return ResourceManager.GetString("Preview3DOutageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Proceed anyway.
         /// </summary>
         public static string ProceedButton {
@@ -1226,7 +1528,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Amount of numbers in the sequence
+        ///   Looks up a localized string similar to Amount of numbers or letters in the sequence
         ///Default value: 10.
         /// </summary>
         public static string RangePortDataAmountToolTip {
@@ -1246,7 +1548,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New sequence.
+        ///   Looks up a localized string similar to New list of type: var[]..[].
         /// </summary>
         public static string RangePortDataSeqToolTip {
             get {
@@ -1559,6 +1861,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unhide Wires.
+        /// </summary>
+        public static string UnhideWiresPopupMenuItem {
+            get {
+                return ResourceManager.GetString("UnhideWiresPopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown.
         /// </summary>
         public static string UnknownVersion {
@@ -1634,7 +1945,7 @@ namespace Dynamo.Properties {
         ///   Looks up a localized string similar to Uh oh...
         /// We&apos;re sorry - we tried to save your decisions, but something went wrong. The decision probably hasn&apos;t been saved. This really shouldn&apos;t have happened. Please get in touch via GitHub and send us this information.
         ///You can also try deleting [FILEPATH] and trying again.
-        ///Depending on your previous choice, instrumentation may still be running, if you&apos;re worried about this, please consider not using Dynamo until we&apos;ve got back to you to solve the problem.
+        ///Depending on your previous choice, analytics may still be running, if you&apos;re worried about this, please consider not using Dynamo until we&apos;ve got back to you to solve the problem.
         ///Sorry about that..
         /// </summary>
         public static string UsageReportingErrorMessage {
@@ -1676,7 +1987,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your code goes here.
+        ///   Looks up a localized string similar to Enter code here.
         /// </summary>
         public static string WatermarkLabelText {
             get {

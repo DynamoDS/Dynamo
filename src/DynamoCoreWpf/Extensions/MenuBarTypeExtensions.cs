@@ -14,6 +14,7 @@ namespace Dynamo.Wpf.Extensions
         /// </summary>
         /// <param name="type"></param>
         /// <returns>A localized string used as the menu header</returns>
+        /// TODO: Remove in Dynamo 3.0
         internal static string ToDisplayString(this MenuBarType type)
         {
             switch (type)

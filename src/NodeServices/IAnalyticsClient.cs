@@ -56,6 +56,41 @@ namespace Dynamo.Logging
         /// Events Category related to DesignScript VM
         /// </summary>
         Engine,
+
+        /// <summary>
+        /// Events Category related to Node Auto-Complete
+        /// </summary>
+        NodeAutoCompleteOperations,
+
+        /// <summary>
+        /// Events Category related to In-Canvas search
+        /// </summary>
+        InCanvasSearchOperations,
+        
+        /// <summary>
+        /// Events Category related to Python operations
+        /// </summary>
+        PythonOperations,
+
+        /// <summary>
+        /// Events Category related to Extensions operations
+        /// </summary>
+        ExtensionOperations,
+
+        /// <summary>
+        /// Events Category related to View Extensions operations
+        /// </summary>
+        ViewExtensionOperations,
+
+        /// <summary>
+        /// Events Category related to package manager operations
+        /// </summary>
+        PackageManagerOperations,
+
+        /// <summary>
+        /// Events Category related to Note operations
+        /// </summary>
+        NoteOperations,
     }
 
     /// <summary>
@@ -84,7 +119,7 @@ namespace Dynamo.Logging
         Delete,
 
         /// <summary>
-        /// Move Event, such as Node move
+        /// Move Event, such as Node move, dialog move
         /// </summary>
         Move,
 
@@ -99,7 +134,7 @@ namespace Dynamo.Logging
         Open,
 
         /// <summary>
-        /// Close Event, such as Close workspace
+        /// Close Event, such as Close workspace, Close Python Editor
         /// </summary>
         Close,
 
@@ -114,7 +149,7 @@ namespace Dynamo.Logging
         Write,
 
         /// <summary>
-        /// Save Event, such as Save workspace
+        /// Save Event, such as Save workspace and save Python code
         /// </summary>
         Save,
 
@@ -152,6 +187,55 @@ namespace Dynamo.Logging
         /// Update Installed event
         /// </summary>
         Installed,
+        
+        /// <summary>
+        /// Select event, such as node auto-complete suggestion selection or in-canvas search selection
+        /// </summary>
+        Select,
+
+        /// <summary>
+        /// Migration event, such as Python migration or DYN migration
+        /// </summary>
+        Migration,
+
+        /// <summary>
+        /// Switch event, such as Python engine switch, dropdown node switch
+        /// </summary>
+        Switch,
+
+        /// <summary>
+        /// Run event, such as Python node run clicked, Graph run Clicked, generic node run during graph execution
+        /// </summary>
+        Run,
+
+        /// <summary>
+        /// Load event, such as extensions loaded, package loaded
+        /// </summary>
+        Load,
+
+        /// <summary>
+        /// Dock event, such as docking view extension
+        /// </summary>
+        Dock,
+
+        /// <summary>
+        /// Undock event, such as undocking view extension
+        /// </summary>
+        Undock,
+
+        /// <summary>
+        /// Rate event, such as rating guided tour
+        /// </summary>
+        Rate,
+
+        /// Pin event, such as pinning a note to a node
+        /// </summary>
+        Pin,
+
+        /// <summary>
+        /// Unpin event, such as unpinning a note from a node
+        /// </summary>
+        Unpin,
     }
 
     /// <summary>
@@ -166,7 +250,7 @@ namespace Dynamo.Logging
         bool ReportingAnalytics { get; }
 
         /// <summary>
-        /// Cheks if detailed usage reporting is ON.
+        /// Checks if detailed usage reporting is ON.
         /// </summary>
         bool ReportingUsage { get; }
 

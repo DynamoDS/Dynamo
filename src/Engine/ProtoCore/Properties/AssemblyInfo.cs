@@ -11,5 +11,11 @@ using System.Runtime.CompilerServices;
 // [assembly: AssemblyKeyFile("ProtoCore.snk")]
 [assembly: InternalsVisibleTo("ProtoTest")]
 [assembly: InternalsVisibleTo("ProtoTestFx")]
+[assembly:InternalsVisibleTo("DynamoCore")]
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("ProtoImperative")]
+[assembly: InternalsVisibleTo("ProtoScript")]
+[assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]
+[assembly: InternalsVisibleTo("ProtoAssociative")]
 

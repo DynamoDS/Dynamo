@@ -292,36 +292,6 @@
       "Description": "Create a NurbsSurface by using explicit control Points, with specified U and V degrees.\n\nNurbsSurface.ByControlPoints (controlVertices: Point[][], uDegree: int = 3, vDegree: int = 3): NurbsSurface"
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Revit.Elements.ImportInstance.ByGeometries@Autodesk.DesignScript.Geometry.Geometry[]",
-      "Id": "c1e10fd1974e4374b6ec0766615d3df4",
-      "Inputs": [
-        {
-          "Id": "67e7e07ad4ed4504860d2ea77383bc55",
-          "Name": "geometries",
-          "Description": "A collection of Geometry\n\nGeometry[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "eeb65b0302d74ebaa880c09ad5ac60a3",
-          "Name": "ImportInstance",
-          "Description": "ImportInstance",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Import a collection of Geometry (Solid, Curve, Surface, etc) into Revit as an ImportInstance. This variant is much faster than ImportInstance.ByGeometry as it uses a batch method.\n\nImportInstance.ByGeometries (geometries: Geometry[]): ImportInstance"
-    },
-    {
       "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
       "VariableInputPorts": true,
       "NodeType": "ExtensionNode",
@@ -724,11 +694,11 @@
     },
     {
       "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
-      "WatchWidth": 320.0,
-      "WatchHeight": 457.0,
-      "WasExecuted": true,
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "WasExecuted": false,
       "Camera": {
-        "Name": "a6ea80d1-292f-4754-af60-4f40882d0c98 Preview",
+        "Name": "Background Preview",
         "EyeX": -17.0,
         "EyeY": 24.0,
         "EyeZ": 50.0,
@@ -1424,75 +1394,6 @@
       ],
       "Replication": "Disabled",
       "Description": "Creates a number."
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Revit.Elements.Form.ByLoftCrossSections@Revit.GeometryReferences.ElementCurveReference[],bool",
-      "Id": "ae4bfdfe524a4a5cbd6475fd56be89af",
-      "Inputs": [
-        {
-          "Id": "79f855eee1334f3e9abe8d5631706280",
-          "Name": "curves",
-          "Description": "ElementCurveReference[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "28ab14022855434f9788086ba22ee409",
-          "Name": "isSolid",
-          "Description": "bool\nDefault value : true",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "a7b8ed37855d4b3fab1a9aaa8fdf88f8",
-          "Name": "Form",
-          "Description": "Form",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Creates a Form by lofting a list of curves\n\nForm.ByLoftCrossSections (curves: ElementCurveReference[], isSolid: bool = true): Form"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Revit.Elements.ModelCurve.ReferenceCurveByCurve@Autodesk.DesignScript.Geometry.Curve",
-      "Id": "799b4dce33ec4a2585187d988f7e267a",
-      "Inputs": [
-        {
-          "Id": "6fdc5a96623047d0b200066a5ad847a8",
-          "Name": "curve",
-          "Description": "Curve",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "a211cca00c174041b00668c671db1510",
-          "Name": "ModelCurve",
-          "Description": "ModelCurve",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Construct a Revit ModelCurve element from a Curve\n\nModelCurve.ReferenceCurveByCurve (curve: Curve): ModelCurve"
     }
   ],
   "Connectors": [
@@ -1552,11 +1453,6 @@
       "Id": "171dd6a495424b7286a134ed622f87c3"
     },
     {
-      "Start": "b60dd6cbbf2a4d07a339d004cc4f0e99",
-      "End": "6fdc5a96623047d0b200066a5ad847a8",
-      "Id": "3907433717e3486fb3cdd3f5ea3a62fe"
-    },
-    {
       "Start": "07778759d60445fe99b4295b34539c1b",
       "End": "fbc9a295d4ac48ea997fd5e935202205",
       "Id": "8d1e21b04014433cb558540e27f7ba9b"
@@ -1595,11 +1491,6 @@
       "Start": "9b566af24ff44388af0f0f0b8bb1f807",
       "End": "e09b814f871447f497b61bdbdcfbddd3",
       "Id": "83ce0ae4416b42b786facd9668656d10"
-    },
-    {
-      "Start": "aeb7d8a8392b41cc9a4eeefd7bb24a35",
-      "End": "67e7e07ad4ed4504860d2ea77383bc55",
-      "Id": "450603c94d5745ffb1ee2dc9f7efe94b"
     },
     {
       "Start": "aeb7d8a8392b41cc9a4eeefd7bb24a35",
@@ -1735,22 +1626,10 @@
       "Start": "e6553ea5f0964a6199f637c530cb2a53",
       "End": "f40bf67c57c8439cbf60cf760a804c2e",
       "Id": "9d1122d54ad740eeaf9a6ce186cc0e2e"
-    },
-    {
-      "Start": "a211cca00c174041b00668c671db1510",
-      "End": "79f855eee1334f3e9abe8d5631706280",
-      "Id": "849815bb658f4ff8a513a5cdd13b0f1a"
     }
   ],
   "Dependencies": [],
-  "Bindings": [
-    {
-      "NodeId": "c1e10fd1-974e-4374-b6ec-0766615d3df4",
-      "Binding": {
-        "ByGeometries_InClassDecl-1_InFunctionScope-1_Instance0_c1e10fd1-974e-4374-b6ec-0766615d3df4": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMC4xLjQzNTclMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPnRydWU8L0Jhc2UtMF9IYXNEYXRhPg0KPEJhc2UtMF9EYXRhIGlkPSJyZWYtMyI+UEZOUFFWQXRSVTVXT2tWdWRtVnNiM0JsSUhodGJHNXpPbmh6YVQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0V0YVc1emRHRnVZMlVpSUhodGJHNXpPbmh6WkQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0VpSUhodGJHNXpPbE5QUVZBdFJVNURQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SWdlRzFzYm5NNlUwOUJVQzFGVGxZOUltaDBkSEE2THk5elkyaGxiV0Z6TG5odGJITnZZWEF1YjNKbkwzTnZZWEF2Wlc1MlpXeHZjR1V2SWlCNGJXeHVjenBqYkhJOUltaDBkSEE2THk5elkyaGxiV0Z6TG0xcFkzSnZjMjltZEM1amIyMHZjMjloY0M5bGJtTnZaR2x1Wnk5amJISXZNUzR3SWlCVFQwRlFMVVZPVmpwbGJtTnZaR2x1WjFOMGVXeGxQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SStEUW84VTA5QlVDMUZUbFk2UW05a2VUNE5DanhoTVRwVFpYSnBZV3hwZW1GaWJHVkpaQ0JwWkQwaWNtVm1MVEVpSUhodGJHNXpPbUV4UFNKb2RIUndPaTh2YzJOb1pXMWhjeTV0YVdOeWIzTnZablF1WTI5dEwyTnNjaTl1YzJGemMyVnRMMUpsZG1sMFUyVnlkbWxqWlhNdVVHVnljMmx6ZEdWdVkyVXZVbVYyYVhSVFpYSjJhV05sY3lVeVF5VXlNRlpsY25OcGIyNGxNMFF5TGpBdU1DNDBNell3SlRKREpUSXdRM1ZzZEhWeVpTVXpSRzVsZFhSeVlXd2xNa01sTWpCUWRXSnNhV05MWlhsVWIydGxiaVV6Ukc1MWJHd2lQZzBLUEhOMGNtbHVaMGxFSUdsa1BTSnlaV1l0TXlJK09ETTVZV0kyT0dNdE5EWTNNQzAwTUdWaUxUbGpZMll0WkRReVpXTmxaVFZsT1RVMkxUQXdNREF3T1RoaFBDOXpkSEpwYm1kSlJENE5DanhwYm5SSlJENHlORFF5UEM5cGJuUkpSRDROQ2p3dllURTZVMlZ5YVdGc2FYcGhZbXhsU1dRK0RRbzhMMU5QUVZBdFJVNVdPa0p2WkhrK0RRbzhMMU5QUVZBdFJVNVdPa1Z1ZG1Wc2IzQmxQZzBLPC9CYXNlLTBfRGF0YT4NCjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+DQo8L2ExOkNhbGxTaXRlX3gwMDJCX1RyYWNlU2VyaWFsaXNlckhlbHBlcj4NCjwvU09BUC1FTlY6Qm9keT4NCjwvU09BUC1FTlY6RW52ZWxvcGU+DQo="
-      }
-    }
-  ],
+  "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
@@ -1842,16 +1721,6 @@
         "Excluded": false,
         "X": -22398.890979387,
         "Y": -19203.6985393764
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "ImportInstance.ByGeometries",
-        "Id": "c1e10fd1974e4374b6ec0766615d3df4",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -22861.9182723749,
-        "Y": -20305.5957145932
       },
       {
         "ShowGeometry": true,
@@ -2172,26 +2041,6 @@
         "Excluded": false,
         "X": -25017.8259159932,
         "Y": -20273.2479544427
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Form.ByLoftCrossSections",
-        "Id": "ae4bfdfe524a4a5cbd6475fd56be89af",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -22586.5445982076,
-        "Y": -20518.126024631
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "ModelCurve.ReferenceCurveByCurve",
-        "Id": "799b4dce33ec4a2585187d988f7e267a",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": -22867.8842411053,
-        "Y": -20500.6220741811
       }
     ],
     "Annotations": [
@@ -2238,20 +2087,6 @@
         "Background": "#FFC1D676"
       },
       {
-        "Id": "690220821a204984bcfb78583354d477",
-        "Title": "Geometry is not the same as a Revit Element:\r\nUse Import Instance To create Revit Imports from Surfaces and Solids in any Revit Environment, use Points and Curves to place Family Instances, or create Form in Mass and Generic Model By Point (Adaptive Component) Families",
-        "Nodes": [],
-        "Left": -22889.9191441972,
-        "Top": -20411.205823341,
-        "Width": 0.0,
-        "Height": 0.0,
-        "FontSize": 36.0,
-        "InitialTop": 0.0,
-        "InitialHeight": 0.0,
-        "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
-      },
-      {
         "Id": "283a0dbdc0684cbdbcac0503752aca10",
         "Title": "Edges, Points and other features can be derived from Surfaces using \"Actions\" appropriate to those geometries",
         "Nodes": [],
@@ -2266,8 +2101,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": 11370.475576651608,
-    "Y": 9258.8939269095827,
-    "Zoom": 0.44773099330677668
+    "X": 5425.6221870986428,
+    "Y": 4548.8401237806765,
+    "Zoom": 0.21567110608317777
   }
 }

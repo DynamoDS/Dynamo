@@ -1,0 +1,16 @@
+<Workspace Version="0.8.1.1693" X="30" Y="327.261854166667" zoom="2.525" Name="Color.Aqua" ID="82ef267e-5ca1-4150-80ad-7eb2d995c85b" Description="Returns the colour aqua." Category="Clockwork.Core.Color.Create">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="DSCore.Color" resolvedName="DSCore.Color" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.Output guid="d6c98772-88dc-4dfc-8106-d8ad5fe3fcb1" type="Dynamo.Nodes.Output" nickname="Output" x="426" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="0,255,255" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="7ae7b396-e7e9-47bf-b256-d45ac25a2ea4" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="0" y="4.21833333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="DSCore.Color.ByARGB(255,0,255,255);" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="7ae7b396-e7e9-47bf-b256-d45ac25a2ea4" start_index="0" end="d6c98772-88dc-4dfc-8106-d8ad5fe3fcb1" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>
