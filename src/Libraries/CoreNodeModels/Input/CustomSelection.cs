@@ -15,7 +15,7 @@ using CoreNodeModels.Properties;
 
 namespace CoreNodeModels.Input
 {
-    [NodeName("Custom Selection")]
+    [NodeName("Custom Dropdown")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("CustomSelectionNodeDescription", typeof(Properties.Resources))]
     [NodeSearchTags("CustomSelectionSearchTags", typeof(Properties.Resources))]
