@@ -248,7 +248,7 @@ namespace Dynamo.Tests
 
             var entries = model.SearchModel.SearchEntries.ToList();
             var nodesInLib = entries.Where(x => x.Assembly.Contains("SampleLibraryZeroTouch")).Select(y => y.FullName).ToList();
-            Assert.AreEqual(13, nodesInLib.Count());
+            Assert.AreEqual(12, nodesInLib.Count());
             Assert.IsTrue(entries.Count(x => x.FullName == "SampleLibraryZeroTouch.Examples.TransformableExample.TransformObject") == 1);
 
         }

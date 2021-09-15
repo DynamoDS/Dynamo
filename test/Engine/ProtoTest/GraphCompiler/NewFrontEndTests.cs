@@ -21,7 +21,7 @@ namespace ProtoTest.GraphCompiler
             ElementResolver elementResolver = new ElementResolver();
             ParseParam parseParam = new ParseParam(Guid.NewGuid(), code, elementResolver);
             
-            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam));
+            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), parseParam));
             Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Count() > 0);
 
             var parsedNode = parseParam.ParsedNodes.ElementAt(0);
@@ -72,7 +72,7 @@ namespace ProtoTest.GraphCompiler
             ElementResolver elementResolver = new ElementResolver();
             ParseParam parseParam = new ParseParam(Guid.NewGuid(), code, elementResolver);
 
-            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam));
+            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), parseParam));
             Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Any());
 
             var inputIdentifier = parseParam.UnboundIdentifiers;
@@ -90,7 +90,7 @@ namespace ProtoTest.GraphCompiler
                 ElementResolver elementResolver = new ElementResolver();
                 ParseParam parseParam = new ParseParam(Guid.NewGuid(), expression, elementResolver);
 
-                Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam));
+                Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), parseParam));
                 Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Any());
 
                 var inputIdentifier = parseParam.UnboundIdentifiers;
