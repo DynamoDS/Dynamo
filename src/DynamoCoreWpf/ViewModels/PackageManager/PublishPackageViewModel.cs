@@ -69,6 +69,17 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// A made up dummy class for UI testing.
+        /// </summary>
+        public class PackageContentItem
+        {
+            public bool IsSelected { get; set; }
+            public string ItemName { get; set; }
+            public string FilePath { get; set; }
+            public string TargetPath { get; set; }
+        }
+
+        /// <summary>
         /// A event called when publishing was a success
         /// </summary>
         public event PublishSuccessHandler PublishSuccess;
@@ -550,6 +561,9 @@ namespace Dynamo.PackageManager
             }
         }
 
+        public ObservableCollection<PackageContentItem> PackageContentItems { get; set; } =
+            new ObservableCollection<PackageContentItem>();
+
         /// <summary>
         /// CustomNodeDefinitions property 
         /// </summary>
@@ -632,6 +646,35 @@ namespace Dynamo.PackageManager
             Dependencies = new ObservableCollection<PackageDependency>();
             Assemblies = new List<PackageAssembly>();
             PropertyChanged += ThisPropertyChanged;
+
+            this.PackageContentItems.Add(new PackageContentItem()
+            {
+                FilePath = @"C:\Test\SomePath\SomeFile.dll",
+                IsSelected = false,
+                ItemName = "Some File",
+                TargetPath = @"C:\Test\SomePath\SomeFile.dll"
+            });
+            this.PackageContentItems.Add(new PackageContentItem()
+            {
+                FilePath = @"C:\Test\SomePath\SomeFile.dll",
+                IsSelected = false,
+                ItemName = "Some File",
+                TargetPath = @"C:\Test\SomePath\SomeFile.dll"
+            });
+            this.PackageContentItems.Add(new PackageContentItem()
+            {
+                FilePath = @"C:\Test\SomePath\SomeFile.dll",
+                IsSelected = false,
+                ItemName = "Some File",
+                TargetPath = @"C:\Test\SomePath\SomeFile.dll"
+            });
+            this.PackageContentItems.Add(new PackageContentItem()
+            {
+                FilePath = @"C:\Test\SomePath\SomeFile.dll",
+                IsSelected = false,
+                ItemName = "Some File",
+                TargetPath = @"C:\Test\SomePath\SomeFile.dll"
+            });
         }
 
         /// <summary>
