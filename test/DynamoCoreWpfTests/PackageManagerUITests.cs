@@ -472,7 +472,7 @@ namespace DynamoCoreWpfTests
         {
             var currentDynamoModel = ViewModel.Model;
 
-            PathManager.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
+            PathManager.BuiltinPackagesDirectory = null;
             currentDynamoModel.PreferenceSettings.DisableBuiltinPackages = true;
             currentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>() { };
             var loadPackageParams = new LoadPackageParams
@@ -488,19 +488,12 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, loader.LocalPackages.Count());
             var vm = new PackagePathViewModel(loader, loadPackageParams, Model.CustomNodeManager);
 
-            vm.RequestShowFileDialog += (sender, args) => { args.Path = Path.Combine(TestDirectory, "bltin_packages_restart"); };
+            vm.RequestShowFileDialog += (sender, args) => { args.Path = BuiltinPackagesTestDir; };
             //add a new path to SignedPackage2
             vm.AddPathCommand.Execute(null);
 
-            Console.WriteLine("RootLocations before commit: " + string.Join("|", vm.RootLocations.Select(x => x)));
-            Console.WriteLine("RootLocations before commit: " + string.Join("|", vm.RootLocations.Select(x => x)));
-            Console.WriteLine("CustomPackageFolders before commit: " + string.Join("|", loadPackageParams.Preferences.CustomPackageFolders));
-
             //save the new path 
             vm.SaveSettingCommand.Execute(null);
-            Console.WriteLine("CustomPackageFolders after commit: " + string.Join("|", loadPackageParams.Preferences.CustomPackageFolders));
-            Console.WriteLine("loader.LocalPackages after commit: " + string.Join("|", loader.LocalPackages.Select(x => x.Name)));
-            Console.WriteLine("loadPackageParams.NewPaths after commit: " + string.Join("|", loadPackageParams.NewPaths ?? new List<string>()));
 
             var pkg = loader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(pkg, "Expected Signed package to be valid");
