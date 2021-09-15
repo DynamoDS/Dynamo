@@ -557,7 +557,6 @@ namespace DynamoCoreWpfTests
             var pkgLoader = GetPackageLoader();
 
             var mockGreg = new Mock<IGregClient>();
-            //mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Returns(;
 
             var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
             var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object);
@@ -659,6 +658,22 @@ namespace DynamoCoreWpfTests
             {
                 Assert.AreEqual(expectedResults[i], operations[i]);
             }
+        }
+
+        [Test]
+        [Description("User tries to download a package with dependencies on other packages but some fail to download.")]
+        public void InstallsPackagesEvenIfSomeFailToDownloadShouldNotThrow()
+        {
+            var mockGreg = new Mock<IGregClient>();
+            var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmVmMock = new PackageManagerClientViewModel(ViewModel, clientmock.Object);
+            Assert.DoesNotThrow(() =>
+            {
+                pmVmMock.InstallPackage(new PackageDownloadHandle(), string.Empty, string.Empty);
+                pmVmMock.InstallPackage(new PackageDownloadHandle() {DownloadState=PackageDownloadHandle.State.Error }, "somepath","somepath");
+            });
+          
+
         }
         #endregion
 
