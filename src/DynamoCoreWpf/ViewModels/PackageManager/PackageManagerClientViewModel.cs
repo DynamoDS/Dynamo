@@ -500,9 +500,10 @@ namespace Dynamo.ViewModels
             {
                 System.Diagnostics.Debug.Assert(package.full_dependency_ids.Count == package.full_dependency_versions.Count);
                 // get all of the dependency version headers
+                var reversedVersions = package.full_dependency_versions.Select(x => x).Reverse().ToList();
                 var dependencyVersionHeaders = package.full_dependency_ids.Select(x=>x).Reverse().Select((dep, i) =>
                 {
-                    var depVersion = package.full_dependency_versions.Select(x => x).Reverse().ElementAt(i);
+                    var depVersion = reversedVersions[i];
                     try
                     {
                         return Model.GetPackageVersionHeader(dep._id, depVersion);
@@ -705,7 +706,7 @@ namespace Dynamo.ViewModels
                     var matchingDownload = downloadTasks.Where(x => x.Result.handle.Id == dep.id).FirstOrDefault();
                     if(matchingDownload != null)
                     {
-                        InstallPackage(matchingDownload.Result.handle, matchingDownload.Result.dlpath, installPath);
+                        InstallPackage(matchingDownload.Result.handle, matchingDownload.Result.downloadPath, installPath);
                     }
                    
                 }
@@ -727,7 +728,7 @@ namespace Dynamo.ViewModels
         /// 
         /// </summary>
         /// <param name="packageDownloadHandle">package download handle</param>
-        internal virtual Task<(PackageDownloadHandle handle, string dlpath)> Download(PackageDownloadHandle packageDownloadHandle)
+        internal virtual Task<(PackageDownloadHandle handle, string downloadPath)> Download(PackageDownloadHandle packageDownloadHandle)
         {
             Downloads.Add(packageDownloadHandle);
 
@@ -743,9 +744,9 @@ namespace Dynamo.ViewModels
                 if (!res.Success)
                 {
                     packageDownloadHandle.Error(res.Error);
-                    return (handle:packageDownloadHandle, dlpath:string.Empty);
+                    return (handle:packageDownloadHandle, downloadPath: string.Empty);
                 }
-                return (handle: packageDownloadHandle, dlpath: pathDl);
+                return (handle: packageDownloadHandle, downloadPath: pathDl);
             });
         }
 
