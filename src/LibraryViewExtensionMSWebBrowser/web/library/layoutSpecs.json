@@ -651,29 +651,6 @@
               "childElements": []
             },
             {
-              "text": "Units",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
-                {
-                  "path": "Core.Units.Convert Between Units"
-                },
-                {
-                  "path": "Core.Units.Number From Feet and Inches"
-                },
-                {
-                  "path": "Core.Units.Unit Types"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Math.RadiansToDegrees"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Math.DegreesToRadians"
-                }
-              ],
-              "childElements": []
-            },
-            {
               "text": "Operators",
               "iconUrl": "./dist/resources/Category.Operators.svg",
               "elementType": "group",
@@ -739,6 +716,142 @@
                 },
                 {
                   "path": "DSCoreNodes.DSCore.Math.Xor"
+                }
+              ],
+              "childElements": []
+            }
+          ]
+        },
+        {
+          "text": "Units",
+          "iconUrl": "./dist/resources/Category.Units.svg",
+          "elementType": "category",
+          "include": [],
+          "childElements": [
+            {
+              "text": "Quantity",
+              "iconUrl": "",
+              "elementType": "group",
+              "include": [
+                {
+                  "path": "DynamoUnits.DynamoUnits.Quantity.Name"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.Quantity.TypeId"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.Quantity.ByTypeID"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.Quantity.Units"
+                }
+              ],
+              "childElements": []
+            },
+            {
+              "text": "Unit",
+              "iconUrl": "",
+              "elementType": "group",
+              "include": [
+                {
+                  "path": "DynamoUnits.DynamoUnits.Unit.Name"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.Unit.TypeId"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.Unit.ByTypeID"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.Unit.AreUnitsConvertible"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.Unit.ConvertibleUnits"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.Unit.QuantitiesContainingUnit"
+                }
+              ],
+              "childElements": []
+            },
+            {
+              "text": "Utilities",
+              "iconUrl": "",
+              "elementType": "group",
+              "include": [
+                {
+                  "path": "Core.Units.Convert Between Units"
+                },
+                {
+                  "path": "Core.Units.Convert Units"
+                },
+                {
+                  "path": "Core.Units.Parse Unit Input"
+                },
+                {
+                  "path": "Core.Units.Number From Feet and Inches"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.Math.RadiansToDegrees"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.Math.DegreesToRadians"
+                },
+                {
+                  "path": "Core.Units.Quantities"
+                },
+                {
+                  "path": "Core.Units.Units"
+                },
+                {
+                  "path": "Core.Units.Symbols"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.Utilities.ConvertByUnits"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.Utilities.ConvertByUnitIds"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.Utilities.ParseExpressionByUnit"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.Utilities.ParseExpression"
+                }
+              ],
+              "childElements": []
+            },
+            {
+              "text": "Symbol",
+              "iconUrl": "",
+              "elementType": "group",
+              "include": [
+                {
+                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.Name"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.TypeId"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.ByTypeID"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.Unit"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.Text"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.Space"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.SymbolsByUnit"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.StringifyDecimal"
+                },
+                {
+                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.StringifyFraction"
                 }
               ],
               "childElements": []
