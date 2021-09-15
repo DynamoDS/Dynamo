@@ -119,10 +119,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public double Top
         {
-            get { return model.Y; }
+            get { return model.Y- OneThirdWidth; }
             set
             {
-                model.Y = value;
+                model.Y = value + OneThirdWidth;
                 RaisePropertyChanged(nameof(Top));
             }
         }
