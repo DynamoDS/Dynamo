@@ -500,6 +500,8 @@ namespace Dynamo.ViewModels
             {
                 System.Diagnostics.Debug.Assert(package.full_dependency_ids.Count == package.full_dependency_versions.Count);
                 // get all of the dependency version headers
+                // we reverse these arrays because the package manager returns dependencies in topological order starting at 
+                // the current package - and we want to install the dependencies first!.
                 var reversedVersions = package.full_dependency_versions.Select(x => x).Reverse().ToList();
                 var dependencyVersionHeaders = package.full_dependency_ids.Select(x=>x).Reverse().Select((dep, i) =>
                 {
@@ -700,7 +702,9 @@ namespace Dynamo.ViewModels
                 //wait for all downloads.
                 await Task.WhenAll(downloadTasks);
 
-                //when above downloads complete, start installing packages in dependency order.
+                // When above downloads complete, start installing packages in dependency order.
+                // The downloads have completed in a random order, but the dependencyVersionHeaders list is in correct topological
+                // install order.
                 foreach(var dep in dependencyVersionHeaders)
                 {
                     var matchingDownload = downloadTasks.Where(x => x.Result.handle.Id == dep.id).FirstOrDefault();
