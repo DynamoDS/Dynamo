@@ -2385,7 +2385,7 @@ namespace Dynamo.Models
         public void Paste(Point2D targetPoint, bool useOffset = true)
         {
             //When called from somewhere other than StateMachine and only ConnectorPins are selected.
-            if (!ClipBoard.Where(m => !(m is ConnectorPinModel)).Select(m => m).Any())
+            if (ClipBoard.All(m => m is ConnectorPinModel))
             {
                 return;
             }
