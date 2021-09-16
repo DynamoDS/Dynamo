@@ -690,6 +690,7 @@ namespace Dynamo.ViewModels
         {
             // The deletion (and accompanying undo/redo actions) get relayed to the WorkspaceModel.
             workspaceViewModel.Model.ClearConnector(ConnectorModel);
+            workspaceViewModel.Model.HasUnsavedChanges = true;
         }
         /// <summary>
         /// Toggles wire viz on/off. This can be overwritten when a node is selected in hidden mode.
