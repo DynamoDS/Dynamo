@@ -1,13 +1,11 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using Dynamo.Graph.Connectors;
+using System.Windows.Navigation;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
@@ -25,7 +23,9 @@ namespace Dynamo.ViewModels
         private DelegateCommand _hideConnectionsCommand;
         private const double autocompletePopupSpacing = 2.5;
         private SolidColorBrush portBorderBrushColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
+        private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
         private SolidColorBrush portBackgroundColor = new SolidColorBrush(Color.FromArgb(0, 60, 60, 60));
+        private SolidColorBrush useLevelsMenuColor = new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
         internal bool inputPortDisconnectedByConnectCommand = false;
         private bool _showUseLevelMenu;
         private bool areConnectorsHidden;
@@ -142,7 +142,6 @@ namespace Dynamo.ViewModels
             set
             {
                 _port.UsingDefaultValue = value;
-                RaisePropertyChanged(nameof(UsingDefaultValueMarkerVisibile));
             }
         }
 
@@ -203,15 +202,6 @@ namespace Dynamo.ViewModels
                 if (UseLevels) return Visibility.Visible;
                 return Visibility.Hidden;
             }
-        }
-
-        /// <summary>
-        /// Determines whether the blue marker appears beside an input port, indicating
-        /// the default value for this port is being used.
-        /// </summary>
-        public bool UsingDefaultValueMarkerVisibile
-        {
-            get => PortType == PortType.Input && UsingDefaultValue && DefaultValueEnabled;
         }
 
         /// <summary>
@@ -363,6 +353,19 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Sets the color of the port's border brush
+        /// </summary>
+        public SolidColorBrush PortValueMarkerColor
+        {
+            get => portValueMarkerColor;
+            set
+            {
+                portValueMarkerColor = value;
+                RaisePropertyChanged(nameof(PortValueMarkerColor));
+            }
+        }
+
+        /// <summary>
         /// Sets the color of the port's background - affected by multiple factors such as
         /// MouseOver, IsConnected, Node States (active, inactie, frozen 
         /// </summary>
@@ -373,6 +376,20 @@ namespace Dynamo.ViewModels
             {
                 portBackgroundColor = value;
                 RaisePropertyChanged(nameof(PortBackgroundColor));
+            }
+        }
+
+        /// <summary>
+        /// Sets the color of the use levels popup in the input port context menu.
+        /// This changes when the Keep List Structure option is activated.
+        /// </summary>
+        public SolidColorBrush UseLevelsMenuColor
+        {
+            get => useLevelsMenuColor;
+            set
+            {
+                useLevelsMenuColor = value;
+                RaisePropertyChanged(nameof(UseLevelsMenuColor));
             }
         }
 
@@ -516,6 +533,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "KeepListStructure":
                     RaisePropertyChanged("ShouldKeepListStructure");
+                    RaisePropertyChanged(nameof(UseLevelsMenuColor));
                     RefreshPortColors();
                     break;
             }
@@ -541,7 +559,7 @@ namespace Dynamo.ViewModels
             var useLevel = (bool)parameter;
             var command = new DynamoModel.UpdateModelValueCommand(
                 Guid.Empty, _node.NodeLogic.GUID, "UseLevels", string.Format("{0}:{1}", _port.Index, useLevel));
-
+            
             _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
             RaisePropertyChanged(nameof(UseLevelSpinnerVisible));
         }
@@ -598,6 +616,10 @@ namespace Dynamo.ViewModels
             bool keepListStructure = (bool)parameter;
             var command = new DynamoModel.UpdateModelValueCommand(
                 Guid.Empty, _node.NodeLogic.GUID, "KeepListStructure", string.Format("{0}:{1}", _port.Index, keepListStructure));
+
+            UseLevelsMenuColor = keepListStructure
+                ? new SolidColorBrush(Color.FromArgb(255, 60, 60, 60))
+                : new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
 
             _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
@@ -755,29 +777,33 @@ namespace Dynamo.ViewModels
                 // Special case for keeping list structure visual appearance
                 if (_port.UseLevels && _port.KeepListStructure && _port.IsConnected)
                 {
-                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(94, 165, 196));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                    PortValueMarkerColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(83, 126, 145));
+                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(168, 181, 187));
                 }
 
                 // Port has a default value, shows blue marker
                 else if (UsingDefaultValue && DefaultValueEnabled)
                 {
-                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                    PortValueMarkerColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(60, 60, 60));
+                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(161, 161, 161));
                 }
                 else
                 {
                     // Port isn't connected and has no default value (or isn't using it)
                     if (!_port.IsConnected)
                     {
-                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(107, 67, 67));
-                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(244, 134, 134));
+                        PortValueMarkerColor = new SolidColorBrush(Color.FromRgb(235, 85, 85));
+                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(60, 60, 60));
+                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(161, 161, 161));
                     }
                     // Port is connected and has no default value
                     else
                     {
-                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
-                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                        PortValueMarkerColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(60, 60, 60));
+                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(161, 161, 161));
                     }
                 }
             }
@@ -786,13 +812,13 @@ namespace Dynamo.ViewModels
             {
                 if (_port.IsConnected)
                 {
-                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(60, 60, 60));
+                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(161, 161, 161));
                 }
                 else
                 {
                     PortBackgroundColor = new SolidColorBrush(Color.FromRgb(60, 60, 60));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(204, 204, 204));
+                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(161, 161, 161));
                 }
             }
         }

@@ -141,7 +141,6 @@
     <SolidColorBrush x:Key="PortIsNotConnectedBorderBrush" Color="#F48686" />
     <SolidColorBrush x:Key="PortKeepListStructureBorderBrush" Color="#6AC0E7" />
 
-    <SolidColorBrush x:Key="PortUsingDefaultValueMarkerColor" Color="#6AC0E7" />
     <SolidColorBrush x:Key="PortUseLevelsCheckBoxColor" Color="#808080" />
 
     <!--  Connector  -->
