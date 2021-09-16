@@ -54,7 +54,6 @@ namespace Dynamo.ViewModels
         private bool enableTSpline;
         private bool showEdges;
         private bool isolateSelectedGeometry;
-        private bool showPreviewBubbles;
         private bool showCodeBlockLineNumber;
         private RunType runSettingsIsChecked;
         private Dictionary<string, TabSettings> preferencesTabs;
@@ -331,6 +330,40 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Flag specifying whether loading built-in packages
+        /// is disabled, if true, or enabled, if false.
+        /// </summary>
+        public bool DisableBuiltInPackages 
+        { 
+            get 
+            {
+                return preferenceSettings.DisableBuiltinPackages;
+            } 
+            set 
+            {
+                preferenceSettings.DisableBuiltinPackages = value;
+                RaisePropertyChanged(nameof(DisableBuiltInPackages));
+            } 
+        }
+
+        /// <summary>
+        /// Flag specifying whether loading custom packages
+        /// is disabled, if true, or enabled, if false.
+        /// </summary>
+        public bool DisableCustomPackages 
+        { 
+            get
+            {
+                return preferenceSettings.DisableCustomPackageLocations;
+            }
+            set
+            {
+                preferenceSettings.DisableCustomPackageLocations = value;
+                RaisePropertyChanged(nameof(DisableCustomPackages));
+            } 
+        }
+
+        /// <summary>
         /// FontSizesList contains the list of sizes for fonts defined (the ones defined are Small, Medium, Large, Extra Large)
         /// </summary>
         public ObservableCollection<string> FontSizeList
@@ -499,7 +532,6 @@ namespace Dynamo.ViewModels
             set
             {
                 preferenceSettings.ShowPreviewBubbles = value;
-                showPreviewBubbles = value;
                 RaisePropertyChanged(nameof(ShowPreviewBubbles));
             }
         }
@@ -930,6 +962,12 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(SelectedPackagePathForInstall):
                     description = Res.PreferencesViewSelectedPackagePathForDownload;
+                    goto default;
+                case nameof(DisableBuiltInPackages):
+                    description = Res.PreferencesViewDisableBuiltInPackages;
+                    goto default;
+                case nameof(DisableCustomPackages):
+                    description = Res.PreferencesViewDisableCustomPackages;
                     goto default;
                 case nameof(RunSettingsIsChecked):
                     description = Res.PreferencesViewRunSettingsLabel;

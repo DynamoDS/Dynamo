@@ -5028,6 +5028,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disable Built-In Package Path.
+        /// </summary>
+        public static string PreferencesViewDisableBuiltInPackages {
+            get {
+                return ResourceManager.GetString("PreferencesViewDisableBuiltInPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable Custom Package Paths.
+        /// </summary>
+        public static string PreferencesViewDisableCustomPackages {
+            get {
+                return ResourceManager.GetString("PreferencesViewDisableCustomPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Node Autocomplete.
         /// </summary>
         public static string PreferencesViewEnableNodeAutoComplete {

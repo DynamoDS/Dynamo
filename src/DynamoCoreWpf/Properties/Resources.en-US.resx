@@ -821,6 +821,14 @@ You will get a chance to save your work.</value>
     <value>Selected package path for download</value>
     <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory | Selected package path for download</comment>
   </data>
+  <data name="PreferencesViewDisableBuiltInPackages" xml:space="preserve">
+    <value>Disable Built-In Package Path</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | Disable Built-In Package Path</comment>
+  </data>
+  <data name="PreferencesViewDisableCustomPackages" xml:space="preserve">
+    <value>Disable Custom Package Paths</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | Disable Custom Package Paths</comment>
+  </data>
   <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
     <value>Square Centimeter</value>
     <comment>Setting menu | Square centimeter</comment>
