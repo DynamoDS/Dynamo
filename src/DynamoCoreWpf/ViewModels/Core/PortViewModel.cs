@@ -25,7 +25,6 @@ namespace Dynamo.ViewModels
         private SolidColorBrush portBorderBrushColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
         private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
         private SolidColorBrush portBackgroundColor = new SolidColorBrush(Color.FromArgb(0, 60, 60, 60));
-        private SolidColorBrush useLevelsMenuColor = new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
         internal bool inputPortDisconnectedByConnectCommand = false;
         private bool _showUseLevelMenu;
         private bool areConnectorsHidden;
@@ -381,15 +380,16 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Sets the color of the use levels popup in the input port context menu.
-        /// This changes when the Keep List Structure option is activated.
+        /// This changes when the Keep List Structure option is activated and the port
+        /// is connected, upon which it turns blue.
         /// </summary>
         public SolidColorBrush UseLevelsMenuColor
         {
-            get => useLevelsMenuColor;
-            set
+            get
             {
-                useLevelsMenuColor = value;
-                RaisePropertyChanged(nameof(UseLevelsMenuColor));
+                return ShouldKeepListStructure && _port.IsConnected
+                    ? new SolidColorBrush(Color.FromArgb(255, 60, 60, 60))
+                    : new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
             }
         }
 
@@ -527,13 +527,13 @@ namespace Dynamo.ViewModels
                     break;
                 case "UseLevels":
                     RaisePropertyChanged("UseLevels");
+                    RaisePropertyChanged(nameof(UseLevelsMenuColor));
                     break;
                 case "Level":
                     RaisePropertyChanged("Level");
                     break;
                 case "KeepListStructure":
                     RaisePropertyChanged("ShouldKeepListStructure");
-                    RaisePropertyChanged(nameof(UseLevelsMenuColor));
                     RefreshPortColors();
                     break;
             }
@@ -616,11 +616,7 @@ namespace Dynamo.ViewModels
             bool keepListStructure = (bool)parameter;
             var command = new DynamoModel.UpdateModelValueCommand(
                 Guid.Empty, _node.NodeLogic.GUID, "KeepListStructure", string.Format("{0}:{1}", _port.Index, keepListStructure));
-
-            UseLevelsMenuColor = keepListStructure
-                ? new SolidColorBrush(Color.FromArgb(255, 60, 60, 60))
-                : new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
-
+            
             _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -821,6 +817,7 @@ namespace Dynamo.ViewModels
                     PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(161, 161, 161));
                 }
             }
+            RaisePropertyChanged(nameof(UseLevelsMenuColor));
         }
 
         /// <summary>
