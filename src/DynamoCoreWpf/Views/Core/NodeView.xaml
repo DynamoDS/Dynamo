@@ -41,7 +41,7 @@
         </Grid.Style>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" MinWidth="22" />
+            <ColumnDefinition Width="*" MinWidth="10" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
@@ -414,7 +414,7 @@
             </Ellipse>
 
             <TextBlock Name="NameBlock"
-                       Margin="6,3,20,0"
+                       Margin="6,3,6,0"
                        VerticalAlignment="Center"
                        Background="{x:Null}"
                        FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -434,9 +434,9 @@
                 <Ellipse Name="nodeRenamedBlueDot"
                          Width="8"
                          Height="8"
-                         Margin="6"
+                         Margin="0,0,6,0"
                          Fill="{StaticResource Blue300Brush}"
-                         Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                         Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Grid.ToolTip>
                     <dynui:DynamoToolTip AttachmentSide="Top" Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>

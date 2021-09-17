@@ -74,6 +74,8 @@
                         </Rectangle>
                         <TextBlock Name="portNameTb"
                                    Width="Auto"
+                                   TextOptions.TextFormattingMode="Display"
+                                   TextOptions.TextRenderingMode="ClearType"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
                                    FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -176,7 +178,7 @@
                     </Style>
                 </Border.Style>
             </Border>
-            <!--  arker that appears to the left side of an input port  -->
+            <!--  Marker that appears to the left side of an input port  -->
             <Rectangle x:Name="portValueMarker"
                        Width="6px"
                        Height="29px"
