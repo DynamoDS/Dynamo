@@ -122,6 +122,8 @@ namespace Dynamo.ViewModels
             get { return model.Y- OneThirdWidth; }
             set
             {
+                //Through trial and error using the OneThirdWidth value to offset the pin location works 
+                //better than using OneHalf.
                 model.Y = value + OneThirdWidth;
                 RaisePropertyChanged(nameof(Top));
             }

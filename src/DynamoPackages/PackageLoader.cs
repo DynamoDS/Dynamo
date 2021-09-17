@@ -227,11 +227,6 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void OnPackagesLoaded(IEnumerable<Assembly> assemblies)
-        {
-            PackagesLoaded?.Invoke(assemblies);
-        }
-
         private IEnumerable<CustomNodeInfo> OnRequestLoadCustomNodeDirectory(string directory, Graph.Workspaces.PackageInfo packageInfo)
         {
             if (RequestLoadCustomNodeDirectory != null)
@@ -257,6 +252,7 @@ namespace Dynamo.PackageManager
             // Prevent loading packages that have been specifically marked as unloaded
             if (package.LoadState.State == PackageLoadState.StateTypes.Unloaded) return;
 
+            List<Assembly> loadedAssemblies = new List<Assembly>();
             try
             {
                 // load node libraries
@@ -267,6 +263,7 @@ namespace Dynamo.PackageManager
                         try
                         {
                             OnRequestLoadNodeLibrary(assem.Assembly);
+                            loadedAssemblies.Add(assem.Assembly);
                         }
                         catch (LibraryLoadFailedException ex)
                         {
@@ -297,6 +294,7 @@ namespace Dynamo.PackageManager
 
                 package.SetAsLoaded();
                 PackgeLoaded?.Invoke(package);
+                PackagesLoaded?.Invoke(loadedAssemblies);
             }
             catch (CustomNodePackageLoadException e)
             {
@@ -337,7 +335,7 @@ namespace Dynamo.PackageManager
 
             var assemblies =
                 LocalPackages.SelectMany(x => x.EnumerateAndLoadAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
-            OnPackagesLoaded(assemblies.Select(x => x.Assembly));
+            PackagesLoaded?.Invoke(assemblies.Select(x => x.Assembly));
         }
 
         /// <summary>
@@ -355,7 +353,6 @@ namespace Dynamo.PackageManager
                     {
                         pathManager.AddResolutionPath(pkg.BinaryDirectory);
                     }
-
                 }
             }
 
@@ -379,13 +376,6 @@ namespace Dynamo.PackageManager
                     TryLoadPackageIntoLibrary(pkg);
                 }
             }
-
-            var assemblies = packages
-                .SelectMany(p => p.LoadedAssemblies.Where(y => y.IsNodeLibrary))
-                .Select(a => a.Assembly)
-                .ToList();
-
-            OnPackagesLoaded(assemblies);
         }
 
         /// <summary>
