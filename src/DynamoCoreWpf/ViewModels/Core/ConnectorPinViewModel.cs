@@ -152,8 +152,6 @@ namespace Dynamo.ViewModels
 
                 isCollapsed = value;
                 RaisePropertyChanged(nameof(IsCollapsed));
-                RaisePropertyChanged(nameof(IsTemporarilyVisible));
-                
             }
         }
 
@@ -173,7 +171,6 @@ namespace Dynamo.ViewModels
             {
                 isTemporarilyVisible = value;
                 RaisePropertyChanged(nameof(IsTemporarilyVisible));
-                RaisePropertyChanged(nameof(IsCollapsed));
             }
         }
 
