@@ -32,11 +32,11 @@
                 <Image.Style>
                     <Style TargetType="Image">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=IsVisible, Mode=OneWay}" Value="False">
+                            <DataTrigger Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True">
                                 <Setter Property="Opacity" Value="0.0"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="False"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=IsVisible, Mode=OneWay}" Value="True">
+                            <DataTrigger Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="False">
                                 <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_48_48.png"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                             </DataTrigger>
@@ -44,14 +44,14 @@
                                 <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_selected_48_48.png"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=IsPartlyVisible, Mode=OneWay}" Value="True">
+                            <DataTrigger Binding="{Binding Path=IsTemporarilyVisible, Mode=OneWay}" Value="True">
                                 <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_hidden_48_48.png"/>
                                 <Setter Property="Opacity" Value="1.0"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                             </DataTrigger>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=IsPartlyVisible, Mode=OneWay}" Value="True"/>
+                                    <Condition Binding="{Binding Path=IsTemporarilyVisible, Mode=OneWay}" Value="True"/>
                                     <Condition Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True"/>
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
