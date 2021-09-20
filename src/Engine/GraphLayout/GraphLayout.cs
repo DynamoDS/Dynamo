@@ -414,7 +414,7 @@ namespace GraphLayout
                     }
                     else if (n.LeftEdges.Count > 0 && AnchorRightEdges.Count == 0)
                     {
-                        n.Y = prevY + 10;
+                        n.Y = prevY;
                         prevY = n.Y;
                         layerUpdated = true;
                     }

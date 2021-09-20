@@ -487,6 +487,9 @@ namespace Dynamo.ViewModels
                 case "ToolTipContent":
                     RaisePropertyChanged("ToolTipContent");
                     break;
+                case nameof(NodeViewModel.ZIndex):
+                    RefreshHideWiresButton();
+                    break;
             }
         }
 
@@ -662,11 +665,14 @@ namespace Dynamo.ViewModels
 
                 if (connectorViewModel == null) continue;
 
-                connectorViewModel.HideConnectorCommand.Execute(SetConnectorsVisibility);
+                connectorViewModel.HideConnectorCommand.Execute(!SetConnectorsVisibility);
             }
             RefreshHideWiresButton();
         }
-
+        /// <summary>
+        /// Returns true if they are hidden.
+        /// </summary>
+        /// <returns></returns>
         private bool CheckIfConnectorsAreHidden()
         {
             if (_port.Connectors.Count < 1 || _node.WorkspaceViewModel.Connectors.Count < 1) return false;
@@ -676,7 +682,7 @@ namespace Dynamo.ViewModels
                 .FirstOrDefault(x => x.Nodevm.NodeModel.GUID == _port.Owner.GUID);
 
             if (connectorViewModel == null) return false;
-            return !connectorViewModel.IsDisplayed;
+            return connectorViewModel.IsCollapsed;
         }
 
 
