@@ -186,7 +186,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             if (string.IsNullOrEmpty(highlightColor))
             {
-                GuideBackgroundElement.HolePath.Stroke = Brushes.Black;
+                GuideBackgroundElement.HolePath.Stroke = Brushes.Transparent;
             }
             else
             {
