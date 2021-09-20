@@ -14,7 +14,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private UIElement hostUIElement;
         private double verticalPopupOffSet;
         private double horizontalPopupOffSet;
-
+        private string htmlPage;
         /// <summary>
         /// Host Name, this property will contain the name of the host control located in the TreeView
         /// </summary>
@@ -94,5 +94,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 horizontalPopupOffSet = value;
             }
         }
+
+        [JsonProperty("HtmlPage")]
+        public string HtmlPage { get => htmlPage; set => htmlPage = value; }
     }
 }

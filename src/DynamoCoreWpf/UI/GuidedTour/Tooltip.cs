@@ -126,6 +126,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             //The Popup Viewmodel and Host is passed as parameters to the PopupWindow so it will create the popup with the needed values (width, height)
             stepUIPopup = new PopupWindow(popupViewModel,HostPopupInfo);
+            
         }
     }
 }

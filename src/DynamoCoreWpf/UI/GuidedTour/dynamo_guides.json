@@ -23,7 +23,7 @@
 				"Sequence": 1,
 				"Name": "library",
 				"Type": "tooltip",
-				"ShowLibrary":  true,
+				"ShowLibrary": true,
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
 				"Height": 250,
@@ -92,11 +92,11 @@
 					"VerticalPopupOffset": 50,
 					"HorizontalPopupOffset": 230
 				},
-				"UIAutomation":{
-						"Sequence": 1,
-						"ControlType": "MenuItem",
-						"Name": "dynamoMenu",
-						"Action": "open"
+				"UIAutomation": {
+					"Sequence": 1,
+					"ControlType": "MenuItem",
+					"Name": "dynamoMenu",
+					"Action": "open"
 				}
 			},
 			{
@@ -116,11 +116,11 @@
 					"VerticalPopupOffset": 20,
 					"HorizontalPopupOffset": 170
 				},
-				"UIAutomation":{
-						"Sequence": 1,
-						"ControlType": "MenuItem",
-						"Name": "HelpMenu",
-						"Action": "open"
+				"UIAutomation": {
+					"Sequence": 1,
+					"ControlType": "MenuItem",
+					"Name": "HelpMenu",
+					"Action": "open"
 				}
 			},
 			{
@@ -144,6 +144,30 @@
 					"HostUIElementString": "WorkspaceTabs",
 					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 0
+				}
+			}
+		]
+	},
+	{
+		"Name": "Packages",
+		"GuideSteps": [
+			{
+				"Sequence": 0,
+				"Name": "packages",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 482,
+				"Height": 512,
+				"StepContent": {
+					"Title": "GetStartedGuideResourcesTitle",
+					"FormattedText": "GetStartedGuideResourcesText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"HostUIElementString": "PackageManagerMenu",
+					"VerticalPopupOffset": 20,
+					"HorizontalPopupOffset": 170,
+					"HtmlPage":  "learnPackages"
 				}
 			}
 		]

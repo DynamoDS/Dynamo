@@ -2367,6 +2367,19 @@ namespace Dynamo.Controls
             extensionsColumnWidth = RightExtensionsViewColumn.Width;
         }
 
+        private void PackagesMenuGuide_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                mainGuideManager = new GuidesManager(_this, dynamoViewModel);
+                mainGuideManager.LaunchTour(Res.PackagesGuide);
+            }
+            catch (Exception)
+            {
+                sidebarGrid.Visibility = Visibility.Visible;
+            }
+        }
+
         public void Dispose()
         {
             viewExtensionManager.Dispose();

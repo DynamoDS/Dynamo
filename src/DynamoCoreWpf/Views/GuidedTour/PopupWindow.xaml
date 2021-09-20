@@ -28,7 +28,7 @@
             Name="RootLayout" >
 
         <Polygon x:Name="TooltipPointer"
-                 Visibility="{Binding ShowPopupPointer, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Visibility="Visible"
                  Points="{Binding TooltipPointerPoints}" 
                  Style="{StaticResource PoupPolygonPointerStyle}" />
 
@@ -52,7 +52,7 @@
                   DataContext="{Binding Step}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
-                    <RowDefinition Height="Auto" 
+                    <RowDefinition Height="*" 
                                    MinHeight="50"/>
                 </Grid.RowDefinitions>
                 
@@ -93,6 +93,9 @@
                                            CustomText="{Binding StepContent.FormattedText}"
                                            Style="{StaticResource CustomRichTextBoxStyle}">
                 </localui:CustomRichTextBox>
+
+                <!--<WebBrowser x:Name="webBrowser" Grid.Row="1"></WebBrowser>-->
+
             </Grid>
             
             

@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.UI.GuidedTour
@@ -168,6 +169,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 positionMethod.Invoke(stepUIPopup, null);
+
+                if(stepUIPopup is PopupWindow)
+                {
+                    var stepUiPopupWindow = (PopupWindow)stepUIPopup;
+                    if (stepUiPopupWindow.webBrowserWindow != null && stepUiPopupWindow.webBrowserWindow.IsOpen)
+                    {
+                        var positionMethodWebBrowser = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                        positionMethodWebBrowser.Invoke(stepUiPopupWindow.webBrowserWindow, null);
+                    }
+                }
             }         
         }
 
