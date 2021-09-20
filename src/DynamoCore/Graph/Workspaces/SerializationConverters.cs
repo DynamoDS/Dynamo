@@ -1189,9 +1189,7 @@ namespace Dynamo.Graph.Workspaces
             var endId = obj["End"].Value<string>();
             var isCollapsedExists = obj[nameof(ConnectorModel.IsCollapsed)];
             
-            var isCollapsed = isCollapsedExists != null ?
-                obj[nameof(ConnectorModel.IsCollapsed)].Value<bool>()
-                : true;
+            var isCollapsed = isCollapsedExists != null && obj[nameof(ConnectorModel.IsCollapsed)].Value<bool>();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 
