@@ -352,7 +352,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Sets the color of the port's border brush
+        /// Sets the color of the small rectangular marker on each input port.
         /// </summary>
         public SolidColorBrush PortValueMarkerColor
         {
