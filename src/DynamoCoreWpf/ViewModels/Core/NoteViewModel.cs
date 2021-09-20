@@ -362,7 +362,7 @@ namespace Dynamo.ViewModels
             if (PinnedNode != null)
             {
                 PinnedNode.PropertyChanged -= PinnedNodeViewModel_PropertyChanged;
-                PinnedNode.RequestsSelection -= PinnedNodeViewModel_OnPinnedNodeSelected;
+                PinnedNode.Selected -= PinnedNodeViewModel_OnPinnedNodeSelected;
                 PinnedNode.Removed -= PinnedNodeViewModel_OnPinnedNodeRemoved;
 
                 Analytics.TrackEvent(
