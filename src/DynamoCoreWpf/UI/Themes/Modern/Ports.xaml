@@ -364,7 +364,7 @@
                                                                Grid.Column="0"
                                                                Width="14px"
                                                                Height="14px"
-                                                               Stroke="#C0C0C0"
+                                                               Stroke="{StaticResource PrimaryCharcoal300Brush}"
                                                                StrokeThickness="1" />
                                                     <Rectangle x:Name="highlightRectangle"
                                                                Grid.Column="0"
