@@ -371,7 +371,7 @@
                                                                Width="14px"
                                                                Height="14px"
                                                                Fill="Transparent"
-                                                               Stroke="#C0C0C0"
+                                                               Stroke="{StaticResource PrimaryCharcoal300Brush}"
                                                                StrokeThickness="1" />
                                                     <Path x:Name="tick"
                                                           Grid.Column="0"
