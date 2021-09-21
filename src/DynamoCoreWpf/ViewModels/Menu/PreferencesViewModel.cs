@@ -1,4 +1,5 @@
 ﻿using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Events;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -342,6 +343,7 @@ namespace Dynamo.ViewModels
             set 
             {
                 preferenceSettings.DisableBuiltinPackages = value;
+                PackagePathsViewModel.SetPackagesScheduledState(PathManager.BuiltinPackagesDirectory, value);
                 RaisePropertyChanged(nameof(DisableBuiltInPackages));
             }
         }
@@ -359,6 +361,10 @@ namespace Dynamo.ViewModels
             set
             {
                 preferenceSettings.DisableCustomPackageLocations = value;
+                foreach(var path in preferenceSettings.CustomPackageFolders.Where(x => x != DynamoModel.BuiltInPackagesToken))
+                {
+                    PackagePathsViewModel.SetPackagesScheduledState(path, value);
+                }
                 RaisePropertyChanged(nameof(DisableCustomPackages));
             } 
         }

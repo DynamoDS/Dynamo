@@ -257,6 +257,26 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal void SetPackagesScheduledState(string packagePath, bool packagePathDisabled)
+        {
+            var loadedPackages = packageLoader.LocalPackages.Where(x => x.LoadState.State == PackageLoadState.StateTypes.Loaded);
+            var packagesInPath = loadedPackages.Where(x => x.RootDirectory.StartsWith(packagePath));
+            if(packagePathDisabled)
+            {
+                foreach (var pkg in packagesInPath)
+                {
+                    pkg.MarkForUnload(PreferenceSettings);
+                }
+            }
+            else
+            {
+                foreach (var pkg in packagesInPath)
+                {
+                    pkg.UnmarkForUninstall(PreferenceSettings);
+                }
+            }
+        }
+
         internal void InitializeRootLocations()
         {
             RootLocations = new ObservableCollection<string>(PreferenceSettings.CustomPackageFolders);
@@ -291,7 +311,7 @@ namespace Dynamo.ViewModels
             if ((disablePrefs.DisableBuiltinPackages && path == Resources.PackagePathViewModel_BuiltInPackages)
                 //or if custompaths disabled and path is custom path
                 || (disablePrefs.DisableCustomPackageLocations && PreferenceSettings.CustomPackageFolders.Contains(path))
-                //or if custompaths disabled and path is known path that is not builtinpackages - needed because new paths that are not commited
+                //or if custompaths disabled and path is known path that is not builtinpackages - needed because new paths that are not committed
                 //will not be added to customPackagePaths yet.
                 || (disablePrefs.DisableCustomPackageLocations && RootLocations.Contains(path) && path != Resources.PackagePathViewModel_BuiltInPackages))
             {

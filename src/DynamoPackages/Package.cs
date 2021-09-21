@@ -509,6 +509,11 @@ namespace Dynamo.PackageManager
                     .Any(guids.Contains);
         }
 
+        /// <summary>
+        /// Marks built-in package for unload.
+        /// Any other custom package will be marked for deletion.
+        /// </summary>
+        /// <param name="prefs"></param>
         internal void MarkForUninstall(IPreferences prefs)
         {
             if (BuiltInPackage) 
@@ -527,22 +532,33 @@ namespace Dynamo.PackageManager
             RaisePropertyChanged(nameof(LoadState));
         }
 
+        /// <summary>
+        /// Marks any given package for unload.
+        /// The package will not be marked for deletion.
+        /// </summary>
+        /// <param name="prefs"></param>
+        internal void MarkForUnload(IPreferences prefs)
+        {
+            LoadState.SetScheduledForUnload();
+            
+            if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
+            {
+                prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
+            }
+            RaisePropertyChanged(nameof(LoadState));
+        }
+
+        /// <summary>
+        /// Resets scheduled state to 'None' for given package.
+        /// Package load state will remain unaffected.
+        /// </summary>
+        /// <param name="prefs"></param>
         internal void UnmarkForUninstall(IPreferences prefs)
         {
             LoadState.ResetScheduledState();
 
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
             RaisePropertyChanged(nameof(LoadState));
-        }
-
-        internal void MarkForLoad(IPreferences prefs)
-        {
-            if (BuiltInPackage)
-            {
-                LoadState.SetAsLoaded();
-                prefs.PackageDirectoriesToUninstall.Remove(RootDirectory);
-                RaisePropertyChanged(nameof(LoadState));
-            }
         }
 
         internal void SetAsLoaded()
