@@ -23,7 +23,8 @@ namespace Dynamo.ViewModels
     public sealed class PathEnabledConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {   if(values != null && values.Length > 1)
+        {   
+            if(values != null && values.Length > 1)
             {
                 if(values[0] is PackagePathViewModel vm && values[1] is string stringPath)
                 {
@@ -107,7 +108,11 @@ namespace Dynamo.ViewModels
                 //return false;
                 return disableBuiltInPackages;
             }
-            internal set { disableBuiltInPackages = value; }
+            internal set 
+            { 
+                disableBuiltInPackages = value;
+                RaisePropertyChanged(nameof(DisableBuiltInPackages));
+            }
         }
 
         private bool disableCustomPackages;
@@ -126,7 +131,11 @@ namespace Dynamo.ViewModels
                 //return false;
                 return disableCustomPackages;
             }
-            internal set { disableCustomPackages = value; }
+            internal set 
+            { 
+                disableCustomPackages = value;
+                RaisePropertyChanged(nameof(DisableCustomPackages));
+            }
         }
 
         private void InitializeCommands()
