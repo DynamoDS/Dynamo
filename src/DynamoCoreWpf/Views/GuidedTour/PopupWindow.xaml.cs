@@ -10,6 +10,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
     /// </summary>
     public partial class PopupWindow : Popup
     {
+        private const int popupBordersOffSet = 10;
         private PopupWindowViewModel popupViewModel;
 
         public PopupWindow(PopupWindowViewModel viewModel, HostControlInfo hInfo)
@@ -22,21 +23,21 @@ namespace Dynamo.Wpf.Views.GuidedTour
             DataContext = popupViewModel;
 
             //Due that we are drawing the Direction pointers on left and right side of the Canvas (10 width each one) then we need to add 20
-            RootLayout.Width = popupViewModel.Width + 20; 
+            RootLayout.Width = popupViewModel.Width + (popupBordersOffSet * 2); 
             //Also a shadow of 10 pixels in top and 10 pixels at the bottom will be shown then we need to add 20
-            RootLayout.Height = popupViewModel.Height + 20;
+            RootLayout.Height = popupViewModel.Height + (popupBordersOffSet * 2);
 
             //The BackgroundRectangle represent the tooltip background rectangle that is drawn over a Canvas
             //Needs to be moved 10 pixels over the X axis to show the direction pointers (Height was already increased above)
             //Needs to be moved 10 pixels over the Y axis to show the shadow at top and bottom.
-            BackgroundRectangle.Rect = new Rect(10, 10, popupViewModel.Width, popupViewModel.Height);
+            BackgroundRectangle.Rect = new Rect(popupBordersOffSet, popupBordersOffSet, popupViewModel.Width, popupViewModel.Height);
 
             //Setting the host over which the popup will appear and the placement mode
             PlacementTarget = hInfo.HostUIElement;
             Placement = hInfo.PopupPlacement;
 
             //The CustomRichTextBox has a margin of 10 in left and 10 in right, also there is a indentation for drawing the PointerDirection of 10 of each side so that's why we are subtracting 40.
-            ContentRichTextBox.Width = popupViewModel.Width - 40;
+            ContentRichTextBox.Width = popupViewModel.Width - (popupBordersOffSet * 4);
             HorizontalOffset = hInfo.HorizontalPopupOffSet;
             VerticalOffset = hInfo.VerticalPopupOffSet;
         }

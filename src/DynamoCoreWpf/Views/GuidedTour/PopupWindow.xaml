@@ -59,7 +59,7 @@
             </Path.Effect>
         </Path>
 
-
+        <!--This Polygon will draw on the Canvas the pointer (a triangle) that will be available only for tooltips but for the Welcome popup will be hidden-->
         <Polygon x:Name="TooltipPointer"
                  Visibility="{Binding ShowPopupPointer, Converter={StaticResource BooleanToVisibilityConverter}}"
                  Points="{Binding TooltipPointerPoints}" 
