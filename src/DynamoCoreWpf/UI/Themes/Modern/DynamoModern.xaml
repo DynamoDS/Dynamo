@@ -2068,7 +2068,6 @@
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
                                           Data="M-2.5,1 L0,-2 L2.5,1"
-                                          Fill="{x:Null}"
                                           Stretch="None"
                                           Stroke="#6AC0E7" />
                                 </Border>
@@ -2099,7 +2098,6 @@
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
                                           Data="M-2.5,-1 L0,2 L2.5,-1"
-                                          Fill="{x:Null}"
                                           Stretch="None"
                                           Stroke="#6AC0E7" />
                                 </Border>
