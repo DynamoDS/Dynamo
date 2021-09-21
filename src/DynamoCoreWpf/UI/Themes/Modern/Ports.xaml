@@ -74,8 +74,6 @@
                         </Rectangle>
                         <TextBlock Name="portNameTb"
                                    Width="Auto"
-                                   TextOptions.TextFormattingMode="Display"
-                                   TextOptions.TextRenderingMode="ClearType"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
                                    FontFamily="{StaticResource ArtifaktElementRegular}"
