@@ -14,11 +14,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private UIElement hostUIElement;
         private double verticalPopupOffSet;
         private double horizontalPopupOffSet;
+        private double widthBoxDelta;
+        private double heightBoxDelta;
 
         /// <summary>
         /// Host Name, this property will contain the name of the host control located in the TreeView
         /// </summary>
-        public string Name 
+        public string Name
         {
             get
             {
@@ -94,5 +96,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 horizontalPopupOffSet = value;
             }
         }
+
+        /// <summary>
+        /// Defines a delta width fot the highlighted box
+        /// </summary>
+        [JsonProperty("WidthBoxDelta")]
+        public double WidthBoxDelta { get => widthBoxDelta; set => widthBoxDelta = value; }
+        /// <summary>
+        /// /// Defines a delta height fot the highlighted box
+        /// </summary>
+        [JsonProperty("HeightBoxDelta")]
+        public double HeightBoxDelta { get => heightBoxDelta; set => heightBoxDelta = value; }
     }
 }
