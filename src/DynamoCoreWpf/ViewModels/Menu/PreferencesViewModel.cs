@@ -342,8 +342,9 @@ namespace Dynamo.ViewModels
             set 
             {
                 preferenceSettings.DisableBuiltinPackages = value;
+                PackagePathsViewModel.DisableBuiltInPackages = value;
                 RaisePropertyChanged(nameof(DisableBuiltInPackages));
-            } 
+            }
         }
 
         /// <summary>
@@ -359,6 +360,7 @@ namespace Dynamo.ViewModels
             set
             {
                 preferenceSettings.DisableCustomPackageLocations = value;
+                PackagePathsViewModel.DisableCustomPackages = value;
                 RaisePropertyChanged(nameof(DisableCustomPackages));
             } 
         }
