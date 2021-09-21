@@ -23,10 +23,13 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
             //Due that we are drawing the Direction pointers on left and right side of the Canvas (10 width each one) then we need to add 20
             RootLayout.Width = popupViewModel.Width + 20; 
-            RootLayout.Height = popupViewModel.Height;
+            //Also a shadow of 10 pixels in top and 10 pixels at the bottom will be shown then we need to add 20
+            RootLayout.Height = popupViewModel.Height + 20;
 
-            //The BackgroundRectangle represent the tooltip and it need to left 10 at left and 10 at right to show the direction pointers
-            BackgroundRectangle.Rect = new Rect(10, 0, popupViewModel.Width, popupViewModel.Height);
+            //The BackgroundRectangle represent the tooltip background rectangle that is drawn over a Canvas
+            //Needs to be moved 10 pixels over the X axis to show the direction pointers (Height was already increased above)
+            //Needs to be moved 10 pixels over the Y axis to show the shadow at top and bottom.
+            BackgroundRectangle.Rect = new Rect(10, 10, popupViewModel.Width, popupViewModel.Height);
 
             //Setting the host over which the popup will appear and the placement mode
             PlacementTarget = hInfo.HostUIElement;

@@ -27,18 +27,51 @@
     <Canvas Background="Transparent"
             Name="RootLayout" >
 
-        <Polygon x:Name="TooltipPointer"
-                 Visibility="{Binding ShowPopupPointer, Converter={StaticResource BooleanToVisibilityConverter}}"
-                 Points="{Binding TooltipPointerPoints}" 
-                 Style="{StaticResource PoupPolygonPointerStyle}" />
-
-        <Path x:Name="PopupPathRectangle" 
+        <Path x:Name="PopupPathRectangle"   
               Style="{StaticResource PoupPathRectangleStyle}">
             <Path.Data>
                 <RectangleGeometry x:Name="BackgroundRectangle">
                 </RectangleGeometry>
             </Path.Data>
+            <!--This effect will show a 4px shadow of 20% of tranparency with a angle of 135 grades-->
+            <Path.Effect>
+                <DropShadowEffect Opacity="0.2" 
+                                  Color="Black"
+                                  ShadowDepth="4"
+                                  BlurRadius="4"
+                                  Direction="135"/>
+            </Path.Effect>
         </Path>
+
+        <Path x:Name="PopupPathRectangleShadow"   
+              Style="{StaticResource PoupPathRectangleStyle}">
+            <Path.Data>
+                <RectangleGeometry Rect="{Binding ElementName=BackgroundRectangle, Path=Rect}">
+                </RectangleGeometry>
+            </Path.Data>
+            <!--This effect will show a 4px shadow of 20% of tranparency with a angle of 315 grades-->
+            <Path.Effect>
+                <DropShadowEffect Opacity="0.2" 
+                                  Color="Black"
+                                  ShadowDepth="4"
+                                  BlurRadius="4"
+                                  Direction="315"/>
+            </Path.Effect>
+        </Path>
+
+
+        <Polygon x:Name="TooltipPointer"
+                 Visibility="{Binding ShowPopupPointer, Converter={StaticResource BooleanToVisibilityConverter}}"
+                 Points="{Binding TooltipPointerPoints}" 
+                 Style="{StaticResource PoupPolygonPointerStyle}">
+            <Polygon.BitmapEffect>
+                <!--This effect will show a 4px shadow of 20% of tranparency with a angle of 315 grades by default-->
+                <DropShadowBitmapEffect Color="Black" 
+                                        Direction="135" 
+                                        ShadowDepth="4" 
+                                        Opacity="0.2" />
+            </Polygon.BitmapEffect>
+        </Polygon>
 
         <Grid Width="{Binding Width}"
                 Height="{Binding Height}"
@@ -59,7 +92,7 @@
                 <!--This is the header/title section of the Popup-->
                 <Border Grid.Row="0" 
                         BorderThickness="0,0,0,1"               
-                        Margin="20,0,0,0">
+                        Margin="20,10,0,0">
                     <Border.BorderBrush>
                         <SolidColorBrush Color="{StaticResource PopupTitleBorderColor}" 
                                          Opacity="0.3"/>
