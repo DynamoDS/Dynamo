@@ -261,16 +261,14 @@ namespace Dynamo.ViewModels
         {
             var loadedPackages = packageLoader.LocalPackages.Where(x => x.LoadState.State == PackageLoadState.StateTypes.Loaded);
             var packagesInPath = loadedPackages.Where(x => x.RootDirectory.StartsWith(packagePath));
-            if(packagePathDisabled)
+
+            foreach (var pkg in packagesInPath)
             {
-                foreach (var pkg in packagesInPath)
+                if (packagePathDisabled)
                 {
                     pkg.MarkForUnload(PreferenceSettings);
                 }
-            }
-            else
-            {
-                foreach (var pkg in packagesInPath)
+                else
                 {
                     pkg.UnmarkForUninstall(PreferenceSettings);
                 }
