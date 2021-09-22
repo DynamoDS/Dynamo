@@ -533,23 +533,8 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Marks any given package for unload.
-        /// The package will not be marked for deletion.
-        /// </summary>
-        /// <param name="prefs"></param>
-        internal void MarkForUnload(IPreferences prefs)
-        {
-            LoadState.SetScheduledForUnload();
-            
-            if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
-            {
-                prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
-            }
-            RaisePropertyChanged(nameof(LoadState));
-        }
-
-        /// <summary>
         /// Resets scheduled state to 'None' for given package.
+        /// Custom package will no longer be uninstalled.
         /// Package load state will remain unaffected.
         /// </summary>
         /// <param name="prefs"></param>
@@ -558,6 +543,29 @@ namespace Dynamo.PackageManager
             LoadState.ResetScheduledState();
 
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
+            RaisePropertyChanged(nameof(LoadState));
+        }
+
+        /// <summary>
+        /// Marks any given package for unload.
+        /// The package will not be marked for deletion.
+        /// </summary>
+        /// <param name="prefs"></param>
+        internal void MarkForUnload()
+        {
+            LoadState.SetScheduledForUnload();
+            RaisePropertyChanged(nameof(LoadState));
+        }
+
+        /// <summary>
+        /// Resets scheduled state to 'None' for given package.
+        /// Package will no longer be unloaded.
+        /// Package load state will remain unaffected.
+        /// </summary>
+        /// <param name="prefs"></param>
+        internal void UnmarkForUnload()
+        {
+            LoadState.ResetScheduledState();
             RaisePropertyChanged(nameof(LoadState));
         }
 

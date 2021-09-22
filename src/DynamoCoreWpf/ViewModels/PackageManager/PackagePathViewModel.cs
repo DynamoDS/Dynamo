@@ -266,11 +266,11 @@ namespace Dynamo.ViewModels
             {
                 if (packagePathDisabled)
                 {
-                    pkg.MarkForUnload(PreferenceSettings);
+                    pkg.MarkForUnload();
                 }
                 else
                 {
-                    pkg.UnmarkForUninstall(PreferenceSettings);
+                    pkg.UnmarkForUnload();
                 }
             }
         }
