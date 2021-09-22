@@ -1748,7 +1748,7 @@ Want to publish a different package?</value>
     <value>Is Node Library</value>
   </data>
   <data name="PublishPackageViewLicense" xml:space="preserve">
-    <value>License (optional - default is MIT)</value>
+    <value>License (optional)</value>
   </data>
   <data name="PublishPackageViewPackageDependencies" xml:space="preserve">
     <value>Dependencies</value>
@@ -1780,7 +1780,7 @@ Want to publish a different package?</value>
     <value>A unique name for the package.</value>
   </data>
   <data name="PublishPackageViewPackageVersion" xml:space="preserve">
-    <value>Version (major minor build)</value>
+    <value>Version (Major Minor Build)</value>
   </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
     <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
@@ -2640,5 +2640,66 @@ Delete the following packages: {2}?
   <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
     <value>Show Preview Bubbles</value>
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
+  </data>
+  <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageVersionMinorWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="PublishPackageViewPackageDescriptionWatermark" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PublishPackageViewPackageNameWatermark" xml:space="preserve">
+    <value>Package name</value>
+  </data>
+  <data name="PackageStateScheduledForUnloadTooltip" xml:space="preserve">
+    <value>Scheduled for Unload.
+This package will be unloaded after the next Dynamo restart.</value>
+  </data>
+  <data name="PublishPackageGroupWatermark" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="PublishPackageKeywordsWatermark" xml:space="preserve">
+    <value>Keywords</value>
+  </data>
+  <data name="PublishPackageDetailsExpanderHeader" xml:space="preserve">
+    <value>More</value>
+  </data>
+  <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
+    <value>If blank, the package will be licensed under MIT</value>
+  </data>
+  <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolder" xml:space="preserve">
+    <value>Copyright Holder (optional)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderWatermark" xml:space="preserve">
+    <value>Author name</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderSubLabel" xml:space="preserve">
+    <value>If blank, default is your username</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYear" xml:space="preserve">
+    <value>Copyright Year (optional)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearWatermark" xml:space="preserve">
+    <value>Publishing year</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearSubLabel" xml:space="preserve">
+    <value>If blank, default is publishing year</value>
+  </data>
+  <data name="PublishPackageViewRepositoryUrlWatermark" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebSite" xml:space="preserve">
+    <value>Website Url (optional)</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebSiteWatermark" xml:space="preserve">
+    <value>URL</value>
   </data>
 </root>

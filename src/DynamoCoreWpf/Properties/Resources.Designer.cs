@@ -5436,6 +5436,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to More.
+        /// </summary>
+        public static string PublishPackageDetailsExpanderHeader {
+            get {
+                return ResourceManager.GetString("PublishPackageDetailsExpanderHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Published Successfully.
         /// </summary>
         public static string PublishPackageDialogCaption {
@@ -5450,6 +5459,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageDocTooltipText {
             get {
                 return ResourceManager.GetString("PublishPackageDocTooltipText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group.
+        /// </summary>
+        public static string PublishPackageGroupWatermark {
+            get {
+                return ResourceManager.GetString("PublishPackageGroupWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keywords.
+        /// </summary>
+        public static string PublishPackageKeywordsWatermark {
+            get {
+                return ResourceManager.GetString("PublishPackageKeywordsWatermark", resourceCulture);
             }
         }
         
@@ -5500,6 +5527,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1.
+        /// </summary>
+        public static string PublishPackageVersionBuildWatermark {
+            get {
+                return ResourceManager.GetString("PublishPackageVersionBuildWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.
+        /// </summary>
+        public static string PublishPackageVersionMajorWatermark {
+            get {
+                return ResourceManager.GetString("PublishPackageVersionMajorWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.
+        /// </summary>
+        public static string PublishPackageVersionMinorWatermark {
+            get {
+                return ResourceManager.GetString("PublishPackageVersionMinorWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add file....
         /// </summary>
         public static string PublishPackageViewAddFileButton {
@@ -5527,11 +5581,83 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to License (optional - default is MIT).
+        ///   Looks up a localized string similar to Copyright Holder (optional).
+        /// </summary>
+        public static string PublishPackageViewCopyrightHolder {
+            get {
+                return ResourceManager.GetString("PublishPackageViewCopyrightHolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If blank, default is your username.
+        /// </summary>
+        public static string PublishPackageViewCopyrightHolderSubLabel {
+            get {
+                return ResourceManager.GetString("PublishPackageViewCopyrightHolderSubLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Author name.
+        /// </summary>
+        public static string PublishPackageViewCopyrightHolderWatermark {
+            get {
+                return ResourceManager.GetString("PublishPackageViewCopyrightHolderWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copyright Year (optional).
+        /// </summary>
+        public static string PublishPackageViewCopyrightYear {
+            get {
+                return ResourceManager.GetString("PublishPackageViewCopyrightYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If blank, default is publishing year.
+        /// </summary>
+        public static string PublishPackageViewCopyrightYearSubLabel {
+            get {
+                return ResourceManager.GetString("PublishPackageViewCopyrightYearSubLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publishing year.
+        /// </summary>
+        public static string PublishPackageViewCopyrightYearWatermark {
+            get {
+                return ResourceManager.GetString("PublishPackageViewCopyrightYearWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to License (optional).
         /// </summary>
         public static string PublishPackageViewLicense {
             get {
                 return ResourceManager.GetString("PublishPackageViewLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If blank, the package will be licensed under MIT.
+        /// </summary>
+        public static string PublishPackageViewLicenseSubLabel {
+            get {
+                return ResourceManager.GetString("PublishPackageViewLicenseSubLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to License.
+        /// </summary>
+        public static string PublishPackageViewLicenseWatermark {
+            get {
+                return ResourceManager.GetString("PublishPackageViewLicenseWatermark", resourceCulture);
             }
         }
         
@@ -5563,6 +5689,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string PublishPackageViewPackageDescriptionWatermark {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageDescriptionWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Group (optional).
         /// </summary>
         public static string PublishPackageViewPackageGroup {
@@ -5581,7 +5716,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to External Dependency (optional).
+        ///   Looks up a localized string similar to Host (optional).
         /// </summary>
         public static string PublishPackageViewPackageHostDependency {
             get {
@@ -5635,7 +5770,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version (major minor build).
+        ///   Looks up a localized string similar to Package name.
+        /// </summary>
+        public static string PublishPackageViewPackageNameWatermark {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageNameWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version (Major Minor Build).
         /// </summary>
         public static string PublishPackageViewPackageVersion {
             get {
@@ -5664,9 +5808,18 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Website Url (optional).
         /// </summary>
-        public static string PublishPackageViewPublisherWebiSite {
+        public static string PublishPackageViewPublisherWebSite {
             get {
-                return ResourceManager.GetString("PublishPackageViewPublisherWebiSite", resourceCulture);
+                return ResourceManager.GetString("PublishPackageViewPublisherWebSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL.
+        /// </summary>
+        public static string PublishPackageViewPublisherWebSiteWatermark {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPublisherWebSiteWatermark", resourceCulture);
             }
         }
         
@@ -5676,6 +5829,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewRepositoryUrl {
             get {
                 return ResourceManager.GetString("PublishPackageViewRepositoryUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL.
+        /// </summary>
+        public static string PublishPackageViewRepositoryUrlWatermark {
+            get {
+                return ResourceManager.GetString("PublishPackageViewRepositoryUrlWatermark", resourceCulture);
             }
         }
         

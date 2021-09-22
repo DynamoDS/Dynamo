@@ -1362,7 +1362,31 @@ You will get a chance to save your work.</value>
     <value>Is Node Library</value>
   </data>
   <data name="PublishPackageViewLicense" xml:space="preserve">
-    <value>License (optional - default is MIT)</value>
+    <value>License (optional)</value>
+  </data>
+  <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
+    <value>If blank, the package will be licensed under MIT</value>
+  </data>
+  <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolder" xml:space="preserve">
+    <value>Copyright Holder (optional)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderWatermark" xml:space="preserve">
+    <value>Author name</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderSubLabel" xml:space="preserve">
+    <value>If blank, default is your username</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYear" xml:space="preserve">
+    <value>Copyright Year (optional)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearWatermark" xml:space="preserve">
+    <value>Publishing year</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearSubLabel" xml:space="preserve">
+    <value>If blank, default is publishing year</value>
   </data>
   <data name="PublishPackageViewPackageDependencies" xml:space="preserve">
     <value>Dependencies</value>
@@ -1388,20 +1412,44 @@ You will get a chance to save your work.</value>
     <value>Name</value>
   </data>
   <data name="PublishPackageViewPackageVersion" xml:space="preserve">
-    <value>Version (major minor build)</value>
+    <value>Version (Major Minor Build)</value>
   </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
     <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
   </data>
+  <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageVersionMinorWatermark" xml:space="preserve">
+  <value>0</value>
+  </data>
+  <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
+  <value>1</value>
+  </data>
+  <data name="PublishPackageGroupWatermark" xml:space="preserve">
+  <value>Group</value>
+  </data>
+  <data name="PublishPackageKeywordsWatermark" xml:space="preserve">
+  <value>Keywords</value>
+  </data>
+  <data name="PublishPackageDetailsExpanderHeader" xml:space="preserve">
+  <value>More</value>
+  </data>
   <data name="PublishPackageViewPublish" xml:space="preserve">
     <value>Publish a Package</value>
   </data>
-  <data name="PublishPackageViewPublisherWebiSite" xml:space="preserve">
+  <data name="PublishPackageViewPublisherWebSite" xml:space="preserve">
     <value>Website Url (optional)</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebSiteWatermark" xml:space="preserve">
+    <value>URL</value>
   </data>
   <data name="PublishPackageViewRepositoryUrl" xml:space="preserve">
     <value>Repository Url (optional)</value>
     <comment>Github repository</comment>
+  </data>
+  <data name="PublishPackageViewRepositoryUrlWatermark" xml:space="preserve">
+    <value>URL</value>
   </data>
   <data name="PublishPackageViewTitle" xml:space="preserve">
     <value>Publish a {0} Package</value>
@@ -1773,8 +1821,14 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
     <value>A description that helps people understand what the package might be used for.</value>
   </data>
+  <data name="PublishPackageViewPackageDescriptionWatermark" xml:space="preserve">
+    <value>Description</value>
+  </data>
   <data name="PublishPackageViewPackageNameTooltip" xml:space="preserve">
     <value>A unique name for the package.</value>
+  </data>
+  <data name="PublishPackageViewPackageNameWatermark" xml:space="preserve">
+    <value>Package name</value>
   </data>
   <data name="UnitAcres" xml:space="preserve">
     <value>Acres</value>
@@ -2195,7 +2249,7 @@ Uninstall the following packages: {0}?</value>
     <value>Version {0} of {1} could not be found.</value>
   </data>
   <data name="PublishPackageViewPackageHostDependency" xml:space="preserve">
-    <value>External Dependency (optional)</value>
+    <value>Host (optional)</value>
   </data>
   <data name="PublishPackageViewPackageHostDependencyTooltip" xml:space="preserve">
     <value>An indication of what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. Users of your package will need to install these applications to fully utilize your package.</value>
