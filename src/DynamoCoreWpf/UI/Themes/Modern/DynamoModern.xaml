@@ -3386,12 +3386,13 @@
         </Setter>
     </Style>
 
+    <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#808080" Opacity="0.15"/>
     <Style x:Key="PoupButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="MinWidth" Value="80" />
         <Setter Property="MaxHeight" Value="36" />
         <Setter Property="BorderThickness" Value="36" />
         <Setter Property="Foreground" Value="{StaticResource PopupWhiteColor}" />
-        <Setter Property="Background" Value="{StaticResource PreferencesWindowButtonColor}" />
+        <Setter Property="Background" Value="{StaticResource PreferencesWindowButtonColor}" />        
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -3403,6 +3404,12 @@
                                           VerticalAlignment="Center"
                                           Content="{TemplateBinding Content}" />
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" TargetName="PopupButtonBorder" Value="{StaticResource Button.MouseOver.Border}"/>
+                            <Setter Property="BorderThickness" TargetName="PopupButtonBorder" Value="2"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
