@@ -3387,6 +3387,7 @@
     </Style>
 
     <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#808080" Opacity="0.15"/>
+    <SolidColorBrush x:Key="Button.Pressed.Border" Color="#808080" Opacity="0.25"/>
     <Style x:Key="PoupButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="MinWidth" Value="80" />
         <Setter Property="MaxHeight" Value="36" />
@@ -3408,6 +3409,11 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="BorderBrush" TargetName="PopupButtonBorder" Value="{StaticResource Button.MouseOver.Border}"/>
                             <Setter Property="BorderThickness" TargetName="PopupButtonBorder" Value="2"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="BorderBrush" TargetName="PopupButtonBorder" Value="{StaticResource Button.Pressed.Border}"/>
+                            <Setter Property="BorderThickness" TargetName="PopupButtonBorder" Value="4"/>
+                            <Setter Property="Background" TargetName="PopupButtonBorder" Value="{StaticResource PreferencesWindowButtonColor}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
