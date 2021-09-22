@@ -1,18 +1,37 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
+    /// <summary>
+    /// Proxy port view model, used for proxy ports under collapsed groups
+    /// Certain features could behave differently e.g. Node AutoComplete is 
+    /// disabled for it.
+    /// </summary>
+    public class ProxyPortViewModel : PortViewModel
+    {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="port"></param>
+        public ProxyPortViewModel(NodeViewModel node, PortModel port)
+            : base(node, port)
+        {
+            // Do nothing for now.
+        }
+    }
+
+    /// <summary>
+    /// Port View Model
+    /// </summary>
     public partial class PortViewModel : ViewModelBase
     {
         #region Properties/Fields
@@ -405,9 +424,9 @@ namespace Dynamo.ViewModels
             _node.WorkspaceViewModel.PropertyChanged -= Workspace_PropertyChanged;
         }
 
-        internal PortViewModel CreateProxyPortViewModel(PortModel portModel)
+        internal ProxyPortViewModel CreateProxyPortViewModel(PortModel portModel)
         {
-            return new PortViewModel(_node, portModel);
+            return new ProxyPortViewModel(_node, portModel);
         }
 
         /// <summary>
@@ -701,7 +720,7 @@ namespace Dynamo.ViewModels
         {
             DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
             // If the feature is enabled from Dynamo experiment setting and if user interaction is on input port.
-            return dynamoViewModel.EnableNodeAutoComplete;
+            return dynamoViewModel.EnableNodeAutoComplete && !(this is ProxyPortViewModel);
         }
 
         /// <summary>
