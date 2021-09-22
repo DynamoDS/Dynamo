@@ -1,13 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
@@ -343,8 +340,8 @@ namespace Dynamo.ViewModels
             SetConnectorsVisibility = CheckIfConnectorsAreHidden();
 
             ShowHideWiresButtonContent = SetConnectorsVisibility
-                ? Properties.Resources.UnhideWiresPopupMenuItem
-                : Properties.Resources.HideWiresPopupMenuItem;
+                ? Wpf.Properties.Resources.ShowWiresPopupMenuItem
+                : Wpf.Properties.Resources.HideWiresPopupMenuItem;
 
             RaisePropertyChanged(nameof(ShowHideWiresButtonContent));
         }

@@ -6004,6 +6004,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Wires.
+        /// </summary>
+        public static string ShowWiresPopupMenuItem {
+            get {
+                return ResourceManager.GetString("ShowWiresPopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please update the permissions or go to Preferences &gt;Node and Package Paths...&apos; to change your default directory..
         /// </summary>
         public static string SolutionToFolderNotWritatbleError {
@@ -6306,15 +6315,6 @@ namespace Dynamo.Wpf.Properties {
         public static string UndeprecatingPackageMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UndeprecatingPackageMessageBoxTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unhide Wires.
-        /// </summary>
-        public static string UnhideWiresPopupMenuItem {
-            get {
-                return ResourceManager.GetString("UnhideWiresPopupMenuItem", resourceCulture);
             }
         }
         
