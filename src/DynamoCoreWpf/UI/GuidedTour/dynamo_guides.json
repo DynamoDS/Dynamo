@@ -90,6 +90,8 @@
 					"PopupPlacement": "right",
 					"HostUIElementString": "dynamoMenu",
 					"VerticalPopupOffset": 50,
+					"HighlightColor": "#EF9362",
+
 					"HorizontalPopupOffset": 230
 				},
 				"UIAutomation": {

@@ -138,39 +138,39 @@ namespace Dynamo.ViewModels
             get { return model.IsSelected; }
         }
 
-        private bool isVisible;
+        private bool isCollapsed;
         [JsonIgnore]
-        public bool IsVisible
+        public override bool IsCollapsed
         {
-            get
-            {
-                return isVisible;
-            }
+            get => isCollapsed;
             set
             {
-                isVisible = value;
-                RaisePropertyChanged(nameof(IsVisible));
-                RaisePropertyChanged(nameof(IsPartlyVisible));
+                if (isCollapsed == value)
+                {
+                    return;
+                }
+
+                isCollapsed = value;
+                RaisePropertyChanged(nameof(IsCollapsed));
             }
         }
 
-        private bool isPartlyVisible;
+        private bool isTemporarilyVisible;
         /// <summary>
         /// Provides the ViewModel (this) with the visibility state of the Connector.
         /// When set to 'hidden', 'IsHalftone' is set to true, and viceversa.
         /// </summary>
         [JsonIgnore]
-        public bool IsPartlyVisible
+        public bool IsTemporarilyVisible
         {
             get
             {
-                return isPartlyVisible;
+                return isTemporarilyVisible;
             }
             set
             {
-                isPartlyVisible = value;
-                RaisePropertyChanged(nameof(IsPartlyVisible));
-                RaisePropertyChanged(nameof(IsVisible));
+                isTemporarilyVisible = value;
+                RaisePropertyChanged(nameof(IsTemporarilyVisible));
             }
         }
 
