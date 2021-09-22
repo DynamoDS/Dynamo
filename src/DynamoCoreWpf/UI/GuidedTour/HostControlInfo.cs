@@ -98,12 +98,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// Defines a delta width fot the highlighted box
+        /// Since the box that highlights the elements has its size fixed, this variable applies a value to fix its Width
         /// </summary>
         [JsonProperty("WidthBoxDelta")]
         public double WidthBoxDelta { get => widthBoxDelta; set => widthBoxDelta = value; }
         /// <summary>
-        /// /// Defines a delta height fot the highlighted box
+        /// Since the box that highlights the elements has its size fixed, this variable applies a value to fix its Height
         /// </summary>
         [JsonProperty("HeightBoxDelta")]
         public double HeightBoxDelta { get => heightBoxDelta; set => heightBoxDelta = value; }
