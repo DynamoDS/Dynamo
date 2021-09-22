@@ -30,6 +30,15 @@ namespace Dynamo.ViewModels
         private string showHideWiresButtonContent = "";
         private bool hideWiresButtonEnabled;
 
+        public static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+        public static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
+
+        public static SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
+        public static SolidColorBrush PortBackgroundColorKeepListStructure = new SolidColorBrush(Color.FromRgb(83, 126, 145));
+
+        public static SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
+        public static SolidColorBrush PortBorderBrushColorKeepListStructure = new SolidColorBrush(Color.FromRgb(168, 181, 187));
+
         /// <summary>
         /// Port model.
         /// </summary>
@@ -778,49 +787,30 @@ namespace Dynamo.ViewModels
                 // Special case for keeping list structure visual appearance
                 if (_port.UseLevels && _port.KeepListStructure && _port.IsConnected)
                 {
-                    PortValueMarkerColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(83, 126, 145));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(168, 181, 187));
+                    PortValueMarkerColor = PortValueMarkerBlue;
+                    PortBackgroundColor = PortBackgroundColorKeepListStructure;
+                    PortBorderBrushColor = PortBorderBrushColorKeepListStructure;
                 }
-
                 // Port has a default value, shows blue marker
                 else if (UsingDefaultValue && DefaultValueEnabled)
                 {
-                    PortValueMarkerColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(60, 60, 60));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(161, 161, 161));
+                    PortValueMarkerColor = PortValueMarkerBlue;
+                    PortBackgroundColor = PortBackgroundColorDefault;
+                    PortBorderBrushColor = PortBorderBrushColorDefault;
                 }
+                // Port isn't connected and has no default value (or isn't using it)
                 else
                 {
-                    // Port isn't connected and has no default value (or isn't using it)
-                    if (!_port.IsConnected)
-                    {
-                        PortValueMarkerColor = new SolidColorBrush(Color.FromRgb(235, 85, 85));
-                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(60, 60, 60));
-                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(161, 161, 161));
-                    }
-                    // Port is connected and has no default value
-                    else
-                    {
-                        PortValueMarkerColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(60, 60, 60));
-                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(161, 161, 161));
-                    }
+                    PortValueMarkerColor = !_port.IsConnected ? PortValueMarkerRed : PortValueMarkerBlue;
+                    PortBackgroundColor = PortBackgroundColorDefault;
+                    PortBorderBrushColor = PortBorderBrushColorDefault;
                 }
             }
             // It's an output port, which either displays a connected style or a disconnected style
             else
             {
-                if (_port.IsConnected)
-                {
-                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(60, 60, 60));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(161, 161, 161));
-                }
-                else
-                {
-                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(60, 60, 60));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(161, 161, 161));
-                }
+                PortBackgroundColor = PortBackgroundColorDefault;
+                PortBorderBrushColor = PortBorderBrushColorDefault;
             }
             RaisePropertyChanged(nameof(UseLevelsMenuColor));
         }
