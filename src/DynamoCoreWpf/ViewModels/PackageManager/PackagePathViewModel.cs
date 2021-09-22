@@ -69,7 +69,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Caches the preference settings.
+        /// Returns the preference settings.
         /// </summary>
         public IPreferences PreferenceSettings
         {
