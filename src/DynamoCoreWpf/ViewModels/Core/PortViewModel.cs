@@ -362,8 +362,8 @@ namespace Dynamo.ViewModels
             SetConnectorsVisibility = CheckIfConnectorsAreHidden();
 
             ShowHideWiresButtonContent = SetConnectorsVisibility
-                ? Properties.Resources.UnhideWiresPopupMenuItem
-                : Properties.Resources.HideWiresPopupMenuItem;
+                ? Wpf.Properties.Resources.ShowWiresPopupMenuItem
+                : Wpf.Properties.Resources.HideWiresPopupMenuItem;
 
             RaisePropertyChanged(nameof(ShowHideWiresButtonContent));
         }
