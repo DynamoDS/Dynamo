@@ -278,7 +278,7 @@ namespace Dynamo.Search
                 for (int i = subPattern.Length; i >= 1; i--)
                 {
                     var part = subPattern.Substring(0, i);
-                    if (key.IndexOf(part, StringComparison.Ordinal) != -1)
+                    if (key.IndexOf(part, StringComparison.OrdinalIgnoreCase) != -1)
                     {   //if we find a match record the amount of the match and goto the next word
                         numberOfMatchSymbols += part.Length;
                         break;
