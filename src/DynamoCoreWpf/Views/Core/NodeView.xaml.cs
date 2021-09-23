@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,6 +29,7 @@ namespace Dynamo.Controls
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
         private const int previewDelay = 1000;
+        private bool inoutportsInitialized = false;
 
         /// <summary>
         /// If false - hides preview control until it will be explicitly shown.
@@ -63,6 +65,41 @@ namespace Dynamo.Controls
                     CreatePreview(viewModel);
                 }                
             }
+        }
+
+        /// <summary>
+        /// Create InOutPorts on demand for the view
+        /// </summary>
+        public ItemsControl CreateInOutPortsControls(string name, int column, ObservableCollection<PortViewModel> itemsSource)
+        {
+            ItemsControl inoutportsControl = new ItemsControl();
+            inoutportsControl.Name = name;
+            inoutportsControl.ItemsSource = itemsSource;
+            inoutportsControl.Style = (Style)Resources["InOutPortControlStyle"];
+            Grid.SetRow(inoutportsControl, 2);
+            Grid.SetColumn(inoutportsControl, column);
+            Canvas.SetZIndex(inoutportsControl, 20);
+            inoutportsControl.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            grid.Children.Add(inoutportsControl);
+            return inoutportsControl;
+        }
+
+        private void PrepareInOutPortsControls()
+        {
+            if (ViewModel != null)
+            {
+                if (!inoutportsInitialized)
+                {
+                    inoutportsInitialized = true;
+                    CreateInOutPortsControls("inputPortControl", 0, ViewModel.InPorts);
+                    CreateInOutPortsControls("outputPortControl", 2, ViewModel.OutPorts);
+                }
+            }
+        }
+
+        private void NodeView_MouseEnter(object sender, MouseEventArgs e)
+        {
+            PrepareInOutPortsControls();
         }
 
         private void NodeView_MouseLeave(object sender, MouseEventArgs e)
@@ -139,6 +176,7 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded -= NodeModel_ConnectorAdded;
             MouseLeave -= NodeView_MouseLeave;
+            MouseEnter -= NodeView_MouseEnter;
 
             if (previewControl != null)
             {
@@ -215,6 +253,7 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded += NodeModel_ConnectorAdded;
             MouseLeave += NodeView_MouseLeave;
+            MouseEnter += NodeView_MouseEnter;
         }
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)

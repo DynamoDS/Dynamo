@@ -5,11 +5,11 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
-             Height="Auto"
-             Width="Auto"
              Name="topControl"
              MouseLeftButtonDown="topControl_MouseLeftButtonDown"
              MouseRightButtonDown="topControl_MouseRightButtonDown"
+             Width="Auto"
+             Height="Auto"
              MouseEnter="OnNodeViewMouseEnter"
              MouseLeave="OnNodeViewMouseLeave"
              PreviewMouseMove="OnNodeViewMouseMove"
@@ -416,12 +416,8 @@
 
         </StackPanel>
 
-        
-
-
-
-
         <!-- INPUT PORTS -->
+        <!--
         <ItemsControl Name="inputPortControl"
                       Grid.Row="2"
                       Grid.Column="0"
@@ -430,8 +426,10 @@
                       Style="{StaticResource InOutPortControlStyle}"
                       ItemsSource="{Binding Path=InPorts}">
         </ItemsControl>
-
+        -->
+       
         <!-- OUTPUT PORTS -->
+        <!--
         <ItemsControl Name="outputPortControl"
                       Grid.Row="2"
                       Grid.Column="2"
@@ -440,7 +438,8 @@
                       Style="{StaticResource InOutPortControlStyle}"
                       ItemsSource="{Binding Path=OutPorts}">
         </ItemsControl>
-
+        -->
+       
         <Grid Name="centralGrid"
               Grid.Column="1"
               Grid.Row="2"

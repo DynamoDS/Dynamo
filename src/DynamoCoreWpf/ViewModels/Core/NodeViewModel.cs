@@ -563,6 +563,30 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        ///     Returns or set the X position of the Node.
+        /// </summary>
+        public double Height
+        {
+            get { return NodeModel.Height; }
+            set
+            {
+                NodeModel.Height = value;
+            }
+        }
+
+        /// <summary>
+        ///     Returns or set the Y position of the Node.
+        /// </summary>
+        public double Width
+        {
+            get { return NodeModel.Width; }
+            set
+            {
+                NodeModel.Width = value;
+            }
+        }
+
         internal double ActualHeight { get; set; }
         internal double ActualWidth { get; set; }
 
