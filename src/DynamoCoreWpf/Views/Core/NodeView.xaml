@@ -45,7 +45,7 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <!--  CONTEXT MENU  -->
+        <!--  Context Menu  -->
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu"
                          x:FieldModifier="public"
@@ -353,7 +353,7 @@
             </Grid>
         </DockPanel>
 
-        <!--  INPUT PORTS  -->
+        <!--  Input Ports  -->
         <ItemsControl Name="inputPortControl"
                       Grid.Row="2"
                       Grid.Column="0"
@@ -364,7 +364,7 @@
                       ItemsSource="{Binding Path=InPorts}"
                       Style="{StaticResource InOutPortControlStyle}" />
 
-        <!--  OUTPUT PORTS  -->
+        <!--  Output Ports  -->
         <ItemsControl Name="outputPortControl"
                       Grid.Row="2"
                       Grid.Column="2"
@@ -375,6 +375,7 @@
                       ItemsSource="{Binding Path=OutPorts}"
                       Style="{StaticResource InOutPortControlStyle}" />
 
+        <!--  Central Grid  -->
         <Grid Name="centralGrid"
               Grid.Row="2"
               Grid.Column="1"
@@ -399,6 +400,7 @@
                   IsEnabled="{Binding Path=IsInteractionEnabled}" />
         </Grid>
 
+        <!--  Glyph Stack Panel  -->
         <StackPanel Name="GlyphStackPanel"
                     Grid.Row="3"
                     Grid.Column="0"
@@ -499,6 +501,7 @@
             </Button>
         </StackPanel>
 
+        <!--  Presentation Grid  -->
         <Grid Name="PresentationGrid"
               Grid.Row="2"
               Grid.RowSpan="2"
@@ -512,6 +515,7 @@
             <!--  DO NOT ERASE THIS GRID TO BE USED FOR PRESENTING IMAGES, 3D VIEWS, ETC.  -->
         </Grid>
 
+        <!--  Node Border  -->
         <Border Name="nodeBorder"
                 Grid.Row="1"
                 Grid.RowSpan="4"
@@ -578,6 +582,7 @@
             </Rectangle.Visibility>
         </Rectangle>-->
 
+        <!--  Expansion Bay  -->
         <Canvas Name="expansionBay"
                 Grid.Row="4"
                 Grid.Column="0"

@@ -706,7 +706,7 @@
   </data>
   <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
     <value>Dismissed Alerts</value>
-    <comment>Display the number of dismissed alerts on the node context menu</comment>
+    <comment>Displays the number of dismissed alerts on the node context menu</comment>
   </data>
   <data name="ContextMenuGroups" xml:space="preserve">
     <value>Groups</value>
