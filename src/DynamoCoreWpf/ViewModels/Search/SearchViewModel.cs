@@ -41,6 +41,8 @@ namespace Dynamo.ViewModels
         {
             if (SearchTextChanged != null)
                 SearchTextChanged(this, e);
+
+            SearchCommand?.Execute(null);
         }
 
         #endregion
