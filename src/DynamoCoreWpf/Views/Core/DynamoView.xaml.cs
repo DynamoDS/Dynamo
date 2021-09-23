@@ -2355,7 +2355,7 @@ namespace Dynamo.Controls
             {
                 dynamoViewModel.MainGuideManager.LaunchTour(Res.GetStartedGuide);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 sidebarGrid.Visibility = Visibility.Visible;
             }
@@ -2371,8 +2371,7 @@ namespace Dynamo.Controls
         {
             try
             {
-                mainGuideManager = new GuidesManager(_this, dynamoViewModel);
-                mainGuideManager.LaunchTour(Res.PackagesGuide);
+                dynamoViewModel.MainGuideManager.LaunchTour(Res.PackagesGuide);
             }
             catch (Exception)
             {

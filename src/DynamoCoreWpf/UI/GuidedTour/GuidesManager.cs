@@ -47,8 +47,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private const string mainGridName = "mainGrid";
         private const string libraryViewName = "Browser";
 
-
-
         internal static string GuidesExecutingDirectory
         {
             get
@@ -248,7 +246,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 HostUIElement = mainRootElement,
                 VerticalPopupOffSet = jsonStepInfo.HostPopupInfo.VerticalPopupOffSet,
                 HorizontalPopupOffSet = jsonStepInfo.HostPopupInfo.HorizontalPopupOffSet,
-                HtmlPage = jsonStepInfo.HostPopupInfo.HtmlPage
+                HtmlPage = jsonStepInfo.HostPopupInfo.HtmlPage,
                 HighlightColor = jsonStepInfo.HostPopupInfo.HighlightColor,
                 WidthBoxDelta = jsonStepInfo.HostPopupInfo.WidthBoxDelta,
                 HeightBoxDelta = jsonStepInfo.HostPopupInfo.HeightBoxDelta
