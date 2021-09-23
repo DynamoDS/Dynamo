@@ -719,7 +719,13 @@ namespace Dynamo.ViewModels
         private bool CanAutoComplete(object parameter)
         {
             DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
-            // If the feature is enabled from Dynamo experiment setting and if user interaction is on input port.
+            // If user trying to trigger Node AutoComplete from proxy ports, display notification
+            // telling user it is not available that way
+            if (this is ProxyPortViewModel)
+            {
+                dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups);
+            }
+            // If the feature is enabled from Dynamo experiment setting and if user interaction is not on proxy ports.
             return dynamoViewModel.EnableNodeAutoComplete && !(this is ProxyPortViewModel);
         }
 
