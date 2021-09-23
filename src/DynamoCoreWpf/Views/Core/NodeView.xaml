@@ -4,8 +4,8 @@
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -18,10 +18,10 @@
              PreviewMouseMove="OnNodeViewMouseMove">
 
     <Grid Name="grid"
-          x:FieldModifier="public"
           HorizontalAlignment="Left"
-          Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
-          ContextMenuService.IsEnabled="false">
+          x:FieldModifier="public"
+          ContextMenuService.IsEnabled="false"
+          Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -41,7 +41,7 @@
         </Grid.Style>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" MinWidth="20" />
+            <ColumnDefinition Width="*" MinWidth="10" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
@@ -251,7 +251,7 @@
                               IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CrossProduct, Mode=OneWay}" />
                 </MenuItem>
                 <MenuItem Name="dismissedAlerts" Header="Dismissed Alerts" />
-                <Separator />
+                <Separator Visibility="{Binding Path=IsInputOrOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                 <MenuItem Name="isInput_cm"
                           Header="{x:Static p:Resources.NodeContextMenuIsInput}"
                           IsCheckable="True"
@@ -303,7 +303,7 @@
                 Margin="16,0"
                 VerticalAlignment="Bottom"
                 Background="#959595"
-                Canvas.ZIndex="1"
+                Canvas.ZIndex="0"
                 CornerRadius="6,6,0,0">
             <Border.Visibility>
                 <Binding Converter="{StaticResource BooleanToVisibilityConverter}"
@@ -319,7 +319,7 @@
                 Margin="8,0"
                 VerticalAlignment="Bottom"
                 Background="#747474"
-                Canvas.ZIndex="2"
+                Canvas.ZIndex="0"
                 CornerRadius="6,6,0,0">
             <Border.Visibility>
                 <Binding Converter="{StaticResource BooleanToVisibilityConverter}"
@@ -335,7 +335,7 @@
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
                 Background="{StaticResource DarkerGreyBrush}"
-                Canvas.ZIndex="3"
+                Canvas.ZIndex="1"
                 CornerRadius="8,8,0,0" />
 
         <!--  Node Header Background  -->
@@ -345,7 +345,7 @@
                 Grid.ColumnSpan="3"
                 Height="46px"
                 Background="{StaticResource DarkMidGreyBrush}"
-                Canvas.ZIndex="4"
+                Canvas.ZIndex="2"
                 CornerRadius="8,8,0,0">
             <Rectangle Fill="Transparent"
                        IsHitTestVisible="True"
@@ -386,7 +386,7 @@
                    Margin="6"
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Top"
-                   Panel.ZIndex="14"
+                   Panel.ZIndex="3"
                    FlowDirection="LeftToRight">
             <!--  The Icon for this Node  -->
             <Ellipse Name="nodeIcon"
@@ -414,7 +414,7 @@
             </Ellipse>
 
             <TextBlock Name="NameBlock"
-                       Margin="6,3,20,0"
+                       Margin="6,3,6,0"
                        VerticalAlignment="Center"
                        Background="{x:Null}"
                        FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -432,11 +432,11 @@
                   Background="Transparent"
                   DockPanel.Dock="Right">
                 <Ellipse Name="nodeRenamedBlueDot"
-                         Width="9"
-                         Height="9"
-                         Margin="6"
+                         Width="8"
+                         Height="8"
+                         Margin="0,0,6,0"
                          Fill="{StaticResource Blue300Brush}"
-                         Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                         Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Grid.ToolTip>
                     <dynui:DynamoToolTip AttachmentSide="Top" Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>
@@ -460,7 +460,7 @@
                       Margin="0,3,0,0"
                       VerticalAlignment="Top"
                       HorizontalContentAlignment="Stretch"
-                      Canvas.ZIndex="20"
+                      Canvas.ZIndex="4"
                       ItemsSource="{Binding Path=InPorts}"
                       Style="{StaticResource InOutPortControlStyle}" />
 
@@ -471,7 +471,7 @@
                       Margin="{Binding OriginalName, Converter={StaticResource NodeOriginalNameToMarginConverter}}"
                       VerticalAlignment="Top"
                       HorizontalContentAlignment="Stretch"
-                      Canvas.ZIndex="20"
+                      Canvas.ZIndex="4"
                       ItemsSource="{Binding Path=OutPorts}"
                       Style="{StaticResource InOutPortControlStyle}" />
 
@@ -480,7 +480,7 @@
               Grid.Column="1"
               Margin="6,6,6,3"
               VerticalAlignment="Top"
-              Canvas.ZIndex="20">
+              Canvas.ZIndex="4">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -495,7 +495,7 @@
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                   x:FieldModifier="public"
-                  Canvas.ZIndex="21"
+                  Canvas.ZIndex="5"
                   IsEnabled="{Binding Path=IsInteractionEnabled}" />
         </Grid>
 
@@ -506,20 +506,19 @@
                     Margin="0,0,6,2"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
-                    Canvas.ZIndex="43"
+                    Canvas.ZIndex="4"
                     FlowDirection="LeftToRight"
                     Orientation="Horizontal">
-            <Grid x:Name="HiddenEyeGlyph"
-                  Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}">
-                <Image Width="24px"
-                       Height="24px"
+            <Grid x:Name="HiddenEyeGlyph" Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}">
+                <Image Width="16px"
+                       Height="16px"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
-                       Source="/DynamoCoreWpf;component/UI/Images/hidden.png" />
+                       Source="/DynamoCoreWpf;component/UI/Images/hidden.png"
+                       Stretch="UniformToFill" />
             </Grid>
             <Label x:Name="LacingIconGlyph"
                    Margin="0,1,0,-1"
-                   ToolTipService.ShowDuration="30000"
                    HorizontalContentAlignment="Center"
                    VerticalContentAlignment="Center"
                    Content="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
@@ -528,12 +527,12 @@
                    Foreground="{StaticResource NodeLacingGlyphBackground}"
                    Style="{StaticResource SZoomFadeLabel}"
                    ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
+                   ToolTipService.ShowDuration="30000"
                    Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}" />
             <Grid Name="AlertsGlyph"
                   Width="Auto"
-                  Height="20">
-                <Border Background="{StaticResource NodeDismissedWarningsGlyphBackground}"
-                        CornerRadius="10">
+                  Height="16">
+                <Border Background="{StaticResource NodeDismissedWarningsGlyphBackground}" CornerRadius="10">
                     <Label Padding="3,2,3,0"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
@@ -547,21 +546,14 @@
                 </Border>
                 <Grid.Style>
                     <Style TargetType="Grid">
-                        <Setter Property="Visibility"
-                                Value="Visible" />
-                        <Setter Property="MinWidth"
-                                Value="20" />
-                        <Setter Property="Margin"
-                                Value="3,0,0,0" />
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Setter Property="MinWidth" Value="16" />
+                        <Setter Property="Margin" Value="3,0,0,0" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding NumberOfDismissedAlerts}"
-                                         Value="0">
-                                <Setter Property="Grid.MinWidth"
-                                        Value="0" />
-                                <Setter Property="Grid.Margin"
-                                        Value="0" />
-                                <Setter Property="Visibility"
-                                        Value="Collapsed" />
+                            <DataTrigger Binding="{Binding NumberOfDismissedAlerts}" Value="0">
+                                <Setter Property="Grid.MinWidth" Value="0" />
+                                <Setter Property="Grid.Margin" Value="0" />
+                                <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -581,25 +573,22 @@
                                                 Height="24"
                                                 Background="Transparent"
                                                 CornerRadius="2" />
-                                        <Image Width="16px"
+                                        <Image x:Name="DotsImage"
+                                               Width="16px"
                                                Height="16px"
                                                Margin="1.5,0,0,0"
+                                               Stretch="UniformToFill"
                                                HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Source="/DynamoCoreWpf;component/UI/Images/more-vertical.png" />
+                                               VerticalAlignment="Center" />
                                     </Grid>
                                     <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver"
-                                                 Value="True">
-                                            <Setter TargetName="DotsBackgroundBorder"
-                                                    Property="Background"
-                                                    Value="{StaticResource NodeOptionsButtonBackground}" />
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="DotsBackgroundBorder" Property="Background" Value="{StaticResource NodeOptionsButtonBackground}" />
+                                            <Setter TargetName="DotsImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/more-vertical_selected_16px.png" />
                                         </Trigger>
-                                        <Trigger Property="IsMouseOver"
-                                                 Value="False">
-                                            <Setter TargetName="DotsBackgroundBorder"
-                                                    Property="Background"
-                                                    Value="Transparent" />
+                                        <Trigger Property="IsMouseOver" Value="False">
+                                            <Setter TargetName="DotsBackgroundBorder" Property="Background" Value="Transparent" />
+                                            <Setter TargetName="DotsImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/more-vertical.png" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -630,32 +619,34 @@
                 Margin="-1"
                 BorderBrush="#F9F9F9"
                 BorderThickness="1"
-                Canvas.ZIndex="4"
+                Canvas.ZIndex="5"
                 CornerRadius="8,8,0,0"
-                IsHitTestVisible="False" />
+                IsHitTestVisible="False"
+                SnapsToDevicePixels="True" />
 
         <!--  Displays when the node is frozen  -->
-        <Rectangle Name="nodeIsFrozenOverlay"
-                   Grid.Row="1"
-                   Grid.RowSpan="4"
-                   Grid.ColumnSpan="3"
-                   Margin="-8"
-                   Canvas.ZIndex="0"
-                   Fill="{StaticResource NodeFrozenOverlayBackground}"
-                   IsHitTestVisible="True"
-                   Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+        <Border Name="nodeIsFrozenOverlay"
+                Grid.Row="1"
+                Grid.RowSpan="4"
+                Grid.ColumnSpan="3"
+                Margin="-8"
+                Background="{StaticResource NodeFrozenOverlayBackground}"
+                Canvas.ZIndex="0"
+                CornerRadius="8,8,0,0"
+                IsHitTestVisible="True"
+                Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  Displays when the node is selected  -->
         <Border Name="selectionBorder"
                 Grid.Row="1"
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
-                Margin="-2"
+                Margin="-3"
                 Background="Transparent"
                 BorderBrush="{StaticResource Blue300Brush}"
                 BorderThickness="4"
-                Canvas.ZIndex="41"
-                CornerRadius="7,7,0,0"
+                Canvas.ZIndex="6"
+                CornerRadius="10,10,0,0"
                 IsHitTestVisible="False">
             <Border.Visibility>
                 <Binding Converter="{StaticResource BooleanToVisibilityConverter}"
@@ -675,7 +666,7 @@
                    StrokeThickness="5"
                    StrokeLineJoin="Round"
                    IsHitTestVisible="False"
-                   Canvas.ZIndex="100"
+                   Canvas.ZIndex="5"
                    Opacity="2"
                    Margin="-1">
             <Rectangle.Visibility>

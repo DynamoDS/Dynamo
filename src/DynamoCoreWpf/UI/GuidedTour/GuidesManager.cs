@@ -74,7 +74,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             mainRootElement = root;
             dynamoViewModel = dynViewModel;
-            guideBackgroundElement = Guide.FindChild(root, guideBackgroundName) as GuideBackground;            
+            guideBackgroundElement = Guide.FindChild(root, guideBackgroundName) as GuideBackground;
             Guides = new List<Guide>();
             Window mainWindow = Window.GetWindow(mainRootElement);
 
@@ -113,7 +113,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 currentGuide.CurrentStep.UpdateLocation();
             }
 
-            if(exitTourPopup != null)
+            if (exitTourPopup != null)
             {
                 exitTourPopup.UpdateLocation();
             }
@@ -196,7 +196,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="jsonFile">Full path of the json file location containing information about the Guides and Steps</param>
         private void CreateGuideSteps(string jsonFile)
-        { 
+        {
             int totalTooltips = 0;
 
             foreach (Guide guide in GuidesManager.ReadGuides(jsonFile))
@@ -213,7 +213,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 foreach (Step step in guide.GuideSteps)
                 {
-                    HostControlInfo hostControlInfo = CreateHostControl(step);               
+                    HostControlInfo hostControlInfo = CreateHostControl(step);
                     Step newStep = CreateStep(step, hostControlInfo, totalTooltips);
 
                     //If the UI Automation info was read from the json file then we create an StepUIAutomation instance containing all the info
@@ -248,7 +248,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 HostUIElement = mainRootElement,
                 VerticalPopupOffSet = jsonStepInfo.HostPopupInfo.VerticalPopupOffSet,
                 HorizontalPopupOffSet = jsonStepInfo.HostPopupInfo.HorizontalPopupOffSet,
-                HighlightColor = jsonStepInfo.HostPopupInfo.HighlightColor
+                HighlightColor = jsonStepInfo.HostPopupInfo.HighlightColor,
+                WidthBoxDelta = jsonStepInfo.HostPopupInfo.WidthBoxDelta,
+                HeightBoxDelta = jsonStepInfo.HostPopupInfo.HeightBoxDelta
             };
 
             //The host_ui_element read from the json file need to exists otherwise the host will be null
@@ -311,7 +313,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                             FormattedText = formattedText,
                             Title = title
                         }
-                    };                   
+                    };
                     break;
                 case Step.StepTypes.SURVEY:
                     newStep = new Survey(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height)
