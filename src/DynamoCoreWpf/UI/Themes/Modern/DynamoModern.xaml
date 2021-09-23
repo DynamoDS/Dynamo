@@ -2498,6 +2498,30 @@
         </Setter>
     </Style>
 
+    <Style x:Key="NodeContextMenuStyle" TargetType="{x:Type ContextMenu}">
+        <Setter Property="Placement" Value="MousePoint" />
+        <Setter Property="Foreground" Value="{StaticResource NodeContextMenuForeground}" />
+        <Setter Property="FontSize" Value="13px" />
+        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border"
+                            Background="{StaticResource NodeContextMenuBackground}"
+                            BorderThickness="0px">
+                        <StackPanel Margin="0,10"
+                                    ClipToBounds="True"
+                                    IsItemsHost="True"
+                                    Orientation="Vertical" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="MenuExpanderStyle" TargetType="Expander">
         <Setter Property="Background" Value="{StaticResource SecondaryGray}" />
         <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}" />
