@@ -170,7 +170,7 @@ namespace Dynamo.Graph
             set
             {
                 height = value;
-                //RaisePropertyChanged("Height");
+                RaisePropertyChanged("Height");
             }
         }
 
@@ -184,7 +184,7 @@ namespace Dynamo.Graph
             set
             {
                 width = value;
-                //RaisePropertyChanged("Width");
+                RaisePropertyChanged("Width");
             }
         }
 

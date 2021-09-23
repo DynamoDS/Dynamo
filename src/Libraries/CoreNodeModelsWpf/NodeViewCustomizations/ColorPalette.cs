@@ -28,17 +28,38 @@ namespace CoreNodeModelsWpf.Nodes
         {
             viewNode = nodeView;
             colorPaletteNode = model;
+
+            viewNode.MouseEnter += ViewNode_MouseEnter;
+        }
+
+        private void ViewNode_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            ConstructView();
+        }
+
+        private void ConstructView()
+        {
+            if (viewNode is null || colorPaletteNode is null )
+            {
+                return;
+            }
+
+            if (ColorPaletteUINode != null)
+            {
+                return;
+            }
+
             converter = new Converters.MediatoDSColorConverter();
             ColorPaletteUINode = new ColorPaletteUI();
             ColorPaletteUINode.xceedColorPickerControl.Closed += ColorPickerControl_Closed;
             colorPaletteNode.PropertyChanged += ColorPaletteNode_PropertyChanged;
-            nodeView.ContentGrid.Children.Add(ColorPaletteUINode);
-
+            viewNode.ContentGrid.Children.Add(ColorPaletteUINode);
 
             var undoRecorder = viewNode.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
             WorkspaceModel.RecordModelForModification(colorPaletteNode, undoRecorder);
             //kick off ui to match initial model state.
             this.ColorPaletteNode_PropertyChanged(ColorPaletteUINode, new PropertyChangedEventArgs("DsColor"));
+            viewNode.MouseEnter -= ViewNode_MouseEnter;
         }
 
         private void ColorPaletteNode_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -83,6 +104,7 @@ namespace CoreNodeModelsWpf.Nodes
         {
             ColorPaletteUINode.xceedColorPickerControl.Closed -= ColorPickerControl_Closed; ;
             colorPaletteNode.PropertyChanged -= ColorPaletteNode_PropertyChanged;
+            viewNode.MouseEnter -= ViewNode_MouseEnter;
 
         }
     }
