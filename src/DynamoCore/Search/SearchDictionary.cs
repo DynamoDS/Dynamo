@@ -307,7 +307,7 @@ namespace Dynamo.Search
                 foreach (var ele in subset)
                 {
                     //if any element in tagDictionary matches to any element in subset, return true
-                    if (currentElementName.IndexOf(ele.FullName) != -1)
+                    if (currentElementName.IndexOf(ele.FullName, StringComparison.OrdinalIgnoreCase) != -1)
                     {
                         filteredDict.Add(searchElement.Key, searchElement.Value);
                         break;
