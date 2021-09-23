@@ -2642,6 +2642,6 @@ Delete the following packages: {2}?
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
   </data>
   <data name="NodeAutoCompleteNotAvailableForCollapsedGroups" xml:space="preserve">
-    <value>Node AutoComplete is not available on ports belong to collapsed groups.</value>
+    <value>Node AutoComplete is not available on ports belonging to collapsed groups.</value>
   </data>
 </root>

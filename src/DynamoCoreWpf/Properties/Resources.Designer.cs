@@ -3867,7 +3867,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Node AutoComplete is not available on ports belong to collapsed groups..
+        ///   Looks up a localized string similar to Node AutoComplete is not available on ports belonging to collapsed groups..
         /// </summary>
         public static string NodeAutoCompleteNotAvailableForCollapsedGroups {
             get {
