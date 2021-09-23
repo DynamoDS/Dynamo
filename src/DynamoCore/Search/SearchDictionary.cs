@@ -312,7 +312,7 @@ namespace Dynamo.Search
                         filteredDict.Add(searchElement.Key, searchElement.Value);
                         break;
                     }
-                }                
+                }
             }
             return filteredDict;
         }
