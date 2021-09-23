@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 

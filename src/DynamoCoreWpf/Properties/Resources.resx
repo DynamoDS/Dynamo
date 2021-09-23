@@ -2642,6 +2642,6 @@ Delete the following packages: {2}?
     <value>Packages</value>
   </data>
   <data name="PackagesGuideLearnAbout" xml:space="preserve">
-    <value>LearnAboutPackages</value>
+    <value>Learn about packages</value>
   </data>
 </root>

@@ -26,12 +26,7 @@
 
     <Canvas Background="Transparent"
             Name="RootLayout" >
-
-        <Polygon x:Name="TooltipPointer"
-                Visibility="Visible"
-                 Points="{Binding TooltipPointerPoints}" 
-                 Style="{StaticResource PoupPolygonPointerStyle}" />
-
+        
         <Path x:Name="PopupPathRectangle" 
               Style="{StaticResource PoupPathRectangleStyle}">
             <Path.Data>
@@ -131,9 +126,6 @@
                                            CustomText="{Binding StepContent.FormattedText}"
                                            Style="{StaticResource CustomRichTextBoxStyle}">
                 </localui:CustomRichTextBox>
-
-                <!--<WebBrowser x:Name="webBrowser" Grid.Row="1"></WebBrowser>-->
-
             </Grid>
             
             

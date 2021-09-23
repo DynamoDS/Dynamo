@@ -4770,7 +4770,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to LearnAboutPackages.
+        ///   Looks up a localized string similar to Learn about packages.
         /// </summary>
         public static string PackagesGuideLearnAbout {
             get {

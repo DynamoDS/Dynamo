@@ -92,6 +92,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Step firstStep = (from step in GuideSteps where step.Sequence == 0 select step).FirstOrDefault();
                 CurrentStep = firstStep;
+
+                if (firstStep.HostPopupInfo != null && 
+                    firstStep.StepType == Step.StepTypes.TOOLTIP)
+                    SetupBackgroundHole(firstStep);
+
                 firstStep.Show();
             }
         }
@@ -103,7 +108,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             TotalSteps = GuideSteps.Count;
 
-            SetLibraryViewVisible(false);   
+            SetLibraryViewVisible(false);
 
             SubscribeFlowEvents();
         }

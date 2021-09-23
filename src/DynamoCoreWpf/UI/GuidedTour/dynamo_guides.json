@@ -158,18 +158,20 @@
 				"Name": "packages",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
-				"Width": 482,
+				"VerticalTooltipOffset": -50,
+				"Width": 480,
 				"Height": 512,
 				"StepContent": {
-					"Title": "GetStartedGuideResourcesTitle",
+					"Title": "PackagesGuideLearnAbout",
 					"FormattedText": "GetStartedGuideResourcesText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "right",
+					"PopupPlacement": "relative",
 					"HostUIElementString": "PackageManagerMenu",
-					"VerticalPopupOffset": 20,
-					"HorizontalPopupOffset": 170,
-					"HtmlPage":  "learnPackages"
+					"VerticalPopupOffset": -25,
+					"HorizontalPopupOffset": 85,
+					"HighlightColor": "#EF9362",
+					"HtmlPage": "learnPackages"
 				}
 			}
 		]
