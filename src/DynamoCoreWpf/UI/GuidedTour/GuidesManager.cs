@@ -49,7 +49,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
 
 
-        public static string GuidesExecutingDirectory
+        internal static string GuidesExecutingDirectory
         {
             get
             {
@@ -57,7 +57,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
-        public static string GuidesJsonFilePath
+        internal static string GuidesJsonFilePath
         {
             get
             {
@@ -69,6 +69,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// GuidesManager Constructor that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
         /// </summary>
         /// <param name="root">root item of the main Dynamo Window </param>
+        /// <param name="dynViewModel"></param>
         public GuidesManager(UIElement root, DynamoViewModel dynViewModel)
         {
             mainRootElement = root;
@@ -105,7 +106,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This method will be used when the PlacementTarget element of the Popup was moved or resize so we need to update each Step and the ExitTour popup
         /// </summary>
-        public void UpdateGuideStepsLocation()
+        internal void UpdateGuideStepsLocation()
         {
             if (currentGuide != null)
             {
@@ -122,7 +123,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This method will launch the tour when the user clicks in the Help->Interactive Guides->Guide
         /// </summary>
         /// <param name="tourName"></param>
-        public void LaunchTour(string tourName)
+        internal void LaunchTour(string tourName)
         {
             if (!tourStarted)
                 GuideFlowEvents.OnGuidedTourStart(tourName);
@@ -366,27 +367,41 @@ namespace Dynamo.Wpf.UI.GuidedTour
             GuideFlowEvents.OnGuidedTourFinish(currentGuide.Name);
 
             //The exit tour popup will be shown only when a popup (doesn't apply for survey) is closed or when the tour is closed. 
-            if (stepType != Step.StepTypes.SURVEY)
-                CreateRealTimeInfoWindow();
+            if(stepType != Step.StepTypes.SURVEY)
+                CreateRealTimeInfoWindow(Res.ExitTourWindowContent);
         }
 
-        private void CreateRealTimeInfoWindow()
+        /// <summary>
+        /// Display a notification to display on top right corner of canvas
+        /// and display message passed as param
+        /// </summary>
+        /// <param name="content">The target content to display.</param>
+        internal void CreateRealTimeInfoWindow(string content)
         {
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
             UIElement hostUIElement = Guide.FindChild(mainRootElement, "statusBarPanel");
 
-            //Creates the RealTimeInfoWindow popup and set up all the needed values to show the popup over the Dynamo workspace
-            exitTourPopup = new RealTimeInfoWindow()
+            // When popup already exist, replace the content
+            if ( exitTourPopup != null && exitTourPopup.IsOpen)
             {
-                VerticalOffset = ExitTourVerticalOffset,
-                HorizontalOffset = ExitTourHorizontalOffset,
-                Placement = PlacementMode.Left,
-                TextContent = Res.ExitTourWindowContent
-            };
+                exitTourPopup.TextContent = content;
+            }
+            else
+            {
+                // Otherwise creates the RealTimeInfoWindow popup and set up all the needed values
+                // to show the popup over the Dynamo workspace
+                exitTourPopup = new RealTimeInfoWindow()
+                {
+                    VerticalOffset = ExitTourVerticalOffset,
+                    HorizontalOffset = ExitTourHorizontalOffset,
+                    Placement = PlacementMode.Left,
+                    TextContent = content
+                };
 
-            if (hostUIElement != null)
-                exitTourPopup.PlacementTarget = hostUIElement;
-            exitTourPopup.IsOpen = true;
+                if (hostUIElement != null)
+                    exitTourPopup.PlacementTarget = hostUIElement;
+                exitTourPopup.IsOpen = true;
+            }
         }
     }
 }
