@@ -3975,6 +3975,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dismissed Alerts.
+        /// </summary>
+        public static string NodeInformationalStateDismissedAlerts {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateDismissedAlerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Renamed.
         /// </summary>
         public static string NodeRenamedLabel {

@@ -704,6 +704,10 @@
     <value>Help</value>
     <comment>Display help message for this node</comment>
   </data>
+  <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
+    <value>Dismissed Alerts</value>
+    <comment>Display the number of dismissed alerts on the node context menu</comment>
+  </data>
   <data name="ContextMenuGroups" xml:space="preserve">
     <value>Groups</value>
     <comment>Context menu for group-based operations</comment>

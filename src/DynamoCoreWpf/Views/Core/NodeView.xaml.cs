@@ -17,6 +17,7 @@ using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Thickness = System.Windows.Thickness;
 
 
 namespace Dynamo.Controls
@@ -61,13 +62,13 @@ namespace Dynamo.Controls
                 if (viewModel.PreviewPinned)
                 {
                     CreatePreview(viewModel);
-                }                
+                }
             }
         }
 
         private void NodeView_MouseLeave(object sender, MouseEventArgs e)
         {
-            if (viewModel!=null && viewModel.OnMouseLeave != null)
+            if (viewModel != null && viewModel.OnMouseLeave != null)
                 viewModel.OnMouseLeave();
         }
 
@@ -240,11 +241,11 @@ namespace Dynamo.Controls
                     break;
 
                 case "IsSetAsInput":
-                    (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                    (DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
                     break;
 
                 case "IsSetAsOutput":
-                    (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                    (DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
                     break;
             }
         }
@@ -321,7 +322,7 @@ namespace Dynamo.Controls
             var editWindow = new EditWindow(viewModel.DynamoViewModel, false, true)
             {
                 DataContext = ViewModel,
-                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle
+                Title = Wpf.Properties.Resources.EditNodeWindowTitle
             };
 
             editWindow.Owner = Window.GetWindow(this);
@@ -426,7 +427,7 @@ namespace Dynamo.Controls
                 }
             }
         }
-        
+
         private void NameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
@@ -678,7 +679,8 @@ namespace Dynamo.Controls
                 {
                     PreviewControl.TransitionToState(PreviewControl.State.Condensed);
                     PreviewControl.TransitionToState(PreviewControl.State.Hidden);
-                } else if (PreviewControl.IsCondensed)
+                }
+                else if (PreviewControl.IsCondensed)
                 {
                     PreviewControl.TransitionToState(PreviewControl.State.Hidden);
                 }
@@ -687,26 +689,404 @@ namespace Dynamo.Controls
 
         #endregion
 
-        private void OptionsButton_Click(object sender, RoutedEventArgs e)
+        private void AddContextMenuItem(MenuItem menuItem)
+        {
+            grid.ContextMenu.Items.Add(menuItem);
+        }
+
+        private void AddContextMenuSeparator() => grid.ContextMenu.Items.Add(new Separator());
+
+        /// <summary>
+        /// Creates a new MenuItem in the node's Context Menu.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="header"></param>
+        /// <param name="command"></param>
+        /// <param name="commandParameter"></param>
+        /// <param name="isCheckable"></param>
+        /// <param name="isChecked"></param>
+        /// <param name="visibility"></param>
+        /// <param name="isEnabled"></param>
+        /// <returns></returns>
+        private MenuItem CreateMenuItem
+        (
+            string name = null,
+            string header = null,
+            Binding command = null,
+            string commandParameter = null,
+            bool isCheckable = false,
+            Binding isChecked = null,
+            Binding visibility = null,
+            Binding isEnabled = null,
+            Binding itemsSource = null
+        )
+        {
+            MenuItem menuItem = new MenuItem { Header = header, IsCheckable = isCheckable };
+
+            if (!string.IsNullOrWhiteSpace(name)) menuItem.Name = name;
+            if (command != null) menuItem.SetBinding(MenuItem.CommandProperty, command);
+            if (commandParameter != null) menuItem.CommandParameter = commandParameter;
+            if (isChecked != null) menuItem.SetBinding(MenuItem.IsCheckedProperty, isChecked);
+            if (visibility != null) menuItem.SetBinding(VisibilityProperty, visibility);
+            if (isEnabled != null) menuItem.SetBinding(IsEnabledProperty, isEnabled);
+            if (itemsSource != null) menuItem.SetBinding(MenuItem.ItemsSourceProperty, itemsSource);
+
+            return menuItem;
+        }
+
+        /// <summary>
+        /// Builds the node's context menu programatically when the user clicks on the Node Options button.
+        /// </summary>
+        private void ConstructNodeContextMenu()
+        {
+            #region Remove
+            MenuItem removeMenuItem = CreateMenuItem
+            (
+                name: "deleteElem_cm",
+                header: Wpf.Properties.Resources.ContextMenuDelete,
+                command: new Binding
+                {
+                    Source = viewModel,
+                    Path = new PropertyPath("DeleteCommand")
+                }
+            );
+            AddContextMenuItem(removeMenuItem);
+            #endregion
+
+            #region Groups
+            MenuItem groupsMenuItem = CreateMenuItem(header: Wpf.Properties.Resources.ContextMenuGroups);
+
+            groupsMenuItem.Items.Add(CreateMenuItem
+                (
+                    name: "createGroup_cm",
+                    header: Wpf.Properties.Resources.ContextCreateGroupFromSelection,
+                    command: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("CreateGroupCommand")
+                    }
+                )
+            );
+            groupsMenuItem.Items.Add(CreateMenuItem
+                (
+                    name: "unGroup_cm",
+                    header: Wpf.Properties.Resources.ContextUnGroupFromSelection,
+                    command: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("UngroupCommand")
+                    }
+                )
+            );
+            groupsMenuItem.Items.Add(CreateMenuItem
+                (
+                    name: "addtoGroup",
+                    header: Wpf.Properties.Resources.ContextAddGroupFromSelection,
+                    command: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("AddToGroupCommand")
+                    }
+                )
+            );
+            AddContextMenuItem(groupsMenuItem);
+            #endregion
+
+            #region Preview
+
+            if (viewModel.ShowsVisibilityToggles)
+            {
+                MenuItem previewMenuItem = CreateMenuItem
+                (
+                    name: "isVisible_cm",
+                    header: Wpf.Properties.Resources.NodeContextMenuPreview,
+                    command: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("ToggleIsVisibleCommand")
+                    },
+                    isCheckable: true,
+                    isChecked: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("IsVisible"),
+                        Mode = BindingMode.OneWay
+                    }
+                );
+                AddContextMenuItem(previewMenuItem);
+            }
+            #endregion
+
+            #region Freeze
+            MenuItem freezeMenuItem = CreateMenuItem
+            (
+                name: "nodeIsFrozen",
+                header: Wpf.Properties.Resources.NodesRunStatus,
+                command: new Binding
+                {
+                    Source = viewModel,
+                    Path = new PropertyPath("ToggleIsFrozenCommand")
+                },
+                isCheckable: true,
+                isChecked: new Binding
+                {
+                    Source = viewModel,
+                    Path = new PropertyPath("IsFrozenExplicitly"),
+                    Mode = BindingMode.OneWay
+                },
+                isEnabled: new Binding
+                {
+                    Source = viewModel,
+                    Path = new PropertyPath("CanToggleFrozen"),
+                    Mode = BindingMode.OneWay
+                }
+            );
+            AddContextMenuItem(freezeMenuItem);
+            #endregion
+
+            #region Show Labels
+            MenuItem showLabelsMenuItem = CreateMenuItem
+            (
+                name: "isDisplayLabelsEnabled_cm",
+                header: Wpf.Properties.Resources.NodeContextMenuShowLabels,
+                isCheckable: true,
+                isChecked: new Binding
+                {
+                    Source = viewModel,
+                    Path = new PropertyPath("IsDisplayingLabels"),
+                    Mode = BindingMode.TwoWay
+                },
+                isEnabled: new Binding
+                {
+                    Source = viewModel,
+                    Path = new PropertyPath("CanDisplayLabels")
+                }
+            );
+            AddContextMenuItem(showLabelsMenuItem);
+            #endregion
+
+            #region Rename
+            MenuItem renameMenuItem = CreateMenuItem
+            (
+                name: "rename_cm",
+                header: Wpf.Properties.Resources.NodeContextMenuRenameNode,
+                command: new Binding
+                {
+                    Source = viewModel,
+                    Path = new PropertyPath("RenameCommand")
+                }
+            );
+            AddContextMenuItem(renameMenuItem);
+            #endregion
+
+            #region Lacing
+
+            if (viewModel.ArgumentLacing != LacingStrategy.Disabled)
+            {
+                MenuItem lacingMenuItem = CreateMenuItem(header: Wpf.Properties.Resources.ContextMenuLacing);
+
+                lacingMenuItem.Items.Add(CreateMenuItem
+                (
+                    header: Wpf.Properties.Resources.ContextMenuLacingAuto,
+                    command: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("SetLacingTypeCommand"),
+                    },
+                    commandParameter: "Auto",
+                    isCheckable: true,
+                    isChecked: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("ArgumentLacing"),
+                        Converter = new EnumToBooleanConverter(),
+                        ConverterParameter = "Auto",
+                        Mode = BindingMode.OneWay
+                    }
+                ));
+
+                lacingMenuItem.Items.Add(CreateMenuItem
+                (
+                    header: Wpf.Properties.Resources.ContextMenuLacingShortest,
+                    command: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("SetLacingTypeCommand"),
+                    },
+                    commandParameter: "Shortest",
+                    isCheckable: true,
+                    isChecked: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("ArgumentLacing"),
+                        Converter = new EnumToBooleanConverter(),
+                        ConverterParameter = "Shortest",
+                        Mode = BindingMode.OneWay
+                    }
+                    ));
+
+                lacingMenuItem.Items.Add(CreateMenuItem
+                (
+                    header: Wpf.Properties.Resources.ContextMenuLacingLongest,
+                    command: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("SetLacingTypeCommand"),
+                    },
+                    commandParameter: "Longest",
+                    isCheckable: true,
+                    isChecked: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("ArgumentLacing"),
+                        Converter = new EnumToBooleanConverter(),
+                        ConverterParameter = "Longest",
+                        Mode = BindingMode.OneWay
+                    }
+                ));
+
+                lacingMenuItem.Items.Add(CreateMenuItem
+                (
+                    header: Wpf.Properties.Resources.ContextMenuLacingCrossProduct,
+                    command: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("SetLacingTypeCommand"),
+                    },
+                    commandParameter: "CrossProduct",
+                    isCheckable: true,
+                    isChecked: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("ArgumentLacing"),
+                        Converter = new EnumToBooleanConverter(),
+                        ConverterParameter = "CrossProduct",
+                        Mode = BindingMode.OneWay
+                    }
+                ));
+
+                AddContextMenuItem(lacingMenuItem);
+            }
+
+            #endregion
+
+            #region Dismissed Alerts
+            MenuItem dismissedAlertsMenuItem = CreateMenuItem
+            (
+                name: "dismissedAlerts",
+                header: Wpf.Properties.Resources.NodeInformationalStateDismissedAlerts,
+                itemsSource: new Binding
+                {
+                    Source = viewModel,
+                    Path = new PropertyPath("DismissedAlerts"),
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                }
+            );
+            DataTemplate itemTemplate = new DataTemplate(typeof(MenuItem));
+
+            FrameworkElementFactory grid = new FrameworkElementFactory(typeof(Grid));
+            grid.Name = "mainTemplateGrid";
+            grid.SetValue(WidthProperty, 220.0);
+            grid.SetValue(HeightProperty, 30.0);
+            grid.SetValue(MarginProperty, new Thickness(-15,0,0,0));
+            grid.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            grid.SetValue(VerticalAlignmentProperty, VerticalAlignment.Stretch);
+            grid.SetValue(BackgroundProperty, new SolidColorBrush(Colors.Transparent));
+
+            FrameworkElementFactory textBlock = new FrameworkElementFactory(typeof(TextBlock));
+            textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+            textBlock.SetValue(MarginProperty, new Thickness(15, 0, 0, 0));
+            textBlock.SetValue(IsHitTestVisibleProperty, false);
+            textBlock.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
+            textBlock.SetValue(ForegroundProperty, new SolidColorBrush(Color.FromRgb(238,238,238)));
+
+            dismissedAlertsMenuItem.ItemTemplate = itemTemplate;
+            
+            AddContextMenuItem(dismissedAlertsMenuItem);
+            #endregion
+
+            #region Is Input / Is Output
+            
+            if(viewModel.IsInputOrOutput)
+            {
+                AddContextMenuSeparator();
+            }
+
+            // Is Input
+            if (viewModel.IsInput)
+            {
+                MenuItem isInputMenuItem = CreateMenuItem
+                (
+                  name: "isInput_cm",
+                  header: Wpf.Properties.Resources.NodeContextMenuIsInput,
+                  isCheckable: true,
+                  isChecked: new Binding
+                  {
+                      Source = viewModel,
+                      Path = new PropertyPath("IsSetAsInput"),
+                      Mode = BindingMode.TwoWay,
+                  }
+                );
+                AddContextMenuItem(isInputMenuItem);
+            }
+
+            // Is Output
+            if (viewModel.IsOutput)
+            {
+                MenuItem isOutputMenuItem = CreateMenuItem
+                (
+                    name: "isOutput_cm",
+                    header: Wpf.Properties.Resources.NodeContextMenuIsOutput,
+                    isCheckable: true,
+                    isChecked: new Binding
+                    {
+                        Source = viewModel,
+                        Path = new PropertyPath("IsSetAsOutput"),
+                        Mode = BindingMode.TwoWay,
+                    }
+                );
+                AddContextMenuItem(isOutputMenuItem);
+            }
+
+            #endregion
+
+            #region Help
+            AddContextMenuSeparator();
+            MenuItem helpMenuItem = CreateMenuItem
+            (
+                name: "help_cm",
+                header: Wpf.Properties.Resources.NodeContextMenuHelp,
+                command: new Binding
+                {
+                    Source = viewModel,
+                    Path = new PropertyPath("ShowHelpCommand")
+                }
+            );
+            AddContextMenuItem(helpMenuItem);
+
+            #endregion
+        }
+
+        private void DisplayNodeContextMenu()
         {
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
-            viewModel.OnSelected(this, EventArgs.Empty);
+            if (grid.ContextMenu.Items.Count == 0) ConstructNodeContextMenu();
+
             grid.ContextMenu.DataContext = viewModel;
             grid.ContextMenu.IsOpen = true;
         }
 
+        private void OptionsButton_Click(object sender, RoutedEventArgs e)
+        {
+            DisplayNodeContextMenu();
+            e.Handled = true;
+        }
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Guid nodeGuid = ViewModel.NodeModel.GUID;
-            ViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
-
-            grid.ContextMenu.DataContext = viewModel;
-            grid.ContextMenu.IsOpen = true;
-            
+            DisplayNodeContextMenu();
             e.Handled = true;
         }
     }

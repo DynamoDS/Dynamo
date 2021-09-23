@@ -190,83 +190,6 @@
                         </Style>
                     </ResourceDictionary>
                 </ContextMenu.Resources>
-                <MenuItem Name="deleteElem_cm"
-                          Command="{Binding Path=DeleteCommand}"
-                          Header="{x:Static p:Resources.ContextMenuDelete}"
-                          IsCheckable="False" />
-                <MenuItem Header="{x:Static p:Resources.ContextMenuGroups}" IsCheckable="False">
-                    <MenuItem Name="createGroup_cm"
-                              Command="{Binding Path=CreateGroupCommand}"
-                              Header="{x:Static p:Resources.ContextCreateGroupFromSelection}" />
-                    <MenuItem Name="unGroup_cm"
-                              Command="{Binding Path=UngroupCommand}"
-                              Header="{x:Static p:Resources.ContextUnGroupFromSelection}" />
-                    <MenuItem Name="addtoGroup"
-                              Command="{Binding Path=AddToGroupCommand}"
-                              Header="{x:Static p:Resources.ContextAddGroupFromSelection}" />
-                </MenuItem>
-                <MenuItem Name="isVisible_cm"
-                          Command="{Binding Path=ToggleIsVisibleCommand}"
-                          Header="{x:Static p:Resources.NodeContextMenuPreview}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Path=IsVisible, Mode=OneWay}"
-                          Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <MenuItem Name="nodeIsFrozen"
-                          Command="{Binding Path=ToggleIsFrozenCommand}"
-                          Header="{x:Static p:Resources.NodesRunStatus}"
-                          IsCheckable="True"
-                          IsChecked="{Binding IsFrozenExplicitly, Mode=OneWay}"
-                          IsEnabled="{Binding CanToggleFrozen, Mode=OneWay}" />
-                <MenuItem Name="isDisplayLabelsEnabled_cm"
-                          Header="{x:Static p:Resources.NodeContextMenuShowLabels}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Path=IsDisplayingLabels, Mode=TwoWay}"
-                          IsEnabled="{Binding Path=CanDisplayLabels}" />
-                <MenuItem Name="rename_cm"
-                          Command="{Binding Path=RenameCommand}"
-                          Header="{x:Static p:Resources.NodeContextMenuRenameNode}"
-                          IsCheckable="False" />
-                <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
-                          IsCheckable="False"
-                          Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}, Mode=OneWay}">
-                    <MenuItem Command="{Binding Path=SetLacingTypeCommand}"
-                              CommandParameter="Auto"
-                              Header="{x:Static p:Resources.ContextMenuLacingAuto}"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Auto, Mode=OneWay}" />
-                    <MenuItem Command="{Binding Path=SetLacingTypeCommand}"
-                              CommandParameter="Shortest"
-                              Header="{x:Static p:Resources.ContextMenuLacingShortest}"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Shortest, Mode=OneWay}" />
-                    <MenuItem Command="{Binding Path=SetLacingTypeCommand}"
-                              CommandParameter="Longest"
-                              Header="{x:Static p:Resources.ContextMenuLacingLongest}"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Longest, Mode=OneWay}" />
-                    <MenuItem Command="{Binding Path=SetLacingTypeCommand}"
-                              CommandParameter="CrossProduct"
-                              Header="{x:Static p:Resources.ContextMenuLacingCrossProduct}"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CrossProduct, Mode=OneWay}" />
-                </MenuItem>
-                <MenuItem Name="dismissedAlerts" Header="Dismissed Alerts" />
-                <Separator Visibility="{Binding Path=IsInputOrOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
-                <MenuItem Name="isInput_cm"
-                          Header="{x:Static p:Resources.NodeContextMenuIsInput}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Path=IsSetAsInput, Mode=TwoWay}"
-                          Visibility="{Binding Path=IsInput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <MenuItem Name="isOutput_cm"
-                          Header="{x:Static p:Resources.NodeContextMenuIsOutput}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Path=IsSetAsOutput, Mode=TwoWay}"
-                          Visibility="{Binding Path=IsOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <Separator />
-                <MenuItem Name="help_cm"
-                          Command="{Binding Path=ShowHelpCommand}"
-                          Header="{x:Static p:Resources.NodeContextMenuHelp}"
-                          IsCheckable="False" />
                 <ContextMenu.Style>
                     <Style TargetType="{x:Type ContextMenu}">
                         <Setter Property="Placement" Value="MousePoint" />
@@ -577,9 +500,9 @@
                                                Width="16px"
                                                Height="16px"
                                                Margin="1.5,0,0,0"
-                                               Stretch="UniformToFill"
                                                HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" />
+                                               VerticalAlignment="Center"
+                                               Stretch="UniformToFill" />
                                     </Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
