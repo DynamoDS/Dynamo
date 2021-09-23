@@ -37,6 +37,10 @@ namespace Dynamo.ViewModels
         }
 
         public event EventHandler SearchTextChanged;
+
+        /// <summary>
+        /// Invokes the SearchTextChanged event handler and executes the SearchCommand
+        /// </summary>
         public void OnSearchTextChanged(object sender, EventArgs e)
         {
             if (SearchTextChanged != null)
@@ -67,13 +71,13 @@ namespace Dynamo.ViewModels
             set { browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
         }
 
+        private string searchText;
         /// <summary>
         ///     SearchText property
         /// </summary>
         /// <value>
         ///     This is the core UI for Dynamo, primarily used for logging.
         /// </value>
-        private string searchText;
         public string SearchText
         {
             get { return searchText; }
