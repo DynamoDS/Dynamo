@@ -14,27 +14,4 @@
         d:DesignWidth="{Binding MainWinWidth}">
 
     <WebBrowser x:Name="webBrowser"></WebBrowser>
-
-
-    <!--<Canvas Background="Transparent"
-            Name="RootLayout" >
-        --><!--<Grid 
-                MinWidth="480">
-            --><!--<Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>-->
-
-            <!--<Grid Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="*" 
-                                   MinHeight="50"/>
-                </Grid.RowDefinitions>                
-
-                
-            </Grid>--><!--
-            
-        </Grid>--><!--
-    </Canvas>-->
 </Popup>
