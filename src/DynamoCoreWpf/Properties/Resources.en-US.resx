@@ -2517,8 +2517,8 @@ Uninstall the following packages: {0}?</value>
   <data name="HideWiresPopupMenuItem" xml:space="preserve">
     <value>Hide Wires</value>
   </data>
-  <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
-    <value>Unhide Wires</value>
+  <data name="ShowWiresPopupMenuItem" xml:space="preserve">
+    <value>Show Wires</value>
   </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this guide later from the Help menu.</value>
@@ -2646,5 +2646,8 @@ Delete the following packages: {2}?
   </data>
   <data name="PackagesGuideLearnAbout" xml:space="preserve">
     <value>Learn about packages</value>
+  </data>
+  <data name="NodeAutoCompleteNotAvailableForCollapsedGroups" xml:space="preserve">
+    <value>Node AutoComplete is not available on ports belonging to collapsed groups.</value>
   </data>
 </root>
