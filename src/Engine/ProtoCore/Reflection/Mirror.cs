@@ -201,7 +201,8 @@ namespace ProtoCore
                             && !hidden
                             && !x.Name.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix)
                             && !x.Name.Equals("Break")
-                            && !CoreUtils.StartsWithDoubleUnderscores(x.Name);
+                            && !CoreUtils.StartsWithDoubleUnderscores(x.Name)
+                            && x.IsActive;
 
                     }
                     ).Select(y => new MethodMirror(y));

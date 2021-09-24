@@ -748,15 +748,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide Wires.
-        /// </summary>
-        public static string HideWiresPopupMenuItem {
-            get {
-                return ResourceManager.GetString("HideWiresPopupMenuItem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No identifiers found..
         /// </summary>
         public static string IdentifiersNotFound {
@@ -1902,15 +1893,6 @@ namespace Dynamo.Properties {
         public static string UnhandledExceptionTitle {
             get {
                 return ResourceManager.GetString("UnhandledExceptionTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unhide Wires.
-        /// </summary>
-        public static string UnhideWiresPopupMenuItem {
-            get {
-                return ResourceManager.GetString("UnhideWiresPopupMenuItem", resourceCulture);
             }
         }
         

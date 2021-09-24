@@ -774,11 +774,12 @@ namespace Dynamo.Models
             Loader.MessageLogged += LogMessage;
 
             // Create a core which is used for parsing code and loading libraries
-            var libraryCore = new ProtoCore.Core(new Options());
-
+            var libraryCore = new ProtoCore.Core(new Options())
+            {
+                ParsingMode = ParseMode.AllowNonAssignment
+            };
             libraryCore.Compilers.Add(Language.Associative, new Compiler(libraryCore));
             libraryCore.Compilers.Add(Language.Imperative, new ProtoImperative.Compiler(libraryCore));
-            libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             LibraryServices = new LibraryServices(libraryCore, pathManager, PreferenceSettings);
             LibraryServices.MessageLogged += LogMessage;
@@ -1817,9 +1818,10 @@ namespace Dynamo.Models
           bool forceManualExecutionMode,
           out WorkspaceModel workspace)
         {
-            CustomNodeManager.AddUninitializedCustomNodesInPath(
-                Path.GetDirectoryName(filePath),
-                IsTestMode);
+            CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filePath), IsTestMode);
+
+            var currentHomeSpace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            currentHomeSpace.UndefineCBNFunctionDefinitions();
 
             // TODO, QNTM-1108: WorkspaceModel.FromJson does not check a schema and so will not fail as long
             // as the fileContents are valid JSON, regardless of if all required data is present or not
@@ -1848,6 +1850,8 @@ namespace Dynamo.Models
             if (homeWorkspace != null)
             {
                 homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
+
+                homeWorkspace.ReCompileCodeBlockNodesForFunctionDefinitions();
 
                 RunType runType;
                 if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)
@@ -2380,6 +2384,11 @@ namespace Dynamo.Models
         /// directly in this point. </param>
         public void Paste(Point2D targetPoint, bool useOffset = true)
         {
+            //When called from somewhere other than StateMachine and only ConnectorPins are selected.
+            if (ClipBoard.All(m => m is ConnectorPinModel))
+            {
+                return;
+            }
             if (useOffset)
             {
                 // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other

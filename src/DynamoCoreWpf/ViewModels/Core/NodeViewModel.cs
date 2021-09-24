@@ -669,6 +669,15 @@ namespace Dynamo.ViewModels
             Selected?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Event to determine when Node is removed
+        /// </summary>
+        internal event EventHandler Removed;
+        internal void OnRemoved(object sender, EventArgs e)
+        {
+            Removed?.Invoke(this, e);
+        }
+
         #endregion
 
         #region constructors
@@ -999,6 +1008,7 @@ namespace Dynamo.ViewModels
         {
             var command = new DynamoModel.DeleteModelCommand(nodeLogic.GUID);
             DynamoViewModel.ExecuteCommand(command);
+            OnRemoved(this, EventArgs.Empty);
         }
 
         private void SetLacingType(object param)

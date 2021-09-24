@@ -14,6 +14,20 @@ namespace DynamoCoreWpfTests
         /// Check to see a pin can be added to a connector
         /// </summary>
         [Test]
+        public void ConnectorVisibilityForLegacyGraphTest()
+        {
+            Open(@"UI/ConnectorPinTests.dyn");
+
+            var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
+
+            // Default collapse state should be false when opening legacy graph
+            Assert.AreEqual(connectorViewModel.IsCollapsed, false);
+        }
+
+        /// <summary>
+        /// Check to see a pin can be added to a connector
+        /// </summary>
+        [Test]
         public void CanPinConnector()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -81,6 +95,7 @@ namespace DynamoCoreWpfTests
             ///Should result in 2 selected nodes.
             Assert.AreEqual(DynamoSelection.Instance.Selection.Count, initialSelectedCount + 2);
         }
+
         /// <summary>
         /// Check to see if can break connection.
         /// </summary>
@@ -105,10 +120,10 @@ namespace DynamoCoreWpfTests
         {
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
-            bool initialVisibility = connectorViewModel.IsDisplayed;
+            bool initialVisibility = connectorViewModel.IsCollapsed;
             ///Toggles hide (visibility == off)
             connectorViewModel.HideConnectorCommand.Execute(null);
-            Assert.AreEqual(connectorViewModel.IsDisplayed, !initialVisibility);
+            Assert.AreEqual(connectorViewModel.IsCollapsed, !initialVisibility);
         }
 
         /// <summary>
@@ -120,13 +135,13 @@ namespace DynamoCoreWpfTests
         {
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
-            bool initialVisibility = connectorViewModel.IsDisplayed;
+            bool initialVisibility = connectorViewModel.IsCollapsed;
             ///Toggles hide (visibility == off)
             connectorViewModel.HideConnectorCommand.Execute(null);
-            Assert.AreEqual(connectorViewModel.IsDisplayed, !initialVisibility);
+            Assert.AreEqual(connectorViewModel.IsCollapsed, !initialVisibility);
             ///Toggles hide on/off (visibility == on)
             connectorViewModel.HideConnectorCommand.Execute(null);
-            Assert.AreEqual(connectorViewModel.IsDisplayed, initialVisibility);
+            Assert.AreEqual(connectorViewModel.IsCollapsed, initialVisibility);
         }
 
         /// <summary>
