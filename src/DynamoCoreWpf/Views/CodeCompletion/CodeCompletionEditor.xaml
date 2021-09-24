@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Border Padding="2,7,2,6"
+        <Border Padding="10,5,10,6"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 BorderBrush="#959595"
@@ -25,10 +25,11 @@
                 SnapsToDevicePixels="True">
             <avalonedit:TextEditor x:Name="InnerTextEditor"
                                    MaxWidth="677"
-                                   Padding="8,0"
+                                   Margin="0,0,0,-2"
+                                   Padding="0"
                                    Background="#3A3B3B"
-                                   FontFamily="{StaticResource CourierPrime}"
-                                   FontSize="14px"
+                                   FontFamily="{StaticResource SourceCodePro}"
+                                   FontSize="13px"
                                    Foreground="#DCDCDC"
                                    LineNumbersForeground="#AAAAAA"
                                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
@@ -36,10 +37,10 @@
                                    WordWrap="False" />
         </Border>
         <TextBlock x:Name="WatermarkLabel"
-                   Margin="0,7,0,0"
+                   Margin="0,5,0,0"
                    Padding="11,3"
-                   FontFamily="{StaticResource CourierPrime}"
-                   FontSize="14px"
+                   FontFamily="{StaticResource SourceCodePro}"
+                   FontSize="13px"
                    Foreground="#AAAAAA"
                    IsHitTestVisible="False" />
     </Grid>

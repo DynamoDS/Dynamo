@@ -17,7 +17,7 @@ namespace Dynamo.ViewModels
         #region Properties 
         private Point currentPosition;
         private bool isHalftone;
-        private bool isPartlyVisible = false;
+        private bool isTemporarilyVisible = false;
         private bool isDataFlowCollection;
         private bool canDisplayIcons = false;
         private bool canShowTooltip = true;
@@ -70,16 +70,16 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Property which overrides 'isVisible==false' condition. When this prop is set to true, wires are set to 
+        /// Property which overrides 'IsCollapsed' condition. When this prop is set to true, wires are set to 
         /// 40% opacity.
         /// </summary>
-        public bool IsPartlyVisible
+        public bool IsTemporarilyDisplayed
         {
-            get { return isPartlyVisible; }
+            get { return isTemporarilyVisible; }
             set
             {
-                isPartlyVisible = value;
-                RaisePropertyChanged(nameof(IsPartlyVisible));
+                isTemporarilyVisible = value;
+                RaisePropertyChanged(nameof(IsTemporarilyDisplayed));
             }
         }
 

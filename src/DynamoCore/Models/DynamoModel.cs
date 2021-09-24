@@ -2384,6 +2384,11 @@ namespace Dynamo.Models
         /// directly in this point. </param>
         public void Paste(Point2D targetPoint, bool useOffset = true)
         {
+            //When called from somewhere other than StateMachine and only ConnectorPins are selected.
+            if (ClipBoard.All(m => m is ConnectorPinModel))
+            {
+                return;
+            }
             if (useOffset)
             {
                 // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other

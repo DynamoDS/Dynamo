@@ -32,18 +32,18 @@ namespace Dynamo.Graph.Connectors
     public class ConnectorModel : ModelBase
     {
         #region properties
-        private bool isDisplayed = true;
+        private bool isCollapsed = false;
 
         /// <summary>
-        /// IsDisplayed flag controlling the visibility of a connector
+        /// IsCollapsed flag controlling the visibility of a connector
         /// </summary>
-        public bool IsDisplayed
+        public bool IsCollapsed
         {
-            get { return isDisplayed; }
+            get { return isCollapsed; }
             set
             {
-                isDisplayed = value;
-                RaisePropertyChanged(nameof(IsDisplayed));
+                isCollapsed = value;
+                RaisePropertyChanged(nameof(IsCollapsed));
             }
         }
         /// <summary>
@@ -251,8 +251,8 @@ namespace Dynamo.Graph.Connectors
 
             switch (name)
             {
-                case nameof(IsDisplayed):
-                    IsDisplayed = Convert.ToBoolean(value);
+                case nameof(IsCollapsed):
+                    IsCollapsed = Convert.ToBoolean(value);
                     break;
                 default:
                     break;
@@ -268,14 +268,14 @@ namespace Dynamo.Graph.Connectors
             helper.SetAttribute("start_index", Start.Index);
             helper.SetAttribute("end", End.Owner.GUID);
             helper.SetAttribute("end_index", End.Index);
-            helper.SetAttribute(nameof(IsDisplayed), IsDisplayed);
+            helper.SetAttribute(nameof(IsCollapsed), IsCollapsed);
             //helper.SetAttribute("portType", ((int) End.PortType));
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             var helper = new XmlElementHelper(nodeElement);
-            IsDisplayed = helper.ReadBoolean(nameof(IsDisplayed));
+            IsCollapsed = helper.ReadBoolean(nameof(IsCollapsed));
             //This is now handled via NodeGraph.LoadConnectorFromXml
         }
 
