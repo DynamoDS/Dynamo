@@ -170,10 +170,11 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "relative",
 					"HostUIElementString": "PackageManagerMenu",
-					"VerticalPopupOffset": -25,
+					"VerticalPopupOffset": -20,
 					"HorizontalPopupOffset": 85,
 					"HighlightColor": "#EF9362",
-					"HtmlPage": "learnPackages"
+					"HtmlPage": "learnPackages",
+					"HeightBoxDelta": 3
 				}
 			}
 		]
