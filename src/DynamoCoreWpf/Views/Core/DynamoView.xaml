@@ -635,11 +635,12 @@
                                       Header="{x:Static p:Resources.GetStartedGuide}"
                                       Click="GetStartedMenuItem_Click">
                             </MenuItem>
-                            <MenuItem x:Name="PackagesMenuGuide"
+                            <!--<MenuItem x:Name="PackagesMenuGuide"
                                       Focusable="False"
+                                     
                                       Header="{x:Static p:Resources.PackagesGuide}"
                                       Click="PackagesMenuGuide_Click">
-                            </MenuItem>
+                            </MenuItem>-->
                         </MenuItem>
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewHepMenuSamples}"
