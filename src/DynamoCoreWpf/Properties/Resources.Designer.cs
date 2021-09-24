@@ -5028,7 +5028,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disable Built-In Package Path.
+        ///   Looks up a localized string similar to Disable Loading Built-In Packages.
         /// </summary>
         public static string PreferencesViewDisableBuiltInPackages {
             get {
@@ -5037,7 +5037,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disable Custom Package Paths.
+        ///   Looks up a localized string similar to Disable Loading Custom Packages.
         /// </summary>
         public static string PreferencesViewDisableCustomPackages {
             get {
