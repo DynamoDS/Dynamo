@@ -138,6 +138,7 @@
                 <StackPanel x:Name="TooltipNavigationControls"
                             Orientation="Horizontal" 
                             HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
                             Grid.Column="0"
                             Visibility="{Binding ShowTooltipNavigationControls, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Button x:Name="BackButton"
