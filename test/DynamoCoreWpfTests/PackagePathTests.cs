@@ -217,32 +217,26 @@ namespace DynamoCoreWpfTests
         [Test]
         public void InstalledPackagesContainsCorrectNumberOfPackages()
         {
-            var pathManager = new Mock<IPathManager>();
-            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
-                () => new List<string> { PackagesDirectory });
-
-            var loader = new PackageLoader(pathManager.Object);
+            var setting = new PreferenceSettings()
+            {
+                CustomPackageFolders = { PackagesDirectory }
+            };
+            var vm = CreatePackagePathViewModel(setting);
             var libraryLoader = new ExtensionLibraryLoader(ViewModel.Model);
 
-            loader.PackagesLoaded += libraryLoader.LoadPackages;
-            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+            vm.packageLoader.PackagesLoaded += libraryLoader.LoadPackages;
+            vm.packageLoader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
 
             var packagesLoaded = false;
 
             Action<IEnumerable<Assembly>> pkgsLoadedDelegate = (x) => { packagesLoaded = true; };
-            loader.PackagesLoaded += pkgsLoadedDelegate;
+            vm.packageLoader.PackagesLoaded += pkgsLoadedDelegate;
 
-            ViewModel.Model.PreferenceSettings.CustomPackageFolders = new List<string>();
-            var loadPackageParams = new LoadPackageParams
-            {
-                Preferences = ViewModel.Model.PreferenceSettings,
-
-            };
-            loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(19, loader.LocalPackages.Count());
+            vm.packageLoader.LoadAll(vm.loadPackageParams);
+            Assert.AreEqual(19, vm.packageLoader.LocalPackages.Count());
             Assert.AreEqual(true, packagesLoaded);
 
-            var installedPackagesViewModel = new InstalledPackagesViewModel(ViewModel, loader);
+            var installedPackagesViewModel = new InstalledPackagesViewModel(ViewModel, vm.packageLoader);
             Assert.AreEqual(19, installedPackagesViewModel.LocalPackages.Count);
 
             var installedPackagesView = new Dynamo.Wpf.Controls.InstalledPackagesControl();
@@ -251,6 +245,33 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(19, installedPackagesView.SearchResultsListBox.Items.Count);
             Assert.AreEqual(2, installedPackagesView.Filters.Items.Count);
+
+            vm.packageLoader.PackagesLoaded -= libraryLoader.LoadPackages;
+            vm.packageLoader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+        }
+
+        [Test]
+        public void RemovePackagePathChangesInstalledPackageState()
+        {
+            var setting = new PreferenceSettings()
+            {
+                CustomPackageFolders = { PackagesDirectory }
+            };
+
+            var vm = CreatePackagePathViewModel(setting);
+            var libraryLoader = new ExtensionLibraryLoader(ViewModel.Model);
+
+            vm.packageLoader.PackagesLoaded += libraryLoader.LoadPackages;
+            vm.packageLoader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            vm.packageLoader.LoadAll(vm.loadPackageParams);
+
+            Assert.AreEqual(19, vm.packageLoader.LocalPackages.Count());
+
+            vm.DeletePathCommand.Execute(0);
+
+            vm.packageLoader.PackagesLoaded -= libraryLoader.LoadPackages;
+            vm.packageLoader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
         }
 
         [Test]
@@ -378,6 +399,7 @@ namespace DynamoCoreWpfTests
                 () => setting.CustomPackageFolders);
 
             PackageLoader loader = new PackageLoader(pathManager.Object);
+            
             LoadPackageParams loadParams = new LoadPackageParams
             {
                 Preferences = setting,

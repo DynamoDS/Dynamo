@@ -75,8 +75,8 @@ namespace Dynamo.ViewModels
         {
             get { return loadPackageParams.Preferences; }
         }
-        private readonly PackageLoader packageLoader;
-        private LoadPackageParams loadPackageParams;
+        internal readonly PackageLoader packageLoader;
+        internal LoadPackageParams loadPackageParams;
         private readonly CustomNodeManager customNodeManager;
 
         public DelegateCommand AddPathCommand { get; private set; }
