@@ -512,7 +512,7 @@
               VerticalAlignment="Bottom"
               x:FieldModifier="public"
               Visibility="Collapsed"
-              ZIndex="6">
+              ZIndex="3">
             <!--  DO NOT ERASE THIS GRID TO BE USED FOR PRESENTING IMAGES, 3D VIEWS, ETC.  -->
         </Grid>
 

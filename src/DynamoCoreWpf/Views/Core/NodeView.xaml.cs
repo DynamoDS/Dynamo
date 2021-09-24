@@ -241,11 +241,11 @@ namespace Dynamo.Controls
                     break;
 
                 case "IsSetAsInput":
-                    (DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                    (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
                     break;
 
                 case "IsSetAsOutput":
-                    (DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                    (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
                     break;
             }
         }
@@ -322,7 +322,7 @@ namespace Dynamo.Controls
             var editWindow = new EditWindow(viewModel.DynamoViewModel, false, true)
             {
                 DataContext = ViewModel,
-                Title = Wpf.Properties.Resources.EditNodeWindowTitle
+                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle
             };
 
             editWindow.Owner = Window.GetWindow(this);
@@ -695,16 +695,15 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="menuItem"></param>
         /// <param name="index"></param>
-        private void AddContextMenuItem(MenuItem menuItem, int index = -1)
+        private void AddContextMenuItem(MenuItem menuItem, int? index = null)
         {
-            if (index < 0)
+            if (index == null)
             {
                 grid.ContextMenu.Items.Add(menuItem);
+                return;
             }
-            else
-            {
-                grid.ContextMenu.Items.Insert(index, menuItem);
-            }
+            
+            grid.ContextMenu.Items.Insert((int)index, menuItem);
         }
 
         /// <summary>
@@ -712,20 +711,21 @@ namespace Dynamo.Controls
         /// Inserting can be helpful when NodeViewCustomizations also want to add their own MenuItems.
         /// </summary>
         /// <param name="index"></param>
-        private void AddContextMenuSeparator(int index = -1)
+        private void AddContextMenuSeparator(int? index = null)
         {
-            if(index < 0)
+            if (index == null)
             {
                 grid.ContextMenu.Items.Add(new Separator());
+                return;
             }
-            else
-            {
-                grid.ContextMenu.Items.Insert(index, new Separator());
-            }
+
+            grid.ContextMenu.Items.Insert((int)index, new Separator());
         }
 
         /// <summary>
         /// Creates a new MenuItem in the node's Context Menu.
+        /// Using optional named arguments here as it makes the Binding syntax
+        /// much cleaner if all handled in the method body.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="header"></param>
