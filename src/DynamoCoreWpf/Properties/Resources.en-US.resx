@@ -2627,6 +2627,9 @@ Delete the following packages: {2}?
   <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
     <value>_Show Tooltip</value>
   </data>
+  <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
+    <value>Dismissed Alerts</value>
+  </data>
   <data name="ContextMenu" xml:space="preserve">
     <value>Node Options</value>
     <comment>Node context menu</comment>

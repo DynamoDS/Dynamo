@@ -17,7 +17,6 @@ using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
-using Thickness = System.Windows.Thickness;
 
 
 namespace Dynamo.Controls
