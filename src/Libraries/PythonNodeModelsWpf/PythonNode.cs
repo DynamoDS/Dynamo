@@ -36,7 +36,6 @@ namespace PythonNodeModelsWpf
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             workspaceModel = nodeView.ViewModel.WorkspaceViewModel.Model;
 
-            nodeView.MainContextMenu.Items.Add(new Separator());
             nodeView.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += EditScriptContent;
 

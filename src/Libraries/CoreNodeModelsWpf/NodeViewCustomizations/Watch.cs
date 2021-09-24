@@ -99,7 +99,6 @@ namespace CoreNodeModelsWpf.Nodes
             };
             rawDataMenuItem.SetBinding(MenuItem.IsCheckedProperty, checkedBinding);
             
-            nodeView.MainContextMenu.Items.Add(new Separator());
             nodeView.MainContextMenu.Items.Add(rawDataMenuItem);
 
             var copyToClipboardMenuItem = new MenuItem

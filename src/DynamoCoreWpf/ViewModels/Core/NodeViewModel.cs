@@ -278,16 +278,8 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.IsCustomFunction ? true : false; }
         }
-
         
         /// <summary>
-        /// A flag marking whether this node's context menu has been constructed.
-        /// This is because the context menu is now lazy-loaded.
-        /// </summary>
-        [JsonIgnore]
-        public bool ContextMenuLoaded { get; set; }
-
-            /// <summary>
         /// Element's left position is two-way bound to this value
         /// </summary>
         [JsonIgnore]

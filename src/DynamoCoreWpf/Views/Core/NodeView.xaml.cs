@@ -16,6 +16,7 @@ using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using SharpDX.Direct2D1;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 
@@ -761,12 +762,39 @@ namespace Dynamo.Controls
             return menuItem;
         }
 
+
+        /// <summary>
+        /// A dictionary of MenuItems which are added during certain nodes' NodeViewCustomization process.
+        /// </summary>
+        private Dictionary<string, object> NodeViewCustomizationMenuItems { get; } = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Saves a persistent list of unique MenuItems that are added by certain nodes during their NodeViewCustomization process.
+        /// Because nodes' ContextMenus are loaded lazily, and their MenuItems are disposed on closing,
+        /// these custom MenuItems need to be manually re-injected into the context menu whenever it is opened.
+        /// </summary>
+        private void SaveNodeViewCustomizationMenuItems()
+        {
+            foreach (var obj in grid.ContextMenu.Items)
+            {
+                if (!(obj is MenuItem menuItem)) continue;
+
+                // In order to avoid repeatedly saving the same NodeViewCustomization MenuItems, we 
+                // check MenuItems are unique by their Header.
+                if (NodeViewCustomizationMenuItems.ContainsKey(menuItem.Header.ToString())) continue;
+                NodeViewCustomizationMenuItems.Add(menuItem.Header.ToString(), menuItem);
+            }
+        }
+
         /// <summary>
         /// Builds the node's context menu programatically when the user clicks on the Node Options button.
         /// This lazy approach is used to reduce the opening time of Dynamo graphs.
         /// </summary>
         private void ConstructNodeContextMenu()
         {
+            // Clearing any existing items in the node's ContextMenu.
+            grid.ContextMenu.Items.Clear();
+
             // Determines where the next item will be inserted into the node's ContextMenu.
             int insertionPoint = 0;
             
@@ -1032,13 +1060,23 @@ namespace Dynamo.Controls
             //textBlock.SetValue(ForegroundProperty, new SolidColorBrush(Color.FromRgb(238,238,238)));
 
             //dismissedAlertsMenuItem.ItemTemplate = itemTemplate;
-            
+
             //AddContextMenuItem(dismissedAlertsMenuItem, insertionPoint++);
             #endregion
 
-            // Everything from here onwards is added to the ContextMenu last and not inserted.
-            // This is so that any injected MenuItems can appear in a consistent position in the ContextMenu.
+            #region Injected NodeViewCustomizations
+            // Re-inserting in the NodeViewCustomization items.
+            if (NodeViewCustomizationMenuItems.Count > 0) AddContextMenuSeparator();
 
+            foreach (KeyValuePair<string, object> keyValuePair in NodeViewCustomizationMenuItems)
+            {
+                grid.ContextMenu.Items.Add(keyValuePair.Value);
+            }
+            
+            // Everything from here onwards is added to the ContextMenu and not inserted (as above).
+            // This is so that any injected MenuItems can appear in a consistent position in the ContextMenu.
+            #endregion
+            
             #region Is Input / Is Output
 
             if (viewModel.IsInput || viewModel.IsOutput)
@@ -1099,8 +1137,6 @@ namespace Dynamo.Controls
             AddContextMenuItem(helpMenuItem);
 
             #endregion
-
-            ViewModel.ContextMenuLoaded = true;
         }
 
         /// <summary>
@@ -1112,12 +1148,24 @@ namespace Dynamo.Controls
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
+            
+            // Get the Node View Customization Items. Save them somewhere.
+            if (grid.ContextMenu.Items.Count > 0 && NodeViewCustomizationMenuItems.Count < 1)
+            {
+                SaveNodeViewCustomizationMenuItems();
+            }
 
-            if (ViewModel.ContextMenuLoaded == false) ConstructNodeContextMenu();
+            ConstructNodeContextMenu();
 
             grid.ContextMenu.DataContext = viewModel;
             grid.ContextMenu.IsOpen = true;
 
+            e.Handled = true;
+        }
+
+        private void MainContextMenu_OnClosed(object sender, RoutedEventArgs e)
+        {
+            grid.ContextMenu.Items.Clear();
             e.Handled = true;
         }
     }
