@@ -36,9 +36,8 @@ namespace PythonNodeModelsWpf
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             workspaceModel = nodeView.ViewModel.WorkspaceViewModel.Model;
 
-            Separator separator = new Separator();
-            nodeView.MainContextMenu.Items.Insert(8, separator);
-            nodeView.MainContextMenu.Items.Insert(9, editWindowItem);
+            nodeView.MainContextMenu.Items.Add(new Separator());
+            nodeView.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += EditScriptContent;
 
             var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
@@ -65,7 +64,7 @@ namespace PythonNodeModelsWpf
             learnMoreItem.Click += OpenPythonLearningMaterial;
             pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
             pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
-            nodeView.MainContextMenu.Items.Insert(11, learnMoreItem);
+            nodeView.MainContextMenu.Items.Add(learnMoreItem);
 
             nodeView.UpdateLayout();
 

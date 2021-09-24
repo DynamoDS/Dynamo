@@ -97,6 +97,7 @@ namespace Watch3DNodeModelsWpf
             var mi = new MenuItem { Header = Resources.ZoomToFit };
             mi.Click += mi_Click;
 
+            nodeView.MainContextMenu.Items.Add(new Separator());
             nodeView.MainContextMenu.Items.Add(mi);
 
             var backgroundRect = new Rectangle

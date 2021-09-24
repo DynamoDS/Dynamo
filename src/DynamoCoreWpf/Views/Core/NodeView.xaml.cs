@@ -689,12 +689,39 @@ namespace Dynamo.Controls
 
         #endregion
 
-        private void AddContextMenuItem(MenuItem menuItem)
+        /// <summary>
+        /// Adds or inserts items to the node's context menu. Inserting can be helpful when
+        /// NodeViewCustomizations also want to add their own MenuItems.
+        /// </summary>
+        /// <param name="menuItem"></param>
+        /// <param name="index"></param>
+        private void AddContextMenuItem(MenuItem menuItem, int index = -1)
         {
-            grid.ContextMenu.Items.Add(menuItem);
+            if (index < 0)
+            {
+                grid.ContextMenu.Items.Add(menuItem);
+            }
+            else
+            {
+                grid.ContextMenu.Items.Insert(index, menuItem);
+            }
         }
 
-        private void AddContextMenuSeparator() => grid.ContextMenu.Items.Add(new Separator());
+        /// <summary>
+        /// Adds or inserts a new separator into the node's context menu.
+        /// </summary>
+        /// <param name="index"></param>
+        private void AddContextMenuSeparator(int index = -1)
+        {
+            if(index < 0)
+            {
+                grid.ContextMenu.Items.Add(new Separator());
+            }
+            else
+            {
+                grid.ContextMenu.Items.Insert(index, new Separator());
+            }
+        }
 
         /// <summary>
         /// Creates a new MenuItem in the node's Context Menu.
@@ -739,6 +766,9 @@ namespace Dynamo.Controls
         /// </summary>
         private void ConstructNodeContextMenu()
         {
+            // Determines where the next item will be inserted into the node's ContextMenu.
+            int insertionPoint = 0;
+            
             #region Remove
             MenuItem removeMenuItem = CreateMenuItem
             (
@@ -750,7 +780,7 @@ namespace Dynamo.Controls
                     Path = new PropertyPath("DeleteCommand")
                 }
             );
-            AddContextMenuItem(removeMenuItem);
+            AddContextMenuItem(removeMenuItem, insertionPoint++);
             #endregion
 
             #region Groups
@@ -789,7 +819,7 @@ namespace Dynamo.Controls
                     }
                 )
             );
-            AddContextMenuItem(groupsMenuItem);
+            AddContextMenuItem(groupsMenuItem, insertionPoint++);
             #endregion
 
             #region Preview
@@ -813,7 +843,7 @@ namespace Dynamo.Controls
                         Mode = BindingMode.OneWay
                     }
                 );
-                AddContextMenuItem(previewMenuItem);
+                AddContextMenuItem(previewMenuItem, insertionPoint++);
             }
             #endregion
 
@@ -841,7 +871,7 @@ namespace Dynamo.Controls
                     Mode = BindingMode.OneWay
                 }
             );
-            AddContextMenuItem(freezeMenuItem);
+            AddContextMenuItem(freezeMenuItem, insertionPoint++);
             #endregion
 
             #region Show Labels
@@ -862,7 +892,7 @@ namespace Dynamo.Controls
                     Path = new PropertyPath("CanDisplayLabels")
                 }
             );
-            AddContextMenuItem(showLabelsMenuItem);
+            AddContextMenuItem(showLabelsMenuItem, insertionPoint++);
             #endregion
 
             #region Rename
@@ -876,7 +906,7 @@ namespace Dynamo.Controls
                     Path = new PropertyPath("RenameCommand")
                 }
             );
-            AddContextMenuItem(renameMenuItem);
+            AddContextMenuItem(renameMenuItem, insertionPoint++);
             #endregion
 
             #region Lacing
@@ -965,7 +995,7 @@ namespace Dynamo.Controls
                     }
                 ));
 
-                AddContextMenuItem(lacingMenuItem);
+                AddContextMenuItem(lacingMenuItem, insertionPoint++);
             }
 
             #endregion
@@ -1002,14 +1032,14 @@ namespace Dynamo.Controls
 
             dismissedAlertsMenuItem.ItemTemplate = itemTemplate;
             
-            AddContextMenuItem(dismissedAlertsMenuItem);
+            AddContextMenuItem(dismissedAlertsMenuItem, insertionPoint++);
             #endregion
 
             #region Is Input / Is Output
             
-            if(viewModel.IsInputOrOutput)
+            if(viewModel.IsInput || viewModel.IsOutput)
             {
-                AddContextMenuSeparator();
+                AddContextMenuSeparator(insertionPoint++);
             }
 
             // Is Input
@@ -1027,7 +1057,7 @@ namespace Dynamo.Controls
                       Mode = BindingMode.TwoWay,
                   }
                 );
-                AddContextMenuItem(isInputMenuItem);
+                AddContextMenuItem(isInputMenuItem, insertionPoint++);
             }
 
             // Is Output
@@ -1045,11 +1075,14 @@ namespace Dynamo.Controls
                         Mode = BindingMode.TwoWay,
                     }
                 );
-                AddContextMenuItem(isOutputMenuItem);
+                AddContextMenuItem(isOutputMenuItem, insertionPoint++);
             }
 
             #endregion
 
+            // The Help MenuItem and its separator are added to the ContextMenu last
+            // and not inserted. This is so that any injected MenuItems can appear in a
+            // consistent position in the ContextMenu.
             #region Help
             AddContextMenuSeparator();
             MenuItem helpMenuItem = CreateMenuItem
@@ -1065,6 +1098,8 @@ namespace Dynamo.Controls
             AddContextMenuItem(helpMenuItem);
 
             #endregion
+
+            ViewModel.ContextMenuLoaded = true;
         }
 
         private void DisplayNodeContextMenu()
@@ -1073,7 +1108,7 @@ namespace Dynamo.Controls
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
-            if (grid.ContextMenu.Items.Count == 0) ConstructNodeContextMenu();
+            if (ViewModel.ContextMenuLoaded == false) ConstructNodeContextMenu();
 
             grid.ContextMenu.DataContext = viewModel;
             grid.ContextMenu.IsOpen = true;
