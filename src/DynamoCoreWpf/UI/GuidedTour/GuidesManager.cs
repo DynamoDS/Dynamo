@@ -47,8 +47,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private const string mainGridName = "mainGrid";
         private const string libraryViewName = "Browser";
 
-
-
         internal static string GuidesExecutingDirectory
         {
             get
@@ -66,7 +64,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// GuidesManager Constructor that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
+        /// GuidesManager Constructor 
         /// </summary>
         /// <param name="root">root item of the main Dynamo Window </param>
         /// <param name="dynViewModel"></param>
@@ -75,9 +73,31 @@ namespace Dynamo.Wpf.UI.GuidedTour
             mainRootElement = root;
             dynamoViewModel = dynViewModel;
             guideBackgroundElement = Guide.FindChild(root, guideBackgroundName) as GuideBackground;
-            Guides = new List<Guide>();
-            Window mainWindow = Window.GetWindow(mainRootElement);
+        }
 
+        /// <summary>
+        /// Initializator that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
+        /// </summary>
+        private void Initialize()
+        {
+            //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
+            GuideFlowEvents.GuidedTourStart += TourStarted;
+            GuideFlowEvents.GuidedTourFinish += TourFinished;
+
+            Guides = new List<Guide>();
+
+            CreateGuideSteps(GuidesJsonFilePath);
+            CreateBackground();
+
+            guideBackgroundElement.HoleRect = new Rect();
+        }
+
+        /// <summary>
+        /// Creates the background for the GuidedTour
+        /// </summary>
+        private void CreateBackground()
+        {
+            Window mainWindow = Window.GetWindow(mainRootElement);
 
             if (guideBackgroundElement == null)
             {
@@ -89,18 +109,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     Visibility = Visibility.Hidden
                 };
 
-                Grid mainGrid = Guide.FindChild(root, mainGridName) as Grid;
+                Grid mainGrid = Guide.FindChild(mainRootElement, mainGridName) as Grid;
                 mainGrid.Children.Add(guideBackgroundElement);
                 Grid.SetColumnSpan(guideBackgroundElement, 5);
                 Grid.SetRowSpan(guideBackgroundElement, 6);
             }
-
-            guideBackgroundElement.HoleRect = new Rect();
-            CreateGuideSteps(GuidesJsonFilePath);
-
-            //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
-            GuideFlowEvents.GuidedTourStart += TourStarted;
-            GuideFlowEvents.GuidedTourFinish += TourFinished;
         }
 
         /// <summary>
@@ -126,7 +139,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal void LaunchTour(string tourName)
         {
             if (!tourStarted)
+            {
+                Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
+            }
         }
 
         /// <summary>
@@ -222,11 +238,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                     if (newStep != null)
                     {
-                        //The step is added to the new Guide being created
-                        newGuide.GuideSteps.Add(newStep);
-
                         //We subscribe the handler to the StepClosed even, so every time the popup is closed then this method will be called.
                         newStep.StepClosed += Popup_StepClosed;
+
+                        //The step is added to the new Guide being created
+                        newGuide.GuideSteps.Add(newStep);
                     }
                 }
                 Guides.Add(newGuide);
