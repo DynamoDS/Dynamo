@@ -1353,10 +1353,16 @@ You will get a chance to save your work.</value>
     <value>Package Contents</value>
   </data>
   <data name="PublishPackageViewAddFileButton" xml:space="preserve">
-    <value>Add file...</value>
+    <value>Add Files</value>
+  </data>
+  <data name="PublishPackageViewAddDirectoryButton" xml:space="preserve">
+    <value>Add Directory</value>
   </data>
   <data name="PublishPackageViewAddFileButtonTooltip" xml:space="preserve">
     <value>Add File To Package</value>
+  </data>
+  <data name="PublishPackageViewAddDirectoryButtonTooltip" xml:space="preserve">
+    <value>Add Directory And Its Files To Package</value>
   </data>
   <data name="PublishPackageViewContextMenuIsNodeLibrary" xml:space="preserve">
     <value>Is Node Library</value>
@@ -1365,7 +1371,7 @@ You will get a chance to save your work.</value>
     <value>License (optional)</value>
   </data>
   <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
-    <value>If blank, the package will be licensed under MIT</value>
+    <value>If blank, the package will be licensed under </value>
   </data>
   <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
     <value>License</value>
@@ -1453,6 +1459,9 @@ You will get a chance to save your work.</value>
   </data>
   <data name="PublishPackageViewTitle" xml:space="preserve">
     <value>Publish a {0} Package</value>
+  </data>
+  <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
+    <value>Markdown Files Directory (optional)</value>
   </data>
   <data name="ShowClassicNodeLibrary" xml:space="preserve">
     <value>Show Classic Node Library</value>
@@ -1737,9 +1746,6 @@ Do you want to install the latest Dynamo update?</value>
     <value>More</value>
     <comment>The "More" button on "Publish a Dynamo Package" dialog</comment>
   </data>
-  <data name="PublishPackage" xml:space="preserve">
-    <value>Publish Online</value>
-  </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
     <value>Getting Started</value>
   </data>
@@ -1988,6 +1994,9 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="Units" xml:space="preserve">
     <value>Units:</value>
+  </data>
+  <data name="PublishPackageOnline" xml:space="preserve">
+    <value>Publish Online</value>
   </data>
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>

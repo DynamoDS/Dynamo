@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.ViewModels;
@@ -109,6 +111,12 @@ namespace Dynamo.PackageManager
                     Actions.Move,
                     Categories.PackageManagerOperations);
             }
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 }

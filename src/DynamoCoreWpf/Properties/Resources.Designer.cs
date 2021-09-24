@@ -5427,15 +5427,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publish Online.
-        /// </summary>
-        public static string PublishPackage {
-            get {
-                return ResourceManager.GetString("PublishPackage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to More.
         /// </summary>
         public static string PublishPackageDetailsExpanderHeader {
@@ -5509,6 +5500,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish Online.
+        /// </summary>
+        public static string PublishPackageOnline {
+            get {
+                return ResourceManager.GetString("PublishPackageOnline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Contents.
         /// </summary>
         public static string PublishPackagePackageContent {
@@ -5554,7 +5554,25 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add file....
+        ///   Looks up a localized string similar to Add Directory.
+        /// </summary>
+        public static string PublishPackageViewAddDirectoryButton {
+            get {
+                return ResourceManager.GetString("PublishPackageViewAddDirectoryButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Directory And Its Files To Package.
+        /// </summary>
+        public static string PublishPackageViewAddDirectoryButtonTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewAddDirectoryButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Files.
         /// </summary>
         public static string PublishPackageViewAddFileButton {
             get {
@@ -5644,7 +5662,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If blank, the package will be licensed under MIT.
+        ///   Looks up a localized string similar to If blank, the package will be licensed under .
         /// </summary>
         public static string PublishPackageViewLicenseSubLabel {
             get {
@@ -5658,6 +5676,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewLicenseWatermark {
             get {
                 return ResourceManager.GetString("PublishPackageViewLicenseWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Markdown Files Directory (optional).
+        /// </summary>
+        public static string PublishPackageViewMarkdownFilesDirectory {
+            get {
+                return ResourceManager.GetString("PublishPackageViewMarkdownFilesDirectory", resourceCulture);
             }
         }
         

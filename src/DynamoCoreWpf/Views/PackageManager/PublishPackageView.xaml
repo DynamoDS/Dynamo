@@ -78,7 +78,7 @@
                 <Setter Property="FontWeight" Value="Bold" />
                 <Setter Property="FontSize" Value="14px" />
                 <Setter Property="Foreground" Value="#DFDFDF" />
-                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="Margin" Value="0,0,0,5" />
             </Style>
             <Style x:Key="SubLabelStyle" TargetType="TextBlock">
@@ -286,8 +286,8 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ToolTip}">
-                            <Border Padding="10"
-                                    Margin="10,5"
+                            <Border Margin="10,5"
+                                    Padding="10"
                                     Background="#EEEEEE"
                                     CornerRadius="4">
                                 <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Top" />
@@ -525,7 +525,7 @@
         <!--  Mid-Section: Details + Datagrid  -->
         <Grid Name="midSectionGrid" Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="250" />
+                <ColumnDefinition MinWidth="265" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" MinWidth="360" />
             </Grid.ColumnDefinitions>
@@ -542,6 +542,8 @@
                           Margin="0,5"
                           VerticalScrollBarVisibility="Visible">
                 <StackPanel Margin="25,11,10,16" Orientation="Vertical">
+
+                    <!--  Name  -->
                     <TextBlock Name="packageNameLabel"
                                Style="{StaticResource LabelStyle}"
                                Text="{x:Static p:Resources.PublishPackageViewPackageName}"
@@ -549,6 +551,8 @@
                     <TextBox Name="packageNameInput"
                              Style="{StaticResource InputStyle}"
                              Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}" />
+
+                    <!--  Description  -->
                     <TextBlock Name="descriptionLabel"
                                Style="{StaticResource LabelStyle}"
                                Text="{x:Static p:Resources.PublishPackageViewPackageDescription}"
@@ -557,6 +561,8 @@
                              MinHeight="81px"
                              Style="{StaticResource InputStyle}"
                              Tag="{x:Static p:Resources.PublishPackageViewPackageDescriptionWatermark}" />
+
+                    <!--  Version  -->
                     <TextBlock Name="versionLabel"
                                Style="{StaticResource LabelStyle}"
                                Text="{x:Static p:Resources.PublishPackageViewPackageVersion}"
@@ -578,6 +584,8 @@
                                  Style="{StaticResource InputStyle}"
                                  Tag="{x:Static p:Resources.PublishPackageVersionBuildWatermark}" />
                     </StackPanel>
+
+                    <!--  External Dependency  -->
                     <TextBlock Name="hostLabel"
                                Margin="0,0,0,10"
                                Style="{StaticResource LabelStyle}"
@@ -644,6 +652,8 @@
                             </ControlTemplate>
                         </ComboBox.Template>
                     </ComboBox>
+
+                    <!--  Group  -->
                     <TextBlock Name="groupLabel"
                                Style="{StaticResource LabelStyle}"
                                Text="{x:Static p:Resources.PublishPackageViewPackageGroup}"
@@ -651,6 +661,8 @@
                     <TextBox Name="groupInput"
                              Style="{StaticResource InputStyle}"
                              Tag="{x:Static p:Resources.PublishPackageGroupWatermark}" />
+
+                    <!--  Keywords  -->
                     <TextBlock Name="keywordsLabel"
                                Style="{StaticResource LabelStyle}"
                                Text="{x:Static p:Resources.PublishPackageViewPackageKeywords}"
@@ -658,6 +670,8 @@
                     <TextBox Name="keywordsInput"
                              Style="{StaticResource InputStyle}"
                              Tag="{x:Static p:Resources.PublishPackageKeywordsWatermark}" />
+
+                    <!--  More  -->
                     <Expander x:Name="detailsExpander"
                               Margin="-2,6"
                               Header="{x:Static p:Resources.PublishPackageDetailsExpanderHeader}"
@@ -684,9 +698,21 @@
                             <TextBlock Name="licenseLabel"
                                        Style="{StaticResource LabelStyle}"
                                        Text="{x:Static p:Resources.PublishPackageViewLicense}" />
-                            <TextBlock Name="licenseSubLabel"
-                                       Style="{StaticResource SubLabelStyle}"
-                                       Text="{x:Static p:Resources.PublishPackageViewLicenseSubLabel}" />
+                            <TextBlock Name="licenseSubLabel" Style="{StaticResource SubLabelStyle}">
+                                <Run Text="{x:Static p:Resources.PublishPackageViewLicenseSubLabel}" />
+                                <Hyperlink Cursor="Hand"
+                                           NavigateUri="https://opensource.org/licenses/MIT"
+                                           RequestNavigate="Hyperlink_RequestNavigate">
+                                    MIT
+                                    <Hyperlink.Style>
+                                        <Style TargetType="Hyperlink">
+                                            <Setter Property="Foreground" Value="#6AC0E7" />
+                                            <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                                            <Setter Property="FontSize" Value="12px" />
+                                        </Style>
+                                    </Hyperlink.Style>
+                                </Hyperlink>
+                            </TextBlock>
                             <TextBox Name="licenseInput"
                                      Style="{StaticResource InputStyle}"
                                      Tag="{x:Static p:Resources.PublishPackageViewLicenseWatermark}" />
@@ -729,22 +755,32 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <DockPanel Grid.Row="0">
-                    <Button Content="Add Directory"
+
+                    <!--  Add Files  -->
+                    <Button Command="{Binding Path=ShowAddFileDialogAndAddCommand}"
+                            Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButton}"
                             DockPanel.Dock="Right"
-                            Style="{StaticResource TextButtonStyle}" />
-                    <Button Content="Add Files"
+                            Style="{StaticResource TextButtonStyle}"
+                            ToolTip="{x:Static p:Resources.PublishPackageViewAddDirectoryButtonTooltip}" />
+
+                    <!--  Add Directory  -->
+                    <Button Command="{Binding Path=ShowAddFileDialogAndAddCommand}"
+                            Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"
                             DockPanel.Dock="Right"
-                            Style="{StaticResource TextButtonStyle}" />
+                            Style="{StaticResource TextButtonStyle}"
+                            ToolTip="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}" />
+
+                    <!--  Package Contents  -->
                     <TextBlock DockPanel.Dock="Left"
                                Style="{StaticResource LabelStyle}"
-                               Text="Package Contents" />
+                               Text="{x:Static p:Resources.PublishPackagePackageContent}" />
                 </DockPanel>
                 <DataGrid Grid.Row="1"
                           Height="370"
                           Margin="0,0,0,15"
                           VerticalAlignment="Stretch"
                           CanUserReorderColumns="False"
-                          ItemsSource="{Binding PackageContentItems}"
+                          ItemsSource="{Binding PackageContents}"
                           Style="{StaticResource DataGrid}">
                     <DataGrid.Columns>
                         <DataGridCheckBoxColumn MinWidth="80"
@@ -755,40 +791,44 @@
                                                 IsReadOnly="False"
                                                 IsThreeState="False" />
                         <DataGridTextColumn MinWidth="50"
-                                            Binding="{Binding Path=ItemName}"
+                                            Binding="{Binding Path=Name}"
                                             Header="Name"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
                         <DataGridTextColumn MinWidth="60"
-                                            Binding="{Binding Path=FilePath}"
+                                            Binding="{Binding Path=FileInfo.FullName}"
                                             Header="File Path"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Width="*"
                                             MinWidth="80"
-                                            Binding="{Binding Path=TargetPath}"
+                                            Binding="{Binding Path=FileInfo.Directory}"
                                             Header="Target Path"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
                                             IsReadOnly="True" />
                     </DataGrid.Columns>
                 </DataGrid>
+
                 <StackPanel Grid.Row="2"
                             Margin="0,0,0,0"
                             VerticalAlignment="Top">
-                    <TextBlock Style="{StaticResource LabelStyle}" Text="Markdown Files Directory (optional)" />
+
+                    <!--  Markdown Files Directory  -->
+                    <TextBlock Style="{StaticResource LabelStyle}" Text="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectory}" />
                     <Grid>
                         <TextBox HorizontalAlignment="Stretch"
                                  IsHitTestVisible="False"
                                  IsReadOnly="True"
                                  Style="{StaticResource InputStyle}"
                                  Tag="..." />
-                        <Button Name="sortResultsButton"
+                        <Button Name="markdownFilesDirectoryButton"
                                 Width="20"
                                 Height="20"
                                 Margin="0,0,10,10"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 BorderThickness="0"
+                                Command="{Binding Path=ShowAddFileDialogAndAddCommand}"
                                 Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate>
@@ -802,6 +842,7 @@
                         </Button>
                     </Grid>
 
+                    <!--  External Package Dependencies  -->
                     <TextBlock Style="{StaticResource LabelStyle}" Text="External Package Dependencies" />
                     <TextBlock Style="{StaticResource SubLabelStyle}" Text="None" />
                 </StackPanel>
@@ -819,15 +860,20 @@
         <DockPanel Grid.Row="2"
                    Margin="25,0"
                    VerticalAlignment="Center">
-            <Button Content="Publish Locally"
+
+            <!--  Publish Online  -->
+            <Button Content="{x:Static p:Resources.PublishPackageOnline}"
                     DockPanel.Dock="Right"
                     Style="{StaticResource CtaButtonStyle}" />
-            <Button Content="Publish Online"
-                    DockPanel.Dock="Right"
+
+            <!--  Publish Locally  -->
+            <Button DockPanel.Dock="Right"
+                    Command="{Binding Path=SubmitCommand}"
+                    Content="{x:Static p:Resources.PublishPackageLocally}"
                     Style="{StaticResource CtaButtonStyle}" />
+
             <TextBlock Name="statusLabel"
                        Margin="0,5,0,0"
-                       HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        FontFamily="{StaticResource ArtifaktElementRegular}"
                        Style="{StaticResource LabelStyle}"
