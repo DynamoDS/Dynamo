@@ -93,7 +93,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// Creates the background for the 
+        /// Creates the background for the GuidedTour
         /// </summary>
         private void CreateBackground()
         {
