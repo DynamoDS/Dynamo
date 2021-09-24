@@ -13,7 +13,7 @@
              MouseEnter="OnNodeViewMouseEnter"
              MouseLeave="OnNodeViewMouseLeave"
              MouseLeftButtonDown="topControl_MouseLeftButtonDown"
-             MouseRightButtonDown="topControl_MouseRightButtonDown"
+             MouseRightButtonDown="DisplayNodeContextMenu"
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              PreviewMouseMove="OnNodeViewMouseMove">
 
@@ -463,7 +463,7 @@
                 </Grid.Style>
             </Grid>
             <Button x:Name="OptionsButton"
-                    Click="OptionsButton_Click"
+                    Click="DisplayNodeContextMenu"
                     ToolTip="{x:Static p:Resources.ContextMenu}">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">

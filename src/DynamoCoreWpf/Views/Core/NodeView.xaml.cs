@@ -690,8 +690,8 @@ namespace Dynamo.Controls
         #endregion
 
         /// <summary>
-        /// Adds or inserts items to the node's context menu. Inserting can be helpful when
-        /// NodeViewCustomizations also want to add their own MenuItems.
+        /// Adds or inserts items to the node's context menu.
+        /// Inserting can be helpful when NodeViewCustomizations also want to add their own MenuItems.
         /// </summary>
         /// <param name="menuItem"></param>
         /// <param name="index"></param>
@@ -709,6 +709,7 @@ namespace Dynamo.Controls
 
         /// <summary>
         /// Adds or inserts a new separator into the node's context menu.
+        /// Inserting can be helpful when NodeViewCustomizations also want to add their own MenuItems.
         /// </summary>
         /// <param name="index"></param>
         private void AddContextMenuSeparator(int index = -1)
@@ -763,6 +764,7 @@ namespace Dynamo.Controls
 
         /// <summary>
         /// Builds the node's context menu programatically when the user clicks on the Node Options button.
+        /// This lazy approach is used to reduce the opening time of Dynamo graphs.
         /// </summary>
         private void ConstructNodeContextMenu()
         {
@@ -1102,7 +1104,11 @@ namespace Dynamo.Controls
             ViewModel.ContextMenuLoaded = true;
         }
 
-        private void DisplayNodeContextMenu()
+        /// <summary>
+        /// A common method to handle the node Options Button being clicked and
+        /// the user right-clicking on the node body to open its ContextMenu.
+        /// </summary>
+        private void DisplayNodeContextMenu(object sender, RoutedEventArgs e)
         {
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(
@@ -1112,16 +1118,7 @@ namespace Dynamo.Controls
 
             grid.ContextMenu.DataContext = viewModel;
             grid.ContextMenu.IsOpen = true;
-        }
 
-        private void OptionsButton_Click(object sender, RoutedEventArgs e)
-        {
-            DisplayNodeContextMenu();
-            e.Handled = true;
-        }
-        private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            DisplayNodeContextMenu();
             e.Handled = true;
         }
     }
