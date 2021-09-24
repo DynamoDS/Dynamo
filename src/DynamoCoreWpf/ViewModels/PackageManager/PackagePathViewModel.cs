@@ -209,7 +209,7 @@ namespace Dynamo.ViewModels
                 return;
 
             RootLocations.Insert(RootLocations.Count, args.Path);
-
+            SetPackagesScheduledState(args.Path, packagePathDisabled: false);
             RaiseCanExecuteChanged();
         }
 
