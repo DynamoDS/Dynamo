@@ -45,7 +45,7 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <!--  Context Menu  -->
+        <!--  CONTEXT MENU  -->
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu"
                          x:FieldModifier="public"
@@ -196,36 +196,38 @@
         </Grid.ContextMenu>
 
         <!--  Graphical Styling of Custom Nodes  -->
-        <Grid Grid.Row="0" Grid.ColumnSpan="3">
-            <Border Name="customNodeBorder0"
-                    Height="6"
-                    Margin="16,0"
-                    VerticalAlignment="Bottom"
-                    Background="#959595"
-                    Canvas.ZIndex="0"
-                    CornerRadius="6,6,0,0">
-                <Border.Visibility>
-                    <Binding Converter="{StaticResource BooleanToVisibilityConverter}"
-                             Mode="OneWay"
-                             Path="IsCustomFunction"
-                             UpdateSourceTrigger="PropertyChanged" />
-                </Border.Visibility>
-            </Border>
-            <Border Name="customNodeBorder1"
-                    Height="4"
-                    Margin="8,0"
-                    VerticalAlignment="Bottom"
-                    Background="#747474"
-                    Canvas.ZIndex="0"
-                    CornerRadius="6,6,0,0">
-                <Border.Visibility>
-                    <Binding Converter="{StaticResource BooleanToVisibilityConverter}"
-                             Mode="OneWay"
-                             Path="IsCustomFunction"
-                             UpdateSourceTrigger="PropertyChanged" />
-                </Border.Visibility>
-            </Border>
-        </Grid>
+        <Border Name="customNodeBorder0"
+                Grid.Row="0"
+                Grid.ColumnSpan="3"
+                Height="8"
+                Margin="16,0"
+                VerticalAlignment="Bottom"
+                Background="#959595"
+                Canvas.ZIndex="0"
+                CornerRadius="6,6,0,0">
+            <Border.Visibility>
+                <Binding Converter="{StaticResource BooleanToVisibilityConverter}"
+                         Mode="OneWay"
+                         Path="IsCustomFunction"
+                         UpdateSourceTrigger="PropertyChanged" />
+            </Border.Visibility>
+        </Border>
+        <Border Name="customNodeBorder1"
+                Grid.Row="0"
+                Grid.ColumnSpan="3"
+                Height="4"
+                Margin="8,0"
+                VerticalAlignment="Bottom"
+                Background="#747474"
+                Canvas.ZIndex="0"
+                CornerRadius="6,6,0,0">
+            <Border.Visibility>
+                <Binding Converter="{StaticResource BooleanToVisibilityConverter}"
+                         Mode="OneWay"
+                         Path="IsCustomFunction"
+                         UpdateSourceTrigger="PropertyChanged" />
+            </Border.Visibility>
+        </Border>
 
         <!--  Node Body Background  -->
         <Border Name="nodeBackground"
@@ -324,10 +326,7 @@
                        Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
                        TextAlignment="Center" />
             <!--  Ellipse sits within Grid to increase size of MouseOver/ToolTip area  -->
-            <Grid Width="12"
-                  Height="16"
-                  Margin="0,3,3,0"
-                  HorizontalAlignment="Right"
+            <Grid HorizontalAlignment="Right"
                   VerticalAlignment="Center"
                   Panel.ZIndex="100"
                   Background="Transparent"
@@ -335,6 +334,7 @@
                 <Ellipse Name="nodeRenamedBlueDot"
                          Width="8"
                          Height="8"
+                         Margin="0,0,6,0"
                          Fill="{StaticResource Blue300Brush}"
                          Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Grid.ToolTip>
@@ -353,19 +353,18 @@
             </Grid>
         </DockPanel>
 
-        <!--  Input Ports  -->
+        <!--  INPUT PORTS  -->
         <ItemsControl Name="inputPortControl"
                       Grid.Row="2"
                       Grid.Column="0"
                       Margin="0,3,0,0"
                       VerticalAlignment="Top"
-                      HorizontalAlignment="Left"
                       HorizontalContentAlignment="Stretch"
                       Canvas.ZIndex="4"
                       ItemsSource="{Binding Path=InPorts}"
                       Style="{StaticResource InOutPortControlStyle}" />
 
-        <!--  Output Ports  -->
+        <!--  OUTPUT PORTS  -->
         <ItemsControl Name="outputPortControl"
                       Grid.Row="2"
                       Grid.Column="2"
@@ -376,7 +375,6 @@
                       ItemsSource="{Binding Path=OutPorts}"
                       Style="{StaticResource InOutPortControlStyle}" />
 
-        <!--  Central Grid  -->
         <Grid Name="centralGrid"
               Grid.Row="2"
               Grid.Column="1"
@@ -401,7 +399,6 @@
                   IsEnabled="{Binding Path=IsInteractionEnabled}" />
         </Grid>
 
-        <!--  Glyph Stack Panel  -->
         <StackPanel Name="GlyphStackPanel"
                     Grid.Row="3"
                     Grid.Column="0"
@@ -480,9 +477,9 @@
                                                Width="16px"
                                                Height="16px"
                                                Margin="1.5,0,0,0"
+                                               Stretch="UniformToFill"
                                                HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Stretch="UniformToFill" />
+                                               VerticalAlignment="Center" />
                                     </Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
@@ -502,7 +499,6 @@
             </Button>
         </StackPanel>
 
-        <!--  Presentation Grid  -->
         <Grid Name="PresentationGrid"
               Grid.Row="2"
               Grid.RowSpan="2"
@@ -516,7 +512,6 @@
             <!--  DO NOT ERASE THIS GRID TO BE USED FOR PRESENTING IMAGES, 3D VIEWS, ETC.  -->
         </Grid>
 
-        <!--  Node Border  -->
         <Border Name="nodeBorder"
                 Grid.Row="1"
                 Grid.RowSpan="4"
@@ -583,7 +578,6 @@
             </Rectangle.Visibility>
         </Rectangle>-->
 
-        <!--  Expansion Bay  -->
         <Canvas Name="expansionBay"
                 Grid.Row="4"
                 Grid.Column="0"
