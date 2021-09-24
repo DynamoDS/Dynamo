@@ -798,9 +798,6 @@ This package has not been loaded because another conflicting package was loaded 
   <data name="GroupNameDefaultText" xml:space="preserve">
     <value>&lt;Double click here to edit group title&gt;</value>
   </data>
-  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
-    <value>Show all errors</value>
-  </data>
   <data name="BackupSavedMsg" xml:space="preserve">
     <value>Backup file is saved</value>
   </data>
