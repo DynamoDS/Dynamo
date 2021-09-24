@@ -1001,45 +1001,48 @@ namespace Dynamo.Controls
             #endregion
 
             #region Dismissed Alerts
-            MenuItem dismissedAlertsMenuItem = CreateMenuItem
-            (
-                name: "dismissedAlerts",
-                header: Wpf.Properties.Resources.NodeInformationalStateDismissedAlerts,
-                itemsSource: new Binding
-                {
-                    Source = viewModel,
-                    Path = new PropertyPath("DismissedAlerts"),
-                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-                }
-            );
-            DataTemplate itemTemplate = new DataTemplate(typeof(MenuItem));
+            //MenuItem dismissedAlertsMenuItem = CreateMenuItem
+            //(
+            //    name: "dismissedAlerts",
+            //    header: Wpf.Properties.Resources.NodeInformationalStateDismissedAlerts,
+            //    itemsSource: new Binding
+            //    {
+            //        Source = viewModel,
+            //        Path = new PropertyPath("DismissedAlerts"),
+            //        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            //    }
+            //);
+            //DataTemplate itemTemplate = new DataTemplate(typeof(MenuItem));
 
-            FrameworkElementFactory grid = new FrameworkElementFactory(typeof(Grid));
-            grid.Name = "mainTemplateGrid";
-            grid.SetValue(WidthProperty, 220.0);
-            grid.SetValue(HeightProperty, 30.0);
-            grid.SetValue(MarginProperty, new Thickness(-15,0,0,0));
-            grid.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left);
-            grid.SetValue(VerticalAlignmentProperty, VerticalAlignment.Stretch);
-            grid.SetValue(BackgroundProperty, new SolidColorBrush(Colors.Transparent));
+            //FrameworkElementFactory grid = new FrameworkElementFactory(typeof(Grid));
+            //grid.Name = "mainTemplateGrid";
+            //grid.SetValue(WidthProperty, 220.0);
+            //grid.SetValue(HeightProperty, 30.0);
+            //grid.SetValue(MarginProperty, new Thickness(-15,0,0,0));
+            //grid.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            //grid.SetValue(VerticalAlignmentProperty, VerticalAlignment.Stretch);
+            //grid.SetValue(BackgroundProperty, new SolidColorBrush(Colors.Transparent));
 
-            FrameworkElementFactory textBlock = new FrameworkElementFactory(typeof(TextBlock));
-            textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-            textBlock.SetValue(MarginProperty, new Thickness(15, 0, 0, 0));
-            textBlock.SetValue(IsHitTestVisibleProperty, false);
-            textBlock.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
-            textBlock.SetValue(ForegroundProperty, new SolidColorBrush(Color.FromRgb(238,238,238)));
+            //FrameworkElementFactory textBlock = new FrameworkElementFactory(typeof(TextBlock));
+            //textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+            //textBlock.SetValue(MarginProperty, new Thickness(15, 0, 0, 0));
+            //textBlock.SetValue(IsHitTestVisibleProperty, false);
+            //textBlock.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
+            //textBlock.SetValue(ForegroundProperty, new SolidColorBrush(Color.FromRgb(238,238,238)));
 
-            dismissedAlertsMenuItem.ItemTemplate = itemTemplate;
+            //dismissedAlertsMenuItem.ItemTemplate = itemTemplate;
             
-            AddContextMenuItem(dismissedAlertsMenuItem, insertionPoint++);
+            //AddContextMenuItem(dismissedAlertsMenuItem, insertionPoint++);
             #endregion
 
+            // Everything from here onwards is added to the ContextMenu last and not inserted.
+            // This is so that any injected MenuItems can appear in a consistent position in the ContextMenu.
+
             #region Is Input / Is Output
-            
-            if(viewModel.IsInput || viewModel.IsOutput)
+
+            if (viewModel.IsInput || viewModel.IsOutput)
             {
-                AddContextMenuSeparator(insertionPoint++);
+                AddContextMenuSeparator();
             }
 
             // Is Input
@@ -1057,7 +1060,7 @@ namespace Dynamo.Controls
                       Mode = BindingMode.TwoWay,
                   }
                 );
-                AddContextMenuItem(isInputMenuItem, insertionPoint++);
+                AddContextMenuItem(isInputMenuItem);
             }
 
             // Is Output
@@ -1075,14 +1078,11 @@ namespace Dynamo.Controls
                         Mode = BindingMode.TwoWay,
                     }
                 );
-                AddContextMenuItem(isOutputMenuItem, insertionPoint++);
+                AddContextMenuItem(isOutputMenuItem);
             }
 
             #endregion
 
-            // The Help MenuItem and its separator are added to the ContextMenu last
-            // and not inserted. This is so that any injected MenuItems can appear in a
-            // consistent position in the ContextMenu.
             #region Help
             AddContextMenuSeparator();
             MenuItem helpMenuItem = CreateMenuItem

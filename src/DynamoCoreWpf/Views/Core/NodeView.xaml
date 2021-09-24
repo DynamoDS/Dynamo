@@ -359,6 +359,7 @@
                       Grid.Column="0"
                       Margin="0,3,0,0"
                       VerticalAlignment="Top"
+                      HorizontalAlignment="Left"
                       HorizontalContentAlignment="Stretch"
                       Canvas.ZIndex="4"
                       ItemsSource="{Binding Path=InPorts}"

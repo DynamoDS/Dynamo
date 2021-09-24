@@ -41,7 +41,7 @@ namespace PythonNodeModelsWpf
             editWindowItem.Click += EditScriptContent;
 
             var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
-            nodeView.MainContextMenu.Items.Insert(10, pythonEngineVersionMenu);
+            nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
             pythonEngine2Item.Click += UpdateToPython2Engine;
             // Bind menu item check state to the Engine property in the ViewModel.
             // By doing this, we make sure the check status is in sync with the ViewModel,
@@ -76,7 +76,7 @@ namespace PythonNodeModelsWpf
             Canvas.SetZIndex(engineLabel, 5);
             engineLabel.HorizontalAlignment = HorizontalAlignment.Left;
             engineLabel.VerticalAlignment = VerticalAlignment.Bottom;
-            engineLabel.Margin = new Thickness(14, -4, 0, 4);
+            engineLabel.Margin = new Thickness(14, -4, -10, 4);
             nodeView.grid.Children.Add(engineLabel);
             Grid.SetColumn(engineLabel, 0);
             Grid.SetRow(engineLabel, 3);
