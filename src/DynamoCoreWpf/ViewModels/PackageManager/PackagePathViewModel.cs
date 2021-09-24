@@ -238,6 +238,8 @@ namespace Dynamo.ViewModels
 
         private void RemovePathAt(int index)
         {
+            var pathToRemove = RootLocations[index];
+            SetPackagesScheduledState(pathToRemove, packagePathDisabled: true);
             RootLocations.RemoveAt(index);
             RaiseCanExecuteChanged();
         }
