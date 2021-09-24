@@ -16,7 +16,6 @@ using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using SharpDX.Direct2D1;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 
