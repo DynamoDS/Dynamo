@@ -2664,4 +2664,11 @@ Delete the following packages: {2}?
   <data name="NodeAutoCompleteNotAvailableForCollapsedGroups" xml:space="preserve">
     <value>Node AutoComplete is not available on ports belonging to collapsed groups.</value>
   </data>
+  <data name="PackageManagerInstall" xml:space="preserve">
+    <value>Install</value>
+    <comment>Used on the package manager search result card. If the package is not installed, the button will say 'Install'.</comment>
+  </data>
+  <data name="PackageManagerPackageHasNoDependencies" xml:space="preserve">
+    <value>No dependencies.</value>
+  </data>
 </root>

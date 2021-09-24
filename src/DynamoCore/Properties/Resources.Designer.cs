@@ -1254,38 +1254,11 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install.
-        /// </summary>
-        public static string PackageManagerInstall {
-            get {
-                return ResourceManager.GetString("PackageManagerInstall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Installed.
-        /// </summary>
-        public static string PackageManagerInstalled {
-            get {
-                return ResourceManager.GetString("PackageManagerInstalled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A package with the given name already exists..
         /// </summary>
         public static string PackageManagerPackageAlreadyExists {
             get {
                 return ResourceManager.GetString("PackageManagerPackageAlreadyExists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No dependencies..
-        /// </summary>
-        public static string PackageManagerPackageHasNoDependencies {
-            get {
-                return ResourceManager.GetString("PackageManagerPackageHasNoDependencies", resourceCulture);
             }
         }
         

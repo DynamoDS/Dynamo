@@ -112,11 +112,11 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return Properties.Resources.PackageManagerPackageHasNoDependencies;
+            if (value == null) return Wpf.Properties.Resources.PackageManagerPackageHasNoDependencies;
 
             List<string> depList = (List<string>)value;
 
-            if(depList.Count < 1) return Properties.Resources.PackageManagerPackageHasNoDependencies;
+            if(depList.Count < 1) return Wpf.Properties.Resources.PackageManagerPackageHasNoDependencies;
 
             return string.Join(Environment.NewLine, depList);
         }
@@ -314,8 +314,8 @@ namespace Dynamo.Controls
             if (!(value is bool booleanValue)) return null;
             
             return booleanValue
-                ? Properties.Resources.PackageManagerInstalled
-                : Properties.Resources.PackageManagerInstall;
+                ? Wpf.Properties.Resources.PackageDownloadStateInstalled
+                : Wpf.Properties.Resources.PackageManagerInstall;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,

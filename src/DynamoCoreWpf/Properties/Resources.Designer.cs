@@ -4320,6 +4320,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Install.
+        /// </summary>
+        public static string PackageManagerInstall {
+            get {
+                return ResourceManager.GetString("PackageManagerInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No dependencies..
+        /// </summary>
+        public static string PackageManagerPackageHasNoDependencies {
+            get {
+                return ResourceManager.GetString("PackageManagerPackageHasNoDependencies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The name of the package cannot contain /,\, or *..
         /// </summary>
         public static string PackageNameCannotContainTheseCharacters {

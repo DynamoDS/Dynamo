@@ -1209,6 +1209,13 @@ You will get a chance to save your work.</value>
     <value>Edit...</value>
     <comment>Edit note</comment>
   </data>
+  <data name="PackageManagerInstall" xml:space="preserve">
+    <value>Install</value>
+    <comment>Used on the package manager search result card. If the package is not installed, the button will say 'Install'.</comment>
+  </data>
+  <data name="PackageManagerPackageHasNoDependencies" xml:space="preserve">
+    <value>No dependencies.</value>
+  </data>
   <data name="PackageDownloadStateDownloaded" xml:space="preserve">
     <value>Downloaded</value>
   </data>
