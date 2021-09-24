@@ -250,7 +250,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save the changes made to current Python node editor and close it..
+        ///   Looks up a localized string similar to Save the changes made to current Python node editor..
         /// </summary>
         public static string PythonScriptEditorSaveChangesButtonTooltip {
             get {
