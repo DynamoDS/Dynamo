@@ -307,16 +307,14 @@
                                         HorizontalAlignment="Left"
                                         Command="{Binding Path=BreakConnectionsCommand}"
                                         Content="{x:Static p:Resources.BreakConnectionPopupMenuItem}"
-                                        IsEnabled="{Binding OutputPortBreakConnectionsButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
-                                        Style="{StaticResource PopupButtonStyle}"
-                                        Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                        IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}"
+                                        Style="{StaticResource PopupButtonStyle}" />
                                 <Button Margin="0,3"
                                         HorizontalAlignment="Left"
                                         Command="{Binding Path=HideConnectionsCommand}"
                                         Content="{Binding ShowHideWiresButtonContent, UpdateSourceTrigger=PropertyChanged}"
                                         IsEnabled="{Binding HideWiresButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
-                                        Style="{StaticResource PopupButtonStyle}"
-                                        Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                        Style="{StaticResource PopupButtonStyle}" />
                             </StackPanel>
                         </Border>
                         <Path Grid.Column="1"

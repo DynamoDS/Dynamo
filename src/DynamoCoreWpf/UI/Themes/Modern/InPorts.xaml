@@ -349,21 +349,19 @@
                                           Command="{Binding Path=UseLevelsCommand}"
                                           CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                           Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
-                                          IsChecked="{Binding Path=UseLevels, Mode=OneWay}"
-                                          Visibility="{Binding UseLevelCheckBoxVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                          IsChecked="{Binding Path=UseLevels, Mode=OneWay}"/>
                                 <CheckBox Margin="0,3,5,3"
                                           HorizontalAlignment="Left"
                                           Command="{Binding Path=KeepListStructureCommand}"
                                           CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                           Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
                                           IsChecked="{Binding Path=ShouldKeepListStructure, Mode=OneWay}"
-                                          IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"
-                                          Visibility="{Binding UseLevelCheckBoxVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                          IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
                                 <CheckBox Margin="0,3,5,3"
                                           HorizontalAlignment="Left"
                                           Content="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
                                           IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}"
-                                          Visibility="{Binding UseDefaultValueCheckBoxVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                          Visibility="{Binding DefaultValueEnabled, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                             </StackPanel>
                         </Border>
                         <Path Grid.Column="1"

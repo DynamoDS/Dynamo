@@ -31,7 +31,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return this.PortModel.Owner is CodeBlockNodeModel && PortType == PortType.Output;
+                return this.PortModel.Owner is CodeBlockNodeModel;
             }
         }
 
@@ -67,22 +67,6 @@ namespace Dynamo.ViewModels
                     return Visibility.Visible;
                 }
             }
-        }
-
-        /// <summary>
-        /// Shows or hides the Break Connections, Hide Wires and UnhideWires buttons in the node chevron popup menu.
-        /// </summary>
-        public bool OutputPortConnectionsButtonsVisible
-        {
-            get => _port.PortType == PortType.Output;
-        }
-
-        /// <summary>
-        /// Enables or disables the Break Connections button on the node output port context menu.
-        /// </summary>
-        public bool OutputPortBreakConnectionsButtonEnabled
-        {
-            get => OutputPortConnectionsButtonsVisible && IsConnected;
         }
 
         /// <summary>
@@ -180,7 +164,7 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "IsConnected":
-                    RaisePropertyChanged(nameof(OutputPortBreakConnectionsButtonEnabled));
+                    RaisePropertyChanged(nameof(IsConnected)); //Do we still need this?
                     RefreshHideWiresButton();
                     break;
             }
