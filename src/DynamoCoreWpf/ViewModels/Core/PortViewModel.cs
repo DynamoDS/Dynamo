@@ -217,6 +217,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The visibility of Use Levels menu.
         /// </summary>
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
         public Visibility UseLevelVisibility
         {
             get
