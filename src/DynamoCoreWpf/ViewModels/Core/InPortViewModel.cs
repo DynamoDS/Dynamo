@@ -122,6 +122,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        // <summary>
+        /// Shows or hides the Use Levels and Keep List Structure checkboxes
+        /// in the node chevron popup menu.
+        /// </summary>
+        public bool UseLevelCheckBoxVisibility
+        {
+            get => _port.PortType == PortType.Input;
+        }
+
         /// <summary>
         /// Shows or hides the Use Default Value checkbox in the node chevron popup menu.
         /// </summary>

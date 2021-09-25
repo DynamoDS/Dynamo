@@ -10,6 +10,28 @@ using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
+    /// <summary>
+    /// Proxy port view model, used for proxy ports under collapsed groups
+    /// Certain features could behave differently e.g. Node AutoComplete is 
+    /// disabled for it.
+    /// </summary>
+    public class ProxyPortViewModel : PortViewModel
+    {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="port"></param>
+        public ProxyPortViewModel(NodeViewModel node, PortModel port)
+            : base(node, port)
+        {
+            // Do nothing for now.
+        }
+    }
+
+    /// <summary>
+    /// Port View Model
+    /// </summary>
     public partial class PortViewModel : ViewModelBase
     {
         #region Properties/Fields
@@ -291,7 +313,7 @@ namespace Dynamo.ViewModels
 
         internal virtual PortViewModel CreateProxyPortViewModel(PortModel portModel)
         {
-            throw new Exception("Don't do this");
+            return new PortViewModel(_node, portModel);
         }
 
         /// <summary>
@@ -459,8 +481,14 @@ namespace Dynamo.ViewModels
         private bool CanAutoComplete(object parameter)
         {
             DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
-            // If the feature is enabled from Dynamo experiment setting and if user interaction is on input port.
-            return dynamoViewModel.EnableNodeAutoComplete;
+            // If user trying to trigger Node AutoComplete from proxy ports, display notification
+            // telling user it is not available that way
+            if (this is ProxyPortViewModel)
+            {
+                dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups);
+            }
+            // If the feature is enabled from Dynamo experiment setting and if user interaction is not on proxy ports.
+            return dynamoViewModel.EnableNodeAutoComplete && !(this is ProxyPortViewModel);
         }
 
         /// <summary>

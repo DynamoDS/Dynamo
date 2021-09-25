@@ -549,7 +549,7 @@ namespace Dynamo.ViewModels
         internal void SetGroupInputPorts()
         {
             InPorts.Clear();
-            List<PortViewModel> newPortViewModels;
+            List<ProxyPortViewModel> newPortViewModels;
 
             if (!AnnotationModel.HasNestedGroups)
             {
@@ -599,7 +599,7 @@ namespace Dynamo.ViewModels
         internal void SetGroupOutPorts()
         {
             OutPorts.Clear();
-            List<PortViewModel> newPortViewModels;
+            List<ProxyPortViewModel> newPortViewModels;
 
             if (!AnnotationModel.HasNestedGroups)
             {
@@ -709,7 +709,7 @@ namespace Dynamo.ViewModels
                 .Where(x => groupPortModels.Contains(x.PortModel))
                 .ToList();
 
-            var newPortViewModels = new List<PortViewModel>();
+            var newPortViewModels = new List<ProxyPortViewModel>();
             for (int i = 0; i < groupPortModels.Count(); i++)
             {
                 var model = groupPortModels.ElementAt(i);
