@@ -481,13 +481,13 @@
                                     Width="{Binding Width}"
                                     MinHeight="20"
                                     Margin="0,0,0,10">
-                        <Grid>
+                        <Grid Margin="0,0,20,0">
                             <TextBlock x:Name="GroupTextBlock"
                                        Text="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBlock'}"
                                        FontFamily="Trebuchet"
                                        FontSize="{Binding FontSize}"
                                        LineStackingStrategy="BlockLineHeight"
-                                       TextWrapping="Wrap"
+                                       TextWrapping="WrapWithOverflow"
                                        Visibility="Visible">
                             </TextBlock>
                             <TextBox Name="GroupTextBox"
@@ -495,7 +495,7 @@
                                      MaxLength="30"
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationText,Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBox'}"
-                                     TextWrapping="Wrap"
+                                     TextWrapping="WrapWithOverflow"
                                      FontFamily="Trebuchet"
                                      FontSize="{Binding FontSize}"
                                      IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
