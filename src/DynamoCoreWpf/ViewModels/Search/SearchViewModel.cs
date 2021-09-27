@@ -214,8 +214,6 @@ namespace Dynamo.ViewModels
                 }
                 strBuilder.Append(", ");
             }
-
-            Analytics.LogPiiInfo("Filter-categories", strBuilder.ToString().Trim());
         }
 
         /// <summary>
@@ -827,8 +825,6 @@ namespace Dynamo.ViewModels
         {
             if (Visible != true)
                 return;
-
-            Analytics.LogPiiInfo("Search", query);
 
             // if the search query is empty, go back to the default treeview
             if (string.IsNullOrEmpty(query))
