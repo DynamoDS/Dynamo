@@ -286,8 +286,20 @@ namespace Dynamo.PackageManager
         internal bool UserAlreadyHasPackageInstalled(string packageName)
         {
             PackageManagerExtension packageManagerExtension = PackageManagerClientViewModel.PackageManagerExtension;
-            List<string> localPackageNames = packageManagerExtension.PackageLoader.LocalPackages.Select(x => x.Name).ToList();
-            return localPackageNames.Contains(packageName) || Downloads.Select(x => x.Name).Contains(packageName);
+            
+            // This check fires before the package is added to PackageLoader.LocalPackages collection.
+            // Therefore, we need to check both the names of downloaded packages and recent downloads.
+
+            List<string> loadedPackageNames = packageManagerExtension.PackageLoader.LocalPackages
+                .Where(x => x.LoadState.State == PackageLoadState.StateTypes.Loaded)
+                .Select(x => x.Name)
+                .ToList();
+
+            List<string> recentlyDownloadedPackageNames = Downloads
+                .Select(x => x.Name)
+                .ToList();
+
+            return loadedPackageNames.Contains(packageName) || recentlyDownloadedPackageNames.Contains(packageName);
         }
 
         public PackageSearchState _searchState; // TODO: Set private for 3.0.
