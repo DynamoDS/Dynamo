@@ -353,7 +353,8 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        /// Search for elements in the dictionary or subset based on the query
+        /// Search for elements in the dictionary or subset based on the query. PLEASE NOTE - this method is called using reflection from the
+	/// MSLibraryWebBrowserUIExtension - if its signature is modified, please update its use in that extension.
         /// </summary>
         /// <param name="query"> The query </param>
         /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>

@@ -101,9 +101,12 @@ namespace Dynamo.Graph.Nodes
 
         internal static List<IGraphicItem> GeneratedGraphicItems(this NodeModel node, EngineController engineController)
         {
-            var ids = node.GetAllOutportAstIdentifiers();
-
             var results = new List<IGraphicItem>();
+            if (node is null || engineController is null)
+            {
+                return results;
+            }
+            var ids = node.GetAllOutportAstIdentifiers();
 
             foreach (var id in ids)
             {

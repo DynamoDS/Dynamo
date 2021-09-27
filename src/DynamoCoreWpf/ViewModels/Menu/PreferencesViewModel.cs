@@ -4,13 +4,13 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -54,6 +54,7 @@ namespace Dynamo.ViewModels
         private bool enableTSpline;
         private bool showEdges;
         private bool isolateSelectedGeometry;
+        private bool showPreviewBubbles;
         private bool showCodeBlockLineNumber;
         private RunType runSettingsIsChecked;
         private Dictionary<string, TabSettings> preferencesTabs;
@@ -151,6 +152,11 @@ namespace Dynamo.ViewModels
         /// Returns all installed packages
         /// </summary>
         public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
+
+        /// <summary>
+        /// Returns all available filters
+        /// </summary>
+        public ObservableCollection<PackageFilter> Filters => installedPackagesViewModel.Filters;
 
         //This includes all the properties that can be set on the General tab
         #region General Properties
@@ -481,6 +487,26 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        public bool ShowPreviewBubbles
+        {
+            get
+            {
+                return preferenceSettings.ShowPreviewBubbles;
+            }
+            set
+            {
+                preferenceSettings.ShowPreviewBubbles = value;
+                showPreviewBubbles = value;
+                RaisePropertyChanged(nameof(ShowPreviewBubbles));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if line numbers should be displayed on code block nodes.
+        /// </summary>
         public bool ShowCodeBlockLineNumber
         {
             get
@@ -773,7 +799,6 @@ namespace Dynamo.ViewModels
             var loadPackagesParams = new LoadPackageParams
             {
                 Preferences = preferenceSettings,
-                PathManager = dynamoViewModel.Model.PathManager,
             };
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
@@ -878,6 +903,14 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Init all package filters
+        /// </summary>
+        internal void InitPackageListFilters()
+        {
+            installedPackagesViewModel.PopulateFilters();
+        }
+
+        /// <summary>
         /// Listen for the PropertyChanged event and updates the saved changes label accordingly
         /// </summary>
         private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -933,6 +966,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(EnableTSplineIsChecked):
                     description = Res.PreferencesViewEnableTSplineNodes;
+                    goto default;
+                case nameof(ShowPreviewBubbles):
+                    description = Res.PreferencesViewShowPreviewBubbles;
                     goto default;
                 case nameof(ShowCodeBlockLineNumber):
                     description = Res.PreferencesViewShowCodeBlockNodeLineNumber;

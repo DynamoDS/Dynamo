@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls.Primitives;
+using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -13,11 +14,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private UIElement hostUIElement;
         private double verticalPopupOffSet;
         private double horizontalPopupOffSet;
+        private double widthBoxDelta;
+        private double heightBoxDelta;
 
         /// <summary>
         /// Host Name, this property will contain the name of the host control located in the TreeView
         /// </summary>
-        public string Name 
+        public string Name
         {
             get
             {
@@ -26,21 +29,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
             set
             {
                 name = value;
-            }
-        }
-
-        /// <summary>
-        /// Host Class, this property will contain the class of the host control located in the TreeView
-        /// </summary>
-        public string HostClass
-        {
-            get
-            {
-                return hostClass;
-            }
-            set
-            {
-                hostClass = value;
             }
         }
 
@@ -60,13 +48,27 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
+        /// This variable will hold the name of the host (UIElement) in a string representation
+        /// </summary>
+        [JsonProperty("HostUIElementString")]
+        public string HostUIElementString { get; set; }
+
+        /// <summary>
         /// This property will hold the placement location of the popup, for now we are just using Right, Left, Top and Bottom
         /// </summary>
+        [JsonProperty("PopupPlacement")]
         public PlacementMode PopupPlacement { get; set; }
+
+        /// <summary>
+        /// This property will highlight the clickable area if its set to true
+        /// </summary>
+        [JsonProperty("HighlightColor")]
+        public string HighlightColor { get; set; }
 
         /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Vertically (by specifying an offset) 
         /// </summary>
+        [JsonProperty("VerticalPopupOffset")]
         public double VerticalPopupOffSet
         {
             get
@@ -82,6 +84,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Horizontally (by specifying an offset) 
         /// </summary>
+        [JsonProperty("HorizontalPopupOffset")]
         public double HorizontalPopupOffSet
         {
             get
@@ -90,8 +93,19 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
             set
             {
-                horizontalPopupOffSet  = value;
+                horizontalPopupOffSet = value;
             }
         }
+
+        /// <summary>
+        /// Since the box that highlights the elements has its size fixed, this variable applies a value to fix its Width
+        /// </summary>
+        [JsonProperty("WidthBoxDelta")]
+        public double WidthBoxDelta { get => widthBoxDelta; set => widthBoxDelta = value; }
+        /// <summary>
+        /// Since the box that highlights the elements has its size fixed, this variable applies a value to fix its Height
+        /// </summary>
+        [JsonProperty("HeightBoxDelta")]
+        public double HeightBoxDelta { get => heightBoxDelta; set => heightBoxDelta = value; }
     }
 }

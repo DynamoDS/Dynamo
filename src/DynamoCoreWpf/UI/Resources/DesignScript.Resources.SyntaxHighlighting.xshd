@@ -23,18 +23,18 @@
   <RuleSets>
     <RuleSet ignorecase="false">
       <Delimiters>()[]{},:.`=;+-*/%!~#\ &amp;|^&gt;&lt;</Delimiters>
-      <Span name="Char" stopateol="true" color="#885D3B" escapecharacter="\">
+      <Span name="Char" stopateol="true" color="#E0A86F" escapecharacter="\">
         <Begin>'</Begin>
         <End>'</End>
       </Span>      
-      <Span name="LineComment" stopateol="true" color="#309130">
+      <Span name="LineComment" stopateol="true" color="#B7D78C">
         <Begin>//</Begin>
       </Span>
-      <Span name="MultiLineComment" stopateol="false" color="#309130">
+      <Span name="MultiLineComment" stopateol="false" color="#B7D78C">
         <Begin>/*</Begin>
         <End>*/</End>
       </Span>
-      <Span name="String" stopateol="false" color="#885D3B" escapecharacter="\">
+      <Span name="String" stopateol="false" color="#E0A86F" escapecharacter="\">
         <Begin>"</Begin>
         <End>"</End>
       </Span>
@@ -53,7 +53,7 @@
         <Key word="catch" />
         <Key word="try" />
       </KeyWords>
-      <KeyWords name="Functions" color="#8C5EAA">
+      <KeyWords name="Functions" color="#F2A9F2">
         <Key word="def" />
         <Key word="function" />
         <Key word="constructor" />
@@ -62,12 +62,12 @@
         <Key word="import" />
         <Key word="from" />
       </KeyWords>
-      <KeyWords name="IterationStatements" color="#8C5EAA">
+      <KeyWords name="IterationStatements" color="#F2A9F2">
         <Key word="for" />
         <Key word="in" />
         <Key word="while" />
       </KeyWords>
-      <KeyWords name="JumpStatements" color="#8C5EAA">
+      <KeyWords name="JumpStatements" color="#F2A9F2">
         <Key word="break" />
         <Key word="continue" />
         <Key word="return" />
@@ -77,7 +77,7 @@
         <Key word="private" />
         <Key word="protected" />
       </KeyWords>
-      <KeyWords name="PrimitiveTypes" color="#8C5EAA">
+      <KeyWords name="PrimitiveTypes" color="#F2A9F2">
         <Key word="int" />
         <Key word="double" />
         <Key word="string" />
@@ -86,12 +86,12 @@
         <Key word="char" />
         <Key word="void" />
       </KeyWords>
-      <KeyWords name="Constants" color="#8C5EAA">
+      <KeyWords name="Constants" color="#F9F9A5">
         <Key word="true" />
         <Key word="false" />
         <Key word="null" />
       </KeyWords>
-      <KeyWords name="LanguageBlocks" color="#8C5EAA">
+      <KeyWords name="LanguageBlocks" color="#6AC0E7">
         <Key word="Associative" />
         <Key word="Imperative" />
         <Key word="Options" />

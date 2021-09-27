@@ -133,6 +133,7 @@
     <Compile Include="Models\GroupModelCommandTests.cs" />
     <Compile Include="Models\ModelEventCommandTest.cs" />
     <Compile Include="Models\MutateTestCommandTest.cs" />
+    <Compile Include="Models\NodeModelWarnings.cs" />
     <Compile Include="Models\OpenFileCommandTest.cs" />
     <Compile Include="Models\PausePlaybackCommandTest.cs" />
     <Compile Include="Models\PresetCommandTests.cs" />

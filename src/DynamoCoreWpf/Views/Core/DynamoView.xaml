@@ -559,9 +559,12 @@
                                       Header="{x:Static p:Resources.DynamoViewViewMenuShowConnectors}"
                                       IsCheckable="True"
                                       Name="ShowHideConnectorsMenuItem"
-                                      IsChecked="{Binding Path=IsShowingConnectors}"
-                                      Command="{Binding ShowHideConnectorsCommand}">
-                            </MenuItem>
+                                      IsChecked="{Binding Path=IsShowingConnectors}"/>
+                            <MenuItem Focusable="False"
+                                      Header="{x:Static p:Resources.DynamoViewViewMenuConnectorShowTooltip}"
+                                      IsCheckable="True"
+                                      Name="ShowHideConnectorTooltipMenuItem"
+                                      IsChecked="{Binding Path=IsShowingConnectorTooltip}"/>
                         </MenuItem>
 
                         <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenu3DPreview}"
@@ -618,6 +621,7 @@
                     </MenuItem>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
+                              Name="HelpMenu"
                               Focusable="False">
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.StartPageWhatsNew}"
@@ -1826,7 +1830,6 @@
             </Grid.Background>
         </Grid>
 
-        <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>
+        <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>        
     </Grid>
-
 </Window>

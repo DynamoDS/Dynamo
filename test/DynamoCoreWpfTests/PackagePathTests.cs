@@ -16,11 +16,45 @@ using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using SystemTestServices;
+using Moq;
+using System.Collections.Generic;
+using Dynamo.Extensions;
+using System;
 
 namespace DynamoCoreWpfTests
 {
     public class PackagePathTests : SystemTestBase
     {
+        private static string executingDirectory;
+        protected static string ExecutingDirectory
+        {
+            get
+            {
+                if (executingDirectory == null)
+                {
+                    executingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                }
+                return executingDirectory;
+            }
+        }
+
+        private static string testDirectory;
+        internal static string TestDirectory
+        {
+            get
+            {
+                if (testDirectory == null)
+                {
+                    var directory = new DirectoryInfo(ExecutingDirectory);
+                    testDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
+                }
+                return testDirectory;
+            }
+        }
+        internal string PackagesDirectory { get { return Path.Combine(TestDirectory, "pkgs"); } }
+
+        internal string BuiltInPackagesTestDir { get { return Path.Combine(TestDirectory, "builtinpackages testdir", "Packages"); } }
+
         #region PackagePathViewModelTests
         [Test]
         public void CannotDeletePathIfThereIsOnlyOne()
@@ -181,6 +215,45 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void InstalledPackagesContainsCorrectNumberOfPackages()
+        {
+            var pathManager = new Mock<IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(ViewModel.Model);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            var packagesLoaded = false;
+
+            Action<IEnumerable<Assembly>> pkgsLoadedDelegate = (x) => { packagesLoaded = true; };
+            loader.PackagesLoaded += pkgsLoadedDelegate;
+
+            ViewModel.Model.PreferenceSettings.CustomPackageFolders = new List<string>();
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = ViewModel.Model.PreferenceSettings,
+
+            };
+            loader.LoadAll(loadPackageParams);
+            Assert.AreEqual(19, loader.LocalPackages.Count());
+            Assert.AreEqual(true, packagesLoaded);
+
+            var installedPackagesViewModel = new InstalledPackagesViewModel(ViewModel, loader);
+            Assert.AreEqual(19, installedPackagesViewModel.LocalPackages.Count);
+
+            var installedPackagesView = new Dynamo.Wpf.Controls.InstalledPackagesControl();
+            installedPackagesView.DataContext = installedPackagesViewModel;
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(19, installedPackagesView.SearchResultsListBox.Items.Count);
+            Assert.AreEqual(2, installedPackagesView.Filters.Items.Count);
+        }
+
+        [Test]
         public void PathEnabledConverterCustomPaths()
         {
             var setting = new PreferenceSettings()
@@ -233,14 +306,16 @@ namespace DynamoCoreWpfTests
             {
                 CustomPackageFolders = {@"Z:\" }
             };
+            var pathManager = new Mock<IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => setting.CustomPackageFolders);
 
-            PackageLoader loader = new PackageLoader(setting.CustomPackageFolders);
+            PackageLoader loader = new PackageLoader(pathManager.Object);
             loader.PackagesLoaded += Loader_PackagesLoaded;
 
-LoadPackageParams loadParams = new LoadPackageParams
+            LoadPackageParams loadParams = new LoadPackageParams
             {
                 Preferences = setting,
-                PathManager = Model.PathManager
             };
             CustomNodeManager customNodeManager = Model.CustomNodeManager;
             var vm= new PackagePathViewModel(loader, loadParams, customNodeManager);
@@ -259,13 +334,13 @@ LoadPackageParams loadParams = new LoadPackageParams
             vm.SaveSettingCommand.Execute(null);
 
             //should have loaded something.
-            Assert.AreEqual(8, count);
+            Assert.AreEqual(10, count);
 
             //commit the paths again. 
             vm.SaveSettingCommand.Execute(null);
 
             //should not have loaded anything.
-            Assert.AreEqual(8, count);
+            Assert.AreEqual(10, count);
 
             void Loader_PackagesLoaded(System.Collections.Generic.IEnumerable<Assembly> obj)
             {
@@ -298,11 +373,14 @@ LoadPackageParams loadParams = new LoadPackageParams
         #region Setup methods
         private PackagePathViewModel CreatePackagePathViewModel(PreferenceSettings setting)
         {
-            PackageLoader loader = new PackageLoader(setting.CustomPackageFolders);
+            var pathManager = new Mock<IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => setting.CustomPackageFolders);
+
+            PackageLoader loader = new PackageLoader(pathManager.Object);
             LoadPackageParams loadParams = new LoadPackageParams
             {
                 Preferences = setting,
-                PathManager = Model.PathManager
             };
             CustomNodeManager customNodeManager = Model.CustomNodeManager;
             return new PackagePathViewModel(loader, loadParams, customNodeManager);

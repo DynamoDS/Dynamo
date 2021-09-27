@@ -178,7 +178,7 @@ namespace Dynamo.ViewModels
             SaveWarningOnUnresolvedIssuesShows?.Invoke(e);
         }
 
-        // <summary>
+        /// <summary>
         /// Event raised when there's a request to open the view extension in the side panel.
         /// </summary>
         internal event Action<string> ViewExtensionOpenRequest;

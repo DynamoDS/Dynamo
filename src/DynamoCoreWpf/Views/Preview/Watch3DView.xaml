@@ -117,11 +117,19 @@
         </hx:Viewport3DX>
         
         <Thumb Name ="resizeThumb" 
-               Width="10" Height="10" 
-               HorizontalAlignment="Right" 
-               VerticalAlignment="Bottom" 
-               Margin="5"
+               Width="10" Height="10"
+               Cursor="SizeNWSE"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Bottom"
+               Margin="3"
                DragDelta="ThumbResizeThumbOnDragDeltaHandler"
-               Visibility="{Binding IsResizable, Converter={StaticResource BoolToVisibilityCollapsedConverter}}"/>
+               Visibility="{Binding IsResizable, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+            <Thumb.Template>
+                <ControlTemplate>
+                    <Polygon Points="0,8 8,8 8,0"
+                             Fill="#AFAFAF" />
+                </ControlTemplate>
+            </Thumb.Template>
+        </Thumb>
     </Grid>
 </UserControl>

@@ -207,5 +207,43 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(noteModel.CenterX, nodeModel.CenterX);
             Assert.AreEqual(noteModel.CenterY, nodeModel.CenterY - (nodeModel.Height * 0.5) - (noteModel.Height * 0.5) - distanceToNode);
         }
+
+        /// <summary>
+        /// Makes sure that only when one node and note
+        /// are selected the PinToNode command is enabled
+        /// </summary>
+        [Test]
+        public void PinToNodeCommandIsProperlyEnabled()
+        {
+            // Open document and get nodes and note views
+            Open(@"UI\UI_PinNodeToNote.dyn");
+            var nodeAGUID = "cf46488c-6631-458e-bba0-25098e2273f5";
+            var noteAGUID = "c589c7ff-a481-4a21-bb18-ac01ed9486fc";
+            var nodeBGUID = "6af656b8-4762-4e77-a5f9-22ef0ab333b5";
+            var noteBGUID = "30858809-6c6b-47a6-a777-4db14c016b0c";
+            var nodeAView = NodeViewWithGuid(nodeAGUID);
+            var noteAView = NoteViewWithGuid(noteAGUID);
+            var nodeBView = NodeViewWithGuid(nodeBGUID);
+            var noteBView = NoteViewWithGuid(noteBGUID);
+
+            // Select a node and a note
+            DynamoSelection.Instance.Selection.AddUnique(nodeAView.ViewModel.NodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteAView.ViewModel.Model);
+
+            // Assert that node can be pinned to note
+            var canPinANodeToANote = noteAView.ViewModel.PinToNodeCommand.CanExecute(null);
+            Assert.IsTrue(canPinANodeToANote);
+
+            //// Assert that you can't pin if you add another node to selection
+            DynamoSelection.Instance.Selection.AddUnique(nodeBView.ViewModel.NodeModel);
+            var canPinNodesToANote = noteAView.ViewModel.PinToNodeCommand.CanExecute(null);
+            Assert.IsFalse(canPinNodesToANote);
+
+            //Remove extra node, Pin and assert that other note cannot be pinned again
+            DynamoSelection.Instance.Selection.Remove(nodeBView.ViewModel.NodeModel);
+            noteAView.ViewModel.PinToNodeCommand.Execute(null);
+            var canPinNodsToNotes = noteBView.ViewModel.PinToNodeCommand.CanExecute(null);
+            Assert.IsFalse(canPinNodesToANote);
+        }
     }
 }
