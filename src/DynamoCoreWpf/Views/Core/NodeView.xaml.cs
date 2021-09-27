@@ -689,7 +689,7 @@ namespace Dynamo.Controls
         #endregion
 
         /// <summary>
-        /// A static class containing methods for dynamically building a Node's Context Menu
+        /// A static class containing methods for dynamically building a Node's Context Menu.
         /// </summary>
         internal class NodeContextMenuBuilder
         {
@@ -1105,6 +1105,24 @@ namespace Dynamo.Controls
         private Dictionary<string, object> NodeViewCustomizationMenuItems { get; } = new Dictionary<string, object>();
 
         /// <summary>
+        /// A list of the names of nodes' default menu items, which cannot be dynamically injected into its context menu.
+        /// </summary>
+        private static readonly List<string> NodeContextMenuDefaultItemNames = new List<string>
+        {
+            Wpf.Properties.Resources.ContextMenuDelete,
+            Wpf.Properties.Resources.ContextMenuGroups,
+            Wpf.Properties.Resources.NodeContextMenuPreview,
+            Wpf.Properties.Resources.NodesRunStatus,
+            Wpf.Properties.Resources.NodeContextMenuShowLabels,
+            Wpf.Properties.Resources.NodeContextMenuRenameNode,
+            Wpf.Properties.Resources.ContextMenuLacing,
+            //Wpf.Properties.Resources.NodeInformationalStateDismissedAlerts,
+            Wpf.Properties.Resources.NodeContextMenuIsInput,
+            Wpf.Properties.Resources.NodeContextMenuIsOutput,
+            Wpf.Properties.Resources.NodeContextMenuHelp
+        };
+
+        /// <summary>
         /// Saves a persistent list of unique MenuItems that are added by certain nodes during their NodeViewCustomization process.
         /// Because nodes' ContextMenus are loaded lazily, and their MenuItems are disposed on closing,
         /// these custom MenuItems need to be manually re-injected into the context menu whenever it is opened.
@@ -1114,6 +1132,7 @@ namespace Dynamo.Controls
             foreach (var obj in grid.ContextMenu.Items)
             {
                 if (!(obj is MenuItem menuItem)) continue;
+                if (NodeContextMenuDefaultItemNames.Contains(menuItem.Header.ToString())) continue;
 
                 // In order to avoid repeatedly saving the same NodeViewCustomization MenuItems, we 
                 // check MenuItems are unique by their Header.
@@ -1158,14 +1177,16 @@ namespace Dynamo.Controls
             nodeContextMenuBuilder.BuildDismissedAlertsMenuItem();
 
             // Injected NodeViewCustomizations
-            nodeContextMenuBuilder.BuildInjectedNodeViewCustomizationMenuItems(NodeViewCustomizationMenuItems);
+            if (NodeViewCustomizationMenuItems.Count > 0)
+            {
+                nodeContextMenuBuilder.BuildInjectedNodeViewCustomizationMenuItems(NodeViewCustomizationMenuItems);
+            }
 
             // Is Input / Is Output
             nodeContextMenuBuilder.BuildIsInputOutputMenuItem();
 
             // Help
             nodeContextMenuBuilder.BuildHelpMenuItem();
-            
         }
 
         /// <summary>
@@ -1179,6 +1200,7 @@ namespace Dynamo.Controls
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
             ContextMenu contextMenu = grid.ContextMenu;
+            if (contextMenu.IsOpen) return;
 
             // Get the Node View Customization Items. Save them somewhere.
             if (contextMenu.Items.Count > 0 && NodeViewCustomizationMenuItems.Count < 1)
