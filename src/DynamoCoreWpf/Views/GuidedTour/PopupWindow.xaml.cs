@@ -59,16 +59,13 @@ namespace Dynamo.Wpf.Views.GuidedTour
             Closed += PopupWindow_Closed;
         }
 
-        ~PopupWindow()
-        {
-            Opened -= PopupWindow_Opened;
-            Closed -= PopupWindow_Closed;
-        }
-
         private void PopupWindow_Closed(object sender, EventArgs e)
         {
             if(webBrowserWindow != null)
                 webBrowserWindow.IsOpen = false;
+
+            Opened -= PopupWindow_Opened;
+            Closed -= PopupWindow_Closed;
         }
 
         private void PopupWindow_Opened(object sender, EventArgs e)

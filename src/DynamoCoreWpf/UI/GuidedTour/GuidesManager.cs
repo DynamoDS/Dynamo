@@ -318,7 +318,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             switch (jsonStepInfo.StepType)
             {
                 case Step.StepTypes.TOOLTIP:
-                    newStep = new Tooltip(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height, jsonStepInfo.TooltipPointerDirection, jsonStepInfo.VerticalTooltipOffset)
+                    newStep = new Tooltip(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height, jsonStepInfo.TooltipPointerDirection, jsonStepInfo.PointerVerticalOffset)
                     {
                         Name = jsonStepInfo.Name,
                         Sequence = jsonStepInfo.Sequence,

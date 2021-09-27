@@ -115,8 +115,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         [JsonProperty("TooltipPointerDirection")]
         public PointerDirection TooltipPointerDirection { get; set; } = PointerDirection.TOP_LEFT;
 
-        [JsonProperty("VerticalTooltipOffset")]
-        public double VerticalTooltipOffset { get; set; }
+        [JsonProperty("PointerVerticalOffset")]
+        public double PointerVerticalOffset { get; set; }
         #endregion
 
         #region Public Methods
@@ -168,21 +168,21 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         public void UpdateLocation()
         {
-            if(stepUIPopup.IsOpen == true)
+            UpdatePopupLocationInvoke(stepUIPopup);
+            if(stepUIPopup is PopupWindow)
+            {
+                var stepUiPopupWindow = (PopupWindow)stepUIPopup;
+                UpdatePopupLocationInvoke(stepUiPopupWindow?.webBrowserWindow);
+            }
+        }
+        
+        private void UpdatePopupLocationInvoke(Popup popUp)
+        {
+            if(popUp != null && popUp.IsOpen)
             {
                 var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                positionMethod.Invoke(stepUIPopup, null);
-
-                if(stepUIPopup is PopupWindow)
-                {
-                    var stepUiPopupWindow = (PopupWindow)stepUIPopup;
-                    if (stepUiPopupWindow.webBrowserWindow != null && stepUiPopupWindow.webBrowserWindow.IsOpen)
-                    {
-                        var positionMethodWebBrowser = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                        positionMethodWebBrowser.Invoke(stepUiPopupWindow.webBrowserWindow, null);
-                    }
-                }
-            }         
+                positionMethod.Invoke(popUp, null);             
+            }
         }
 
         /// <summary>
