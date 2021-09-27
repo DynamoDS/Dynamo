@@ -37,7 +37,7 @@
                                 <Setter Property="ToolTipService.IsEnabled" Value="False"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="False">
-                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_48_48.png"/>
+                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_default_48_48.png"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
@@ -56,7 +56,7 @@
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
                                     <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_selected_48_48.png"/>
-                                    <Setter Property="Opacity" Value="0.6"/>
+                                    <Setter Property="Opacity" Value="0.4"/>
                                     <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                                 </MultiDataTrigger.Setters>
                             </MultiDataTrigger>

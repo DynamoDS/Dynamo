@@ -989,7 +989,6 @@ namespace Dynamo.ViewModels
                 case nameof(ConnectorPinModel.IsSelected):
                     var vm = sender as ConnectorPinViewModel;
                     AnyPinSelected = vm.IsSelected;
-                    RaisePropertyChanged(nameof(PreviewState));
                     break;
                 default:
                     break;
