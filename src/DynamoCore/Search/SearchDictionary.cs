@@ -13,7 +13,7 @@ namespace Dynamo.Search
     public class SearchDictionary<V>
     {
         private ILogger logger;
-        private static int LIMIT_SEARCH_TAG_SIZE = 100;
+        private static int LIMIT_SEARCH_TAG_SIZE = 300;
 
         /// <summary>
         ///     Construct a SearchDictionary object
