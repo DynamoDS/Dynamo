@@ -35,6 +35,7 @@
         </ResourceDictionary>
     </Window.Resources>
 
+    <!--  Contains the entire view  -->
     <Grid Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="58px" />
@@ -43,6 +44,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.Resources>
+            <!--  Local style for ContextMenu MenuItems, used for the Filter/Sort buttons  -->
             <Style TargetType="{x:Type MenuItem}">
                 <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
                 <Setter Property="Height" Value="30" />
@@ -147,6 +149,8 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <!--  Local style for ContextMenu Separators, used for the Filter/Sort buttons  -->
             <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
                 <Setter Property="OverridesDefaultStyle" Value="true" />
                 <Setter Property="Template">
@@ -161,13 +165,15 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <!--  Local style for ListBoxItems, used in the package search results  -->
             <Style TargetType="{x:Type ListBoxItem}">
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                            <Border x:Name="Bd"
+                            <Border x:Name="Border"
                                     Padding="{TemplateBinding Padding}"
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
@@ -177,9 +183,10 @@
                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             </Border>
+                            <!--  Overwriting default WPF triggers to stop ListBoxItems appearing with default styling  -->
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsSelected" Value="true">
-                                    <Setter TargetName="Bd" Property="Background" Value="Transparent" />
+                                    <Setter TargetName="Border" Property="Background" Value="Transparent" />
                                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
                                 </Trigger>
                                 <MultiTrigger>
@@ -187,7 +194,7 @@
                                         <Condition Property="IsSelected" Value="true" />
                                         <Condition Property="Selector.IsSelectionActive" Value="false" />
                                     </MultiTrigger.Conditions>
-                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
                                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}}" />
                                 </MultiTrigger>
                                 <Trigger Property="IsEnabled" Value="false">
@@ -202,7 +209,8 @@
                 </Setter>
             </Style>
         </Grid.Resources>
-        <!--  Title + Close Button  -->
+
+        <!--  Header: Contains the window title, minimize, restore and close buttons  -->
         <Border Name="titleBar"
                 Grid.Row="0"
                 Grid.RowSpan="4"
@@ -230,7 +238,7 @@
             </DockPanel>
         </Border>
 
-        <!--  Search Bar  -->
+        <!--  Contains the search bar, sort and filter buttons  -->
         <Border Name="searchBar"
                 Grid.Row="1"
                 Padding="25,18"
@@ -256,10 +264,14 @@
                             </Rectangle>
                         </ControlTemplate>
                     </Button.Template>
+
+                    <!--  When clicked, the sort button displays a ContextMenu of options to the user  -->
                     <Button.ContextMenu>
                         <ContextMenu Width="180"
                                      Background="{StaticResource DarkerGreyBrush}"
                                      Style="{StaticResource ContextMenuStyle}">
+
+                            <!--  Sub-Title 'SORT BY'  -->
                             <Separator>
                                 <Separator.Template>
                                     <ControlTemplate TargetType="Separator">
@@ -272,37 +284,45 @@
                                     </ControlTemplate>
                                 </Separator.Template>
                             </Separator>
-                            <!--  Name  -->
+
+                            <!--  Sort By Package Name  -->
                             <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
                                       CommandParameter="Name"
                                       Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByName}"
                                       IsCheckable="True"
                                       IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Name, Mode=TwoWay}" />
-                            <!--  Most Recent Update  -->
+
+                            <!--  Sort By Most Recent Update  -->
                             <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
                                       CommandParameter="LastUpdate"
                                       Header="{x:Static p:Resources.PackageSearchViewContextMenuSortyByUpdate}"
                                       IsCheckable="True"
                                       IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=LastUpdate, Mode=TwoWay}" />
-                            <!--  Downloads  -->
+
+                            <!--  Sort By Number of Downloads  -->
                             <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
                                       CommandParameter="Downloads"
                                       Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByDownloads}"
                                       IsCheckable="True"
                                       IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Downloads, Mode=TwoWay}" />
-                            <!--  Votes  -->
+
+                            <!--  Sort By Number Of Votes  -->
                             <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
                                       CommandParameter="Votes"
                                       Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByVotes}"
                                       IsCheckable="True"
                                       IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Votes, Mode=TwoWay}" />
-                            <!--  Author  -->
+
+                            <!--  Sort By Author Name  -->
                             <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
                                       CommandParameter="Maintainers"
                                       Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByAuthor}"
                                       IsCheckable="True"
                                       IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Maintainers, Mode=TwoWay}" />
+
                             <Separator />
+
+                            <!--  Sub-Title 'ORDER'  -->
                             <Separator>
                                 <Separator.Template>
                                     <ControlTemplate TargetType="Separator">
@@ -315,13 +335,15 @@
                                     </ControlTemplate>
                                 </Separator.Template>
                             </Separator>
-                            <!--  Ascending  -->
+
+                            <!--  Sort Ascending  -->
                             <MenuItem Command="{Binding Path=SetSortingDirectionCommand}"
                                       CommandParameter="Ascending"
                                       Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderAscending}"
                                       IsCheckable="True"
                                       IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Ascending, Mode=TwoWay}" />
-                            <!--  Descending  -->
+
+                            <!--  Sort Descending  -->
                             <MenuItem Command="{Binding Path=SetSortingDirectionCommand}"
                                       CommandParameter="Descending"
                                       Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderDescending}"
@@ -330,6 +352,7 @@
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
+
                 <!--  Filter Button  -->
                 <Button Name="filterResultsButton"
                         Width="20"
@@ -350,6 +373,8 @@
                             </Rectangle>
                         </ControlTemplate>
                     </Button.Template>
+
+                    <!--  When clicked, the filter button displays a ContextMenu of options to the user  -->
                     <Button.ContextMenu>
                         <ContextMenu Name="HostFilter"
                                      DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
@@ -368,6 +393,7 @@
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
+
                 <!--  Search Bar  -->
                 <Grid Name="searchBarGrid" DockPanel.Dock="Left">
                     <TextBox Name="searchTextBox"
@@ -382,6 +408,8 @@
                              Text="{Binding Path=SearchText, Mode=TwoWay}"
                              TextChanged="SearchTextBox_TextChanged"
                              Visibility="{Binding ShowSearchText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                    <!--  A watermark that appears when the user hasn't entered a search query  -->
                     <TextBlock Name="searchTextBoxWatermark"
                                Padding="17,11,5,10"
                                Background="Transparent"
@@ -392,7 +420,8 @@
                                Opacity="0.5"
                                Text="{Binding SearchBoxPrompt}"
                                Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" />
-                    <!--  Clear Text X Button  -->
+
+                    <!--  'X' button to reset search query text  -->
                     <Button Margin="10"
                             HorizontalAlignment="Right"
                             Command="{Binding ClearSearchTextBoxCommand}"
@@ -414,13 +443,14 @@
             </DockPanel>
         </Border>
 
-        <!--  Results  -->
+        <!--  Contains the package search results  -->
         <Border Name="results"
                 Grid.Row="2"
                 Grid.RowSpan="2"
                 Margin="0,0,0,3"
                 Background="#2A2A2A">
-            <ListBox Name="SearchResultsListBox"
+
+            <ListBox Name="searchResultsListBox"
                      Background="Transparent"
                      BorderThickness="0"
                      ItemsSource="{Binding Path=SearchResults}"
@@ -429,7 +459,7 @@
                      SelectedIndex="{Binding Path=SelectedIndex}"
                      VirtualizingPanel.ScrollUnit="Pixel">
                 <ListBox.Resources>
-                    <!--  Used to style labels on result, e.g. Number of Installs  -->
+                    <!--  Local style used for labels on result, e.g. Number of Installs  -->
                     <Style x:Key="resultLabelStyle" TargetType="TextBlock">
                         <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                         <Setter Property="FontSize" Value="10" />
@@ -442,7 +472,7 @@
                         </Style.Triggers>
                     </Style>
 
-                    <!--  Style buttons on each result, e.g. Install  -->
+                    <!--  Local style used for buttons on each result, e.g. Install  -->
                     <Style x:Key="resultButtonStyle" TargetType="Button">
                         <Setter Property="Template">
                             <Setter.Value>
@@ -479,6 +509,7 @@
                     </Style>
                 </ListBox.ItemContainerStyle>
 
+                <!--  The template for all package search results  -->
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="viewModels:PackageManagerSearchElementViewModel">
                         <Grid Name="resultItemTemplate" VerticalAlignment="Center">
@@ -777,7 +808,7 @@
                                            TextTrimming="CharacterEllipsis" />
                             </DockPanel>
 
-                            <!--  Separates List Items  -->
+                            <!--  A 1px bar that separates List Items  -->
                             <Rectangle Name="separator"
                                        Grid.Row="1"
                                        Height="1"
@@ -790,7 +821,7 @@
             </ListBox>
         </Border>
 
-        <!--  Download Bar  -->
+        <!--  Download bar: A stacking list of (up to 3) most-recently downloaded packages. Appears when the user installs a package.  -->
         <ListBox Name="DownloadsListBox"
                  Grid.Row="3"
                  Margin="0,5,0,10"
@@ -802,10 +833,13 @@
                  ScrollViewer.VerticalScrollBarVisibility="Disabled">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
+                    <!--  Ensure the stackpanel fills bottom-to-top  -->
                     <VirtualizingStackPanel VerticalAlignment="Bottom" />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
+
+                <!--  Template for displaying downloaded package details to the user  -->
                 <DataTemplate>
                     <Grid>
                         <!--  Contains everything except for the download status flag  -->
@@ -912,7 +946,8 @@
                                 </Button>
                             </Grid>
                         </Border>
-                        <!--  The download status flag  -->
+
+                        <!--  The download status flag, which changes colour to reflect the downloadState  -->
                         <Border Name="downloadStatusFlag"
                                 Width="3"
                                 HorizontalAlignment="Left"

@@ -495,7 +495,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void ClearSearchTextBox(object obj)
         {
-            SearchText = "";
+            SearchText = string.Empty;
         }
 
         /// <summary>

@@ -1238,9 +1238,9 @@ namespace Dynamo.Controls
 
             if (numberVersions > 1)
             {
-                return difference.TotalDays >= 30 ? "" : Properties.Resources.PackageManagerPackageUpdated;
+                return difference.TotalDays >= 30 ? "" : Wpf.Properties.Resources.PackageManagerPackageUpdated;
             }
-            return Properties.Resources.PackageManagerPackageNew;
+            return Wpf.Properties.Resources.PackageManagerPackageNew;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

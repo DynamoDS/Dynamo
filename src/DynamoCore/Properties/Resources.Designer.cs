@@ -1254,24 +1254,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New.
-        /// </summary>
-        public static string PackageManagerPackageNew {
-            get {
-                return ResourceManager.GetString("PackageManagerPackageNew", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Updated.
-        /// </summary>
-        public static string PackageManagerPackageUpdated {
-            get {
-                return ResourceManager.GetString("PackageManagerPackageUpdated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The current user, &apos;{0}&apos;, is not a maintainer of the package &apos;{1}&apos;..
         /// </summary>
         public static string PackageManagerUserIsNotAMaintainer {
