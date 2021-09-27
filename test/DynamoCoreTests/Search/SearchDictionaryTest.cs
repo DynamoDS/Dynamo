@@ -83,14 +83,16 @@ namespace Dynamo.Tests.Search
             searchDictionary.Search(query2);
             var query3 = "all elements of";
             searchDictionary.Search(query3);
-            var query = "all elements of category";
+            var query4 = "all elements of category";
+            searchDictionary.Search(query4);
+            var query = "az";
             var results = searchDictionary.Search(query);
 
             stopwatch.Stop();
 
-            Assert.AreEqual(results.Count(), 16);
+            Assert.AreEqual(results.Count(), 20);
 
-            int timeLimit = 230;//ms
+            int timeLimit = 260;//ms
             Assert.IsTrue(Math.Abs(stopwatch.ElapsedMilliseconds - timeLimit) < 0.2 * timeLimit, $"Search time should be within a range of +/- 20% of {timeLimit}ms but we got {stopwatch.ElapsedMilliseconds}ms");
         }
 
