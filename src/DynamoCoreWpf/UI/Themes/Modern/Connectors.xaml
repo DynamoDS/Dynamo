@@ -62,8 +62,8 @@
             </DataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
-                    <Condition  Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="True"/>
-                    <Condition  Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
+                    <Condition Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="True"/>
+                    <Condition Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="Opacity" Value="0.4"/>
@@ -72,8 +72,8 @@
             </MultiDataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
-                    <Condition  Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="False"/>
-                    <Condition  Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
+                    <Condition Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="False"/>
+                    <Condition Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="Opacity" Value="0.0"/>
@@ -109,11 +109,20 @@
                             </Style>
                         </MenuItem.Style>
                     </MenuItem>
+                    <!--Added for action at right click (contextmenu)-->
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseEnter">
+                            <i:InvokeCommandAction Command="{Binding ConnectorSelectionCommand}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeave">
+                            <i:InvokeCommandAction Command="{Binding ConnectorSelectionCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </ContextMenu>
             </Grid.ContextMenu>
             <Grid.Resources>
                 <SolidColorBrush x:Key="BConnectorSelection"
-                                 Color="{Binding PreviewState, Converter={StaticResource ConnectionStateToColorConverter}}">
+                                 Color="{Binding PreviewState, Converter={StaticResource ConnectionStateToColorConverter}, UpdateSourceTrigger=PropertyChanged}">
                 </SolidColorBrush>
             </Grid.Resources>
 
@@ -128,7 +137,7 @@
             <Path Stroke="{DynamicResource BConnectorSelection}" StrokeThickness="3"
               Name="connector"
               Visibility="{Binding BezVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" 
-              Style="{StaticResource SConnector}" Canvas.ZIndex="0" 
+              Style="{StaticResource SConnector}" Canvas.ZIndex="-1" 
                   Data="{Binding ComputedBezierPathGeometry, UpdateSourceTrigger=PropertyChanged}">
                 <i:Interaction.Behaviors>
                     <mouse:MouseBehaviour MouseX="{Binding PanelX, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" MouseY="{Binding PanelY, Mode=OneWayToSource,  UpdateSourceTrigger=PropertyChanged}" />
