@@ -735,19 +735,9 @@ namespace Dynamo.ViewModels
         {
             // We only want to display the last 3 downloaded packages to the user
             // in the form of toast notifications.
-            if (Downloads.Count >= 3)
-            {
-                // Iterates backwards through the downloads list and removes items
-                // until there are only 2 remaining, the third is added below.
-                int counter = 0;
 
-                for (int i = Downloads.Count - 1; i >= 0; i--)
-                {
-                    if (counter > 1) Downloads.RemoveAt(i);
-                    counter++;
-                }
-            }
-
+            // We remove all but the last 2 packages and add the most recently-downloaded package
+            if (Downloads.Count > 2) Downloads.RemoveRange(index: 0, count: Downloads.Count - 2);
             Downloads.Add(packageDownloadHandle);
 
             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
