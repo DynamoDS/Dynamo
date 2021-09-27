@@ -34,6 +34,8 @@ namespace Dynamo.Nodes
 
         public ConnectorPinView()
         {
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+
             InitializeComponent();
             ViewModel = null;
 
