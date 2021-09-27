@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Search;
@@ -8,7 +10,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests.Search
 {
     [TestFixture]
-    class SearchDictionaryTest
+    class SearchDictionaryTest : UnitTestBase
     {
         /// <summary>
         /// This test method will execute several Add methods located in the SearchDictionary class
@@ -55,6 +57,41 @@ namespace Dynamo.Tests.Search
 
             //Check that we have 11 items in the dictionary
             Assert.AreEqual(searchDictionary.NumTags, 11);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestSearchDictionaryPerformance()
+        {
+            //Arrange
+            var searchDictionary = new SearchDictionary<string>();
+
+            var tagsPath = System.IO.Path.Combine(TestDirectory, "performance", "search_tags", "searchtags.log");
+            var tags = System.IO.File.ReadAllLines(tagsPath);
+            int value = 0;
+            foreach (var tag in tags)
+            {
+                searchDictionary.Add($"Value:{value++}", tag);
+            }
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            var query1 = "all";
+            searchDictionary.Search(query1);
+            var query2 = "all elements";
+            searchDictionary.Search(query2);
+            var query3 = "all elements of";
+            searchDictionary.Search(query3);
+            var query = "all elements of category";
+            var results = searchDictionary.Search(query);
+
+            stopwatch.Stop();
+
+            Assert.AreEqual(results.Count(), 15);
+
+            int timeLimit = 230;//ms
+            Assert.IsTrue(Math.Abs(stopwatch.ElapsedMilliseconds - timeLimit) < 0.2 * timeLimit, $"Search time should be within a range of +/- 20% of {timeLimit}ms but we got {stopwatch.ElapsedMilliseconds}ms");
         }
 
         /// <summary>
