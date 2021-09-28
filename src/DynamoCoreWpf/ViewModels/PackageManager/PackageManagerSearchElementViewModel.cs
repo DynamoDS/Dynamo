@@ -62,7 +62,7 @@ namespace Dynamo.PackageManager.ViewModels
 
         private bool canInstall;
         /// <summary>
-        /// A Boolean flag reporting whether or not the user already has this SearchElement's package installed.
+        /// A Boolean flag reporting whether or not the user can install this SearchElement's package.
         /// </summary>
         public bool CanInstall
         {
