@@ -85,7 +85,8 @@
                         BorderThickness="1"
                         CornerRadius="2"
                         DockPanel.Dock="Bottom"
-                        MouseDown="ErrorsBorder_MouseDown"
+                        MouseLeave="Border_OnMouseLeave"
+                        MouseEnter="Border_OnMouseEnter"
                         Visibility="{Binding NodeErrorsVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                     <!--  Main Grid  -->
                     <Grid Margin="10,10,10,10">
@@ -313,7 +314,8 @@
                         BorderThickness="1"
                         CornerRadius="2"
                         DockPanel.Dock="Bottom"
-                        MouseDown="WarningsBorder_MouseDown"
+                        MouseEnter="Border_OnMouseEnter"
+                        MouseLeave="Border_OnMouseLeave"
                         Visibility="{Binding NodeWarningsVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                     <!--  Main Grid  -->
                     <Grid Margin="10,10,10,10">
@@ -367,7 +369,6 @@
                                          FontSize="12px"
                                          Foreground="Black"
                                          ItemsSource="{Binding NodeWarningsToDisplay, UpdateSourceTrigger=PropertyChanged}"
-                                         MouseDown="WarningsBorder_MouseDown"
                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                          Visibility="{Binding NodeWarningsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                     <ListBox.Style>
@@ -583,7 +584,8 @@
                         BorderThickness="1"
                         CornerRadius="2"
                         DockPanel.Dock="Bottom"
-                        MouseDown="InfoBorder_MouseDown"
+                        MouseEnter="Border_OnMouseEnter"
+                        MouseLeave="Border_OnMouseLeave"
                         Visibility="{Binding NodeInfoVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                     <!--  Main Grid  -->
                     <Grid Margin="10,10,10,10">
@@ -638,7 +640,6 @@
                                          FontSize="12px"
                                          Foreground="Black"
                                          ItemsSource="{Binding NodeInfoToDisplay, UpdateSourceTrigger=PropertyChanged}"
-                                         MouseDown="InfoBorder_MouseDown"
                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                          Visibility="{Binding NodeInfoSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                     <ListBox.Style>

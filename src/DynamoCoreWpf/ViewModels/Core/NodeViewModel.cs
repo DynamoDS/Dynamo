@@ -749,6 +749,10 @@ namespace Dynamo.ViewModels
                     ErrorBubble.NodeMessages.Clear();
                 });
             }
+            else
+            {
+                ErrorBubble.NodeMessages.Clear();
+            }
         }
 
         private void DismissedNodeWarnings_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

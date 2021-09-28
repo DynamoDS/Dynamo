@@ -918,58 +918,6 @@ namespace Dynamo.Controls
                 this.hyperlink.RequestNavigate -= RequestNavigateToDocumentationLinkHandler;
         }
 
-
-        private void ErrorsBorder_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton != MouseButton.Left) return;
-            if (ViewModel.NodeErrorsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
-            {
-                ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
-                ErrorsBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
-            }
-            else
-            {
-                ViewModel.NodeErrorsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
-                ErrorsBorder.HorizontalAlignment = HorizontalAlignment.Left;
-            }
-
-            ViewModel.NodeWarningsShowLessMessageVisible = false;
-        }
-
-        private void WarningsBorder_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton != MouseButton.Left) return;
-            if (ViewModel.NodeWarningsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
-            {
-                ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
-                WarningsBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
-            }
-            else
-            {
-                ViewModel.NodeWarningsVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
-                WarningsBorder.HorizontalAlignment = HorizontalAlignment.Left;
-            }
-
-            ViewModel.NodeWarningsShowLessMessageVisible = false;
-        }
-
-        private void InfoBorder_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton != MouseButton.Left) return;
-            if (ViewModel.NodeInfoVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon)
-            {
-                ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
-                InfoBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
-            }
-            else
-            {
-                ViewModel.NodeInfoVisibilityState = InfoBubbleViewModel.NodeMessageVisibility.Icon;
-                InfoBorder.HorizontalAlignment = HorizontalAlignment.Left;
-            }
-
-            ViewModel.NodeWarningsShowLessMessageVisible = false;
-        }
-
         private void ShowAllErrorsButton_Click(object sender, RoutedEventArgs e)
         {
             // If we're already expanded, this button collapses the border
@@ -1097,7 +1045,70 @@ namespace Dynamo.Controls
             
             ViewModel.RefreshNodeInformationalStateDisplay();
         }
-        
+
+
+        private void Border_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            if (!(sender is Border border)) return;
+
+            InfoBubbleViewModel.NodeMessageVisibility nodeMessageVisibility = InfoBubbleViewModel.NodeMessageVisibility.Icon;
+            HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left;
+
+            switch (border.Name)
+            {
+                case "InfoBorder":
+                    InfoBorder.HorizontalAlignment = horizontalAlignment;
+                    ViewModel.NodeInfoVisibilityState = nodeMessageVisibility;
+                    break;
+                case "WarningsBorder":
+                    WarningsBorder.HorizontalAlignment = horizontalAlignment;
+                    ViewModel.NodeWarningsVisibilityState = nodeMessageVisibility;
+                    break;
+                case "ErrorsBorder":
+                    ErrorsBorder.HorizontalAlignment = horizontalAlignment;
+                    ViewModel.NodeErrorsVisibilityState = nodeMessageVisibility;
+                    break;
+                default:
+                    return;
+            }
+
+            e.Handled = true;
+        }
+
         #endregion
+
+        private void Border_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            if (!(sender is Border border)) return;
+
+            InfoBubbleViewModel.NodeMessageVisibility collapsed = InfoBubbleViewModel.NodeMessageVisibility.CollapseMessages;
+            InfoBubbleViewModel.NodeMessageVisibility icon = InfoBubbleViewModel.NodeMessageVisibility.Icon;
+            HorizontalAlignment stretch = HorizontalAlignment.Stretch;
+            HorizontalAlignment left = HorizontalAlignment.Left;
+
+            bool isIcon;
+            
+            switch (border.Name)
+            {
+                case "InfoBorder":
+                    isIcon = ViewModel.NodeInfoVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon;
+                    ViewModel.NodeInfoVisibilityState = isIcon ? collapsed : icon;
+                    break;
+                case "WarningsBorder":
+                    isIcon = ViewModel.NodeWarningsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon;
+                    ViewModel.NodeWarningsVisibilityState = isIcon ? collapsed : icon;
+                    break;
+                case "ErrorsBorder":
+                    isIcon = ViewModel.NodeErrorsVisibilityState == InfoBubbleViewModel.NodeMessageVisibility.Icon;
+                    ViewModel.NodeErrorsVisibilityState = isIcon ? collapsed : icon;
+                    break;
+                default:
+                    return;
+            }
+
+            border.HorizontalAlignment = isIcon ? stretch : left;
+            ViewModel.NodeWarningsShowLessMessageVisible = false;
+            e.Handled = true;
+        }
     }
 }
