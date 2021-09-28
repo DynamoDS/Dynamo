@@ -46,7 +46,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Hosts dependencies specified for latest version of particular package
         /// </summary>
-        public List<string> Hosts { get { return Header.versions.Last().host_dependencies == null ? null : Header.versions.Last().host_dependencies.ToList(); }}
+        public List<string> Hosts { get { return Header.versions.Last().host_dependencies == null ? null : Header.versions.Last().host_dependencies.ToList(); } }
 
         /// <summary>
         /// Hosts dependencies string specified for latest version of particular package
@@ -133,7 +133,7 @@ namespace Dynamo.PackageManager
             if (header.keywords != null && header.keywords.Count > 0)
             {
                 this.Keywords = String.Join(" ", header.keywords);
-            } 
+            }
             else
             {
                 this.Keywords = "";

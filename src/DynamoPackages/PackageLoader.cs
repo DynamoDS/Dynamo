@@ -431,15 +431,16 @@ namespace Dynamo.PackageManager
             foreach (var packagesDirectory in pathManager.PackagesDirectories)
             {
 
-                if (preferences is IDisablePackageLoadingPreferences disablePrefs
-                    &&
-                    //if this directory is the builtin packages location
-                    //and loading from there is disabled, don't scan the directory.
-                    ((disablePrefs.DisableBuiltinPackages && packagesDirectory == PathManager.BuiltinPackagesDirectory)
-                    //or if custom package directories are disabled, and this is a custom package directory, don't scan.
-                    || (disablePrefs.DisableCustomPackageLocations && preferences.CustomPackageFolders.Contains(packagesDirectory))))
+                if (!(preferences is IDisablePackageLoadingPreferences disablePrefs)) return;
+
+                var isACustomPackageDirectory = preferences.CustomPackageFolders.Where(x => packagesDirectory.StartsWith(x)).Any();
+                //if this directory is the builtin packages location
+                //and loading from there is disabled, don't scan the directory.
+                if ((disablePrefs.DisableBuiltinPackages && packagesDirectory == PathManager.BuiltinPackagesDirectory)
+                //or if custom package directories are disabled, and this is a custom package directory, don't scan.
+                || (disablePrefs.DisableCustomPackageLocations && isACustomPackageDirectory))
                 {
-                    Log(string.Format(Resources.PackagesDirectorySkipped,packagesDirectory));
+                    Log(string.Format(Resources.PackagesDirectorySkipped, packagesDirectory));
                     continue;
                 }
                 else

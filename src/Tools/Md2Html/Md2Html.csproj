@@ -78,7 +78,7 @@
     <Exec Condition=" '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True'"
 		Command="if not exist $(SharedOutputPath) mkdir $(SharedOutputPath)"/>
     <!-- the ILMergePath property points to the location of ILMerge.exe console application -->
-    <Exec Condition=" '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True'" 
+    <Exec Condition=" '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True'"
 		Command="$(ILMergeConsolePath) $(OutputPath)Md2Html.exe ^
 		/allowDup ^
 		/lib:$(OutputPath) ^
