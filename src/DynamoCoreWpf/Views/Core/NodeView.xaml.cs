@@ -16,6 +16,7 @@ using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 
@@ -689,504 +690,30 @@ namespace Dynamo.Controls
         #endregion
 
         /// <summary>
-        /// A static class containing methods for dynamically building a Node's Context Menu.
-        /// </summary>
-        internal class NodeContextMenuBuilder
-        {
-            // A reference to the NodeViewModel whose ContextMenu is being built.
-            private NodeViewModel NodeViewModel { get; }
-            private ContextMenu ContextMenu { get; }
-
-            // Constructor
-            internal NodeContextMenuBuilder(NodeViewModel nodeViewModel, ContextMenu contextMenu)
-            {
-                NodeViewModel = nodeViewModel;
-                ContextMenu = contextMenu;
-            }
-
-            /// <summary>
-            /// Adds or inserts items to a context menu.
-            /// </summary>
-            /// <param name="menuItem"></param>
-            internal void AddContextMenuItem(MenuItem menuItem) => ContextMenu.Items.Add(menuItem);
-            
-            /// <summary>
-            /// Adds a new separator a context menu.
-            /// </summary>
-            internal void AddContextMenuSeparator() => ContextMenu.Items.Add(new Separator());
-            
-            /// <summary>
-            /// Creates a new MenuItem in the node's Context Menu.
-            /// Using optional named arguments here as it makes the Binding syntax
-            /// much cleaner if all handled in the method body.
-            /// </summary>
-            /// <param name="name"></param>
-            /// <param name="header"></param>
-            /// <param name="command"></param>
-            /// <param name="commandParameter"></param>
-            /// <param name="isCheckable"></param>
-            /// <param name="isChecked"></param>
-            /// <param name="visibility"></param>
-            /// <param name="isEnabled"></param>
-            /// <returns></returns>
-            internal static MenuItem CreateMenuItem
-            (
-                string name = null,
-                string header = null,
-                Binding command = null,
-                string commandParameter = null,
-                bool isCheckable = false,
-                Binding isChecked = null,
-                Binding visibility = null,
-                Binding isEnabled = null,
-                Binding itemsSource = null
-            )
-            {
-                MenuItem menuItem = new MenuItem { Header = header, IsCheckable = isCheckable };
-
-                if (!string.IsNullOrWhiteSpace(name)) menuItem.Name = name;
-                if (command != null) menuItem.SetBinding(MenuItem.CommandProperty, command);
-                if (commandParameter != null) menuItem.CommandParameter = commandParameter;
-                if (isChecked != null) menuItem.SetBinding(MenuItem.IsCheckedProperty, isChecked);
-                if (visibility != null) menuItem.SetBinding(VisibilityProperty, visibility);
-                if (isEnabled != null) menuItem.SetBinding(IsEnabledProperty, isEnabled);
-                if (itemsSource != null) menuItem.SetBinding(MenuItem.ItemsSourceProperty, itemsSource);
-
-                return menuItem;
-            }
-
-            internal void BuildDeleteMenuItem()
-            {
-                MenuItem deleteMenuItem = CreateMenuItem
-                (
-                    name: "deleteElem_cm",
-                    header: Wpf.Properties.Resources.ContextMenuDelete,
-                    command: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("DeleteCommand")
-                    }
-                );
-                
-                AddContextMenuItem(deleteMenuItem);
-            }
-
-            internal void BuildGroupsMenuItem()
-            {
-                MenuItem groupsMenuItem = CreateMenuItem(header: Wpf.Properties.Resources.ContextMenuGroups);
-
-                groupsMenuItem.Items.Add(CreateMenuItem
-                    (
-                        name: "createGroup_cm",
-                        header: Wpf.Properties.Resources.ContextCreateGroupFromSelection,
-                        command: new Binding
-                        {
-                            Source = NodeViewModel,
-                            Path = new PropertyPath("CreateGroupCommand")
-                        }
-                    )
-                );
-                groupsMenuItem.Items.Add(CreateMenuItem
-                    (
-                        name: "unGroup_cm",
-                        header: Wpf.Properties.Resources.ContextUnGroupFromSelection,
-                        command: new Binding
-                        {
-                            Source = NodeViewModel,
-                            Path = new PropertyPath("UngroupCommand")
-                        }
-                    )
-                );
-                groupsMenuItem.Items.Add(CreateMenuItem
-                    (
-                        name: "addtoGroup",
-                        header: Wpf.Properties.Resources.ContextAddGroupFromSelection,
-                        command: new Binding
-                        {
-                            Source = NodeViewModel,
-                            Path = new PropertyPath("AddToGroupCommand")
-                        }
-                    )
-                );
-                
-                AddContextMenuItem(groupsMenuItem);
-            }
-
-            internal void BuildPreviewMenuItem()
-            {
-                MenuItem previewMenuItem = CreateMenuItem
-                (
-                    name: "isVisible_cm",
-                    header: Wpf.Properties.Resources.NodeContextMenuPreview,
-                    command: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("ToggleIsVisibleCommand")
-                    },
-                    isCheckable: true,
-                    isChecked: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("IsVisible"),
-                        Mode = BindingMode.OneWay
-                    }
-                );
-                
-                AddContextMenuItem(previewMenuItem);
-            }
-
-            internal void BuildFreezeMenuItem()
-            {
-                MenuItem freezeMenuItem = CreateMenuItem
-                (
-                    name: "nodeIsFrozen",
-                    header: Wpf.Properties.Resources.NodesRunStatus,
-                    command: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("ToggleIsFrozenCommand")
-                    },
-                    isCheckable: true,
-                    isChecked: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("IsFrozenExplicitly"),
-                        Mode = BindingMode.OneWay
-                    },
-                    isEnabled: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("CanToggleFrozen"),
-                        Mode = BindingMode.OneWay
-                    }
-                );
-                
-                AddContextMenuItem(freezeMenuItem);
-            }
-
-            internal void BuildShowLabelsMenuItem()
-            {
-                MenuItem showLabelsMenuItem = CreateMenuItem
-                (
-                    name: "isDisplayLabelsEnabled_cm",
-                    header: Wpf.Properties.Resources.NodeContextMenuShowLabels,
-                    isCheckable: true,
-                    isChecked: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("IsDisplayingLabels"),
-                        Mode = BindingMode.TwoWay
-                    },
-                    isEnabled: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("CanDisplayLabels")
-                    }
-                );
-                
-                AddContextMenuItem(showLabelsMenuItem);
-            }
-
-            internal void BuildRenameMenuItem()
-            {
-                MenuItem renameMenuItem = CreateMenuItem
-                (
-                    name: "rename_cm",
-                    header: Wpf.Properties.Resources.NodeContextMenuRenameNode,
-                    command: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("RenameCommand")
-                    }
-                );
-                AddContextMenuItem(renameMenuItem);
-            }
-
-            internal void BuildLacingMenuItem()
-            {
-                MenuItem lacingMenuItem = CreateMenuItem(header: Wpf.Properties.Resources.ContextMenuLacing);
-
-                lacingMenuItem.Items.Add(CreateMenuItem
-                (
-                    header: Wpf.Properties.Resources.ContextMenuLacingAuto,
-                    command: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("SetLacingTypeCommand"),
-                    },
-                    commandParameter: "Auto",
-                    isCheckable: true,
-                    isChecked: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("ArgumentLacing"),
-                        Converter = new EnumToBooleanConverter(),
-                        ConverterParameter = "Auto",
-                        Mode = BindingMode.OneWay
-                    }
-                ));
-
-                lacingMenuItem.Items.Add(CreateMenuItem
-                (
-                    header: Wpf.Properties.Resources.ContextMenuLacingShortest,
-                    command: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("SetLacingTypeCommand"),
-                    },
-                    commandParameter: "Shortest",
-                    isCheckable: true,
-                    isChecked: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("ArgumentLacing"),
-                        Converter = new EnumToBooleanConverter(),
-                        ConverterParameter = "Shortest",
-                        Mode = BindingMode.OneWay
-                    }
-                    ));
-
-                lacingMenuItem.Items.Add(CreateMenuItem
-                (
-                    header: Wpf.Properties.Resources.ContextMenuLacingLongest,
-                    command: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("SetLacingTypeCommand"),
-                    },
-                    commandParameter: "Longest",
-                    isCheckable: true,
-                    isChecked: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("ArgumentLacing"),
-                        Converter = new EnumToBooleanConverter(),
-                        ConverterParameter = "Longest",
-                        Mode = BindingMode.OneWay
-                    }
-                ));
-
-                lacingMenuItem.Items.Add(CreateMenuItem
-                (
-                    header: Wpf.Properties.Resources.ContextMenuLacingCrossProduct,
-                    command: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("SetLacingTypeCommand"),
-                    },
-                    commandParameter: "CrossProduct",
-                    isCheckable: true,
-                    isChecked: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("ArgumentLacing"),
-                        Converter = new EnumToBooleanConverter(),
-                        ConverterParameter = "CrossProduct",
-                        Mode = BindingMode.OneWay
-                    }
-                ));
-
-                AddContextMenuItem(lacingMenuItem);
-            }
-
-            internal void BuildDismissedAlertsMenuItem()
-            {
-                //MenuItem dismissedAlertsMenuItem = CreateMenuItem
-                //(
-                //    name: "dismissedAlerts",
-                //    header: Wpf.Properties.Resources.NodeInformationalStateDismissedAlerts,
-                //    itemsSource: new Binding
-                //    {
-                //        Source = viewModel,
-                //        Path = new PropertyPath("DismissedAlerts"),
-                //        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-                //    }
-                //);
-                //DataTemplate itemTemplate = new DataTemplate(typeof(MenuItem));
-
-                //FrameworkElementFactory grid = new FrameworkElementFactory(typeof(Grid));
-                //grid.Name = "mainTemplateGrid";
-                //grid.SetValue(WidthProperty, 220.0);
-                //grid.SetValue(HeightProperty, 30.0);
-                //grid.SetValue(MarginProperty, new Thickness(-15,0,0,0));
-                //grid.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left);
-                //grid.SetValue(VerticalAlignmentProperty, VerticalAlignment.Stretch);
-                //grid.SetValue(BackgroundProperty, new SolidColorBrush(Colors.Transparent));
-
-                //FrameworkElementFactory textBlock = new FrameworkElementFactory(typeof(TextBlock));
-                //textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-                //textBlock.SetValue(MarginProperty, new Thickness(15, 0, 0, 0));
-                //textBlock.SetValue(IsHitTestVisibleProperty, false);
-                //textBlock.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
-                //textBlock.SetValue(ForegroundProperty, new SolidColorBrush(Color.FromRgb(238,238,238)));
-
-                //dismissedAlertsMenuItem.ItemTemplate = itemTemplate;
-
-                //AddContextMenuItem(dismissedAlertsMenuItem, insertionPoint++);
-            }
-
-            internal void BuildInjectedNodeViewCustomizationMenuItems(Dictionary<string, object> nodeViewCustomizationMenuItems)
-            {
-                if (nodeViewCustomizationMenuItems.Count > 0)
-                {
-                    AddContextMenuSeparator();
-
-                    foreach (KeyValuePair<string, object> keyValuePair in nodeViewCustomizationMenuItems)
-                    { 
-                        ContextMenu.Items.Add(keyValuePair.Value);
-                    }
-                }
-            }
-
-            internal void BuildIsInputOutputMenuItem()
-            {
-                if (NodeViewModel.IsInput || NodeViewModel.IsOutput)
-                {
-                    AddContextMenuSeparator();
-                }
-
-                // Is Input
-                if (NodeViewModel.IsInput)
-                {
-                    MenuItem isInputMenuItem = CreateMenuItem
-                    (
-                        name: "isInput_cm",
-                        header: Wpf.Properties.Resources.NodeContextMenuIsInput,
-                        isCheckable: true,
-                        isChecked: new Binding
-                        {
-                            Source = NodeViewModel,
-                            Path = new PropertyPath("IsSetAsInput"),
-                            Mode = BindingMode.TwoWay,
-                        }
-                    );
-                    AddContextMenuItem(isInputMenuItem);
-                }
-
-                // Is Output
-                if (NodeViewModel.IsOutput)
-                {
-                    MenuItem isOutputMenuItem = CreateMenuItem
-                    (
-                        name: "isOutput_cm",
-                        header: Wpf.Properties.Resources.NodeContextMenuIsOutput,
-                        isCheckable: true,
-                        isChecked: new Binding
-                        {
-                            Source = NodeViewModel,
-                            Path = new PropertyPath("IsSetAsOutput"),
-                            Mode = BindingMode.TwoWay,
-                        }
-                    );
-                    AddContextMenuItem(isOutputMenuItem);
-                }
-            }
-
-            internal void BuildHelpMenuItem()
-            {
-                AddContextMenuSeparator();
-                MenuItem helpMenuItem = CreateMenuItem
-                (
-                    name: "help_cm",
-                    header: Wpf.Properties.Resources.NodeContextMenuHelp,
-                    command: new Binding
-                    {
-                        Source = NodeViewModel,
-                        Path = new PropertyPath("ShowHelpCommand")
-                    }
-                );
-                AddContextMenuItem(helpMenuItem);
-            }
-        }
-
-        /// <summary>
         /// A dictionary of MenuItems which are added during certain nodes' NodeViewCustomization process.
         /// </summary>
         private Dictionary<string, object> NodeViewCustomizationMenuItems { get; } = new Dictionary<string, object>();
-
-        /// <summary>
-        /// A list of the names of nodes' default menu items, which cannot be dynamically injected into its context menu.
-        /// </summary>
-        private static readonly List<string> NodeContextMenuDefaultItemNames = new List<string>
-        {
-            Wpf.Properties.Resources.ContextMenuDelete,
-            Wpf.Properties.Resources.ContextMenuGroups,
-            Wpf.Properties.Resources.NodeContextMenuPreview,
-            Wpf.Properties.Resources.NodesRunStatus,
-            Wpf.Properties.Resources.NodeContextMenuShowLabels,
-            Wpf.Properties.Resources.NodeContextMenuRenameNode,
-            Wpf.Properties.Resources.ContextMenuLacing,
-            //Wpf.Properties.Resources.NodeInformationalStateDismissedAlerts,
-            Wpf.Properties.Resources.NodeContextMenuIsInput,
-            Wpf.Properties.Resources.NodeContextMenuIsOutput,
-            Wpf.Properties.Resources.NodeContextMenuHelp
-        };
 
         /// <summary>
         /// Saves a persistent list of unique MenuItems that are added by certain nodes during their NodeViewCustomization process.
         /// Because nodes' ContextMenus are loaded lazily, and their MenuItems are disposed on closing,
         /// these custom MenuItems need to be manually re-injected into the context menu whenever it is opened.
         /// </summary>
-        private void SaveNodeViewCustomizationMenuItems()
+        private void StashNodeViewCustomizationMenuItems()
         {
             foreach (var obj in grid.ContextMenu.Items)
             {
                 if (!(obj is MenuItem menuItem)) continue;
-                if (NodeContextMenuDefaultItemNames.Contains(menuItem.Header.ToString())) continue;
 
-                // In order to avoid repeatedly saving the same NodeViewCustomization MenuItems, we 
-                // check MenuItems are unique by their Header.
+                // We don't stash default MenuItems, such as 'Freeze'.
+                if (NodeContextMenuBuilder.NodeContextMenuDefaultItemNames.Contains(menuItem.Header.ToString())) continue;
+
+                // We don't stash the same MenuItem multiple times.
                 if (NodeViewCustomizationMenuItems.ContainsKey(menuItem.Header.ToString())) continue;
+                
+                // The MenuItem gets stashed.
                 NodeViewCustomizationMenuItems.Add(menuItem.Header.ToString(), menuItem);
             }
-        }
-
-        /// <summary>
-        /// Builds the node's context menu programatically when the user clicks on the Node Options button.
-        /// This lazy approach is used to reduce the opening time of Dynamo graphs.
-        /// </summary>
-        private void ConstructNodeContextMenu(ContextMenu contextMenu)
-        {
-            // Clearing any existing items in the node's ContextMenu.
-            contextMenu.Items.Clear();
-
-            NodeContextMenuBuilder nodeContextMenuBuilder = new NodeContextMenuBuilder(viewModel, contextMenu);
-
-            // Delete
-            nodeContextMenuBuilder.BuildDeleteMenuItem();
-
-            // Groups
-            nodeContextMenuBuilder.BuildGroupsMenuItem();
-            
-            // Preview
-            if (viewModel.ShowsVisibilityToggles) nodeContextMenuBuilder.BuildPreviewMenuItem();
-
-            // Freeze
-            nodeContextMenuBuilder.BuildFreezeMenuItem();
-
-            // Show Labels
-            nodeContextMenuBuilder.BuildShowLabelsMenuItem();
-
-            // Rename
-            nodeContextMenuBuilder.BuildRenameMenuItem();
-            
-            // Lacing
-            if (viewModel.ArgumentLacing != LacingStrategy.Disabled) nodeContextMenuBuilder.BuildLacingMenuItem();
-
-            // Dismissed Alerts
-            nodeContextMenuBuilder.BuildDismissedAlertsMenuItem();
-
-            // Injected NodeViewCustomizations
-            if (NodeViewCustomizationMenuItems.Count > 0)
-            {
-                nodeContextMenuBuilder.BuildInjectedNodeViewCustomizationMenuItems(NodeViewCustomizationMenuItems);
-            }
-
-            // Is Input / Is Output
-            nodeContextMenuBuilder.BuildIsInputOutputMenuItem();
-
-            // Help
-            nodeContextMenuBuilder.BuildHelpMenuItem();
         }
 
         /// <summary>
@@ -1200,16 +727,17 @@ namespace Dynamo.Controls
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
             ContextMenu contextMenu = grid.ContextMenu;
-            if (contextMenu.IsOpen) return;
 
-            // Get the Node View Customization Items. Save them somewhere.
+            // Stashing any injected MenuItems from the Node View Customization process.
             if (contextMenu.Items.Count > 0 && NodeViewCustomizationMenuItems.Count < 1)
             {
-                SaveNodeViewCustomizationMenuItems();
+                StashNodeViewCustomizationMenuItems();
             }
 
-            ConstructNodeContextMenu(contextMenu);
-
+            // Clearing any existing items in the node's ContextMenu.
+            contextMenu.Items.Clear();
+            NodeContextMenuBuilder.Build(contextMenu, viewModel, NodeViewCustomizationMenuItems);
+            
             contextMenu.DataContext = viewModel;
             contextMenu.IsOpen = true;
 
