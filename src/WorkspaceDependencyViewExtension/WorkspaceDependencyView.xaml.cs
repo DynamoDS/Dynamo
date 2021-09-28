@@ -1,4 +1,11 @@
-﻿using System;
+﻿using Dynamo.Core;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
+using Dynamo.PackageManager;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -7,15 +14,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Dynamo.Controls;
-using Dynamo.Core;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
-using Dynamo.PackageManager;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
-using Dynamo.Logging;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -45,7 +43,8 @@ namespace Dynamo.WorkspaceDependency
         /// You are not expected to modify this but rather inspection.
         /// </summary>
         internal IEnumerable<PackageDependencyRow> dataRows;
-        internal IEnumerable<LocalDefinitionRow> localDefinitionDataRows;
+        internal IEnumerable<DependencyRow> localDefinitionDataRows;
+        internal IEnumerable<DependencyRow> externalFilesDataRows;
 
         private Boolean hasDependencyIssue = false;
 
@@ -123,7 +122,7 @@ namespace Dynamo.WorkspaceDependency
 
         private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName == nameof(currentWorkspace.NodeLibraryDependencies) || args.PropertyName == nameof(currentWorkspace.NodeLocalDefinitions))
+            if (args.PropertyName == nameof(currentWorkspace.NodeLibraryDependencies) || args.PropertyName == nameof(currentWorkspace.NodeLocalDefinitions) || args.PropertyName == nameof(currentWorkspace.ExternalFiles))
                 DependencyRegen(currentWorkspace);
         }
 
@@ -135,9 +134,10 @@ namespace Dynamo.WorkspaceDependency
         {
             RestartBanner.Visibility = Visibility.Hidden;
             var packageDependencies = ws.NodeLibraryDependencies.Where(d => d is PackageDependencyInfo).ToList();
-            var localDefinitions = ws.NodeLocalDefinitions.Where(d => d is LocalDefinitionInfo).ToList();
+            var localDefinitions = ws.NodeLocalDefinitions.Where(d => d is DependencyInfo).ToList();
+            var externalFiles = ws.ExternalFiles.Where(d => d is DependencyInfo).ToList();
 
-            foreach (LocalDefinitionInfo info in localDefinitions)
+            foreach (DependencyInfo info in localDefinitions)
             {
                 try
                 {
@@ -153,17 +153,27 @@ namespace Dynamo.WorkspaceDependency
                         }
                     }
 
-                    if (info.Path != null)
-                    {
-                        var localDefinitionFileInfo = new FileInfo(info.Path);
-                        long size = localDefinitionFileInfo.Length / KbConversionConstant;
-                        info.Size = size.ToString() + sizeUnits;
-                    }
+                    info.Size = GetFileSize(info.Path);
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
                 }
-                
+
+                HasDependencyIssue = info.Path == null;
+            }
+
+            foreach (DependencyInfo info in externalFiles)
+            {
+                try
+                {
+                    info.Size = GetFileSize(info.Path);
+                }
+                catch (Exception ex)
+                {
+                    dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
+                }
+
                 HasDependencyIssue = info.Path == null;
             }
 
@@ -183,10 +193,11 @@ namespace Dynamo.WorkspaceDependency
                 foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => 
                 x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion || x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload))
                 {
-                    (packageDependencies.FirstOrDefault(x => x.Name == package.Name) as PackageDependencyInfo).State = 
+                    (packageDependencies.FirstOrDefault(x => x.Name == package.Name) as PackageDependencyInfo).State =
                         PackageDependencyState.RequiresRestart;
                     hasPackageMarkedForUninstall = true;
                 }
+
                 RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible: Visibility.Hidden;
             }
 
@@ -204,14 +215,17 @@ namespace Dynamo.WorkspaceDependency
             }
 
             dataRows = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
-            localDefinitionDataRows = localDefinitions.Select(d => new LocalDefinitionRow(d as LocalDefinitionInfo));
+            localDefinitionDataRows = localDefinitions.Select(d => new DependencyRow(d as DependencyInfo));
+            externalFilesDataRows = externalFiles.Select(d => new DependencyRow(d as DependencyInfo));
 
             Packages.IsExpanded = dataRows.Count() > 0;
             LocalDefinitions.IsExpanded = localDefinitionDataRows.Count() > 0;
+            ExternalFiles.IsExpanded = externalFilesDataRows.Count() > 0;
 
 
             PackageDependencyTable.ItemsSource = dataRows;
             LocalDefinitionsTable.ItemsSource = localDefinitionDataRows;
+            ExternalFilesTable.ItemsSource = externalFilesDataRows;
         }
 
         /// <summary>
@@ -333,13 +347,30 @@ namespace Dynamo.WorkspaceDependency
             HomeWorkspaceModel.WorkspaceClosed -= this.CloseExtensionTab;
             PackageDependencyTable.ItemsSource = null;
             LocalDefinitionsTable.ItemsSource = null;
+            ExternalFilesTable.ItemsSource = null;
             dataRows = null;
             localDefinitionDataRows = null;
+            externalFilesDataRows = null;
         }
 
         private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             DependencyRegen(currentWorkspace);
+        }
+
+        /// <summary>
+        /// Computes the file size from the path.
+        /// </summary>
+        private string GetFileSize(string path)
+        {
+            if (path != null)
+            {
+                var fileInfo = new FileInfo(path);
+                long size = fileInfo.Length / KbConversionConstant;
+                return size.ToString() + sizeUnits;
+            }
+
+            return null;
         }
     }
 
@@ -455,19 +486,19 @@ namespace Dynamo.WorkspaceDependency
     }
 
     /// <summary>
-    /// Represents information about a local dependency as a row in the dependency table
+    /// Represents information about a dependency as a row in the dependency table
     /// </summary>
-    public class LocalDefinitionRow
+    public class DependencyRow
     {
-        internal LocalDefinitionInfo DependencyInfo { get; private set; }
+        internal DependencyInfo DependencyInfo { get; private set; }
 
-        internal LocalDefinitionRow(LocalDefinitionInfo localDefinitionInfo)
+        internal DependencyRow(DependencyInfo localDefinitionInfo)
         {
             DependencyInfo = localDefinitionInfo;
         }
 
         /// <summary>
-        /// Name of this package dependency
+        /// Name of this dependency
         /// </summary>
         public string Name => DependencyInfo.Name;
 

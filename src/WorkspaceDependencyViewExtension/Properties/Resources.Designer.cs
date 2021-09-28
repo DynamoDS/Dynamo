@@ -134,6 +134,15 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to External Files.
+        /// </summary>
+        public static string ExternalFilesHeaderText {
+            get {
+                return ResourceManager.GetString("ExternalFilesHeaderText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Install Specified Version.
         /// </summary>
         public static string InstallButtonText {

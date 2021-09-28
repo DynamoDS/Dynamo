@@ -728,7 +728,7 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-               var nodeLocalDefinitions = new Dictionary<object, LocalDefinitionInfo>();
+               var nodeLocalDefinitions = new Dictionary<object, DependencyInfo>();
 
                 foreach (var node in Nodes)
                 {
@@ -744,7 +744,7 @@ namespace Dynamo.Graph.Workspaces
 
                             if (!nodeLocalDefinitions.ContainsKey(localDefinitionName)) 
                             {
-                                nodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName);
+                                nodeLocalDefinitions[localDefinitionName] = new DependencyInfo(localDefinitionName);
                             }
 
                             nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
@@ -757,7 +757,7 @@ namespace Dynamo.Graph.Workspaces
 
                             if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
                             {
-                                nodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName, assemblyPath);
+                                nodeLocalDefinitions[localDefinitionName] = new DependencyInfo(localDefinitionName, assemblyPath);
                             }
 
                             nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
@@ -784,7 +784,7 @@ namespace Dynamo.Graph.Workspaces
                     {
                         foreach (var node in dependency.Nodes)
                         {
-                            localDefinitionsDictionary[node] = dependency as LocalDefinitionInfo;
+                            localDefinitionsDictionary[node] = dependency as DependencyInfo;
                         }
                     }
                 }
@@ -793,8 +793,62 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        internal List<INodeLibraryDependencyInfo> ExternalFiles
+        {
+            get
+            {
+                var externalFiles = new Dictionary<object, DependencyInfo>();
+
+                foreach (var node in Nodes)
+                { 
+                    if (node is CodeBlockNodeModel codeBlockNode)
+                    {
+                        var lines = codeBlockNode.Code.Split('\n');
+
+                        foreach (var line in lines)
+                        {
+                            //ignore the escape chars.
+                            string lineWithoutEscapeCharacters = line.Replace("\\\\", "\\").Replace("\"", "");
+
+                            if (File.Exists(lineWithoutEscapeCharacters.Substring(0, lineWithoutEscapeCharacters.Length - 1)))
+                            {
+                                var path = lineWithoutEscapeCharacters.Substring(0, lineWithoutEscapeCharacters.Length - 1);
+                                var externalFileName = Path.GetFileName(path);
+
+                                if (!externalFiles.ContainsKey(externalFileName))
+                                {
+                                    externalFiles[externalFileName] = new DependencyInfo(externalFileName, path);
+                                }
+
+                                externalFiles[externalFileName].AddDependent(node.GUID);
+                                externalFiles[externalFileName].ReferenceType = ReferenceType.External;
+                            }
+                        }
+                    }
+                }
+
+                return externalFiles.Values.ToList<INodeLibraryDependencyInfo>();
+            }
+            set
+            {
+                foreach (var dependency in value)
+                {
+                    if (dependency.ReferenceType == ReferenceType.External)
+                    {
+                        foreach (var node in dependency.Nodes)
+                        {
+                            externalFilesDictionary[node] = dependency as DependencyInfo;
+                        }
+                    }
+                }
+
+                RaisePropertyChanged(nameof(ExternalFiles));
+            }
+        }
+
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
-        private Dictionary<Guid, LocalDefinitionInfo> localDefinitionsDictionary = new Dictionary<Guid, LocalDefinitionInfo>();
+        private Dictionary<Guid, DependencyInfo> localDefinitionsDictionary = new Dictionary<Guid, DependencyInfo>();
+        private Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
 
 
         /// <summary>
@@ -1151,6 +1205,7 @@ namespace Dynamo.Graph.Workspaces
 
             this.NodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
             this.NodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+            this.ExternalFiles = new List<INodeLibraryDependencyInfo>();
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;

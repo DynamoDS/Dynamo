@@ -315,7 +315,7 @@ namespace DynamoCoreWpfTests
                                                                                 .Where(x => x.Name.Equals("Workspace References")).FirstOrDefault();
 
             Assert.AreEqual(2, workspaceViewExtension.DependencyView.localDefinitionDataRows.Count());
-            foreach (LocalDefinitionRow localDefinitionRow in workspaceViewExtension.DependencyView.localDefinitionDataRows)
+            foreach (DependencyRow localDefinitionRow in workspaceViewExtension.DependencyView.localDefinitionDataRows)
             {
                 var dependencyInfo = localDefinitionRow.DependencyInfo;
                 Assert.Contains(dependencyInfo.Name, dependenciesList);
