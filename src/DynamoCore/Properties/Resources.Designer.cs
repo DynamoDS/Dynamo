@@ -1090,14 +1090,6 @@ namespace Dynamo.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Show all errors.
-        /// </summary>
-        public static string NodeInformationalStateShowAllErrors {
-            get {
-                return ResourceManager.GetString("NodeInformationalStateShowAllErrors", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:.
