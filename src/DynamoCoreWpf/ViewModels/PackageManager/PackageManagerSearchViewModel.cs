@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Greg.Responses;
@@ -148,8 +147,7 @@ namespace Dynamo.PackageManager
         }
 
         private List<FilterEntry> hostFilter;
-
-
+        
         /// <summary>
         /// Dynamic Filter for package hosts, should include all Dynamo known hosts from PM backend
         ///  e.g. "Advance Steel", "Alias", "Civil 3D", "FormIt", "Revit"
@@ -280,6 +278,29 @@ namespace Dynamo.PackageManager
             get { return this.SearchResults.Count == 0; }
         }
 
+        /// <summary>
+        /// Checks if the user already has a package by the given name.
+        /// </summary>
+        /// <param name="packageName"></param>
+        /// <returns></returns>
+        internal bool UserAlreadyHasPackageInstalled(string packageName)
+        {
+            PackageManagerExtension packageManagerExtension = PackageManagerClientViewModel.PackageManagerExtension;
+            
+            // This check fires before the package is added to PackageLoader.LocalPackages collection.
+            // Therefore, we need to check both the names of downloaded packages and recent downloads.
+
+            List<string> loadedPackageNames = packageManagerExtension.PackageLoader.LocalPackages
+                .Where(x => x.LoadState.State == PackageLoadState.StateTypes.Loaded)
+                .Select(x => x.Name)
+                .ToList();
+
+            List<string> recentlyDownloadedPackageNames = Downloads
+                .Select(x => x.Name)
+                .ToList();
+
+            return loadedPackageNames.Contains(packageName) || recentlyDownloadedPackageNames.Contains(packageName);
+        }
 
         public PackageSearchState _searchState; // TODO: Set private for 3.0.
 
@@ -312,7 +333,7 @@ namespace Dynamo.PackageManager
         public List<string> SelectedHosts { get; set; }
 
         private SearchDictionary<PackageManagerSearchElement> SearchDictionary;
-
+        
         /// <summary>
         ///     Command to clear the completed package downloads
         /// </summary>
@@ -334,6 +355,24 @@ namespace Dynamo.PackageManager
         public DelegateCommand<object> SetSortingDirectionCommand { get; set; }
 
         /// <summary>
+        /// Opens the Package Details ViewExtension
+        /// </summary>
+        public DelegateCommand<object> ViewPackageDetailsCommand { get; set; }
+
+        /// <summary>
+        /// Clears the search text box and resets the search
+        /// </summary>
+        public DelegateCommand<object> ClearSearchTextBoxCommand { get; set; }
+
+        /// <summary>
+        /// When the user downloads new package via the package search manager, a toast notification
+        /// appears at the base of the window. This command fires when the user clicks to dismiss
+        /// one of these toast notifications.
+        /// </summary>
+        public DelegateCommand<object> ClearDownloadToastNotificationCommand { get; set; }
+
+
+        /// <summary>
         ///     Current downloads
         /// </summary>
         public ObservableCollection<PackageDownloadHandle> Downloads
@@ -352,6 +391,9 @@ namespace Dynamo.PackageManager
             SortCommand = new DelegateCommand(Sort, CanSort);
             SetSortingKeyCommand = new DelegateCommand<object>(SetSortingKey, CanSetSortingKey);
             SetSortingDirectionCommand = new DelegateCommand<object>(SetSortingDirection, CanSetSortingDirection);
+            ViewPackageDetailsCommand = new DelegateCommand<object>(ViewPackageDetails);
+            ClearSearchTextBoxCommand = new DelegateCommand<object>(ClearSearchTextBox);
+            ClearDownloadToastNotificationCommand = new DelegateCommand<object>(ClearDownloadToastNotification);
             SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = string.Empty;
             SortingKey = PackageSortingKey.LastUpdate;
@@ -410,7 +452,7 @@ namespace Dynamo.PackageManager
             {
                 hostFilter.Add(new FilterEntry(host, this));
             }
-
+            
             return hostFilter;
         }
 
@@ -451,6 +493,42 @@ namespace Dynamo.PackageManager
             this.Sort();
         }
 
+        /// <summary>
+        /// Set the sorting direction.  Used by the associated command.
+        /// </summary>
+        /// <param name="obj"></param>
+        public void ViewPackageDetails(object obj)
+        {
+            // to be implemented in future PR   
+        }
+
+        /// <summary>
+        /// Clears the search text box and resets the search.
+        /// </summary>
+        public void ClearSearchTextBox(object obj)
+        {
+            SearchText = string.Empty;
+        }
+
+        /// <summary>
+        /// When the user downloads new package via the package search manager, a toast notification
+        /// appears at the base of the window. This command fires when the user clicks to dismiss
+        /// one of these toast notifications.
+        /// </summary>
+        /// <param name="obj"></param>
+        public void ClearDownloadToastNotification(object obj)
+        {
+            if (!(obj is PackageDownloadHandle packageDownloadHandle)) return;
+
+            PackageDownloadHandle packageDownloadHandleToRemove = PackageManagerClientViewModel.Downloads
+                .FirstOrDefault(x => x.Id == packageDownloadHandle.Id);
+
+            if (packageDownloadHandleToRemove == null) return;
+
+            PackageManagerClientViewModel.Downloads.Remove(packageDownloadHandleToRemove);
+            RaisePropertyChanged(nameof(Downloads));
+        }
+        
         /// <summary>
         /// Set the associated key
         /// </summary>
@@ -567,7 +645,7 @@ namespace Dynamo.PackageManager
                 }
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
-
+            
         }
 
         private void AddToSearchResults(PackageManagerSearchElementViewModel element)
@@ -586,7 +664,7 @@ namespace Dynamo.PackageManager
             this.SearchResults.Clear();
         }
 
-        private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
+        internal void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
         {
             this.PackageManagerClientViewModel.ExecutePackageDownload(element.Name, version, downloadPath);
         }
@@ -632,7 +710,7 @@ namespace Dynamo.PackageManager
                 this.ClearCompletedCommand.RaiseCanExecuteChanged();
             }
 
-            this.RaisePropertyChanged("HasDownloads");
+            this.RaisePropertyChanged(nameof(HasDownloads));
 
         }
 
@@ -753,7 +831,7 @@ namespace Dynamo.PackageManager
             if (!String.IsNullOrEmpty(query))
             {
                 list = Filter(SearchDictionary.Search(query)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
+                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin, UserAlreadyHasPackageInstalled))
                     .Take(MaxNumSearchResults))
                     .ToList();
             }
@@ -761,7 +839,7 @@ namespace Dynamo.PackageManager
             {
                 // with null query, don't show deprecated packages
                 list = Filter(LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin)))
+                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin, UserAlreadyHasPackageInstalled)))
                     .ToList();
                 Sort(list, this.SortingKey);
             }
