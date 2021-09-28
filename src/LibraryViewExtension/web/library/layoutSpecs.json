@@ -445,7 +445,7 @@
                   "path": "Core.Input.Output"
                 },
                 {
-                  "path": "Core.Input.Custom Selection"
+                  "path": "Core.Input.Custom Dropdown"
                 }
               ],
               "childElements": []
