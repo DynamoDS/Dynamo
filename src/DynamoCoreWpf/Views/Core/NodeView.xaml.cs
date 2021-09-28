@@ -697,7 +697,7 @@ namespace Dynamo.Controls
             grid.ContextMenu.DataContext = viewModel;
             grid.ContextMenu.IsOpen = true;
         }
-        
+
         private void UnDismissMessage_Click(object sender, MouseButtonEventArgs e)
         {
             if (!(sender is Grid grid)) return;
@@ -706,6 +706,7 @@ namespace Dynamo.Controls
             if (textBlock == null) return;
 
             viewModel.ErrorBubble.UndismissMessageCommand.Execute(textBlock.Tag);
+        }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {

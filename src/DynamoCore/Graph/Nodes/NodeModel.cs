@@ -26,7 +26,6 @@ using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
-using Type = System.Type;
 
 namespace Dynamo.Graph.Nodes
 {

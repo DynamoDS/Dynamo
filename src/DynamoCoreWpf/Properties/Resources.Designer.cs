@@ -2811,15 +2811,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add group to group.
-        /// </summary>
-        public static string GroupContextMenuAddGroupToGroup {
-            get {
-                return ResourceManager.GetString("GroupContextMenuAddGroupToGroup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Select Background.
         /// </summary>
         public static string GroupContextMenuBackground {
