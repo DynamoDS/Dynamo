@@ -645,6 +645,8 @@
                                                Margin="10,0,0,0"></TextBlock>
                                 </StackPanel>
                             </Expander>
+                            
+                            <!--Display Settings Expander-->
                             <Expander x:Name="Display"
                                       Grid.Row="2"
                                       Style="{StaticResource MenuExpanderStyle}" 
@@ -740,26 +742,61 @@
                                         Style="{StaticResource MenuExpanderStyle}" 
                                         IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PackagePathsExpander}"
                                         Header="{x:Static p:Resources.PackagePathsExpanderName}">
-                                <StackPanel Orientation="Vertical" Margin="0,6,0,0">
-                                    <Label  Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}" 
-                                            Padding="5,5,5,5"
-                                            FontSize="13"
-                                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                                            ToolTip="{x:Static p:Resources.PreferencesPackageDownloadDirectoryTooltip}"/>
-                                    <ComboBox Grid.Row="1"
-                                              x:Name="PackageDownloadDirectoryComboBox"
-                                              Width="Auto"
-                                              Margin="0,5,0,5"
-                                              HorizontalAlignment="Left"
-                                              ItemsSource="{Binding Path=PackagePathsForInstall}"
-                                              SelectedItem="{Binding Path=SelectedPackagePathForInstall}"
-                                              Style="{StaticResource NoBordersComboBoxStyle}"
-                                              ToolTip="{Binding Path=SelectedPackagePathForInstall}">
-                                    </ComboBox>
-                                    <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
-                                        <packagemanager:PackagePathView x:Name="PackagePathView" DataContext="{Binding PackagePathsViewModel}"/>
-                                    </ScrollViewer>
-                                </StackPanel>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Orientation="Vertical" Margin="0,6,0,0" Grid.Row="0">
+                                        <Label  Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}" 
+                                                Padding="5,5,5,5"
+                                                FontSize="13"
+                                                Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                ToolTip="{x:Static p:Resources.PreferencesPackageDownloadDirectoryTooltip}"/>
+                                        <ComboBox Grid.Row="1"
+                                                  x:Name="PackageDownloadDirectoryComboBox"
+                                                  Width="Auto"
+                                                  Margin="0,5,0,5"
+                                                  HorizontalAlignment="Left"
+                                                  ItemsSource="{Binding Path=PackagePathsForInstall}"
+                                                  SelectedItem="{Binding Path=SelectedPackagePathForInstall}"
+                                                  Style="{StaticResource NoBordersComboBoxStyle}"
+                                                  ToolTip="{Binding Path=SelectedPackagePathForInstall}">
+                                        </ComboBox>
+                                        <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
+                                            <packagemanager:PackagePathView x:Name="PackagePathView" DataContext="{Binding PackagePathsViewModel}"/>
+                                        </ScrollViewer>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" 
+                                                Margin="0,0,0,0" 
+                                                Grid.Row="1">
+                                        <ToggleButton Name="DisableBuiltInPackagesToggle"
+                                                              Width="{StaticResource ToggleButtonWidth}"
+                                                              Height="{StaticResource ToggleButtonHeight}"
+                                                              VerticalAlignment="Center"
+                                                              IsChecked="{Binding Path=DisableBuiltInPackages}"
+                                                              Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewDisableBuiltInPackages}" 
+                                                                VerticalAlignment="Center"
+                                                                Margin="10,0,0,0"
+                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" 
+                                                Margin="0,12,0,0" 
+                                                Grid.Row="2">
+                                        <ToggleButton Name="DisableCustomPackagesToggle"
+                                                                  Width="{StaticResource ToggleButtonWidth}"
+                                                                  Height="{StaticResource ToggleButtonHeight}"
+                                                                  VerticalAlignment="Center"
+                                                                  IsChecked="{Binding Path=DisableCustomPackages}"
+                                                                  Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewDisableCustomPackages}" 
+                                                           VerticalAlignment="Center"
+                                                           Margin="10,0,0,0"
+                                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    </StackPanel>
+                                </Grid>
                             </Expander>
 
                             <!--This Grid row contains the Installed Packages section-->

@@ -821,6 +821,14 @@ You will get a chance to save your work.</value>
     <value>Selected package path for download</value>
     <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory | Selected package path for download</comment>
   </data>
+  <data name="PreferencesViewDisableBuiltInPackages" xml:space="preserve">
+    <value>Disable Loading Built-In Packages</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | Disable Loading Built-In Packages</comment>
+  </data>
+  <data name="PreferencesViewDisableCustomPackages" xml:space="preserve">
+    <value>Disable Loading Custom Packages</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | Disable Loading Custom Packages</comment>
+  </data>
   <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
     <value>Square Centimeter</value>
     <comment>Setting menu | Square centimeter</comment>
@@ -2637,6 +2645,26 @@ Delete the following packages: {2}?
   <data name="PackageFilter_Name_All" xml:space="preserve">
     <value>All</value>
   </data>
+  <data name="PackageSearchHeader" xml:space="preserve">
+    <value>Search for packages</value>
+    <comment>The title of the package search manager window.</comment>
+  </data>
+  <data name="PackageSearchSortBy" xml:space="preserve">
+    <value>SORT BY</value>
+    <comment>Header in Package Search 'Sort By' Button  Context Menu</comment>
+  </data>
+  <data name="PackageSearchResultViewDetails" xml:space="preserve">
+    <value>View Details</value>
+    <comment>In package search result card.</comment>
+  </data>
+  <data name="PackageSearchResultRequirements" xml:space="preserve">
+    <value>Requirements</value>
+    <comment>In package search result card.</comment>
+  </data>
+  <data name="PackageSearchOrder" xml:space="preserve">
+    <value>ORDER</value>
+    <comment>Header in Package Search 'Sort By' Button Context Menu</comment>
+  </data>
   <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
     <value>Show Preview Bubbles</value>
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
@@ -2649,5 +2677,20 @@ Delete the following packages: {2}?
   </data>
   <data name="NodeAutoCompleteNotAvailableForCollapsedGroups" xml:space="preserve">
     <value>Node AutoComplete is not available on ports belonging to collapsed groups.</value>
+  </data>
+  <data name="PackageManagerInstall" xml:space="preserve">
+    <value>Install</value>
+    <comment>Used on the package manager search result card. If the package is not installed, the button will say 'Install'.</comment>
+  </data>
+  <data name="PackageManagerPackageHasNoDependencies" xml:space="preserve">
+    <value>No dependencies.</value>
+  </data>
+  <data name="PackageManagerPackageUpdated" xml:space="preserve">
+    <value>Updated</value>
+	<comment>Displays next to the package name in the Package Search window if the package has been updated in the last 30 days.</comment>
+  </data>
+  <data name="PackageManagerPackageNew" xml:space="preserve">
+    <value>New</value>
+    <comment>Displays next to the package name in the Package Search window if the package has been added in the last 30 days.</comment>
   </data>
 </root>

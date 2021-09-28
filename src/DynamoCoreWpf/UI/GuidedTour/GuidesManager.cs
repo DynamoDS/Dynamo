@@ -78,7 +78,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Initializator that will read all the guides/steps from and json file and subscribe handlers for the Start and Finish events
         /// </summary>
-        private void Initialize()
+        internal void Initialize()
         {
             //Subscribe the handlers when the Tour is started and finished, the handlers are unsubscribed in the method TourFinished()
             GuideFlowEvents.GuidedTourStart += TourStarted;

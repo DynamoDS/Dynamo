@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -734,6 +733,11 @@ namespace Dynamo.ViewModels
         /// <param name="packageDownloadHandle">package download handle</param>
         internal virtual Task<(PackageDownloadHandle handle, string downloadPath)> Download(PackageDownloadHandle packageDownloadHandle)
         {
+            // We only want to display the last 3 downloaded packages to the user
+            // in the form of toast notifications.
+
+            // We remove all but the last 2 packages and add the most recently-downloaded package
+            if (Downloads.Count > 2) Downloads.RemoveRange(index: 0, count: Downloads.Count - 2);
             Downloads.Add(packageDownloadHandle);
 
             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
