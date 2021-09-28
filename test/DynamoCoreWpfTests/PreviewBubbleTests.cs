@@ -313,7 +313,7 @@ namespace DynamoCoreWpfTests
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
             var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
-            Assert.IsTrue(ViewModel.ShowPreviewBubbles, "Preview bubbles are turned off");
+            Assert.IsTrue(ViewModel.PreferencesViewModel.ShowPreviewBubbles, "Preview bubbles are turned off");
 
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
@@ -324,8 +324,8 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsHidden, "Preview bubble is not hidden");
 
             // turn off preview bubbles
-            ViewModel.ShowPreviewBubbles = false;
-            Assert.IsFalse(ViewModel.ShowPreviewBubbles, "Preview bubbles have not been turned off");
+            ViewModel.PreferencesViewModel.ShowPreviewBubbles = false;
+            Assert.IsFalse(ViewModel.PreferencesViewModel.ShowPreviewBubbles, "Preview bubbles have not been turned off");
 
             RaiseMouseEnterOnNode(nodeView);
 

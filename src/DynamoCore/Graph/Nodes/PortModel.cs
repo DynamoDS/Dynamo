@@ -167,7 +167,7 @@ namespace Dynamo.Graph.Nodes
                 double halfHeight = Height * 0.5;
 
                 double offset = Owner.GetPortVerticalOffset(this);
-                double y = Owner.Y + NodeModel.HeaderHeight + 5 + halfHeight + offset;
+                double y = Owner.Y + NodeModel.HeaderHeight + halfHeight + offset + 9;
 
                 switch (PortType)
                 {
@@ -179,7 +179,7 @@ namespace Dynamo.Graph.Nodes
                             // Special case because code block outputs are smaller than regular outputs.
                             // This ensures the output port of the first code block output aligns with
                             // the first input port of any node.
-                            return new Point2D(Owner.X + Owner.Width, y + 12.8);
+                            return new Point2D(Owner.X + Owner.Width, y + 9);
                         }
                         return new Point2D(Owner.X + Owner.Width, y);
                 }

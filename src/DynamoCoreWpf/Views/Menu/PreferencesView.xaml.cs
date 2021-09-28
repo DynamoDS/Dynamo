@@ -70,6 +70,9 @@ namespace Dynamo.Wpf.Views
 
             // Init package paths for install 
             dynamoViewModel.PreferencesViewModel.InitPackagePathsForInstall();
+
+            // Init all package filters 
+            dynamoViewModel.PreferencesViewModel.InitPackageListFilters();
         }
 
         /// <summary>

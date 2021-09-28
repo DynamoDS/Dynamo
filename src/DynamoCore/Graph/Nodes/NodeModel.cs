@@ -72,7 +72,7 @@ namespace Dynamo.Graph.Nodes
 
         #endregion
 
-        internal const double HeaderHeight = 55;
+        internal const double HeaderHeight = 46;
 
         #region public members
 
@@ -1273,7 +1273,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns></returns>
         public MirrorData GetValue(int outPortIndex, EngineController engine)
         {
-            return engine.GetMirror(GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();
+            return engine.GetMirror(GetAstIdentifierForOutputIndex(outPortIndex).Value)?.GetData();
         }
 
         /// <summary>

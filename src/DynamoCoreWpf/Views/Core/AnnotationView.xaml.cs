@@ -14,6 +14,7 @@ using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
 using TextBox = System.Windows.Controls.TextBox;
 using Dynamo.Wpf.Utilities;
+using Dynamo.Graph.Annotations;
 
 namespace Dynamo.Nodes
 {
@@ -103,8 +104,10 @@ namespace Dynamo.Nodes
                 this.GroupTextBlock.FontSize,
                 Brushes.Black);
 
-            this.ViewModel.AnnotationModel.Width = formattedText.Width;
-            this.ViewModel.AnnotationModel.TextMaxWidth = formattedText.Width;
+            var margin = this.TextBlockGrid.Margin.Right + this.TextBlockGrid.Margin.Left;
+
+            this.ViewModel.AnnotationModel.Width = formattedText.Width + margin;
+            this.ViewModel.AnnotationModel.TextMaxWidth = formattedText.Width + margin;
         }
 
         private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -148,6 +151,14 @@ namespace Dynamo.Nodes
             {
                 DynamoSelection.Instance.ClearSelection();
                 System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
+
+                // Expand the group before deleting it
+                // otherwise collapsed content will be "lost" 
+                if (!this.ViewModel.IsExpanded)
+                {
+                    this.ViewModel.IsExpanded = true;
+                }
+                 
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
@@ -311,7 +322,7 @@ namespace Dynamo.Nodes
             //Record the value here, this is useful when title is popped from stack during undo
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
-                    Guid.Empty, ViewModel.AnnotationModel.GUID, "GroupNameTextBlockText",
+                    Guid.Empty, ViewModel.AnnotationModel.GUID, nameof(AnnotationModel.AnnotationDescriptionText),
                     GroupDescriptionTextBox.Text));
 
             ViewModel.WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
@@ -332,7 +343,6 @@ namespace Dynamo.Nodes
         {
             if (ViewModel is null || !IsLoaded) return;
 
-            SetTextMaxWidth();
             SetTextHeight();
             ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
 

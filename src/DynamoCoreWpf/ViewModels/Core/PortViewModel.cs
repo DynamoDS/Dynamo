@@ -1,18 +1,37 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
+    /// <summary>
+    /// Proxy port view model, used for proxy ports under collapsed groups
+    /// Certain features could behave differently e.g. Node AutoComplete is 
+    /// disabled for it.
+    /// </summary>
+    public class ProxyPortViewModel : PortViewModel
+    {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="port"></param>
+        public ProxyPortViewModel(NodeViewModel node, PortModel port)
+            : base(node, port)
+        {
+            // Do nothing for now.
+        }
+    }
+
+    /// <summary>
+    /// Port View Model
+    /// </summary>
     public partial class PortViewModel : ViewModelBase
     {
         #region Properties/Fields
@@ -25,12 +44,22 @@ namespace Dynamo.ViewModels
         private DelegateCommand _hideConnectionsCommand;
         private const double autocompletePopupSpacing = 2.5;
         private SolidColorBrush portBorderBrushColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
+        private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
         private SolidColorBrush portBackgroundColor = new SolidColorBrush(Color.FromArgb(0, 60, 60, 60));
         internal bool inputPortDisconnectedByConnectCommand = false;
         private bool _showUseLevelMenu;
         private bool areConnectorsHidden;
         private string showHideWiresButtonContent = "";
         private bool hideWiresButtonEnabled;
+
+        public static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+        public static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
+
+        public static SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
+        public static SolidColorBrush PortBackgroundColorKeepListStructure = new SolidColorBrush(Color.FromRgb(83, 126, 145));
+
+        public static SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
+        public static SolidColorBrush PortBorderBrushColorKeepListStructure = new SolidColorBrush(Color.FromRgb(168, 181, 187));
 
         /// <summary>
         /// Port model.
@@ -142,7 +171,6 @@ namespace Dynamo.ViewModels
             set
             {
                 _port.UsingDefaultValue = value;
-                RaisePropertyChanged(nameof(UsingDefaultValueMarkerVisibile));
             }
         }
 
@@ -206,15 +234,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Determines whether the blue marker appears beside an input port, indicating
-        /// the default value for this port is being used.
-        /// </summary>
-        public bool UsingDefaultValueMarkerVisibile
-        {
-            get => PortType == PortType.Input && UsingDefaultValue && DefaultValueEnabled;
-        }
-
-        /// <summary>
         /// If should keep list structure on this port.
         /// </summary>
         public bool ShouldKeepListStructure
@@ -255,8 +274,8 @@ namespace Dynamo.ViewModels
         internal NodeViewModel NodeViewModel
         {
             get => _node;
-        }       
-
+        }
+        
         /// <summary>
         /// Shows or hides the Use Levels and Keep List Structure checkboxes
         /// in the node chevron popup menu.
@@ -304,16 +323,19 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Indicates whether this port's connectors are visible or not.
-        /// This can be affected by the HideConnectorsCommand in the output port context menu.
+        /// Sets the visibility of the connectors from the port. This will overwrite the 
+        /// individual visibility of the connectors. However when visibility is controlled 
+        /// from the connector, that connector's visibility will overwrite its previous state.
+        /// In order to overwrite visibility of all connectors associated with a port, us this 
+        /// flag again.
         /// </summary>
-        public bool AreConnectorsHidden
+        public bool SetConnectorsVisibility
         {
             get => areConnectorsHidden;
             set
             {
                 areConnectorsHidden = value; 
-                RaisePropertyChanged(nameof(AreConnectorsHidden));
+                RaisePropertyChanged(nameof(SetConnectorsVisibility));
             }
         }
 
@@ -337,11 +359,11 @@ namespace Dynamo.ViewModels
         private void RefreshHideWiresButton()
         {
             HideWiresButtonEnabled = _port.Connectors.Count > 0;
-            AreConnectorsHidden = CheckIfConnectorsAreHidden();
+            SetConnectorsVisibility = CheckIfConnectorsAreHidden();
 
-            ShowHideWiresButtonContent = AreConnectorsHidden
-                ? Properties.Resources.UnhideWiresPopupMenuItem
-                : Properties.Resources.HideWiresPopupMenuItem;
+            ShowHideWiresButtonContent = SetConnectorsVisibility
+                ? Wpf.Properties.Resources.ShowWiresPopupMenuItem
+                : Wpf.Properties.Resources.HideWiresPopupMenuItem;
 
             RaisePropertyChanged(nameof(ShowHideWiresButtonContent));
         }
@@ -360,6 +382,19 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Sets the color of the small rectangular marker on each input port.
+        /// </summary>
+        public SolidColorBrush PortValueMarkerColor
+        {
+            get => portValueMarkerColor;
+            set
+            {
+                portValueMarkerColor = value;
+                RaisePropertyChanged(nameof(PortValueMarkerColor));
+            }
+        }
+
+        /// <summary>
         /// Sets the color of the port's background - affected by multiple factors such as
         /// MouseOver, IsConnected, Node States (active, inactie, frozen 
         /// </summary>
@@ -370,6 +405,21 @@ namespace Dynamo.ViewModels
             {
                 portBackgroundColor = value;
                 RaisePropertyChanged(nameof(PortBackgroundColor));
+            }
+        }
+
+        /// <summary>
+        /// Sets the color of the use levels popup in the input port context menu.
+        /// This changes when the Keep List Structure option is activated and the port
+        /// is connected, upon which it turns blue.
+        /// </summary>
+        public SolidColorBrush UseLevelsMenuColor
+        {
+            get
+            {
+                return ShouldKeepListStructure && _port.IsConnected
+                    ? new SolidColorBrush(Color.FromArgb(255, 60, 60, 60))
+                    : new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
             }
         }
 
@@ -402,9 +452,9 @@ namespace Dynamo.ViewModels
             _node.WorkspaceViewModel.PropertyChanged -= Workspace_PropertyChanged;
         }
 
-        internal PortViewModel CreateProxyPortViewModel(ProxyPortModel proxyPortModel)
+        internal ProxyPortViewModel CreateProxyPortViewModel(PortModel portModel)
         {
-            return new PortViewModel(_node, proxyPortModel);
+            return new ProxyPortViewModel(_node, portModel);
         }
 
         /// <summary>
@@ -467,6 +517,9 @@ namespace Dynamo.ViewModels
                 case "ToolTipContent":
                     RaisePropertyChanged("ToolTipContent");
                     break;
+                case nameof(NodeViewModel.ZIndex):
+                    RefreshHideWiresButton();
+                    break;
             }
         }
 
@@ -507,6 +560,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "UseLevels":
                     RaisePropertyChanged("UseLevels");
+                    RaisePropertyChanged(nameof(UseLevelsMenuColor));
                     break;
                 case "Level":
                     RaisePropertyChanged("Level");
@@ -538,7 +592,7 @@ namespace Dynamo.ViewModels
             var useLevel = (bool)parameter;
             var command = new DynamoModel.UpdateModelValueCommand(
                 Guid.Empty, _node.NodeLogic.GUID, "UseLevels", string.Format("{0}:{1}", _port.Index, useLevel));
-
+            
             _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
             RaisePropertyChanged(nameof(UseLevelSpinnerVisible));
         }
@@ -595,7 +649,7 @@ namespace Dynamo.ViewModels
             bool keepListStructure = (bool)parameter;
             var command = new DynamoModel.UpdateModelValueCommand(
                 Guid.Empty, _node.NodeLogic.GUID, "KeepListStructure", string.Format("{0}:{1}", _port.Index, keepListStructure));
-
+            
             _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -641,11 +695,14 @@ namespace Dynamo.ViewModels
 
                 if (connectorViewModel == null) continue;
 
-                connectorViewModel.HideConnectorCommand.Execute(null);
+                connectorViewModel.HideConnectorCommand.Execute(!SetConnectorsVisibility);
             }
             RefreshHideWiresButton();
         }
-
+        /// <summary>
+        /// Returns true if they are hidden.
+        /// </summary>
+        /// <returns></returns>
         private bool CheckIfConnectorsAreHidden()
         {
             if (_port.Connectors.Count < 1 || _node.WorkspaceViewModel.Connectors.Count < 1) return false;
@@ -655,7 +712,7 @@ namespace Dynamo.ViewModels
                 .FirstOrDefault(x => x.Nodevm.NodeModel.GUID == _port.Owner.GUID);
 
             if (connectorViewModel == null) return false;
-            return !connectorViewModel.IsVisible;
+            return connectorViewModel.IsCollapsed;
         }
 
 
@@ -691,8 +748,14 @@ namespace Dynamo.ViewModels
         private bool CanAutoComplete(object parameter)
         {
             DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
-            // If the feature is enabled from Dynamo experiment setting and if user interaction is on input port.
-            return dynamoViewModel.EnableNodeAutoComplete;
+            // If user trying to trigger Node AutoComplete from proxy ports, display notification
+            // telling user it is not available that way
+            if (this is ProxyPortViewModel)
+            {
+                dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups);
+            }
+            // If the feature is enabled from Dynamo experiment setting and if user interaction is not on proxy ports.
+            return dynamoViewModel.EnableNodeAutoComplete && !(this is ProxyPortViewModel);
         }
 
         /// <summary>
@@ -752,46 +815,32 @@ namespace Dynamo.ViewModels
                 // Special case for keeping list structure visual appearance
                 if (_port.UseLevels && _port.KeepListStructure && _port.IsConnected)
                 {
-                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(94, 165, 196));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                    PortValueMarkerColor = PortValueMarkerBlue;
+                    PortBackgroundColor = PortBackgroundColorKeepListStructure;
+                    PortBorderBrushColor = PortBorderBrushColorKeepListStructure;
                 }
-
                 // Port has a default value, shows blue marker
                 else if (UsingDefaultValue && DefaultValueEnabled)
                 {
-                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                    PortValueMarkerColor = PortValueMarkerBlue;
+                    PortBackgroundColor = PortBackgroundColorDefault;
+                    PortBorderBrushColor = PortBorderBrushColorDefault;
                 }
+                // Port isn't connected and has no default value (or isn't using it)
                 else
                 {
-                    // Port isn't connected and has no default value (or isn't using it)
-                    if (!_port.IsConnected)
-                    {
-                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(107, 67, 67));
-                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(244, 134, 134));
-                    }
-                    // Port is connected and has no default value
-                    else
-                    {
-                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
-                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-                    }
+                    PortValueMarkerColor = !_port.IsConnected ? PortValueMarkerRed : PortValueMarkerBlue;
+                    PortBackgroundColor = PortBackgroundColorDefault;
+                    PortBorderBrushColor = PortBorderBrushColorDefault;
                 }
             }
             // It's an output port, which either displays a connected style or a disconnected style
             else
             {
-                if (_port.IsConnected)
-                {
-                    PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-                }
-                else
-                {
-                    PortBackgroundColor = new SolidColorBrush(Colors.Transparent);
-                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(204, 204, 204));
-                }
+                PortBackgroundColor = PortBackgroundColorDefault;
+                PortBorderBrushColor = PortBorderBrushColorDefault;
             }
+            RaisePropertyChanged(nameof(UseLevelsMenuColor));
         }
 
         /// <summary>

@@ -87,16 +87,17 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(Model));
             }
         }
-        /// <summary>
-        /// In this case width == height for connectorPinModels, 
-        /// so we only need one property that can be used for both.
-        /// </summary>
+      /// <summary>
+      /// This property is used to center the ConnectorPinIcon in views
+      /// as well as to offset the coordinate used for drawing
+      /// bezier connectors through.
+      /// </summary>
         [JsonIgnore]
-        public double HalfWidth
+        public double OneThirdWidth
         {
             get
             {
-                return Model.Width * 0.5;
+                return Model.Width * 0.33333;
             }
         }
 
@@ -118,10 +119,12 @@ namespace Dynamo.ViewModels
         /// </summary>
         public double Top
         {
-            get { return model.Y; }
+            get { return model.Y- OneThirdWidth; }
             set
             {
-                model.Y = value;
+                //Through trial and error using the OneThirdWidth value to offset the pin location works 
+                //better than using OneHalf.
+                model.Y = value + OneThirdWidth;
                 RaisePropertyChanged(nameof(Top));
             }
         }
@@ -135,39 +138,39 @@ namespace Dynamo.ViewModels
             get { return model.IsSelected; }
         }
 
-        private bool isVisible;
+        private bool isCollapsed;
         [JsonIgnore]
-        public bool IsVisible
+        public override bool IsCollapsed
         {
-            get
-            {
-                return isVisible;
-            }
+            get => isCollapsed;
             set
             {
-                isVisible = value;
-                RaisePropertyChanged(nameof(IsVisible));
-                RaisePropertyChanged(nameof(IsPartlyVisible));
+                if (isCollapsed == value)
+                {
+                    return;
+                }
+
+                isCollapsed = value;
+                RaisePropertyChanged(nameof(IsCollapsed));
             }
         }
 
-        private bool isPartlyVisible;
+        private bool isTemporarilyVisible;
         /// <summary>
         /// Provides the ViewModel (this) with the visibility state of the Connector.
         /// When set to 'hidden', 'IsHalftone' is set to true, and viceversa.
         /// </summary>
         [JsonIgnore]
-        public bool IsPartlyVisible
+        public bool IsTemporarilyVisible
         {
             get
             {
-                return isPartlyVisible;
+                return isTemporarilyVisible;
             }
             set
             {
-                isPartlyVisible = value;
-                RaisePropertyChanged(nameof(IsPartlyVisible));
-                RaisePropertyChanged(nameof(IsVisible));
+                isTemporarilyVisible = value;
+                RaisePropertyChanged(nameof(IsTemporarilyVisible));
             }
         }
 
@@ -195,6 +198,7 @@ namespace Dynamo.ViewModels
         private void UnpinWireCommandExecute(object parameter)
         {
             OnRequestRemove(this, EventArgs.Empty);
+            WorkspaceViewModel.Model.HasUnsavedChanges = true;
         }
 
         private void InitializeCommands()

@@ -1,4 +1,5 @@
 ﻿using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Events;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -151,6 +152,11 @@ namespace Dynamo.ViewModels
         /// Returns all installed packages
         /// </summary>
         public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
+
+        /// <summary>
+        /// Returns all available filters
+        /// </summary>
+        public ObservableCollection<PackageFilter> Filters => installedPackagesViewModel.Filters;
 
         //This includes all the properties that can be set on the General tab
         #region General Properties
@@ -325,6 +331,45 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Flag specifying whether loading built-in packages
+        /// is disabled, if true, or enabled, if false.
+        /// </summary>
+        public bool DisableBuiltInPackages 
+        { 
+            get 
+            {
+                return preferenceSettings.DisableBuiltinPackages;
+            } 
+            set 
+            {
+                preferenceSettings.DisableBuiltinPackages = value;
+                PackagePathsViewModel.SetPackagesScheduledState(PathManager.BuiltinPackagesDirectory, value);
+                RaisePropertyChanged(nameof(DisableBuiltInPackages));
+            }
+        }
+
+        /// <summary>
+        /// Flag specifying whether loading custom packages
+        /// is disabled, if true, or enabled, if false.
+        /// </summary>
+        public bool DisableCustomPackages 
+        { 
+            get
+            {
+                return preferenceSettings.DisableCustomPackageLocations;
+            }
+            set
+            {
+                preferenceSettings.DisableCustomPackageLocations = value;
+                foreach(var path in preferenceSettings.CustomPackageFolders.Where(x => x != DynamoModel.BuiltInPackagesToken))
+                {
+                    PackagePathsViewModel.SetPackagesScheduledState(path, value);
+                }
+                RaisePropertyChanged(nameof(DisableCustomPackages));
+            } 
+        }
+
+        /// <summary>
         /// FontSizesList contains the list of sizes for fonts defined (the ones defined are Small, Medium, Large, Extra Large)
         /// </summary>
         public ObservableCollection<string> FontSizeList
@@ -481,6 +526,25 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        public bool ShowPreviewBubbles
+        {
+            get
+            {
+                return preferenceSettings.ShowPreviewBubbles;
+            }
+            set
+            {
+                preferenceSettings.ShowPreviewBubbles = value;
+                RaisePropertyChanged(nameof(ShowPreviewBubbles));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if line numbers should be displayed on code block nodes.
+        /// </summary>
         public bool ShowCodeBlockLineNumber
         {
             get
@@ -877,6 +941,14 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Init all package filters
+        /// </summary>
+        internal void InitPackageListFilters()
+        {
+            installedPackagesViewModel.PopulateFilters();
+        }
+
+        /// <summary>
         /// Listen for the PropertyChanged event and updates the saved changes label accordingly
         /// </summary>
         private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -896,6 +968,12 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(SelectedPackagePathForInstall):
                     description = Res.PreferencesViewSelectedPackagePathForDownload;
+                    goto default;
+                case nameof(DisableBuiltInPackages):
+                    description = Res.PreferencesViewDisableBuiltInPackages;
+                    goto default;
+                case nameof(DisableCustomPackages):
+                    description = Res.PreferencesViewDisableCustomPackages;
                     goto default;
                 case nameof(RunSettingsIsChecked):
                     description = Res.PreferencesViewRunSettingsLabel;
@@ -932,6 +1010,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(EnableTSplineIsChecked):
                     description = Res.PreferencesViewEnableTSplineNodes;
+                    goto default;
+                case nameof(ShowPreviewBubbles):
+                    description = Res.PreferencesViewShowPreviewBubbles;
                     goto default;
                 case nameof(ShowCodeBlockLineNumber):
                     description = Res.PreferencesViewShowCodeBlockNodeLineNumber;

@@ -5,9 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dynamo.Wpf.Views.GuidedTour"
              mc:Ignorable="d">
-    
     <Grid>
-        <Canvas 
+        <Canvas
             Background="Transparent"
             Name="RootLayout" >
             <Path Stroke="Black" StrokeThickness="1" Fill="Black" Opacity="0.5">
@@ -24,11 +23,13 @@
                 </Path.Data>
             </Path>
 
-            <Path Name="HolePath" Stroke="Black" StrokeThickness="3" Fill="Transparent" Opacity="0.5">
+            <Path Name="HolePath" Stroke="Black" StrokeThickness="2" Fill="Transparent" Opacity="1">
                 <Path.Data>
                     <RectangleGeometry Rect="{Binding HoleRect}" RadiusX="1" RadiusY="1"/>
                 </Path.Data>
             </Path>
         </Canvas>
     </Grid>
+
+
 </UserControl>

@@ -33,6 +33,7 @@ using Dynamo.Visualization;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;
+using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
@@ -50,20 +51,6 @@ namespace Dynamo.ViewModels
 
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
     {
-        public int ScaleFactorLog
-        {
-            get
-            {
-                return (CurrentSpace == null) ? 0 :
-                    Convert.ToInt32(Math.Log10(CurrentSpace.ScaleFactor));
-            }
-            set
-            {
-                CurrentSpace.ScaleFactor = Math.Pow(10, value);
-                CurrentSpace.ScaleFactorChanged = true;
-            }
-        }
-
         #region properties
 
         private readonly DynamoModel model;
@@ -105,6 +92,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Guided Tour Manager
+        /// </summary>
+        public GuidesManager MainGuideManager { get; set; }
+
         public Point TransformOrigin
         {
             get { return transformOrigin; }
@@ -118,6 +110,20 @@ namespace Dynamo.ViewModels
         public bool ViewingHomespace
         {
             get { return model.CurrentWorkspace == HomeSpace; }
+        }
+
+        public int ScaleFactorLog
+        {
+            get
+            {
+                return (CurrentSpace == null) ? 0 :
+                    Convert.ToInt32(Math.Log10(CurrentSpace.ScaleFactor));
+            }
+            set
+            {
+                CurrentSpace.ScaleFactor = Math.Pow(10, value);
+                CurrentSpace.ScaleFactorChanged = true;
+            }
         }
 
         public bool IsAbleToGoHome
@@ -282,6 +288,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
+        [Obsolete("This was moved to PreferencesViewModel.cs")]
         public bool ShowPreviewBubbles
         {
             get

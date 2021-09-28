@@ -21,7 +21,14 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand VisitRepositoryCommand { get; set; }
         public ICommand DownloadLatestToCustomPathCommand { get; set; }
 
+        /// <summary>
+        /// A function used to determine whether the user has installed this package already.
+        /// Matching occurs via package name.
+        /// </summary>
+        private Func<string,bool> isPackageInstalled;
+
         public new PackageManagerSearchElement Model { get; internal set; }
+
 
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : base(element)
         {
@@ -29,7 +36,9 @@ namespace Dynamo.PackageManager.ViewModels
 
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded );
 
-            this.DownloadLatestCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), false));
+            this.DownloadLatestCommand = new DelegateCommand(
+                () => OnRequestDownload(Model.Header.versions.Last(), false),
+                () => !Model.IsDeprecated && !IsInstalled);
             this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), true));
 
             this.UpvoteCommand = new DelegateCommand(Model.Upvote, () => canLogin);
@@ -41,6 +50,46 @@ namespace Dynamo.PackageManager.ViewModels
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
+
+        }
+
+        /// <summary>
+        /// Alternative constructor which takes a Function object in order to
+        /// assist communication between the PackageManagerSearchViewModel
+        /// and the PackageManagerSearchElementViewModel.
+        /// </summary>
+        /// <param name="element">A PackageManagerSearchElement</param>
+        /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
+        /// <param name="isPackageInstalledFunction">A function that we pass to this constructor which takes a string and returns a Boolean.</param>
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, Func<string,bool> isPackageInstalledFunction) : this(element, canLogin)
+        {
+            this.isPackageInstalled = isPackageInstalledFunction;
+            this.IsInstalled = isPackageInstalled(this.Model.Name);
+        }
+
+        private bool isInstalled;
+
+        /// <summary>
+        /// A Boolean flag reporting whether or not the user already has this SearchElement's package installed.
+        /// </summary>
+        public bool IsInstalled
+        {
+            get => isInstalled;
+            set
+            {
+                isInstalled = value;
+                RaisePropertyChanged(nameof(IsInstalled));
+            }
+        }
+
+        /// <summary>
+        /// Checks whether the user has already installed a package with the given name.
+        /// </summary>
+        /// <returns>A Boolean indicating whether the user already has a package installed with the given name.</returns>
+        internal bool IsPackageInstalled()
+        {
+            IsInstalled = isPackageInstalled(this.Model.Name);
+            return IsInstalled;
         }
 
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
@@ -87,11 +136,11 @@ namespace Dynamo.PackageManager.ViewModels
         }
 
         private List<String> CustomPackageFolders;
-
+        
         public delegate void PackageSearchElementDownloadHandler(
             PackageManagerSearchElement element, PackageVersion version, string downloadPath = null);
         public event PackageSearchElementDownloadHandler RequestDownload;
-
+        
         public void OnRequestDownload(PackageVersion version, bool downloadToCustomPath)
         {
             string downloadPath = String.Empty;
@@ -106,6 +155,8 @@ namespace Dynamo.PackageManager.ViewModels
 
             if (RequestDownload != null)
                 RequestDownload(this.Model, version, downloadPath);
+
+            IsPackageInstalled();
         }
 
         /// <summary>

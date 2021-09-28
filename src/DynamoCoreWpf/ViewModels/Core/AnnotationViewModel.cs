@@ -247,6 +247,7 @@ namespace Dynamo.ViewModels
                     this.CollapseGroupContents(true);
                     RaisePropertyChanged(nameof(InbetweenNodesCount));
                 }
+                WorkspaceViewModel.HasUnsavedChanges = true;
                 RaisePropertyChanged(nameof(IsExpanded));
             }
         }
@@ -532,6 +533,13 @@ namespace Dynamo.ViewModels
             ViewModelBases.OfType<AnnotationViewModel>()
                 .ToList()
                 .ForEach(x => AddToCutGeometryDictionary(x));
+
+            if (!IsExpanded)
+            {
+                SetGroupInputPorts();
+                SetGroupOutPorts();
+                CollapseGroupContents(true);
+            }
         }
 
         /// <summary>
@@ -542,7 +550,7 @@ namespace Dynamo.ViewModels
         internal void SetGroupInputPorts()
         {
             InPorts.Clear();
-            List<PortViewModel> newPortViewModels;
+            List<ProxyPortViewModel> newPortViewModels;
 
             if (!AnnotationModel.HasNestedGroups)
             {
@@ -592,7 +600,7 @@ namespace Dynamo.ViewModels
         internal void SetGroupOutPorts()
         {
             OutPorts.Clear();
-            List<PortViewModel> newPortViewModels;
+            List<ProxyPortViewModel> newPortViewModels;
 
             if (!AnnotationModel.HasNestedGroups)
             {
@@ -678,22 +686,18 @@ namespace Dynamo.ViewModels
                 );
         }
 
-        private List<PortViewModel> CreateProxyPorts(IEnumerable<PortModel> groupPortModels)
+        private List<ProxyPortViewModel> CreateProxyPorts(IEnumerable<PortModel> groupPortModels)
         {
-            var proxyModels = groupPortModels
-                .Select(x => new ProxyPortModel(x))
-                .ToList();
-
             var originalPortViewModels = WorkspaceViewModel.Nodes
                 .SelectMany(x => x.InPorts.Concat(x.OutPorts))
                 .Where(x => groupPortModels.Contains(x.PortModel))
                 .ToList();
 
-            var newPortViewModels = new List<PortViewModel>();
-            for (int i = 0; i < proxyModels.Count(); i++)
+            var newPortViewModels = new List<ProxyPortViewModel>();
+            for (int i = 0; i < groupPortModels.Count(); i++)
             {
-                var proxyModel = proxyModels[i];
-                newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(proxyModel));
+                var model = groupPortModels.ElementAt(i);
+                newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(model));
             }
 
             return newPortViewModels;
@@ -736,6 +740,11 @@ namespace Dynamo.ViewModels
 
         private void CollapseConnectors()
         {
+            if (originalInPorts is null)
+            {
+                return;
+            }
+
             var excludedPorts = originalInPorts.Concat(originalOutPorts);
 
             var allNodes = this.Nodes

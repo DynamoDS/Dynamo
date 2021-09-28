@@ -24,6 +24,9 @@ namespace DynamoCoreWpfTests
 
             //Creates the Guides Manager passing the Dynamo Window and ViewModel and validates that no exception is thrown
             Assert.DoesNotThrow( () => testGuide = new GuidesManager(View._this, ViewModel));
+            
+            //Initializes variables and reads json properties
+            Assert.DoesNotThrow( () => testGuide.Initialize());
 
             //Validate that the Guides were read correctly from the json file
             Assert.NotNull(testGuide);

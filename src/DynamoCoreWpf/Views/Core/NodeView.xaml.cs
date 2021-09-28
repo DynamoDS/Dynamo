@@ -415,13 +415,6 @@ namespace Dynamo.Controls
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
-            if (ViewModel.WorkspaceViewModel.Zoom < 0.4)
-            {
-                grid.ContextMenu.IsOpen = true;
-                e.Handled = true;
-                return;
-            }
-            
             viewModel.OnSelected(this, EventArgs.Empty);
 
             if (e.ClickCount == 2)
@@ -700,6 +693,7 @@ namespace Dynamo.Controls
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
+            viewModel.OnSelected(this, EventArgs.Empty);
             grid.ContextMenu.DataContext = viewModel;
             grid.ContextMenu.IsOpen = true;
         }
@@ -712,6 +706,17 @@ namespace Dynamo.Controls
             if (textBlock == null) return;
 
             viewModel.ErrorBubble.UndismissMessageCommand.Execute(textBlock.Tag);
+
+        private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Guid nodeGuid = ViewModel.NodeModel.GUID;
+            ViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
+
+            grid.ContextMenu.DataContext = viewModel;
+            grid.ContextMenu.IsOpen = true;
+            
+            e.Handled = true;
         }
     }
 }

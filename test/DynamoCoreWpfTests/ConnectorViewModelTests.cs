@@ -14,6 +14,20 @@ namespace DynamoCoreWpfTests
         /// Check to see a pin can be added to a connector
         /// </summary>
         [Test]
+        public void ConnectorVisibilityForLegacyGraphTest()
+        {
+            Open(@"UI/ConnectorPinTests.dyn");
+
+            var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
+
+            // Default collapse state should be false when opening legacy graph
+            Assert.AreEqual(connectorViewModel.IsCollapsed, false);
+        }
+
+        /// <summary>
+        /// Check to see a pin can be added to a connector
+        /// </summary>
+        [Test]
         public void CanPinConnector()
         {
             Open(@"UI/ConnectorPinTests.dyn");
@@ -23,8 +37,8 @@ namespace DynamoCoreWpfTests
             int initialConnectorCount = connectorViewModel.ConnectorPinViewCollection.Count;
 
             ///hard-coded position (1) on wire
-            connectorViewModel.PanelX = 319.333333;
-            connectorViewModel.PanelY = 272;
+            connectorViewModel.PanelX = 292.66666;
+            connectorViewModel.PanelY = 278;
 
             ///Action triggered when hovering over a connector
             connectorViewModel.FlipOnConnectorAnchor();
@@ -33,8 +47,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, initialConnectorCount + 1);
 
             ///hard-coded position (2) on wire
-            connectorViewModel.PanelX = 332;
-            connectorViewModel.PanelY = 278;
+            connectorViewModel.PanelX = 419.33333;
+            connectorViewModel.PanelY = 347.33333;
 
             connectorViewModel.PinConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, initialConnectorCount + 2);
@@ -51,8 +65,8 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
             ///hard-coded position (1) on wire
-            connectorViewModel.PanelX = 319.333333;
-            connectorViewModel.PanelY = 272;
+            connectorViewModel.PanelX = 292.66666;
+            connectorViewModel.PanelY = 278;
 
             ///Action triggered when hovering over a connector
             connectorViewModel.FlipOnConnectorAnchor();
@@ -81,6 +95,7 @@ namespace DynamoCoreWpfTests
             ///Should result in 2 selected nodes.
             Assert.AreEqual(DynamoSelection.Instance.Selection.Count, initialSelectedCount + 2);
         }
+
         /// <summary>
         /// Check to see if can break connection.
         /// </summary>
@@ -105,10 +120,10 @@ namespace DynamoCoreWpfTests
         {
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
-            bool initialVisibility = connectorViewModel.IsVisible;
+            bool initialVisibility = connectorViewModel.IsCollapsed;
             ///Toggles hide (visibility == off)
             connectorViewModel.HideConnectorCommand.Execute(null);
-            Assert.AreEqual(connectorViewModel.IsVisible, !initialVisibility);
+            Assert.AreEqual(connectorViewModel.IsCollapsed, !initialVisibility);
         }
 
         /// <summary>
@@ -120,13 +135,13 @@ namespace DynamoCoreWpfTests
         {
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
-            bool initialVisibility = connectorViewModel.IsVisible;
+            bool initialVisibility = connectorViewModel.IsCollapsed;
             ///Toggles hide (visibility == off)
             connectorViewModel.HideConnectorCommand.Execute(null);
-            Assert.AreEqual(connectorViewModel.IsVisible, !initialVisibility);
+            Assert.AreEqual(connectorViewModel.IsCollapsed, !initialVisibility);
             ///Toggles hide on/off (visibility == on)
             connectorViewModel.HideConnectorCommand.Execute(null);
-            Assert.AreEqual(connectorViewModel.IsVisible, initialVisibility);
+            Assert.AreEqual(connectorViewModel.IsCollapsed, initialVisibility);
         }
 
         /// <summary>
@@ -163,8 +178,8 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
             ///hard-coded position (1) on wire
-            connectorViewModel.PanelX = 319.333333;
-            connectorViewModel.PanelY = 272;
+            connectorViewModel.PanelX = 292.66666;
+            connectorViewModel.PanelY = 278;
 
             int initialPinCount = connectorViewModel.ConnectorPinViewCollection.Count;
 
@@ -188,8 +203,8 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
             ///hard-coded position (1) on wire
-            connectorViewModel.PanelX = 319.333333;
-            connectorViewModel.PanelY = 272;
+            connectorViewModel.PanelX = 292.66666;
+            connectorViewModel.PanelY = 278;
 
             ///Action triggered when hovering over a connector
             connectorViewModel.FlipOnConnectorAnchor();
@@ -217,8 +232,8 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
             ///hard-coded position (1) on wire
-            connectorViewModel.PanelX = 319.333333;
-            connectorViewModel.PanelY = 272;
+            connectorViewModel.PanelX = 292.66666;
+            connectorViewModel.PanelY = 278;
 
             ///Action triggered when hovering over a connector
             connectorViewModel.FlipOnConnectorAnchor();
@@ -246,8 +261,8 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
             ///hard-coded position on wire
-            connectorViewModel.PanelX = 319.333333;
-            connectorViewModel.PanelY = 272;
+            connectorViewModel.PanelX = 292.66666;
+            connectorViewModel.PanelY = 278;
 
             ///deltas to move by
             double xMove = 250;

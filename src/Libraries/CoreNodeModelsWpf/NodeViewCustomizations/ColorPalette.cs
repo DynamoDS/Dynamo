@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Media;
 using CoreNodeModels.Input;
 using CoreNodeModelsWpf.Controls;
@@ -30,6 +31,8 @@ namespace CoreNodeModelsWpf.Nodes
             colorPaletteNode = model;
             converter = new Converters.MediatoDSColorConverter();
             ColorPaletteUINode = new ColorPaletteUI();
+            ColorPaletteUINode.HorizontalAlignment = HorizontalAlignment.Left;
+            ColorPaletteUINode.VerticalAlignment = VerticalAlignment.Top;
             ColorPaletteUINode.xceedColorPickerControl.Closed += ColorPickerControl_Closed;
             colorPaletteNode.PropertyChanged += ColorPaletteNode_PropertyChanged;
             nodeView.ContentGrid.Children.Add(ColorPaletteUINode);

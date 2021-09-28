@@ -73,8 +73,14 @@ namespace PythonNodeModelsWpf
             nodeModel.DeletionStarted += NodeModel_DeletionStarted;
             nodeModel.Disposed += NodeModel_Disposed;
 
-            nodeView.PresentationGrid.Visibility = Visibility.Visible;
-            nodeView.PresentationGrid.Children.Add(new EngineLabel(nodeModel));
+            EngineLabel engineLabel = new EngineLabel(nodeModel);
+            Canvas.SetZIndex(engineLabel, 5);
+            engineLabel.HorizontalAlignment = HorizontalAlignment.Left;
+            engineLabel.VerticalAlignment = VerticalAlignment.Bottom;
+            engineLabel.Margin = new Thickness(14, -4, 0, 4);
+            nodeView.grid.Children.Add(engineLabel);
+            Grid.SetColumn(engineLabel, 0);
+            Grid.SetRow(engineLabel, 3);
         }
 
         /// <summary>

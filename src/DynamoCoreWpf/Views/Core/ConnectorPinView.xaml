@@ -6,8 +6,6 @@
              xmlns:local="clr-namespace:Dynamo.Wpf.Views.Preview"
              xmlns:props="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
-             d:DesignHeight="30"
-             d:DesignWidth="30"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:ui="clr-namespace:Dynamo.UI"
              MouseLeftButtonDown="OnPinMouseDown"
@@ -30,34 +28,34 @@
             </Canvas.ContextMenu>
 
         <Grid  x:Name="PinBtn"  Background="Transparent">
-            <Image>
+            <Image Width="{Binding Model.Width}" Height="{Binding Model.Width}">
                 <Image.Style>
                     <Style TargetType="Image">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=IsVisible, Mode=OneWay}" Value="False">
+                            <DataTrigger Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True">
                                 <Setter Property="Opacity" Value="0.0"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="False"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=IsVisible, Mode=OneWay}" Value="True">
-                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/Pin_16_16.png"/>
+                            <DataTrigger Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="False">
+                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_48_48.png"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
-                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_selected_16_16.png"/>
+                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_selected_48_48.png"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=IsPartlyVisible, Mode=OneWay}" Value="True">
-                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_hidden_16_16.png"/>
+                            <DataTrigger Binding="{Binding Path=IsTemporarilyVisible, Mode=OneWay}" Value="True">
+                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_hidden_48_48.png"/>
                                 <Setter Property="Opacity" Value="1.0"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                             </DataTrigger>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=IsPartlyVisible, Mode=OneWay}" Value="True"/>
+                                    <Condition Binding="{Binding Path=IsTemporarilyVisible, Mode=OneWay}" Value="True"/>
                                     <Condition Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True"/>
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
-                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_selected_16_16.png"/>
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_selected_48_48.png"/>
                                     <Setter Property="Opacity" Value="0.6"/>
                                     <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                                 </MultiDataTrigger.Setters>
@@ -68,7 +66,7 @@
             </Image>
         </Grid>
         <Canvas.RenderTransform>
-            <TranslateTransform X="{Binding HalfWidth, Mode=OneWay}" Y="{Binding HalfWidth, Mode=OneWay}" />
+            <TranslateTransform X="{Binding OneThirdWidth, Mode=OneWay}" Y="{Binding OneThirdWidth, Mode=OneWay}" />
         </Canvas.RenderTransform>
     </Canvas>
 </UserControl>

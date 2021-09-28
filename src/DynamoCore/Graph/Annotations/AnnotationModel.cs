@@ -470,7 +470,7 @@ namespace Dynamo.Graph.Annotations
                 case "TextBlockText":
                     AnnotationText = value;
                     break;
-                case "GroupNameTextBlockText":
+                case nameof(AnnotationDescriptionText):
                     AnnotationDescriptionText = value;
                     break;
             }

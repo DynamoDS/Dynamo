@@ -46,12 +46,16 @@ namespace DSCore.File
                 tb.ScrollToHorizontalOffset(double.PositiveInfinity);
                 nodeView.ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
             };
-            tb.Margin = new Thickness(0, 8, 0, 5);
+            tb.Margin = new Thickness(6, 8, 0, 5);
 
             var sp = new StackPanel();
             sp.Children.Add(readFileButton);
-            sp.Children.Add(tb);
             nodeView.inputGrid.Children.Add(sp);
+
+            nodeView.grid.Children.Add(tb);
+            Grid.SetColumn(tb, 1);
+            Grid.SetRow(tb, 3);
+            Canvas.SetZIndex(tb, 5);
 
             tb.DataContext = model;
             var bindingVal = new Binding("Value")
