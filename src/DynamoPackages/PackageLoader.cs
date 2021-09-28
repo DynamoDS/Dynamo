@@ -227,11 +227,6 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void OnPackagesLoaded(IEnumerable<Assembly> assemblies)
-        {
-            PackagesLoaded?.Invoke(assemblies);
-        }
-
         private IEnumerable<CustomNodeInfo> OnRequestLoadCustomNodeDirectory(string directory, Graph.Workspaces.PackageInfo packageInfo)
         {
             if (RequestLoadCustomNodeDirectory != null)
@@ -257,6 +252,7 @@ namespace Dynamo.PackageManager
             // Prevent loading packages that have been specifically marked as unloaded
             if (package.LoadState.State == PackageLoadState.StateTypes.Unloaded) return;
 
+            List<Assembly> loadedAssemblies = new List<Assembly>();
             try
             {
                 // load node libraries
@@ -267,6 +263,7 @@ namespace Dynamo.PackageManager
                         try
                         {
                             OnRequestLoadNodeLibrary(assem.Assembly);
+                            loadedAssemblies.Add(assem.Assembly);
                         }
                         catch (LibraryLoadFailedException ex)
                         {
@@ -297,6 +294,7 @@ namespace Dynamo.PackageManager
 
                 package.SetAsLoaded();
                 PackgeLoaded?.Invoke(package);
+                PackagesLoaded?.Invoke(loadedAssemblies);
             }
             catch (CustomNodePackageLoadException e)
             {
@@ -337,7 +335,7 @@ namespace Dynamo.PackageManager
 
             var assemblies =
                 LocalPackages.SelectMany(x => x.EnumerateAndLoadAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
-            OnPackagesLoaded(assemblies.Select(x => x.Assembly));
+            PackagesLoaded?.Invoke(assemblies.Select(x => x.Assembly));
         }
 
         /// <summary>
@@ -355,7 +353,6 @@ namespace Dynamo.PackageManager
                     {
                         pathManager.AddResolutionPath(pkg.BinaryDirectory);
                     }
-
                 }
             }
 
@@ -379,13 +376,6 @@ namespace Dynamo.PackageManager
                     TryLoadPackageIntoLibrary(pkg);
                 }
             }
-
-            var assemblies = packages
-                .SelectMany(p => p.LoadedAssemblies.Where(y => y.IsNodeLibrary))
-                .Select(a => a.Assembly)
-                .ToList();
-
-            OnPackagesLoaded(assemblies);
         }
 
         /// <summary>
@@ -441,15 +431,16 @@ namespace Dynamo.PackageManager
             foreach (var packagesDirectory in pathManager.PackagesDirectories)
             {
 
-                if (preferences is IDisablePackageLoadingPreferences disablePrefs
-                    &&
-                    //if this directory is the builtin packages location
-                    //and loading from there is disabled, don't scan the directory.
-                    ((disablePrefs.DisableBuiltinPackages && packagesDirectory == PathManager.BuiltinPackagesDirectory)
-                    //or if custom package directories are disabled, and this is a custom package directory, don't scan.
-                    || (disablePrefs.DisableCustomPackageLocations && preferences.CustomPackageFolders.Contains(packagesDirectory))))
+                if (!(preferences is IDisablePackageLoadingPreferences disablePrefs)) return;
+
+                var isACustomPackageDirectory = preferences.CustomPackageFolders.Where(x => packagesDirectory.StartsWith(x)).Any();
+                //if this directory is the builtin packages location
+                //and loading from there is disabled, don't scan the directory.
+                if ((disablePrefs.DisableBuiltinPackages && packagesDirectory == PathManager.BuiltinPackagesDirectory)
+                //or if custom package directories are disabled, and this is a custom package directory, don't scan.
+                || (disablePrefs.DisableCustomPackageLocations && isACustomPackageDirectory))
                 {
-                    Log(string.Format(Resources.PackagesDirectorySkipped,packagesDirectory));
+                    Log(string.Format(Resources.PackagesDirectorySkipped, packagesDirectory));
                     continue;
                 }
                 else

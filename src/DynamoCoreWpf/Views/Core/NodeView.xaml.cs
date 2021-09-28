@@ -693,14 +693,20 @@ namespace Dynamo.Controls
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
+            viewModel.OnSelected(this, EventArgs.Empty);
             grid.ContextMenu.DataContext = viewModel;
             grid.ContextMenu.IsOpen = true;
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!(ViewModel.WorkspaceViewModel.Zoom < 0.4)) return;
+            Guid nodeGuid = ViewModel.NodeModel.GUID;
+            ViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
+
+            grid.ContextMenu.DataContext = viewModel;
             grid.ContextMenu.IsOpen = true;
+            
             e.Handled = true;
         }
     }

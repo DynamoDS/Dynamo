@@ -947,7 +947,8 @@ namespace Dynamo.ViewModels
                 var oldClipboardData = model.ClipBoard.ToList();
 
                 model.Copy();
-                if (model.ClipBoard.Any())
+                // Prevents Paste from being called when only ConnectorPins are selected.
+                if (!model.ClipBoard.All(m => m is ConnectorPinModel))
                 {
                     model.Paste(targetPoint, false);
                     owningWorkspace.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();

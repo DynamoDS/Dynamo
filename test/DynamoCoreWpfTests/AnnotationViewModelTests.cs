@@ -933,6 +933,46 @@ namespace DynamoCoreWpfTests
             Assert.That(groupNodesCollapsedStatusAfter.All(x => x == true));
         }
 
+
+        [Test]
+        public void ChangingIsExpandedMarksGraphAsModified()
+        {
+            // Arrange
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
+
+            //Select the node for group
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            //Create a Group around that node
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotationViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
+
+            // Act
+            // Set workspace changes to false
+            ViewModel.CurrentSpaceViewModel.HasUnsavedChanges = false;
+
+            // Change annotationViewModel IsExpandedState
+            annotationViewModel.IsExpanded = !annotationViewModel.IsExpanded;
+            var workspaceStateAfterChangingIsExpandedFirst = ViewModel.CurrentSpaceViewModel.HasUnsavedChanges;
+
+            // Set workspace changes to false
+            ViewModel.CurrentSpaceViewModel.HasUnsavedChanges = false;
+
+            // Change annotationViewModel IsExpandedState
+            annotationViewModel.IsExpanded = !annotationViewModel.IsExpanded;
+            var workspaceStateAfterChangingIsExpandedSecond = ViewModel.CurrentSpaceViewModel.HasUnsavedChanges;
+
+            // Assert
+            Assert.IsTrue(workspaceStateAfterChangingIsExpandedFirst);
+            Assert.IsTrue(workspaceStateAfterChangingIsExpandedSecond);
+            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
+        }
+
         #endregion
     }
 }

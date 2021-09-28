@@ -23,7 +23,7 @@
 				"Sequence": 1,
 				"Name": "library",
 				"Type": "tooltip",
-				"ShowLibrary":  true,
+				"ShowLibrary": true,
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
 				"Height": 250,
@@ -90,13 +90,15 @@
 					"PopupPlacement": "right",
 					"HostUIElementString": "dynamoMenu",
 					"VerticalPopupOffset": 50,
-					"HorizontalPopupOffset": 230
+					"HighlightColor": "#EF9362",
+					"HorizontalPopupOffset": 230,
+					"HeightBoxDelta": 3
 				},
-				"UIAutomation":{
-						"Sequence": 1,
-						"ControlType": "MenuItem",
-						"Name": "dynamoMenu",
-						"Action": "open"
+				"UIAutomation": {
+					"Sequence": 1,
+					"ControlType": "MenuItem",
+					"Name": "dynamoMenu",
+					"Action": "open"
 				}
 			},
 			{
@@ -114,13 +116,15 @@
 					"PopupPlacement": "right",
 					"HostUIElementString": "HelpMenu",
 					"VerticalPopupOffset": 20,
-					"HorizontalPopupOffset": 170
+					"HorizontalPopupOffset": 170,
+					"HighlightColor": "#EF9362",
+					"HeightBoxDelta": 3
 				},
-				"UIAutomation":{
-						"Sequence": 1,
-						"ControlType": "MenuItem",
-						"Name": "HelpMenu",
-						"Action": "open"
+				"UIAutomation": {
+					"Sequence": 1,
+					"ControlType": "MenuItem",
+					"Name": "HelpMenu",
+					"Action": "open"
 				}
 			},
 			{
