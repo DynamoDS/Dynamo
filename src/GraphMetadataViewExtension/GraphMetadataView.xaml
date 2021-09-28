@@ -22,7 +22,6 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converters:UriToStringConverter x:Key="UriToStringConverter" />
-            <converters:LinterExtensionDescriptorToVisibilityConverter x:Key="LinterExtensionDescriptorToVisibilityConverter" />
             <vr:UriValidationRule x:Key="UriValidationRule"/>
 
             <ControlTemplate x:Key="textboxErrorTemplate">

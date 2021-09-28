@@ -10,7 +10,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using ProtoFFI;
-using Dynamo.Utilities;
+//using Dynamo.Utilities;
 using System.IO;
 
 namespace ProtoScript.Runners
@@ -1549,24 +1549,24 @@ namespace ProtoScript.Runners
                 return;
             }
 
-            using (DebugModes.IsEnabled("DumpByteCode") ? new DebugByteCodeMode(runnerCore) : null)
-            {
-                // Get AST list that need to be executed
-                var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
+            //using (DebugModes.IsEnabled("DumpByteCode") ? new DebugByteCodeMode(runnerCore) : null)
+            //{
+            //    // Get AST list that need to be executed
+            //    var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
 
-                // Prior to execution, apply state modifications to the VM given the delta AST's
-                bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
-                changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
+            //    // Prior to execution, apply state modifications to the VM given the delta AST's
+            //    bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
+            //    changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
 
-                if (finalDeltaAstList.Any() || anyForcedExecutedNodes)
-                {
-                    CompileAndExecuteForDeltaExecution(finalDeltaAstList);
-                }
+            //    if (finalDeltaAstList.Any() || anyForcedExecutedNodes)
+            //    {
+            //        CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+            //    }
 
-                var guids = runtimeCore.ExecutedAstGuids.ToList();
-                executedAstGuids[syncData.SessionID] = guids;
-                runtimeCore.RemoveExecutedAstGuids();
-            }
+            //    var guids = runtimeCore.ExecutedAstGuids.ToList();
+            //    executedAstGuids[syncData.SessionID] = guids;
+            //    runtimeCore.RemoveExecutedAstGuids();
+            //}
         }
 
         private void SynchronizeInternal(string code)
