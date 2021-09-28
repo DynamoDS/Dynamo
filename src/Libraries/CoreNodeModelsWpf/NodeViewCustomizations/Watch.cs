@@ -98,7 +98,6 @@ namespace CoreNodeModelsWpf.Nodes
                 IsCheckable = true,
             };
             rawDataMenuItem.SetBinding(MenuItem.IsCheckedProperty, checkedBinding);
-            
             nodeView.MainContextMenu.Items.Add(rawDataMenuItem);
 
             var copyToClipboardMenuItem = new MenuItem
