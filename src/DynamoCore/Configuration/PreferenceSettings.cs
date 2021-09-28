@@ -409,14 +409,33 @@ namespace Dynamo.Configuration
         /// Settings that apply to view extensions.
         /// </summary>
         public List<ViewExtensionSettings> ViewExtensionSettings { get; set; }
+
+        private bool disableBuiltinPackages;
         /// <summary>
         /// If enabled Dynamo Built-In Packages will not be loaded.
         /// </summary>
-        public bool DisableBuiltinPackages { get; set; }
+        public bool DisableBuiltinPackages { 
+            get { return disableBuiltinPackages; }
+            set 
+            {
+                disableBuiltinPackages = value;
+                RaisePropertyChanged(nameof(DisableBuiltinPackages)); 
+            } 
+        }
+
+        private bool disableCustomPackageLocations;
         /// <summary>
         /// If enabled user's custom package locations will not be loaded.
         /// </summary>
-        public bool DisableCustomPackageLocations { get; set; }
+        public bool DisableCustomPackageLocations 
+        { 
+            get { return disableCustomPackageLocations; } 
+            set 
+            { 
+                disableCustomPackageLocations = value;
+                RaisePropertyChanged(nameof(DisableCustomPackageLocations));
+            } 
+        }
         /// <summary>
         /// Defines the default run type when opening a workspace
         /// </summary>

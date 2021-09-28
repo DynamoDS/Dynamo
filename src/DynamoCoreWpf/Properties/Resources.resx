@@ -556,6 +556,14 @@
     <value>Selected package path for download</value>
     <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory | Selected package path for download</comment>
   </data>
+  <data name="PreferencesViewDisableBuiltInPackages" xml:space="preserve">
+    <value>Disable Loading Built-In Packages</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | Disable Loading Built-In Packages</comment>
+  </data>
+  <data name="PreferencesViewDisableCustomPackages" xml:space="preserve">
+    <value>Disable Loading Custom Packages</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | Disable Loading Custom Packages</comment>
+  </data>
   <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
     <value>Square Centimeter</value>
     <comment>Setting menu | Square centimeter</comment>
@@ -2072,8 +2080,8 @@ Next assemblies were loaded several times:
   <data name="HideWiresPopupMenuItem" xml:space="preserve">
     <value>Hide Wires</value>
   </data>
-  <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
-    <value>Unhide Wires</value>
+  <data name="ShowWiresPopupMenuItem" xml:space="preserve">
+    <value>Show Wires</value>
   </data>
   <data name="DirectoryNotFound" xml:space="preserve">
     <value>Directory Not Found</value>
@@ -2637,5 +2645,8 @@ Delete the following packages: {2}?
   <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
     <value>Show Preview Bubbles</value>
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
+  </data>
+  <data name="NodeAutoCompleteNotAvailableForCollapsedGroups" xml:space="preserve">
+    <value>Node AutoComplete is not available on ports belonging to collapsed groups.</value>
   </data>
 </root>

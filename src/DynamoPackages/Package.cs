@@ -509,6 +509,11 @@ namespace Dynamo.PackageManager
                     .Any(guids.Contains);
         }
 
+        /// <summary>
+        /// Marks built-in package for unload.
+        /// Any other custom package will be marked for deletion.
+        /// </summary>
+        /// <param name="prefs"></param>
         internal void MarkForUninstall(IPreferences prefs)
         {
             if (BuiltInPackage) 
@@ -527,6 +532,12 @@ namespace Dynamo.PackageManager
             RaisePropertyChanged(nameof(LoadState));
         }
 
+        /// <summary>
+        /// Resets scheduled state to 'None' for given package.
+        /// Custom package will no longer be uninstalled.
+        /// Package load state will remain unaffected.
+        /// </summary>
+        /// <param name="prefs"></param>
         internal void UnmarkForUninstall(IPreferences prefs)
         {
             LoadState.ResetScheduledState();
@@ -535,14 +546,27 @@ namespace Dynamo.PackageManager
             RaisePropertyChanged(nameof(LoadState));
         }
 
-        internal void MarkForLoad(IPreferences prefs)
+        /// <summary>
+        /// Marks any given package for unload.
+        /// The package will not be marked for deletion.
+        /// </summary>
+        /// <param name="prefs"></param>
+        internal void MarkForUnload()
         {
-            if (BuiltInPackage)
-            {
-                LoadState.SetAsLoaded();
-                prefs.PackageDirectoriesToUninstall.Remove(RootDirectory);
-                RaisePropertyChanged(nameof(LoadState));
-            }
+            LoadState.SetScheduledForUnload();
+            RaisePropertyChanged(nameof(LoadState));
+        }
+
+        /// <summary>
+        /// Resets scheduled state to 'None' for given package.
+        /// Package will no longer be unloaded.
+        /// Package load state will remain unaffected.
+        /// </summary>
+        /// <param name="prefs"></param>
+        internal void UnmarkForUnload()
+        {
+            LoadState.ResetScheduledState();
+            RaisePropertyChanged(nameof(LoadState));
         }
 
         internal void SetAsLoaded()

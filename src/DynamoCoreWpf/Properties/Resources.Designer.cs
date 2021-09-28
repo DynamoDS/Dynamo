@@ -3867,6 +3867,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Node AutoComplete is not available on ports belonging to collapsed groups..
+        /// </summary>
+        public static string NodeAutoCompleteNotAvailableForCollapsedGroups {
+            get {
+                return ResourceManager.GetString("NodeAutoCompleteNotAvailableForCollapsedGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable Periodic Update.
         /// </summary>
         public static string NodeContextMenuEnablePeriodicUpdate {
@@ -5028,6 +5037,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disable Loading Built-In Packages.
+        /// </summary>
+        public static string PreferencesViewDisableBuiltInPackages {
+            get {
+                return ResourceManager.GetString("PreferencesViewDisableBuiltInPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable Loading Custom Packages.
+        /// </summary>
+        public static string PreferencesViewDisableCustomPackages {
+            get {
+                return ResourceManager.GetString("PreferencesViewDisableCustomPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Node Autocomplete.
         /// </summary>
         public static string PreferencesViewEnableNodeAutoComplete {
@@ -6004,6 +6031,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Wires.
+        /// </summary>
+        public static string ShowWiresPopupMenuItem {
+            get {
+                return ResourceManager.GetString("ShowWiresPopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please update the permissions or go to Preferences &gt;Node and Package Paths...&apos; to change your default directory..
         /// </summary>
         public static string SolutionToFolderNotWritatbleError {
@@ -6306,15 +6342,6 @@ namespace Dynamo.Wpf.Properties {
         public static string UndeprecatingPackageMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UndeprecatingPackageMessageBoxTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unhide Wires.
-        /// </summary>
-        public static string UnhideWiresPopupMenuItem {
-            get {
-                return ResourceManager.GetString("UnhideWiresPopupMenuItem", resourceCulture);
             }
         }
         
