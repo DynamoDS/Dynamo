@@ -2157,7 +2157,18 @@ namespace Dynamo.Models
         internal void AddToGroup(List<ModelBase> modelsToAdd)
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
-            var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.IsSelected);
+            var selectedGroups = workspaceAnnotations
+                .Where(x => x.IsSelected);
+
+            // If multiple groups are selected, chances are that we
+            // have a group that contains a nested group.
+            // If this is the case we want to make sure that we add the
+            // node to the parent folder.
+            var selectedGroup = selectedGroups.Count() > 1 ?
+                selectedGroups.FirstOrDefault(x => x.HasNestedGroups) :
+                selectedGroups.FirstOrDefault();
+
+            //var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.IsSelected);
             if (selectedGroup != null)
             {
                 foreach (var model in modelsToAdd)

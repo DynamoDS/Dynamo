@@ -973,6 +973,42 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
         }
 
+
+        [Test]
+        public void AddingNodeToGroupWithNestedGroupsWillAddNodeToParentGroup()
+        {
+            // Arrange
+            var parentGroupName = "GroupWithGroupedGroup";
+            var nestedGroupName = "GroupInsideOtherGroup";
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var parentGroupViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == parentGroupName);
+            var parentGroupModel = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.GUID == parentGroupViewModel.AnnotationModel.GUID);
+
+            var nestedGroupModel = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.AnnotationText == nestedGroupName);
+
+            // Act
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+
+            //verify the node was created
+            Assert.That(ViewModel.Model.CurrentWorkspace.Nodes.Contains(addNode));
+
+            var addNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
+                .FirstOrDefault(x => x.Id == addNode.GUID);
+
+            DynamoSelection.Instance.Selection.Clear();
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(parentGroupModel);
+
+            addNodeViewModel.AddToGroupCommand.Execute(null);
+
+            // Assert
+            Assert.IsTrue(parentGroupModel.ContainsModel(addNode));
+            Assert.IsFalse(nestedGroupModel.ContainsModel(addNode));
+        }
+
         #endregion
     }
 }
