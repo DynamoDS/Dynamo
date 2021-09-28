@@ -279,27 +279,19 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Checks if the user already has a package by the given name.
+        /// Checks if the package can be installed.
         /// </summary>
         /// <param name="packageName"></param>
         /// <returns></returns>
-        internal bool UserAlreadyHasPackageInstalled(string packageName)
+        internal bool CanInstallPackage(string name)
         {
-            PackageManagerExtension packageManagerExtension = PackageManagerClientViewModel.PackageManagerExtension;
-            
-            // This check fires before the package is added to PackageLoader.LocalPackages collection.
-            // Therefore, we need to check both the names of downloaded packages and recent downloads.
-
-            List<string> loadedPackageNames = packageManagerExtension.PackageLoader.LocalPackages
-                .Where(x => x.LoadState.State == PackageLoadState.StateTypes.Loaded)
-                .Select(x => x.Name)
-                .ToList();
-
-            List<string> recentlyDownloadedPackageNames = Downloads
-                .Select(x => x.Name)
-                .ToList();
-
-            return loadedPackageNames.Contains(packageName) || recentlyDownloadedPackageNames.Contains(packageName);
+            var localPackages = PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.LocalPackages;
+            return PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.LocalPackages
+                .Where(x => x.Name == name)// Matching name and version
+                .Where(x => !x.BuiltInPackage)// Non built-in packages
+                .Where(x => (x.LoadState.State == PackageLoadState.StateTypes.Loaded) ||
+                            (x.LoadState.State == PackageLoadState.StateTypes.Unloaded))
+                .Any();
         }
 
         public PackageSearchState _searchState; // TODO: Set private for 3.0.
@@ -412,6 +404,8 @@ namespace Dynamo.PackageManager
             PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
             PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded += 
                 ConflictingCustomNodePackageLoaded;
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.PackageAdded += OnPackageAddedOrRemoved;
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.PackageRemoved += OnPackageAddedOrRemoved;
         }
         
         /// <summary>
@@ -701,17 +695,21 @@ namespace Dynamo.PackageManager
                 foreach (var item in args.NewItems)
                 {
                     var handle = (PackageDownloadHandle)item;
-                    handle.PropertyChanged += (o, eventArgs) => this.ClearCompletedCommand.RaiseCanExecuteChanged();
+                    handle.PropertyChanged += (o, eventArgs) => ClearCompletedCommand.RaiseCanExecuteChanged();
                 }
             }
 
             if (PackageManagerClientViewModel.Downloads.Count == 0)
             {
-                this.ClearCompletedCommand.RaiseCanExecuteChanged();
+                ClearCompletedCommand.RaiseCanExecuteChanged();
             }
 
-            this.RaisePropertyChanged(nameof(HasDownloads));
+            foreach (var sr in SearchResults)
+            {
+                sr.CanInstall = !Downloads.Any(x => x.Name == sr.Model.Name);
+            }
 
+            RaisePropertyChanged(nameof(HasDownloads));
         }
 
         private void SearchResultsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -784,6 +782,8 @@ namespace Dynamo.PackageManager
             RequestShowFileDialog -= OnRequestShowFileDialog;
             SearchResults.CollectionChanged -= SearchResultsOnCollectionChanged;
             PackageManagerClientViewModel.Downloads.CollectionChanged -= DownloadsOnCollectionChanged;
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.PackageAdded -= OnPackageAddedOrRemoved;
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.PackageRemoved -= OnPackageAddedOrRemoved;
             PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded -=
                 ConflictingCustomNodePackageLoaded;
         }
@@ -825,13 +825,14 @@ namespace Dynamo.PackageManager
         {
             if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
 
-            var canLogin = PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider;
             List<PackageManagerSearchElementViewModel> list = null;
 
             if (!String.IsNullOrEmpty(query))
             {
                 list = Filter(SearchDictionary.Search(query)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin, UserAlreadyHasPackageInstalled))
+                    .Select(x => new PackageManagerSearchElementViewModel(x, 
+                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider, 
+                        CanInstallPackage(x.Name)))
                     .Take(MaxNumSearchResults))
                     .ToList();
             }
@@ -839,7 +840,9 @@ namespace Dynamo.PackageManager
             {
                 // with null query, don't show deprecated packages
                 list = Filter(LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin, UserAlreadyHasPackageInstalled)))
+                    .Select(x => new PackageManagerSearchElementViewModel(x, 
+                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider, 
+                        CanInstallPackage(x.Name))))
                     .ToList();
                 Sort(list, this.SortingKey);
             }
@@ -913,5 +916,12 @@ namespace Dynamo.PackageManager
             SearchResults[SelectedIndex].Model.Execute();
         }
 
+        private void OnPackageAddedOrRemoved(Package _)
+        {
+            foreach (var sr in SearchResults)
+            {
+                sr.CanInstall = CanInstallPackage(sr.Model.Name);
+            }
+        }
     }
 }
