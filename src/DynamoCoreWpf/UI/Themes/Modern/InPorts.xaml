@@ -59,7 +59,6 @@
                           IsEnabled="{Binding Path=IsEnabled}"
                           IsHitTestVisible="True"
                           Height="{Binding Path=Height}"
-                          Margin="{Binding Path=MarginThickness}"
                           ToolTipService.ShowDuration="60000">
                         <Rectangle Fill="Transparent"
                                    IsHitTestVisible="{Binding IsHitTestVisible}"
