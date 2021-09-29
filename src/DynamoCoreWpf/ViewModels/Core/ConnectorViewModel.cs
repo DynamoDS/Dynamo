@@ -547,7 +547,7 @@ namespace Dynamo.ViewModels
                 var portValue = model.Start.Owner.GetValue(model.Start.Index, workspaceViewModel.DynamoViewModel.EngineController);
                 if (portValue is null)
                 {
-                    ConnectorDataTooltip = "N/A";
+                    ConnectorDataTooltip = string.Empty;
                     return;
                 }
 

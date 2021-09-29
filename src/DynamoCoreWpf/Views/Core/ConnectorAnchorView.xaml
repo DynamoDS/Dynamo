@@ -68,7 +68,8 @@
                 Width="{Binding AnchorSize}"
                 ToolTipService.ShowDuration="{x:Static Member=System:Int32.MaxValue}">
             <Button.ToolTip>
-                <ToolTip Style="{StaticResource ConnectorTooltip}">
+                <ToolTip Style="{StaticResource ConnectorTooltip}"
+                         Visibility="{Binding DataToolTipText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource EmptyStringToCollapsedConverter}}">
                     <StackPanel Margin="5">
                         <TextBlock Text="{Binding DataToolTipText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ToolTipFirstLine}}"
                                    FontWeight="Bold"/>
