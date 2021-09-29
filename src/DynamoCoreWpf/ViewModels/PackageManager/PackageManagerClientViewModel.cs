@@ -193,6 +193,9 @@ namespace Dynamo.ViewModels
             get { return pmExtension ?? (pmExtension = DynamoViewModel.Model.GetPackageManagerExtension()); }
         }
 
+        internal event Action<PackageDownloadHandle> PackageInstallFinished;
+        internal event Action<PackageDownloadHandle> PackageDownloadStarted;
+
         public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
 
         public readonly DynamoViewModel DynamoViewModel;
@@ -711,10 +714,8 @@ namespace Dynamo.ViewModels
                     {
                         InstallPackage(matchingDownload.Result.handle, matchingDownload.Result.downloadPath, installPath);
                     }
-                   
                 }
             }
-
         }
 
         /// <summary>
@@ -733,6 +734,7 @@ namespace Dynamo.ViewModels
         /// <param name="packageDownloadHandle">package download handle</param>
         internal virtual Task<(PackageDownloadHandle handle, string downloadPath)> Download(PackageDownloadHandle packageDownloadHandle)
         {
+            PackageDownloadStarted?.Invoke(packageDownloadHandle);
             // We only want to display the last 3 downloaded packages to the user
             // in the form of toast notifications.
 
@@ -793,6 +795,10 @@ namespace Dynamo.ViewModels
                 {
                     packageDownloadHandle.Error(e.Message);
                 }
+                finally
+                {
+                    PackageInstallFinished?.Invoke(packageDownloadHandle);
+                }
             }));
         }
 
@@ -808,8 +814,6 @@ namespace Dynamo.ViewModels
             {
                 PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
-
-                dynPkg.LoadState.SetAsLoaded();
             }
             else
             {

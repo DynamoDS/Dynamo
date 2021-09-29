@@ -23,12 +23,19 @@ namespace Dynamo.PackageManager.ViewModels
 
         public new PackageManagerSearchElement Model { get; internal set; }
 
-
-        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : base(element)
+        /// <summary>
+        /// Alternative constructor which takes a Function object in order to
+        /// assist communication between the PackageManagerSearchViewModel
+        /// and the PackageManagerSearchElementViewModel.
+        /// </summary>
+        /// <param name="element">A PackageManagerSearchElement</param>
+        /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
+        /// <param name="canInstall">Whether a package can be installed.</param>
+        internal PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool canInstall) : base(element)
         {
             this.Model = element;
-
-            this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded );
+            
+            this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded);
 
             this.DownloadLatestCommand = new DelegateCommand(
                 () => OnRequestDownload(Model.Header.versions.Last(), false),
@@ -45,20 +52,11 @@ namespace Dynamo.PackageManager.ViewModels
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
 
-        }
-
-        /// <summary>
-        /// Alternative constructor which takes a Function object in order to
-        /// assist communication between the PackageManagerSearchViewModel
-        /// and the PackageManagerSearchElementViewModel.
-        /// </summary>
-        /// <param name="element">A PackageManagerSearchElement</param>
-        /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
-        /// <param name="canInstall">Whether a package can be installed.</param>
-        internal PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool canInstall) : this(element, canLogin)
-        {
             CanInstall = canInstall;
         }
+
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : this(element, canLogin, true)
+        {}
 
         private bool canInstall;
         /// <summary>
