@@ -13,9 +13,14 @@ namespace Dynamo.Wpf.Views.GuidedTour
     /// </summary>
     public partial class WebBrowserWindow : Popup
     {
+        //This variable represents a sum of the header and footer of the main popup to compensate the hight of this popup
         private const int headerAndFooterCompensation = 150;
+        //This variable represents the width size of the tooltip to relocate this popup
         private const int tooltipOffset = 10;
+        //The headers size of the main popup to add an offset and adjust this popup
         private const int headerOffset = 50;
+        //Directory where the html files are located
+        private const string htmlFileDirectory = "file:///{0}/Views/GuidedTour/HtmlPages/{1}.html";
         public WebBrowserWindow(PopupWindowViewModel viewModel, HostControlInfo hInfo)
         {
             InitializeComponent();
@@ -34,7 +39,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             VerticalOffset = hInfo.VerticalPopupOffSet + headerOffset;
 
             string curDir = Directory.GetCurrentDirectory();
-            Uri webBrowserUri = new Uri(string.Format("file:///{0}/Views/GuidedTour/HtmlPages/{1}.html", curDir, hInfo.HtmlPage));
+            Uri webBrowserUri = new Uri(string.Format(htmlFileDirectory, curDir, hInfo.HtmlPage));
             webBrowser.Navigate(webBrowserUri);
         }
     }
