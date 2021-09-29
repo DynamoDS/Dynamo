@@ -1,4 +1,6 @@
 ﻿using Dynamo.ViewModels;
+using System;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,10 +22,13 @@ namespace Dynamo.Controls
         private void InitializeCommands(object sender, RoutedEventArgs e)
         {
             ViewModel = this.DataContext as ConnectorContextMenuViewModel;
+            MainContextMenu.DataContext = ViewModel;
+            MainContextMenu.IsOpen = true;
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
+            MainContextMenu.MouseLeave -= OnMouseLeave;
             ViewModel.DisposeViewModel();
         }
     }
