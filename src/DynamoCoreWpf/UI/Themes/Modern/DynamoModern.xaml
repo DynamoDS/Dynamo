@@ -11,6 +11,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
 
     <!--  Control colors.  -->
@@ -2185,9 +2186,7 @@
     <SolidColorBrush x:Key="PreferencesWindowTabSelectedColor" Color="#ADE4DE" />
     <SolidColorBrush x:Key="PreferencesWindowButtonPressedColor" Color="#0778B0" />
     <SolidColorBrush x:Key="PreferencesWindowButtonMouseOverFontColor" Color="#CDCBCB" />
-    <SolidColorBrush x:Key="CloseButtonMouseOverBackground" Color="#E81123" />
-    <SolidColorBrush x:Key="CloseButtonPressed" Color="#B70F1B" />
-    <SolidColorBrush x:Key="CloseButtonMouseOverForeground" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="CloseButtonMouseOverForeground" Color="{StaticResource Blue300Brush}" />
     <SolidColorBrush x:Key="TabItemUnSelected" Color="DarkGray" />
     <SolidColorBrush x:Key="SecondaryGray" Color="#707070" />
     <SolidColorBrush x:Key="SemiTransparent" Color="#80000000" />
@@ -2223,45 +2222,26 @@
         <Setter Property="FontSize" Value="14" />
     </Style>
 
-    <Style x:Key="CaptionButtonStyleClose" TargetType="Button">
+    <Style x:Key="CloseButtonStyle" TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid x:Name="LayoutRoot"
-                          Width="46"
-                          Height="40"
+                          Width="20"
+                          Height="20"
                           Background="Transparent">
-                        <TextBlock x:Name="txt"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontFamily="Segoe MDL2 Assets"
-                                   FontSize="14"
-                                   Foreground="{StaticResource PreferencesWindowFontColor}"
-                                   RenderOptions.ClearTypeHint="Auto"
-                                   Text="{TemplateBinding Content}"
-                                   TextOptions.TextFormattingMode="Display"
-                                   TextOptions.TextRenderingMode="Aliased" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="LayoutRoot" Property="Background" Value="{StaticResource CloseButtonMouseOverBackground}" />
                             <Setter TargetName="txt" Property="Foreground" Value="{StaticResource CloseButtonMouseOverForeground}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="LayoutRoot" Property="Background" Value="{StaticResource CloseButtonPressed}" />
                             <Setter TargetName="txt" Property="Foreground" Value="{StaticResource CloseButtonMouseOverForeground}" />
-                            <Setter TargetName="txt" Property="FontSize" Value="12" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
-
-    <Style x:Key="CloseButtonStyle"
-           BasedOn="{StaticResource CaptionButtonStyleClose}"
-           TargetType="Button">
-        <Setter Property="Content" Value="&#xE8BB;" />
     </Style>
 
     <Style x:Key="PopupButtonStyle" TargetType="Button">
