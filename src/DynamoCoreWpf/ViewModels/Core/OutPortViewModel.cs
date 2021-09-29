@@ -58,7 +58,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (IsPortCondensed)
+                if (IsPortCondensed  || PortName.Equals(">"))
                 {
                     return Visibility.Collapsed;
                 }
