@@ -2168,7 +2168,6 @@ namespace Dynamo.Models
                 selectedGroups.FirstOrDefault(x => x.HasNestedGroups) :
                 selectedGroups.FirstOrDefault();
 
-            //var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.IsSelected);
             if (selectedGroup != null)
             {
                 foreach (var model in modelsToAdd)
