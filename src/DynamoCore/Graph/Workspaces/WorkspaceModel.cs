@@ -800,7 +800,12 @@ namespace Dynamo.Graph.Workspaces
                 var externalFiles = new Dictionary<object, DependencyInfo>();
 
                 foreach (var node in Nodes)
-                { 
+                {
+                    if (externalFilesDictionary.TryGetValue(node.GUID, out var dependencyInfo)) 
+                    {
+                        externalFiles[dependencyInfo.Name] = dependencyInfo;
+                    }
+
                     if (node is CodeBlockNodeModel codeBlockNode)
                     {
                         var lines = codeBlockNode.Code.Split('\n');
@@ -810,7 +815,7 @@ namespace Dynamo.Graph.Workspaces
                             //ignore the escape chars.
                             string lineWithoutEscapeCharacters = line.Replace("\\\\", "\\").Replace("\"", "");
 
-                            if (File.Exists(lineWithoutEscapeCharacters.Substring(0, lineWithoutEscapeCharacters.Length - 1)))
+                            if (lineWithoutEscapeCharacters.Length > 1 && File.Exists(lineWithoutEscapeCharacters.Substring(0, lineWithoutEscapeCharacters.Length - 1)))
                             {
                                 var path = lineWithoutEscapeCharacters.Substring(0, lineWithoutEscapeCharacters.Length - 1);
                                 var externalFileName = Path.GetFileName(path);
@@ -823,6 +828,25 @@ namespace Dynamo.Graph.Workspaces
                                 externalFiles[externalFileName].AddDependent(node.GUID);
                                 externalFiles[externalFileName].ReferenceType = ReferenceType.External;
                             }
+                        }
+                    }
+
+                    if(node.CachedValue != null)
+                    {
+                        var nodeValue = node.CachedValue.Data;
+
+                        if (nodeValue is string && File.Exists(nodeValue.ToString()))
+                        {
+                            var path = nodeValue.ToString();
+                            var externalFileName = Path.GetFileName(path);
+
+                            if (!externalFiles.ContainsKey(externalFileName))
+                            {
+                                externalFiles[externalFileName] = new DependencyInfo(externalFileName, path);
+                            }
+
+                            externalFiles[externalFileName].AddDependent(node.GUID);
+                            externalFiles[externalFileName].ReferenceType = ReferenceType.External;
                         }
                     }
                 }
