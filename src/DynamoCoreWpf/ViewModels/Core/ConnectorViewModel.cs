@@ -31,6 +31,7 @@ namespace Dynamo.ViewModels
         private double panelY;
         private Point mousePosition;
         private ConnectorAnchorViewModel connectorAnchorViewModel;
+        private ConnectorContextMenuViewModel connectorContextMenuViewModel;
         private readonly WorkspaceViewModel workspaceViewModel;
         private PortModel activeStartPort;
         private ConnectorModel model;
@@ -123,9 +124,18 @@ namespace Dynamo.ViewModels
             get { return connectorAnchorViewModel; }
             private set { connectorAnchorViewModel = value; RaisePropertyChanged(nameof(ConnectorAnchorViewModel)); }
         }
-/// <summary>
-/// Used to point to the active start port corresponding to this connector
-/// </summary>
+
+        /// <summary>
+        /// Instantiates the context menu when required.
+        /// </summary>
+        public ConnectorContextMenuViewModel ConnectorContextMenuViewModel
+        {
+            get { return connectorContextMenuViewModel; }
+            private set { connectorContextMenuViewModel = value; RaisePropertyChanged(nameof(ConnectorContextMenuViewModel)); }
+        }
+        /// <summary>
+        /// Used to point to the active start port corresponding to this connector
+        /// </summary>
         public PortModel ActiveStartPort { get { return activeStartPort; } internal set { activeStartPort = value; } }
 
         /// <summary>
@@ -661,6 +671,23 @@ namespace Dynamo.ViewModels
             ConnectorAnchorViewModel = null;
         }
 
+        internal void CreateContextMenu()
+        {
+            ConnectorContextMenuViewModel = new ConnectorContextMenuViewModel(this)
+            {
+                CurrentPosition = MousePosition,
+                IsCollapsed = this.IsCollapsed
+            };
+            ConnectorContextMenuViewModel.RequestDispose += DisposeContextMenu;
+        }
+
+        private void DisposeContextMenu(object arg1, EventArgs arg2)
+        {
+           // ConnectorContextMenuViewModel.Dispose();
+            ConnectorContextMenuViewModel.RequestDispose -= DisposeContextMenu;
+            ConnectorContextMenuViewModel = null;
+        }
+
         /// <summary>
         /// If hover == true, then after the timer is up something will appear.
         /// IF set to false, the object in question will disappear.
@@ -775,6 +802,15 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Instantiates this connector's ContextMenu.
+        /// </summary>
+        /// <param name="parameters"></param>
+        private void InstantiateContextMenuCommandExecute(object parameters)
+        {
+            CreateContextMenu();
+        }
+
+        /// <summary>
         /// Helper function ssed for placing (re-placing) connector
         /// pins when a WatchNode is placed in the center of a connector.
         /// </summary>
@@ -813,7 +849,13 @@ namespace Dynamo.ViewModels
             MouseHoverCommand = new DelegateCommand(MouseHoverCommandExecute, CanRunMouseHover);
             MouseUnhoverCommand = new DelegateCommand(MouseUnhoverCommandExecute, CanRunMouseUnhover);
             PinConnectorCommand = new DelegateCommand(PinConnectorCommandExecute, x => true);
-            ConnectorSelectionCommand = new DelegateCommand(ConnectorSelectionCommandExecute, x => true);
+            InstantiateContextMenuCommand = new DelegateCommand(InstantiateContextMenuCommandExecute, x => !IsConnecting);
+            ConnectorSelectionCommand = new DelegateCommand(ConnectorSelectionCommandExecute, x => !IsConnecting);
+        }
+
+        private void ConnectorSelectionCommandExecute(object obj)
+        {
+            
         }
 
         #endregion
