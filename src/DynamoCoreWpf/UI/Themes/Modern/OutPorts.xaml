@@ -44,10 +44,7 @@
                 can live in the lowest level of Z-Order
             -->
             <Border x:Name="mainBorder" 
-                    SnapsToDevicePixels="True"
-                    Height="29px"
-                    CornerRadius="11,0,0,11"
-                    BorderThickness="1,1,0,1">
+                    SnapsToDevicePixels="True">
                 <!--  DockPanel that positions the visible port name and the ContextArrowGrid  -->
                 <DockPanel x:Name="mainDockPanel" FlowDirection="LeftToRight">
                     <Grid Name="portNameGrid"
@@ -145,6 +142,9 @@
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Background" Value="{Binding PortBackgroundColor, UpdateSourceTrigger=PropertyChanged}" />
+                        <Setter Property="Height" Value="29px" />
+                        <Setter Property ="CornerRadius" Value ="11,0,0,11" />
+                        <Setter Property ="BorderThickness" Value ="1,1,0,1" />
                         <Setter Property="BorderBrush" Value="{Binding PortBorderBrushColor, UpdateSourceTrigger=PropertyChanged}" />
                         <Style.Triggers>
                             <!--  Used for styling output ports when they are 'condensed' i.e. on a code block  -->
@@ -169,12 +169,12 @@
             <Border x:Name="mainBorderHighlightOverlay"
                     BorderBrush="Transparent"
                     Opacity="0.2"
-                    CornerRadius="11,0,0,11"
-                    BorderThickness="1,1,0,1"
                     SnapsToDevicePixels="True">
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Height" Value="29px" />
+                        <Setter Property="CornerRadius" Value="11,0,0,11" />
+                        <Setter Property="BorderThickness" Value="1,1,0,1" />
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="White" />
@@ -186,7 +186,6 @@
                                 <Setter Property="CornerRadius" Value="0" />
                                 <Setter Property="BorderThickness" Value="0" />
                                 <Setter Property="Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
-                                <Setter Property="Margin" Value="0" />
                                 <Setter Property="Width" Value="20px" />
                             </DataTrigger>
                         </Style.Triggers>
