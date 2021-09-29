@@ -65,6 +65,7 @@
     <controls:PackageSearchStateToStringConverter x:Key="PackageSearchStateToStringConverter" />
     <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
     <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter" />
+    <controls:InstalledButtonTextConverter x:Key="InstalledButtonTextConverter" />
     <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter" />
     <controls:PackageUploadStateToStringConverter x:Key="PackageUploadStateToStringConverter" />

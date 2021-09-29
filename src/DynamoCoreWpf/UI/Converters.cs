@@ -110,25 +110,15 @@ namespace Dynamo.Controls
     /// </summary>
     public class DependencyListToStringConverter : IValueConverter
     {
-        private readonly string[] PythonEngineList = { PythonNodeModels.PythonEngineVersion.CPython3.ToString(), PythonNodeModels.PythonEngineVersion.IronPython2.ToString() };
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string depString = string.Empty;
-            bool flag = false;
-            if (value != null)
-            {
-                List<string> depList = (List<string>)value;
-                foreach (var dep in depList)
-                {
-                    if (PythonEngineList.IndexOf(dep) != -1)
-                    {
-                        depString += dep + ", ";
-                        flag = true;
-                    }
-                }
-                return flag ? depString.Remove(depString.Length - 2) : null;
-            }
-            return null;
+            if (value == null) return Wpf.Properties.Resources.PackageManagerPackageHasNoDependencies;
+
+            List<string> depList = (List<string>)value;
+
+            if(depList.Count < 1) return Wpf.Properties.Resources.PackageManagerPackageHasNoDependencies;
+
+            return string.Join(Environment.NewLine, depList);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -307,6 +297,29 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter,
           CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Determines what the Install button says on the Package Manager Search.
+    /// If the package is installed it says 'Installed', otherwise 'Install'.
+    /// </summary>
+    public class InstalledButtonTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (!(value is bool booleanValue)) return null;
+            
+            return booleanValue
+                ? Wpf.Properties.Resources.PackageDownloadStateInstalled
+                : Wpf.Properties.Resources.PackageManagerInstall;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
         {
             return null;
         }
@@ -1181,6 +1194,60 @@ namespace Dynamo.Controls
             if ((bool)value)
                 return Visibility.Visible;
             return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Used in the Dynamo package manager search window to hide or show a label next to each package's name.
+    /// The label only appears if the package has been recently created/updated (in the last 30 days).
+    /// Label text is set via the DateToPackageLabelConverter.
+    /// </summary>
+    public class DateToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is string)) return Visibility.Collapsed;
+            
+            DateTime.TryParse(value.ToString(), out DateTime dateTime);
+
+            TimeSpan difference = DateTime.Now - dateTime;
+
+            if (difference.TotalDays >= 30) return Visibility.Collapsed;
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Used to determine the text which appears next to a package when it's either
+    /// brand new or has been recently updated.
+    /// If the package was updated in the last 30 days it says 'Updated'.
+    /// If the package is brand new (only has 1 version) and is less than 30 days it says 'New'.
+    /// </summary>
+    public class DateToPackageLabelConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is PackageManagerSearchElement packageManagerSearchElement)) return Visibility.Collapsed;
+
+            DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateLastUpdated);
+            TimeSpan difference = DateTime.Now - dateLastUpdated;
+            int numberVersions = packageManagerSearchElement.Header.num_versions;
+
+            if (numberVersions > 1)
+            {
+                return difference.TotalDays >= 30 ? "" : Wpf.Properties.Resources.PackageManagerPackageUpdated;
+            }
+            return Wpf.Properties.Resources.PackageManagerPackageNew;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
