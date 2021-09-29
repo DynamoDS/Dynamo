@@ -629,6 +629,7 @@
                         </MenuItem>
                         <MenuItem x:Name="InteractiveGuidesMenuItem"
                                   Focusable="False"
+                                  Command="{Binding DisplayInteractiveGuideCommand}"
                                   Header="{x:Static p:Resources.InteractiveGuides}">
                             <MenuItem x:Name="GetStartedMenuItem"
                                       Focusable="False"

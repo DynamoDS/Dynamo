@@ -263,6 +263,9 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("ShowStartPage");
                 if (DisplayStartPageCommand != null)
                     DisplayStartPageCommand.RaiseCanExecuteChanged();
+
+                if (DisplayInteractiveGuideCommand != null)
+                    DisplayInteractiveGuideCommand.RaiseCanExecuteChanged();
             }
         }
 
