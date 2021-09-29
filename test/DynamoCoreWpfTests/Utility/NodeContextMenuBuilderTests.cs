@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Controls;
 using Dynamo.Graph.Nodes;
@@ -9,6 +10,71 @@ namespace DynamoCoreWpfTests.Utility
 {
     public class NodeContextMenuBuilderTests : DynamoTestUIBase
     {
+        /// <summary>
+        /// Checks that the Build method constructs the node context menu as expected.
+        /// </summary>
+        [Test]
+        public void TestBuildContextMenu()
+        {
+            // Arrange
+            var dummyNode = new DummyNode();
+
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(dummyNode, false);
+
+            Assert.That(ViewModel.Model.CurrentWorkspace.Nodes.Contains(dummyNode));
+
+            var dummyNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
+                .FirstOrDefault(x => x.Id == dummyNode.GUID);
+
+            ContextMenu contextMenu = new ContextMenu();
+
+            // Act
+            NodeContextMenuBuilder.Build
+            (
+                contextMenu,
+                dummyNodeViewModel,
+                new OrderedDictionary()
+            );
+
+            // Assert
+            List<string> menuItemNames = contextMenu.Items
+                .OfType<MenuItem>()
+                .Select(x => x.Header.ToString())
+                .ToList();
+
+            CollectionAssert.Contains(menuItemNames, Dynamo.Wpf.Properties.Resources.ContextMenuDelete);
+            CollectionAssert.Contains(menuItemNames, Dynamo.Wpf.Properties.Resources.ContextMenuGroups);
+            CollectionAssert.Contains(menuItemNames, Dynamo.Wpf.Properties.Resources.NodesRunStatus);
+            CollectionAssert.Contains(menuItemNames, Dynamo.Wpf.Properties.Resources.NodeContextMenuShowLabels);
+            CollectionAssert.Contains(menuItemNames, Dynamo.Wpf.Properties.Resources.NodeContextMenuRenameNode);
+            CollectionAssert.Contains(menuItemNames, Dynamo.Wpf.Properties.Resources.NodeContextMenuHelp);
+
+            if (dummyNodeViewModel.ShowsVisibilityToggles)
+            {
+                CollectionAssert.Contains(menuItemNames, Dynamo.Wpf.Properties.Resources.NodeContextMenuShowLabels);
+            }
+            
+            if (dummyNodeViewModel.ArgumentLacing != LacingStrategy.Disabled)
+            {
+                CollectionAssert.Contains(menuItemNames, Dynamo.Wpf.Properties.Resources.ContextMenuLacing);
+            }
+            
+            if (dummyNodeViewModel.IsInput)
+            {
+                CollectionAssert.Contains(menuItemNames, Dynamo.Wpf.Properties.Resources.NodeContextMenuIsInput);
+            }
+            
+            if (dummyNodeViewModel.IsOutput)
+            {
+                CollectionAssert.Contains(menuItemNames, Dynamo.Wpf.Properties.Resources.NodeContextMenuIsOutput);
+            }
+
+            int expectedSeparatorsCount = dummyNodeViewModel.IsInput || dummyNodeViewModel.IsOutput ? 2 : 1;
+
+            List<Separator> separators = contextMenu.Items.OfType<Separator>().ToList();
+            Assert.AreEqual(expectedSeparatorsCount, separators.Count);
+        }
+
         /// <summary>
         /// Checks that the NodeContextMenuItemBuilder is able to load MenuItems which come from the
         /// NodeViewCustomization process. Builds one ContextMenu without custom items, and another with two of them.
