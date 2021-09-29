@@ -185,6 +185,7 @@
     <Compile Include="SliderViewModelTests.cs" />
     <Compile Include="StringToDateTimeOffsetConverterTest.cs" />
     <Compile Include="Utility\DispatcherUtil.cs" />
+    <Compile Include="Utility\NodeContextMenuBuilderTests.cs" />
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
     <Compile Include="ViewExtensions\GraphMetadataViewExtensionTests.cs" />

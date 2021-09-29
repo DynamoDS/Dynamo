@@ -18,12 +18,12 @@ namespace Dynamo.Wpf.Utilities
         /// <summary>
         /// A reference to the NodeViewModel whose ContextMenu is being built.
         /// </summary>
-        private static NodeViewModel NodeViewModel { get; set; }
+        internal static NodeViewModel NodeViewModel { get; set; }
 
         /// <summary>
         /// A reference to the ContextMenu to which items are being added. 
         /// </summary>
-        private static ContextMenu ContextMenu { get; set; }
+        internal static ContextMenu ContextMenu { get; set; }
 
         // Builds the node's Context Menu, including re-adding any injected MenuItems from
         // the NodeViewCustomization process.
@@ -55,17 +55,17 @@ namespace Dynamo.Wpf.Utilities
             AddContextMenuSeparator();
             AddContextMenuItem(BuildHelpMenuItem());
         }
-        
+
         /// <summary>
         /// Adds items to a context menu.
         /// </summary>
         /// <param name="menuItem"></param>
-        private static void AddContextMenuItem(MenuItem menuItem) => ContextMenu.Items.Add(menuItem);
+        internal static void AddContextMenuItem(MenuItem menuItem) => ContextMenu.Items.Add(menuItem);
 
         /// <summary>
         /// Adds a new separator a context menu.
         /// </summary>
-        private static void AddContextMenuSeparator() => ContextMenu.Items.Add(new Separator());
+        internal static void AddContextMenuSeparator() => ContextMenu.Items.Add(new Separator());
 
         /// <summary>
         /// Creates a new MenuItem in the node's Context Menu.
@@ -81,7 +81,7 @@ namespace Dynamo.Wpf.Utilities
         /// <param name="visibility"></param>
         /// <param name="isEnabled"></param>
         /// <returns></returns>
-        private static MenuItem CreateMenuItem
+        internal static MenuItem CreateMenuItem
         (
             string name = null,
             string header = null,
@@ -107,7 +107,7 @@ namespace Dynamo.Wpf.Utilities
             return menuItem;
         }
 
-        private static MenuItem BuildDeleteMenuItem()
+        internal static MenuItem BuildDeleteMenuItem()
         {
             return CreateMenuItem
             (
@@ -121,7 +121,7 @@ namespace Dynamo.Wpf.Utilities
             );
         }
 
-        private static MenuItem BuildGroupsMenuItem()
+        internal static MenuItem BuildGroupsMenuItem()
         {
             MenuItem groupsMenuItem = CreateMenuItem(header: Properties.Resources.ContextMenuGroups);
 
@@ -162,7 +162,7 @@ namespace Dynamo.Wpf.Utilities
             return groupsMenuItem;
         }
 
-        private static MenuItem BuildPreviewMenuItem()
+        internal static MenuItem BuildPreviewMenuItem()
         {
             MenuItem previewMenuItem = CreateMenuItem
             (
@@ -185,7 +185,7 @@ namespace Dynamo.Wpf.Utilities
             return previewMenuItem;
         }
 
-        private static MenuItem BuildFreezeMenuItem()
+        internal static MenuItem BuildFreezeMenuItem()
         {
             MenuItem freezeMenuItem = CreateMenuItem
             (
@@ -214,7 +214,7 @@ namespace Dynamo.Wpf.Utilities
             return freezeMenuItem;
         }
 
-        private static MenuItem BuildShowLabelsMenuItem()
+        internal static MenuItem BuildShowLabelsMenuItem()
         {
             MenuItem showLabelsMenuItem = CreateMenuItem
             (
@@ -237,7 +237,7 @@ namespace Dynamo.Wpf.Utilities
             return showLabelsMenuItem;
         }
 
-        private static MenuItem BuildRenameMenuItem()
+        internal static MenuItem BuildRenameMenuItem()
         {
             MenuItem renameMenuItem = CreateMenuItem
             (
@@ -252,7 +252,7 @@ namespace Dynamo.Wpf.Utilities
             return renameMenuItem;
         }
 
-        private static MenuItem BuildLacingMenuItem()
+        internal static MenuItem BuildLacingMenuItem()
         {
             MenuItem lacingMenuItem = CreateMenuItem(header: Properties.Resources.ContextMenuLacing);
 
@@ -378,7 +378,7 @@ namespace Dynamo.Wpf.Utilities
             return null;
         }
 
-        private static void AddInjectedNodeViewCustomizationMenuItems(OrderedDictionary nodeViewCustomizationMenuItems)
+        internal static void AddInjectedNodeViewCustomizationMenuItems(OrderedDictionary nodeViewCustomizationMenuItems)
         {
             foreach (DictionaryEntry keyValuePair in nodeViewCustomizationMenuItems)
             {
@@ -386,7 +386,7 @@ namespace Dynamo.Wpf.Utilities
             }
         }
 
-        private static MenuItem BuildIsInputMenuItem()
+        internal static MenuItem BuildIsInputMenuItem()
         {
             return CreateMenuItem
             (
@@ -402,7 +402,7 @@ namespace Dynamo.Wpf.Utilities
             );
         }
 
-        private static MenuItem BuildIsOutputMenuItem()
+        internal static MenuItem BuildIsOutputMenuItem()
         {
             return CreateMenuItem
             (
@@ -418,7 +418,7 @@ namespace Dynamo.Wpf.Utilities
             );
         }
 
-        private static MenuItem BuildHelpMenuItem()
+        internal static MenuItem BuildHelpMenuItem()
         {
             return CreateMenuItem
             (
