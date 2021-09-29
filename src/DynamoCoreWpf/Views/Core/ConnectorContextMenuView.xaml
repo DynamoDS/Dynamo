@@ -32,10 +32,10 @@
                                 <Setter Property="IsChecked" Value="False"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsCollapsed}" Value="False">
-                                        <Setter Property="Header" Value="Hide Wire"/>
+                                        <Setter Property="Header" Value="{x:Static props:Resources.ConnectorContextMenuHeaderHideConnector}"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsCollapsed}" Value="True">
-                                        <Setter Property="Header" Value="Show Wire"/>
+                                        <Setter Property="Header" Value="{x:Static props:Resources.ConnectorContextMenuHeaderShowConnector}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
