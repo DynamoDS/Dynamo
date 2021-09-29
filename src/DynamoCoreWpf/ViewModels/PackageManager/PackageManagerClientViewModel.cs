@@ -193,8 +193,7 @@ namespace Dynamo.ViewModels
             get { return pmExtension ?? (pmExtension = DynamoViewModel.Model.GetPackageManagerExtension()); }
         }
 
-        internal event Action<PackageDownloadHandle> PackageInstallFinished;
-        internal event Action<PackageDownloadHandle> PackageDownloadStarted;
+        internal event Action<PackageDownloadHandle> PackageInstallNotification;
 
         public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
 
@@ -734,7 +733,6 @@ namespace Dynamo.ViewModels
         /// <param name="packageDownloadHandle">package download handle</param>
         internal virtual Task<(PackageDownloadHandle handle, string downloadPath)> Download(PackageDownloadHandle packageDownloadHandle)
         {
-            PackageDownloadStarted?.Invoke(packageDownloadHandle);
             // We only want to display the last 3 downloaded packages to the user
             // in the form of toast notifications.
 
@@ -743,9 +741,10 @@ namespace Dynamo.ViewModels
             Downloads.Add(packageDownloadHandle);
 
             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
-
+       
             return Task.Factory.StartNew(() =>
             {
+                PackageInstallNotification?.Invoke(packageDownloadHandle);
                 // Attempt to download package
                 string pathDl;
                 var res = Model.DownloadPackage(packageDownloadHandle.Id, packageDownloadHandle.VersionName, out pathDl);
@@ -754,8 +753,10 @@ namespace Dynamo.ViewModels
                 if (!res.Success)
                 {
                     packageDownloadHandle.Error(res.Error);
-                    return (handle:packageDownloadHandle, downloadPath: string.Empty);
+                    pathDl = string.Empty;
                 }
+
+                PackageInstallNotification?.Invoke(packageDownloadHandle);
                 return (handle: packageDownloadHandle, downloadPath: pathDl);
             });
         }
@@ -771,6 +772,8 @@ namespace Dynamo.ViewModels
             {
                 try
                 {
+                    PackageInstallNotification?.Invoke(packageDownloadHandle);
+
                     packageDownloadHandle.Done(downloadPath);
                     var firstOrDefault = PackageManagerExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
                     if (firstOrDefault != null)
@@ -797,7 +800,7 @@ namespace Dynamo.ViewModels
                 }
                 finally
                 {
-                    PackageInstallFinished?.Invoke(packageDownloadHandle);
+                    PackageInstallNotification?.Invoke(packageDownloadHandle);
                 }
             }));
         }

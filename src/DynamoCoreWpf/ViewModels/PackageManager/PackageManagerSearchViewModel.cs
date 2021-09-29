@@ -285,12 +285,26 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         internal bool CanInstallPackage(string name)
         {
-            // Return true if there are no matching Loaded/Unloaded non built-in packages
+            // Return true if there are no matching non built-in packages
             return false == PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.LocalPackages
-                .Where(x => x.Name == name)
-                .Where(x => !x.BuiltInPackage)
-                .Any(x => x.LoadState.State == PackageLoadState.StateTypes.Loaded ||
-                          x.LoadState.State == PackageLoadState.StateTypes.Unloaded);
+                .Any(x => (x.Name == name) && !x.BuiltInPackage);
+        }
+
+        /// <summary>
+        /// Checks if the package corresponding to the PackageDownloadHandle can be installed.
+        /// </summary>
+        /// <param name="packageName"></param>
+        /// <returns></returns>
+        internal bool CanInstallPackage(PackageDownloadHandle dh)
+        {
+            switch (dh.DownloadState)
+            {
+                case PackageDownloadHandle.State.Uninitialized:
+                case PackageDownloadHandle.State.Error:
+                    return true;
+                default:
+                    return CanInstallPackage(dh.Name);
+            }
         }
 
         public PackageSearchState _searchState; // TODO: Set private for 3.0.
@@ -385,7 +399,6 @@ namespace Dynamo.PackageManager
             ViewPackageDetailsCommand = new DelegateCommand<object>(ViewPackageDetails);
             ClearSearchTextBoxCommand = new DelegateCommand<object>(ClearSearchTextBox);
             ClearDownloadToastNotificationCommand = new DelegateCommand<object>(ClearDownloadToastNotification);
-            SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = string.Empty;
             SortingKey = PackageSortingKey.LastUpdate;
             SortingDirection = PackageSortingDirection.Ascending;
@@ -398,13 +411,8 @@ namespace Dynamo.PackageManager
         /// </summary>
         public PackageManagerSearchViewModel(PackageManagerClientViewModel client) : this()
         {
-            this.PackageManagerClientViewModel = client;
+            PackageManagerClientViewModel = client;
             HostFilter = InitializeHostFilter();
-            PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
-            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded += 
-                ConflictingCustomNodePackageLoaded;
-            PackageManagerClientViewModel.PackageInstallFinished += PackageInstallFinishedHandler;
-            PackageManagerClientViewModel.PackageDownloadStarted += PackageDownloadStartedHandler;
         }
         
         /// <summary>
@@ -641,13 +649,13 @@ namespace Dynamo.PackageManager
             
         }
 
-        private void AddToSearchResults(PackageManagerSearchElementViewModel element)
+        internal void AddToSearchResults(PackageManagerSearchElementViewModel element)
         {
             element.RequestDownload += this.PackageOnExecuted;
             this.SearchResults.Add(element);
         }
 
-        private void ClearSearchResults()
+        internal void ClearSearchResults()
         {
             foreach (var ele in this.SearchResults)
             {
@@ -771,15 +779,22 @@ namespace Dynamo.PackageManager
             SelectedIndex = SelectedIndex - 1;
         }
 
-        internal void UnregisterHandlers()
+        internal void RegisterTransientHandlers()
         {
-            RequestShowFileDialog -= OnRequestShowFileDialog;
+            SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
+            PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded +=
+                ConflictingCustomNodePackageLoaded;
+            PackageManagerClientViewModel.PackageInstallNotification += PackageInstallNotificationHandler;
+        }
+
+        internal void UnregisterTransientHandlers()
+        {
             SearchResults.CollectionChanged -= SearchResultsOnCollectionChanged;
             PackageManagerClientViewModel.Downloads.CollectionChanged -= DownloadsOnCollectionChanged;
             PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded -=
                 ConflictingCustomNodePackageLoaded;
-            PackageManagerClientViewModel.PackageInstallFinished -= PackageInstallFinishedHandler;
-            PackageManagerClientViewModel.PackageDownloadStarted -= PackageDownloadStartedHandler;
+            PackageManagerClientViewModel.PackageInstallNotification -= PackageInstallNotificationHandler;
         }
 
         /// <summary>
@@ -910,28 +925,12 @@ namespace Dynamo.PackageManager
             SearchResults[SelectedIndex].Model.Execute();
         }
 
-        internal void PackageDownloadStartedHandler(PackageDownloadHandle h)
+        internal void PackageInstallNotificationHandler(PackageDownloadHandle h)
         {
-            foreach (var sr in SearchResults)
-            {
-                if (sr.Model.Name == h.Name)
-                {
-                    sr.CanInstall = true;
-                    break;
-                }
-            }
-        }
+            PackageManagerSearchElementViewModel sr = SearchResults.FirstOrDefault(x => x.Model.Name == h.Name);
+            if (sr == null) return;
 
-        internal void PackageInstallFinishedHandler(PackageDownloadHandle h)
-        {
-            foreach (var sr in SearchResults)
-            {
-                if (sr.Model.Name == h.Name)
-                {
-                    sr.CanInstall = CanInstallPackage(sr.Model.Name);
-                    break;
-                }
-            }
+            sr.CanInstall = CanInstallPackage(h);
         }
     }
 }

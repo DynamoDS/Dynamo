@@ -56,11 +56,8 @@ namespace Dynamo.PackageManager.Wpf.Tests
                     pkgHeader
                 }
             }), false, true);
-            packageManagerSearchViewModel.SearchResults.Add(newSE);
-            packageManagerSearchViewModel.SearchState = PackageManagerSearchViewModel.PackageSearchState.Results;
 
-
-            newSE.RequestDownload += packageManagerSearchViewModel.PackageOnExecuted;
+            packageManagerSearchViewModel.AddToSearchResults(newSE);
 
             // Necessary to dismiss any MessageBox which appears during the installation..
             var dlgMock = new Mock<MessageBoxService.IMessageBox>();
@@ -74,6 +71,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             
             // Assert
             Assert.AreEqual(false, newSE.CanInstall);
+            packageManagerSearchViewModel.ClearSearchResults();
         }
     }
 }
