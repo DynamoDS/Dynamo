@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -692,7 +693,7 @@ namespace Dynamo.Controls
         /// <summary>
         /// A dictionary of MenuItems which are added during certain nodes' NodeViewCustomization process.
         /// </summary>
-        private Dictionary<string, object> NodeViewCustomizationMenuItems { get; } = new Dictionary<string, object>();
+        private OrderedDictionary NodeViewCustomizationMenuItems { get; } = new OrderedDictionary();
 
         /// <summary>
         /// Saves a persistent list of unique MenuItems that are added by certain nodes during their NodeViewCustomization process.
@@ -709,7 +710,7 @@ namespace Dynamo.Controls
                 if (NodeContextMenuBuilder.NodeContextMenuDefaultItemNames.Contains(menuItem.Header.ToString())) continue;
 
                 // We don't stash the same MenuItem multiple times.
-                if (NodeViewCustomizationMenuItems.ContainsKey(menuItem.Header.ToString())) continue;
+                if (NodeViewCustomizationMenuItems.Contains(menuItem.Header.ToString())) continue;
                 
                 // The MenuItem gets stashed.
                 NodeViewCustomizationMenuItems.Add(menuItem.Header.ToString(), menuItem);
@@ -726,7 +727,7 @@ namespace Dynamo.Controls
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
-            ContextMenu contextMenu = grid.ContextMenu;
+            var contextMenu = grid.ContextMenu;
 
             // Stashing any injected MenuItems from the Node View Customization process.
             if (contextMenu.Items.Count > 0 && NodeViewCustomizationMenuItems.Count < 1)

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -25,7 +27,7 @@ namespace Dynamo.Wpf.Utilities
 
         // Builds the node's Context Menu, including re-adding any injected MenuItems from
         // the NodeViewCustomization process.
-        internal static void Build(ContextMenu contextMenu, NodeViewModel nodeViewModel, Dictionary<string, object> nodeViewCustomizationMenuItems)
+        internal static void Build(ContextMenu contextMenu, NodeViewModel nodeViewModel, OrderedDictionary nodeViewCustomizationMenuItems)
         {
             ContextMenu = contextMenu;
             NodeViewModel = nodeViewModel;
@@ -114,7 +116,7 @@ namespace Dynamo.Wpf.Utilities
                 command: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("DeleteCommand")
+                    Path = new PropertyPath(nameof(NodeViewModel.DeleteCommand))
                 }
             );
         }
@@ -130,7 +132,7 @@ namespace Dynamo.Wpf.Utilities
                     command: new Binding
                     {
                         Source = NodeViewModel,
-                        Path = new PropertyPath("CreateGroupCommand")
+                        Path = new PropertyPath(nameof(NodeViewModel.CreateGroupCommand))
                     }
                 )
             );
@@ -141,7 +143,7 @@ namespace Dynamo.Wpf.Utilities
                     command: new Binding
                     {
                         Source = NodeViewModel,
-                        Path = new PropertyPath("UngroupCommand")
+                        Path = new PropertyPath(nameof(NodeViewModel.UngroupCommand))
                     }
                 )
             );
@@ -152,7 +154,7 @@ namespace Dynamo.Wpf.Utilities
                     command: new Binding
                     {
                         Source = NodeViewModel,
-                        Path = new PropertyPath("AddToGroupCommand")
+                        Path = new PropertyPath(nameof(NodeViewModel.AddToGroupCommand))
                     }
                 )
             );
@@ -169,13 +171,13 @@ namespace Dynamo.Wpf.Utilities
                 command: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("ToggleIsVisibleCommand")
+                    Path = new PropertyPath(nameof(NodeViewModel.ToggleIsVisibleCommand))
                 },
                 isCheckable: true,
                 isChecked: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("IsVisible"),
+                    Path = new PropertyPath(nameof(NodeViewModel.IsVisible)),
                     Mode = BindingMode.OneWay
                 }
             );
@@ -192,19 +194,19 @@ namespace Dynamo.Wpf.Utilities
                 command: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("ToggleIsFrozenCommand")
+                    Path = new PropertyPath(nameof(NodeViewModel.ToggleIsFrozenCommand))
                 },
                 isCheckable: true,
                 isChecked: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("IsFrozenExplicitly"),
+                    Path = new PropertyPath(nameof(NodeViewModel.IsFrozenExplicitly)),
                     Mode = BindingMode.OneWay
                 },
                 isEnabled: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("CanToggleFrozen"),
+                    Path = new PropertyPath(nameof(NodeViewModel.CanToggleFrozen)),
                     Mode = BindingMode.OneWay
                 }
             );
@@ -222,13 +224,13 @@ namespace Dynamo.Wpf.Utilities
                 isChecked: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("IsDisplayingLabels"),
+                    Path = new PropertyPath(nameof(NodeViewModel.IsDisplayingLabels)),
                     Mode = BindingMode.TwoWay
                 },
                 isEnabled: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("CanDisplayLabels")
+                    Path = new PropertyPath(nameof(NodeViewModel.CanDisplayLabels))
                 }
             );
 
@@ -244,7 +246,7 @@ namespace Dynamo.Wpf.Utilities
                 command: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("RenameCommand")
+                    Path = new PropertyPath(nameof(NodeViewModel.RenameCommand))
                 }
             );
             return renameMenuItem;
@@ -260,14 +262,14 @@ namespace Dynamo.Wpf.Utilities
                 command: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("SetLacingTypeCommand"),
+                    Path = new PropertyPath(nameof(NodeViewModel.SetLacingTypeCommand)),
                 },
                 commandParameter: "Auto",
                 isCheckable: true,
                 isChecked: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("ArgumentLacing"),
+                    Path = new PropertyPath(nameof(NodeViewModel.ArgumentLacing)),
                     Converter = new EnumToBooleanConverter(),
                     ConverterParameter = "Auto",
                     Mode = BindingMode.OneWay
@@ -280,14 +282,14 @@ namespace Dynamo.Wpf.Utilities
                 command: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("SetLacingTypeCommand"),
+                    Path = new PropertyPath(nameof(NodeViewModel.SetLacingTypeCommand)),
                 },
                 commandParameter: "Shortest",
                 isCheckable: true,
                 isChecked: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("ArgumentLacing"),
+                    Path = new PropertyPath(nameof(NodeViewModel.ArgumentLacing)),
                     Converter = new EnumToBooleanConverter(),
                     ConverterParameter = "Shortest",
                     Mode = BindingMode.OneWay
@@ -300,14 +302,14 @@ namespace Dynamo.Wpf.Utilities
                 command: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("SetLacingTypeCommand"),
+                    Path = new PropertyPath(nameof(NodeViewModel.SetLacingTypeCommand)),
                 },
                 commandParameter: "Longest",
                 isCheckable: true,
                 isChecked: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("ArgumentLacing"),
+                    Path = new PropertyPath(nameof(NodeViewModel.ArgumentLacing)),
                     Converter = new EnumToBooleanConverter(),
                     ConverterParameter = "Longest",
                     Mode = BindingMode.OneWay
@@ -320,14 +322,14 @@ namespace Dynamo.Wpf.Utilities
                 command: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("SetLacingTypeCommand"),
+                    Path = new PropertyPath(nameof(NodeViewModel.SetLacingTypeCommand)),
                 },
                 commandParameter: "CrossProduct",
                 isCheckable: true,
                 isChecked: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("ArgumentLacing"),
+                    Path = new PropertyPath(nameof(NodeViewModel.ArgumentLacing)),
                     Converter = new EnumToBooleanConverter(),
                     ConverterParameter = "CrossProduct",
                     Mode = BindingMode.OneWay
@@ -347,7 +349,7 @@ namespace Dynamo.Wpf.Utilities
             //    itemsSource: new Binding
             //    {
             //        Source = viewModel,
-            //        Path = new PropertyPath("DismissedAlerts"),
+            //        Path = new PropertyPath(nameof("DismissedAlerts"),
             //        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             //    }
             //);
@@ -376,9 +378,9 @@ namespace Dynamo.Wpf.Utilities
             return null;
         }
 
-        private static void AddInjectedNodeViewCustomizationMenuItems(Dictionary<string, object> nodeViewCustomizationMenuItems)
+        private static void AddInjectedNodeViewCustomizationMenuItems(OrderedDictionary nodeViewCustomizationMenuItems)
         {
-            foreach (KeyValuePair<string, object> keyValuePair in nodeViewCustomizationMenuItems)
+            foreach (DictionaryEntry keyValuePair in nodeViewCustomizationMenuItems)
             {
                 ContextMenu.Items.Add(keyValuePair.Value);
             }
@@ -394,7 +396,7 @@ namespace Dynamo.Wpf.Utilities
                 isChecked: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("IsSetAsInput"),
+                    Path = new PropertyPath(nameof(NodeViewModel.IsSetAsInput)),
                     Mode = BindingMode.TwoWay,
                 }
             );
@@ -410,7 +412,7 @@ namespace Dynamo.Wpf.Utilities
                 isChecked: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("IsSetAsOutput"),
+                    Path = new PropertyPath(nameof(NodeViewModel.IsSetAsOutput)),
                     Mode = BindingMode.TwoWay,
                 }
             );
@@ -425,7 +427,7 @@ namespace Dynamo.Wpf.Utilities
                 command: new Binding
                 {
                     Source = NodeViewModel,
-                    Path = new PropertyPath("ShowHelpCommand")
+                    Path = new PropertyPath(nameof(NodeViewModel.ShowHelpCommand))
                 }
             );
         }

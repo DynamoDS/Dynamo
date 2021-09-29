@@ -254,7 +254,7 @@
     <comment>Context menu item</comment>
   </data>
   <data name="ContextMenuDelete" xml:space="preserve">
-    <value>Delete</value>
+    <value>Remove</value>
     <comment>Context menu for selected node - delete selected node</comment>
   </data>
   <data name="ContextMenuEditCustomNode" xml:space="preserve">
