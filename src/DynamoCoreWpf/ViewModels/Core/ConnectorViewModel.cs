@@ -683,7 +683,6 @@ namespace Dynamo.ViewModels
 
         private void DisposeContextMenu(object arg1, EventArgs arg2)
         {
-           // ConnectorContextMenuViewModel.Dispose();
             ConnectorContextMenuViewModel.RequestDispose -= DisposeContextMenu;
             ConnectorContextMenuViewModel = null;
         }

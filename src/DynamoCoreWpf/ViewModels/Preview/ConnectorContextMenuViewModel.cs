@@ -104,7 +104,6 @@ namespace Dynamo.ViewModels
         private void BreakConnectionsSurrogateCommandExecute(object obj)
         {
             ViewModel.BreakConnectionCommand.Execute(null);
-            OnRequestDispose(this, EventArgs.Empty);
         }
         /// <summary>
         /// Request disposal of this viewmodel after command has run.
@@ -113,7 +112,6 @@ namespace Dynamo.ViewModels
         private void SelectConnectedSurrogateCommandExecute(object obj)
         {
             ViewModel.SelectConnectedCommand.Execute(null);
-            OnRequestDispose(this, EventArgs.Empty);
         }
         /// <summary>
         /// Request disposal of this viewmodel after command has run.
@@ -122,7 +120,6 @@ namespace Dynamo.ViewModels
         private void HideConnectorSurrogateCommandExecute(object obj)
         {
             ViewModel.HideConnectorCommand.Execute(null);
-            OnRequestDispose(this, EventArgs.Empty);
         }
 
         #endregion

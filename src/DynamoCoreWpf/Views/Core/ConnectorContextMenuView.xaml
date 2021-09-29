@@ -5,8 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:props="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-             mc:Ignorable="d"
-             MouseLeave="OnMouseLeave">
+             mc:Ignorable="d">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -15,30 +14,33 @@
             </ResourceDictionary.MergedDictionaries>
             </ResourceDictionary>
     </UserControl.Resources>
-    <Canvas Canvas.Top="{Binding CurrentPosition.Y}"
-            Canvas.Left="{Binding CurrentPosition.X}">
-        <Canvas.ContextMenu>
-            <ContextMenu Visibility="Visible">
-                <MenuItem Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnections}" 
+    <Canvas Canvas.Top="0"
+            Canvas.Left="0">
+        <Button Canvas.Top="{Binding CurrentPosition.Y}"
+            Canvas.Left="{Binding CurrentPosition.X}" Height="10" Width="10" Visibility="Hidden" MouseLeave="OnMouseLeave">
+            <Button.ContextMenu>
+            <ContextMenu Name="MainContextMenu" MouseLeave="OnMouseLeave">
+                <MenuItem x:Name="BreakItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnections}" 
                           Command="{Binding BreakConnectionsSurrogateCommand}"/>
-                <MenuItem Header="{x:Static props:Resources.ConnectorContextMenuHeaderSelectConnected}" 
+                    <MenuItem x:Name="SelectItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderSelectConnected}" 
                           Command="{Binding SelectConnectedSurrogateCommand}"/>
-                <MenuItem Command="{Binding HideConnectorSurrogateCommand}">
-                    <MenuItem.Style>
-                        <Style TargetType="MenuItem">
-                            <Setter Property="IsChecked" Value="False"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsCollapsed}" Value="False">
-                                    <Setter Property="Header" Value="Hide Wire"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IsCollapsed}" Value="True">
-                                    <Setter Property="Header" Value="Show Wire"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </MenuItem.Style>
-                </MenuItem>
-            </ContextMenu>
-        </Canvas.ContextMenu>
+                    <MenuItem x:Name="HideItem" Command="{Binding HideConnectorSurrogateCommand}">
+                        <MenuItem.Style>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="IsChecked" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsCollapsed}" Value="False">
+                                        <Setter Property="Header" Value="Hide Wire"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsCollapsed}" Value="True">
+                                        <Setter Property="Header" Value="Show Wire"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
+                </ContextMenu>
+        </Button.ContextMenu>
+        </Button>
     </Canvas>
 </UserControl>
