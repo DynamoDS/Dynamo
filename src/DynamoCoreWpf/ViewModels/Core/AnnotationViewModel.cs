@@ -517,6 +517,7 @@ namespace Dynamo.ViewModels
         internal void SetGroupInputPorts()
         {
             InPorts.Clear();
+            InputNodes.Clear();
             List<ProxyPortViewModel> newPortViewModels;
 
             // we need to store the original ports here
@@ -554,6 +555,7 @@ namespace Dynamo.ViewModels
         internal void SetGroupOutPorts()
         {
             OutPorts.Clear();
+            OutputNodes.Clear();
             List<ProxyPortViewModel> newPortViewModels;
 
             // we need to store the original ports here
