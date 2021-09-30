@@ -991,7 +991,12 @@ namespace Dynamo.ViewModels
                 case NotifyCollectionChangedAction.Add:
                     foreach (PortViewModel item in e.NewItems)
                     {
-                        if (OutputNodes.Contains(item.NodeViewModel)) continue;
+                        if (OutputNodes.Contains(item.NodeViewModel) ||
+                            OutputNodes.Count == 3)
+                        {
+                            continue;
+                        }
+
                         OutputNodes.Add(item.NodeViewModel);
                     }
                     break;
@@ -1014,7 +1019,12 @@ namespace Dynamo.ViewModels
                 case NotifyCollectionChangedAction.Add:
                     foreach (PortViewModel item in e.NewItems)
                     {
-                        if (InputNodes.Contains(item.NodeViewModel)) continue;
+                        if (InputNodes.Contains(item.NodeViewModel) ||
+                            InputNodes.Count == 3)
+                        {
+                            continue;
+                        }
+
                         InputNodes.Add(item.NodeViewModel);
                     }
                     break;
