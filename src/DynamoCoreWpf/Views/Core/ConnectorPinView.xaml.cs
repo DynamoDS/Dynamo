@@ -34,6 +34,10 @@ namespace Dynamo.Nodes
 
         public ConnectorPinView()
         {
+            // Add DynamoConverters - currently using the InverseBoolToVisibilityCollapsedConverter
+            // to be able to collapse pins
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+
             InitializeComponent();
             ViewModel = null;
 

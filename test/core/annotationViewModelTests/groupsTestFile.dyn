@@ -484,6 +484,66 @@
       ],
       "Replication": "Disabled",
       "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a;",
+      "Id": "0fa88a0f76bf484c8f24d0c98f2001cb",
+      "Inputs": [
+        {
+          "Id": "a7e5d857c1c0497080e1089d78da7029",
+          "Name": "a",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7872b35b1e01440bbf5b2bfa5092988d",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "b;",
+      "Id": "db79855ec8da41f59d5bd442d2c0bdc6",
+      "Inputs": [
+        {
+          "Id": "48d52e734c9049878d217514b5eaf12e",
+          "Name": "b",
+          "Description": "b",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3e23b62e7ff34131bef9744a2817daf2",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
     }
   ],
   "Connectors": [
@@ -540,6 +600,12 @@
       "End": "6704d22af2ff424ab10a009a6875b28b",
       "Id": "4b7cb708a19148feaa7cc63be6711bf4",
       "IsCollapsed": "False"
+    },
+    {
+      "Start": "7872b35b1e01440bbf5b2bfa5092988d",
+      "End": "48d52e734c9049878d217514b5eaf12e",
+      "Id": "17318da5dd194962a7b751344001f14b",
+      "IsCollapsed": "False"
     }
   ],
   "Dependencies": [],
@@ -583,7 +649,13 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
-    "ConnectorPins": [],
+    "ConnectorPins": [
+      {
+        "Left": 368.21708173297861,
+        "Top": 2232.6963790506429,
+        "ConnectorGuid": "17318da5-dd19-4962-a7b7-51344001f14b"
+      }
+    ],
     "NodeViews": [
       {
         "Name": "Code Block",
@@ -744,6 +816,26 @@
         "Excluded": false,
         "X": 565.42700418512209,
         "Y": 1742.6828879588616
+      },
+      {
+        "Name": "PinNode1",
+        "ShowGeometry": true,
+        "Id": "0fa88a0f76bf484c8f24d0c98f2001cb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 141.0,
+        "Y": 2028.0
+      },
+      {
+        "Name": "PinNode2",
+        "ShowGeometry": true,
+        "Id": "db79855ec8da41f59d5bd442d2c0bdc6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 483.49280771890994,
+        "Y": 2027.8375359168431
       }
     ],
     "Annotations": [
@@ -839,6 +931,28 @@
         "Background": "#FFC1D676"
       },
       {
+        "Id": "a87c3469dc5d4475849e85ccd5fbae78",
+        "Title": "CollapsedGroup",
+        "DescriptionText": "<Double click here to edit group description>",
+        "IsExpanded": false,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "b66aa988e2c14953ba8b161b0f748e1d",
+          "bb8e7e6e3daf42f19b24b34fd2b6429a"
+        ],
+        "HasNestedGroups": false,
+        "Left": 185.06467884730887,
+        "Top": 1672.634327243012,
+        "Width": 465.02899200447985,
+        "Height": 150.0,
+        "FontSize": 36.0,
+        "InitialTop": 1735.9676605763452,
+        "InitialHeight": 151.71522738251633,
+        "TextblockHeight": 53.333333333333336,
+        "Background": "#FFC1D676"
+      },
+      {
         "Id": "7fbc02d54b664e38b37a639e6c9d9663",
         "Title": "GroupWithGroupedGroup",
         "DescriptionText": "<Click here to edit the group description>",
@@ -882,10 +996,29 @@
         "InitialHeight": 173.04856071584959,
         "TextblockHeight": 53.333333333333336,
         "Background": "#FFC1D676"
+      },
+      {
+        "Id": "84f2246557994f83b6263c3f5790d7cc",
+        "Title": "PinnedNodes to be grouped in test",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 150.44194031057322,
+        "Top": 1967.3947826699173,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
       }
     ],
-    "X": 231.11707316395939,
-    "Y": -739.73367060986516,
-    "Zoom": 0.69594667359159645
+    "X": 284.7662528512343,
+    "Y": -2058.3224230670721,
+    "Zoom": 1.1994243414922043
   }
 }
