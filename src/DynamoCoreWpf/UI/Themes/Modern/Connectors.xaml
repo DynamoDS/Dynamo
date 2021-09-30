@@ -133,7 +133,6 @@
             <ContentControl Content="{Binding ConnectorAnchorViewModel}"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"/>
-
             <ContentControl Content="{Binding ConnectorPinViewCollection}"
                             ContentTemplate="{StaticResource ShowPinCollection}"/>
         </Grid>
