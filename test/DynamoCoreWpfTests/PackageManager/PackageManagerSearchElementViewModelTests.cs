@@ -1,18 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using SystemTestServices;
-using Dynamo.Controls;
+﻿using SystemTestServices;
 using Dynamo.PackageManager.ViewModels;
-using Dynamo.Wpf.Utilities;
 using Moq;
 using NUnit.Framework;
 using Greg.Responses;
 using Greg;
-using Greg.Requests;
 using Dynamo.Tests;
-using System.Windows.Threading;
-using System;
 using Dynamo.ViewModels;
 
 namespace Dynamo.PackageManager.Wpf.Tests
