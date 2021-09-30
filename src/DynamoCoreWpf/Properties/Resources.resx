@@ -705,7 +705,7 @@
     <comment>View menu | Zoom out</comment>
   </data>
   <data name="ContextMenuDelete" xml:space="preserve">
-    <value>Remove</value>
+    <value>Delete</value>
     <comment>Context menu for selected node - delete selected node</comment>
   </data>
   <data name="NodeContextMenuHelp" xml:space="preserve">
