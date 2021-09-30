@@ -496,13 +496,14 @@
                         <Grid Name="resultItemTemplate" VerticalAlignment="Center">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="40px" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="35px" />
                             </Grid.RowDefinitions>
 
                             <!--  Top Row  -->
                             <DockPanel Name="resultTopRow"
                                        Grid.Row="0"
-                                       Margin="15,12,5,0"
+                                       Margin="15,15,5,0"
                                        LastChildFill="False">
 
                                 <!--  View Details Button  -->
@@ -571,77 +572,6 @@
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Button.Template>
-                                </Button>
-
-                                <!--  Requirements Button  -->
-                                <Button Name="requirementsButton"
-                                        Content="{x:Static p:Resources.PackageSearchResultRequirements}"
-                                        DockPanel.Dock="Right"
-                                        ToolTipService.ShowDuration="30000">
-                                    <Button.Template>
-                                        <ControlTemplate TargetType="{x:Type Button}">
-                                            <Border Name="ButtonBorder"
-                                                    Height="25"
-                                                    Padding="5,0"
-                                                    BorderThickness="2"
-                                                    CornerRadius="2">
-                                                <DockPanel>
-                                                    <Rectangle Width="10"
-                                                               Height="10"
-                                                               Margin="0,0,0,0"
-                                                               VerticalAlignment="Center"
-                                                               DockPanel.Dock="Left">
-                                                        <Rectangle.Style>
-                                                            <Style TargetType="Rectangle">
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="True">
-                                                                        <Setter Property="Fill">
-                                                                            <Setter.Value>
-                                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Requirements - disabled.png" />
-                                                                            </Setter.Value>
-                                                                        </Setter>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="False">
-                                                                        <Setter Property="Fill">
-                                                                            <Setter.Value>
-                                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Requirements.png" />
-                                                                            </Setter.Value>
-                                                                        </Setter>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Rectangle.Style>
-                                                    </Rectangle>
-                                                    <TextBlock Name="textBlock"
-                                                               Padding="4,4,4,3"
-                                                               HorizontalAlignment="Right"
-                                                               VerticalAlignment="Center"
-                                                               Cursor="Hand"
-                                                               DockPanel.Dock="Right"
-                                                               FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                               FontSize="11"
-                                                               Text="{TemplateBinding Content}" />
-                                                </DockPanel>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#4A4A4A" />
-                                                </Trigger>
-                                                <Trigger Property="IsPressed" Value="True">
-                                                    <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#5F5F5F" />
-                                                </Trigger>
-                                                <Trigger Property="IsEnabled" Value="False">
-                                                    <Setter Property="TextBlock.Foreground" Value="#999999" />
-                                                </Trigger>
-                                                <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
-                                                    <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
-                                                </DataTrigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Button.Template>
-                                    <Button.ToolTip>
-                                        <ToolTip Content="{Binding Model.Hosts, Converter={StaticResource DependencyListToStringConverter}}" Style="{StaticResource GenericToolTipDark}" />
-                                    </Button.ToolTip>
                                 </Button>
 
                                 <!--  Install Button  -->
@@ -784,9 +714,34 @@
                                 </Grid>
                             </DockPanel>
 
+                            <!--  Middle Row  -->
+                            <DockPanel Name="requirementsRow"
+                                       Grid.Row="1"
+                                       Margin="15,0,0,0"
+                                       VerticalAlignment="Center"
+                                       LastChildFill="False">
+                                <Rectangle Width="10"
+                                           Height="10"
+                                           Margin="0,0,0,1"
+                                           VerticalAlignment="Center"
+                                           Visibility="{Binding Path=Model.Hosts.Count, Converter={StaticResource IntToVisibilityConverter}}"
+                                           DockPanel.Dock="Left">
+                                    <Rectangle.Fill>
+                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Requirements - disabled.png" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <TextBlock x:Name="requirementsLabel"
+                                           Margin="5,0"
+                                           DockPanel.Dock="Left"
+                                           Style="{StaticResource resultLabelStyle}"
+                                           Visibility="{Binding Path=Model.Hosts.Count, Converter={StaticResource IntToVisibilityConverter}}"
+                                           Text="{Binding Model.Hosts, Converter={StaticResource DependencyListToStringConverter}}">
+                                </TextBlock>
+                            </DockPanel>
+
                             <!--  Bottom Row  -->
                             <DockPanel Name="resultBottomRow"
-                                       Grid.Row="1"
+                                       Grid.Row="2"
                                        Margin="15,0,5,15"
                                        VerticalAlignment="Bottom"
                                        LastChildFill="True">
@@ -865,7 +820,7 @@
 
                             <!--  A 1px bar that separates List Items  -->
                             <Rectangle Name="separator"
-                                       Grid.Row="1"
+                                       Grid.Row="2"
                                        Height="1"
                                        VerticalAlignment="Bottom"
                                        Fill="{StaticResource DarkMidGreyBrush}" />

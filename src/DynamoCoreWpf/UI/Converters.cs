@@ -114,13 +114,13 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return Wpf.Properties.Resources.PackageManagerPackageHasNoDependencies;
+            if (value == null) return string.Empty;
 
             List<string> depList = (List<string>)value;
 
-            if(depList.Count < 1) return Wpf.Properties.Resources.PackageManagerPackageHasNoDependencies;
+            if(depList.Count < 1) return string.Empty;
 
-            return string.Join(Environment.NewLine, depList);
+            return string.Join(", ", depList);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2197,9 +2197,8 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((int)value > 0)
-                return Visibility.Visible;
-
+            if (value == null) return Visibility.Collapsed;
+            if ((int)value > 0) return Visibility.Visible;
             return Visibility.Collapsed;
         }
 
