@@ -117,7 +117,7 @@
                                                         ToolTip="{Binding Path=PackageLoadStateTooltip}"
                                                         Margin="5,0,0,0"
                                                         Padding="5,0,5,0">
-                                                        <TextBlock Text="{Binding Path=PackageLoadStateText}"
+                                                        <TextBlock Name="PackageStateLabel" Text="{Binding Path=PackageLoadStateText}"
                                                                 TextTrimming="CharacterEllipsis"
                                                                 FontSize="10"
                                                                 FontFamily="Artifakt Element"

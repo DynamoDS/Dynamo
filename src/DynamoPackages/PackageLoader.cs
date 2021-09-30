@@ -63,7 +63,6 @@ namespace Dynamo.PackageManager
         /// </summary>
         public event Action<Package> PackageRemoved;
 
-        private const string builtinPackagesDirName = @"Built-In Packages";
         private readonly List<IExtension> requestedExtensions = new List<IExtension>();
         /// <summary>
         /// Collection of ViewExtensions the ViewExtensionSource requested be loaded.
