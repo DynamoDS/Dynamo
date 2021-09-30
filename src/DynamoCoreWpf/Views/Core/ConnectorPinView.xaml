@@ -4,11 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:props="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+             xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
              mc:Ignorable="d" 
              xmlns:ui="clr-namespace:Dynamo.UI"
              MouseLeftButtonDown="OnPinMouseDown"
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
-             MouseLeave="OnPinViewMouseLeave">
+             MouseLeave="OnPinViewMouseLeave"
+             Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
+             d:DataContext="{d:DesignInstance Type=viewModels:ConnectorViewModel}">
 
     <UserControl.Resources>
         <ResourceDictionary>
