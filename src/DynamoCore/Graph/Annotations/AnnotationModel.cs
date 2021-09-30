@@ -86,8 +86,6 @@ namespace Dynamo.Graph.Annotations
             }
             set
             {
-                if (height == value) return;
-
                 height = value;
                 RaisePropertyChanged("Height");
             }
@@ -103,7 +101,6 @@ namespace Dynamo.Graph.Annotations
             get { return modelAreaHeight; }
             set
             {
-                if (modelAreaHeight == value) return;
                 modelAreaHeight = value;
                 RaisePropertyChanged(nameof(ModelAreaHeight));
             }

@@ -73,9 +73,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoGeometry, Version=2.12.0.6216, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="ProtoGeometry, Version=2.12.0.6315, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.6216\lib\net48\ProtoGeometry.dll</HintPath>
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.6315\lib\net48\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
@@ -1396,6 +1396,28 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\checkmark - grey.png" />
+    <Resource Include="UI\Images\package_error.png" />
+    <Resource Include="UI\Images\close.png" />
+    <Resource Include="UI\Images\icon-shape.png" />
+    <Resource Include="UI\Images\Progress circle.png" />
+    <Resource Include="UI\Images\Requirements - disabled.png" />
+    <Resource Include="UI\Images\View details - disabled.png" />
+    <Resource Include="UI\Images\Add - default.png" />
+    <Resource Include="UI\Images\Add - disabled.png" />
+    <Resource Include="UI\Images\Checkmark - menu selected.png" />
+    <Resource Include="UI\Images\Checkmark.png" />
+    <Resource Include="UI\Images\Circle close.png" />
+    <Resource Include="UI\Images\Copyright.png" />
+    <Resource Include="UI\Images\Date.png" />
+    <Resource Include="UI\Images\Download.png" />
+    <Resource Include="UI\Images\Favorite.png" />
+    <Resource Include="UI\Images\Filter.png" />
+    <Resource Include="UI\Images\Flag.png" />
+    <Resource Include="UI\Images\Profile.png" />
+    <Resource Include="UI\Images\Requirements.png" />
+    <Resource Include="UI\Images\Sort.png" />
+    <Resource Include="UI\Images\View details.png" />
     <Resource Include="UI\Images\more-vertical_selected_16px.png" />
     <Resource Include="UI\Images\watch_selected_48_48.png" />
     <Resource Include="UI\Images\pin_48_48.png" />

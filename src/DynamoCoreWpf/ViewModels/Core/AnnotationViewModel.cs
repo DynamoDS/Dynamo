@@ -247,6 +247,7 @@ namespace Dynamo.ViewModels
                     this.CollapseGroupContents(true);
                     RaisePropertyChanged(nameof(InbetweenNodesCount));
                 }
+                WorkspaceViewModel.HasUnsavedChanges = true;
                 RaisePropertyChanged(nameof(IsExpanded));
             }
         }
