@@ -11,66 +11,94 @@ using Greg.Responses;
 using Greg;
 using Greg.Requests;
 using Dynamo.Tests;
+using System.Windows.Threading;
+using System;
+using Dynamo.ViewModels;
 
 namespace Dynamo.PackageManager.Wpf.Tests
 {
     class PackageManagerSearchElementViewModelTests : SystemTestBase
     {
         /// <summary>
-        /// A test to ensure the IsInstalled property of a package updates correctly once it is installed.
+        /// A test to ensure the CanInstall property of a package updates correctly.
         /// </summary>
         [Test]
-        public void TestPackageManagerSearchElementIsInstalled()
+        public void TestPackageManagerSearchElementCanInstall()
         {
-            var id = "test-123";
-            var deps = new List<Dependency>() { new Dependency() { _id = id, name = "Foo" } };
-            var depVers = new List<string>() { "1.0.0" };
-            var pkgHeader = new PackageVersion() {
-                version = "1.0.0",
-                engine_version = "2.3.0",
-                name = "test-123",
-                id = "test-123",
-                full_dependency_ids = deps,
-                full_dependency_versions = depVers
-            };
+            var name1 = "non-duplicate";
+            var name2 = "duplicate";
+            var version = "1.0.0";
 
             var mockGreg = new Mock<IGregClient>();
-            mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
-            .Returns(new ResponseWithContentBody<PackageVersion>()
+            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object);
+
+            var ext = Model.GetPackageManagerExtension();
+            var loader = ext.PackageLoader;
+            loader.Add(new Package("", name2, version, ""));
+
+            var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
+            packageManagerSearchViewModel.RegisterTransientHandlers();
+
+            var newSE1 = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
             {
-                content = pkgHeader,
-                success = true
-            });
+                name = name1
+            }), false);
 
-            var client = new PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
-
-            // Arrange
-            PackageManagerSearchViewModel packageManagerSearchViewModel = new PackageManagerSearchViewModel(new Dynamo.ViewModels.PackageManagerClientViewModel(ViewModel, client));
-            packageManagerSearchViewModel.SearchResults = new System.Collections.ObjectModel.ObservableCollection<PackageManagerSearchElementViewModel>() { };
-
-            var newSE = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
+            var newSE2 = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
             {
-                name = "test-123",
-                versions = new List<PackageVersion>()
-                {
-                    pkgHeader
-                }
-            }), false, true);
+                name = name2
+            }), false);
 
-            packageManagerSearchViewModel.AddToSearchResults(newSE);
+            packageManagerSearchViewModel.AddToSearchResults(newSE1);
+            packageManagerSearchViewModel.AddToSearchResults(newSE2);
 
-            // Necessary to dismiss any MessageBox which appears during the installation..
-            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
-            dlgMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
-                .Returns(MessageBoxResult.OK);
-            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+            // Default CanInstall should be true
+            Assert.AreEqual(true, newSE1.CanInstall);
+            Assert.AreEqual(true, newSE2.CanInstall);
 
-            // Act
-            Assert.AreEqual(true, newSE.CanInstall);
-            newSE.DownloadLatestCommand.Execute(null);
-            
-            // Assert
-            Assert.AreEqual(false, newSE.CanInstall);
+            var dHandle1 = new PackageDownloadHandle()
+            {
+                Id = name1,
+                VersionName = version,
+                Name = name1
+            };
+
+            var dHandle2 = new PackageDownloadHandle()
+            {
+                Id = name2,
+                VersionName = version,
+                Name = name2
+            };
+
+            pmCVM.Object.Downloads.Add(dHandle1);
+            pmCVM.Object.Downloads.Add(dHandle2);
+
+            Assert.AreEqual(true, newSE1.CanInstall);
+            Assert.AreEqual(true, newSE2.CanInstall);
+
+            dHandle1.DownloadState = PackageDownloadHandle.State.Downloading;
+            Assert.AreEqual(false, newSE1.CanInstall);
+
+            dHandle1.DownloadState = PackageDownloadHandle.State.Downloaded;
+            Assert.AreEqual(false, newSE1.CanInstall);
+
+            dHandle1.DownloadState = PackageDownloadHandle.State.Error;
+            dHandle2.DownloadState = PackageDownloadHandle.State.Downloading;
+
+            Assert.AreEqual(true, newSE1.CanInstall);
+            Assert.AreEqual(false, newSE2.CanInstall);
+
+            dHandle1.DownloadState = PackageDownloadHandle.State.Installing;
+            dHandle2.DownloadState = PackageDownloadHandle.State.Downloaded;
+            Assert.AreEqual(false, newSE1.CanInstall);
+            Assert.AreEqual(false, newSE2.CanInstall);
+
+            dHandle1.DownloadState = PackageDownloadHandle.State.Installed;
+            dHandle2.DownloadState = PackageDownloadHandle.State.Installed;
+            Assert.AreEqual(true, newSE1.CanInstall);
+            Assert.AreEqual(false, newSE2.CanInstall);
+
             packageManagerSearchViewModel.ClearSearchResults();
         }
     }

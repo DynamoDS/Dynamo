@@ -301,9 +301,13 @@ namespace Dynamo.PackageManager
             {
                 case PackageDownloadHandle.State.Uninitialized:
                 case PackageDownloadHandle.State.Error:
-                    return true;
+                    return true;// Allowed if Download/Install not yet begun or if in Error state.
+                case PackageDownloadHandle.State.Downloaded:
+                case PackageDownloadHandle.State.Downloading:
+                case PackageDownloadHandle.State.Installing:
+                    return false;
                 default:
-                    return CanInstallPackage(dh.Name);
+                    return CanInstallPackage(dh.Name);// All other states need to check with PackageLoader's LocalPackages
             }
         }
 
@@ -703,6 +707,17 @@ namespace Dynamo.PackageManager
                 {
                     var handle = (PackageDownloadHandle)item;
                     handle.PropertyChanged += (o, eventArgs) => ClearCompletedCommand.RaiseCanExecuteChanged();
+                    // Update CanInstall property every time the download handle's state changes
+                    handle.PropertyChanged += (o, eventArgs) => {
+                        // Hooking into propertyChanged works only if each download handle is added to
+                        // the Downloads collection before Download/Install begins.
+                        if (eventArgs.PropertyName == nameof(PackageDownloadHandle.DownloadState)) {
+                            PackageManagerSearchElementViewModel sr = SearchResults.FirstOrDefault(x => x.Model.Name == handle.Name);
+                            if (sr == null) return;
+
+                            sr.CanInstall = CanInstallPackage(handle);
+                        }
+                    };
                 }
             }
 
@@ -785,7 +800,6 @@ namespace Dynamo.PackageManager
             PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
             PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded +=
                 ConflictingCustomNodePackageLoaded;
-            PackageManagerClientViewModel.PackageInstallNotification += PackageInstallNotificationHandler;
         }
 
         internal void UnregisterTransientHandlers()
@@ -794,7 +808,6 @@ namespace Dynamo.PackageManager
             PackageManagerClientViewModel.Downloads.CollectionChanged -= DownloadsOnCollectionChanged;
             PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded -=
                 ConflictingCustomNodePackageLoaded;
-            PackageManagerClientViewModel.PackageInstallNotification -= PackageInstallNotificationHandler;
         }
 
         /// <summary>
@@ -923,14 +936,6 @@ namespace Dynamo.PackageManager
                 return;
 
             SearchResults[SelectedIndex].Model.Execute();
-        }
-
-        internal void PackageInstallNotificationHandler(PackageDownloadHandle h)
-        {
-            PackageManagerSearchElementViewModel sr = SearchResults.FirstOrDefault(x => x.Model.Name == h.Name);
-            if (sr == null) return;
-
-            sr.CanInstall = CanInstallPackage(h);
         }
     }
 }

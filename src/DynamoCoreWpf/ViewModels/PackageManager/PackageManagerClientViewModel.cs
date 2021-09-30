@@ -193,8 +193,6 @@ namespace Dynamo.ViewModels
             get { return pmExtension ?? (pmExtension = DynamoViewModel.Model.GetPackageManagerExtension()); }
         }
 
-        internal event Action<PackageDownloadHandle> PackageInstallNotification;
-
         public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
 
         public readonly DynamoViewModel DynamoViewModel;
@@ -744,7 +742,6 @@ namespace Dynamo.ViewModels
        
             return Task.Factory.StartNew(() =>
             {
-                PackageInstallNotification?.Invoke(packageDownloadHandle);
                 // Attempt to download package
                 string pathDl;
                 var res = Model.DownloadPackage(packageDownloadHandle.Id, packageDownloadHandle.VersionName, out pathDl);
@@ -756,7 +753,6 @@ namespace Dynamo.ViewModels
                     pathDl = string.Empty;
                 }
 
-                PackageInstallNotification?.Invoke(packageDownloadHandle);
                 return (handle: packageDownloadHandle, downloadPath: pathDl);
             });
         }
@@ -772,8 +768,6 @@ namespace Dynamo.ViewModels
             {
                 try
                 {
-                    PackageInstallNotification?.Invoke(packageDownloadHandle);
-
                     packageDownloadHandle.Done(downloadPath);
                     var firstOrDefault = PackageManagerExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
                     if (firstOrDefault != null)
@@ -797,10 +791,6 @@ namespace Dynamo.ViewModels
                 catch (Exception e)
                 {
                     packageDownloadHandle.Error(e.Message);
-                }
-                finally
-                {
-                    PackageInstallNotification?.Invoke(packageDownloadHandle);
                 }
             }));
         }
