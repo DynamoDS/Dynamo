@@ -550,6 +550,7 @@ namespace Dynamo.ViewModels
         internal void SetGroupInputPorts()
         {
             InPorts.Clear();
+            InputNodes.Clear();
             List<ProxyPortViewModel> newPortViewModels;
 
             if (!AnnotationModel.HasNestedGroups)
@@ -600,6 +601,7 @@ namespace Dynamo.ViewModels
         internal void SetGroupOutPorts()
         {
             OutPorts.Clear();
+            OutputNodes.Clear();
             List<ProxyPortViewModel> newPortViewModels;
 
             if (!AnnotationModel.HasNestedGroups)
@@ -728,6 +730,8 @@ namespace Dynamo.ViewModels
                     // we collapse that and all of its content.
                     annotationViewModel.IsCollapsed = true;
                     annotationViewModel.CollapseGroupContents(false);
+                    annotationViewModel.SetGroupInputPorts();
+                    annotationViewModel.SetGroupOutPorts();
                 }
 
                 viewModel.IsCollapsed = true;
@@ -1000,13 +1004,6 @@ namespace Dynamo.ViewModels
                         OutputNodes.Add(item.NodeViewModel);
                     }
                     break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (PortViewModel item in e.OldItems)
-                    {
-                        if (!OutputNodes.Contains(item.NodeViewModel)) continue;
-                        OutputNodes.Remove(item.NodeViewModel);
-                    }
-                    break;
                 default:
                     break;
             }
@@ -1026,13 +1023,6 @@ namespace Dynamo.ViewModels
                         }
 
                         InputNodes.Add(item.NodeViewModel);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (PortViewModel item in e.OldItems)
-                    {
-                        if (!InputNodes.Contains(item.NodeViewModel)) continue;
-                        InputNodes.Remove(item.NodeViewModel);
                     }
                     break;
                 default:

@@ -291,7 +291,7 @@
                                 Width="{Binding Path=ActualHeight, ElementName=circularBorder}"
                                 Padding="2">
                             <Border.ToolTip>
-                                <dynui:DynamoToolTip AttachmentSide="Top"
+                                <dynui:DynamoToolTip AttachmentSide="Bottom"
                                                      Style="{DynamicResource ResourceKey=SLightToolTip}"
                                                      Margin="5,0,0,0"
                                                      Visibility="{Binding IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
