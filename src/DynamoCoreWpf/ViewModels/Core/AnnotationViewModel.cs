@@ -291,6 +291,21 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Collection of the nested groups in this group.
+        /// This is used for displaying nested groups info
+        /// when this group is collapsed.
+        /// </summary>
+        public ICollection<AnnotationViewModel> NestedGroups
+        {
+            get => nestedGroups;
+            set
+            {
+                nestedGroups = value;
+                RaisePropertyChanged(nameof(NestedGroups));
+            }
+        }
+
+        /// <summary>
         /// Counter of all nodes in the group that
         /// aren't either an input or output node.
         /// This is used to display the amount of nodes
@@ -886,6 +901,10 @@ namespace Dynamo.ViewModels
 
         private void HandleNodesCollectionChanges()
         {
+            NestedGroups = ViewModelBases
+                .OfType<AnnotationViewModel>()
+                .ToList();
+
             var allGroupedGroups = Nodes.OfType<AnnotationModel>();
             var removedFromGroup = GroupIdToCutGeometry.Keys
                 .ToList()
