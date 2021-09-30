@@ -2,7 +2,6 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
                       xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
                       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-                      xmlns:converters="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
                       xmlns:props="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
                       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                       xmlns:views="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
