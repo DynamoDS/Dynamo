@@ -86,8 +86,6 @@ namespace Dynamo.Graph.Annotations
             }
             set
             {
-                if (height == value) return;
-
                 height = value;
                 RaisePropertyChanged("Height");
             }
@@ -103,7 +101,6 @@ namespace Dynamo.Graph.Annotations
             get { return modelAreaHeight; }
             set
             {
-                if (modelAreaHeight == value) return;
                 modelAreaHeight = value;
                 RaisePropertyChanged(nameof(ModelAreaHeight));
             }
@@ -176,7 +173,16 @@ namespace Dynamo.Graph.Annotations
             get { return nodes; }
             set
             {
-                nodes = value.ToHashSet<ModelBase>();
+                // First remove all pins from the input
+                var valuesWithoutPins = value
+                    .Where(x => !(x is ConnectorPinModel));
+
+                // then recalculate which pins belongs to the
+                // group and add them to the nodes collection
+                var pinModels = GetPinsFromNodes(value.OfType<NodeModel>());
+                nodes = valuesWithoutPins.Concat(pinModels)
+                    .ToHashSet<ModelBase>();
+
                 if (nodes != null && nodes.Any())
                 {
                     foreach (var model in nodes)
@@ -353,6 +359,7 @@ namespace Dynamo.Graph.Annotations
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();
             var noteModels = notes as NoteModel[] ?? notes.ToArray();
             var groupModels = groups as AnnotationModel[] ?? groups.ToArray();
+
             DeletedModelBases = new List<ModelBase>();
             this.Nodes = nodeModels
                 .Concat(noteModels.Cast<ModelBase>())
@@ -360,6 +367,24 @@ namespace Dynamo.Graph.Annotations
                 .ToList();
 
             UpdateBoundaryFromSelection();
+        }
+
+        private ConnectorPinModel[] GetPinsFromNodes(IEnumerable<NodeModel> nodeModels)
+        {
+            if (nodeModels is null ||
+                !nodeModels.Any())
+            {
+                return new List<ConnectorPinModel>().ToArray();
+            }
+
+            var connectorPinsToAdd = nodeModels
+                .SelectMany(x => x.AllConnectors)
+                .Where(x => nodeModels.Contains(x.Start.Owner) && nodeModels.Contains(x.End.Owner))
+                .SelectMany(x => x.ConnectorPinModels)
+                .Distinct()
+                .ToArray();
+
+            return connectorPinsToAdd;
         }
 
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
