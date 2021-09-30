@@ -63,8 +63,8 @@
             </DataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
-                    <Condition  Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="True"/>
-                    <Condition  Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
+                    <Condition Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="True"/>
+                    <Condition Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="Opacity" Value="0.4"/>
@@ -73,8 +73,8 @@
             </MultiDataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
-                    <Condition  Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="False"/>
-                    <Condition  Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
+                    <Condition Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="False"/>
+                    <Condition Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="Opacity" Value="0.0"/>
@@ -102,9 +102,10 @@
                     <i:InvokeCommandAction Command="{Binding ConnectorSelectionCommand}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
+
             <Grid.Resources>
                 <SolidColorBrush x:Key="BConnectorSelection"
-                                 Color="{Binding PreviewState, Converter={StaticResource ConnectionStateToColorConverter}}">
+                                 Color="{Binding PreviewState, Converter={StaticResource ConnectionStateToColorConverter}, UpdateSourceTrigger=PropertyChanged}">
                 </SolidColorBrush>
             </Grid.Resources>
 
@@ -119,7 +120,7 @@
             <Path Stroke="{DynamicResource BConnectorSelection}" StrokeThickness="3"
               Name="connector"
               Visibility="{Binding BezVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" 
-              Style="{StaticResource SConnector}" Canvas.ZIndex="0" 
+              Style="{StaticResource SConnector}" Canvas.ZIndex="-1" 
                   Data="{Binding ComputedBezierPathGeometry, UpdateSourceTrigger=PropertyChanged}">
                 <i:Interaction.Behaviors>
                     <mouse:MouseBehaviour MouseX="{Binding PanelX, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" MouseY="{Binding PanelY, Mode=OneWayToSource,  UpdateSourceTrigger=PropertyChanged}" />
@@ -133,108 +134,10 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Path>
-            <!--Bezier Thick Path-->
-            <Path Stroke="{StaticResource ConnectorHoverStateOutline}" StrokeThickness="6"
-              Name="connectorBorderBezier"
-              Canvas.ZIndex="-1" Data="{Binding ComputedBezierPathGeometry, UpdateSourceTrigger=PropertyChanged}">
-                <Path.Style>
-                    <Style TargetType="Path">
-                        <Setter Property="Visibility" Value="Hidden"/>
-                        <Style.Triggers>
-                            <!--show thick wire-->
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=ConnectorAnchorViewModelExists, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
-                                    <Condition Binding="{Binding Path=BezVisibility, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
-                                </MultiDataTrigger.Conditions>
-                                <MultiDataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </MultiDataTrigger.Setters>
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Path.Style>
-            </Path>
-
-            <!--Polyline Path-->
-            <Path Stroke="{DynamicResource BConnectorSelection}" StrokeThickness="3"
-              Name="plineConnector" Style="{StaticResource SConnector}"
-              Visibility="{Binding PlineVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" Canvas.ZIndex="0">
-                <Path.Data>
-                    <PathGeometry>
-                        <PathGeometry.Figures>
-                            <PathFigureCollection>
-                                <PathFigure x:Name="PlineFigure" StartPoint="{Binding CurvePoint0}">
-                                    <PathFigure.Segments>
-                                        <PathSegmentCollection>
-                                            <LineSegment Point="{Binding CurvePoint1}"/>
-                                            <LineSegment Point="{Binding CurvePoint2}"/>
-                                            <LineSegment Point="{Binding CurvePoint3}"/>
-                                        </PathSegmentCollection>
-                                    </PathFigure.Segments>
-                                </PathFigure>
-                            </PathFigureCollection>
-                        </PathGeometry.Figures>
-                    </PathGeometry>
-                </Path.Data>
-                <i:Interaction.Behaviors>
-                    <mouse:MouseBehaviour MouseX="{Binding PanelX, Mode=OneWayToSource}" MouseY="{Binding PanelY, Mode=OneWayToSource}" />
-                </i:Interaction.Behaviors>
-
-                <i:Interaction.Triggers>
-                    <i:EventTrigger  EventName="MouseEnter">
-                        <i:InvokeCommandAction Command="{Binding MouseHoverCommand}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger  EventName="MouseLeave">
-                        <i:InvokeCommandAction Command="{Binding MouseUnhoverCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Path>
-                    
-            <!--Polyline Thick Path-->
-            <Path Stroke="{StaticResource ConnectorHoverStateOutline}" StrokeThickness="6"
-              Name="connectorBorderPolyline"
-              Canvas.ZIndex="-1">
-                <Path.Data>
-                    <PathGeometry>
-                        <PathGeometry.Figures>
-                            <PathFigureCollection>
-                                <PathFigure StartPoint="{Binding CurvePoint0}">
-                                    <PathFigure.Segments>
-                                        <PathSegmentCollection>
-                                            <LineSegment Point="{Binding CurvePoint1}"/>
-                                            <LineSegment Point="{Binding CurvePoint2}"/>
-                                            <LineSegment Point="{Binding CurvePoint3}"/>
-                                        </PathSegmentCollection>
-                                    </PathFigure.Segments>
-                                </PathFigure>
-                            </PathFigureCollection>
-                        </PathGeometry.Figures>
-                    </PathGeometry>
-                </Path.Data>
-                <Path.Style>
-                    <Style TargetType="Path">
-                        <Setter Property="Visibility" Value="Hidden"/>
-                        <Style.Triggers>
-                            <!--show thick wire-->
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=ConnectorAnchorViewModelExists, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
-                                    <Condition Binding="{Binding Path=PlineVisibility, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
-                                </MultiDataTrigger.Conditions>
-                                <MultiDataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </MultiDataTrigger.Setters>
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Path.Style>
-            </Path>
 
             <ContentControl Content="{Binding ConnectorContextMenuViewModel}"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"/>
-            
             <ContentControl Content="{Binding ConnectorAnchorViewModel}"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"/>
