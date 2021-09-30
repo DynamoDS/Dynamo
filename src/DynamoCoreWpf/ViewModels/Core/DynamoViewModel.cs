@@ -2470,6 +2470,11 @@ namespace Dynamo.ViewModels
             return !this.ShowStartPage;
         }
 
+        private bool CanDisplayInteractiveGuide(object parameter)
+        {
+            return !this.ShowStartPage;
+        }
+
         internal void Pan(object parameter)
         {
             Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", CurrentSpaceViewModel.X, CurrentSpaceViewModel.Y, currentWorkspaceViewModel.Zoom));
