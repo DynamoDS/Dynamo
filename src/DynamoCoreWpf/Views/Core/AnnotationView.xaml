@@ -510,7 +510,9 @@
                     <ContentControl x:Name="GroupDescriptionControls"
                                     Grid.Row="1"
                                     MinHeight="20"
-                                    Margin="0,-10,30,0">
+                                    Margin="0,-10,30,0"
+                                    SizeChanged="GroupDescriptionControls_SizeChanged"
+                                    IsVisibleChanged="GroupDescriptionTextBlock_IsVisibleChanged">
                         <Grid>
                             <TextBlock x:Name="GroupDescriptionTextBlock"
                                        Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
@@ -518,8 +520,7 @@
                                        FontSize="12"
                                        LineStackingStrategy="BlockLineHeight"
                                        TextWrapping="Wrap"
-                                       Visibility="Visible"
-                                       IsVisibleChanged="GroupDescriptionTextBlock_IsVisibleChanged">
+                                       Visibility="Visible">
                             </TextBlock>
                             <TextBox Name="GroupDescriptionTextBox"
                                      MaxLength="280"

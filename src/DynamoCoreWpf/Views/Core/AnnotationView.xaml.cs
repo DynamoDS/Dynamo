@@ -423,5 +423,10 @@ namespace Dynamo.Nodes
         {
             SetTextHeight();
         }
+
+        private void GroupDescriptionControls_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            SetTextHeight();
+        }
     }
 }

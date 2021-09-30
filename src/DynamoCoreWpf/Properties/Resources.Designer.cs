@@ -511,7 +511,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove.
+        ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string ContextMenuDelete {
             get {

@@ -20,7 +20,7 @@ using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.ViewModels
 {
-    public enum PreviewState { Selection, ExecutionPreview, None }
+    public enum PreviewState { Selection, ExecutionPreview, Hover, None }
 
     public partial class ConnectorViewModel : ViewModelBase
     {
@@ -289,6 +289,7 @@ namespace Dynamo.ViewModels
             {
                 connectorAnchorViewModelExists = value;
                 RaisePropertyChanged(nameof(ConnectorAnchorViewModelExists));
+                RaisePropertyChanged(nameof(PreviewState));
             }
         }
         /// <summary>
@@ -438,6 +439,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private PreviewState previewState = PreviewState.None;
         public PreviewState PreviewState
         {
             get
@@ -458,7 +460,22 @@ namespace Dynamo.ViewModels
                     return PreviewState.Selection;
                 }
 
+                if(this.ConnectorAnchorViewModelExists)
+                {
+                    return PreviewState.Hover;
+                }
+
+                if(previewState != null)
+                {
+                    return previewState;
+                }
+
                 return PreviewState.None;
+            }
+            set
+            {
+                previewState = value;
+                RaisePropertyChanged(nameof(PreviewState));
             }
         }
 
@@ -520,7 +537,7 @@ namespace Dynamo.ViewModels
                 var portValue = model.Start.Owner.GetValue(model.Start.Index, workspaceViewModel.DynamoViewModel.EngineController);
                 if (portValue is null)
                 {
-                    ConnectorDataTooltip = "N/A";
+                    ConnectorDataTooltip = string.Empty;
                     return;
                 }
 
@@ -591,6 +608,8 @@ namespace Dynamo.ViewModels
         /// Delegate command to run when 'Pin Wire' item is clicked on this connector ContextMenu.
         /// </summary>
         public DelegateCommand PinConnectorCommand { get; set; }
+
+        public DelegateCommand ConnectorSelectionCommand { get; set; }
 
         /// <summary>
         /// When mouse hovers over connector, if the data coming through the connector is collection of 5 or more,
@@ -767,6 +786,11 @@ namespace Dynamo.ViewModels
             workspaceViewModel.Model.RecordCreatedModel(connectorPinModel);
         }
 
+        public void ConnectorSelectionCommandExecute(object parameter)
+        {
+            PreviewState = PreviewState == PreviewState.Selection ? PreviewState.None : PreviewState.Selection;
+        }
+
         private void HandlerRedrawRequest(object sender, EventArgs e)
         {
             Redraw();
@@ -789,6 +813,7 @@ namespace Dynamo.ViewModels
             MouseHoverCommand = new DelegateCommand(MouseHoverCommandExecute, CanRunMouseHover);
             MouseUnhoverCommand = new DelegateCommand(MouseUnhoverCommandExecute, CanRunMouseUnhover);
             PinConnectorCommand = new DelegateCommand(PinConnectorCommandExecute, x => true);
+            ConnectorSelectionCommand = new DelegateCommand(ConnectorSelectionCommandExecute, x => true);
         }
 
         #endregion
@@ -964,7 +989,6 @@ namespace Dynamo.ViewModels
                 case nameof(ConnectorPinModel.IsSelected):
                     var vm = sender as ConnectorPinViewModel;
                     AnyPinSelected = vm.IsSelected;
-                    RaisePropertyChanged(nameof(PreviewState));
                     break;
                 default:
                     break;

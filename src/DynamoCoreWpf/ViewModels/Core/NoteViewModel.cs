@@ -298,6 +298,8 @@ namespace Dynamo.ViewModels
 
             SubscribeToPinnedNode();
 
+            WorkspaceViewModel.HasUnsavedChanges = true;
+
         }
 
         private bool CanPinToNode(object parameters)
@@ -334,6 +336,7 @@ namespace Dynamo.ViewModels
         {
             UnsuscribeFromPinnedNode();
             Model.PinnedNode = null;
+            WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
         private void SubscribeToPinnedNode()
