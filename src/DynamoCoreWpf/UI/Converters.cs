@@ -347,6 +347,26 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Displays the number of votes a package has received from users, but displays
+    /// zero if the vote count goes negative.
+    /// </summary>
+    public class PackageVotesConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (!(value is int intValue)) return 0;
+            return intValue > -1 ? intValue : 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     // This converter expects the following properties to be bound through XAML 
     // (these properties are also to be bound in the exact order as stated here):
     // 

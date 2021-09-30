@@ -4851,6 +4851,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sort Packages..
+        /// </summary>
+        public static string PackageSortToolTip {
+            get {
+                return ResourceManager.GetString("PackageSortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string PackageStateError {

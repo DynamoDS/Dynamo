@@ -2681,10 +2681,13 @@ Delete the following packages: {2}?
   </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Updated</value>
-	<comment>Displays next to the package name in the Package Search window if the package has been updated in the last 30 days.</comment>
+    <comment>Displays next to the package name in the Package Search window if the package has been updated in the last 30 days.</comment>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>New</value>
     <comment>Displays next to the package name in the Package Search window if the package has been added in the last 30 days.</comment>
+  </data>
+  <data name="PackageSortToolTip" xml:space="preserve">
+    <value>Sort Packages.</value>
   </data>
 </root>
