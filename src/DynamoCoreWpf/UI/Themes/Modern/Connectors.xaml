@@ -95,12 +95,6 @@
                 <i:EventTrigger EventName="MouseRightButtonDown">
                     <i:InvokeCommandAction Command="{Binding InstantiateContextMenuCommand}"/>
                 </i:EventTrigger>
-                <i:EventTrigger EventName="MouseRightButtonDown">
-                    <i:InvokeCommandAction Command="{Binding ConnectorSelectionCommand}"/>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="MouseLeave">
-                    <i:InvokeCommandAction Command="{Binding ConnectorSelectionCommand}"/>
-                </i:EventTrigger>
             </i:Interaction.Triggers>
             <Grid.Resources>
                 <SolidColorBrush x:Key="BConnectorSelection"
@@ -133,6 +127,9 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Path>
+            <ContentControl Content="{Binding ConnectorContextMenuViewModel}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"/>
             <ContentControl Content="{Binding ConnectorAnchorViewModel}"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"/>

@@ -618,7 +618,14 @@ namespace Dynamo.ViewModels
         /// Delegate command to run when 'Pin Wire' item is clicked on this connector ContextMenu.
         /// </summary>
         public DelegateCommand PinConnectorCommand { get; set; }
+        /// <summary>
+        /// Delegate command to trigger a construction of a ContextMenu.
+        /// </summary>
+        public DelegateCommand InstantiateContextMenuCommand { get; set; }
 
+        /// <summary>
+        /// Delegate command run to capture right click of connector.
+        /// </summary>
         public DelegateCommand ConnectorSelectionCommand { get; set; }
 
         /// <summary>
@@ -685,6 +692,7 @@ namespace Dynamo.ViewModels
         {
             ConnectorContextMenuViewModel.RequestDispose -= DisposeContextMenu;
             ConnectorContextMenuViewModel = null;
+            ConnectorSelectionCommand.Execute(null);
         }
 
         /// <summary>
@@ -806,6 +814,8 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void InstantiateContextMenuCommandExecute(object parameters)
         {
+            //Updates PreviewState of connector.
+            ConnectorSelectionCommand.Execute(null);
             CreateContextMenu();
         }
 
