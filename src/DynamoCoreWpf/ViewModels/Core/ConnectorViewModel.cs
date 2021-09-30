@@ -852,11 +852,6 @@ namespace Dynamo.ViewModels
             ConnectorSelectionCommand = new DelegateCommand(ConnectorSelectionCommandExecute, x => !IsConnecting);
         }
 
-        private void ConnectorSelectionCommandExecute(object obj)
-        {
-            
-        }
-
         #endregion
 
         /// <summary>
