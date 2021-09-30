@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
@@ -971,6 +972,27 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(workspaceStateAfterChangingIsExpandedFirst);
             Assert.IsTrue(workspaceStateAfterChangingIsExpandedSecond);
             Assert.IsTrue(ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
+        }
+
+        [Test]
+        public void ConnectorPinsGetsAddedToTheGroup()
+        {
+            // Arrange
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var pinNode1Name = "PinNode1";
+            var pinNode2Name = "PinNode2";
+
+            var nodesToGroup = ViewModel.CurrentSpace.Nodes.Where(x => x.Name == pinNode1Name || x.Name == pinNode2Name);
+
+            // Act
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddRange(nodesToGroup);
+
+            Guid groupid = Guid.NewGuid();
+            var annotation = ViewModel.Model.CurrentWorkspace.AddAnnotation("This is a test group", "Group that contains connector pins", groupid);
+
+            // Assert
+            Assert.That(annotation.Nodes.OfType<ConnectorPinModel>().Any());
         }
 
         #endregion
