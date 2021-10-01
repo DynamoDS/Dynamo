@@ -1386,6 +1386,11 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\pin_hidden_48_48.png" />
+    <Resource Include="UI\Images\pin_hover_48_48.png" />
+    <Resource Include="UI\Images\wire_anchor_48_48.png" />
+    <Resource Include="UI\Images\watch_hidden_48_48.png" />
+    <Resource Include="UI\Images\watch_hover_48_48.png" />
     <Resource Include="UI\Images\checkmark - grey.png" />
     <Resource Include="UI\Images\package_error.png" />
     <Resource Include="UI\Images\close.png" />
@@ -1409,13 +1414,9 @@
     <Resource Include="UI\Images\Sort.png" />
     <Resource Include="UI\Images\View details.png" />
     <Resource Include="UI\Images\more-vertical_selected_16px.png" />
-    <Resource Include="UI\Images\watch_selected_48_48.png" />
-    <Resource Include="UI\Images\pin_48_48.png" />
     <Resource Include="UI\Images\pin_default_48_48.png" />
-    <Resource Include="UI\Images\pin_hidden_48_48.png" />
     <Resource Include="UI\Images\pin_selected_48_48.png" />
     <Resource Include="UI\Images\watch_default_48_48.png" />
-    <Resource Include="UI\Images\watch_hidden_48_48.png" />
     <Resource Include="UI\Images\error.png" />
     <Resource Include="UI\Images\info.png" />
     <Resource Include="UI\Images\warning.png" />
@@ -1426,12 +1427,8 @@
     <Resource Include="UI\Images\hidden.png" />
     <Resource Include="UI\Images\default-node-icon.png" />
     <Resource Include="UI\Images\more-vertical.png" />
-    <Resource Include="UI\Images\pin_default_16_16.png" />
-    <Resource Include="UI\Images\watch_default_16_16.png" />
-    <Resource Include="UI\Images\wire_anchor_12_12.png" />
     <Resource Include="UI\Images\watch_hidden_16_16.png" />
     <Resource Include="UI\Images\alert.png" />
-    <Resource Include="UI\Images\Pin_NoBackground_16_16.png" />
     <Resource Include="UI\Images\menu_16_16.png" />
     <Resource Include="UI\Images\caret_down.png" />
     <Resource Include="UI\Images\caret_up.png" />
@@ -1439,10 +1436,6 @@
     <Resource Include="UI\Images\PackageManager\down_16_16.png" />
     <Resource Include="UI\Images\PackageManager\folder_16_16.png" />
     <Resource Include="UI\Images\PackageManager\up_16_16.png" />
-    <Resource Include="UI\Images\pin_hidden_16_16.png" />
-    <Resource Include="UI\Images\pin_selected_16_16.png" />
-    <Resource Include="UI\Images\Pin_16_16.png" />
-    <Resource Include="UI\Images\Watch_16_16.png" />
     <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
