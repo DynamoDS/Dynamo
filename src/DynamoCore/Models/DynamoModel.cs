@@ -2546,12 +2546,24 @@ namespace Dynamo.Models
                     {
                         foreach (var group in annotation.Nodes.OfType<AnnotationModel>())
                         {
-                            newAnnotations.Add(CreateAnnotationModel(group, modelLookup));
+                            var nestedGroup = CreateAnnotationModel(
+                                group,
+                                modelLookup
+                                    .Where(x => group.Nodes.Select(y => y.GUID).Contains(x.Key))
+                                    .ToDictionary(x => x.Key, x => x.Value)
+                                );
+
+                            newAnnotations.Add(nestedGroup);
+                            modelLookup.Add(group.GUID, nestedGroup);
                         }
                     }
 
-                    var annotationModel = CreateAnnotationModel(annotation, modelLookup);
+                    var annotationModel = CreateAnnotationModel(annotation, modelLookup
+                                .Where(x => annotation.Nodes.Select(y => y.GUID).Contains(x.Key))
+                                .ToDictionary(x => x.Key, x => x.Value));
+
                     newAnnotations.Add(annotationModel);
+                    modelLookup.Add(annotation.GUID, annotationModel);
                 }
 
                 // Add the new Annotation's to the Workspace
