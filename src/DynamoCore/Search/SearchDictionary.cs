@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using System.Configuration;
+using System.Reflection;
 
 namespace Dynamo.Search
 {
@@ -14,6 +16,22 @@ namespace Dynamo.Search
     {
         private ILogger logger;
         private static int LIMIT_SEARCH_TAG_SIZE = 300;
+
+        static SearchDictionary()
+        {
+            try
+            {
+                // Look up search tag limit in the assembly configuration
+                var assemblyConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+                if (assemblyConfig != null)
+                {
+                    var searchTagSizeLimit = assemblyConfig.AppSettings.Settings["searchTagSizeLimit"];
+                    if (searchTagSizeLimit != null && int.TryParse(searchTagSizeLimit.Value, out int value))
+                        LIMIT_SEARCH_TAG_SIZE = value;
+                }
+            }
+            catch { }
+        }
 
         /// <summary>
         ///     Construct a SearchDictionary object
