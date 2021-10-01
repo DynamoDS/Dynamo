@@ -12,7 +12,6 @@ namespace Dynamo.ViewModels
         private Point currentPosition;
         private bool isCollapsed;
         private ConnectorViewModel ViewModel { get; set; }
-        private Dispatcher Dispatcher { get; set; }
 
         /// <summary>
         /// Controls connector visibility: on/off. When wire is off, additional styling xaml turns off tooltips.
@@ -54,8 +53,6 @@ namespace Dynamo.ViewModels
         {
             ViewModel = connectorViewModel;
             InitCommands();
-
-            Dispatcher = Dispatcher.CurrentDispatcher;
         }
 
         /// <summary>
