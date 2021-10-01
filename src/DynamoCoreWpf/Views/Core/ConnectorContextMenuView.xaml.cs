@@ -21,6 +21,7 @@ namespace Dynamo.Controls
 
         private void InitializeCommands(object sender, RoutedEventArgs e)
         {
+            this.Loaded -= InitializeCommands;
             ViewModel = this.DataContext as ConnectorContextMenuViewModel;
             MainContextMenu.DataContext = ViewModel;
             MainContextMenu.IsOpen = true;
