@@ -165,7 +165,7 @@
 				"Height": 512,
 				"StepContent": {
 					"Title": "PackagesGuideLearnAbout",
-					"FormattedText": "GetStartedGuideResourcesText"
+					"FormattedText": "PackagesGuideLearnAboutText"
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "relative",
@@ -173,7 +173,7 @@
 					"VerticalPopupOffset": -20,
 					"HorizontalPopupOffset": 85,
 					"HighlightColor": "#EF9362",
-					"HtmlPage": "learnPackages",
+					"HtmlPage": "learnPackages.html",
 					"HeightBoxDelta": 3
 				}
 			}

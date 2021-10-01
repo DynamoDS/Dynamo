@@ -637,7 +637,7 @@
                             </MenuItem>
                             <MenuItem x:Name="PackagesMenuGuide"
                                       Focusable="False"     
-                                      Visibility="Collapsed"
+                                      
                                       Header="{x:Static p:Resources.PackagesGuide}"
                                       Click="PackagesMenuGuide_Click">
                             </MenuItem>
