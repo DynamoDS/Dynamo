@@ -1096,6 +1096,7 @@ namespace Dynamo.ViewModels
                 {
                     PortViewModel portToRemove = UnSubscribePortEvents(OutPorts.ToList().First(x => x.PortModel == item));
                     OutPorts.Remove(portToRemove);
+                    portToRemove.Dispose();
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Reset)
@@ -1103,6 +1104,7 @@ namespace Dynamo.ViewModels
                 foreach (var p in OutPorts)
                 {
                     UnSubscribePortEvents(p);
+                    p.Dispose();
                 }
                 OutPorts.Clear();
             }
