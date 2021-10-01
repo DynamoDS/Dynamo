@@ -161,11 +161,11 @@ namespace Dynamo.ViewModels
                 case nameof(UseLevels):
                     RaisePropertyChanged(nameof(UseLevels));
                     break;
-                case nameof(port.Level):
+                case nameof(Level):
                     RaisePropertyChanged(nameof(Level));
                     break;
                 case nameof(KeepListStructure):
-                    RaisePropertyChanged(nameof(KeepListStructure));
+                    RaisePropertyChanged(nameof(ShouldKeepListStructure));
                     RefreshPortColors();
                     break;
             }

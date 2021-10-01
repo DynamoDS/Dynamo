@@ -149,7 +149,6 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case nameof(IsConnected):
-                    RaisePropertyChanged(nameof(IsConnected)); //Do we still need this?
                     RefreshHideWiresButton();
                     break;
             }
