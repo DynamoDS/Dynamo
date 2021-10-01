@@ -227,87 +227,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <Style x:Key="InputOutputNodesListViewTemplate"
-               TargetType="{x:Type ListView}">
-            <Setter Property="Background"
-                    Value="Transparent" />
-            <Setter Property="VerticalContentAlignment"
-                    Value="Center" />
-            <Setter Property="VerticalAlignment"
-                    Value="Center" />
-            <Setter Property="HorizontalAlignment"
-                    Value="Center" />
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-                    Value="Disabled" />
-            <Setter Property="BorderThickness"
-                    Value="0" />
-            <Setter Property="IsHitTestVisible"
-                    Value="True" />
-            <Setter Property="ItemContainerStyle">
-                <Setter.Value>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="Background"
-                                Value="Transparent" />
-                        <Setter Property="BorderBrush"
-                                Value="Transparent" />
-                        <Setter Property="BorderThickness"
-                                Value="0" />
-                        <Setter Property="Margin"
-                                Value="0" />
-                        <Setter Property="Padding"
-                                Value="0" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Canvas Width="22"
-                                                Height="26.6">
-                                            <ContentPresenter />
-                                        </Canvas>
-                                    </StackPanel>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="ItemsPanel">
-                <Setter.Value>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"
-                                    Margin="0,0,4.6,0" />
-                    </ItemsPanelTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="ItemTemplate">
-                <Setter.Value>
-                    <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
-                        <Border x:Name="circularBorder"
-                                BorderBrush="#CFE4B3"
-                                BorderThickness="1"
-                                Background="#4a4a4a"
-                                CornerRadius="{Binding Path=ActualHeight, ElementName=circularBorder}"
-                                Width="{Binding Path=ActualHeight, ElementName=circularBorder}"
-                                Padding="2">
-                            <Border.ToolTip>
-                                <dynui:DynamoToolTip AttachmentSide="Bottom"
-                                                     Style="{DynamicResource ResourceKey=SLightToolTip}"
-                                                     Margin="5,0,0,0"
-                                                     Visibility="{Binding IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="{Binding Name}" />
-                                    </StackPanel>
-                                </dynui:DynamoToolTip>
-                            </Border.ToolTip>
-                            <Image Width="20"
-                                   Source="{Binding ImageSource}">
-                            </Image>
-                        </Border>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </UserControl.Resources>
 
     <Grid Name="AnnotationGrid"
@@ -798,52 +717,24 @@
                               Margin="0,10">
                 </ItemsControl>
 
-                <!--Group content icons-->
-                <Grid x:Name="GroupContentIcons"
-                      Grid.ColumnSpan="3"
-                      Grid.Row="1"
-                      Background="Transparent"
-                      HorizontalAlignment="Center"
-                      Margin="10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <ListView x:Name="InputPortIcons"
-                              Grid.Column="0"
-                              ItemsSource="{Binding InputNodes}"
-                              Style="{StaticResource InputOutputNodesListViewTemplate}"
-                              Margin="0"
-                              Panel.ZIndex="2">
-                    </ListView>
-
-                    <Border x:Name="AddtionalNodesCount"
-                            Grid.Column="1"
-                            VerticalAlignment="Center"
-                            BorderThickness="1"
-                            BorderBrush="#CFE4B3"
-                            Background="#EEEEEE"
-                            CornerRadius="{Binding Path=ActualHeight, ElementName=AddtionalNodesCount}"
-                            Width="{Binding Path=ActualHeight, ElementName=AddtionalNodesCount}"
-                            Height="26"
-                            Padding="0"
-                            Margin="-4.6">
-                        <TextBlock Text="{Binding InbetweenNodesCount, Mode=OneWay, StringFormat='+{0}'}"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontSize="10" />
-                    </Border>
-
-                    <ListView x:Name="OutputPortIcons"
-                              Grid.Column="2"
-                              ItemsSource="{Binding OutputNodes}"
-                              Style="{StaticResource InputOutputNodesListViewTemplate}"
-                              Panel.ZIndex="2">
-                    </ListView>
-                </Grid>
+                <Border x:Name="NodeCount"
+                        Grid.Row="1"
+                        Grid.ColumnSpan="3"
+                        VerticalAlignment="Center"
+                        BorderThickness="1"
+                        BorderBrush="#FFFFFF"
+                        Background="#EEEEEE"
+                        CornerRadius="{Binding Path=ActualHeight, ElementName=NodeCount}"
+                        Width="{Binding Path=ActualHeight, ElementName=NodeCount}"
+                        Height="32"
+                        Padding="0"
+                        Margin="10">
+                    <TextBlock Text="{Binding NodeContentCount, Mode=OneWay, StringFormat='+{0}'}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="14" />
+                </Border>
             </Grid>
-
         </Border>
     </Grid>
 </UserControl>
