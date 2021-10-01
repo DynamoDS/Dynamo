@@ -660,6 +660,8 @@ namespace Dynamo.Controls
         public SolidColorBrush NoneBrush { get; set; }
         public SolidColorBrush SelectionBrush { get; set; }
 
+        public SolidColorBrush HoverBrush { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var state = (PreviewState)value;
@@ -671,6 +673,8 @@ namespace Dynamo.Controls
                     return NoneBrush;
                 case PreviewState.Selection:
                     return SelectionBrush;
+                case PreviewState.Hover:
+                    return HoverBrush;
                 default:
                     return NoneBrush;
             }
@@ -687,6 +691,7 @@ namespace Dynamo.Controls
         public Color ExecutionPreview { get; set; }
         public Color None { get; set; }
         public Color Selection { get; set; }
+        public Color Hover { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -699,6 +704,8 @@ namespace Dynamo.Controls
                     return None;
                 case PreviewState.Selection:
                     return Selection;
+                case PreviewState.Hover:
+                    return Hover;
                 default:
                     return None;
             }
