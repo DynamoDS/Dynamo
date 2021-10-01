@@ -679,6 +679,10 @@ namespace Dynamo.ViewModels
         /// <param name="collapseConnectors"></param>
         private void CollapseGroupContents(bool collapseConnectors)
         {
+            NestedGroups = ViewModelBases
+                .OfType<AnnotationViewModel>()
+                .ToList();
+
             foreach (var viewModel in ViewModelBases)
             {
                 if (viewModel is AnnotationViewModel annotationViewModel)
@@ -882,10 +886,6 @@ namespace Dynamo.ViewModels
 
         private void HandleNodesCollectionChanges()
         {
-            NestedGroups = ViewModelBases
-                .OfType<AnnotationViewModel>()
-                .ToList();
-
             var allGroupedGroups = Nodes.OfType<AnnotationModel>();
             var removedFromGroup = GroupIdToCutGeometry.Keys
                 .ToList()
