@@ -129,21 +129,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Sets the color of the use levels popup in the input port context menu.
-        /// This changes when the Keep List Structure option is activated and the port
-        /// is connected, upon which it turns blue.
-        /// </summary>
-        public SolidColorBrush UseLevelsMenuColor
-        {
-            get
-            {
-                return ShouldKeepListStructure && _port.IsConnected
-                    ? new SolidColorBrush(Color.FromArgb(255, 60, 60, 60))
-                    : new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
-            }
-        }
-
         #endregion
 
         public InPortViewModel(NodeViewModel node, PortModel port) : base(node, port)
@@ -173,7 +158,6 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(UsingDefaultValue));
                     RefreshPortColors();
                     break;
-                    RaisePropertyChanged(nameof(UseLevelsMenuColor));
                 case nameof(UseLevels):
                     RaisePropertyChanged(nameof(UseLevels));
                     break;
@@ -281,8 +265,6 @@ namespace Dynamo.ViewModels
                 PortBackgroundColor = PortBackgroundColorDefault;
                 PortBorderBrushColor = PortBorderBrushColorDefault;
             }
-
-            RaisePropertyChanged(nameof(UseLevelsMenuColor));
         }
     }
 }
