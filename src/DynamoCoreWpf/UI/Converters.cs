@@ -380,7 +380,7 @@ namespace Dynamo.Controls
             CultureInfo culture)
         {
             if (!(value is int intValue)) return 0;
-            return intValue > -1 ? intValue : 0;
+            return intValue > 0 ? intValue : 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
