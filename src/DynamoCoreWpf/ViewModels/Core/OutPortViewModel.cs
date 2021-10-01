@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 using Dynamo.UI.Commands;
-using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
@@ -14,11 +10,11 @@ namespace Dynamo.ViewModels
     {
         #region Properties/Fields
 
-        private DelegateCommand _breakConnectionsCommand;
-        private DelegateCommand _hideConnectionsCommand;
+        private DelegateCommand breakConnectionsCommand;
+        private DelegateCommand hideConnectionsCommand;
         private DelegateCommand portMouseLeftButtonOnContextCommand;
 
-        private bool _showContextMenu;
+        private bool showContextMenu;
         private bool areConnectorsHidden;
         private string showHideWiresButtonContent = "";
         private bool hideWiresButtonEnabled;
@@ -27,27 +23,18 @@ namespace Dynamo.ViewModels
         /// Sets the condensed styling on Code Block output ports.
         /// This is used to style the output ports on Code Blocks to be smaller.
         /// </summary>
-        public bool IsPortCondensed
-        {
-            get
-            {
-                return this.PortModel.Owner is CodeBlockNodeModel;
-            }
-        }
+        public bool IsPortCondensed => this.PortModel.Owner is CodeBlockNodeModel;
 
         /// <summary>
         /// If should display Use Levels popup menu. 
         /// </summary>
         public bool ShowContextMenu
         {
-            get
-            {
-                return _showContextMenu;
-            }
+            get => showContextMenu;
             set
             {
-                _showContextMenu = value;
-                RaisePropertyChanged("ShowContextMenu");
+                showContextMenu = value;
+                RaisePropertyChanged(nameof(ShowContextMenu));
             }
         }
 
@@ -62,10 +49,8 @@ namespace Dynamo.ViewModels
                 {
                     return Visibility.Collapsed;
                 }
-                else
-                {
-                    return Visibility.Visible;
-                }
+
+                return Visibility.Visible;
             }
         }
 
@@ -118,7 +103,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void RefreshHideWiresButton()
         {
-            HideWiresButtonEnabled = _port.Connectors.Count > 0;
+            HideWiresButtonEnabled = port.Connectors.Count > 0;
             SetConnectorsVisibility = CheckIfConnectorsAreHidden();
 
             ShowHideWiresButtonContent = SetConnectorsVisibility
@@ -132,24 +117,24 @@ namespace Dynamo.ViewModels
 
         public OutPortViewModel(NodeViewModel node, PortModel port) :base(node, port)
         {
-            _node.PropertyChanged += _node_PropertyChanged;
-            _port.PropertyChanged += _port_PropertyChanged;
+            node.PropertyChanged += NodePropertyChanged;
+            port.PropertyChanged += PortPropertyChanged;
             RefreshHideWiresButton();
         }
 
         public override void Dispose()
         {
-            _port.PropertyChanged -= _port_PropertyChanged;
-            _node.PropertyChanged -= _node_PropertyChanged;
+            port.PropertyChanged -= PortPropertyChanged;
+            node.PropertyChanged -= NodePropertyChanged;
             base.Dispose();
         }
 
         internal override PortViewModel CreateProxyPortViewModel(PortModel portModel)
         {
-            return new OutPortViewModel(_node, portModel);
+            return new OutPortViewModel(node, portModel);
         }
 
-        void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void NodePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -159,11 +144,11 @@ namespace Dynamo.ViewModels
             }
         }
 
-        void _port_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void PortPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case "IsConnected":
+                case nameof(IsConnected):
                     RaisePropertyChanged(nameof(IsConnected)); //Do we still need this?
                     RefreshHideWiresButton();
                     break;
@@ -176,14 +161,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public DelegateCommand BreakConnectionsCommand
         {
-            get
-            {
-                if (_breakConnectionsCommand == null)
-                {
-                    _breakConnectionsCommand = new DelegateCommand(BreakConnections);
-                }
-                return _breakConnectionsCommand;
-            }
+            get { return breakConnectionsCommand ?? (breakConnectionsCommand = new DelegateCommand(BreakConnections)); }
         }
 
         /// <summary>
@@ -192,14 +170,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public DelegateCommand HideConnectionsCommand
         {
-            get
-            {
-                if (_hideConnectionsCommand == null)
-                {
-                    _hideConnectionsCommand = new DelegateCommand(HideConnections);
-                }
-                return _hideConnectionsCommand;
-            }
+            get { return hideConnectionsCommand ?? (hideConnectionsCommand = new DelegateCommand(HideConnections)); }
         }
 
         /// <summary>
@@ -209,13 +180,16 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         private void BreakConnections(object parameter)
         {
-            for (int i = _port.Connectors.Count - 1; i >= 0; i--)
+            for (var i = port.Connectors.Count - 1; i >= 0; i--)
             {
                 // Attempting to get the relevant ConnectorViewModel via matching GUID
-                ConnectorViewModel connectorViewModel = _node.WorkspaceViewModel.Connectors
-                    .FirstOrDefault(x => x.ConnectorModel.GUID == _port.Connectors[i].GUID);
+                ConnectorViewModel connectorViewModel = node.WorkspaceViewModel.Connectors
+                    .FirstOrDefault(x => x.ConnectorModel.GUID == port.Connectors[i].GUID);
 
-                if (connectorViewModel == null) continue;
+                if (connectorViewModel == null)
+                {
+                    continue;
+                }
 
                 connectorViewModel.BreakConnectionCommand.Execute(null);
             }
@@ -228,13 +202,16 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         private void HideConnections(object parameter)
         {
-            for (int i = _port.Connectors.Count - 1; i >= 0; i--)
+            for (var i = port.Connectors.Count - 1; i >= 0; i--)
             {
                 // Attempting to get the relevant ConnectorViewModel via matching GUID
-                ConnectorViewModel connectorViewModel = _node.WorkspaceViewModel.Connectors
-                    .FirstOrDefault(x => x.ConnectorModel.GUID == _port.Connectors[i].GUID);
+                var connectorViewModel = node.WorkspaceViewModel.Connectors
+                    .FirstOrDefault(x => x.ConnectorModel.GUID == port.Connectors[i].GUID);
 
-                if (connectorViewModel == null) continue;
+                if (connectorViewModel == null)
+                {
+                    continue;
+                }
 
                 connectorViewModel.HideConnectorCommand.Execute(!SetConnectorsVisibility);
             }
@@ -247,31 +224,32 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         private bool CheckIfConnectorsAreHidden()
         {
-            if (_port.Connectors.Count < 1 || _node.WorkspaceViewModel.Connectors.Count < 1) return false;
+            if (port.Connectors.Count < 1 || node.WorkspaceViewModel.Connectors.Count < 1) return false;
 
             // Attempting to get a relevant ConnectorViewModel via matching NodeModel GUID
-            ConnectorViewModel connectorViewModel = _node.WorkspaceViewModel.Connectors
-                .FirstOrDefault(x => x.Nodevm.NodeModel.GUID == _port.Owner.GUID);
+            ConnectorViewModel connectorViewModel = node.WorkspaceViewModel.Connectors
+                .FirstOrDefault(x => x.Nodevm.NodeModel.GUID == port.Owner.GUID);
 
-            if (connectorViewModel == null) return false;
+            if (connectorViewModel == null)
+            {
+                return false;
+            }
+
             return connectorViewModel.IsCollapsed;
         }
 
+        /// <summary>
+        /// Handles the Mouse left button click on the node context menu button.
+        /// </summary>
         public DelegateCommand MouseLeftButtonDownOnContextCommand
         {
             get
             {
-                if (portMouseLeftButtonOnContextCommand == null)
-                    portMouseLeftButtonOnContextCommand = new DelegateCommand(OnMouseLeftButtonDownOnContext, CanConnect);
-
-                return portMouseLeftButtonOnContextCommand;
+                return portMouseLeftButtonOnContextCommand ?? (portMouseLeftButtonOnContextCommand =
+                    new DelegateCommand(OnMouseLeftButtonDownOnContext, CanConnect));
             }
         }
 
-        /// <summary>
-        /// Handles the Mouse left button down on the level.
-        /// </summary>
-        /// <param name="parameter"></param>
         private void OnMouseLeftButtonDownOnContext(object parameter)
         {
             ShowContextMenu = true;

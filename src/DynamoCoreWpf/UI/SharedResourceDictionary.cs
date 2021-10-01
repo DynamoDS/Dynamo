@@ -64,8 +64,8 @@ namespace Dynamo.UI
         private static ResourceDictionary _connectorsDictionary;
         private static ResourceDictionary _portsDictionary;
         private static ResourceDictionary _sidebarGridDictionary;
-        private static ResourceDictionary _outPortsDictionary;
-        private static ResourceDictionary _inPortsDictionary;
+        private static ResourceDictionary outPortsDictionary;
+        private static ResourceDictionary inPortsDictionary;
 
         public static string ThemesDirectory 
         {
@@ -212,7 +212,7 @@ namespace Dynamo.UI
         {
             get
             {
-                return _outPortsDictionary ?? (_outPortsDictionary = new ResourceDictionary() { Source = OutPortsDictionaryUri });
+                return outPortsDictionary ?? (outPortsDictionary = new ResourceDictionary() { Source = OutPortsDictionaryUri });
             }
         }
 
@@ -220,7 +220,7 @@ namespace Dynamo.UI
         {
             get
             {
-                return _inPortsDictionary ?? (_inPortsDictionary = new ResourceDictionary() { Source = InPortsDictionaryUri });
+                return inPortsDictionary ?? (inPortsDictionary = new ResourceDictionary() { Source = InPortsDictionaryUri });
             }
         }
 

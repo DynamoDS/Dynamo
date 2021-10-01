@@ -14,11 +14,11 @@ namespace Dynamo.ViewModels
     {
         #region Properties/Fields
 
-        private DelegateCommand _useLevelsCommand;
-        private DelegateCommand _keepListStructureCommand;
+        private DelegateCommand useLevelsCommand;
+        private DelegateCommand keepListStructureCommand;
         private DelegateCommand portMouseLeftButtonOnLevelCommand;
 
-        private bool _showUseLevelMenu;
+        private bool showUseLevelMenu;
 
         private static SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
         private static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
@@ -30,20 +30,17 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Returns whether this port has a default value that can be used.
         /// </summary>
-        public bool DefaultValueEnabled
-        {
-            get { return _port.DefaultValue != null; }
-        }
-        
+        public bool DefaultValueEnabled => port.DefaultValue != null;
+
         /// <summary>
         /// Returns whether the port is using its default value, or whether this been disabled
         /// </summary>
         public bool UsingDefaultValue
         {
-            get { return _port.UsingDefaultValue; }
+            get => port.UsingDefaultValue;
             set
             {
-                _port.UsingDefaultValue = value;
+                port.UsingDefaultValue = value;
             }
         }
 
@@ -52,24 +49,18 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool ShowUseLevelMenu
         {
-            get
-            {
-                return _showUseLevelMenu;
-            }
+            get => showUseLevelMenu;
             set
             {
-                _showUseLevelMenu = value;
-                RaisePropertyChanged("ShowUseLevelMenu");
+                showUseLevelMenu = value;
+                RaisePropertyChanged(nameof(ShowUseLevelMenu));
             }
         }
 
         /// <summary>
         /// If UseLevel is enabled on this port.
         /// </summary>
-        public bool UseLevels
-        {
-            get { return _port.UseLevels; }
-        }
+        public bool UseLevels => port.UseLevels;
 
         /// <summary>
         /// Determines whether or not the UseLevelsSpinner is visible on the port.
@@ -78,8 +69,16 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (PortType == PortType.Output) return Visibility.Collapsed;
-                if (UseLevels) return Visibility.Visible;
+                if (PortType == PortType.Output)
+                {
+                    return Visibility.Collapsed;
+                }
+
+                if (UseLevels)
+                {
+                    return Visibility.Visible;
+                }
+
                 return Visibility.Hidden;
             }
         }
@@ -87,17 +86,14 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// If should keep list structure on this port.
         /// </summary>
-        public bool ShouldKeepListStructure
-        {
-            get { return _port.KeepListStructure; }
-        }
+        public bool ShouldKeepListStructure => port.KeepListStructure;
 
         /// <summary>
         /// Levle of list.
         /// </summary>
         public int Level
         {
-            get { return _port.Level; }
+            get => port.Level;
             set
             {
                 ChangeLevel(value);
@@ -111,14 +107,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_node.ArgumentLacing != LacingStrategy.Disabled)
+                if (node.ArgumentLacing != LacingStrategy.Disabled)
                 {
                     return Visibility.Visible;
                 }
-                else
-                {
-                    return Visibility.Collapsed;
-                }
+
+                return Visibility.Collapsed;
             }
         }
 
@@ -154,40 +148,40 @@ namespace Dynamo.ViewModels
 
         public InPortViewModel(NodeViewModel node, PortModel port) : base(node, port)
         {
-            _port.PropertyChanged += _port_PropertyChanged;
+            port.PropertyChanged += PortPropertyChanged;
         }
 
         public override void Dispose()
         {
-            _port.PropertyChanged -= _port_PropertyChanged;
+            port.PropertyChanged -= PortPropertyChanged;
             base.Dispose();
         }
 
         internal override PortViewModel CreateProxyPortViewModel(PortModel portModel)
         {
-            return new InPortViewModel(_node, portModel);
+            return new InPortViewModel(node, portModel);
         }
 
-        void _port_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void PortPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case "DefaultValue":
-                    RaisePropertyChanged("DefaultValue");
+                case nameof(port.DefaultValue):
+                    RaisePropertyChanged(nameof(port.DefaultValue));
                     break;
-                case "UsingDefaultValue":
-                    RaisePropertyChanged("UsingDefaultValue");
+                case nameof(UsingDefaultValue):
+                    RaisePropertyChanged(nameof(UsingDefaultValue));
                     RefreshPortColors();
                     break;
-                case "UseLevels":
-                    RaisePropertyChanged("UseLevels");
                     RaisePropertyChanged(nameof(UseLevelsMenuColor));
+                case nameof(UseLevels):
+                    RaisePropertyChanged(nameof(UseLevels));
                     break;
-                case "Level":
-                    RaisePropertyChanged("Level");
+                case nameof(port.Level):
+                    RaisePropertyChanged(nameof(Level));
                     break;
-                case "KeepListStructure":
-                    RaisePropertyChanged("ShouldKeepListStructure");
+                case nameof(KeepListStructure):
+                    RaisePropertyChanged(nameof(KeepListStructure));
                     RefreshPortColors();
                     break;
             }
@@ -198,23 +192,16 @@ namespace Dynamo.ViewModels
         /// </summary>
         public DelegateCommand UseLevelsCommand
         {
-            get
-            {
-                if (_useLevelsCommand == null)
-                {
-                    _useLevelsCommand = new DelegateCommand(UseLevel, p => true);
-                }
-                return _useLevelsCommand;
-            }
+            get { return useLevelsCommand ?? (useLevelsCommand = new DelegateCommand(UseLevel, p => true)); }
         }
 
         private void UseLevel(object parameter)
         {
             var useLevel = (bool)parameter;
             var command = new DynamoModel.UpdateModelValueCommand(
-                Guid.Empty, _node.NodeLogic.GUID, "UseLevels", string.Format("{0}:{1}", _port.Index, useLevel));
+                Guid.Empty, node.NodeLogic.GUID, "UseLevels", string.Format("{0}:{1}", port.Index, useLevel));
             
-            _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+            node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
             RaisePropertyChanged(nameof(UseLevelSpinnerVisible));
         }
 
@@ -225,39 +212,37 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_keepListStructureCommand == null)
-                {
-                    _keepListStructureCommand = new DelegateCommand(KeepListStructure, p => true);
-                }
-                return _keepListStructureCommand;
+                return keepListStructureCommand ??
+                       (keepListStructureCommand = new DelegateCommand(KeepListStructure, p => true));
             }
         }
 
         private void KeepListStructure(object parameter)
         {
-            bool keepListStructure = (bool)parameter;
+            var keepListStructure = (bool)parameter;
             var command = new DynamoModel.UpdateModelValueCommand(
-                Guid.Empty, _node.NodeLogic.GUID, "KeepListStructure", string.Format("{0}:{1}", _port.Index, keepListStructure));
+                Guid.Empty, node.NodeLogic.GUID, "KeepListStructure", string.Format("{0}:{1}", port.Index, keepListStructure));
             
-            _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+            node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
 
         private void ChangeLevel(int level)
         {
             var command = new DynamoModel.UpdateModelValueCommand(
-                            Guid.Empty, _node.NodeLogic.GUID, "ChangeLevel", string.Format("{0}:{1}", _port.Index, level));
+                            Guid.Empty, node.NodeLogic.GUID, "ChangeLevel", string.Format("{0}:{1}", port.Index, level));
 
-            _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+            node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
 
+        /// <summary>
+        /// Handles the Mouse left button click on the node levels context menu button.
+        /// </summary>
         public DelegateCommand MouseLeftButtonDownOnLevelCommand
         {
             get
             {
-                if (portMouseLeftButtonOnLevelCommand == null)
-                    portMouseLeftButtonOnLevelCommand = new DelegateCommand(OnMouseLeftButtonDownOnLevel, CanConnect);
-
-                return portMouseLeftButtonOnLevelCommand;
+                return portMouseLeftButtonOnLevelCommand ?? (portMouseLeftButtonOnLevelCommand =
+                    new DelegateCommand(OnMouseLeftButtonDownOnLevel, CanConnect));
             }
         }
 
@@ -275,11 +260,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         protected override void RefreshPortColors()
         {
-            // The visual appearance of ports can be affected by many different logical states
-            // Inputs have more display styles than outputs
-
             // Special case for keeping list structure visual appearance
-            if (_port.UseLevels && _port.KeepListStructure && _port.IsConnected)
+            if (port.UseLevels && port.KeepListStructure && port.IsConnected)
             {
                 PortValueMarkerColor = PortValueMarkerBlue;
                 PortBackgroundColor = PortBackgroundColorKeepListStructure;
@@ -295,7 +277,7 @@ namespace Dynamo.ViewModels
             // Port isn't connected and has no default value (or isn't using it)
             else
             {
-                PortValueMarkerColor = !_port.IsConnected ? PortValueMarkerRed : PortValueMarkerBlue;
+                PortValueMarkerColor = !port.IsConnected ? PortValueMarkerRed : PortValueMarkerBlue;
                 PortBackgroundColor = PortBackgroundColorDefault;
                 PortBorderBrushColor = PortBorderBrushColorDefault;
             }
