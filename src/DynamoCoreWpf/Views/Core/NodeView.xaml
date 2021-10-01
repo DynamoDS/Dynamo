@@ -21,7 +21,7 @@
           HorizontalAlignment="Left"
           x:FieldModifier="public"
           ContextMenuService.IsEnabled="false"
-          Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
+          Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityConverter}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
