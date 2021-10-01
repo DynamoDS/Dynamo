@@ -11,7 +11,7 @@
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
         Style="{DynamicResource DynamoWindowStyle}"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterOwner"
         WindowStyle="None">
     <Window.Background>
         <SolidColorBrush Opacity="0" />

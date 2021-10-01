@@ -3,7 +3,9 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Annotations;
+using Dynamo.Controls;
 using Dynamo.Logging;
+using Dynamo.Utilities;
 
 namespace Dynamo.UI.Prompts
 {
@@ -12,11 +14,15 @@ namespace Dynamo.UI.Prompts
     /// </summary>
     public partial class DynamoMessageBox : INotifyPropertyChanged
     {
+        #region Private Fields
         private string titleText;
         private string bodyText;
         private MessageBoxButton messageBoxButton;
         private MessageBoxImage messageBoxImage;
+        #endregion
 
+        #region Public Properties
+        
         /// <summary>
         /// The title/caption of the message
         /// </summary>
@@ -69,6 +75,8 @@ namespace Dynamo.UI.Prompts
             }
         }
 
+        #endregion
+
         /// <summary>
         /// Public constructor
         /// </summary>
@@ -78,6 +86,14 @@ namespace Dynamo.UI.Prompts
             DataContext = this;
         }
 
+        /// <summary>
+        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
+        /// </summary>
+        /// <param name="messageBoxText"></param>
+        /// <param name="caption"></param>
+        /// <param name="button"></param>
+        /// <param name="icon"></param>
+        /// <returns></returns>
         public static MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button,
             MessageBoxImage icon)
         {
@@ -90,9 +106,16 @@ namespace Dynamo.UI.Prompts
             };
 
             dynamoMessageBox.ConfigureButtons(button);
-            return dynamoMessageBox.ShowDialog() == true ? MessageBoxResult.OK : MessageBoxResult.No;
+            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
         }
 
+        /// <summary>
+        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
+        /// </summary>
+        /// <param name="messageBoxText"></param>
+        /// <param name="caption"></param>
+        /// <param name="button"></param>
+        /// <returns></returns>
         public static MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button)
         {
             var dynamoMessageBox = new DynamoMessageBox
@@ -103,9 +126,15 @@ namespace Dynamo.UI.Prompts
             };
 
             dynamoMessageBox.ConfigureButtons(button);
-            return dynamoMessageBox.ShowDialog() == true ? MessageBoxResult.OK : MessageBoxResult.No;
+            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
         }
 
+        /// <summary>
+        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
+        /// </summary>
+        /// <param name="messageBoxText"></param>
+        /// <param name="caption"></param>
+        /// <returns></returns>
         public static MessageBoxResult Show(string messageBoxText, string caption)
         {
             var dynamoMessageBox = new DynamoMessageBox
@@ -115,9 +144,14 @@ namespace Dynamo.UI.Prompts
             };
 
             dynamoMessageBox.ConfigureButtons(MessageBoxButton.OK);
-            return dynamoMessageBox.ShowDialog() == true ? MessageBoxResult.OK : MessageBoxResult.No;
+            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
         }
 
+        /// <summary>
+        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
+        /// </summary>
+        /// <param name="messageBoxText"></param>
+        /// <returns></returns>
         public static MessageBoxResult? Show(string messageBoxText)
         {
             var dynamoMessageBox = new DynamoMessageBox
@@ -125,7 +159,7 @@ namespace Dynamo.UI.Prompts
                 BodyText = messageBoxText
             };
             dynamoMessageBox.ConfigureButtons(MessageBoxButton.OK);
-            return dynamoMessageBox.ShowDialog() == true ? MessageBoxResult.OK : MessageBoxResult.No;
+            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -154,6 +188,32 @@ namespace Dynamo.UI.Prompts
                     YesButton.Visibility = Visibility.Visible;
                     NoButton.Visibility = Visibility.Visible;
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Converts the nullable bool result from ShowDialog into the appropriate MessageBoxResult.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public MessageBoxResult ConvertResult(bool? value)
+        {
+            switch (MessageBoxButton)
+            {
+                case MessageBoxButton.OK:
+                    if (value == null || value == false) return MessageBoxResult.None;
+                    return MessageBoxResult.OK;
+                case MessageBoxButton.OKCancel:
+                    if (value == null) return MessageBoxResult.None;
+                    return value == true ? MessageBoxResult.OK : MessageBoxResult.Cancel;
+                case MessageBoxButton.YesNoCancel:
+                    if (value == null) return MessageBoxResult.None;
+                    return value == true ? MessageBoxResult.Yes : MessageBoxResult.Cancel;
+                case MessageBoxButton.YesNo:
+                    if (value == null) return MessageBoxResult.None;
+                    return value == true ? MessageBoxResult.Yes : MessageBoxResult.No;
+                default:
+                    return MessageBoxResult.None;
             }
         }
 

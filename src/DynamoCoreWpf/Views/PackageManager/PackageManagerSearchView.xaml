@@ -30,6 +30,7 @@
             <controls:DateToPackageLabelConverter x:Key="DateToPackageLabelCollapsedConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
+            <controls:DependencyListToVisibilityConverter x:Key="DependencyListToVisibilityConverter" />
 
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
@@ -519,8 +520,8 @@
                                                     BorderThickness="2"
                                                     CornerRadius="2">
                                                 <DockPanel>
-                                                    <Rectangle Width="10"
-                                                               Height="10"
+                                                    <Rectangle Width="9"
+                                                               Height="9"
                                                                Margin="0,0,0,0"
                                                                VerticalAlignment="Center"
                                                                DockPanel.Dock="Left">
@@ -566,6 +567,9 @@
                                                 <Trigger Property="IsEnabled" Value="False">
                                                     <Setter Property="TextBlock.Foreground" Value="#999999" />
                                                 </Trigger>
+                                                <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="True">
+                                                    <Setter Property="TextBlock.Foreground" Value="#999999" />
+                                                </DataTrigger>
                                                 <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
                                                     <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
                                                 </DataTrigger>
@@ -720,11 +724,11 @@
                                        Margin="15,0,0,0"
                                        VerticalAlignment="Center"
                                        LastChildFill="False">
-                                <Rectangle Width="10"
-                                           Height="10"
+                                <Rectangle Width="9"
+                                           Height="9"
                                            Margin="0,0,0,1"
                                            VerticalAlignment="Center"
-                                           Visibility="{Binding Path=Model.Hosts.Count, Converter={StaticResource IntToVisibilityConverter}}"
+                                           Visibility="{Binding Path=Model.Hosts, Converter={StaticResource DependencyListToVisibilityConverter}}"
                                            DockPanel.Dock="Left">
                                     <Rectangle.Fill>
                                         <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Requirements - disabled.png" />
@@ -734,7 +738,7 @@
                                            Margin="5,0"
                                            DockPanel.Dock="Left"
                                            Style="{StaticResource resultLabelStyle}"
-                                           Visibility="{Binding Path=Model.Hosts.Count, Converter={StaticResource IntToVisibilityConverter}}"
+                                           Visibility="{Binding Path=Model.Hosts, Converter={StaticResource DependencyListToVisibilityConverter}}"
                                            Text="{Binding Model.Hosts, Converter={StaticResource DependencyListToStringConverter}}">
                                 </TextBlock>
                             </DockPanel>

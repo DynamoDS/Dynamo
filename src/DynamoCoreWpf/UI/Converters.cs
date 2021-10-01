@@ -128,6 +128,29 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+    /// <summary>
+    /// Converts the list of package dependencies to a string
+    /// </summary>
+    public class DependencyListToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return Visibility.Collapsed;
+
+            List<string> depList = (List<string>)value;
+
+            if (depList.Count < 1) return Visibility.Collapsed;
+
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     /// <summary>
     /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
     /// </summary>
@@ -2197,9 +2220,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return Visibility.Collapsed;
-            if ((int)value > 0) return Visibility.Visible;
-            return Visibility.Collapsed;
+            return (int)value > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
