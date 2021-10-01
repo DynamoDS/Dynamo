@@ -4329,15 +4329,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No dependencies..
-        /// </summary>
-        public static string PackageManagerPackageHasNoDependencies {
-            get {
-                return ResourceManager.GetString("PackageManagerPackageHasNoDependencies", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to New.
         /// </summary>
         public static string PackageManagerPackageNew {
