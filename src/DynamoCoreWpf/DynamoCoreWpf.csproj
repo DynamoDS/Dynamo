@@ -1396,12 +1396,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.en-US.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
-    <Content Include="Views\GuidedTour\HtmlPages\learnPackages.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Views\GuidedTour\HtmlPages\Resources\DynamoPackages_1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Resource Include="UI\Images\pin_hidden_48_48.png" />
     <Resource Include="UI\Images\pin_hover_48_48.png" />
     <Resource Include="UI\Images\wire_anchor_48_48.png" />
