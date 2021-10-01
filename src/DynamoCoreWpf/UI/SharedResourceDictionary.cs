@@ -200,6 +200,7 @@ namespace Dynamo.UI
             }
         }
 
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortsDictionary or OutPortsDictionary")]
         public static ResourceDictionary PortsDictionary
         {
             get {
