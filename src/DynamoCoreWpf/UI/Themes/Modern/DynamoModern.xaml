@@ -2307,22 +2307,44 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="border"
-                            Height="36px"
-                            Padding="8,11,8,9"
-                            Background="#0696D7"
-                            CornerRadius="2">
-                        <TextBlock x:Name="textBlock"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontFamily="{StaticResource ArtifaktElementRegular}"
-                                   FontSize="14px"
-                                   Foreground="#FFFFFF"
-                                   Text="{TemplateBinding Content}" />
-                    </Border>
+                    <Grid>
+                        <Border x:Name="mouseOverBorder"
+                                Margin="2"
+                                BorderThickness="2"
+                                BorderBrush="#ECECEC"
+                                Visibility="Hidden"
+                                CornerRadius="2"/>
+                        <Border x:Name="mousePressedBorder"
+                                Margin="0"
+                                BorderThickness="4"
+                                Visibility="Hidden"
+                                BorderBrush="#DFDFDF"
+                                CornerRadius="4"/>
+                        <Border x:Name="border"
+                                Margin="4"
+                                Height="36px"
+                                Padding="8,0,8,0"
+                                BorderThickness="1"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="2">
+                            <TextBlock x:Name="textBlock"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="14px"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       Text="{TemplateBinding Content}" />
+                        </Border>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="MediumTurquoise" />
+                            <Setter TargetName="border" Property="Opacity" Value="0.9" />
+                            <Setter TargetName="mouseOverBorder" Property="Visibility " Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.9" />
+                            <Setter TargetName="mousePressedBorder" Property="Visibility " Value="Visible" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

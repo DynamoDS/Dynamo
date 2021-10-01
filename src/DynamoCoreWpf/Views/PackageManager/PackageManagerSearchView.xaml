@@ -30,7 +30,7 @@
             <controls:DateToPackageLabelConverter x:Key="DateToPackageLabelCollapsedConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
-            <controls:DependencyListToVisibilityConverter x:Key="DependencyListToVisibilityConverter" />
+            <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
 
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
@@ -728,7 +728,7 @@
                                            Height="9"
                                            Margin="0,0,0,1"
                                            VerticalAlignment="Center"
-                                           Visibility="{Binding Path=Model.Hosts, Converter={StaticResource DependencyListToVisibilityConverter}}"
+                                           Visibility="{Binding Path=Model.Hosts, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"
                                            DockPanel.Dock="Left">
                                     <Rectangle.Fill>
                                         <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Requirements - disabled.png" />
@@ -738,7 +738,7 @@
                                            Margin="5,0"
                                            DockPanel.Dock="Left"
                                            Style="{StaticResource resultLabelStyle}"
-                                           Visibility="{Binding Path=Model.Hosts, Converter={StaticResource DependencyListToVisibilityConverter}}"
+                                           Visibility="{Binding Path=Model.Hosts, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"
                                            Text="{Binding Model.Hosts, Converter={StaticResource DependencyListToStringConverter}}">
                                 </TextBlock>
                             </DockPanel>
@@ -781,7 +781,7 @@
                                            Margin="5,0"
                                            DockPanel.Dock="Right"
                                            Style="{StaticResource resultLabelStyle}"
-                                           Text="{Binding Path=Model.Votes, Converter={StaticResource PackageVotesConverter}}" />
+                                           Text="{Binding Path=Model.Votes, Converter={StaticResource NegativeIntToZeroConverter}}" />
                                 <Rectangle Width="10"
                                            Height="10"
                                            Margin="5,0,0,2"

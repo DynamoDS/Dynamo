@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -108,7 +109,7 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Converts the list of package dependencies to a string
+    /// Converts the list of package dependencies to a comma-separated string.
     /// </summary>
     public class DependencyListToStringConverter : IValueConverter
     {
@@ -130,19 +131,18 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Converts the list of package dependencies to a string
+    /// Returns Visibility.Visible if the collection has more than n items, otherwise returns Visibility.Collapsed.
     /// </summary>
-    public class DependencyListToVisibilityConverter : IValueConverter
+    public class ListHasMoreThanNItemsToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return Visibility.Collapsed;
+            if (!(value is ICollection collection)) return Visibility.Collapsed;
 
-            List<string> depList = (List<string>)value;
+            // If no parameter is specified, we return Visible when there are more than 0 (i.e. any) items.
+            var n = (int)(parameter ?? 0);
 
-            if (depList.Count < 1) return Visibility.Collapsed;
-
-            return Visibility.Visible;
+            return collection.Count <= n ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -371,10 +371,10 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Displays the number of votes a package has received from users, but displays
-    /// zero if the vote count goes negative.
+    /// Converts any numbers below 0 to 0, otherwise returns the original number.
+    /// For example, used to display the number of votes each package has received in the package manager.
     /// </summary>
-    public class PackageVotesConverter : IValueConverter
+    public class NegativeIntToZeroConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
             CultureInfo culture)
