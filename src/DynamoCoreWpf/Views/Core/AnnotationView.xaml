@@ -681,7 +681,8 @@
                          Height="{Binding ModelAreaHeight}"
                          IsHitTestVisible="True"
                          Background="Transparent"
-                         Opacity="0.5">
+                         Opacity="0.5"
+                         Visibility="{Binding IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                     <Path Stroke="Transparent"
                           StrokeThickness="0">
                         <Path.Fill>
@@ -740,6 +741,9 @@
                 Width="{Binding Width}"
                 Visibility="{Binding ElementName=GroupExpander, Path=IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
                 Grid.Row="1">
+            <Border.Background>
+                <SolidColorBrush Color="{Binding Background}" Opacity="0.5" />
+            </Border.Background>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -814,7 +818,6 @@
                     </ListView>
                 </Grid>
             </Grid>
-
         </Border>
     </Grid>
 </UserControl>
