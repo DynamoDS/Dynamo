@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using CoreNodeModels.Input;
 using Dynamo.Configuration;
@@ -19,6 +20,7 @@ using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
+using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
@@ -861,6 +863,30 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
             Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void InCanvasSearchTextChangeTriggersOneSearchCommand()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+
+            // open context menu
+            RightClick(currentWs.zoomBorder);
+
+            // show in-canvas search
+            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+
+            var searchControl = currentWs.ChildrenOfType<Popup>().Select(x => (x as Popup)?.Child as InCanvasSearchControl).Where(c => c != null).FirstOrDefault();
+            Assert.IsNotNull(searchControl);
+
+            int count = 0;
+            (searchControl.DataContext as SearchViewModel).SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
+            searchControl.SearchTextBox.Text = "dsfdf";
+            
+
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(count, 1);
         }
 
         [Test]
