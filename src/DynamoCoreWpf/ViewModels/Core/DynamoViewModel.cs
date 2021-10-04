@@ -263,6 +263,9 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("ShowStartPage");
                 if (DisplayStartPageCommand != null)
                     DisplayStartPageCommand.RaiseCanExecuteChanged();
+
+                if (DisplayInteractiveGuideCommand != null)
+                    DisplayInteractiveGuideCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -2463,6 +2466,11 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanDisplayStartPage(object parameter)
+        {
+            return !this.ShowStartPage;
+        }
+
+        private bool CanDisplayInteractiveGuide(object parameter)
         {
             return !this.ShowStartPage;
         }
