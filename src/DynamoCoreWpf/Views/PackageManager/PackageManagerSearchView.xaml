@@ -526,6 +526,8 @@
                                 <Button Name="viewDetailsButton"
                                         Click="ViewDetailsButton_OnClick"
                                         Content="{x:Static p:Resources.PackageSearchResultViewDetails}"
+                                        Command="{Binding ViewPackageDetailsCommand}"
+                                        CommandParameter="{Binding }"
                                         DockPanel.Dock="Right"
                                         Style="{StaticResource resultButtonStyle}" />
                                 <Rectangle Width="10"
