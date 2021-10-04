@@ -114,7 +114,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         [JsonProperty("TooltipPointerDirection")]
         public PointerDirection TooltipPointerDirection { get; set; } = PointerDirection.TOP_LEFT;
-
+        /// <summary>
+        /// A vertical offfset to the pointer of the popups 
+        /// </summary>
         [JsonProperty("PointerVerticalOffset")]
         public double PointerVerticalOffset { get; set; }
         #endregion
