@@ -308,6 +308,7 @@
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\Preview\CompactBubbleViewModel.cs" />
     <Compile Include="ViewModels\Preview\ConnectorAnchorViewModel.cs" />
+    <Compile Include="ViewModels\Preview\ConnectorContextMenuViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
@@ -334,6 +335,9 @@
     <Compile Include="Views\CodeBlocks\CodeBlockEditor.cs" />
     <Compile Include="Views\Core\ConnectorAnchorView.xaml.cs">
       <DependentUpon>ConnectorAnchorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Core\ConnectorContextMenuView.xaml.cs">
+      <DependentUpon>ConnectorContextMenuView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
@@ -474,6 +478,10 @@
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Core\ConnectorContextMenuView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GuidedTour\RealTimeInfoWindow.xaml">
       <SubType>Designer</SubType>

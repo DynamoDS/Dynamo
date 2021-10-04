@@ -430,11 +430,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pin Wire.
+        ///   Looks up a localized string similar to Hide Wire.
         /// </summary>
-        public static string ConnectorContextMenuHeaderPinConnector {
+        public static string ConnectorContextMenuHeaderHideConnector {
             get {
-                return ResourceManager.GetString("ConnectorContextMenuHeaderPinConnector", resourceCulture);
+                return ResourceManager.GetString("ConnectorContextMenuHeaderHideConnector", resourceCulture);
             }
         }
         
@@ -444,6 +444,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ConnectorContextMenuHeaderSelectConnected {
             get {
                 return ResourceManager.GetString("ConnectorContextMenuHeaderSelectConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Wire.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderShowConnector {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderShowConnector", resourceCulture);
             }
         }
         
