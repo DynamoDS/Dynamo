@@ -705,6 +705,8 @@ namespace Dynamo.Controls
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
+            viewModel.OnSelected(this, EventArgs.Empty);
+
             grid.ContextMenu.DataContext = viewModel;
             grid.ContextMenu.IsOpen = true;
             
