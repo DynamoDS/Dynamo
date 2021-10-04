@@ -2558,12 +2558,9 @@ namespace Dynamo.Models
                         }
                     }
 
-                    var annotationModel = CreateAnnotationModel(annotation, modelLookup
-                                .Where(x => annotation.Nodes.Select(y => y.GUID).Contains(x.Key))
-                                .ToDictionary(x => x.Key, x => x.Value));
+                    var annotationModel = CreateAnnotationModel(annotation, modelLookup);
 
                     newAnnotations.Add(annotationModel);
-                    modelLookup.Add(annotation.GUID, annotationModel);
                 }
 
                 // Add the new Annotation's to the Workspace
@@ -2595,6 +2592,7 @@ namespace Dynamo.Models
             // so they need to be in pasted annotation as well
             var modelsToRestore = model.DeletedModelBases.Intersect(ClipBoard);
             var modelsToAdd = model.Nodes.Concat(modelsToRestore);
+
             // checked condition here that supports pasting of multiple groups
             foreach (var models in modelsToAdd)
             {
