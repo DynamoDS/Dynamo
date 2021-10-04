@@ -1463,6 +1463,9 @@ You will get a chance to save your work.</value>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
     <value>Markdown Files Directory (optional)</value>
   </data>
+  <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
+    <value>An optional location for documenting your package in the markdown format.</value>
+  </data>
   <data name="ShowClassicNodeLibrary" xml:space="preserve">
     <value>Show Classic Node Library</value>
   </data>

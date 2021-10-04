@@ -5689,6 +5689,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An optional location for documenting your package in the markdown format..
+        /// </summary>
+        public static string PublishPackageViewMarkdownFilesDirectoryToolTip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewMarkdownFilesDirectoryToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dependencies.
         /// </summary>
         public static string PublishPackageViewPackageDependencies {

@@ -2714,4 +2714,7 @@ This package will be unloaded after the next Dynamo restart.</value>
   <data name="PublishPackageOnline" xml:space="preserve">
     <value>Publish Online</value>
   </data>
+  <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
+    <value>An optional location for documenting your package in the markdown format.</value>
+  </data>
 </root>

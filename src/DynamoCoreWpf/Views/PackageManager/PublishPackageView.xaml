@@ -320,6 +320,8 @@
                                                   TextElement.FontFamily="{StaticResource ArtifaktElementRegular}"
                                                   TextElement.FontSize="10px"
                                                   TextElement.FontWeight="Regular"
+                                                  ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Content.Text}"
+                                                  ToolTipService.ShowDuration="30000"
                                                   TextElement.Foreground="Blue" />
                             </Border>
                         </ControlTemplate>
@@ -492,16 +494,17 @@
             <RowDefinition Height="66px" />
         </Grid.RowDefinitions>
 
-        <!--  Title + Close Button  -->
+        <!--  Top Section: Title + Close Button  -->
         <Border Name="titleBar"
                 Grid.Row="0"
                 Grid.RowSpan="3"
                 Grid.Column="0"
-                Grid.ColumnSpan="3"
                 Background="{StaticResource DarkMidGreyBrush}"
                 CornerRadius="4"
                 MouseDown="PreferencesPanel_MouseDown">
             <DockPanel HorizontalAlignment="Stretch">
+
+                <!--  Close Button  -->
                 <Button x:Name="closeButton"
                         Margin="8"
                         VerticalAlignment="Top"
@@ -509,6 +512,8 @@
                         DockPanel.Dock="Right"
                         KeyboardNavigation.IsTabStop="False"
                         Style="{DynamicResource CloseButtonStyle}" />
+
+                <!--  Dialog Title  -->
                 <TextBlock x:Name="headerTitle"
                            Margin="25,16"
                            VerticalAlignment="Top"
@@ -820,6 +825,7 @@
                                  IsHitTestVisible="False"
                                  IsReadOnly="True"
                                  Style="{StaticResource InputStyle}"
+                                 Text="{Binding MarkdownFilesDirectory, UpdateSourceTrigger=PropertyChanged}"
                                  Tag="..." />
                         <Button Name="markdownFilesDirectoryButton"
                                 Width="20"
@@ -828,7 +834,8 @@
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 BorderThickness="0"
-                                Command="{Binding Path=ShowAddFileDialogAndAddCommand}"
+                                Command="{Binding Path=SelectMarkdownDirectoryCommand}"
+                                ToolTip="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectoryToolTip}"
                                 Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate>
@@ -856,7 +863,7 @@
                           ResizeDirection="Columns" />
         </Grid>
 
-        <!--  Bottom Section  -->
+        <!--  Bottom Section: Publish Buttons + Status Label -->
         <DockPanel Grid.Row="2"
                    Margin="25,0"
                    VerticalAlignment="Center">
@@ -867,9 +874,9 @@
                     Style="{StaticResource CtaButtonStyle}" />
 
             <!--  Publish Locally  -->
-            <Button DockPanel.Dock="Right"
-                    Command="{Binding Path=SubmitCommand}"
+            <Button Command="{Binding Path=SubmitCommand}"
                     Content="{x:Static p:Resources.PublishPackageLocally}"
+                    DockPanel.Dock="Right"
                     Style="{StaticResource CtaButtonStyle}" />
 
             <TextBlock Name="statusLabel"

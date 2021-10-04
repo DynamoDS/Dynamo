@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Forms;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.ZeroTouch;
@@ -15,6 +16,7 @@ using Dynamo.PackageManager.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.Utilities;
 using Greg.Requests;
 using Microsoft.Practices.Prism.Commands;
 using PythonNodeModels;
@@ -505,6 +507,22 @@ namespace Dynamo.PackageManager
             get { return !HasDependencies; }
         }
 
+        private string markdownFilesDirectory;
+
+        /// <summary>
+        /// An optional directory, specified by the user, which holds guidance documents
+        /// for their nodes or packages in the markdown format.
+        /// </summary>
+        public string MarkdownFilesDirectory
+        {
+            get => markdownFilesDirectory;
+            set
+            {
+                markdownFilesDirectory = value;
+                RaisePropertyChanged(nameof(MarkdownFilesDirectory));
+            }
+        }
+
         /// <summary>
         /// SubmitCommand property </summary>
         /// <value>
@@ -523,6 +541,13 @@ namespace Dynamo.PackageManager
         /// A command which, when executed, submits the current package</value>
         public DelegateCommand ShowAddFileDialogAndAddCommand { get; private set; }
 
+        /// <summary>
+        /// SelectMarkdownDirectoryCommand property </summary>
+        /// <value>
+        /// A command which, when executed, opens the directory selection dialog and prompts the user to
+        /// specify a directory for their (optional) markdown files.</value>
+        public DelegateCommand SelectMarkdownDirectoryCommand { get; private set; }
+        
         /// <summary>
         /// ToggleMoreCommand property </summary>
         /// <value>
@@ -629,6 +654,7 @@ namespace Dynamo.PackageManager
             SubmitCommand = new DelegateCommand(Submit, CanSubmit);
             PublishLocallyCommand = new DelegateCommand(PublishLocally, CanPublishLocally);
             ShowAddFileDialogAndAddCommand = new DelegateCommand(ShowAddFileDialogAndAdd, CanShowAddFileDialogAndAdd);
+            SelectMarkdownDirectoryCommand = new DelegateCommand(SelectMarkdownDirectory);
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
             Dependencies = new ObservableCollection<PackageDependency>();
             Assemblies = new List<PackageAssembly>();
@@ -1045,6 +1071,7 @@ namespace Dynamo.PackageManager
         }
 
         private string _errorString = "";
+        
         public string ErrorString
         {
             get { return _errorString; }
@@ -1090,6 +1117,41 @@ namespace Dynamo.PackageManager
             {
                 AddFile(file);
             }
+        }
+
+        /// <summary>
+        /// A command, fired when the user click the button to select a directory for their markdown documentation.
+        /// When clicked, prompts the user to specify a directory containing markdown files.
+        /// </summary>
+        private void SelectMarkdownDirectory()
+        {
+            var pathManager = DynamoViewModel.Model.PathManager as PathManager;
+            
+            var args = new PackagePathEventArgs
+            {
+                Path = pathManager.DefaultPackagesDirectory
+            };
+
+            OnRequestShowFileDialog(this, args);
+
+            if (args.Cancel) return;
+
+            var folder = args.Path;
+
+            if (!IsDirectoryWritable(folder))
+            {
+                ErrorString = String.Format(Resources.FolderNotWritableError, folder);
+                var ErrorMessage = ErrorString + "\n" + Resources.SolutionToFolderNotWritatbleError;
+                if (DynamoModel.IsTestMode) return;
+                MessageBoxService.Show(ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            MarkdownFilesDirectory = folder;
+        }
+
+        private void ShowFileDialog(PackagePathEventArgs e)
+        {
+            OnRequestShowFileDialog(this, e);
         }
 
         private bool CanShowAddFileDialogAndAdd()
@@ -1181,11 +1243,11 @@ namespace Dynamo.PackageManager
                     // as the existing assembly cannot be modified while Dynamo is active.
                     if (this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name))
                     {
-                        MessageBox.Show(string.Format(Resources.PackageDuplicateAssemblyWarning, 
+                        MessageBoxService.Show(string.Format(Resources.PackageDuplicateAssemblyWarning, 
                                         dynamoViewModel.BrandingResourceProvider.ProductName),
                                         Resources.PackageDuplicateAssemblyWarningTitle, 
-                                        MessageBoxButtons.OK, 
-                                        MessageBoxIcon.Stop);
+                                        MessageBoxButton.OK, 
+                                        MessageBoxImage.Stop);
                         return; // skip loading assembly
                     }
 
