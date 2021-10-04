@@ -245,8 +245,9 @@ namespace Dynamo.ViewModels
                     this.SetGroupInputPorts();
                     this.SetGroupOutPorts();
                     this.CollapseGroupContents(true);
-                    RaisePropertyChanged(nameof(InbetweenNodesCount));
+                    RaisePropertyChanged(nameof(NodeContentCount));
                 }
+                WorkspaceViewModel.HasUnsavedChanges = true;
                 RaisePropertyChanged(nameof(IsExpanded));
             }
         }
@@ -274,44 +275,16 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private ObservableCollection<NodeViewModel> inputNodes;
-        /// <summary>
-        /// Collection of the groups input NodeViewModels.
-        /// This is used for displaying node icons when the
-        /// group is collapsed.
-        /// </summary>
-        [JsonIgnore]
-        public ObservableCollection<NodeViewModel> InputNodes
-        {
-            get => inputNodes;
-            private set => inputNodes = value;
-        }
-
-        private ObservableCollection<NodeViewModel> outputNodes;
-        /// <summary>
-        /// Collection of the groups output NodeViewModels.
-        /// This is used for displaying node icons when the
-        /// group is collapsed.
-        /// </summary>
-        [JsonIgnore]
-        public ObservableCollection<NodeViewModel> OutputNodes
-        {
-            get => outputNodes;
-            private set => outputNodes = value;
-        }
-
         /// <summary>
         /// Counter of all nodes in the group that
         /// aren't either an input or output node.
         /// This is used to display the amount of nodes
         /// the are in between the input and output nodes.
         /// </summary>
-        public int InbetweenNodesCount
+        public int NodeContentCount
         {
             get => Nodes
-                .Except(InputNodes
-                    .Select(x => x.NodeModel)
-                    .Union(OutputNodes.Select(x => x.NodeModel)))
+                .OfType<NodeModel>()
                 .Count();
         }
 
@@ -520,11 +493,6 @@ namespace Dynamo.ViewModels
 
             InPorts = new ObservableCollection<PortViewModel>();
             OutPorts = new ObservableCollection<PortViewModel>();
-            InputNodes = new ObservableCollection<NodeViewModel>();
-            OutputNodes = new ObservableCollection<NodeViewModel>();
-
-            InPorts.CollectionChanged += InPorts_CollectionChanged;
-            OutPorts.CollectionChanged += OutPorts_CollectionChanged;
 
             ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
 
@@ -551,45 +519,32 @@ namespace Dynamo.ViewModels
             InPorts.Clear();
             List<ProxyPortViewModel> newPortViewModels;
 
-            if (!AnnotationModel.HasNestedGroups)
+            // we need to store the original ports here
+            // as we need those later for when we
+            // need to collapse the groups content
+            if (this.AnnotationModel.HasNestedGroups)
             {
-                // we need to store the original ports here
-                // as we need thoese later for when we
-                // need to collapse the groups content
+                var ownerNodes = Nodes
+                    .OfType<AnnotationModel>()
+                    .SelectMany(x => x.Nodes.OfType<NodeModel>())
+                    .Concat(Nodes.OfType<NodeModel>());
+
+                originalInPorts = GetGroupInPorts(ownerNodes);
+            }
+            else
+            {
                 originalInPorts = GetGroupInPorts();
-
-                // Create proxies of the ports so we can
-                // visually add them to the group but they
-                // should still reference their NodeModel
-                // owner
-                newPortViewModels = CreateProxyPorts(originalInPorts);
-
-                if (newPortViewModels == null) return;
-                InPorts.AddRange(newPortViewModels);
-                return;
             }
 
-            // We need to get all NodeModels for the nested groups 
-            // here, as we will have to show any ports belonging to a
-            // node that are either unconnected or connected to outside
-            // of the owner group.
-            var ownerGroupNodes = Nodes.OfType<AnnotationModel>()
-                .SelectMany(x=>x.Nodes.OfType<NodeModel>())
-                .Concat(Nodes.OfType<NodeModel>());
-
-            // Find the needed input ports of all the nested groups
-            var groupedGroupsInPorts = new List<PortModel>();
-            foreach (var group in ViewModelBases.OfType<AnnotationViewModel>())
-            {
-                groupedGroupsInPorts.AddRange(group.GetGroupInPorts(ownerGroupNodes));
-            }
-
-            originalInPorts = GetGroupInPorts().Concat(groupedGroupsInPorts);
-
+            // Create proxies of the ports so we can
+            // visually add them to the group but they
+            // should still reference their NodeModel
+            // owner
             newPortViewModels = CreateProxyPorts(originalInPorts);
 
             if (newPortViewModels == null) return;
             InPorts.AddRange(newPortViewModels);
+            return;
         }
 
         /// <summary>
@@ -601,44 +556,32 @@ namespace Dynamo.ViewModels
             OutPorts.Clear();
             List<ProxyPortViewModel> newPortViewModels;
 
-            if (!AnnotationModel.HasNestedGroups)
+            // we need to store the original ports here
+            // as we need thoese later for when we
+            // need to collapse the groups content
+            if (this.AnnotationModel.HasNestedGroups)
             {
-                // we need to store the original ports here
-                // as we need thoese later for when we
-                // need to collapse the groups content
+                var ownerNodes = Nodes
+                    .OfType<AnnotationModel>()
+                    .SelectMany(x => x.Nodes.OfType<NodeModel>())
+                    .Concat(Nodes.OfType<NodeModel>());
+
+                originalOutPorts = GetGroupOutPorts(ownerNodes);
+            }
+            else
+            {
                 originalOutPorts = GetGroupOutPorts();
-
-                // Create proxies of the ports so we can
-                // visually add them to the group but they
-                // should still reference their NodeModel
-                // owner
-                newPortViewModels = CreateProxyPorts(originalOutPorts);
-
-                if (newPortViewModels == null) return;
-                OutPorts.AddRange(newPortViewModels);
-                return;
             }
 
-            // We need to get all NodeModels for the nested groups 
-            // here, as we will have to show any ports belonging to a
-            // node that are either unconnected or connected to outside
-            // of the owner group.
-            var ownerGroupNodes = Nodes.OfType<AnnotationModel>()
-                .SelectMany(x => x.Nodes.OfType<NodeModel>())
-                .Concat(Nodes.OfType<NodeModel>());
-
-            var groupedGroupsOutPorts = new List<PortModel>();
-            foreach (var group in ViewModelBases.OfType<AnnotationViewModel>())
-            {
-                groupedGroupsOutPorts.AddRange(group.GetGroupOutPorts(ownerGroupNodes));
-            }
-
-            originalOutPorts = GetGroupOutPorts().Concat(groupedGroupsOutPorts);
-
+            // Create proxies of the ports so we can
+            // visually add them to the group but they
+            // should still reference their NodeModel
+            // owner
             newPortViewModels = CreateProxyPorts(originalOutPorts);
 
             if (newPortViewModels == null) return;
             OutPorts.AddRange(newPortViewModels);
+            return;
         }
 
         internal IEnumerable<PortModel> GetGroupInPorts(IEnumerable<NodeModel> ownerNodes = null)
@@ -727,6 +670,8 @@ namespace Dynamo.ViewModels
                     // we collapse that and all of its content.
                     annotationViewModel.IsCollapsed = true;
                     annotationViewModel.CollapseGroupContents(false);
+                    annotationViewModel.SetGroupInputPorts();
+                    annotationViewModel.SetGroupOutPorts();
                 }
 
                 viewModel.IsCollapsed = true;
@@ -983,52 +928,6 @@ namespace Dynamo.ViewModels
                 );
         }
 
-        private void OutPorts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (PortViewModel item in e.NewItems)
-                    {
-                        if (OutputNodes.Contains(item.NodeViewModel)) continue;
-                        OutputNodes.Add(item.NodeViewModel);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (PortViewModel item in e.OldItems)
-                    {
-                        if (!OutputNodes.Contains(item.NodeViewModel)) continue;
-                        OutputNodes.Remove(item.NodeViewModel);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void InPorts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (PortViewModel item in e.NewItems)
-                    {
-                        if (InputNodes.Contains(item.NodeViewModel)) continue;
-                        InputNodes.Add(item.NodeViewModel);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (PortViewModel item in e.OldItems)
-                    {
-                        if (!InputNodes.Contains(item.NodeViewModel)) continue;
-                        InputNodes.Remove(item.NodeViewModel);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
         private void GroupViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -1058,8 +957,6 @@ namespace Dynamo.ViewModels
 
         public override void Dispose()
         {
-            InPorts.CollectionChanged -= InPorts_CollectionChanged;
-            OutPorts.CollectionChanged -= OutPorts_CollectionChanged;
             annotationModel.PropertyChanged -= model_PropertyChanged;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();

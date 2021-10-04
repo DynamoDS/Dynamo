@@ -151,6 +151,14 @@ namespace Dynamo.Nodes
             {
                 DynamoSelection.Instance.ClearSelection();
                 System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
+
+                // Expand the group before deleting it
+                // otherwise collapsed content will be "lost" 
+                if (!this.ViewModel.IsExpanded)
+                {
+                    this.ViewModel.IsExpanded = true;
+                }
+                 
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
@@ -412,6 +420,11 @@ namespace Dynamo.Nodes
         }
 
         private void GroupDescriptionTextBlock_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            SetTextHeight();
+        }
+
+        private void GroupDescriptionControls_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             SetTextHeight();
         }
