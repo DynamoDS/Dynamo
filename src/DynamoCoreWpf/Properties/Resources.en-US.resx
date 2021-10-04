@@ -273,8 +273,8 @@
     <value>Switch to Geometry _View</value>
     <comment>Context menu item</comment>
   </data>
-  <data name="ContextMenuHideAllGeometry" xml:space="preserve">
-    <value>Hide all geometry preview</value>
+  <data name="ContextMenuHideGeometry" xml:space="preserve">
+    <value>Hide geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="ContextMenuHideAllTextBubble" xml:space="preserve">
@@ -333,8 +333,8 @@
     <value>Publish This Custom Node...</value>
     <comment>Context menu item</comment>
   </data>
-  <data name="ContextMenuShowAllGeometry" xml:space="preserve">
-    <value>Show all geometry preview</value>
+  <data name="ContextMenuShowGeometry" xml:space="preserve">
+    <value>Show geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
