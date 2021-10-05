@@ -37,6 +37,7 @@ namespace Dynamo.ViewModels
         private ConnectorModel model;
         private bool isConnecting = false;
         private bool isCollapsed = false;
+        private bool isHidden = false;
         private bool isTemporarilyVisible = false;
         private string connectorDataToolTip;
         private bool canShowConnectorTooltip = true;
@@ -174,8 +175,23 @@ namespace Dynamo.ViewModels
 
                 isCollapsed = value;
                 RaisePropertyChanged(nameof(IsCollapsed));
-                SetVisibilityOfPins(IsCollapsed);
-                SetPartialVisibilityOfPins(IsCollapsed);
+            }
+        }
+
+        public bool IsHidden
+        {
+            get => isHidden;
+            set
+            {
+                if (isHidden == value)
+                {
+                    return;
+                }
+
+                isHidden = value;
+                RaisePropertyChanged(nameof(IsHidden));
+                SetVisibilityOfPins(IsHidden);
+                SetPartialVisibilityOfPins(IsHidden);
             }
         }
 
@@ -196,24 +212,24 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void SetVisibilityOfPins(bool isCollapsed)
+        private void SetVisibilityOfPins(bool isHidden)
         {
             if (ConnectorPinViewCollection is null) { return; }
 
             foreach (var pin in ConnectorPinViewCollection)
             {
-                var visibilityModified = !isCollapsed && BezVisibility ? false : true;
+                var visibilityModified = !isHidden ? false : true;
                 //set visible or hidden based on connector
-                pin.IsCollapsed = visibilityModified;
+                pin.IsHidden = visibilityModified;
             }
         }
-        private void SetPartialVisibilityOfPins(bool isCollapsed)
+        private void SetPartialVisibilityOfPins(bool isHidden)
         {
             if (ConnectorPinViewCollection is null) { return; }
 
             foreach (var pin in ConnectorPinViewCollection)
             {
-                var partialVisibilityModified = !isCollapsed && BezVisibility ? false : true;
+                var partialVisibilityModified = !isHidden ? false : true;
                 //set 'partlyVisible' based on connector (when selected while connector is hidden)
                 pin.IsTemporarilyVisible = partialVisibilityModified;
             }
@@ -402,42 +418,6 @@ namespace Dynamo.ViewModels
             {
                 endDotSize = value;
                 RaisePropertyChanged(nameof(EndDotSize));
-            }
-        }
-
-        /// <summary>
-        /// Returns visible if the connectors is in the current space and the 
-        /// model's current connector type is BEZIER
-        /// </summary>
-        public bool BezVisibility
-        {
-            get
-            {
-                if (workspaceViewModel.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
-                    return true;
-                return false;
-            }
-            set
-            {
-                RaisePropertyChanged(nameof(BezVisibility));
-            }
-        }
-
-        /// <summary>
-        /// Returns visible if the connectors is in the current space and the 
-        /// model's current connector type is POLYLINE
-        /// </summary>
-        public bool PlineVisibility
-        {
-            get
-            {
-                if (workspaceViewModel.DynamoViewModel.ConnectorType == ConnectorType.POLYLINE)
-                    return true;
-                return false;
-            }
-            set
-            {
-                RaisePropertyChanged(nameof(PlineVisibility));
             }
         }
 
@@ -665,7 +645,7 @@ namespace Dynamo.ViewModels
             {
                 CanShowTooltip = CanShowConnectorTooltip,
                 CurrentPosition = MousePosition,
-                IsHalftone = IsCollapsed,
+                IsHalftone = IsHidden,
                 IsDataFlowCollection = IsDataFlowCollection
             };
             ConnectorAnchorViewModel.RequestDispose += DisposeAnchor;
@@ -683,7 +663,7 @@ namespace Dynamo.ViewModels
             ConnectorContextMenuViewModel = new ConnectorContextMenuViewModel(this)
             {
                 CurrentPosition = MousePosition,
-                IsCollapsed = this.IsCollapsed
+                IsCollapsed = this.IsHidden
             };
             ConnectorContextMenuViewModel.RequestDispose += DisposeContextMenu;
         }
@@ -762,16 +742,16 @@ namespace Dynamo.ViewModels
             // which case use that parameter it is specifying.
             bool usedFlag = parameter != null?
                 Convert.ToBoolean(parameter):
-                !ConnectorModel.IsCollapsed;
+                !ConnectorModel.IsHidden;
                 
             workspaceViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.UpdateModelValueCommand(System.Guid.Empty, ConnectorModel.GUID,
-                   nameof(ConnectorModel.IsCollapsed), usedFlag.ToString()));
+                   nameof(ConnectorModel.IsHidden), usedFlag.ToString()));
 
             workspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
 
             bool adjacentNodeSelected = model.Start.Owner.IsSelected || model.End.Owner.IsSelected;
-            if (adjacentNodeSelected && ConnectorModel.IsCollapsed)
+            if (adjacentNodeSelected && ConnectorModel.IsHidden)
             {
                 IsTemporarilyDisplayed = true;
             }
@@ -843,7 +823,7 @@ namespace Dynamo.ViewModels
 
         private bool CanRunMouseHover(object parameter)
         {
-            return !IsConnecting && BezVisibility;
+            return !IsConnecting;
         }
         private bool CanRunMouseUnhover(object parameter)
         {
@@ -875,7 +855,7 @@ namespace Dynamo.ViewModels
             ConnectorPinViewCollection = new ObservableCollection<ConnectorPinViewModel>();
             ConnectorPinViewCollection.CollectionChanged += HandleCollectionChanged;
 
-            IsCollapsed = !workspaceViewModel.DynamoViewModel.IsShowingConnectors;
+            IsHidden = !workspaceViewModel.DynamoViewModel.IsShowingConnectors;
             IsConnecting = true;
             MouseHoverOn = false;
             activeStartPort = port;
@@ -906,7 +886,7 @@ namespace Dynamo.ViewModels
         {
             this.workspaceViewModel = workspace;
             model = connectorModel;
-            IsCollapsed = model.IsCollapsed; 
+            IsHidden = model.IsHidden;
             MouseHoverOn = false;
 
             model.PropertyChanged += HandleConnectorPropertyChanged;
@@ -940,13 +920,13 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case nameof(ConnectorModel.IsCollapsed):
+                case nameof(ConnectorModel.IsHidden):
                     ConnectorModel connector = sender as ConnectorModel;
                     if (connector is null)
                     {
                         return;
                     }
-                    IsCollapsed = connector.IsCollapsed;
+                    IsHidden = connector.IsHidden;
                     break;
                 default:
                     break;
@@ -1009,7 +989,7 @@ namespace Dynamo.ViewModels
         {
             var pinViewModel = new ConnectorPinViewModel(this.workspaceViewModel, pinModel)
             {
-                IsCollapsed = IsCollapsed,
+                IsHidden = this.IsHidden,
                 IsTemporarilyVisible = isTemporarilyVisible
             };
             pinViewModel.PropertyChanged += PinViewModelPropertyChanged;
@@ -1044,7 +1024,7 @@ namespace Dynamo.ViewModels
         private void HandleRequestSelected(object sender, EventArgs e)
         {
             ConnectorPinViewModel pinViewModel = sender as ConnectorPinViewModel;
-            IsTemporarilyDisplayed = pinViewModel.IsSelected && IsCollapsed;
+            IsTemporarilyDisplayed = pinViewModel.IsSelected && IsHidden;
         }
         /// <summary>
         /// Handles ConnectorPin 'Unpin' command.
@@ -1118,8 +1098,7 @@ namespace Dynamo.ViewModels
                 case nameof(NodeModel.IsSelected):
                     RaisePropertyChanged(nameof(PreviewState));
                     IsTemporarilyDisplayed = model.Start.Owner.IsSelected 
-                        && IsCollapsed
-                        && BezVisibility ? true : false;
+                        && IsHidden ? true : false;
                     break;
                 case nameof(NodeModel.Position):
                     RaisePropertyChanged(nameof(CurvePoint0));
@@ -1153,8 +1132,7 @@ namespace Dynamo.ViewModels
                 case nameof(NodeModel.IsSelected):
                     RaisePropertyChanged(nameof(PreviewState));
                     IsTemporarilyDisplayed = model.End.Owner.IsSelected 
-                        && IsCollapsed 
-                        && BezVisibility ? true : false;
+                        && IsHidden ? true : false;
                     break;
                 case nameof(NodeModel.Position):
                     RaisePropertyChanged(nameof(CurvePoint0));
@@ -1174,27 +1152,11 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case nameof(ConnectorType):
-                    if (workspaceViewModel.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
-                    {
-                        BezVisibility = true;
-                        SetVisibilityOfPins(ConnectorModel.IsCollapsed);
-                        PlineVisibility = false;
-                    }
-                    else
-                    {
-                        BezVisibility = false;
-                        SetVisibilityOfPins(ConnectorModel.IsCollapsed);
-                        PlineVisibility = true;
-                    }
-
-                    Redraw();
-                    break;
                 case nameof(DynamoViewModel.IsShowingConnectors):
                     var dynModel = sender as DynamoViewModel;
-                    ConnectorModel.IsCollapsed = !dynModel.IsShowingConnectors;
+                    IsHidden = !dynModel.IsShowingConnectors;
                     bool adjacentNodeSelected = model.Start.Owner.IsSelected || model.End.Owner.IsSelected;
-                    if (adjacentNodeSelected && ConnectorModel.IsCollapsed)
+                    if (adjacentNodeSelected && ConnectorModel.IsHidden)
                     {
                         IsTemporarilyDisplayed = true;
                     }
@@ -1301,16 +1263,9 @@ namespace Dynamo.ViewModels
 
             var offset = 0.0;
             double distance = 0;
-            if (this.BezVisibility == true)
-            {
-                distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
-                offset = .45 * distance;
-            }
-            else
-            {
-                distance = CurvePoint3.X - CurvePoint0.X;
-                offset = distance / 2;
-            }
+
+            distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
+            offset = .45 * distance;
 
             CurvePoint1 = new Point(CurvePoint0.X + offset, CurvePoint0.Y);
             CurvePoint2 = new Point(p2.X - offset, p2.Y);
@@ -1350,16 +1305,9 @@ namespace Dynamo.ViewModels
         {
             var offset = 0.0;
             double distance = 0;
-            if (this.BezVisibility == true)
-            {
-                distance = Math.Sqrt(Math.Pow(endPt.X - startPt.X, 2) + Math.Pow(endPt.Y - startPt.Y, 2));
-                offset = .45 * distance;
-            }
-            else
-            {
-                distance = endPt.X - startPt.X;
-                offset = distance / 2;
-            }
+
+            distance = Math.Sqrt(Math.Pow(endPt.X - startPt.X, 2) + Math.Pow(endPt.Y - startPt.Y, 2));
+            offset = .45 * distance;
 
             var pt1 = new Point(startPt.X + offset, startPt.Y);
             var pt2 = new Point(endPt.X - offset, endPt.Y);
@@ -1401,16 +1349,9 @@ namespace Dynamo.ViewModels
 
                 var offset = 0.0;
                 double distance = 0;
-                if (this.BezVisibility == true)
-                {
-                    distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
-                    offset = .45 * distance;
-                }
-                else
-                {
-                    distance = CurvePoint3.X - CurvePoint0.X;
-                    offset = distance / 2;
-                }
+
+                distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
+                offset = .45 * distance;
 
                 CurvePoint1 = new Point(CurvePoint0.X + offset, CurvePoint0.Y);
                 CurvePoint2 = new Point(p2.X - offset, p2.Y);

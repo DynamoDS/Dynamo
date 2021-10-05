@@ -32,18 +32,18 @@ namespace Dynamo.Graph.Connectors
     public class ConnectorModel : ModelBase
     {
         #region properties
-        private bool isCollapsed = false;
+        private bool isHidden = false;
 
         /// <summary>
-        /// IsCollapsed flag controlling the visibility of a connector
+        /// IsHidden flag controlling the visibility of a connector
         /// </summary>
-        public bool IsCollapsed
+        public bool IsHidden
         {
-            get { return isCollapsed; }
+            get { return isHidden; }
             set
             {
-                isCollapsed = value;
-                RaisePropertyChanged(nameof(IsCollapsed));
+                isHidden = value;
+                RaisePropertyChanged(nameof(IsHidden));
             }
         }
         /// <summary>
@@ -251,8 +251,8 @@ namespace Dynamo.Graph.Connectors
 
             switch (name)
             {
-                case nameof(IsCollapsed):
-                    IsCollapsed = Convert.ToBoolean(value);
+                case nameof(IsHidden):
+                    IsHidden = Convert.ToBoolean(value);
                     break;
                 default:
                     break;
@@ -268,14 +268,14 @@ namespace Dynamo.Graph.Connectors
             helper.SetAttribute("start_index", Start.Index);
             helper.SetAttribute("end", End.Owner.GUID);
             helper.SetAttribute("end_index", End.Index);
-            helper.SetAttribute(nameof(IsCollapsed), IsCollapsed);
+            helper.SetAttribute(nameof(IsHidden), IsHidden);
             //helper.SetAttribute("portType", ((int) End.PortType));
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             var helper = new XmlElementHelper(nodeElement);
-            IsCollapsed = helper.ReadBoolean(nameof(IsCollapsed));
+            IsHidden = helper.ReadBoolean(nameof(IsHidden));
             //This is now handled via NodeGraph.LoadConnectorFromXml
         }
 

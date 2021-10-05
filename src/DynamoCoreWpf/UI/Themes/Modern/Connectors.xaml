@@ -50,7 +50,7 @@
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="True"/>
-                    <Condition Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
+                    <Condition Binding="{Binding Path=IsHidden, Mode=OneWay}" Value="True"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="IsHitTestVisible" Value="True"/>
@@ -61,7 +61,7 @@
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="False"/>
-                    <Condition Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
+                    <Condition Binding="{Binding Path=IsHidden, Mode=OneWay}" Value="True"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="IsHitTestVisible" Value="False"/>
@@ -69,7 +69,7 @@
                     <Setter Property="ToolTipService.IsEnabled" Value="False"/>
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
-            <DataTrigger Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="False">
+            <DataTrigger Binding="{Binding Path=IsHidden, Mode=OneWay}" Value="False">
                 <Setter Property="IsHitTestVisible" Value="True"/>
                 <Setter Property="Opacity" Value="1.0"/>
                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
@@ -81,7 +81,7 @@
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="True"/>
-                    <Condition Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
+                    <Condition Binding="{Binding Path=IsHidden, Mode=OneWay}" Value="True"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="Opacity" Value="0.4"/>
@@ -90,13 +90,13 @@
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="False"/>
-                    <Condition Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
+                    <Condition Binding="{Binding Path=IsHidden, Mode=OneWay}" Value="True"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="Opacity" Value="0.0"/>
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
-            <DataTrigger Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="False">
+            <DataTrigger Binding="{Binding Path=IsHidden, Mode=OneWay}" Value="False">
                 <Setter Property="Opacity" Value="1.0"/>
             </DataTrigger>
         </Style.Triggers>
@@ -117,16 +117,18 @@
             </Grid.Resources>
 
             <Canvas x:Name="MainCanvas" Canvas.Top="0" Canvas.Left="0" ZIndex="1">
-                <Ellipse  Name="endDot" Style="{StaticResource SEllipses}" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
+                <Ellipse  Name="endDot" Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" 
+                          Style="{StaticResource SEllipses}" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
                           Canvas.Top="{Binding CurvePoint3.Y}" Canvas.Left="{Binding CurvePoint3.X}" Canvas.ZIndex="1"/>
-                <Ellipse  Name="startDot"  Style="{StaticResource SEllipses}" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
+                <Ellipse  Name="startDot" Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"
+                          Style="{StaticResource SEllipses}" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
                           Canvas.Top="{Binding CurvePoint0.Y}" Canvas.Left="{Binding CurvePoint0.X}" Canvas.ZIndex="1"/>
             </Canvas>
 
             <!--Bezier Path-->
             <Path Stroke="{DynamicResource BConnectorSelection}" StrokeThickness="3"
               Name="connector"
-              Visibility="{Binding BezVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" 
+              Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" 
               Style="{StaticResource SConnector}" Canvas.ZIndex="-1" 
                   Data="{Binding ComputedBezierPathGeometry, UpdateSourceTrigger=PropertyChanged}">
                 <i:Interaction.Behaviors>

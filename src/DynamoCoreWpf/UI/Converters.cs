@@ -1306,7 +1306,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if ((bool)value)
+            if ((bool)value == true)
                 return Visibility.Collapsed;
             return Visibility.Visible;
         }
