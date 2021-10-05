@@ -93,7 +93,7 @@ namespace Dynamo.Tests.Search
             Assert.AreEqual(results.Count(), 20);
 
             double timeLimit = 300;//ms
-            double range = 30;
+            double range = 70;
             Assert.IsTrue(Math.Abs(stopwatch.ElapsedMilliseconds - timeLimit) < range / 100 * timeLimit, $"Search time should be within a range of +/- {range}% of {timeLimit}ms but we got {stopwatch.ElapsedMilliseconds}ms");
         }
 
