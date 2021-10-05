@@ -3,6 +3,16 @@ using Dynamo.Selection;
 using NUnit.Framework;
 using static Dynamo.Models.DynamoModel;
 using Dynamo.Utilities;
+using System.IO;
+using System.Collections.Generic;
+using Dynamo.Configuration;
+using Dynamo.Models;
+using System.Reflection;
+using DynamoShapeManager;
+using TestServices;
+using Dynamo.ViewModels;
+using Dynamo.Controls;
+using Dynamo.Graph.Connectors;
 
 namespace DynamoCoreWpfTests
 {
@@ -163,6 +173,54 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(this.ViewModel.CurrentSpaceViewModel.Connectors.Count, initialConnectorCount + 1);
             ///Three nodes should be the total number of nodes after this operation.
             Assert.AreEqual(this.ViewModel.CurrentSpaceViewModel.Nodes.Count, initialNodeCount + 1);
+        }
+
+        public string SettingDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "settings"); } }
+
+        [Test]
+        public void LoadGraphWithPolylineSetting()
+        {
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
+            preloader.Preload();
+
+            var settingsFilePath = Path.Combine(SettingDirectory, "DynamoSettings-polylineConnectors.xml");
+            Assert.IsTrue(File.Exists(settingsFilePath));
+            PreferenceSettings.DynamoTestPath = settingsFilePath;
+
+            TestPathResolver pathResolver = null;
+            var preloadedLibraries = new List<string>();
+            GetLibrariesToPreload(preloadedLibraries);
+
+            if (preloadedLibraries.Any())
+            {
+                pathResolver = new TestPathResolver();
+                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
+                {
+                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
+                }
+            }
+
+            Model = DynamoModel.Start(
+               this.CreateStartConfiguration(pathResolver));
+
+            ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = Model
+                });
+
+            //create the view
+            View = new DynamoView(ViewModel);
+            View.Show();
+
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), "UI", "ConnectorPinTests.dyn");
+            Assert.IsTrue(File.Exists(openPath));
+
+            Model.OpenFileFromPath(openPath);
+
+            Assert.AreEqual(Model.ConnectorType, ConnectorType.BEZIER);
+            Assert.AreEqual(Model.CurrentWorkspace.Connectors.Count(), 1);
         }
 
         #endregion

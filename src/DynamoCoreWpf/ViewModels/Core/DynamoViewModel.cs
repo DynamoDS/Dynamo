@@ -409,7 +409,6 @@ namespace Dynamo.ViewModels
             set
             {
                 model.ConnectorType = value;
-
                 RaisePropertyChanged("ConnectorType");
             }
         }
@@ -2410,14 +2409,7 @@ namespace Dynamo.ViewModels
 
         public void SetConnectorType(object parameters)
         {
-            if (parameters.ToString() == "BEZIER")
-            {
-                ConnectorType = ConnectorType.BEZIER;
-            }
-            else
-            {
-                ConnectorType = ConnectorType.POLYLINE;
-            }
+            ConnectorType = ConnectorType.BEZIER;
         }
 
         internal bool CanSetConnectorType(object parameters)
