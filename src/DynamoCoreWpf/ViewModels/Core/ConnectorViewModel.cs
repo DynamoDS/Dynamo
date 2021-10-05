@@ -631,11 +631,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand InstantiateContextMenuCommand { get; set; }
 
         /// <summary>
-        /// Delegate command run to capture right click of connector.
-        /// </summary>
-        public DelegateCommand ConnectorSelectionCommand { get; set; }
-
-        /// <summary>
         /// When mouse hovers over connector, if the data coming through the connector is collection of 5 or more,
         /// a 'watch' icon appears at the midpoint of the connector, enabling the user to place a watch node
         /// at that location by clicking on it.
@@ -687,22 +682,21 @@ namespace Dynamo.ViewModels
 
         internal void CreateContextMenu()
         {
-            ConnectorContextMenuViewModel = null;
             ConnectorContextMenuViewModel = new ConnectorContextMenuViewModel(this)
             {
                 CurrentPosition = MousePosition,
                 IsCollapsed = this.IsHidden
             };
             //Updates PreviewState of connector.
-            ConnectorSelectionCommand.Execute(null);
+            PreviewState = PreviewState.Selection;
             ConnectorContextMenuViewModel.RequestDispose += DisposeContextMenu;
         }
 
         private void DisposeContextMenu(object arg1, EventArgs arg2)
         {
+            PreviewState = PreviewState.None;
             ConnectorContextMenuViewModel.RequestDispose -= DisposeContextMenu;
             ConnectorContextMenuViewModel = null;
-            ConnectorSelectionCommand.Execute(null);
         }
 
         /// <summary>
@@ -824,6 +818,13 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void InstantiateContextMenuCommandExecute(object parameters)
         {
+            if (ConnectorContextMenuViewModel != null)
+            {
+                ConnectorContextMenuViewModel = null;
+                PreviewState = PreviewState.None;
+                return;
+            }
+
             CreateContextMenu();
         }
 
@@ -837,11 +838,6 @@ namespace Dynamo.ViewModels
             var connectorPinModel = new ConnectorPinModel(point.X, point.Y, Guid.NewGuid(), model.GUID);
             connectors[connectorWireIndex].AddPin(connectorPinModel);
             workspaceViewModel.Model.RecordCreatedModel(connectorPinModel);
-        }
-
-        public void ConnectorSelectionCommandExecute(object parameter)
-        {
-            PreviewState = PreviewState == PreviewState.Selection ? PreviewState.None : PreviewState.Selection;
         }
 
         private void HandlerRedrawRequest(object sender, EventArgs e)
@@ -858,6 +854,11 @@ namespace Dynamo.ViewModels
             return MouseHoverOn;
         }
 
+        private bool CanInstantiateContextMenu(object parameter)
+        {
+            return !IsConnecting && !AnyPinHoveredOver;
+        }
+
         private void InitializeCommands()
         {
             BreakConnectionCommand = new DelegateCommand(BreakConnectionCommandExecute, x => true);
@@ -866,8 +867,7 @@ namespace Dynamo.ViewModels
             MouseHoverCommand = new DelegateCommand(MouseHoverCommandExecute, CanRunMouseHover);
             MouseUnhoverCommand = new DelegateCommand(MouseUnhoverCommandExecute, CanRunMouseUnhover);
             PinConnectorCommand = new DelegateCommand(PinConnectorCommandExecute, x => true);
-            InstantiateContextMenuCommand = new DelegateCommand(InstantiateContextMenuCommandExecute, x => !IsConnecting && !AnyPinHoveredOver);
-            ConnectorSelectionCommand = new DelegateCommand(ConnectorSelectionCommandExecute, x => !IsConnecting);
+            InstantiateContextMenuCommand = new DelegateCommand(InstantiateContextMenuCommandExecute, CanInstantiateContextMenu);
         }
 
         #endregion

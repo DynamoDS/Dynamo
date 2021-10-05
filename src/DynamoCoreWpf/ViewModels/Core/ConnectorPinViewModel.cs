@@ -126,6 +126,11 @@ namespace Dynamo.ViewModels
             }
         }
         public bool isHoveredOver = false;
+        /// <summary>
+        /// This flag let's the ConnectorViewModel when it can and cannot run a ConnectorContextMenu. It CANNOT
+        /// do so when IsHoveredOver for any pin is set to true, as in that case we want only that ConnectorPins 
+        /// ContextMenu to be enabled on right click.
+        /// </summary>
         public bool IsHoveredOver
         {
             get => isHoveredOver;

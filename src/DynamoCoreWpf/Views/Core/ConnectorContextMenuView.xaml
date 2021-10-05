@@ -22,7 +22,7 @@
             <Button.ContextMenu>
             <ContextMenu Name="MainContextMenu"
                          Style="{StaticResource ContextMenuStyle}"
-                         MouseLeave="OnMouseLeave"
+                         MouseLeave="OnMouseLeaveContextMenu"
                          ContextMenuClosing="OnContextMenuClosing">
                 <MenuItem x:Name="BreakItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnections}" 
                           Command="{Binding BreakConnectionsSurrogateCommand}"/>
