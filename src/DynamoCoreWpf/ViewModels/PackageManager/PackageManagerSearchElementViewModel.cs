@@ -54,6 +54,11 @@ namespace Dynamo.PackageManager.ViewModels
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
         }
 
+        /// <summary>
+        /// PackageManagerSearchElementViewModel Constructor
+        /// </summary>
+        /// <param name="element">A PackageManagerSearchElement</param>
+        /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : this(element, canLogin, true)
         {}
 
