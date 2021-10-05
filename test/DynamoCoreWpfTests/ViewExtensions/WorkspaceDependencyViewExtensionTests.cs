@@ -298,7 +298,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void VerifyLocalDefinitions()
         {
-            List<string> dependenciesList = new List<string>() { "RootNode.dyf", "DLL.dll"};
+            List<string> dependenciesList = new List<string>() { "RootNode.dyf"};
             DynamoModel.IsTestMode = false;
 
             // Load the custom node and the zero touch assembly.
@@ -314,12 +314,10 @@ namespace DynamoCoreWpfTests
             var workspaceViewExtension = (WorkspaceDependencyViewExtension)View.viewExtensionManager.ViewExtensions
                                                                                 .Where(x => x.Name.Equals("Workspace References")).FirstOrDefault();
 
-            Assert.AreEqual(2, workspaceViewExtension.DependencyView.localDefinitionDataRows.Count());
-            foreach (DependencyRow localDefinitionRow in workspaceViewExtension.DependencyView.localDefinitionDataRows)
-            {
-                var dependencyInfo = localDefinitionRow.DependencyInfo;
-                Assert.Contains(dependencyInfo.Name, dependenciesList);
-            }
+            Assert.AreEqual(1, workspaceViewExtension.DependencyView.localDefinitionDataRows.Count());
+            DependencyRow localDefinitionRow = workspaceViewExtension.DependencyView.localDefinitionDataRows.FirstOrDefault();
+            var dependencyInfo = localDefinitionRow.DependencyInfo;
+            Assert.Contains(dependencyInfo.Name, dependenciesList);
         }
 
         [Test]
