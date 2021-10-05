@@ -21,7 +21,7 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
             // Default collapse state should be false when opening legacy graph
-            Assert.AreEqual(connectorViewModel.IsCollapsed, false);
+            Assert.AreEqual(connectorViewModel.IsHidden, false);
         }
 
         /// <summary>
@@ -120,10 +120,10 @@ namespace DynamoCoreWpfTests
         {
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
-            bool initialVisibility = connectorViewModel.IsCollapsed;
+            bool initialVisibility = connectorViewModel.IsHidden;
             ///Toggles hide (visibility == off)
             connectorViewModel.HideConnectorCommand.Execute(null);
-            Assert.AreEqual(connectorViewModel.IsCollapsed, !initialVisibility);
+            Assert.AreEqual(connectorViewModel.IsHidden, !initialVisibility);
         }
 
         /// <summary>
@@ -135,13 +135,13 @@ namespace DynamoCoreWpfTests
         {
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
-            bool initialVisibility = connectorViewModel.IsCollapsed;
+            bool initialVisibility = connectorViewModel.IsHidden;
             ///Toggles hide (visibility == off)
             connectorViewModel.HideConnectorCommand.Execute(null);
-            Assert.AreEqual(connectorViewModel.IsCollapsed, !initialVisibility);
+            Assert.AreEqual(connectorViewModel.IsHidden, !initialVisibility);
             ///Toggles hide on/off (visibility == on)
             connectorViewModel.HideConnectorCommand.Execute(null);
-            Assert.AreEqual(connectorViewModel.IsCollapsed, initialVisibility);
+            Assert.AreEqual(connectorViewModel.IsHidden, initialVisibility);
         }
 
         /// <summary>

@@ -22,7 +22,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(contextMenuViewModel);
 
             //Assert 'IsCollapsed' property matches that of connectorViewModel.
-            Assert.AreEqual(connectorViewModel.IsCollapsed, contextMenuViewModel.IsCollapsed);
+            Assert.AreEqual(connectorViewModel.IsHidden, contextMenuViewModel.IsCollapsed);
 
             //Assert position between the same is the same.
             Assert.AreEqual(connectorViewModel.MousePosition, contextMenuViewModel.CurrentPosition);
@@ -80,13 +80,13 @@ namespace DynamoCoreWpfTests
             Open(@"UI/ConnectorContextMenuTestFile.dyn");
 
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
-            bool initialVisibility = connectorViewModel.IsCollapsed;
+            bool initialVisibility = connectorViewModel.IsHidden;
             //Creates contextMenu.
             connectorViewModel.InstantiateContextMenuCommand.Execute(null);
             var contextMenuViewModel = connectorViewModel.ConnectorContextMenuViewModel;
             ///Toggles hide (visibility == off)
             contextMenuViewModel.HideConnectorSurrogateCommand.Execute(null);
-            Assert.AreEqual(connectorViewModel.IsCollapsed, !initialVisibility);
+            Assert.AreEqual(connectorViewModel.IsHidden, !initialVisibility);
         }
 
   
