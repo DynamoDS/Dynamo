@@ -344,6 +344,7 @@ namespace Dynamo.WorkspaceDependency
             loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
             currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
             WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
+            currentWorkspace.Saved -= TriggerDependencyRegen;
             HomeWorkspaceModel.WorkspaceClosed -= this.CloseExtensionTab;
             PackageDependencyTable.ItemsSource = null;
             LocalDefinitionsTable.ItemsSource = null;
