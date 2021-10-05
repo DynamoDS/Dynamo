@@ -125,6 +125,21 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(Top));
             }
         }
+        public bool isHoveredOver = false;
+        public bool IsHoveredOver
+        {
+            get => isHoveredOver;
+            set
+            {
+                if (isHoveredOver == value)
+                {
+                    return;
+                }
+
+                isHoveredOver = value;
+                RaisePropertyChanged(nameof(IsHoveredOver));
+            }
+        }
 
         /// <summary>
         /// Provides the ViewModel (this) with the selected state of the ConnectorPinModel.

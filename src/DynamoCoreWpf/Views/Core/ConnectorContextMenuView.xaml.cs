@@ -18,7 +18,6 @@ namespace Dynamo.Controls
             InitializeComponent();
             this.Loaded += InitializeCommands;
         }
-
         private void InitializeCommands(object sender, RoutedEventArgs e)
         {
             this.Loaded -= InitializeCommands;
@@ -26,13 +25,11 @@ namespace Dynamo.Controls
             MainContextMenu.DataContext = ViewModel;
             MainContextMenu.IsOpen = true;
         }
-
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
             MainContextMenu.MouseLeave -= OnMouseLeave;
             ViewModel.DisposeViewModel();
         }
-
         private void OnContextMenuClosing(object sender, ContextMenuEventArgs e)
         {
             MainContextMenu.ContextMenuClosing -= OnContextMenuClosing;

@@ -45,6 +45,7 @@ namespace Dynamo.ViewModels
         private bool connectorAnchorViewModelExists;
         private bool isDataFlowCollection;
         private bool anyPinSelected;
+        private bool anyPinHoveredOver = false;
         private double dotTop;
         private double dotLeft;
         private double endDotSize = 6;
@@ -495,7 +496,23 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(AnyPinSelected));
             }
         }
-
+        /// <summary>
+        /// This flag let's the ConnectorViewModel when it can and cannot run a ConnectorContextMenu. It CANNOT
+        /// do so when IsHoveredOver for any pin is set to true, as in that case we want only that ConnectorPins 
+        /// ContextMenu to be enabled on right click.
+        /// </summary>
+        public bool AnyPinHoveredOver
+        {
+            get
+            {
+                return anyPinHoveredOver;
+            }
+            set
+            {
+                anyPinHoveredOver = value;
+                RaisePropertyChanged(nameof(AnyPinHoveredOver));
+            }
+        }
         public bool IsFrozen
         {
             get { return model == null ? activeStartPort.Owner.IsFrozen : Nodevm.IsFrozen; }
@@ -849,7 +866,7 @@ namespace Dynamo.ViewModels
             MouseHoverCommand = new DelegateCommand(MouseHoverCommandExecute, CanRunMouseHover);
             MouseUnhoverCommand = new DelegateCommand(MouseUnhoverCommandExecute, CanRunMouseUnhover);
             PinConnectorCommand = new DelegateCommand(PinConnectorCommandExecute, x => true);
-            InstantiateContextMenuCommand = new DelegateCommand(InstantiateContextMenuCommandExecute, x => !IsConnecting);
+            InstantiateContextMenuCommand = new DelegateCommand(InstantiateContextMenuCommandExecute, x => !IsConnecting && !AnyPinHoveredOver);
             ConnectorSelectionCommand = new DelegateCommand(ConnectorSelectionCommandExecute, x => !IsConnecting);
         }
 
@@ -1023,9 +1040,13 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case nameof(ConnectorPinModel.IsSelected):
+                case nameof(ConnectorPinViewModel.IsSelected):
                     var vm = sender as ConnectorPinViewModel;
                     AnyPinSelected = vm.IsSelected;
+                    break;
+                case nameof(ConnectorPinViewModel.IsHoveredOver):
+                    vm = sender as ConnectorPinViewModel;
+                    AnyPinHoveredOver = vm.IsHoveredOver;
                     break;
                 default:
                     break;
@@ -1053,7 +1074,7 @@ namespace Dynamo.ViewModels
 
             if(ConnectorContextMenuViewModel!= null)
             {
-                ConnectorContextMenuViewModel.RequestDispose += DisposeContextMenu;
+                ConnectorContextMenuViewModel.DisposeViewModel();
             }
         }
 

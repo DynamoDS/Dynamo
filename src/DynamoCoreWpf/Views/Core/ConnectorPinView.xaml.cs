@@ -94,5 +94,14 @@ namespace Dynamo.Nodes
                 }
             }
         }
+        private void OnPinRightMouseButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.IsHoveredOver = true;
+        }
+
+        private void OnPinRightMouseButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.IsHoveredOver = false;
+        }
     }
 }
