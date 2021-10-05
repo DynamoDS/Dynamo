@@ -9,8 +9,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              MouseLeftButtonDown="OnPinMouseDown"
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
-             MouseLeave="OnPinViewMouseLeave"
-             d:DataContext="{d:DesignInstance Type=viewModels:ConnectorViewModel}">
+             MouseLeave="OnPinViewMouseLeave">
 
     <UserControl.Resources>
         <ResourceDictionary>
