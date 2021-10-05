@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -281,7 +282,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Checks if the package can be installed.
         /// </summary>
-        /// <param name="packageName"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
         internal bool CanInstallPackage(string name)
         {
@@ -293,7 +294,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Checks if the package corresponding to the PackageDownloadHandle can be installed.
         /// </summary>
-        /// <param name="packageName"></param>
+        /// <param name="dh"></param>
         /// <returns></returns>
         internal bool CanInstallPackage(PackageDownloadHandle dh)
         {
@@ -701,23 +702,40 @@ namespace Dynamo.PackageManager
 
         private void DownloadsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-            if (args.NewItems != null)
+            void canExecuteHandler(object o, PropertyChangedEventArgs eArgs)
+                => ClearCompletedCommand.RaiseCanExecuteChanged();
+
+            void canInstallHandler(object o, PropertyChangedEventArgs eArgs)
+            {
+                var handle = o as PackageDownloadHandle;
+                // Hooking into propertyChanged works only if each download handle is added to
+                // the Downloads collection before Download/Install begins.
+                if (eArgs.PropertyName == nameof(PackageDownloadHandle.DownloadState))
+                {
+                    PackageManagerSearchElementViewModel sr = SearchResults.FirstOrDefault(x => x.Model.Name == handle.Name);
+                    if (sr == null) return;
+
+                    sr.CanInstall = CanInstallPackage(o as PackageDownloadHandle);
+                }
+            }
+
+            if (args.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (var item in args.NewItems)
                 {
                     var handle = (PackageDownloadHandle)item;
-                    handle.PropertyChanged += (o, eventArgs) => ClearCompletedCommand.RaiseCanExecuteChanged();
                     // Update CanInstall property every time the download handle's state changes
-                    handle.PropertyChanged += (o, eventArgs) => {
-                        // Hooking into propertyChanged works only if each download handle is added to
-                        // the Downloads collection before Download/Install begins.
-                        if (eventArgs.PropertyName == nameof(PackageDownloadHandle.DownloadState)) {
-                            PackageManagerSearchElementViewModel sr = SearchResults.FirstOrDefault(x => x.Model.Name == handle.Name);
-                            if (sr == null) return;
-
-                            sr.CanInstall = CanInstallPackage(handle);
-                        }
-                    };
+                    handle.PropertyChanged += canInstallHandler;
+                    handle.PropertyChanged += canExecuteHandler;
+                }
+            } 
+            else if (args.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var item in args.OldItems)
+                {
+                    var handle = (PackageDownloadHandle)item;
+                    handle.PropertyChanged -= canInstallHandler;
+                    handle.PropertyChanged -= canExecuteHandler;
                 }
             }
 
