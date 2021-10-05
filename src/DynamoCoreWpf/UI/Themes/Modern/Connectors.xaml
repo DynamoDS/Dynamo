@@ -2,8 +2,6 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
                       xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
                       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-                      xmlns:converters="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
-                      xmlns:props="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
                       xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                       xmlns:views="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
                       xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
@@ -12,6 +10,9 @@
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
+    <DataTemplate DataType="{x:Type viewModels:ConnectorContextMenuViewModel}">
+        <views:ConnectorContextMenuView DataContext="{Binding}" />
+    </DataTemplate>
     <DataTemplate DataType="{x:Type viewModels:ConnectorAnchorViewModel}">
         <views:ConnectorAnchorView DataContext="{Binding}" />
     </DataTemplate>
@@ -90,36 +91,11 @@
     <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
         <Grid x:Name="MainGrid"
               Visibility="Visible">
-            <Grid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnections}" Command="{Binding BreakConnectionCommand}"/>
-                    <MenuItem Header="{x:Static props:Resources.ConnectorContextMenuHeaderSelectConnected}" Command="{Binding SelectConnectedCommand}"/>
-                    <MenuItem Command="{Binding HideConnectorCommand}">
-                        <MenuItem.Style>
-                            <Style TargetType="MenuItem">
-                                <Setter Property="IsChecked" Value="False"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsCollapsed}" Value="False">
-                                        <Setter Property="Header" Value="Hide Wire"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsCollapsed}" Value="True">
-                                        <Setter Property="Header" Value="Show Wire"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </MenuItem.Style>
-                    </MenuItem>
-                    <!--Added for action at right click (contextmenu)-->
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseEnter">
-                            <i:InvokeCommandAction Command="{Binding ConnectorSelectionCommand}"/>
-                        </i:EventTrigger>
-                        <i:EventTrigger EventName="MouseLeave">
-                            <i:InvokeCommandAction Command="{Binding ConnectorSelectionCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </ContextMenu>
-            </Grid.ContextMenu>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseRightButtonDown">
+                    <i:InvokeCommandAction Command="{Binding InstantiateContextMenuCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <Grid.Resources>
                 <SolidColorBrush x:Key="BConnectorSelection"
                                  Color="{Binding PreviewState, Converter={StaticResource ConnectionStateToColorConverter}, UpdateSourceTrigger=PropertyChanged}">
@@ -151,10 +127,12 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Path>
+            <ContentControl Content="{Binding ConnectorContextMenuViewModel}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"/>
             <ContentControl Content="{Binding ConnectorAnchorViewModel}"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"/>
-
             <ContentControl Content="{Binding ConnectorPinViewCollection}"
                             ContentTemplate="{StaticResource ShowPinCollection}"/>
         </Grid>
