@@ -144,13 +144,16 @@
                 </i:Interaction.Triggers>
             </Path>
             <ContentControl Content="{Binding ConnectorContextMenuViewModel}"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"/>
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Panel.ZIndex="1"/>
             <ContentControl Content="{Binding ConnectorAnchorViewModel}"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"/>
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Panel.ZIndex="2"/>
             <ContentControl Content="{Binding ConnectorPinViewCollection}"
-                            ContentTemplate="{StaticResource ShowPinCollection}"/>
+                            ContentTemplate="{StaticResource ShowPinCollection}"
+                            Panel.ZIndex="3"/>
         </Grid>
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Path=IsFrozen, Mode=OneWay}" Value="True">               

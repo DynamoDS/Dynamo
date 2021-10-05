@@ -175,6 +175,7 @@ namespace Dynamo.ViewModels
 
                 isCollapsed = value;
                 RaisePropertyChanged(nameof(IsCollapsed));
+                SetCollapseOfPins(IsCollapsed);
             }
         }
 
@@ -212,6 +213,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private void SetCollapseOfPins(bool isCollapsed)
+        {
+            if (ConnectorPinViewCollection is null) { return; }
+
+            foreach (var pin in ConnectorPinViewCollection)
+            {
+                pin.IsCollapsed = isCollapsed;
+            }
+        }
         private void SetVisibilityOfPins(bool isHidden)
         {
             if (ConnectorPinViewCollection is null) { return; }
@@ -665,6 +675,8 @@ namespace Dynamo.ViewModels
                 CurrentPosition = MousePosition,
                 IsCollapsed = this.IsHidden
             };
+            //Updates PreviewState of connector.
+            ConnectorSelectionCommand.Execute(null);
             ConnectorContextMenuViewModel.RequestDispose += DisposeContextMenu;
         }
 
@@ -794,8 +806,6 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void InstantiateContextMenuCommandExecute(object parameters)
         {
-            //Updates PreviewState of connector.
-            ConnectorSelectionCommand.Execute(null);
             CreateContextMenu();
         }
 

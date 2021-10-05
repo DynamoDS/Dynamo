@@ -10,7 +10,6 @@
              MouseLeftButtonDown="OnPinMouseDown"
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              MouseLeave="OnPinViewMouseLeave"
-             Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"
              d:DataContext="{d:DesignInstance Type=viewModels:ConnectorViewModel}">
 
     <UserControl.Resources>
@@ -30,7 +29,8 @@
             </Canvas.ContextMenu>
 
         <Grid  x:Name="PinBtn"  Background="Transparent">
-            <Image Width="{Binding Model.Width}" Height="{Binding Model.Width}">
+            <Image Width="{Binding Model.Width}" Height="{Binding Model.Width}" Panel.ZIndex="10"
+                    Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <Image.Style>
                     <Style TargetType="Image">
                         <Style.Triggers>

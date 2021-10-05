@@ -32,5 +32,11 @@ namespace Dynamo.Controls
             MainContextMenu.MouseLeave -= OnMouseLeave;
             ViewModel.DisposeViewModel();
         }
+
+        private void OnContextMenuClosing(object sender, ContextMenuEventArgs e)
+        {
+            MainContextMenu.ContextMenuClosing -= OnContextMenuClosing;
+            ViewModel.DisposeViewModel();
+        }
     }
 }
