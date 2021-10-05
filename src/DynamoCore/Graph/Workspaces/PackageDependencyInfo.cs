@@ -156,6 +156,20 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// Create a Dependency info object from the Name, Path and ReferenceType
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="path"></param>
+        /// <param name="referenceType"></param>
+        internal DependencyInfo(string name, string path, ReferenceType referenceType)
+        {
+            Name = name;
+            Path = path;
+            ReferenceType = referenceType;
+            nodes = new HashSet<Guid>();
+        }
+
+        /// <summary>
         /// Create a Dependency info object from the Name and ReferenceType
         /// </summary>
         /// <param name="name"></param>

@@ -1101,6 +1101,9 @@ namespace Dynamo.Graph.Workspaces
                 case ReferenceType.ZeroTouch:
                     depInfo = new DependencyInfo(name, ReferenceType.ZeroTouch);
                     break;
+                case ReferenceType.External:
+                    depInfo = new DependencyInfo(name, ReferenceType.External);
+                    break;
                 default:
                     depInfo = new DependencyInfo(name);
                     break;

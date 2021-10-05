@@ -103,6 +103,7 @@ namespace Dynamo.WorkspaceDependency
                 DependencyRegen(obj as WorkspaceModel);
                 // Update current workspace
                 currentWorkspace = obj as WorkspaceModel;
+                currentWorkspace.Saved += TriggerDependencyRegen;
                 currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
             }
         }
@@ -143,7 +144,7 @@ namespace Dynamo.WorkspaceDependency
                 {
                     if (info.ReferenceType == ReferenceType.DYFFile)
                     {
-                        // Try to get the Custom node information if possible. 
+                        // Try to get the Custom node information if possible.
                         string customNodeName = info.Name.Replace(customNodeExtension, "");
                         dependencyViewExtension.DependencyView.CustomNodeManager.TryGetNodeInfo(customNodeName, out CustomNodeInfo customNodeInfo);
 
@@ -246,6 +247,7 @@ namespace Dynamo.WorkspaceDependency
             this.DataContext = this;
             currentWorkspace = p.CurrentWorkspaceModel as WorkspaceModel;
             WorkspaceModel.DummyNodesReloaded += TriggerDependencyRegen;
+            currentWorkspace.Saved += TriggerDependencyRegen;
             p.CurrentWorkspaceChanged += OnWorkspaceChanged;
             p.CurrentWorkspaceCleared += OnWorkspaceCleared;
             currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
