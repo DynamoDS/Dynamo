@@ -24,12 +24,10 @@ namespace Dynamo.ViewModels
         private bool showUseLevelMenu;
         private const double autocompletePopupSpacing = 2.5;
         internal bool inputPortDisconnectedByConnectCommand = false;
-        protected static SolidColorBrush portBorderBrushColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
-        protected static SolidColorBrush portBackgroundColor = new SolidColorBrush(Color.FromArgb(0, 60, 60, 60));
-
         protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
-
+        private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
+        private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;
         /// <summary>
         /// Port model.
         /// </summary>
