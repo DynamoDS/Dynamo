@@ -2319,8 +2319,8 @@ Uninstall the following packages: {0}?</value>
   <data name="ConnectorContextMenuHeaderBreakConnections" xml:space="preserve">
     <value>Break Connections</value>
   </data>
-  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
-    <value>Pin Wire</value>
+  <data name="ConnectorContextMenuHeaderShowConnector" xml:space="preserve">
+    <value>Show Wire</value>
   </data>
   <data name="ConnectorContextMenuHeaderSelectConnected" xml:space="preserve">
     <value>Select Connected</value>
@@ -2686,5 +2686,8 @@ Delete the following packages: {2}?
   </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>Sort Packages.</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderHideConnector" xml:space="preserve">
+    <value>Hide Wire</value>
   </data>
 </root>

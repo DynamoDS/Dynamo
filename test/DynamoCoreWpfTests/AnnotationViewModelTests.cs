@@ -880,7 +880,6 @@ namespace DynamoCoreWpfTests
             var group1ViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == groupName);
             var inPortsBefore = group1ViewModel.InPorts.ToList();
             var outPortsBefore = group1ViewModel.OutPorts.ToList();
-            var inbetweenNodesBefore = group1ViewModel.InbetweenNodesCount;
 
             var expectedInPortNames = new List<string>
             {
@@ -904,11 +903,9 @@ namespace DynamoCoreWpfTests
             // Assert
             Assert.That(inPortsBefore.Count != group1ViewModel.InPorts.Count);
             Assert.That(outPortsBefore.Count != group1ViewModel.OutPorts.Count);
-            Assert.That(inbetweenNodesBefore != group1ViewModel.InbetweenNodesCount);
             CollectionAssert.AreEquivalent(expectedInPortNames, group1ViewModel.InPorts.Select(x => x.PortModel.Name));
             CollectionAssert.AreEquivalent(expectedOutPortNames, group1ViewModel.OutPorts.Select(x => x.PortModel.Name));
-            Assert.That(group1ViewModel.InbetweenNodesCount == 1);
-
+            Assert.That(group1ViewModel.NodeContentCount == 5);
         }
 
 
