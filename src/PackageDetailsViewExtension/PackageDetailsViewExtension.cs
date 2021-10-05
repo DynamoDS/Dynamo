@@ -3,9 +3,9 @@ using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.PackageDetails
 {
-    public class PackageDetailsViewExtension : ViewExtensionBase
+    public class PackageDetailsViewExtension : IViewExtension
     {
-        public override void Dispose()
+        public  void Dispose()
         {
             
         }
@@ -14,15 +14,15 @@ namespace Dynamo.PackageDetails
         private const string EXTENSION_GUID = "C71CA1B9-BF9F-425A-A12C-53DF56770406";
 
         private ViewLoadedParams viewLoadedParamsReference;
-        public override string UniqueId => EXTENSION_GUID;
-        public override string Name => EXTENSION_NAME;
+        public  string UniqueId => EXTENSION_GUID;
+        public  string Name => EXTENSION_NAME;
 
-        public override void Startup(ViewStartupParams viewStartupParams)
+        public  void Startup(ViewStartupParams viewStartupParams)
         {
             
         }
 
-        public override void Loaded(ViewLoadedParams viewLoadedParams)
+        public  void Loaded(ViewLoadedParams viewLoadedParams)
         {
             viewLoadedParams.ViewExtensionOpenRequestWithParameter += OnViewExtensionOpenWithParameterRequest;
         }
@@ -39,11 +39,12 @@ namespace Dynamo.PackageDetails
             PackageDetailsViewModel packageDetailsViewModel = new PackageDetailsViewModel(packageManagerSearchElementViewModel);
             PackageDetailsView packageDetailsView = new PackageDetailsView(packageDetailsViewModel);
             
-            viewLoadedParamsReference?.AddToExtensionsSideBar(this, packageDetailsView);
+
+            //viewLoadedParamsReference?.AddToExtensionsSideBar(this, testControl);
         }
 
 
-        public override void Shutdown()
+        public  void Shutdown()
         {
             viewLoadedParamsReference.ViewExtensionOpenRequestWithParameter -= OnViewExtensionOpenWithParameterRequest;
         }

@@ -8,7 +8,6 @@ namespace Dynamo.PackageDetails
         public PackageDetailsView(PackageDetailsViewModel packageDetailsViewModel)
         {
             InitializeComponent();
-
             this.PackageDetailsViewModel = packageDetailsViewModel;
         }
     }
