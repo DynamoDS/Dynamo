@@ -4860,6 +4860,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Packages.
+        /// </summary>
+        public static string PackagesGuide {
+            get {
+                return ResourceManager.GetString("PackagesGuide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn about packages.
+        /// </summary>
+        public static string PackagesGuideLearnAbout {
+            get {
+                return ResourceManager.GetString("PackagesGuideLearnAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string PackageStateError {

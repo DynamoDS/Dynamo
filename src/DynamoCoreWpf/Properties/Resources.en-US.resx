@@ -2669,6 +2669,12 @@ Delete the following packages: {2}?
     <value>Show Preview Bubbles</value>
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
   </data>
+  <data name="PackagesGuide" xml:space="preserve">
+    <value>Packages</value>
+  </data>
+  <data name="PackagesGuideLearnAbout" xml:space="preserve">
+    <value>Learn about packages</value>
+  </data>
   <data name="NodeAutoCompleteNotAvailableForCollapsedGroups" xml:space="preserve">
     <value>Node AutoComplete is not available on ports belonging to collapsed groups.</value>
   </data>

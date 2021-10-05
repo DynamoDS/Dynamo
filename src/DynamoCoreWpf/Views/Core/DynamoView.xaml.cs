@@ -2355,7 +2355,7 @@ namespace Dynamo.Controls
             {
                 dynamoViewModel.MainGuideManager.LaunchTour(Res.GetStartedGuide);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 sidebarGrid.Visibility = Visibility.Visible;
             }
@@ -2365,6 +2365,18 @@ namespace Dynamo.Controls
         {
             //Setting the width of right extension after resize to
             extensionsColumnWidth = RightExtensionsViewColumn.Width;
+        }
+
+        private void PackagesMenuGuide_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                dynamoViewModel.MainGuideManager.LaunchTour(Res.PackagesGuide);
+            }
+            catch (Exception)
+            {
+                sidebarGrid.Visibility = Visibility.Visible;
+            }
         }
 
         public void Dispose()
