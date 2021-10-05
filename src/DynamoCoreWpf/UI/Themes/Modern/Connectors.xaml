@@ -67,6 +67,7 @@
                     <Condition Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
+                    <Setter Property="IsHitTestVisible" Value="True"/>
                     <Setter Property="Opacity" Value="0.4"/>
                     <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                 </MultiDataTrigger.Setters>
@@ -77,11 +78,13 @@
                     <Condition Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
+                    <Setter Property="IsHitTestVisible" Value="False"/>
                     <Setter Property="Opacity" Value="0.0"/>
                     <Setter Property="ToolTipService.IsEnabled" Value="False"/>
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
             <DataTrigger Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="False">
+                <Setter Property="IsHitTestVisible" Value="True"/>
                 <Setter Property="Opacity" Value="1.0"/>
                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
             </DataTrigger>
