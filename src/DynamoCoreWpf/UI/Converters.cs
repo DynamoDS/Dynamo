@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -36,6 +37,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null) return string.Empty;
             string incomingString = value as string;
             return incomingString.Split(new[] { '\r', '\n' }, 2)[0].Trim();
         }
@@ -50,6 +52,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null) return string.Empty;
             string incomingString = value as string;
             return incomingString.Split(new[] { '\r', '\n' }, 2)[1].Trim();
         }
@@ -615,6 +618,8 @@ namespace Dynamo.Controls
         public SolidColorBrush NoneBrush { get; set; }
         public SolidColorBrush SelectionBrush { get; set; }
 
+        public SolidColorBrush HoverBrush { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var state = (PreviewState)value;
@@ -626,6 +631,8 @@ namespace Dynamo.Controls
                     return NoneBrush;
                 case PreviewState.Selection:
                     return SelectionBrush;
+                case PreviewState.Hover:
+                    return HoverBrush;
                 default:
                     return NoneBrush;
             }
@@ -642,6 +649,7 @@ namespace Dynamo.Controls
         public Color ExecutionPreview { get; set; }
         public Color None { get; set; }
         public Color Selection { get; set; }
+        public Color Hover { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -654,6 +662,8 @@ namespace Dynamo.Controls
                     return None;
                 case PreviewState.Selection:
                     return Selection;
+                case PreviewState.Hover:
+                    return Hover;
                 default:
                     return None;
             }
@@ -832,6 +842,34 @@ namespace Dynamo.Controls
         {
             List<object> list = (List<object>)value;
             return list.Count > 0; //spacing for Inputs + title space + bottom space
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Check if the collection has more items than the provided
+    /// parameter. If no parameter is provided the converter will
+    /// check if the collection has more than 1 item.
+    /// </summary>
+    public class CollectionHasMoreThanNItemsToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is ICollection collection))
+            {
+                return false;
+            }
+
+            if (parameter is int n)
+            {
+                return collection.Count > n;
+            }
+
+            return collection.Count > 1;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -3139,6 +3177,37 @@ namespace Dynamo.Controls
             }
 
             return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts an ICollection<AnnotationViewModel> to a string
+    /// that displays how many AnnotationViewModels there is in the
+    /// Collection.
+    /// </summary>
+    [ValueConversion(typeof(ICollection<AnnotationViewModel>), typeof(string))]
+    public class NestedGroupsLabelConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection<AnnotationViewModel> viewModels) ||
+                !viewModels.Any())
+            {
+                return string.Empty;
+            }
+
+            var numberOfNestedGroups = viewModels.Count;
+            if (numberOfNestedGroups > 1)
+            {
+                return $"{numberOfNestedGroups} Groups";
+            }
+
+            return viewModels.FirstOrDefault().AnnotationText;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

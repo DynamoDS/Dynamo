@@ -2157,7 +2157,17 @@ namespace Dynamo.Models
         internal void AddToGroup(List<ModelBase> modelsToAdd)
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
-            var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.IsSelected);
+            var selectedGroups = workspaceAnnotations
+                .Where(x => x.IsSelected);
+
+            // If multiple groups are selected, chances are that we
+            // have a group that contains a nested group.
+            // If this is the case we want to make sure that we add the
+            // node to the parent folder.
+            var selectedGroup = selectedGroups.Count() > 1 ?
+                selectedGroups.FirstOrDefault(x => x.HasNestedGroups) :
+                selectedGroups.FirstOrDefault();
+
             if (selectedGroup != null)
             {
                 foreach (var model in modelsToAdd)
@@ -2536,11 +2546,20 @@ namespace Dynamo.Models
                     {
                         foreach (var group in annotation.Nodes.OfType<AnnotationModel>())
                         {
-                            newAnnotations.Add(CreateAnnotationModel(group, modelLookup));
+                            var nestedGroup = CreateAnnotationModel(
+                                group,
+                                modelLookup
+                                    .Where(x => group.Nodes.Select(y => y.GUID).Contains(x.Key))
+                                    .ToDictionary(x => x.Key, x => x.Value)
+                                );
+
+                            newAnnotations.Add(nestedGroup);
+                            modelLookup.Add(group.GUID, nestedGroup);
                         }
                     }
 
                     var annotationModel = CreateAnnotationModel(annotation, modelLookup);
+
                     newAnnotations.Add(annotationModel);
                 }
 
@@ -2573,6 +2592,7 @@ namespace Dynamo.Models
             // so they need to be in pasted annotation as well
             var modelsToRestore = model.DeletedModelBases.Intersect(ClipBoard);
             var modelsToAdd = model.Nodes.Concat(modelsToRestore);
+
             // checked condition here that supports pasting of multiple groups
             foreach (var models in modelsToAdd)
             {

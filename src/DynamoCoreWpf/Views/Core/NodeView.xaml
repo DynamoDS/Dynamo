@@ -21,7 +21,7 @@
           HorizontalAlignment="Left"
           x:FieldModifier="public"
           ContextMenuService.IsEnabled="false"
-          Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
+          Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityConverter}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -434,7 +434,7 @@
                 <Ellipse Name="nodeRenamedBlueDot"
                          Width="8"
                          Height="8"
-                         Margin="0,0,6,0"
+                         Margin="0,2,6,0"
                          Fill="{StaticResource Blue300Brush}"
                          Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Grid.ToolTip>

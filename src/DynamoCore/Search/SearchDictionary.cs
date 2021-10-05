@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using System.Configuration;
+using System.Reflection;
 
 namespace Dynamo.Search
 {
@@ -13,6 +15,23 @@ namespace Dynamo.Search
     public class SearchDictionary<V>
     {
         private ILogger logger;
+        private static int LIMIT_SEARCH_TAG_SIZE = 300;
+
+        static SearchDictionary()
+        {
+            try
+            {
+                // Look up search tag limit in the assembly configuration
+                var assemblyConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
+                if (assemblyConfig != null)
+                {
+                    var searchTagSizeLimit = assemblyConfig.AppSettings.Settings["searchTagSizeLimit"];
+                    if (searchTagSizeLimit != null && int.TryParse(searchTagSizeLimit.Value, out int value))
+                        LIMIT_SEARCH_TAG_SIZE = value;
+                }
+            }
+            catch { }
+        }
 
         /// <summary>
         ///     Construct a SearchDictionary object
@@ -277,7 +296,8 @@ namespace Dynamo.Search
                 for (int i = subPattern.Length; i >= 1; i--)
                 {
                     var part = subPattern.Substring(0, i);
-                    if (key.IndexOf(part) != -1)
+                    // Use OrdinalIgnoreCase to improve performance (with the accepted downside that the culture will be ignored)
+                    if (key.IndexOf(part, StringComparison.OrdinalIgnoreCase) != -1)
                     {   //if we find a match record the amount of the match and goto the next word
                         numberOfMatchSymbols += part.Length;
                         break;
@@ -306,12 +326,12 @@ namespace Dynamo.Search
                 foreach (var ele in subset)
                 {
                     //if any element in tagDictionary matches to any element in subset, return true
-                    if (currentElementName.IndexOf(ele.FullName) != -1)
+                    if (currentElementName.IndexOf(ele.FullName, StringComparison.OrdinalIgnoreCase) != -1)
                     {
                         filteredDict.Add(searchElement.Key, searchElement.Value);
                         break;
                     }
-                }                
+                }
             }
             return filteredDict;
         }
@@ -342,7 +362,7 @@ namespace Dynamo.Search
                             tagAndWeight =>
                                 new
                                 {
-                                    Tag = tagAndWeight.Key,
+                                    Tag = tagAndWeight.Key.Substring(0, tagAndWeight.Key.Length > LIMIT_SEARCH_TAG_SIZE ? LIMIT_SEARCH_TAG_SIZE : tagAndWeight.Key.Length),
                                     Weight = tagAndWeight.Value,
                                     Entry = entryAndTags.Key
                                 }))
@@ -379,12 +399,13 @@ namespace Dynamo.Search
             query = query.ToLower();
 
             var subPatterns = SplitOnWhiteSpace(query);
-
-            // Add full (unsplit by whitespace) query to subpatterns
-            var subPatternsList = subPatterns.ToList();
-            subPatternsList.Insert(0, query);
-            subPatterns = (subPatternsList).ToArray();
-
+            if (subPatterns.Length > 1)// More than one word
+            {
+                // Add full (unsplit by whitespace) query to subpatterns
+                var subPatternsList = subPatterns.ToList();
+                subPatternsList.Insert(0, query);
+                subPatterns = (subPatternsList).ToArray();
+            }
 
             foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
             {

@@ -539,23 +539,6 @@
                         <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuConnector}"
                                   Name="connectorMenu">
                             <MenuItem Focusable="False"
-                                      Header="{x:Static p:Resources.DynamoViewViewMenuConnectorType}"
-                                      IsEnabled="True">
-                                <MenuItem Focusable="False"
-                                          Name="settings_curves"
-                                          IsCheckable="True"
-                                          IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}"
-                                          Command="{Binding SetConnectorTypeCommand}"
-                                          CommandParameter="BEZIER"
-                                          Header="{x:Static p:Resources.DynamoViewViewMenuConnectorTypeCurve}" />
-                                <MenuItem Name="settings_plines"
-                                          IsCheckable="True"
-                                          IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}"
-                                          Command="{Binding SetConnectorTypeCommand}"
-                                          CommandParameter="POLYLINE"
-                                          Header="{x:Static p:Resources.DynamoViewViewMenuConnectorTypePolylines}" />
-                            </MenuItem>
-                            <MenuItem Focusable="False"
                                       Header="{x:Static p:Resources.DynamoViewViewMenuShowConnectors}"
                                       IsCheckable="True"
                                       Name="ShowHideConnectorsMenuItem"
@@ -629,11 +612,18 @@
                         </MenuItem>
                         <MenuItem x:Name="InteractiveGuidesMenuItem"
                                   Focusable="False"
+                                  Command="{Binding DisplayInteractiveGuideCommand}"
                                   Header="{x:Static p:Resources.InteractiveGuides}">
                             <MenuItem x:Name="GetStartedMenuItem"
                                       Focusable="False"
                                       Header="{x:Static p:Resources.GetStartedGuide}"
                                       Click="GetStartedMenuItem_Click">
+                            </MenuItem>
+                            <MenuItem x:Name="PackagesMenuGuide"
+                                      Focusable="False"     
+                                      
+                                      Header="{x:Static p:Resources.PackagesGuide}"
+                                      Click="PackagesMenuGuide_Click">
                             </MenuItem>
                         </MenuItem>
                         <MenuItem Focusable="False"
