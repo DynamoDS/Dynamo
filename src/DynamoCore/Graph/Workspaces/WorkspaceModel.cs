@@ -756,7 +756,7 @@ namespace Dynamo.Graph.Workspaces
                             var directoryName = Path.GetDirectoryName(assemblyPath);
 
                             // For the local definition reference, the assembly directory exists on disc.
-                            if (!directoryName.Equals("") && Directory.Exists(directoryName))
+                            if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName))
                             {
                                 localDefinitionName = Path.GetFileName(assemblyPath);
 
