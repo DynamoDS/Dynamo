@@ -86,9 +86,15 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.AreEqual(false, newSE1.CanInstall);
             Assert.AreEqual(false, newSE2.CanInstall);
 
+            // Simulate that the package corresponding to name1 was added successfully
+            var package1 = new Package("", name1, version, "") { };
+            package1.SetAsLoaded();
+            loader.Add(package1);
+
             dHandle1.DownloadState = PackageDownloadHandle.State.Installed;
             dHandle2.DownloadState = PackageDownloadHandle.State.Installed;
-            Assert.AreEqual(true, newSE1.CanInstall);
+
+            Assert.AreEqual(false, newSE1.CanInstall);
             Assert.AreEqual(false, newSE2.CanInstall);
 
             packageManagerSearchViewModel.ClearSearchResults();

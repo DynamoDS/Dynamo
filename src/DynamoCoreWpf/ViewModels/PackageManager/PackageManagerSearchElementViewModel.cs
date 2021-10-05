@@ -30,11 +30,12 @@ namespace Dynamo.PackageManager.ViewModels
         /// </summary>
         /// <param name="element">A PackageManagerSearchElement</param>
         /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
-        /// <param name="canInstall">Whether a package can be installed.</param>
-        internal PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool canInstall) : base(element)
+        /// <param name="install">Whether a package can be installed.</param>
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool install) : base(element)
         {
             this.Model = element;
-            
+            CanInstall = install;
+
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded);
 
             this.DownloadLatestCommand = new DelegateCommand(
@@ -51,8 +52,6 @@ namespace Dynamo.PackageManager.ViewModels
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
-
-            CanInstall = canInstall;
         }
 
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : this(element, canLogin, true)
