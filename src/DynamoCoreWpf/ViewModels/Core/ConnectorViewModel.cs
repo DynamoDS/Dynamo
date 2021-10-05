@@ -670,6 +670,7 @@ namespace Dynamo.ViewModels
 
         internal void CreateContextMenu()
         {
+            ConnectorContextMenuViewModel = null;
             ConnectorContextMenuViewModel = new ConnectorContextMenuViewModel(this)
             {
                 CurrentPosition = MousePosition,
@@ -1049,6 +1050,11 @@ namespace Dynamo.ViewModels
             workspaceViewModel.Model.RecordAndDeleteModels(
                 new List<ModelBase>() { viewModelSender.Model });
             ConnectorModel.ConnectorPinModels.Remove(viewModelSender.Model);
+
+            if(ConnectorContextMenuViewModel!= null)
+            {
+                ConnectorContextMenuViewModel.RequestDispose += DisposeContextMenu;
+            }
         }
 
         private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
