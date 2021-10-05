@@ -5,11 +5,11 @@ using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using DynamoUtilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,9 +29,7 @@ namespace Dynamo.WorkspaceDependency
         /// The hyper link where Dynamo user will be forwarded to for submitting comments.
         /// </summary>
         private readonly string FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
-        private readonly string sizeUnits = " KB";
         private readonly string customNodeExtension = ".dyf";
-        private const long KbConversionConstant = 1024;
 
         private ViewLoadedParams loadedParams;
         private WorkspaceDependencyViewExtension dependencyViewExtension;
@@ -154,7 +152,7 @@ namespace Dynamo.WorkspaceDependency
                         }
                     }
 
-                    info.Size = GetFileSize(info.Path);
+                    info.Size = PathHelper.GetFileSize(info.Path);
                 }
                 catch (Exception ex)
                 {
@@ -168,7 +166,7 @@ namespace Dynamo.WorkspaceDependency
             {
                 try
                 {
-                    info.Size = GetFileSize(info.Path);
+                    info.Size = PathHelper.GetFileSize(info.Path);
                 }
                 catch (Exception ex)
                 {
@@ -358,21 +356,6 @@ namespace Dynamo.WorkspaceDependency
         private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             DependencyRegen(currentWorkspace);
-        }
-
-        /// <summary>
-        /// Computes the file size from the path.
-        /// </summary>
-        private string GetFileSize(string path)
-        {
-            if (path != null)
-            {
-                var fileInfo = new FileInfo(path);
-                long size = fileInfo.Length / KbConversionConstant;
-                return size.ToString() + sizeUnits;
-            }
-
-            return null;
         }
     }
 

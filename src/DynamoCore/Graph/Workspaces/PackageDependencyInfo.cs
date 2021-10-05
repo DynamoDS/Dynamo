@@ -102,7 +102,7 @@ namespace Dynamo.Graph.Workspaces
     }
 
     /// <summary>
-    /// Class containing info about a LocalDefinition or External File
+    /// Class containing info about a LocalDefinition or an External File
     /// </summary>
     internal class DependencyInfo: INodeLibraryDependencyInfo
     {
@@ -209,7 +209,7 @@ namespace Dynamo.Graph.Workspaces
             }
 
             var other = obj as DependencyInfo;
-            if (other.Name == this.Name && other.Path == this.Path)
+            if (other.Name == this.Name && other.Path == this.Path && other.ReferenceType == this.ReferenceType)
             {
                 return true;
             }

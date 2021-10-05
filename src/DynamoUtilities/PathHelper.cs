@@ -9,6 +9,9 @@ namespace DynamoUtilities
 {
     public class PathHelper
     {
+        private static readonly string sizeUnits = " KB";
+        private const long KbConversionConstant = 1024;
+
         // This return an exception if any operation failed and the folder
         // wasn't created. It's the responsibility of the caller of this function
         // to check whether the folder creation is successful or not.
@@ -178,6 +181,21 @@ namespace DynamoUtilities
             String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
             String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
             return snapshotName;
+        }
+
+        /// <summary>
+        /// Computes the file size from the path.
+        /// </summary>
+        public static string GetFileSize(string path)
+        {
+            if (path != null)
+            {
+                var fileInfo = new FileInfo(path);
+                long size = fileInfo.Length / KbConversionConstant;
+                return size.ToString() + sizeUnits;
+            }
+
+            return null;
         }
     }
 }
