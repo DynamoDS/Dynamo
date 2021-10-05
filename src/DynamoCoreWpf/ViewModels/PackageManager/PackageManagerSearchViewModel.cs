@@ -287,7 +287,7 @@ namespace Dynamo.PackageManager
         internal bool CanInstallPackage(string name)
         {
             // Return true if there are no matching non built-in packages
-            return false == PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.LocalPackages
+            return !PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.LocalPackages
                 .Any(x => (x.Name == name) && !x.BuiltInPackage);
         }
 
