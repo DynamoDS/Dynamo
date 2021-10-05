@@ -40,20 +40,6 @@
 
     <Style x:Key="SConnector" TargetType="Path">
         <Style.Triggers>
-            <!--<EventTrigger RoutedEvent="MouseEnter">
-                <BeginStoryboard>
-                    <Storyboard>
-                        <DoubleAnimation From="3" To="6" Duration="0" Storyboard.TargetProperty="StrokeThickness"></DoubleAnimation>
-                    </Storyboard>
-                </BeginStoryboard>
-            </EventTrigger>
-            <EventTrigger RoutedEvent="MouseLeave">
-                <BeginStoryboard>
-                    <Storyboard>
-                        <DoubleAnimation From="6" To="3" Duration="0" Storyboard.TargetProperty="StrokeThickness"></DoubleAnimation>
-                    </Storyboard>
-                </BeginStoryboard>
-            </EventTrigger>-->
             <DataTrigger Binding="{Binding Path=IsConnecting, Mode=OneWay}" Value="True">
                 <Setter Property="StrokeDashArray" Value="2"/>
             </DataTrigger>
@@ -90,7 +76,32 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-    
+    <Style x:Key="SEllipses" TargetType="Ellipse">
+        <Style.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="True"/>
+                    <Condition Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Opacity" Value="0.4"/>
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=IsTemporarilyDisplayed, Mode=OneWay}" Value="False"/>
+                    <Condition Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True"/>
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Opacity" Value="0.0"/>
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+            <DataTrigger Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="False">
+                <Setter Property="Opacity" Value="1.0"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
         <Grid x:Name="MainGrid"
               Visibility="Visible">
@@ -106,9 +117,9 @@
             </Grid.Resources>
 
             <Canvas x:Name="MainCanvas" Canvas.Top="0" Canvas.Left="0" ZIndex="1">
-                <Ellipse  Name="endDot" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
+                <Ellipse  Name="endDot" Style="{StaticResource SEllipses}" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
                           Canvas.Top="{Binding CurvePoint3.Y}" Canvas.Left="{Binding CurvePoint3.X}" Canvas.ZIndex="1"/>
-                <Ellipse  Name="startDot" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
+                <Ellipse  Name="startDot"  Style="{StaticResource SEllipses}" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
                           Canvas.Top="{Binding CurvePoint0.Y}" Canvas.Left="{Binding CurvePoint0.X}" Canvas.ZIndex="1"/>
             </Canvas>
 
