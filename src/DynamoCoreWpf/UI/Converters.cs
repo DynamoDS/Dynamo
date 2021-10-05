@@ -23,6 +23,8 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
+using Greg.Responses;
+using PythonNodeModels;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -128,6 +130,25 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+    /// <summary>
+    /// Takes a list of Greg dependencies and returns a comma separated stirng.
+    /// </summary>
+    public class DependencyListConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is List<Dependency> dependencies)) return string.Empty;
+
+            return string.Join(", ", dependencies.Select(x => x.name).ToList());
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    
     /// <summary>
     /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
     /// </summary>
@@ -155,6 +176,36 @@ namespace Dynamo.Controls
           CultureInfo culture)
         {
             return null;
+        }
+    }
+
+    /// <summary>
+    /// Takes in a Python engine version as a string (e.g. 2.5.0.0) and converts to a user-facing string.
+    /// </summary>
+    public class PythonEngineConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is string stringValue) || string.IsNullOrWhiteSpace(stringValue))
+            {
+                return PythonEngineVersion.Unspecified;
+            }
+            
+            char firstCharacter = stringValue[0];
+            switch (firstCharacter)
+            {
+                case '2':
+                    return PythonEngineVersion.IronPython2;
+                case '3':
+                    return PythonEngineVersion.CPython3;
+                default:
+                    return stringValue;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -342,6 +393,26 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter,
           CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// If the given list of strings is empty, replaces with a string given as a parameter value.
+    /// </summary>
+    public class EmptyListToParameterValueConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (value is List<string> stringList && stringList.Count > 0) return string.Join(", ", stringList);
+            if (parameter is string parameterValue) return parameterValue;
+            return string.Empty;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
         {
             return null;
         }
