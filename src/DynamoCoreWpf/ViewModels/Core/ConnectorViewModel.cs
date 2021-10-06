@@ -858,7 +858,7 @@ namespace Dynamo.ViewModels
 
         private bool CanInstantiateContextMenu(object parameter)
         {
-            return !IsConnecting && !AnyPinHoveredOver;
+            return !IsConnecting && !ConnectorPinViewCollection.Any(p => p.IsHoveredOver);
         }
 
         private void InitializeCommands()
@@ -1045,10 +1045,6 @@ namespace Dynamo.ViewModels
                 case nameof(ConnectorPinViewModel.IsSelected):
                     var vm = sender as ConnectorPinViewModel;
                     AnyPinSelected = vm.IsSelected;
-                    break;
-                case nameof(ConnectorPinViewModel.IsHoveredOver):
-                    vm = sender as ConnectorPinViewModel;
-                    AnyPinHoveredOver = vm.IsHoveredOver;
                     break;
                 default:
                     break;
