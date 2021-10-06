@@ -836,8 +836,7 @@ namespace Dynamo.ViewModels
             //create a packagePathsViewModel we'll use to interact with the package search paths list.
             var loadPackagesParams = new LoadPackageParams
             {
-                Preferences = preferenceSettings,
-                NewPaths = new List<string>()
+                Preferences = preferenceSettings
             };
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            

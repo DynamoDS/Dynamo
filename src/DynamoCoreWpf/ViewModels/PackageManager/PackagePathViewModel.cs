@@ -248,18 +248,19 @@ namespace Dynamo.ViewModels
         private void CommitChanges(object param)
         {
             var newpaths = CommitRootLocations();
+            IEnumerable<string> additionalPaths = new List<string>();
             //if paths are modified, reload packages and update prefs.
             if (!PreferenceSettings.CustomPackageFolders.SequenceEqual(newpaths))
             {
-                loadPackageParams.NewPaths = newpaths.Except(PreferenceSettings.CustomPackageFolders);
+                additionalPaths = newpaths.Except(PreferenceSettings.CustomPackageFolders);
                 PreferenceSettings.CustomPackageFolders = newpaths;
                 if (packageLoader != null)
                 {
-                    packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+                    packageLoader.LoadCustomNodesAndPackages(additionalPaths, PreferenceSettings, customNodeManager);
                 }
             }
             // Load packages from paths enabled by disable-path toggles if they are not already loaded.
-            LoadEnabledPackagePaths();
+            LoadEnabledPackagePaths(additionalPaths);
         }
 
         internal void SetPackagesScheduledState(string packagePath, bool packagePathDisabled)
@@ -287,12 +288,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal void LoadEnabledPackagePaths()
+        internal void LoadEnabledPackagePaths(IEnumerable<string> addedPaths)
         {
             if (packageLoader != null && packagePathsEnabled.Any())
             {
-                loadPackageParams.NewPaths = packagePathsEnabled.Except(loadPackageParams.NewPaths);
-                packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+                var newPaths = packagePathsEnabled.Except(addedPaths);
+                packageLoader.LoadCustomNodesAndPackages(newPaths, PreferenceSettings, customNodeManager);
             }
             packagePathsEnabled.Clear();
         }
