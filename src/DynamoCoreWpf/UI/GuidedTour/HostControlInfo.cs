@@ -14,6 +14,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private UIElement hostUIElement;
         private double verticalPopupOffSet;
         private double horizontalPopupOffSet;
+        private string htmlPage;
         private double widthBoxDelta;
         private double heightBoxDelta;
 
@@ -107,5 +108,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         [JsonProperty("HeightBoxDelta")]
         public double HeightBoxDelta { get => heightBoxDelta; set => heightBoxDelta = value; }
+
+        /// <summary>
+        /// The html page anme that is going to be rendered inside the popup
+        /// </summary>
+        [JsonProperty("HtmlPage")]
+        public string HtmlPage { get => htmlPage; set => htmlPage = value; }
     }
 }

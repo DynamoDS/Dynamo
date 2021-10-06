@@ -165,10 +165,24 @@
                                     Grid.Row="0"
                                     CornerRadius="{StaticResource ExpanderCornerRadius}"
                                     Padding="0"
-                                    Margin="0">
+                                    Margin="0"
+                                    ToolTipService.IsEnabled="{TemplateBinding IsExpanded, Converter={StaticResource InverseBooleanConverter}}">
                                 <Border.Background>
                                     <SolidColorBrush Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.Background}"></SolidColorBrush>
                                 </Border.Background>
+                                <Border.ToolTip>
+                                    <dynui:DynamoToolTip AttachmentSide="Top"
+                                                         Style="{DynamicResource ResourceKey=SLightToolTip}"
+                                                         Margin="5,0,0,0">
+                                        <StackPanel Orientation="Vertical"
+                                                    MaxWidth="320">
+                                            <TextBlock Text="{Binding AnnotationText}"
+                                                       Margin="0,0,0,10" />
+                                            <TextBlock Text="{Binding AnnotationDescriptionText}"
+                                                       TextWrapping="WrapWithOverflow" />
+                                        </StackPanel>
+                                    </dynui:DynamoToolTip>
+                                </Border.ToolTip>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -231,20 +245,6 @@
     <Grid Name="AnnotationGrid"
           Height="Auto"
           IsHitTestVisible="True">
-        <Grid.ToolTip>
-            <dynui:DynamoToolTip AttachmentSide="Top"
-                                 Style="{DynamicResource ResourceKey=SLightToolTip}"
-                                 Margin="5,0,0,0"
-                                 Visibility="{Binding IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
-                <StackPanel Orientation="Vertical"
-                            MaxWidth="320">
-                    <TextBlock Text="{Binding AnnotationText}"
-                               Margin="0,0,0,10" />
-                    <TextBlock Text="{Binding AnnotationDescriptionText}"
-                               TextWrapping="WrapWithOverflow" />
-                </StackPanel>
-            </dynui:DynamoToolTip>
-        </Grid.ToolTip>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -719,23 +719,69 @@
                               Margin="0,10">
                 </ItemsControl>
 
-                <Border x:Name="NodeCount"
-                        Grid.Row="1"
-                        Grid.ColumnSpan="3"
-                        VerticalAlignment="Center"
-                        BorderThickness="1"
-                        BorderBrush="#FFFFFF"
-                        Background="#EEEEEE"
-                        CornerRadius="{Binding Path=ActualHeight, ElementName=NodeCount}"
-                        Width="{Binding Path=ActualHeight, ElementName=NodeCount}"
-                        Height="32"
-                        Padding="0"
-                        Margin="10">
-                    <TextBlock Text="{Binding NodeContentCount, Mode=OneWay, StringFormat='+{0}'}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontSize="14" />
-                </Border>
+                <Grid x:Name="GroupContent"
+                      Grid.Row="1"
+                      Grid.ColumnSpan="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label x:Name="NestedGroups"
+                           Grid.Column="0"
+                           Content="{Binding NestedGroups, Converter={StaticResource NestedGroupsLabelConverter}}"
+                           Margin="0"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           ToolTipService.ShowOnDisabled="False"
+                           ToolTipService.IsEnabled="{Binding NestedGroups, Converter={StaticResource CollectionHasMoreThanNItemsToBoolConverter}}">
+                        <Label.ToolTip>
+                            <dynui:DynamoToolTip AttachmentSide="Bottom"
+                                                 Style="{DynamicResource ResourceKey=SLightToolTip}"
+                                                 Margin="5,0,0,0">
+                                <ListView ItemsSource="{Binding NestedGroups}">
+                                    <ListView.Resources>
+                                        <DataTemplate x:Key="MultipleItems"
+                                                      DataType="{x:Type viewModels:AnnotationViewModel}">
+                                            <TextBlock Text="{Binding AnnotationText}" />
+                                        </DataTemplate>
+                                    </ListView.Resources>
+                                    <ListView.Style>
+                                        <Style TargetType="{x:Type ListView}">
+                                            <Setter Property="Background"
+                                                    Value="Transparent" />
+                                            <Setter Property="BorderThickness"
+                                                    Value="0" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding NestedGroups, 
+                                                                        Converter={StaticResource CollectionHasMoreThanNItemsToBoolConverter}}"
+                                                             Value="True">
+                                                    <Setter Property="ItemTemplate"
+                                                            Value="{StaticResource MultipleItems}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ListView.Style>
+                                </ListView>
+                            </dynui:DynamoToolTip>
+                        </Label.ToolTip>
+                    </Label>
+
+                    <Border x:Name="NodeCount"
+                            Grid.Column="1"
+                            BorderThickness="1"
+                            BorderBrush="#FFFFFF"
+                            Background="#EEEEEE"
+                            CornerRadius="{Binding Path=ActualHeight, ElementName=NodeCount}"
+                            Width="{Binding Path=ActualHeight, ElementName=NodeCount}"
+                            Height="32"
+                            Margin="10">
+                        <TextBlock Text="{Binding NodeContentCount, Mode=OneWay, StringFormat='+{0}'}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="14" />
+                    </Border>
+                </Grid>
             </Grid>
         </Border>
     </Grid>

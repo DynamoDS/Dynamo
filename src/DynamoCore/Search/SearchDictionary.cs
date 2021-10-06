@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using Dynamo.Configuration;
 
 namespace Dynamo.Search
 {
@@ -277,7 +278,8 @@ namespace Dynamo.Search
                 for (int i = subPattern.Length; i >= 1; i--)
                 {
                     var part = subPattern.Substring(0, i);
-                    if (key.IndexOf(part) != -1)
+                    // Use OrdinalIgnoreCase to improve performance (with the accepted downside that the culture will be ignored)
+                    if (key.IndexOf(part, StringComparison.OrdinalIgnoreCase) != -1)
                     {   //if we find a match record the amount of the match and goto the next word
                         numberOfMatchSymbols += part.Length;
                         break;
@@ -306,12 +308,12 @@ namespace Dynamo.Search
                 foreach (var ele in subset)
                 {
                     //if any element in tagDictionary matches to any element in subset, return true
-                    if (currentElementName.IndexOf(ele.FullName) != -1)
+                    if (currentElementName.IndexOf(ele.FullName, StringComparison.OrdinalIgnoreCase) != -1)
                     {
                         filteredDict.Add(searchElement.Key, searchElement.Value);
                         break;
                     }
-                }                
+                }
             }
             return filteredDict;
         }
@@ -342,7 +344,8 @@ namespace Dynamo.Search
                             tagAndWeight =>
                                 new
                                 {
-                                    Tag = tagAndWeight.Key,
+                                    Tag = tagAndWeight.Key.Substring(0, tagAndWeight.Key.Length > PreferenceSettings.NodeSearchTagSizeLimitValue ? 
+                                    PreferenceSettings.NodeSearchTagSizeLimitValue : tagAndWeight.Key.Length),
                                     Weight = tagAndWeight.Value,
                                     Entry = entryAndTags.Key
                                 }))
@@ -379,12 +382,13 @@ namespace Dynamo.Search
             query = query.ToLower();
 
             var subPatterns = SplitOnWhiteSpace(query);
-
-            // Add full (unsplit by whitespace) query to subpatterns
-            var subPatternsList = subPatterns.ToList();
-            subPatternsList.Insert(0, query);
-            subPatterns = (subPatternsList).ToArray();
-
+            if (subPatterns.Length > 1)// More than one word
+            {
+                // Add full (unsplit by whitespace) query to subpatterns
+                var subPatternsList = subPatterns.ToList();
+                subPatternsList.Insert(0, query);
+                subPatterns = (subPatternsList).ToArray();
+            }
 
             foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
             {

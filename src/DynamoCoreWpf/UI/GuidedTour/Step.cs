@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.UI.GuidedTour
@@ -113,6 +114,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         [JsonProperty("TooltipPointerDirection")]
         public PointerDirection TooltipPointerDirection { get; set; } = PointerDirection.TOP_LEFT;
+        /// <summary>
+        /// A vertical offfset to the pointer of the popups 
+        /// </summary>
+        [JsonProperty("PointerVerticalOffset")]
+        public double PointerVerticalOffset { get; set; }
         #endregion
 
         #region Public Methods
@@ -164,11 +170,21 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         public void UpdateLocation()
         {
-            if(stepUIPopup.IsOpen == true)
+            UpdatePopupLocationInvoke(stepUIPopup);
+            if(stepUIPopup is PopupWindow)
+            {
+                var stepUiPopupWindow = (PopupWindow)stepUIPopup;
+                UpdatePopupLocationInvoke(stepUiPopupWindow?.webBrowserWindow);
+            }
+        }
+        
+        private void UpdatePopupLocationInvoke(Popup popUp)
+        {
+            if(popUp != null && popUp.IsOpen)
             {
                 var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                positionMethod.Invoke(stepUIPopup, null);
-            }         
+                positionMethod.Invoke(popUp, null);             
+            }
         }
 
         /// <summary>

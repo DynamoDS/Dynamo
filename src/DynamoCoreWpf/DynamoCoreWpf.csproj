@@ -178,6 +178,7 @@
     <Compile Include="UI\GuidedTour\Guide.cs" />
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
+    <Compile Include="UI\GuidedTour\GuidedTourResources.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
     <Compile Include="UI\GuidedTour\Step.cs" />
     <Compile Include="UI\GuidedTour\StepUIAutomation.cs" />
@@ -308,6 +309,7 @@
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\Preview\CompactBubbleViewModel.cs" />
     <Compile Include="ViewModels\Preview\ConnectorAnchorViewModel.cs" />
+    <Compile Include="ViewModels\Preview\ConnectorContextMenuViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
@@ -335,6 +337,9 @@
     <Compile Include="Views\Core\ConnectorAnchorView.xaml.cs">
       <DependentUpon>ConnectorAnchorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Core\ConnectorContextMenuView.xaml.cs">
+      <DependentUpon>ConnectorContextMenuView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
       <DependentUpon>ConnectorPinView.xaml</DependentUpon>
@@ -347,6 +352,9 @@
     </Compile>
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\WebBrowserWindow.xaml.cs">
+      <DependentUpon>WebBrowserWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GuidedTour\RealTimeInfoWindow.xaml.cs">
       <DependentUpon>RealTimeInfoWindow.xaml</DependentUpon>
@@ -474,6 +482,14 @@
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GuidedTour\WebBrowserWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Core\ConnectorContextMenuView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GuidedTour\RealTimeInfoWindow.xaml">
       <SubType>Designer</SubType>
@@ -1391,6 +1407,7 @@
     <Resource Include="UI\Images\caret_up_grey_48px.png" />
     <Resource Include="UI\Images\menu_grey_48px.png" />
     <Resource Include="UI\Images\NodeIcon_placeholder.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
     <Resource Include="UI\Images\pin_hidden_48_48.png" />
     <Resource Include="UI\Images\pin_hover_48_48.png" />
     <Resource Include="UI\Images\wire_anchor_48_48.png" />

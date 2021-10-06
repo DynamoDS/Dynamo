@@ -457,7 +457,7 @@
                 <Ellipse Name="nodeRenamedBlueDot"
                          Width="8"
                          Height="8"
-                         Margin="0,0,6,0"
+                         Margin="0,2,6,0"
                          Fill="{StaticResource Blue300Brush}"
                          Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Grid.ToolTip>
