@@ -916,10 +916,18 @@ namespace Dynamo.ViewModels
                     // if annotation is selected its children should be added to selection too
                     foreach (var m in n.Nodes)
                     {
+                        if (m is AnnotationModel nestedGroup)
+                        {
+                            foreach (var model in nestedGroup.Nodes)
+                            {
+                                selection.AddUnique(model);
+                            }
+                        }
                         selection.AddUnique(m);
                     }
                 }
-                else if (n.IsSelected)
+                else if (n.IsSelected &&
+                    !Model.Annotations.ContainsModel(n))
                 {
                     selection.Remove(n);
                 }
