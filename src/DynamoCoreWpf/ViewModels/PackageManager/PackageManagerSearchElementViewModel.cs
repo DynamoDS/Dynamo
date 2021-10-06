@@ -21,24 +21,26 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand VisitRepositoryCommand { get; set; }
         public ICommand DownloadLatestToCustomPathCommand { get; set; }
 
-        /// <summary>
-        /// A function used to determine whether the user has installed this package already.
-        /// Matching occurs via package name.
-        /// </summary>
-        private Func<string,bool> isPackageInstalled;
-
         public new PackageManagerSearchElement Model { get; internal set; }
 
-
-        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : base(element)
+        /// <summary>
+        /// Alternative constructor which takes a Function object in order to
+        /// assist communication between the PackageManagerSearchViewModel
+        /// and the PackageManagerSearchElementViewModel.
+        /// </summary>
+        /// <param name="element">A PackageManagerSearchElement</param>
+        /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
+        /// <param name="install">Whether a package can be installed.</param>
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool install) : base(element)
         {
             this.Model = element;
+            CanInstall = install;
 
-            this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded );
+            this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded);
 
             this.DownloadLatestCommand = new DelegateCommand(
                 () => OnRequestDownload(Model.Header.versions.Last(), false),
-                () => !Model.IsDeprecated && !IsInstalled);
+                () => !Model.IsDeprecated && CanInstall);
             this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), true));
 
             this.UpvoteCommand = new DelegateCommand(Model.Upvote, () => canLogin);
@@ -50,46 +52,32 @@ namespace Dynamo.PackageManager.ViewModels
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
-
         }
 
         /// <summary>
-        /// Alternative constructor which takes a Function object in order to
-        /// assist communication between the PackageManagerSearchViewModel
-        /// and the PackageManagerSearchElementViewModel.
+        /// PackageManagerSearchElementViewModel Constructor
         /// </summary>
         /// <param name="element">A PackageManagerSearchElement</param>
         /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
-        /// <param name="isPackageInstalledFunction">A function that we pass to this constructor which takes a string and returns a Boolean.</param>
-        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, Func<string,bool> isPackageInstalledFunction) : this(element, canLogin)
-        {
-            this.isPackageInstalled = isPackageInstalledFunction;
-            this.IsInstalled = isPackageInstalled(this.Model.Name);
-        }
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : this(element, canLogin, true)
+        {}
 
-        private bool isInstalled;
-
+        private bool canInstall;
         /// <summary>
-        /// A Boolean flag reporting whether or not the user already has this SearchElement's package installed.
+        /// A Boolean flag reporting whether or not the user can install this SearchElement's package.
         /// </summary>
-        public bool IsInstalled
+        public bool CanInstall
         {
-            get => isInstalled;
-            set
+            get
             {
-                isInstalled = value;
-                RaisePropertyChanged(nameof(IsInstalled));
+                return canInstall;
             }
-        }
 
-        /// <summary>
-        /// Checks whether the user has already installed a package with the given name.
-        /// </summary>
-        /// <returns>A Boolean indicating whether the user already has a package installed with the given name.</returns>
-        internal bool IsPackageInstalled()
-        {
-            IsInstalled = isPackageInstalled(this.Model.Name);
-            return IsInstalled;
+            internal set
+            {
+                canInstall = value;
+                RaisePropertyChanged(nameof(CanInstall));
+            }
         }
 
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
@@ -155,8 +143,6 @@ namespace Dynamo.PackageManager.ViewModels
 
             if (RequestDownload != null)
                 RequestDownload(this.Model, version, downloadPath);
-
-            IsPackageInstalled();
         }
 
         /// <summary>
