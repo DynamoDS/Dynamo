@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls.Primitives;
 using Newtonsoft.Json;
 
@@ -14,7 +15,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private UIElement hostUIElement;
         private double verticalPopupOffSet;
         private double horizontalPopupOffSet;
-        private string htmlPage;
+        private HtmlPage htmlPage;
         private double widthBoxDelta;
         private double heightBoxDelta;
 
@@ -113,6 +114,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// The html page anme that is going to be rendered inside the popup
         /// </summary>
         [JsonProperty("HtmlPage")]
-        public string HtmlPage { get => htmlPage; set => htmlPage = value; }
+        public HtmlPage HtmlPage { get => htmlPage; set => htmlPage = value; }
+    }
+
+    public class HtmlPage
+    {
+        private string fileName;
+        private Dictionary<string,string> resources;
+
+        [JsonProperty("Resources")]
+        public Dictionary<string, string> Resources { get => resources; set => resources = value; }
+
+        [JsonProperty("FileName")]
+        public string FileName { get => fileName; set => fileName = value; }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -21,7 +23,11 @@ namespace Dynamo.Wpf.Views.GuidedTour
         private const int tooltipOffset = 10;
         //The headers size of the main popup to add an offset and adjust this popup
         private const int headerOffset = 50;
-        
+
+        private const string mainFontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
+
+        private const string resourcesPath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources";
+
         public WebBrowserWindow(PopupWindowViewModel viewModel, HostControlInfo hInfo)
         {
             InitializeComponent();
@@ -39,9 +45,58 @@ namespace Dynamo.Wpf.Views.GuidedTour
             //Vertical offset plus 50 is to compensate the header size
             VerticalOffset = hInfo.VerticalPopupOffSet + headerOffset;
 
-            var bodyHtmlPage = GuidedTourResources.LoadContentFromResources(hInfo.HtmlPage, GetType().Assembly);
+            LoadWebBrowser(hInfo.HtmlPage);
+
+
+        }
+
+        private void LoadWebBrowser(HtmlPage htmlPage)
+        {
+            var bodyHtmlPage = GuidedTourResources.LoadContentFromResources(htmlPage.FileName, GetType().Assembly);
+
+            bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage);
+            bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", mainFontStylePath);
 
             webBrowser.NavigateToString(bodyHtmlPage);
+        }
+
+        private string LoadResouces(string bodyHtmlPage, HtmlPage htmlPage)
+        {
+            if (htmlPage.Resources.Any())
+            {
+                foreach (var resource in htmlPage.Resources)
+                {
+                    bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, resource.Key, $"{resourcesPath}.{resource.Value}");
+                }
+            }
+
+            return bodyHtmlPage;
+        }
+
+        private string LoadResourceAndReplaceByKey(string bodyHtmlPage, string key, string resourceFile)
+        {
+            Stream resourceStream = GuidedTourResources.LoadResource(resourceFile);
+
+            if (resourceStream != null)
+            {
+                var resourceBase64 = ConvertToBase64(resourceStream);
+                bodyHtmlPage = bodyHtmlPage.Replace(key, resourceBase64);
+            }
+
+            return bodyHtmlPage;
+        }
+
+        private string ConvertToBase64(Stream stream)
+        {
+            byte[] bytes;
+            using (var memoryStream = new MemoryStream())
+            {
+                stream.CopyTo(memoryStream);
+                bytes = memoryStream.ToArray();
+            }
+
+            string base64 = Convert.ToBase64String(bytes);
+            return base64;
         }
     }
 }

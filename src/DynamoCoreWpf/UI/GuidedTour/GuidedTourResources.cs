@@ -52,7 +52,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             return result;
         }
 
-        private static Assembly GetResourceAssembly(Assembly assembly, string name)
+        public static Assembly GetResourceAssembly(Assembly assembly, string name)
         {
             var culture = CultureInfo.CurrentUICulture;
             var satelliteAssembly = GetSatelliteAssembly(assembly, culture);
@@ -94,7 +94,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
-        private static bool ContainsResource(Assembly assembly, string name)
+        public static bool ContainsResource(Assembly assembly, string name)
         {
             if (assembly != null)
             {
@@ -119,6 +119,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
 
             return $"{name.Substring(0, name.LastIndexOf(extension))}.{culture.Name}{extension}";
+        }
+
+        internal static Stream LoadResource(string url)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var textStream = assembly.GetManifestResourceStream(url);
+            return textStream;
         }
     }
 }
