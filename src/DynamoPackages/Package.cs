@@ -30,6 +30,76 @@ namespace Dynamo.PackageManager
         }
     }
 
+    /// <summary>
+    /// Describes a package's load state
+    /// </summary>
+    public class PackageLoadState
+    {
+        /// <summary>
+        /// The current load state of a package
+        /// </summary>
+        public enum StateTypes
+        {
+            /// <summary>
+            /// Invalid state. The initial state for every package, before it is interpreted by Dynamo
+            /// </summary>
+            None,
+            /// <summary>
+            /// The package is fully loaded and is ready to be used
+            /// </summary>
+            Loaded,
+            /// <summary>
+            /// The package is not loaded in Dynamo and not deleted from package locations
+            /// </summary>
+            Unloaded,
+            /// <summary>
+            /// The package was not loaded in Dynamo because of an error. See the Error property for more information
+            /// </summary>
+            Error
+        }
+
+        /// <summary>
+        /// The scheduled load state of a package
+        /// </summary>
+        public enum ScheduledTypes
+        {
+            /// <summary>
+            /// Invalid scheduled state. The initial state for every package, before it is interpreted by Dynamo
+            /// </summary>
+            None,
+            /// <summary>
+            /// The package is scheduled to be unloaded. After the next Dynamo restart, the package will be in an Unloaded state
+            /// </summary>
+            ScheduledForUnload,
+            /// <summary>
+            /// The package is scheduled to be deleted. After the next Dynamo restart, the package will deleted from the package locations
+            /// </summary>
+            ScheduledForDeletion
+        }
+
+        private string errorMessage;
+        private ScheduledTypes scheduledState = ScheduledTypes.None;
+        private StateTypes state = StateTypes.None;// Default to None type.
+
+        internal void SetAsLoaded() { state = StateTypes.Loaded; errorMessage = ""; }
+        internal void SetAsError(string msg = "") { state = StateTypes.Error; errorMessage = msg; }
+        internal void SetAsUnloaded() { state = StateTypes.Unloaded; errorMessage = ""; }
+        internal void ResetState() { state = StateTypes.None; }
+
+        internal void SetScheduledForDeletion() { scheduledState = ScheduledTypes.ScheduledForDeletion; }
+        internal void SetScheduledForUnload() { scheduledState = ScheduledTypes.ScheduledForUnload; }
+        internal void ResetScheduledState() { scheduledState = ScheduledTypes.None; }
+
+        // The current load state of the Package.
+        public StateTypes State { get { return state; } }
+
+        // The scheduled (or desired) state of the Package.
+        public ScheduledTypes ScheduledState { get { return scheduledState; } }
+        
+        // The error message associated with the current State of the Package. Valid only if the State is of type StateTypes.Error
+        public string ErrorMessage { get { return errorMessage; } }
+    }
+
     public class Package : NotificationObject, ILogSource
     {
         #region Properties/Fields
@@ -61,7 +131,12 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(RootDirectory, "doc"); }
         }
 
-        public bool Loaded { get; internal set; }
+        [Obsolete("This property will be removed in 3.0. Please use the LoadState property instead.")]
+        public bool Loaded {
+            get {
+                return LoadState.State == PackageLoadState.StateTypes.Loaded;
+            }
+        }
 
         private bool typesVisibleInManager;
         public bool TypesVisibleInManager
@@ -106,12 +181,21 @@ namespace Dynamo.PackageManager
         /// </summary>
         public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
 
-        private bool markedForUninstall;
+        internal bool BuiltInPackage
+        {
+            get { return RootDirectory.StartsWith(PathManager.BuiltinPackagesDirectory); }
+        }
+
+        [Obsolete("This property will be removed in Dynamo 3.0. Use LoadState.ScheduledState instead")]
         public bool MarkedForUninstall
         {
-            get { return markedForUninstall; }
-            internal set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
+            get {
+                return BuiltInPackage ? LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload :
+                  LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion;
+            }
         }
+
+        public PackageLoadState LoadState = new PackageLoadState();
 
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
@@ -265,10 +349,12 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     Enumerates all assemblies in the package
+        ///     Enumerates all assemblies in the package. This method currently has the side effect that it will
+        ///     load all binaries in the package bin folder unless the package is loaded from a special package path
+        ///     I.E. Builtin Packages.
         /// </summary>
         /// <returns>The list of all node library assemblies</returns>
-        internal IEnumerable<PackageAssembly> EnumerateAssembliesInBinDirectory()
+        internal IEnumerable<PackageAssembly> EnumerateAndLoadAssembliesInBinDirectory()
         {
             var assemblies = new List<PackageAssembly>();
 
@@ -282,7 +368,7 @@ namespace Dynamo.PackageManager
             foreach (var assemFile in (new System.IO.DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
             {
                 Assembly assem;
-
+                //TODO when can we make this false. 3.0?
                 bool shouldLoadFile = true;
                 if (this.RequiresSignedEntryPoints)
                 {
@@ -360,7 +446,7 @@ namespace Dynamo.PackageManager
             {
                 throw new ArgumentNullException("name");
             }
-
+            //TODO I'm guessing this was added for legacy or handbuilt packages - all assemblies are treated as node libraries
             if (nodeLibraryFullNames == null)
             {
                 return true;
@@ -396,7 +482,8 @@ namespace Dynamo.PackageManager
 
         internal bool InUse(DynamoModel dynamoModel)
         {
-            return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || IsCustomNodeFromPackageInUse(dynamoModel)) && Loaded;
+            return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || 
+                IsCustomNodeFromPackageInUse(dynamoModel)) && LoadState.State == PackageLoadState.StateTypes.Loaded;
         }
 
         private bool IsCustomNodeFromPackageInUse(DynamoModel dynamoModel)
@@ -422,20 +509,70 @@ namespace Dynamo.PackageManager
                     .Any(guids.Contains);
         }
 
+        /// <summary>
+        /// Marks built-in package for unload.
+        /// Any other custom package will be marked for deletion.
+        /// </summary>
+        /// <param name="prefs"></param>
         internal void MarkForUninstall(IPreferences prefs)
         {
-            MarkedForUninstall = true;
+            if (BuiltInPackage) 
+            {
+                LoadState.SetScheduledForUnload();
+            } 
+            else
+            {
+                LoadState.SetScheduledForDeletion();
+            }
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
             {
                 prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
             }
+            RaisePropertyChanged(nameof(LoadState));
         }
 
+        /// <summary>
+        /// Resets scheduled state to 'None' for given package.
+        /// Custom package will no longer be uninstalled.
+        /// Package load state will remain unaffected.
+        /// </summary>
+        /// <param name="prefs"></param>
         internal void UnmarkForUninstall(IPreferences prefs)
         {
-            MarkedForUninstall = false;
+            LoadState.ResetScheduledState();
+
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
+            RaisePropertyChanged(nameof(LoadState));
+        }
+
+        /// <summary>
+        /// Marks any given package for unload.
+        /// The package will not be marked for deletion.
+        /// </summary>
+        /// <param name="prefs"></param>
+        internal void MarkForUnload()
+        {
+            LoadState.SetScheduledForUnload();
+            RaisePropertyChanged(nameof(LoadState));
+        }
+
+        /// <summary>
+        /// Resets scheduled state to 'None' for given package.
+        /// Package will no longer be unloaded.
+        /// Package load state will remain unaffected.
+        /// </summary>
+        /// <param name="prefs"></param>
+        internal void UnmarkForUnload()
+        {
+            LoadState.ResetScheduledState();
+            RaisePropertyChanged(nameof(LoadState));
+        }
+
+        internal void SetAsLoaded()
+        {
+            LoadState.SetAsLoaded();
+            RaisePropertyChanged(nameof(LoadState));
         }
 
         internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
@@ -449,8 +586,21 @@ namespace Dynamo.PackageManager
             try
             {
                 LoadedCustomNodes.ToList().ForEach(x => customNodeManager.Remove(x.FunctionId));
-                packageLoader.Remove(this);
-                Directory.Delete(RootDirectory, true);
+                if (BuiltInPackage)
+                {
+                    LoadState.SetAsUnloaded();
+                    RaisePropertyChanged(nameof(LoadState));
+
+                    if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
+                    {
+                        prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
+                    }
+                }
+                else
+                {
+                    packageLoader.Remove(this);
+                    Directory.Delete(RootDirectory, true);
+                }
             }
             catch (Exception e)
             {

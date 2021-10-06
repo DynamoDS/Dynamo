@@ -38,6 +38,13 @@ namespace DynamoCoreWpfTests
             };
         }
 
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            string path = Path.Combine(PackagesDirectory, "Custom Rounding", "extra", "DLL.dll");
+            libraries.Add(path);
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void RestartBannerDefaultStateTest()
         {
@@ -75,7 +82,7 @@ namespace DynamoCoreWpfTests
 
             // This is equivalent to uninstall the package
             var package = viewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == "Dynamo Samples").FirstOrDefault();
-            package.MarkedForUninstall = true;
+            package.LoadState.SetScheduledForDeletion();
 
             // Once choosing to install the specified version, info.State should reflect RequireRestart
             viewExtension.DependencyView.DependencyRegen(CurrentWorkspace);
@@ -196,7 +203,7 @@ namespace DynamoCoreWpfTests
 
             // This is equivalent to uninstall the package
             var package = viewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == "Dynamo Samples").FirstOrDefault();
-            package.MarkedForUninstall = true;
+            package.LoadState.SetScheduledForDeletion();
 
             // Closing the dyf will trigger DependencyRegen of HomeWorkspaceModel.
             // The HomeWorkspaceModel does not contain any dependency info since it's empty
@@ -286,6 +293,34 @@ namespace DynamoCoreWpfTests
                 var dependencyInfo = packageDependencyRow.DependencyInfo;
                 Assert.Contains(dependencyInfo.Name, dependenciesList);
             }
+        }
+
+        [Test]
+        public void VerifyLocalDefinitions()
+        {
+            List<string> dependenciesList = new List<string>() { "RootNode.dyf", "DLL.dll"};
+            DynamoModel.IsTestMode = false;
+
+            // Load the custom node and the zero touch assembly.
+            GetLibrariesToPreload(new List<string>());
+            var examplePath = Path.Combine(@"core\custom_node_dep_test\RootNode.dyf");
+            Open(examplePath);
+            ViewModel.Model.ClearCurrentWorkspace();
+
+            // Open test file to verify the LocalDefinitions list. 
+            examplePath = Path.Combine(@"core\LocalDefinitionsTest.dyn");
+            Open(examplePath);
+           
+            var workspaceViewExtension = (WorkspaceDependencyViewExtension)View.viewExtensionManager.ViewExtensions
+                                                                                .Where(x => x.Name.Equals("Workspace References")).FirstOrDefault();
+
+            Assert.AreEqual(2, workspaceViewExtension.DependencyView.localDefinitionDataRows.Count());
+            foreach (LocalDefinitionRow localDefinitionRow in workspaceViewExtension.DependencyView.localDefinitionDataRows)
+            {
+                var dependencyInfo = localDefinitionRow.DependencyInfo;
+                Assert.Contains(dependencyInfo.Name, dependenciesList);
+            }
+
         }
     }
 }

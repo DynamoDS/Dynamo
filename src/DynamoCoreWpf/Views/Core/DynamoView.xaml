@@ -8,6 +8,7 @@
         xmlns:workspaces="clr-namespace:Dynamo.Graph.Workspaces;assembly=DynamoCore"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:uictrls="clr-namespace:Dynamo.UI.Controls"
+        xmlns:service="clr-namespace:Dynamo.Services"
         xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
         xmlns:views="clr-namespace:Dynamo.Views"
         xmlns:controls1="clr-namespace:Dynamo.Wpf.Controls"
@@ -296,12 +297,18 @@
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuAbout}"
                                   Command="{Binding ShowAboutWindowCommand}"
                                   Focusable="False" />
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialog}"
+                                  Name="ToggleIsAnalyticsReportingApprovedCommand"
+                                  Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialogTooltip}"
+                                  Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
+                                  Focusable="False"/>
+                        <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuPreferences}"
                                   Focusable="False"
                                   Click="OnPreferencesWindowClick"
-                                  Visibility="Collapsed"
                                   Name="preferencesOption"/>
-                        <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuExit}"
                                   Command="{Binding ExitCommand}"
                                   Name="exit"
@@ -532,29 +539,15 @@
                         <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuConnector}"
                                   Name="connectorMenu">
                             <MenuItem Focusable="False"
-                                      Header="{x:Static p:Resources.DynamoViewViewMenuConnectorType}"
-                                      IsEnabled="True">
-                                <MenuItem Focusable="False"
-                                          Name="settings_curves"
-                                          IsCheckable="True"
-                                          IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}"
-                                          Command="{Binding SetConnectorTypeCommand}"
-                                          CommandParameter="BEZIER"
-                                          Header="{x:Static p:Resources.DynamoViewViewMenuConnectorTypeCurve}" />
-                                <MenuItem Name="settings_plines"
-                                          IsCheckable="True"
-                                          IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}"
-                                          Command="{Binding SetConnectorTypeCommand}"
-                                          CommandParameter="POLYLINE"
-                                          Header="{x:Static p:Resources.DynamoViewViewMenuConnectorTypePolylines}" />
-                            </MenuItem>
-                            <MenuItem Focusable="False"
                                       Header="{x:Static p:Resources.DynamoViewViewMenuShowConnectors}"
                                       IsCheckable="True"
                                       Name="ShowHideConnectorsMenuItem"
-                                      IsChecked="{Binding Path=IsShowingConnectors}"
-                                      Command="{Binding ShowHideConnectorsCommand}">
-                            </MenuItem>
+                                      IsChecked="{Binding Path=IsShowingConnectors}"/>
+                            <MenuItem Focusable="False"
+                                      Header="{x:Static p:Resources.DynamoViewViewMenuConnectorShowTooltip}"
+                                      IsCheckable="True"
+                                      Name="ShowHideConnectorTooltipMenuItem"
+                                      IsChecked="{Binding Path=IsShowingConnectorTooltip}"/>
                         </MenuItem>
 
                         <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenu3DPreview}"
@@ -597,10 +590,6 @@
                                   Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="showPMSearch" />
                         <MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewPackageMenuManagePackage}"
-                                  Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  Name="showPMInstalled" />
-                        <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewPackageMenuPublishPackage}"
                                   Command="{Binding Path=DataContext.PublishNewPackageCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="publishNewPackage" />
@@ -615,10 +604,27 @@
                     </MenuItem>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
+                              Name="HelpMenu"
                               Focusable="False">
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.StartPageWhatsNew}"
                                   Command="{Binding ShowGalleryCommand}">
+                        </MenuItem>
+                        <MenuItem x:Name="InteractiveGuidesMenuItem"
+                                  Focusable="False"
+                                  Command="{Binding DisplayInteractiveGuideCommand}"
+                                  Header="{x:Static p:Resources.InteractiveGuides}">
+                            <MenuItem x:Name="GetStartedMenuItem"
+                                      Focusable="False"
+                                      Header="{x:Static p:Resources.GetStartedGuide}"
+                                      Click="GetStartedMenuItem_Click">
+                            </MenuItem>
+                            <MenuItem x:Name="PackagesMenuGuide"
+                                      Focusable="False"     
+                                      
+                                      Header="{x:Static p:Resources.PackagesGuide}"
+                                      Click="PackagesMenuGuide_Click">
+                            </MenuItem>
                         </MenuItem>
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewHepMenuSamples}"
@@ -703,10 +709,6 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
                                   Click="OnDebugModesClick"
                                   IsCheckable="False" />
-                        <MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
-                                  Command="{Binding ManagePackagePathsCommand}"
-                                  Name="managePackagePaths" />
                     </MenuItem>
                 </Menu>
 
@@ -1691,15 +1693,14 @@
         </Grid>
 
         <!--Bottom Panel including RunMode etc-->
-        <WrapPanel Orientation="Horizontal"
-                   Grid.Row="5"
-                   Grid.Column="0"
-                   Grid.RowSpan="1"
-                   HorizontalAlignment="Stretch"
-                   VerticalAlignment="Stretch"
-                   Grid.ColumnSpan="5">
-
-            <WrapPanel.Background>
+        <Grid 
+                Grid.Row="5"
+                Grid.Column="0"
+                Grid.RowSpan="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Grid.ColumnSpan="5">
+            <Grid.Background>
                 <LinearGradientBrush  StartPoint="0.5,0"
                                       EndPoint="0.5,1">
                     <GradientStop Color="#222"
@@ -1707,7 +1708,7 @@
                     <GradientStop Color="#111"
                                   Offset="1.0" />
                 </LinearGradientBrush>
-            </WrapPanel.Background>
+            </Grid.Background>
 
             <Grid Name="bottomBarGrid"
                   Grid.Row="4"
@@ -1717,7 +1718,7 @@
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
@@ -1725,22 +1726,19 @@
                            Grid.Row="0"
                            Grid.Column="0"
                            HorizontalAlignment="Stretch"
-                           VerticalAlignment="Stretch" 
+                           VerticalAlignment="Stretch"
                            Visibility="{Binding IsAbleToGoHome, Converter={StaticResource InverseBoolToVisibilityConverter}}">
 
-                        <controls1:RunSettingsControl x:Name="RunSettingsControl"
-                                                    Margin="2.5,5,5,5" 
-                                                     VerticalAlignment="Stretch"
-                                                     DataContext="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel}"/>
+                    <controls1:RunSettingsControl x:Name="RunSettingsControl"
+                                                  Margin="2.5,5,5,5"
+                                                  VerticalAlignment="Stretch"
+                                                  DataContext="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel}" />
                 </WrapPanel>
-                
+
                 <!--NotificationControl for showing run-time notifications-->
-                <controls1:NotificationsControl Grid.Column="1"/>
-                
+                <controls1:NotificationsControl Grid.Column="1" />
             </Grid>
-
-        </WrapPanel>
-
+        </Grid>
 
         <!--Split Between Console and Canvas-->
         <GridSplitter ResizeDirection="Rows"
@@ -1783,6 +1781,7 @@
                       VerticalAlignment="Stretch"
                       Margin="0"
                       Background="Transparent"
+                      DragCompleted="RightExtensionSidebar_DragCompleted"
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
 
         <!--Start Page-->
@@ -1821,7 +1820,6 @@
             </Grid.Background>
         </Grid>
 
-        <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>
+        <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>        
     </Grid>
-
 </Window>

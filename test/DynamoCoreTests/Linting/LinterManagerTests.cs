@@ -18,22 +18,26 @@ namespace Dynamo.Tests.Linting
     class LinterManagerTests
     {
         const string MOCK_GUID = "358321af-2633-4697-b475-81632582eba0";
+        const string MOCK_Name = "Test Extension";
         const string MOCK_RULE_ID = "1";
 
-        readonly Mock<LinterExtensionBase> mockExtension = new Mock<LinterExtensionBase>() { CallBase = true };
-        readonly Mock<NodeLinterRule> mockRule = new Mock<NodeLinterRule> { CallBase = true };
+        private Mock<LinterExtensionBase> mockExtension;
+        private Mock<NodeLinterRule> mockRule;
 
         private DynamoModel model;
 
         [SetUp]
         public void Init()
         {
+            mockExtension = new Mock<LinterExtensionBase>() { CallBase = true };
+            mockRule = new Mock<NodeLinterRule> { CallBase = true };
 
             // Setup mock rule
             mockRule.Setup(r => r.Id).Returns(MOCK_RULE_ID);
             
             // Setup mock LinterExtension
             mockExtension.Setup(e => e.UniqueId).Returns(MOCK_GUID);
+            mockExtension.Setup(e => e.Name).Returns(MOCK_Name);
 
             model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
@@ -60,9 +64,9 @@ namespace Dynamo.Tests.Linting
             Assert.That(!model.LinterManager.IsExtensionActive(MOCK_GUID));
 
             // Act
-            model.LinterManager.ActiveLinter = model.LinterManager.AvailableLinters
+            model.LinterManager.SetActiveLinter(model.LinterManager.AvailableLinters
                 .Where(x => x.Id == MOCK_GUID)
-                .FirstOrDefault();
+                .FirstOrDefault());
 
             // Assert
             Assert.That(model.LinterManager.ActiveLinter != activeLinterBefore);
@@ -87,9 +91,9 @@ namespace Dynamo.Tests.Linting
             // When setting a linter as the active linter, that linters Activate() gets called
             // which will initialize the rules using the init function. As we only have one mock rule
             // that checks if the node name is "NewNodeName" no failed evaluation results should be created here.
-            model.LinterManager.ActiveLinter = model.LinterManager.AvailableLinters
+            model.LinterManager.SetActiveLinter(model.LinterManager.AvailableLinters
                 .Where(x => x.Id == MOCK_GUID)
-                .FirstOrDefault();
+                .FirstOrDefault());
 
             // Update graph nodes name to trigger the node rule evaluation
             failureNode.Name = "NewNodeName";
@@ -114,8 +118,10 @@ namespace Dynamo.Tests.Linting
         {
             // Arrange
             var secondLinterExtId = "cddab693-9f38-4a66-a600-a758f2c6c817";
+            var secondLinterExtName = "Another Test Extension";
             var secondLinterExt = new Mock<LinterExtensionBase>() { CallBase = true };
             secondLinterExt.Setup(e => e.UniqueId).Returns(secondLinterExtId);
+            secondLinterExt.Setup(e => e.Name).Returns(secondLinterExtName);
 
             var nodeRuleId = "999";
             var nodeRule = new Mock<NodeLinterRule> { CallBase = true };
@@ -141,18 +147,18 @@ namespace Dynamo.Tests.Linting
             // and subscribe everything. Then we change the active linter again but to the mock extension created in this test
             // this is to simulate a change in the active linter and to make sure we are only getting results from the active linter
             // even though two linters have been initialized.
-            model.LinterManager.ActiveLinter = model.LinterManager.AvailableLinters
+            model.LinterManager.SetActiveLinter(model.LinterManager.AvailableLinters
                 .Where(x => x.Id == MOCK_GUID)
-                .FirstOrDefault();
+                .FirstOrDefault());
 
-            model.LinterManager.ActiveLinter = model.LinterManager.AvailableLinters
+            model.LinterManager.SetActiveLinter(model.LinterManager.AvailableLinters
                 .Where(x => x.Id == secondLinterExtId)
-                .FirstOrDefault();
+                .FirstOrDefault());
 
             failureNode.Name = "NewNodeName";
 
             // Assert
-            Assert.That(model.LinterManager.AvailableLinters.Count == 2);
+            Assert.That(model.LinterManager.AvailableLinters.Count == 3);
             Assert.That(model.LinterManager.RuleEvaluationResults.Count == 1);
             Assert.That(model.LinterManager.RuleEvaluationResults.
                 Any(x => x.RuleId == nodeRuleId));

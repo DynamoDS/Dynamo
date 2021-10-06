@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using System.Linq;
 using DSCPython;
+using System.IO;
+using Dynamo;
 
 namespace DSPythonTests
 {
-    public class PythonEvalTests
+    public class PythonEvalTests : UnitTestBase
     {
         public delegate object PythonEvaluatorDelegate(string code, IList bindingNames, IList bindingValues);
 
@@ -173,7 +175,7 @@ print 'hello'
         [Test]
         public void CPythonEngineWithErrorRaisesCorrectEvent()
         {
-          
+
             var count = 0;
             DSCPython.EvaluationEventHandler CPythonEvaluator_EvaluationEnd = (state, scope, codeString, bindings) =>
             {
@@ -349,5 +351,49 @@ OUT = s,fs,dk,dv,di
                 Assert.AreEqual(expected, output);
             }
         }
+        [Test]
+        public void ImportedLibrariesReloadedOnNewEvaluation()
+        {
+
+            var modName = "reload_test1";
+
+            var tempPath = Path.Combine(TempFolder, $"{modName}.py");
+
+            //clear file.
+            File.WriteAllText(tempPath, "value ='Hello World!'\n");
+            try
+            {
+                var script = $@"import sys
+sys.path.append(r'{Path.GetDirectoryName(tempPath)}')
+import {modName}
+OUT = {modName}.value";
+
+                var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
+                   script,
+                   new ArrayList { "IN" },
+                   new ArrayList { new ArrayList { " ", "  " } });
+
+                Assert.AreEqual("Hello World!", output);
+
+                //now modify the file.
+                File.AppendAllLines(tempPath, new string[] { "value ='bye'" });
+
+                //mock raise event
+                DSCPython.CPythonEvaluator.RequestPythonResetHandler(nameof(PythonNodeModels.PythonEngineVersion.CPython3));
+
+                output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
+                 script,
+                 new ArrayList { "IN" },
+                 new ArrayList { new ArrayList { " ", "  " } });
+                Assert.AreEqual("bye", output);
+
+            }
+            finally
+            {
+                File.Delete(tempPath);
+            }
+        }
+
+
     }
 }

@@ -4,10 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-
 using Dynamo.Configuration;
 using Dynamo.Controls;
-using Dynamo.Extensions;
+using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -16,7 +15,6 @@ using Dynamo.Scheduler;
 using Dynamo.Tests;
 using Dynamo.Updates;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
 using DynamoShapeManager;
 
 using NUnit.Framework;
@@ -37,6 +35,8 @@ namespace SystemTestServices
         protected string workingDirectory;
         private Preloader preloader;
         private AssemblyResolver assemblyResolver;
+        // Some tests override the static property PathManager.BuiltinPackagesDirectory, so we need a way to reset it after each test.
+        private string originalBuiltinPackagesDirectory;
 
         #region protected properties
 
@@ -82,6 +82,9 @@ namespace SystemTestServices
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
+            // Store a copy of the PathManager.BuiltinPackagesDirectory so that we can reset it after each DynamoModelTest
+            originalBuiltinPackagesDirectory = originalBuiltinPackagesDirectory ?? PathManager.BuiltinPackagesDirectory;
+
             StartDynamo(testConfig);
         }
 
@@ -124,6 +127,7 @@ namespace SystemTestServices
                 assemblyResolver = null;
             }
 
+            PathManager.BuiltinPackagesDirectory = originalBuiltinPackagesDirectory;
             try
             {
                 var directory = new DirectoryInfo(TempFolder);

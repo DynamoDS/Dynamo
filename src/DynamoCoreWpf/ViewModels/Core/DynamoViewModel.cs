@@ -26,12 +26,14 @@ using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI;
+using Dynamo.UI.Prompts;
 using Dynamo.Updates;
 using Dynamo.Utilities;
 using Dynamo.Visualization;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;
+using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
@@ -49,25 +51,12 @@ namespace Dynamo.ViewModels
 
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
     {
-        public int ScaleFactorLog
-        {
-            get
-            {
-                return (CurrentSpace == null) ? 0 :
-                    Convert.ToInt32(Math.Log10(CurrentSpace.ScaleFactor));
-            }
-            set
-            {
-                CurrentSpace.ScaleFactor = Math.Pow(10, value);
-                CurrentSpace.ScaleFactorChanged = true;
-            }
-        }
-
         #region properties
 
         private readonly DynamoModel model;
         private Point transformOrigin;
         private bool showStartPage = false;
+        private PreferencesViewModel preferencesViewModel;
 
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
 
@@ -95,6 +84,19 @@ namespace Dynamo.ViewModels
             get { return Model.PreferenceSettings; }
         }
 
+        internal PreferencesViewModel PreferencesViewModel
+        {
+            get
+            {
+                return preferencesViewModel;
+            }
+        }
+
+        /// <summary>
+        /// Guided Tour Manager
+        /// </summary>
+        public GuidesManager MainGuideManager { get; set; }
+
         public Point TransformOrigin
         {
             get { return transformOrigin; }
@@ -108,6 +110,20 @@ namespace Dynamo.ViewModels
         public bool ViewingHomespace
         {
             get { return model.CurrentWorkspace == HomeSpace; }
+        }
+
+        public int ScaleFactorLog
+        {
+            get
+            {
+                return (CurrentSpace == null) ? 0 :
+                    Convert.ToInt32(Math.Log10(CurrentSpace.ScaleFactor));
+            }
+            set
+            {
+                CurrentSpace.ScaleFactor = Math.Pow(10, value);
+                CurrentSpace.ScaleFactorChanged = true;
+            }
         }
 
         public bool IsAbleToGoHome
@@ -133,6 +149,15 @@ namespace Dynamo.ViewModels
         public WorkspaceModel CurrentSpace
         {
             get { return model.CurrentWorkspace; }
+        }
+
+        /// <summary>
+        /// Count of unresolved issues on the linter manager.
+        /// This is used for binding in the NotificationsControl
+        /// </summary>
+        public int LinterIssuesCount
+        {
+            get => Model.LinterManager?.RuleEvaluationResults.Count ?? 0;
         }
 
         public double WorkspaceActualHeight { get; set; }
@@ -238,6 +263,9 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("ShowStartPage");
                 if (DisplayStartPageCommand != null)
                     DisplayStartPageCommand.RaiseCanExecuteChanged();
+
+                if (DisplayInteractiveGuideCommand != null)
+                    DisplayInteractiveGuideCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -263,6 +291,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
+        [Obsolete("This was moved to PreferencesViewModel.cs")]
         public bool ShowPreviewBubbles
         {
             get
@@ -279,6 +308,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Indicates if line numbers should be displayed on code block nodes.
         /// </summary>
+        [Obsolete("This was moved to PreferencesViewModel.cs")]
         public bool ShowCodeBlockLineNumber
         {
             get
@@ -348,8 +378,23 @@ namespace Dynamo.ViewModels
             set
             {
                 model.IsShowingConnectors = value;
-
-                RaisePropertyChanged("IsShowingConnectors");
+                RaisePropertyChanged(nameof(IsShowingConnectors));
+            }
+        }
+        /// <summary>
+        /// Relaying the flag `IsShowingConnectorTooltip' coming from
+        /// the Dynamo model.
+        /// </summary>
+        public bool IsShowingConnectorTooltip
+        {
+            get
+            {
+                return model.IsShowingConnectorTooltip;
+            }
+            set
+            {
+                model.IsShowingConnectorTooltip = value;
+                RaisePropertyChanged(nameof(IsShowingConnectorTooltip));
             }
         }
 
@@ -645,6 +690,10 @@ namespace Dynamo.ViewModels
            
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
+            if (model.LinterManager != null)
+            {
+                model.LinterManager.RuleEvaluationResults.CollectionChanged += OnRuleEvaluationResultsCollectionChanged;
+            }
              
             SubscribeModelCleaningUpEvent();
             SubscribeModelUiEvents();
@@ -674,6 +723,8 @@ namespace Dynamo.ViewModels
             WatchHandler.RequestSelectGeometry += BackgroundPreviewViewModel.AddLabelForPath;
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
             model.ComputeModelDeserialized += model_ComputeModelDeserialized;
+
+            preferencesViewModel = new PreferencesViewModel(this);
         }
 
         /// <summary>
@@ -745,6 +796,7 @@ namespace Dynamo.ViewModels
 
         protected virtual void UnsubscribeAllEvents()
         {
+            preferencesViewModel.UnsubscribeAllEvents();
             UnsubscribeDispatcherEvents();
             UnsubscribeModelUiEvents();
             UnsubscribeModelChangedEvents();
@@ -755,6 +807,11 @@ namespace Dynamo.ViewModels
 
             model.WorkspaceAdded -= WorkspaceAdded;
             model.WorkspaceRemoved -= WorkspaceRemoved;
+            if (model.LinterManager != null)
+            {
+                model.LinterManager.RuleEvaluationResults.CollectionChanged -= OnRuleEvaluationResultsCollectionChanged;
+            }
+
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
         }
@@ -1123,7 +1180,7 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
 
-            var command = new DynamoModel.CreateAnnotationCommand(Guid.NewGuid(), null, 0, 0, true);
+            var command = new DynamoModel.CreateAnnotationCommand(Guid.NewGuid(), null, null, 0, 0, true);
             this.ExecuteCommand(command);
         }
 
@@ -1185,6 +1242,19 @@ namespace Dynamo.ViewModels
                 var message = "Internal error, argument must be null";
                 throw new ArgumentException(message, "parameters");
             }
+
+            // If only an AnnotationModel is selected that means
+            // we are trying to remove a group from another group
+            if (DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Count() == DynamoSelection.Instance.Selection.Count())
+            {
+                foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>().ToList())
+                {
+                    var command = new DynamoModel.UngroupModelCommand(modelb.GUID);
+                    this.ExecuteCommand(command);
+                    return;
+                }
+            }
+
             //Check for multiple groups - Delete the group and not the nodes.
             foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>().ToList())
             {
@@ -1223,6 +1293,24 @@ namespace Dynamo.ViewModels
                     this.ExecuteCommand(command);
                 }
             }  
+        }
+
+        internal void AddGroupToGroup(object hostGroupGuid)
+        {
+            if (!(hostGroupGuid is Guid hostGroupId))
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+            //Check for multiple groups - Delete the group and not the nodes.
+            foreach (var annotationModel in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
+            {
+                if (!(annotationModel.GUID == hostGroupId))
+                {
+                    var command = new DynamoModel.AddGroupToGroupCommand(annotationModel.GUID, hostGroupId);
+                    this.ExecuteCommand(command);
+                }
+            }
         }
 
         private void WorkspaceAdded(WorkspaceModel item)
@@ -1266,6 +1354,11 @@ namespace Dynamo.ViewModels
                 }
                 currentWorkspaceViewModel = null;
             workspaces.Remove(viewModel);
+        }
+
+        private void OnRuleEvaluationResultsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(LinterIssuesCount));
         }
 
         internal void AddToRecentFiles(string path)
@@ -1518,6 +1611,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void Save(object parameter)
         {
+            if (!ShowWarningDialogOnSaveWithUnresolvedIssues()) return;
+
             if (!String.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
             {
                 // For read-only file, re-direct save to save-as
@@ -1678,21 +1773,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void ShowInstalledPackages(object parameters)
-        {
-            OnRequestManagePackagesDialog(this, EventArgs.Empty);
-        }
-
-        private bool CanShowInstalledPackages(object parameters)
-        {
-            return true;
-        }
-
-        private void ManagePackagePaths(object parameters)
-        {
-            OnRequestPackagePathsDialog(this, EventArgs.Empty);
-        }
-
         /// <summary>
         ///     Change the currently visible workspace to a custom node's workspace
         /// </summary>
@@ -1847,12 +1927,16 @@ namespace Dynamo.ViewModels
             if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
             {
                 if (CanShowSaveDialogAndSaveResult(parameter))
+                {
                     ShowSaveDialogAndSaveResult(parameter);
+                }
             }
             else
             {
                 if (CanSave(parameter))
+                {
                     Save(parameter);
+                }
             }
         }
 
@@ -1863,27 +1947,94 @@ namespace Dynamo.ViewModels
 
         public void ShowSaveDialogAndSaveResult(object parameter)
         {
+            if (!ShowWarningDialogOnSaveWithUnresolvedIssues())
+            {
+                return;
+            }
+
             var vm = this;
 
-            FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
+            try
+            {
+                FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
 
-            // If the filePath is not empty set the default directory
-            if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
-            {
-                var fi = new FileInfo(vm.Model.CurrentWorkspace.FileName);
-                _fileDialog.InitialDirectory = fi.DirectoryName;
-                _fileDialog.FileName = fi.Name;
+                // If the filePath is not empty set the default directory
+                if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
+                {
+                    var fi = new FileInfo(vm.Model.CurrentWorkspace.FileName);
+                    _fileDialog.InitialDirectory = fi.DirectoryName;
+                    _fileDialog.FileName = fi.Name;
+                }
+                else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
+                {
+                    var pathManager = vm.model.PathManager;
+                    _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
+                }
+
+                if (_fileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    SaveAs(_fileDialog.FileName);
+                }
             }
-            else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
+            catch (PathTooLongException)
             {
-                var pathManager = vm.model.PathManager;
-                _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
+                string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+                var args = new TaskDialogEventArgs(
+                    new Uri(imageUri, UriKind.Relative),
+                    WpfResources.GraphIssuesOnSavePath_Title,
+                    WpfResources.GraphIssuesOnSavePath_Summary,
+                    WpfResources.GraphIssuesOnSavePath_Description);
+
+                args.AddRightAlignedButton((int)DynamoModel.ButtonId.Ok, WpfResources.OKButton);
+
+                var dialog = new GenericTaskDialog(args);
+                dialog.ShowDialog();
+            }
+        }
+
+        private bool ShowWarningDialogOnSaveWithUnresolvedIssues()
+        {
+            if (Model.LinterManager is null || 
+                Model.LinterManager.RuleEvaluationResults.Count <= 0)
+            {
+                return true;
             }
 
-            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+            var args = new TaskDialogEventArgs(
+                new Uri(imageUri, UriKind.Relative), 
+                WpfResources.GraphIssuesOnSave_Title,
+                WpfResources.GraphIssuesOnSave_Summary, 
+                WpfResources.GraphIssuesOnSave_Description);
+
+            args.AddRightAlignedButton((int)DynamoModel.ButtonId.Proceed, WpfResources.GraphIssuesOnSave_ProceedBtn);
+            args.AddRightAlignedButton((int)DynamoModel.ButtonId.Cancel, WpfResources.GraphIssuesOnSave_CancelBtn);
+
+            var dialog = new GenericTaskDialog(args);
+
+            if (DynamoModel.IsTestMode)
             {
-                SaveAs(_fileDialog.FileName);
+                dialog.Show();
+                if (dialog.IsActive)
+                {
+                    var saveWarningArgs = new SaveWarningOnUnresolvedIssuesArgs(dialog);
+                    OnSaveWarningOnUnresolvedIssuesShows(saveWarningArgs);
+                }
+                return false;
             }
+
+            dialog.ShowDialog();
+
+            // If cancel ('x' in top right corner) is pressed the ClickedButtonId on the 
+            // GenericTaskDialog is 0
+            if (args.ClickedButtonId == (int)DynamoModel.ButtonId.Cancel ||
+                args.ClickedButtonId == 0)
+            {
+                OnViewExtensionOpenRequest("Graph Status");
+                return false;
+            }
+
+            return true;
         }
 
         internal bool CanShowSaveDialogAndSaveResult(object parameter)
@@ -2257,15 +2408,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void ShowConnectors(object parameter)
-        {
-        }
-
-        internal bool CanShowConnectors(object parameter)
-        {
-            return true;
-        }
-
         public void SetConnectorType(object parameters)
         {
             if (parameters.ToString() == "BEZIER")
@@ -2324,6 +2466,11 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanDisplayStartPage(object parameter)
+        {
+            return !this.ShowStartPage;
+        }
+
+        private bool CanDisplayInteractiveGuide(object parameter)
         {
             return !this.ShowStartPage;
         }

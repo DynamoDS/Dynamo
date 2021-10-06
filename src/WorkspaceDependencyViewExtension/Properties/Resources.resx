@@ -117,6 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="CustomNodeReferenceIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+        hNk9+B+uRbqv2tzfLgAAAABJRU5ErkJggg==
+</value>
+  </data>
   <data name="DependencyViewExtensionErrorTemplate" xml:space="preserve">
     <value>Error from WorkspaceDependencyViewExtension: {0}</value>
   </data>
@@ -144,10 +173,15 @@
   <data name="KeepLocalButtonText" xml:space="preserve">
     <value>Keep Installed Version</value>
   </data>
+  <data name="LocalDefinitionsHeaderText" xml:space="preserve">
+    <value>Local Definitions</value>
+  </data>
   <data name="MenuItemString" xml:space="preserve">
     <value>Show Workspace References</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="NameHeader" xml:space="preserve">
+    <value>Name</value>
+  </data>
   <data name="NodeLibraryDependency_Loaded" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAS0AAAEsCAYAAACWv+VLAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAu
@@ -363,7 +397,10 @@
 </value>
   </data>
   <data name="PackageHeaderText" xml:space="preserve">
-    <value>Package</value>
+    <value>Packages</value>
+  </data>
+  <data name="PathHeader" xml:space="preserve">
+    <value>Path</value>
   </data>
   <data name="ProvideFeedbackButton" xml:space="preserve">
     <value>Provide Feedback</value>
@@ -377,7 +414,36 @@
   <data name="RestartBannerMessage" xml:space="preserve">
     <value>An installed package is marked for uninstall. To complete the uninstall, please restart Dynamo.</value>
   </data>
-  <data name="VersionHeaderText" xml:space="preserve">
+  <data name="SizeHeader" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="VersionHeader" xml:space="preserve">
     <value>Version</value>
+  </data>
+  <data name="ZeroTouchNodeReferenceIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAFgAAABjCAYAAAAfKMdaAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAALiMAAC4jAXilP3YAAASFSURBVHhe7Z09ThxBEIV9BHwD5BMg+QIOuIJzIsfOSAm5
+        gjNiIuckHIAAW4BxYMmBA0e2b7B+Zc2Yp9br2d2ie35qOvgk9nVVTc/HahbB7PJis9kMcnf/cA02C+Mn
+        OFDnMzYyZLDRxQh++PKVH9+CySXLkMEml/gM7rlV5zQmMmSwySULNi7UeY2FDBlsMBV8Ad7MDLsc8B5T
+        JpMsQwabSwWfqbopEXtUTCJZhgw2tkTBH5PHPaNLliGDTS1R8Bk4SbKeUSXLkMGGFim4y98nec9okmXI
+        YDOLFdyt2Ysyr/WMIlmGDDayaMHdek5y9XORIYNNLF5wV5OTfJLWlkSGDDYQQnBXN7pkGTI4eBjBBtZG
+        lSxDBgcOJdjA+miSZcjgoOEEG6gZRbIMGRwwpGADdbnfYRSTLEMGB4ss+ABUlSxDBgcKK9hAbU7yH3Ck
+        evZBhgwOElqwgfpqkmXI4ADhBRvoqSJZhgyGr0Kwgb7ikmXIYPBqBBvoLSpZhgyGrkqwgf5ikmXIYODq
+        BBuYcQRMKM819pIsQwbDVinYwJwhyYeqJ0WGDAatVrCBWTnJdgnZemOLDBkMWaLgsThX+2FkyGBIE5xw
+        //DYf73VhQwZDGmC8zTBlVmNYHshUrdUlSb92XgdgsfC40KGjGdoVDwuZMh4hkbF40KGjGdoVDwuZMh4
+        hkbF40KGjGdoVDwuZMh4hkbF40KGjGdoVDwuZMh4hkbF40KGjGdoVDwuZMh4hkbF40KGjGdoVDwuZMh4
+        hkbF40KGjGdoVDwuZMh4hkbF40KGjGdoVDwuZMh4hkbF40KGjGdoVDwuZMh4hkbF40KGjGdoVDwurOnQ
+        Cgf4DnioHUTVRcTeUD70R097Iw2vpxyaYPuCmxrlONtZMN3NsnqSD18aYnfBDRdZwXadTfkBfoNHyqKj
+        7qrcBy04fSVs7Abc2TeFXTbBJYG7JrgmcDeu4E+f7zYZvoFL8Fb1MdSDh7omxdNTAribjWDGRL9U/QbX
+        pms5PD0lgLtJBZ8SJpXXLlW/wXXpWg5PTwngbjrBYu01+EU1x2lNV5edkcPTUwK4m49gA7k9m/uaD5ma
+        wRkKT08J4G52gu1Z3NfcZGoGZyg8PSWAu3kJNrbVbFtXeHpKAHdNcE3grgmuCdw1wTWBuya4JnDXBNcE
+        7uYlGPkx1VxlagZnKDw9JYC72Qk+p5rTTM3gDIWnpwRwNx/ByN7xOniV1nR12Rk5PD0lgLvpBAP+Zc9N
+        l/1fU/1GWpfjuT0lgLtJBecYPFFRL3luTwngbjaCr4Bdf+VlgaGeQZ7bUwK4G1fw2oC7JrgmcNcE1wTu
+        muCawN1ugoG609D+P5ANsDsK1foasHM3B+ZCrad3omYFN8qwu+B2d+UTe7hoz+DK/BNsH4ll15Uc6R2G
+        dp1RdWsgvcaaG1XXcyJfDZmukIeu+T0a9kLGLq5VHSNDxoYkQ5vgJ5rgkti5Jy6a4JLYuScumuCS2Lkn
+        Lprgkti5Jy6a4JLYuScuqghuPNEEV6YJrkwTXJkigsf6+O4lsuU/wmxe/AV8tbn2KMM22QAAAABJRU5E
+        rkJggg==
+</value>
   </data>
 </root>

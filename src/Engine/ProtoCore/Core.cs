@@ -159,16 +159,25 @@ namespace ProtoCore
 
         public FunctionTable FunctionTable { get; private set; }
 
-#endregion
+        #endregion
 
-        // This flag is set true when we call GraphUtilities.PreloadAssembly to load libraries in Graph UI
+        /// <summary>
+        /// This flag is set true when we call GraphUtilities.PreloadAssembly to load libraries.
+        /// </summary>
         public bool IsParsingPreloadedAssembly { get; set; }
+
+        /// <summary>
+        /// This flag is set true when we recompile CBNs after function definitions are compiled.
+        /// </summary>
+        internal bool IsCodeBlockNodeFirstPass { get; set; }
         
         // THe ImportModuleHandler owned by the temporary core used in Graph UI precompilation
         // needed to detect if the same assembly is not being imported more than once
         public ImportModuleHandler ImportHandler { get; set; }
-        
-        // This is set to true when the temporary core is used for precompilation of CBN's in GraphUI
+
+        /// <summary>
+        /// This is set to true when the temporary core is used for precompilation of CBN's.
+        /// </summary>
         public bool IsParsingCodeBlockNode { get; set; }
 
         // This is the AST node list of default imported libraries needed for Graph Compiler
@@ -315,53 +324,59 @@ namespace ProtoCore
             // Update the functiond definition in the codeblocks
             int hash = CoreUtils.GetFunctionHash(functionDef);
 
-            ProcedureNode procNode = null;
+            List<ProcedureNode> procNodes = null;
 
             foreach (CodeBlock block in CodeBlockList)
             {
                 // Update the current function definition in the current block
-                procNode = block.procedureTable.Procedures.FirstOrDefault(p => p.HashID == hash);
-                int index = procNode == null ? Constants.kInvalidIndex: procNode.ID; 
-                if (Constants.kInvalidIndex == index)
-                    continue;
-
-                procNode.IsActive = false;
-
-                // Remove staled graph nodes
-                var graph = block.instrStream.dependencyGraph;
-                graph.GraphList.RemoveAll(g => g.classIndex == ClassIndex && 
-                                               g.procIndex == index);
-                graph.RemoveNodesFromScope(Constants.kGlobalScope, index);
-
-                // Make a copy of all symbols defined in this function
-                var localSymbols = block.symbolTable.symbolList.Values
-                                        .Where(n => 
-                                                n.classScope == Constants.kGlobalScope 
-                                             && n.functionIndex == index)
-                                        .ToList();
-
-                foreach (var symbol in localSymbols)
+                procNodes = block.procedureTable.Procedures.Where(p => p.HashID == hash).ToList();
+                foreach (var procNode in procNodes)
                 {
-                    block.symbolTable.UndefineSymbol(symbol);
-                }
+                    int index = procNode == null ? Constants.kInvalidIndex : procNode.ID;
+                    if (Constants.kInvalidIndex == index)
+                        continue;
 
+                    procNode.IsActive = false;
+
+
+                    // Remove staled graph nodes
+                    var graph = block.instrStream.dependencyGraph;
+                    graph.GraphList.RemoveAll(g => g.classIndex == ClassIndex &&
+                                                   g.procIndex == index);
+                    graph.RemoveNodesFromScope(Constants.kGlobalScope, index);
+
+                    // Make a copy of all symbols defined in this function
+                    var localSymbols = block.symbolTable.symbolList.Values
+                                            .Where(n =>
+                                                    n.classScope == Constants.kGlobalScope
+                                                 && n.functionIndex == index)
+                                            .ToList();
+
+                    foreach (var symbol in localSymbols)
+                    {
+                        block.symbolTable.UndefineSymbol(symbol);
+                    }
+                }
                 break;
             }
-
-            if (null != procNode)
+            foreach (var procNode in procNodes)
             {
-                // Remove codeblock defined in procNode from CodeBlockList and CompleteCodeBlockList
-                foreach (int cbID in procNode.ChildCodeBlocks)
+                if (null != procNode)
                 {
-                    CompleteCodeBlockDict.Remove(cbID);
-
-                    foreach (CodeBlock cb in CodeBlockList)
+                    // Remove codeblock defined in procNode from CodeBlockList and CompleteCodeBlockList
+                    foreach (int cbID in procNode.ChildCodeBlocks)
                     {
-                        cb.children.RemoveAll(x => x.codeBlockId == cbID);
+                        CompleteCodeBlockDict.Remove(cbID);
+
+                        foreach (CodeBlock cb in CodeBlockList)
+                        {
+                            cb.children.RemoveAll(x => x.codeBlockId == cbID);
+                        }
                     }
                 }
             }
 
+            if (DSExecutable == null) return;
 
             // Update the function definition in global function tables
             foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in DSExecutable.FunctionTable.GlobalFuncTable)

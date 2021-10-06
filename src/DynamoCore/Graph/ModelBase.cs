@@ -73,6 +73,7 @@ namespace Dynamo.Graph
 
         private Guid guid;
         private bool isSelected;
+        private bool belongsToGroup;
         private double x;
         private double y;
         private double height = 100;

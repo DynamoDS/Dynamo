@@ -1,0 +1,279 @@
+{
+  "Uuid": "8bf564bb-9254-4631-9492-abed2db6cc47",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "simplified_circular_dep4",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "+@var[]..[],var[]..[]",
+      "Id": "f98c67f366704adebd013210a342c10b",
+      "Inputs": [
+        {
+          "Id": "7a266a32be12485aaca10b71739cf166",
+          "Name": "x",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f84a53f05c75478d8014de109a1a13c6",
+          "Name": "y",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5d78d5b3431b4762817220be4f86e364",
+          "Name": "var",
+          "Description": "The sum of two input numbers, or the concatenation of two strings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2;\n3;",
+      "Id": "e0fd9547edf74922829b329c436136c0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e8559502e3fc46a9bd7b4265a5d9b253",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0ea9c20ebe5e4ac481d3895c12291c82",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "-@var[]..[],var[]..[]",
+      "Id": "64f3528399a54cf89459a684e4fa798a",
+      "Inputs": [
+        {
+          "Id": "cf5318cbc5a84e02992e3de30d3e9856",
+          "Name": "x",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6673ee94a9bb4b1583d09e3312bdaf5f",
+          "Name": "y",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f784e9ee917e403595a18cf687446cf9",
+          "Name": "number",
+          "Description": "Result of the y input subtracted from the x input",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns subtraction of x minus y\n\n- (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "*@var[]..[],var[]..[]",
+      "Id": "7f9c12b47579431d9af38c808e1cfc57",
+      "Inputs": [
+        {
+          "Id": "b0c57c02f7bd46baba41244eb1975361",
+          "Name": "x",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "df56a5ab81a64ba4a17e8ea2704c3fbb",
+          "Name": "y",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "77c7a06aca19438fb14ca8ef71e4d81e",
+          "Name": "number",
+          "Description": "The product of the two input numbers",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns multiplication of x times y\n\n* (x: var[]..[], y: var[]..[]): var[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "5d78d5b3431b4762817220be4f86e364",
+      "End": "cf5318cbc5a84e02992e3de30d3e9856",
+      "Id": "a0dbeaf80de74b738ebd1e007cbd776e"
+    },
+    {
+      "Start": "5d78d5b3431b4762817220be4f86e364",
+      "End": "b0c57c02f7bd46baba41244eb1975361",
+      "Id": "098297e79f2048c5a1615f74d36b60c6"
+    },
+    {
+      "Start": "0ea9c20ebe5e4ac481d3895c12291c82",
+      "End": "6673ee94a9bb4b1583d09e3312bdaf5f",
+      "Id": "03cb7e05f734437087069466094f3524"
+    },
+    {
+      "Start": "0ea9c20ebe5e4ac481d3895c12291c82",
+      "End": "f84a53f05c75478d8014de109a1a13c6",
+      "Id": "5b8ab425b5034e53bc811c6752ffcd13"
+    },
+    {
+      "Start": "f784e9ee917e403595a18cf687446cf9",
+      "End": "df56a5ab81a64ba4a17e8ea2704c3fbb",
+      "Id": "31b59579524f47c08c00d167ce256822"
+    },
+    {
+      "Start": "77c7a06aca19438fb14ca8ef71e4d81e",
+      "End": "7a266a32be12485aaca10b71739cf166",
+      "Id": "fd2bb17ef8984be2adc79d84608f0470"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.0.2136",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "+",
+        "Id": "f98c67f366704adebd013210a342c10b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 370.00000000000006,
+        "Y": 67.600000000000023
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e0fd9547edf74922829b329c436136c0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 96.0,
+        "Y": 127.20000000000005
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "-",
+        "Id": "64f3528399a54cf89459a684e4fa798a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 406.00000000000006,
+        "Y": 347.20000000000005
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "*",
+        "Id": "7f9c12b47579431d9af38c808e1cfc57",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 673.60000000000014,
+        "Y": 74.799999999999969
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

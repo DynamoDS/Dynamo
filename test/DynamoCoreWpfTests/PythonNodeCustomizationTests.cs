@@ -99,13 +99,13 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeModel.Engine, engineAfterChange);
             var engineMenuItem = nodeView.MainContextMenu
                 .Items
-                .Cast<MenuItem>()
+                .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == "Python Engine Version");
             var ironPython2MenuItem = engineMenuItem.Items
-                .Cast<MenuItem>()
+                .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo);
             var cPython3MenuItem = engineMenuItem.Items
-                .Cast<MenuItem>()
+                .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
             Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
             Assert.AreEqual(true, cPython3MenuItem.IsChecked);
@@ -296,7 +296,7 @@ namespace DynamoCoreWpfTests
                
             var learnMoreMenuItem = nodeView.MainContextMenu
                 .Items
-                .Cast<MenuItem>()
+                .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == "Learn more about Python");
 
             Assert.IsNotNull(learnMoreMenuItem);
@@ -330,7 +330,7 @@ namespace DynamoCoreWpfTests
 
             var learnMoreMenuItem = nodeView.MainContextMenu
                 .Items
-                .Cast<MenuItem>()
+                .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == "Learn more about Python");
 
             Assert.IsNotNull(learnMoreMenuItem);
@@ -368,14 +368,14 @@ namespace DynamoCoreWpfTests
             //Get the python engine menu 
             var engineMenuItem = nodeView.MainContextMenu
                 .Items
-                .Cast<MenuItem>()
+                .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == "Python Engine Version");
 
             Assert.IsNotNull(engineMenuItem);
 
             //Get the python engine menu option "CPython3"
             var cPython3MenuItem = engineMenuItem.Items
-                .Cast<MenuItem>()
+                .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
 
             Assert.IsNotNull(cPython3MenuItem);
@@ -493,7 +493,7 @@ namespace DynamoCoreWpfTests
             // get the `Edit...` menu item from the nodes context menu so we can simulate the click event.
             var editMenuItem = nodeView.MainContextMenu
                 .Items
-                .Cast<MenuItem>()
+                .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == "Edit...");
 
             editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
@@ -511,7 +511,7 @@ namespace DynamoCoreWpfTests
         private static void SetEngineViaContextMenu(NodeView nodeView, PythonEngineVersion engine)
         {
             var engineSelection = nodeView.MainContextMenu.Items
-                      .Cast<MenuItem>()
+                      .OfType<MenuItem>()
                       .Where(item => (item.Header as string) == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher).FirstOrDefault();
             switch (engine)
             {
@@ -549,15 +549,15 @@ namespace DynamoCoreWpfTests
 
             var editMenuItem = nodeView.MainContextMenu
                 .Items
-                .Cast<MenuItem>()
+                .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == "Python Engine Version");
 
             var engineMenuItems = editMenuItem.Items;
             var ironPython2MenuItem = engineMenuItems
-                .Cast<MenuItem>()
+                .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo);
             var cPython3MenuItem = engineMenuItems
-                .Cast<MenuItem>()
+                .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
 
             // Act
@@ -597,7 +597,7 @@ namespace DynamoCoreWpfTests
             var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeModels.PythonNodeBase;
             Assert.NotNull(nodeModel);
 
-            var engineLabel = nodeView.PresentationGrid
+            var engineLabel = nodeView.grid
                 .Children
                 .Cast<UIElement>()
                 .Where(x=>x.GetType() == typeof(PythonNodeModelsWpf.Controls.EngineLabel))
@@ -616,7 +616,7 @@ namespace DynamoCoreWpfTests
             var engineLabelTextAfterChange = currentEngineTextBlock.Text;
 
             // Assert
-            Assert.IsTrue(nodeView.PresentationGrid.IsVisible);
+            Assert.IsTrue(nodeView.grid.IsVisible);
             Assert.AreEqual(expectedDefaultEngineLabelText, defaultEngineLabelText);
             Assert.AreEqual(engineChange.ToString(), engineLabelTextAfterChange);
             DispatcherUtil.DoEvents();

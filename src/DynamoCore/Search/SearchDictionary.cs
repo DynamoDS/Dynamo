@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using Dynamo.Configuration;
 
 namespace Dynamo.Search
 {
@@ -277,7 +278,8 @@ namespace Dynamo.Search
                 for (int i = subPattern.Length; i >= 1; i--)
                 {
                     var part = subPattern.Substring(0, i);
-                    if (key.IndexOf(part) != -1)
+                    // Use OrdinalIgnoreCase to improve performance (with the accepted downside that the culture will be ignored)
+                    if (key.IndexOf(part, StringComparison.OrdinalIgnoreCase) != -1)
                     {   //if we find a match record the amount of the match and goto the next word
                         numberOfMatchSymbols += part.Length;
                         break;
@@ -295,21 +297,25 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="subset">The subset that will be used to match elements in tagDictionary.</param>
         /// <returns></returns>
-        private static bool MatchWithSubset(IGrouping<string, Tuple<V, double>> pair, IEnumerable<SearchElements.NodeSearchElement> subset)
+        private static Dictionary<V, double> MatchWithSubset(Dictionary<V,double> searchDict, IEnumerable<SearchElements.NodeSearchElement> subset)
         {
-            foreach (var eleAndWeight in pair)
+            Dictionary<V, double> filteredDict = new Dictionary<V, double>();
+
+            foreach (var searchElement in searchDict)
             {
-                var currentElement = (eleAndWeight.Item1 as SearchElements.NodeSearchElement).FullName;
+                var currentElement = (searchElement.Key as SearchElements.NodeSearchElement);
+                var currentElementName = currentElement.FullName;
                 foreach (var ele in subset)
                 {
                     //if any element in tagDictionary matches to any element in subset, return true
-                    if (currentElement.IndexOf(ele.FullName) != -1)
+                    if (currentElementName.IndexOf(ele.FullName, StringComparison.OrdinalIgnoreCase) != -1)
                     {
-                        return true;
+                        filteredDict.Add(searchElement.Key, searchElement.Value);
+                        break;
                     }
-                }                
+                }
             }
-            return false;
+            return filteredDict;
         }
 
         private static string[] SplitOnWhiteSpace(string s)
@@ -338,7 +344,8 @@ namespace Dynamo.Search
                             tagAndWeight =>
                                 new
                                 {
-                                    Tag = tagAndWeight.Key,
+                                    Tag = tagAndWeight.Key.Substring(0, tagAndWeight.Key.Length > PreferenceSettings.NodeSearchTagSizeLimitValue ? 
+                                    PreferenceSettings.NodeSearchTagSizeLimitValue : tagAndWeight.Key.Length),
                                     Weight = tagAndWeight.Value,
                                     Entry = entryAndTags.Key
                                 }))
@@ -349,21 +356,8 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        /// Extract subset of nodes from tagDictionary to limit search scope
-        /// </summary>
-        /// <param name="subset"> The subset that will be extracted. </param>
-        private List<IGrouping<string, Tuple<V, double>>> BuildSubsetDictionary(IEnumerable<SearchElements.NodeSearchElement> subset)
-        {
-            var subsetDictionary = new List<IGrouping<string, Tuple<V, double>>>();
-            foreach (var pair in tagDictionary.Where(x => MatchWithSubset(x, subset)))
-            {
-                subsetDictionary.Add(pair);
-            }
-            return subsetDictionary;
-        }
-
-        /// <summary>
-        /// Search for elements in the dictionary or subset based on the query
+        /// Search for elements in the dictionary or subset based on the query. PLEASE NOTE - this method is called using reflection from the
+	/// MSLibraryWebBrowserUIExtension - if its signature is modified, please update its use in that extension.
         /// </summary>
         /// <param name="query"> The query </param>
         /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
@@ -384,26 +378,26 @@ namespace Dynamo.Search
             {
                 RebuildTagDictionary();
             }
-            var currentDictionary = tagDictionary;
 
             query = query.ToLower();
 
             var subPatterns = SplitOnWhiteSpace(query);
-
-            // Add full (unsplit by whitespace) query to subpatterns
-            var subPatternsList = subPatterns.ToList();
-            subPatternsList.Insert(0, query);
-            subPatterns = (subPatternsList).ToArray();
-
-            //check if subset is provided, if yes then extract the subset from tagDictionary
-            if (subset != null)
+            if (subPatterns.Length > 1)// More than one word
             {
-                currentDictionary = BuildSubsetDictionary(subset);
+                // Add full (unsplit by whitespace) query to subpatterns
+                var subPatternsList = subPatterns.ToList();
+                subPatternsList.Insert(0, query);
+                subPatterns = (subPatternsList).ToArray();
             }
 
-            foreach (var pair in currentDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
+            foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
             {
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
+            }
+
+            if (subset != null)
+            {
+                searchDict = MatchWithSubset(searchDict, subset);
             }
 
             var orderedSearchDict = searchDict.OrderByDescending(x => x.Value);

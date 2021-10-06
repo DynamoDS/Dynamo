@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Controls;
+using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -81,6 +82,8 @@ namespace Dynamo.WorkspaceDependency
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
             // when a package is loaded update the DependencyView 
             // as we may have installed a missing package.
+
+            DependencyView.CustomNodeManager = (CustomNodeManager)viewLoadedParams.StartupParams.CustomNodeManager;
 
             pmExtension.PackageLoader.PackgeLoaded += (package) =>
             {

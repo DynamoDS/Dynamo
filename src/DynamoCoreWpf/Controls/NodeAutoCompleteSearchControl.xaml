@@ -65,18 +65,32 @@
                                TextAlignment="Center"
                                FontSize="14">
                         </TextBlock>
-                        <Button Name="CloseButton" Margin="50,0,5,0" BorderThickness="0"  Background="{StaticResource autocompletionWindow}">
-                            <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button Name="InfoButton" Click="OnMoreInfoClicked" Margin="50,7,5,7" BorderThickness="0"  Background="{StaticResource autocompletionWindow}">
+                        <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="False">
+                                            <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        </Button>
+                        <Button Name="CloseButton" Margin="0,7,5,7" Height="14" Width="14" BorderThickness="0" Click="CloseAutocompletionWindow" Background="{StaticResource autocompletionWindow}">
+                                <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Image.Style>
                                     <Style TargetType="{x:Type Image}">
                                         <Style.Triggers>
                                             <Trigger Property="IsMouseOver" Value="False">
-                                                <Setter Property="Source"
-                                                            Value="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png" />
+                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Source"
-                                                            Value="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png" />
+                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png" />
                                             </Trigger>
                                         </Style.Triggers>
                                     </Style>
@@ -115,7 +129,7 @@
             </ListBox>
         </Border>
 
-        <Border Margin="-3,0,-3,0">
+        <Border Margin="-4,2,-2,2" Grid.RowSpan="2">
             <Popup StaysOpen="True"
                    AllowsTransparency="True"
                    Placement="Right"
@@ -174,7 +188,7 @@
                                    HorizontalAlignment="Center"
                                    Height="18"
                                    Margin="2,0,0,0"
-                                   Text="{x:Static resx:Resources.SearchTextBlockText}" />
+                                   Text="{x:Static resx:Resources.AutocompleteSearchTextBlockText}" />
 
                     </StackPanel>
 
@@ -183,6 +197,7 @@
                              Background="Transparent"
                              BorderThickness="0"
                              FontSize="12"
+                             Height="18"
                              IsEnabled="True"
                              VerticalAlignment="Center"
                              Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

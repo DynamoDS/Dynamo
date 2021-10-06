@@ -700,7 +700,7 @@ namespace Dynamo.Tests
             OpenModel(testFile);
 
             var ztNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("bda3e3e4c18c461dae5598df465035b2")).First();
-            Assert.AreEqual(ztNode.OutPorts.First().ToolTip, "An Arc");
+            Assert.AreEqual(ztNode.OutPorts.First().ToolTip, "Arc created from three points");
 
             var nodeModelNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("c848cc3cb24a477f8248e53fc9304cc1")).First();
             Assert.AreEqual(nodeModelNode.OutPorts.First().ToolTip, "Selected colors");
@@ -726,7 +726,7 @@ namespace Dynamo.Tests
             OpenModel(testFile);
 
             var ztNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("bda3e3e4c18c461dae5598df465035b2")).First();
-            Assert.AreEqual(ztNode.InPorts.First().ToolTip, "First point along the curve\n\nPoint");
+            Assert.AreEqual(ztNode.InPorts.First().ToolTip, "1st point of arc\n\nPoint");
 
             var nodeModelNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("c848cc3cb24a477f8248e53fc9304cc1")).First();
             Assert.AreEqual(nodeModelNode.InPorts.First().ToolTip, "List of colors to include in the range");
@@ -1014,7 +1014,7 @@ namespace Dynamo.Tests
                                     "of the graph will not execute; skipping test ...");
             }
 
-            if (((HomeWorkspaceModel)ws1).RunSettings.RunType == Models.RunType.Manual)
+            if (((HomeWorkspaceModel)ws1).RunSettings.RunType == Dynamo.Models.RunType.Manual)
             {
                 RunCurrentModel();
             }

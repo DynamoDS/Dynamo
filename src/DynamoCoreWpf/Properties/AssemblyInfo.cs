@@ -42,3 +42,12 @@ using System.Windows;
 [assembly: InternalsVisibleTo("SystemTestServices")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
+[assembly: InternalsVisibleTo("LintingViewExtension")]
+[assembly: InternalsVisibleTo("GraphMetadataViewExtension")]
+
+[assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSpecification))]
+[assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSection))]
+[assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutElement))]
+[assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutElementType))]
+[assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutIncludeInfo))]
+[assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.ILibraryViewCustomization))]

@@ -365,7 +365,7 @@ namespace DynamoCoreWpfTests
 
             var editMenuItem = nodeView.MainContextMenu
                 .Items
-                .Cast<MenuItem>()
+                .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == "Edit...");
 
             editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
@@ -378,6 +378,50 @@ namespace DynamoCoreWpfTests
             var assistantWindow = scriptEditor.GetChildrenWindowsOfType<BaseDiffViewer>().FirstOrDefault();
             assistantWindow.AcceptButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
+            // Assert
+            Assert.That(File.Exists(backupFilePath));
+
+            // Clean up
+            File.Delete(backupFilePath);
+        }
+
+        [Test]
+        public void MigratingPython2CodeThatResultsInImaginaryCaseDoesNotCrash()
+        {
+            // Arrange
+            var dynFileName = "pymigrateimaginarydiff.dyn";
+            var dynBackupFileName = "pymigrateimaginarydiff.Python2.dyn";
+            DynamoModel.IsTestMode = true;
+
+            var python2dynPath = Path.Combine(UnitTestBase.TestDirectory, @"core\python", dynFileName);
+            var backupFilePath = Path.Combine(Model.PathManager.BackupDirectory, dynBackupFileName);
+            if (File.Exists(backupFilePath))
+                File.Delete(backupFilePath);
+
+            Open(python2dynPath);
+            DispatcherUtil.DoEvents();
+
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            Assert.IsNotNull(currentWs, "DynamoView does not have any WorkspaceView");
+
+            var nodeView = currentWs.ChildOfType<NodeView>();
+
+            var editMenuItem = nodeView.MainContextMenu
+                .Items
+                .OfType<MenuItem>()
+                .First(x => x.Header.ToString() == "Edit...");
+
+            editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            DispatcherUtil.DoEvents();
+
+            // Act
+            Assert.DoesNotThrow(() => {
+                var scriptEditor = View.GetChildrenWindowsOfType<ScriptEditorWindow>().FirstOrDefault();
+                scriptEditor.MigrationAssistantBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                DispatcherUtil.DoEvents();
+                var assistantWindow = scriptEditor.GetChildrenWindowsOfType<BaseDiffViewer>().FirstOrDefault();
+                assistantWindow.AcceptButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                });
             // Assert
             Assert.That(File.Exists(backupFilePath));
 

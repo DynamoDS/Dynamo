@@ -3,17 +3,58 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:Dynamo.UI"            
+             xmlns:controls="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200" 
              MinWidth="50"
              MinHeight="20"
-             Height="Auto" Width="Auto" MaxWidth="300" Visibility="Visible"
+             Height="Auto" Width="Auto" MaxWidth="300"
+             Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}" 
              MouseDown="OnNoteMouseDown" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ResourceDictionary>
+                    <controls:NullToVisibiltyConverter x:Key="nullToVisibiltyConverter"  />
+                    <controls:NullToPinWidthConverter x:Key="nullToPinWidthConverter"  />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Style TargetType="UserControl" BasedOn="{StaticResource NoteUserControlStyle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
+                    <Setter Property="Background" Value="LightBlue"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="False">
+                    <Setter Property="Background" Value="#EEE"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsOnEditMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                    <Setter Property="Background" Value="#EEE"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsOnEditMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                    <Setter Property="BorderThickness" Value="1"/>
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding Path=IsOnEditMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Style>
     
     <Grid Name="BaseGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="{Binding Path=PinnedNode, Converter={StaticResource nullToPinWidthConverter }, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid.RowDefinitions>
         <Grid.ContextMenu>
             <ContextMenu>               
                 <MenuItem Name="deleteItem" Header="{x:Static p:Resources.NoteViewContextMenuDelete}" Click="OnDeleteItemClick"  />               
@@ -27,55 +68,73 @@
                 <MenuItem Name="unGroup_cm"
                           Header="{x:Static p:Resources.ContextUnGroupFromSelection}"
                           Command="{Binding Path=UngroupCommand}" />
+                <MenuItem Name="pinToNode"
+                          Header="{x:Static p:Resources.ContextPinToNode}" 
+                          Command="{Binding Path=PinToNodeCommand}"
+                          ToolTip="Select a node to pin to this note" ToolTipService.ShowOnDisabled="True"/>
+
             </ContextMenu>
         </Grid.ContextMenu>
         <Canvas Background="{x:Null}">
         </Canvas>
 
-        <TextBlock
-          Foreground="White"
-          Text="{Binding Path=Text, Mode=OneWay}"
-          Grid.Column="0" Grid.Row="0" FontFamily="Trebuchet" 
-            FontSize="12" 
-            Padding="10" TextWrapping="Wrap">
-            
-          <TextBlock.RenderTransform>
-            <TranslateTransform X="0" Y="-0.4" />
-          </TextBlock.RenderTransform>
-            
-        <TextBlock.Style>
-            <Style TargetType="TextBlock">
+        <TextBox
+            Name ="noteTextBox"
+            Grid.Column="0" Grid.Row="0"
+            Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            AcceptsReturn="True"
+            AcceptsTab="True"
+            LostFocus="noteTextBox_LostFocus"
+            PreviewKeyDown="noteTextBox_PreviewKeyDown"
+            IsEnabled="{Binding Path=IsOnEditMode, Mode=OneWay}"
+            >
+            <TextBox.Style>
+                <Style TargetType="TextBox" BasedOn="{StaticResource NoteTextBoxStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsOnEditMode, Mode=OneWay}" Value="True">
+                            <Setter Property="BorderThickness" Value="0"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=IsOnEditMode, Mode=OneWay}" Value="False">
+                            <Setter Property="BorderThickness" Value="0"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
 
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
-                        <Setter Property="Background" Value="LightBlue"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="False">
-                        <Setter Property="Background" Value="#EEE"/>
-                    </DataTrigger>
-                </Style.Triggers>
-
-            </Style>
-        </TextBlock.Style>
-            
-        <TextBlock.Effect>
-            <DropShadowEffect
-                ShadowDepth="0"
-                Color="#222"
-                Opacity="0.25"
-                BlurRadius="9.0" />
-        </TextBlock.Effect>
-            
-        </TextBlock>
-        
         <TextBlock 
             Name="noteText"
             Grid.Column="0" Grid.Row="0"
-            Text="{Binding Path=Text, Mode=OneWay}" 
-            FontFamily="Trebuchet" 
-            FontSize="12" 
-            Foreground="#222"
-            Padding="10" TextWrapping="Wrap" >
+            Text="{Binding Path=Text, Mode=OneWay}"   
+            >
+            <TextBlock.Style>
+                <Style TargetType="TextBlock" BasedOn="{StaticResource NoteTextBlockStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
+                            <Setter Property="Background" Value="LightBlue"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="False">
+                            <Setter Property="Background" Value="#EEE"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
         </TextBlock>
+        <Button
+            Name="pinButton"
+            Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
+            Background="{x:Null}"
+            BorderThickness="0"
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Bottom"
+            Margin="3"
+            Command="{Binding Path=UnpinFromNodeCommand}"
+            Visibility="{Binding Path=PinnedNode, Converter={StaticResource nullToVisibiltyConverter }, UpdateSourceTrigger=PropertyChanged}"
+            >
+            <Image
+                Source="/DynamoCoreWpf;component/UI/Images/Pin_NoBackground_16_16.png"
+                Width="10"
+                />
+        </Button>
     </Grid>
 </UserControl>

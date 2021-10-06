@@ -21,6 +21,7 @@ namespace Dynamo.ViewModels
 
         internal PortViewModel PortViewModel { get; set; }
         private List<NodeSearchElement> searchElementsCache;
+        private List<NodeSearchElement> defaultSearchElementsCache;
 
         /// <summary>
         /// Cache of default node suggestions, use it in case where
@@ -63,36 +64,43 @@ namespace Dynamo.ViewModels
             // These default suggestions will be populated based on the port type.
             if (!searchElementsCache.Any())
             {
-                if (PortViewModel.PortModel.PortType == PortType.Input) 
-                {
-                    switch (PortViewModel.PortModel.GetInputPortType())
-                    {
-                        case "int":
-                            FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
-                            break;
-                        case "double":
-                            FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
-                            break;
-                        case "string":
-                            FilteredResults = DefaultResults.Where(e => e.Name == "String").ToList();
-                            break;
-                        case "bool":
-                            FilteredResults = DefaultResults.Where(e => e.Name == "Boolean").ToList();
-                            break;
-                        default:
-                            FilteredResults = DefaultResults.Where(e => e.Name == "String" || e.Name == "Number Slider" || e.Name == "Integer Slider" || e.Name == "Number" || e.Name == "Boolean");
-                            break;
-                    }
-                }
-                else
-                {
-                    FilteredResults = DefaultResults.Where(e => e.Name == "Watch" || e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
-                }
+                PopulateDefaultAutoCompleteCandidates();
             }
             else
             {
                 FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
             }
+        }
+
+        internal void PopulateDefaultAutoCompleteCandidates()
+        {
+            if (PortViewModel.PortModel.PortType == PortType.Input)
+            {
+                switch (PortViewModel.PortModel.GetInputPortType())
+                {
+                    case "int":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
+                        break;
+                    case "double":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
+                        break;
+                    case "string":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "String").ToList();
+                        break;
+                    case "bool":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "Boolean").ToList();
+                        break;
+                    default:
+                        FilteredResults = DefaultResults.Where(e => e.Name == "String" || e.Name == "Number Slider" || e.Name == "Integer Slider" || e.Name == "Number" || e.Name == "Boolean");
+                        break;
+                }
+            }
+            else
+            {
+                FilteredResults = DefaultResults.Where(e => e.Name == "Watch" || e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
+            }
+
+            defaultSearchElementsCache = FilteredResults.Select(x => x.Model).ToList();
         }
 
         /// <summary>
@@ -115,10 +123,31 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel == null) return;
 
-            //Providing the saved search results to limit the scope of the query search.
-            var foundNodes = Search(input, searchElementsCache);
-            FilteredResults = new List<NodeSearchElementViewModel>(foundNodes).OrderBy(x => x.Name).ThenBy(x => x.Description);
-
+            if (input.Equals(""))
+            {
+                if (searchElementsCache.Any())
+                {
+                    FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache); 
+                }
+                else
+                {
+                    PopulateDefaultAutoCompleteCandidates();
+                }
+            }
+            else 
+            {
+                //Providing the saved search results to limit the scope of the query search.
+                if (searchElementsCache.Any()) 
+                {
+                    var foundNodes = Search(input, searchElementsCache);
+                    FilteredResults = new List<NodeSearchElementViewModel>(foundNodes).OrderBy(x => x.Name).ThenBy(x => x.Description);
+                }
+                else
+                {
+                    var foundNodes = Search(input, defaultSearchElementsCache);
+                    FilteredResults = new List<NodeSearchElementViewModel>(foundNodes).OrderBy(x => x.Name).ThenBy(x => x.Description);
+                }        
+            }
         }
 
         /// <summary>
@@ -158,8 +187,15 @@ namespace Dynamo.ViewModels
             var core = dynamoViewModel.Model.LibraryServices.LibraryManagementCore;
 
             //if inputPortType is an array, use just the typename
-            var parseResult = ParserUtils.ParseWithCore($"dummyName:{ portType};", core);
-            var ast = parseResult.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
+            ParseResult parseResult = null;
+            try
+            {
+                parseResult = ParserUtils.ParseWithCore($"dummyName:{ portType};", core);
+            }
+            catch(ProtoCore.BuildHaltException)
+            { }
+
+            var ast = parseResult?.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
             //if parsing the type failed, revert to original string.
             portType = ast != null ? ast.datatype.Name : portType;
 

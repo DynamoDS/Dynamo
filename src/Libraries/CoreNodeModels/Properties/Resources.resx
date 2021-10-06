@@ -447,7 +447,7 @@
     <value>Starting accumulated value, to be passed into the first call to the Reductor function.</value>
   </data>
   <data name="ScopeIfDescription" xml:space="preserve">
-    <value>Returns the result of either the True or False input depending on what boolean value is toggled in the test input.</value>
+    <value>Returns the result of either True or False input depending on what boolean value is toggled in the test input. Supports recursion which requires that only a single branch be executed. It's critical that that both True and False branches are isolated and do not interact with each other!</value>
     <comment>Description for Scope If</comment>
   </data>
   <data name="SelectionPortDataResultToolTip" xml:space="preserve">
@@ -613,5 +613,8 @@ Default value: {0}</value>
   </data>
   <data name="FilePathOutputDescription" xml:space="preserve">
     <value>File Path</value>
+  </data>
+  <data name="IFNodeWarningMessage" xml:space="preserve">
+    <value>This node has been updated and will be removed in a future version of Dynamo. Existing behavior is retained, but a new version now supports Empty Lists, Null values and inputs of varying length. Please replace this node if you wish to use this improved behavior.</value>
   </data>
 </root>

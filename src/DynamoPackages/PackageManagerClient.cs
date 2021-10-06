@@ -28,9 +28,9 @@ namespace Dynamo.PackageManager
         private readonly IPackageUploadBuilder uploadBuilder;
 
         /// <summary>
-        ///     The directory where all packages are to be stored for this session.
+        ///     The directory where new packages are created during the upload process.
         /// </summary>
-        private readonly string packagesDirectory;
+        private readonly string packageUploadDirectory;
        
         /// <summary>
         ///     The URL of the package manager website
@@ -42,9 +42,9 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        internal PackageManagerClient(IGregClient client, IPackageUploadBuilder builder, string packagesDirectory)
+        internal PackageManagerClient(IGregClient client, IPackageUploadBuilder builder, string packageUploadDirectory)
         {
-            this.packagesDirectory = packagesDirectory;
+            this.packageUploadDirectory = packageUploadDirectory;
             this.uploadBuilder = builder;
             this.client = client;
         }
@@ -120,7 +120,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="packageInfo">Name and version of a package</param>
         /// <returns>Package version metadata</returns>
-        internal PackageVersion GetPackageVersionHeader(string id, string version)
+        internal virtual PackageVersion GetPackageVersionHeader(string id, string version)
         {
             var req = new HeaderVersionDownload(id, version);
             var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageVersion>(req);
@@ -184,14 +184,14 @@ namespace Dynamo.PackageManager
                 ResponseBody ret = null;
                 if (isNewVersion)
                 {
-                    var pkg = uploadBuilder.NewPackageVersionUpload(package, packagesDirectory, files,
+                    var pkg = uploadBuilder.NewPackageVersionUpload(package, packageUploadDirectory, files,
                         packageUploadHandle);
                     packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                     ret = this.client.ExecuteAndDeserialize(pkg);
                 }
                 else
                 {
-                    var pkg = uploadBuilder.NewPackageUpload(package, packagesDirectory, files,
+                    var pkg = uploadBuilder.NewPackageUpload(package, packageUploadDirectory, files,
                         packageUploadHandle);
                     packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                     ret = this.client.ExecuteAndDeserialize(pkg);

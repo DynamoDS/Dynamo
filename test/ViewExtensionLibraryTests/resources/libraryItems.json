@@ -129,12 +129,12 @@
       "keywords": "DSCore.Logic.Or, DSCoreNodesUI.Logic.Or, Or"
     },
     {
-      "fullyQualifiedName": "Core.Logic.If",
-      "iconUrl": "http://localhost/icons/CoreNodeModels.Logic.If.Small?path=nodes\\CoreNodeModels.dll",
+      "fullyQualifiedName": "Core.Logic.RefactoredIf",
+      "iconUrl": "http://localhost/icons/CoreNodeModels.Logic.RefactoredIf.Small?path=nodes\\CoreNodeModels.dll",
       "contextData": "If",
       "parameters": null,
       "itemType": "action",
-      "keywords": "DSCoreNodesUI.Logic.If, If"
+      "keywords": "DSCoreNodesUI.Logic.RefactoredIf, RefactoredIf"
     },
     {
       "fullyQualifiedName": "Core.Logic.ScopeIf",
@@ -2495,6 +2495,14 @@
       "parameters": null,
       "itemType": "create",
       "keywords": "segments, joincurves"
+    },
+    {
+      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves.Small?path=ProtoGeometry.dll",
+      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves@Autodesk.DesignScript.Geometry.Curve[]",
+      "parameters": null,
+      "itemType": "create",
+      "keywords": "segments, joincurves, group curves"
     },
     {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints",

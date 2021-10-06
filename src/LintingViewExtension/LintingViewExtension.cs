@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Controls;
 using Dynamo.Extensions;
 using Dynamo.Graph;
 using Dynamo.Linting;
@@ -22,7 +23,6 @@ namespace Dynamo.LintingViewExtension
         private LinterViewModel linterViewModel;
         private LinterView linterView;
 
-
         public override string UniqueId { get { return EXTENSION_GUID; } }
 
         public override string Name { get { return EXTENSION_NAME; } }
@@ -38,12 +38,31 @@ namespace Dynamo.LintingViewExtension
             this.viewLoadedParamsReference = viewLoadedParams;
             this.linterViewModel = new LinterViewModel(linterManager, viewLoadedParamsReference);
             this.linterView = new LinterView() { DataContext = linterViewModel };
+            viewLoadedParams.ViewExtensionOpenRequest += OnViewExtensionOpenRequest;
 
             // Add a button to Dynamo View menu to manually show the window
             this.linterMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
             this.linterMenuItem.Checked += MenuItemCheckHandler;
             this.linterMenuItem.Unchecked += MenuItemUnCheckedHandler;
-            this.viewLoadedParamsReference.AddExtensionMenuItem(this.linterMenuItem);
+            if(linterManager.AvailableLinters.Count > 1) { viewLoadedParamsReference.AddExtensionMenuItem(this.linterMenuItem); }
+
+            this.linterManager.PropertyChanged += OnLinterManagerPropertyChange;
+        }
+
+        private void OnViewExtensionOpenRequest(string extensionName)
+        {
+            if (extensionName != Name)
+            {
+                return;
+            }
+            
+            if (linterMenuItem.IsChecked)
+            {
+                this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.linterView);
+                return;
+            }
+                
+            linterMenuItem.IsChecked = true;
         }
 
         public override void Shutdown()
@@ -55,6 +74,8 @@ namespace Dynamo.LintingViewExtension
         {
             this.linterMenuItem.Checked -= MenuItemCheckHandler;
             this.linterMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+            if (linterManager != null) linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
+            viewLoadedParamsReference.ViewExtensionOpenRequest -= OnViewExtensionOpenRequest;
         }
 
         public override void Closed()
@@ -64,6 +85,15 @@ namespace Dynamo.LintingViewExtension
             
             this.linterMenuItem.IsChecked = false;
         }
+
+        private void OnLinterManagerPropertyChange(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(linterManager.AvailableLinters))
+            {
+                viewLoadedParamsReference.AddExtensionMenuItem(this.linterMenuItem);
+            }
+        }
+
         private void MenuItemUnCheckedHandler(object sender, RoutedEventArgs e)
         {
             viewLoadedParamsReference.CloseExtensioninInSideBar(this);

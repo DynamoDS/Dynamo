@@ -23,13 +23,24 @@ namespace Dynamo.PackageManager.ViewModels
 
         public new PackageManagerSearchElement Model { get; internal set; }
 
-        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : base(element)
+        /// <summary>
+        /// Alternative constructor which takes a Function object in order to
+        /// assist communication between the PackageManagerSearchViewModel
+        /// and the PackageManagerSearchElementViewModel.
+        /// </summary>
+        /// <param name="element">A PackageManagerSearchElement</param>
+        /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
+        /// <param name="install">Whether a package can be installed.</param>
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool install) : base(element)
         {
             this.Model = element;
+            CanInstall = install;
 
-            this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded );
+            this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded);
 
-            this.DownloadLatestCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), false));
+            this.DownloadLatestCommand = new DelegateCommand(
+                () => OnRequestDownload(Model.Header.versions.Last(), false),
+                () => !Model.IsDeprecated && CanInstall);
             this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), true));
 
             this.UpvoteCommand = new DelegateCommand(Model.Upvote, () => canLogin);
@@ -41,6 +52,32 @@ namespace Dynamo.PackageManager.ViewModels
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
+        }
+
+        /// <summary>
+        /// PackageManagerSearchElementViewModel Constructor
+        /// </summary>
+        /// <param name="element">A PackageManagerSearchElement</param>
+        /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : this(element, canLogin, true)
+        {}
+
+        private bool canInstall;
+        /// <summary>
+        /// A Boolean flag reporting whether or not the user can install this SearchElement's package.
+        /// </summary>
+        public bool CanInstall
+        {
+            get
+            {
+                return canInstall;
+            }
+
+            internal set
+            {
+                canInstall = value;
+                RaisePropertyChanged(nameof(CanInstall));
+            }
         }
 
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
@@ -87,11 +124,11 @@ namespace Dynamo.PackageManager.ViewModels
         }
 
         private List<String> CustomPackageFolders;
-
+        
         public delegate void PackageSearchElementDownloadHandler(
             PackageManagerSearchElement element, PackageVersion version, string downloadPath = null);
         public event PackageSearchElementDownloadHandler RequestDownload;
-
+        
         public void OnRequestDownload(PackageVersion version, bool downloadToCustomPath)
         {
             string downloadPath = String.Empty;

@@ -22,6 +22,7 @@ namespace Dynamo.Linting
         #region Private fields
         private readonly IExtensionManager extensionManager;
         private LinterExtensionDescriptor activeLinter;
+
         #endregion
 
         #region Public properties
@@ -37,28 +38,31 @@ namespace Dynamo.Linting
         internal ObservableCollection<IRuleEvaluationResult> RuleEvaluationResults { get; set; }
 
         /// <summary>
-        /// The LinterDescripter that is currently set as active
+        /// The LinterDescriptor that is currently set as active
         /// </summary>
-        public LinterExtensionDescriptor ActiveLinter
+        public LinterExtensionDescriptor ActiveLinter { get => activeLinter; }
+
+        /// <summary>
+        /// The LinterDescriptor setter that can be fully or partially activated
+        /// </summary>
+        public void SetActiveLinter(LinterExtensionDescriptor value, bool fullActivation = true)
         {
-            get => activeLinter;
-            set
+            if (activeLinter == value) return;
+
+            if (activeLinter != null &&
+                TryGetLinterExtension(activeLinter, out LinterExtensionBase linterExtension))
             {
-                if (activeLinter == value) return;
-
-                if (activeLinter != null &&
-                    TryGetLinterExtension(activeLinter, out LinterExtensionBase linterExtension))
-                {
-                    linterExtension.Deactivate();
-                }
-
-                if (TryGetLinterExtension(value, out linterExtension))
-                {
-                    linterExtension.Activate();
-                }
-
-                activeLinter = value;
+                linterExtension.Deactivate();
             }
+
+            activeLinter = value;
+
+            if (TryGetLinterExtension(value, out linterExtension))
+            {
+                linterExtension.Activate(fullActivation);
+            }
+
+            RaisePropertyChanged(nameof(ActiveLinter));
         }
 
         #endregion
@@ -68,6 +72,9 @@ namespace Dynamo.Linting
             this.extensionManager = extensionManager;
             AvailableLinters = new HashSet<LinterExtensionDescriptor>();
             RuleEvaluationResults = new ObservableCollection<IRuleEvaluationResult>();
+
+            activeLinter = LinterExtensionDescriptor.DefaultDescriptor;
+            AvailableLinters.Add(activeLinter);
 
             SubscribeLinterEvents();
         }
@@ -80,6 +87,18 @@ namespace Dynamo.Linting
         internal bool IsExtensionActive(string uniqueId)
         {
             return ActiveLinter?.Id == uniqueId;
+        }
+        
+        internal void SetDefaultLinter()
+        {
+            var linterDescriptor = AvailableLinters
+                .Where(x => x.Id == LinterExtensionDescriptor.DefaultDescriptor.Id)
+                .FirstOrDefault();
+
+            if (linterDescriptor != null)
+            {
+                SetActiveLinter(linterDescriptor);
+            }
         }
 
         #region Private methods
@@ -95,6 +114,8 @@ namespace Dynamo.Linting
             if (AvailableLinters.Contains(extensionDescriptor)) return;
 
             AvailableLinters.Add(extensionDescriptor);
+
+            RaisePropertyChanged(nameof(AvailableLinters));
         }
 
         private void OnRuleEvaluated(IRuleEvaluationResult result)
@@ -103,7 +124,7 @@ namespace Dynamo.Linting
 
             if (result.Status == RuleEvaluationStatusEnum.Passed)
             {
-                RuleEvaluationResults.Remove(result);
+                DynamoModel.OnRequestDispatcherInvoke(() => { RuleEvaluationResults.Remove(result); });
             }
 
             else
@@ -122,14 +143,18 @@ namespace Dynamo.Linting
                         if (storingResult.NodeIds != gRuleResult.NodeIds) 
                         {
                             // remove original result and replace with new one
-                            RuleEvaluationResults.Remove(storingResult);
-                            RuleEvaluationResults.Add(result);
+                            DynamoModel.OnRequestDispatcherInvoke(() =>
+                            {
+                                RuleEvaluationResults.Remove(storingResult);
+                                RuleEvaluationResults.Add(result);
+                            });
                         }
                     }
                     
                     return;
                 }
-                RuleEvaluationResults.Add(result);
+
+                DynamoModel.OnRequestDispatcherInvoke(() => { RuleEvaluationResults.Add(result); });
             }
         }
 

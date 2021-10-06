@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
@@ -18,6 +19,8 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
+using Point = System.Windows.Point;
+using Size = System.Windows.Size;
 
 namespace Dynamo.ViewModels
 {
@@ -199,6 +202,13 @@ namespace Dynamo.ViewModels
                 }
             }
         }
+
+        /// <summary>
+        /// Used to determine whether the node's context menu display an Output/Input menu
+        /// </summary>
+        [JsonIgnore]
+        public bool IsInputOrOutput => IsInput || IsOutput;
+
         /// <summary>
         /// The Name of the nodemodel this view points to
         /// this is the name of the node as it is displayed in the UI.
@@ -246,6 +256,20 @@ namespace Dynamo.ViewModels
         public ElementState State
         {
             get { return nodeLogic.State; }
+        }
+        
+        /// <summary>
+        /// This is a UI placeholder for future functionality relating to Alerts
+        /// </summary>
+        [JsonIgnore]
+        public int NumberOfDismissedAlerts
+        {
+            get => 0;
+            set
+            {
+                NumberOfDismissedAlerts = value;
+                RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
+            }
         }
 
         [JsonIgnore]
@@ -467,6 +491,8 @@ namespace Dynamo.ViewModels
         }
 
         private bool isNodeNewlyAdded;
+        private ImageSource imageSource;
+
         [JsonIgnore]
         public bool IsNodeAddedRecently
         {
@@ -563,6 +589,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
+        public ImageSource ImageSource
+        {
+            get => imageSource;
+            set
+            {
+                imageSource = value;
+                RaisePropertyChanged(nameof(ImageSource));
+            }
+        }
+
         internal double ActualHeight { get; set; }
         internal double ActualWidth { get; set; }
 
@@ -574,6 +611,15 @@ namespace Dynamo.ViewModels
         {
             get { return NodeModel.UserDescription; }
             set { NodeModel.UserDescription = value; }
+        }
+
+        public override bool IsCollapsed
+        {
+            get => base.IsCollapsed;
+            set
+            {
+                base.IsCollapsed = value;
+            }
         }
 
         #endregion
@@ -614,10 +660,33 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Event to determine when Node is selected
+        /// </summary>
+        internal event EventHandler Selected;
+        internal void OnSelected(object sender, EventArgs e)
+        {
+            Selected?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Event to determine when Node is removed
+        /// </summary>
+        internal event EventHandler Removed;
+        internal void OnRemoved(object sender, EventArgs e)
+        {
+            Removed?.Invoke(this, e);
+        }
+
         #endregion
 
         #region constructors
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="workspaceViewModel"></param>
+        /// <param name="logic"></param>
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic)
         {
             WorkspaceViewModel = workspaceViewModel;
@@ -655,6 +724,11 @@ namespace Dynamo.ViewModels
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             ZIndex = ++StaticZIndex;
             ++NoteViewModel.StaticZIndex;
+
+            if (workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource))
+            {
+                ImageSource = imgSource;
+            }
         }
 
         /// <summary>
@@ -662,7 +736,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         public override void Dispose()
         {
-            this.NodeModel.PropertyChanged -= logic_PropertyChanged;
+            NodeModel.PropertyChanged -= logic_PropertyChanged;
+            NodeModel.InPorts.CollectionChanged -= inports_collectionChanged;
+            NodeModel.OutPorts.CollectionChanged -= outports_collectionChanged;
 
             DynamoViewModel.Model.PropertyChanged -= Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged -= DebugSettings_PropertyChanged;
@@ -680,6 +756,7 @@ namespace Dynamo.ViewModels
             {
                 p.Dispose();
             }
+
             ErrorBubble.Dispose();
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
@@ -882,6 +959,7 @@ namespace Dynamo.ViewModels
                 var data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
 
                 ErrorBubble.UpdateContentCommand.Execute(data);
+
                 ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
             }
         }
@@ -930,6 +1008,7 @@ namespace Dynamo.ViewModels
         {
             var command = new DynamoModel.DeleteModelCommand(nodeLogic.GUID);
             DynamoViewModel.ExecuteCommand(command);
+            OnRemoved(this, EventArgs.Empty);
         }
 
         private void SetLacingType(object param)
@@ -1303,7 +1382,66 @@ namespace Dynamo.ViewModels
             return false;
         }
 
+        
 
+        private void SelectUpstreamNeighbours(object parameters)
+        {
+            NodeModel.SelectUpstreamNeighbours();
+
+            var upstreamNodes = NodeModel
+                .AllUpstreamNodes(new List<NodeModel>())
+                .ToList();
+
+            upstreamNodes.Add(NodeModel);
+
+            SelectRelatedGroupsToNodes(upstreamNodes);
+        }
+        
+        private void SelectDownstreamNeighbours(object parameters)
+        {
+            NodeModel.SelectDownstreamNeighbours();
+
+            var downstreamNodes = NodeModel
+                .AllDownstreamNodes(new List<NodeModel>())
+                .ToList();
+
+            downstreamNodes.Add(NodeModel);
+
+            SelectRelatedGroupsToNodes(downstreamNodes);
+        }
+
+        private void SelectDownstreamAndUpstreamNeighbours(object parameters)
+        {
+            NodeModel.SelectUpstreamAndDownstreamNeighbours();
+            
+            var nodesSelected = NodeModel
+                .AllUpstreamNodes(new List<NodeModel>())
+                .ToList();
+
+            nodesSelected.AddRange(NodeModel
+                .AllDownstreamNodes(new List<NodeModel>())
+                .ToList());
+
+            nodesSelected.Add(NodeModel);
+
+            SelectRelatedGroupsToNodes(nodesSelected);
+
+        }
+
+
+        private void SelectRelatedGroupsToNodes(List<NodeModel> nodes)
+        {
+            var nodesGUIDS = nodes.Select(n => n.GUID);
+            var groups = WorkspaceViewModel.Annotations;
+            foreach (var group in groups)
+            {
+                var groupsNodesGUIDS = group.Nodes.Select(n => n.GUID);
+
+                if (groupsNodesGUIDS.Intersect(nodesGUIDS).Any())
+                    group.AddGroupAndGroupedNodesToSelection();
+            }
+        }
+        
         #region Private Helper Methods
         private Point GetTopLeft()
         {

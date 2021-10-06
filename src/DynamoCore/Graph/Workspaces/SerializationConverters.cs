@@ -585,14 +585,29 @@ namespace Dynamo.Graph.Workspaces
             // relevant ports.
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
-            IEnumerable<INodeLibraryDependencyInfo> nodeLibraryDependencies;
+            IEnumerable<INodeLibraryDependencyInfo> workspaceReferences;
+            var nodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            var nodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+
             if (obj[NodeLibraryDependenciesPropString] != null)
             {
-                nodeLibraryDependencies = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
+                workspaceReferences = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
             }
             else
             {
-                nodeLibraryDependencies = new List<PackageDependencyInfo>();
+                workspaceReferences = new List<INodeLibraryDependencyInfo>();
+            }
+
+            foreach(INodeLibraryDependencyInfo depInfo in workspaceReferences) 
+            {
+                if (depInfo is PackageDependencyInfo)
+                {
+                    nodeLibraryDependencies.Add(depInfo);
+                }
+                else if (depInfo is LocalDefinitionInfo) 
+                {
+                    nodeLocalDefinitions.Add(depInfo);
+                }
             }
 
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
@@ -670,14 +685,14 @@ namespace Dynamo.Graph.Workspaces
                 // ExtensionData
                 homeWorkspace.ExtensionData = GetExtensionData(serializer, obj);
 
-                // If there is a active linter serialized in the graph we set it to the active linter.
+                // If there is a active linter serialized in the graph we set it to the active linter else set the default None.
                 SetActiveLinter(obj);
 
                 ws = homeWorkspace;
             }
 
-            ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
-
+            ws.NodeLibraryDependencies = nodeLibraryDependencies;
+            ws.NodeLocalDefinitions = nodeLocalDefinitions;
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
 
@@ -686,26 +701,33 @@ namespace Dynamo.Graph.Workspaces
 
         private void SetActiveLinter(JObject obj)
         {
-            if (linterManager is null || 
-                !obj.TryGetValue(LINTING_PROP_STRING, StringComparison.OrdinalIgnoreCase, out JToken linter))
+            while (true)
+            {
+
+                if (linterManager is null ||
+                    !obj.TryGetValue(LINTING_PROP_STRING, StringComparison.OrdinalIgnoreCase, out JToken linter))
+                    break;
+
+                if (!linter.HasValues)
+                    break;
+
+                var activeLinterId = linter.Value<string>(LinterManagerConverter.ACTIVE_LINTER_ID_OBJECT_NAME);
+
+                if (activeLinterId is null)
+                    break;
+
+                var linterDescriptor = linterManager.AvailableLinters
+                    .Where(x => x.Id == activeLinterId)
+                    .FirstOrDefault();
+
+                if (linterDescriptor is null)
+                    break;
+
+                linterManager.SetActiveLinter(linterDescriptor, false);
                 return;
+            }
 
-            if (!linter.HasValues)
-                return;
-
-            var activeLinterId = linter.Value<string>(LinterManagerConverter.ACTIVE_LINTER_ID_OBJECT_NAME);
-
-            if (activeLinterId is null)
-                return;
-
-            var linterDescriptor = linterManager.AvailableLinters
-                .Where(x => x.Id == activeLinterId)
-                .FirstOrDefault();
-
-            if (linterDescriptor is null)
-                return;
-
-            linterManager.ActiveLinter = linterDescriptor;
+            linterManager?.SetDefaultLinter();
         }
 
         private static List<ExtensionData> GetExtensionData(JsonSerializer serializer, JObject obj)
@@ -818,10 +840,13 @@ namespace Dynamo.Graph.Workspaces
             }
             writer.WriteEndArray();
 
-            // NodeLibraryDependencies
+            // Join NodeLibraryDependencies & NodeLocalDefinitions and serialze them.
             writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
-            serializer.Serialize(writer, ws.NodeLibraryDependencies);
-            
+
+            IEnumerable<INodeLibraryDependencyInfo> referencesList = ws.NodeLibraryDependencies;
+            referencesList = referencesList.Concat(ws.NodeLocalDefinitions);
+            serializer.Serialize(writer, referencesList);
+
             if (!isCustomNode && ws is HomeWorkspaceModel hws)
             {
                 // Thumbnail
@@ -999,8 +1024,10 @@ namespace Dynamo.Graph.Workspaces
                 writer.WriteStartObject();
                 writer.WritePropertyName(NamePropString);
                 writer.WriteValue(p.Name);
-                writer.WritePropertyName(VersionPropString);
-                writer.WriteValue(p.Version.ToString());
+                if (p.Version != null) {
+                    writer.WritePropertyName(VersionPropString);
+                    writer.WriteValue(p.Version.ToString());
+                }
                 writer.WritePropertyName(ReferenceTypePropString);
                 writer.WriteValue(p.ReferenceType.ToString("G"));
                 writer.WritePropertyName(NodesPropString);
@@ -1025,16 +1052,6 @@ namespace Dynamo.Graph.Workspaces
             // Get dependency name
             var name = obj["Name"].Value<string>();
 
-            // Try get dependency version
-            var versionString = obj["Version"].Value<string>();
-            Version version;
-            if (!Version.TryParse(versionString, out version))
-            {
-                logger.LogWarning(
-                    string.Format("The version of Package Dependency {0} could not be deserialized.", name), 
-                    Logging.WarningLevel.Moderate);
-            }
-
             //default to package.
             ReferenceType parsedType = ReferenceType.Package;
             JToken referenceTypeToken;
@@ -1049,7 +1066,20 @@ namespace Dynamo.Graph.Workspaces
                 }
 
             }
-        
+
+            Version version = null;
+            // Try get dependency version
+            if (obj["Version"] != null)
+            {
+                var versionString = obj["Version"].Value<string>();
+                if (!Version.TryParse(versionString, out version))
+                {
+                    logger.LogWarning(
+                        string.Format("The Version of Dependency: {0}, ReferenceType: {1} could not be deserialized.", name, parsedType),
+                        Logging.WarningLevel.Moderate);
+                }
+            }
+
             INodeLibraryDependencyInfo depInfo;
             //select correct constructor based on referenceType
             switch (parsedType)
@@ -1057,16 +1087,17 @@ namespace Dynamo.Graph.Workspaces
                 case ReferenceType.Package:
                     depInfo = new PackageDependencyInfo(name, version);
                     break;
-                /*TODO add other cases: for example
-                 * case ReferenceType.ZeroTouch
-                 * depInfp = new ZeroTouchDependencyInfo(name,version)
-                */
+                case ReferenceType.DYFFile:
+                    depInfo = new LocalDefinitionInfo(name, ReferenceType.DYFFile);
+
+                    break;
+                case ReferenceType.ZeroTouch:
+                    depInfo = new LocalDefinitionInfo(name, ReferenceType.ZeroTouch);
+                    break;
                 default:
-                    depInfo = new PackageDependencyInfo(name, version);
+                    depInfo = new LocalDefinitionInfo(name);
                     break;
             }
-
-           
 
             // Try get dependent node IDs
             var nodes = obj["Nodes"].Values<string>();
@@ -1156,6 +1187,9 @@ namespace Dynamo.Graph.Workspaces
             var obj = JObject.Load(reader);
             var startId = obj["Start"].Value<string>();
             var endId = obj["End"].Value<string>();
+            var isCollapsedExists = obj[nameof(ConnectorModel.IsCollapsed)];
+            
+            var isCollapsed = isCollapsedExists != null && obj[nameof(ConnectorModel.IsCollapsed)].Value<bool>();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 
@@ -1182,7 +1216,9 @@ namespace Dynamo.Graph.Workspaces
             Guid connectorId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
             if(startPort != null && endPort != null)
             {
-                return new ConnectorModel(startPort, endPort, connectorId);
+                var connectorModel = new ConnectorModel(startPort, endPort, connectorId);
+                connectorModel.IsCollapsed = isCollapsed;
+                return connectorModel;
             }
             else
             {
@@ -1209,6 +1245,8 @@ namespace Dynamo.Graph.Workspaces
             writer.WriteValue(connector.End.GUID.ToString("N"));
             writer.WritePropertyName("Id");
             writer.WriteValue(connector.GUID.ToString("N"));
+            writer.WritePropertyName(nameof(ConnectorModel.IsCollapsed));
+            writer.WriteValue(connector.IsCollapsed.ToString());
             writer.WriteEndObject();
         }
     }

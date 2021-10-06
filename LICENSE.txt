@@ -26,6 +26,10 @@ https://opensource.org/licenses/lgpl-2.1.php
 ### CEFSharp
 https://github.com/cefsharp/CefSharp/blob/master/LICENSE
 
+### Command Line Parser
+https://github.com/commandlineparser/commandline
+  (MIT license)
+
 ### CSharpAnalytics
 https://github.com/AttackPattern/CSharpAnalytics
 http://www.apache.org/licenses/LICENSE-2.0
@@ -62,6 +66,9 @@ https://github.com/mganss/HtmlSanitizer
 https://github.com/mganss/HtmlSanitizer/blob/master/LICENSE.md
   (MIT license)
 
+### ImageMagick
+https://imagemagick.org/script/license.php
+
 ### Immutable (System.Immutable)
 https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
   (MIT License)
@@ -75,9 +82,22 @@ https://github.com/dotnet/ILMerge
 https://github.com/dotnet/ILMerge/blob/master/LICENSE
   (MIT License)
 
+### IPython (autoreload.py)
+https://github.com/ipython/ipython/blob/master/IPython/extensions/autoreload.py
+https://github.com/ipython/ipython/blob/master/LICENSE
+  (BSD-3-Clause License)
+
 ### libiconv
 https://www.gnu.org/software/libiconv/
 https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
+
+### Magick.NET.Core
+https://github.com/dlemstra/Magick.NET/blob/main/License.txt
+  (Apache 2.0 License)
+
+### Magick.NET-Q8-AnyCPU
+https://github.com/dlemstra/Magick.Native/blob/main/License.txt
+  (Apache 2.0 License)
 
 ### Markdig
 https://github.com/lunet-io/markdig

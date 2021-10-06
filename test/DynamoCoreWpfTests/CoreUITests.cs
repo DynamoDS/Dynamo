@@ -1,27 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Extensions;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Linting.Interfaces;
+using Dynamo.Linting.Rules;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
-using Dynamo.UI.Prompts;
+using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
 using DynamoCoreWpfTests.Utility;
+using Moq;
+using Moq.Protected;
 using NUnit.Framework;
 using SystemTestServices;
+using WpfResources = Dynamo.Wpf.Properties.Resources;
 
 namespace DynamoCoreWpfTests
 {
@@ -859,6 +867,30 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        public void InCanvasSearchTextChangeTriggersOneSearchCommand()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+
+            // open context menu
+            RightClick(currentWs.zoomBorder);
+
+            // show in-canvas search
+            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+
+            var searchControl = currentWs.ChildrenOfType<Popup>().Select(x => (x as Popup)?.Child as InCanvasSearchControl).Where(c => c != null).FirstOrDefault();
+            Assert.IsNotNull(searchControl);
+
+            int count = 0;
+            (searchControl.DataContext as SearchViewModel).SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
+            searchControl.SearchTextBox.Text = "dsfdf";
+            
+
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(count, 1);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void WorkspaceContextMenu_TestIfSearchTextClearsOnOpeningContextMenu()
         {
             var currentWs = View.ChildOfType<WorkspaceView>();
@@ -897,6 +929,102 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(currentWs.WorkspaceLacingMenu.IsSubmenuOpen);
         }
 
+
+        [Test]
+        public void WarningShowsWhenSavingWithLinterWarningsOrErrors()
+        {
+            // Arrange
+            var expectedWindowTitle = WpfResources.GraphIssuesOnSave_Title;
+            var recivedEvents = new List<string>();
+            var savewarnHandler = new Action<SaveWarningOnUnresolvedIssuesArgs>((e) => { recivedEvents.Add(e.TaskDialog.Title); e.TaskDialog.Close(); });
+            ViewModel.SaveWarningOnUnresolvedIssuesShows += savewarnHandler;
+            
+    
+            Mock<LinterExtensionBase> mockLinter = new Mock<LinterExtensionBase>() { CallBase = true };
+            SetupMockLinter(mockLinter);
+
+            var startupParams = new StartupParams(Model.AuthenticationManager.AuthProvider,
+                Model.PathManager, new ExtensionLibraryLoader(Model), Model.CustomNodeManager,
+                Model.GetType().Assembly.GetName().Version, Model.PreferenceSettings, Model.LinterManager);
+
+            mockLinter.Object.InitializeBase(Model.LinterManager);
+            mockLinter.Object.Startup(startupParams);
+            Model.ExtensionManager.Add(mockLinter.Object);
+
+            OpenDynamoDefinition(Path.Combine(GetTestDirectory(ExecutingDirectory), @"UI/SaveWithIssuesWarning.dyn"));
+
+            var failureNode = new DummyNode();
+            Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(failureNode, 0, 0, false, false));
+
+            Model.LinterManager.SetActiveLinter(Model.LinterManager.AvailableLinters
+                .Where(x => x.Id == mockLinter.Object.UniqueId)
+                .FirstOrDefault());
+
+            // Act
+            failureNode.Name = "NewNodeName";
+            Assert.That(Model.LinterManager.RuleEvaluationResults.Count > 0);
+
+            ViewModel.ShowSaveDialogIfNeededAndSaveResult(null);
+
+            // Assert
+            Assert.That(recivedEvents.Count == 1);
+            Assert.That(recivedEvents.First() == expectedWindowTitle);
+            ViewModel.SaveWarningOnUnresolvedIssuesShows -= savewarnHandler;
+            
+        }
+
+   
+
+        private void SetupMockLinter(Mock<LinterExtensionBase> mockLinter)
+        {
+            const string MOCK_LINTER_GUID = "358321af-2633-4697-b475-81632582eba0";
+            const string MOCK_LINTER_NAME = "MockLinter";
+            const string MOCK_RULE_ID = "1";
+
+            Mock<NodeLinterRule> mockRule = new Mock<NodeLinterRule> { CallBase = true };
+
+            // Setup mock rule
+            mockRule.Setup(r => r.Id).Returns(MOCK_RULE_ID);
+
+            // Setup mock LinterExtension
+            mockLinter.Setup(e => e.UniqueId).Returns(MOCK_LINTER_GUID);
+            mockLinter.Setup(e => e.Name).Returns(MOCK_LINTER_NAME);
+
+            mockRule.Setup(x => x.EvaluationTriggerEvents).
+                Returns(new List<string> { nameof(NodeModel.Name) });
+
+            mockRule.Protected().Setup<RuleEvaluationStatusEnum>("EvaluateFunction", ItExpr.IsAny<NodeModel>(), ItExpr.IsAny<string>()).
+                Returns((NodeModel node, string changedEvent) => NodeRuleEvaluateFunction(node, changedEvent));
+
+            mockRule.Protected().Setup<List<Tuple<RuleEvaluationStatusEnum, string>>>("InitFunction", ItExpr.IsAny<WorkspaceModel>()).
+                Returns((WorkspaceModel wm) => NodeRuleInitFuction(wm));
+
+            mockLinter.Object.AddLinterRule(mockRule.Object);
+
+        }
+
+        private RuleEvaluationStatusEnum NodeRuleEvaluateFunction(NodeModel node, string changedEvent)
+        {
+            return node.Name == "NewNodeName" ?
+                RuleEvaluationStatusEnum.Failed :
+                RuleEvaluationStatusEnum.Passed;
+        }
+
+        private List<Tuple<RuleEvaluationStatusEnum, string>> NodeRuleInitFuction(WorkspaceModel wm)
+        {
+            var results = new List<Tuple<RuleEvaluationStatusEnum, string>>();
+            foreach (var node in wm.Nodes)
+            {
+                var evaluationStatus = NodeRuleEvaluateFunction(node, "init");
+                if (evaluationStatus == RuleEvaluationStatusEnum.Passed)
+                    continue;
+
+                var valueTuple = Tuple.Create(evaluationStatus, node.GUID.ToString());
+                results.Add(valueTuple);
+            }
+            return results;
+        }
+
         private void RightClick(IInputElement element)
         {
             element.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Right)
@@ -911,5 +1039,7 @@ namespace DynamoCoreWpfTests
 
             DispatcherUtil.DoEvents();
         }
+
+
     }
 }

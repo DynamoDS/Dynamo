@@ -63,6 +63,34 @@ namespace Dynamo.Graph.Nodes
             return gathered;
         }
 
+        /// <summary>
+        /// Get all downstream nodes of a node model
+        /// </summary>
+        /// <param name="node"> Node model to get downstream nodes of </param>
+        /// <param name="gathered"> List to recursively gather downstream nodes, set to an empty list to start </param>
+        /// <returns></returns>
+        internal static IEnumerable<NodeModel> AllDownstreamNodes(this NodeModel node, List<NodeModel> gathered)
+        {
+            if (node == null)
+            {
+                return new List<NodeModel>();
+            }
+
+            var downstream = node.OutPorts.SelectMany(p => p.Connectors.Select(c => c.End.Owner));
+
+            foreach (var n in downstream.Where(n => !gathered.Contains(n)))
+            {
+                gathered.Add(n);
+            }
+
+            foreach (var n in downstream)
+            {
+                n.AllDownstreamNodes(gathered);
+            }
+
+            return gathered;
+        }
+
         internal static bool IsUpstreamOf(this NodeModel node, NodeModel otherNode)
         {
             var gathered = new List<NodeModel>();
@@ -73,9 +101,12 @@ namespace Dynamo.Graph.Nodes
 
         internal static List<IGraphicItem> GeneratedGraphicItems(this NodeModel node, EngineController engineController)
         {
-            var ids = node.GetAllOutportAstIdentifiers();
-
             var results = new List<IGraphicItem>();
+            if (node is null || engineController is null)
+            {
+                return results;
+            }
+            var ids = node.GetAllOutportAstIdentifiers();
 
             foreach (var id in ids)
             {

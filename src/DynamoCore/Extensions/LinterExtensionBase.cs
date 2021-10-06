@@ -8,6 +8,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Linting;
 using Dynamo.Linting.Rules;
+using Dynamo.Models;
 
 namespace Dynamo.Extensions
 {
@@ -18,15 +19,18 @@ namespace Dynamo.Extensions
     {
         private const string NODE_ADDED_PROPERTY = "NodeAdded";
         private const string NODE_REMOVED_PROPERTY = "NodeRemoved";
+        private const string NODE_MODIFIED_PROPERTY = "Modified";
 
         #region Private/Internal properties
         private HashSet<LinterRule> linterRules = new HashSet<LinterRule>();
         private LinterManager linterManager;
-        private WorkspaceModel currentWorkspace;
+        private HomeWorkspaceModel currentWorkspace;
 
         internal ReadyParams ReadyParamsRef { get; set; }
 
         internal bool IsActive => this.linterManager?.IsExtensionActive(UniqueId) ?? false;
+
+        internal bool SetupComplete { get; set; } = false;
   
         internal LinterExtensionDescriptor ExtensionDescriptor { get; private set; }
         #endregion
@@ -69,13 +73,28 @@ namespace Dynamo.Extensions
         /// <summary>
         /// Activate this linter by subscribing the workspace and initializing its rules
         /// </summary>
-        internal void Activate()
+        internal void Activate(bool linkToWorkspace = true)
         {
-            if (IsActive)
+            //Nothing left to do if initial setup is complete and we are already linked to application events
+            if (SetupComplete)
+            {
                 return;
+            }
+
+            UnlinkFromCurrentWorkspace();
 
             ReadyParamsRef.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
-            OnCurrentWorkspaceChanged(ReadyParamsRef.CurrentWorkspaceModel);
+            ReadyParamsRef.CurrentWorkspaceClearingStarted += OnCurrentWorkspaceClosing;
+            ReadyParamsRef.CurrentWorkspaceRemoveStarted += OnCurrentWorkspaceClosing;
+
+            if (linkToWorkspace)
+            {
+                LinkToWorkspace(ReadyParamsRef.CurrentWorkspaceModel as HomeWorkspaceModel);
+            }            
+
+            SetupComplete = true;
+
+            OnActivated();
         }
 
         /// <summary>
@@ -83,9 +102,22 @@ namespace Dynamo.Extensions
         /// </summary>
         internal void Deactivate()
         {
+            //Nothing to deactivate if we have not setup everything properly
+            //yet or we alreay deativated this linter extension
+            if (!SetupComplete)
+            {
+                return;
+            }
+
             ReadyParamsRef.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
-            UnsubscribeGraphEvents(currentWorkspace);
-            this.linterManager.RuleEvaluationResults.Clear();
+            ReadyParamsRef.CurrentWorkspaceClearingStarted -= OnCurrentWorkspaceClosing;
+            ReadyParamsRef.CurrentWorkspaceRemoveStarted -= OnCurrentWorkspaceClosing;
+
+            UnlinkFromCurrentWorkspace();
+
+            SetupComplete = false;
+
+            OnDeactivated();
         }
 
         #endregion
@@ -143,12 +175,14 @@ namespace Dynamo.Extensions
 
         private void InitializeRules()
         {
-            if (!(ReadyParamsRef.CurrentWorkspaceModel is WorkspaceModel wm))
+            if (currentWorkspace is null)
+            {
                 return;
+            }
 
             foreach (var rule in LinterRules)
             {
-                rule.InitializeBase(wm);
+                rule.InitializeBase(currentWorkspace);
             }
         }
 
@@ -157,9 +191,8 @@ namespace Dynamo.Extensions
         ///<inheritdoc/>
         public virtual void Ready(ReadyParams sp)
         {
+            currentWorkspace = null;
             ReadyParamsRef = sp;
-            if (IsActive)
-                InitializeRules();
         }
 
         ///<inheritdoc/>
@@ -175,8 +208,9 @@ namespace Dynamo.Extensions
         ///<inheritdoc/>
         public virtual void Dispose()
         {
-            ReadyParamsRef.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
-            UnsubscribeGraphEvents(currentWorkspace);
+            //TODO - move to ShutDown once the coresponding PR is merged
+            //ReadyParamsRef.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+            //UnsubscribeGraphEvents(currentWorkspace);
         }
 
         #endregion
@@ -195,22 +229,78 @@ namespace Dynamo.Extensions
             LinterExtensionReady?.Invoke(ExtensionDescriptor);
         }
 
+        private void LinkToWorkspace(HomeWorkspaceModel workspace)
+        {
+            if (workspace != null)
+            {
+                currentWorkspace = workspace;
+                SubscribeNodeEvents();
+                SubscribeGraphEvents();
+                InitializeRules();
+
+                OnLink();
+            }
+        }
+
+        private void UnlinkFromCurrentWorkspace()
+        {
+            if (currentWorkspace != null)
+            {
+                UnsubscribeGraphEvents(currentWorkspace);
+                DynamoModel.OnRequestDispatcherInvoke(() => { this.linterManager.RuleEvaluationResults.Clear(); });
+                currentWorkspace = null;
+
+                OnUnlink();
+            }
+        }
+
+        private void OnCurrentWorkspaceClosing(IWorkspaceModel obj)
+        {
+            HomeWorkspaceModel workspaceAboutToClose = obj as HomeWorkspaceModel;
+            //It can be a CustomNodeWorkspaceModel which we are not interested in processing
+            if (workspaceAboutToClose is null) 
+            {
+                return;
+            }
+
+            //we only care about the workspace we are linked to
+            if (workspaceAboutToClose != currentWorkspace)
+            {
+                return;
+            }
+
+            foreach (var rule in linterRules)
+            {
+                rule?.CleanupRule(workspaceAboutToClose);
+            }
+
+            UnlinkFromCurrentWorkspace();
+        }
+
         private void OnCurrentWorkspaceChanged(IWorkspaceModel obj)
         {
-            if (this.currentWorkspace != null)
-                UnsubscribeGraphEvents(this.currentWorkspace);
+            HomeWorkspaceModel incomingWorkspace = obj as HomeWorkspaceModel;
 
-            this.linterManager.RuleEvaluationResults.Clear();
-            this.currentWorkspace = ReadyParamsRef.CurrentWorkspaceModel as WorkspaceModel;
-            this.SubscribeNodeEvents();
-            this.SubscribeGraphEvents();
-            this.InitializeRules();
+            //If incoming workspace is not of expected type we will unlink from current workspace.
+            //This will happen when you edit a custom node for example.
+            //Other than that we do not expect to have a change event for the same workspace,
+            //we assume something went bad in this case and we also unlink.
+            //If the incoming workspace is default home screen workspace we also unlink.
+            if (incomingWorkspace is null || 
+                currentWorkspace == incomingWorkspace || 
+                String.IsNullOrEmpty(incomingWorkspace.FileName))
+            {
+                UnlinkFromCurrentWorkspace();
+                return;
+            }
+
+            LinkToWorkspace(incomingWorkspace);
         }
 
         private void SubscribeGraphEvents()
         {
-            this.currentWorkspace.NodeRemoved += OnNodeRemoved;
-            this.currentWorkspace.NodeAdded += OnNodeAdded;
+            currentWorkspace.NodeRemoved += OnNodeRemoved;
+            currentWorkspace.NodeAdded += OnNodeAdded;
         }
 
 
@@ -219,6 +309,7 @@ namespace Dynamo.Extensions
             foreach (var node in currentWorkspace.Nodes)
             {
                 node.PropertyChanged += OnNodePropertyChanged;
+                node.Modified += OnNodeModified;
             }
         }
 
@@ -234,6 +325,7 @@ namespace Dynamo.Extensions
         private void UnsubscribeNodeEvents(NodeModel node)
         {
             node.PropertyChanged -= OnNodePropertyChanged;
+            node.Modified -= OnNodeModified;
         }
 
         private void OnNodeAdded(NodeModel node)
@@ -241,13 +333,19 @@ namespace Dynamo.Extensions
             EvaluateGraphRules(node, NODE_ADDED_PROPERTY);
             EvaluateNodeRules(node, NODE_ADDED_PROPERTY);
             node.PropertyChanged += OnNodePropertyChanged;
+            node.Modified += OnNodeModified;
+        }
+
+        private void OnNodeModified(NodeModel node)
+        {
+            EvaluateGraphRules(node, NODE_MODIFIED_PROPERTY);
+            EvaluateNodeRules(node, NODE_MODIFIED_PROPERTY);
         }
 
         private void OnNodePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             EvaluateNodeRules(sender as NodeModel, e.PropertyName);
             EvaluateGraphRules(sender as NodeModel, e.PropertyName);
-
         }
 
         private void OnNodeRemoved(Graph.Nodes.NodeModel node)
@@ -270,6 +368,35 @@ namespace Dynamo.Extensions
             }
 
         }
+
+        internal event Action OnLinterExtensionActivated;
+
+        private void OnActivated()
+        {
+            OnLinterExtensionActivated?.Invoke();
+        }
+
+        internal event Action OnLinterExtensionDeactivated;
+
+        private void OnDeactivated()
+        {
+            OnLinterExtensionDeactivated?.Invoke();
+        }
+
+        internal event Action OnLinterUnlinkFromWorkspace;
+
+        private void OnUnlink()
+        {
+            OnLinterUnlinkFromWorkspace?.Invoke();
+        }
+
+        internal event Action OnLinterLinkToWorkspace;
+
+        private void OnLink()
+        {
+            OnLinterLinkToWorkspace?.Invoke();
+        }
+
         #endregion
     }
 }

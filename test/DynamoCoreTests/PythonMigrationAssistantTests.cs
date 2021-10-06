@@ -94,5 +94,23 @@ OUT = groupBox1
             var actual = ScriptMigrator.MigrateCode(original);
             Assert.AreEqual(expected, actual);
         }
+
+        [Test]
+        public void CanMigrateFixAddReferenceToFileAndPathToPython3AddReference()
+        {
+            var original = @"
+import sys
+import clr
+clr.AddReferenceToFileAndPath('System.Windows.Forms')
+";
+            var expected = @"
+import sys
+import clr
+clr.AddReference('System.Windows.Forms')
+";
+            var actual = ScriptMigrator.MigrateCode(original);
+            Assert.AreEqual(expected, actual);
+        }
+
     }
 }

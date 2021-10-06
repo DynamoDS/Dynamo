@@ -108,6 +108,11 @@ namespace Dynamo.Configuration
         public bool ShowConnector { get; set; }
 
         /// <summary>
+        /// Should connector tooltip be visible?
+        /// </summary>
+        public bool ShowConnectorToolTip { get; set; }
+
+        /// <summary>
         /// The types of connector: Bezier or Polyline.
         /// </summary>
         public ConnectorType ConnectorType { get; set; }
@@ -359,6 +364,35 @@ namespace Dynamo.Configuration
         /// </summary>
         private static string defaultPythonEngine;
 
+        internal event Func<string> RequestUserDataFolder;
+        internal string OnRequestUserDataFolder()
+        {
+            return RequestUserDataFolder?.Invoke();
+        }
+
+        private string selectedPackagePathForInstall;
+        // TODO: Add this to IPreferences in Dynamo 3.0
+        /// <summary>
+        /// Currently selected package path where all packages downloaded from the Package Manager
+        /// will be installed. The default package path for install is the user data directory
+        /// currently used by the Dynamo environment.
+        /// </summary>
+        public string SelectedPackagePathForInstall 
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(selectedPackagePathForInstall))
+                {
+                    selectedPackagePathForInstall = OnRequestUserDataFolder();
+                }
+                return selectedPackagePathForInstall;
+            }
+            set
+            {
+                selectedPackagePathForInstall = value;
+            }
+        }
+
         /// <summary>
         /// Indicates (if any) which namespaces should not be displayed in the Dynamo node library.
         /// String format: "[library name]:[fully qualified namespace]"
@@ -375,18 +409,58 @@ namespace Dynamo.Configuration
         /// Settings that apply to view extensions.
         /// </summary>
         public List<ViewExtensionSettings> ViewExtensionSettings { get; set; }
+
+        private bool disableBuiltinPackages;
         /// <summary>
-        /// If enabled Dynamo Standard Library packages will not be loaded.
+        /// If enabled Dynamo Built-In Packages will not be loaded.
         /// </summary>
-        public bool DisableStandardLibrary { get; set; }
+        public bool DisableBuiltinPackages { 
+            get { return disableBuiltinPackages; }
+            set 
+            {
+                disableBuiltinPackages = value;
+                RaisePropertyChanged(nameof(DisableBuiltinPackages)); 
+            } 
+        }
+
+        private bool disableCustomPackageLocations;
         /// <summary>
         /// If enabled user's custom package locations will not be loaded.
         /// </summary>
-        public bool DisableCustomPackageLocations { get; set; }
+        public bool DisableCustomPackageLocations 
+        { 
+            get { return disableCustomPackageLocations; } 
+            set 
+            { 
+                disableCustomPackageLocations = value;
+                RaisePropertyChanged(nameof(DisableCustomPackageLocations));
+            } 
+        }
         /// <summary>
         /// Defines the default run type when opening a workspace
         /// </summary>
         public RunType DefaultRunType { get; set; }
+
+        /// <summary>
+        /// Show Run Preview flag.
+        /// </summary>
+        public bool ShowRunPreview { get; set; }
+
+        /// <summary>
+        /// Limits the size of the tags used by the SearchDictionary
+        /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value 
+        /// if found at deserialize time.
+        /// </summary>
+        internal static int NodeSearchTagSizeLimitValue = 300;
+
+        /// <summary>
+        /// Limits the size of the tags used by the SearchDictionary
+        /// </summary>
+        public int NodeSearchTagSizeLimit 
+        { 
+            get { return NodeSearchTagSizeLimitValue; } 
+            set { NodeSearchTagSizeLimitValue = value; } 
+        }
         #endregion
 
         /// <summary>
@@ -409,6 +483,7 @@ namespace Dynamo.Configuration
             ShowPreviewBubbles = true;
             ShowCodeBlockLineNumber = true;
             ShowConnector = true;
+            ShowConnectorToolTip = true;
             ConnectorType = ConnectorType.BEZIER;
             IsBackgroundGridVisible = true;
             PackageDirectoriesToUninstall = new List<string>();
@@ -434,6 +509,7 @@ namespace Dynamo.Configuration
             EnableNodeAutoComplete = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
+
         }
 
         /// <summary>
@@ -508,6 +584,7 @@ namespace Dynamo.Configuration
             catch (Exception) { }
 
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
+            MigrateStdLibTokenToBuiltInToken(settings);
 
             return settings;
         }
@@ -539,6 +616,19 @@ namespace Dynamo.Configuration
                     "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
                 );
                 NamespacesToExcludeFromLibrarySpecified = true;
+            }
+        }
+
+        //migrate old path token to new path token
+        private static void MigrateStdLibTokenToBuiltInToken(PreferenceSettings settings)
+        {
+            for(var i = 0; i< settings.CustomPackageFolders.Count;i++)
+            {
+                var path = settings.CustomPackageFolders[i];
+                if (path == DynamoModel.StandardLibraryToken)
+                {
+                    settings.CustomPackageFolders[i] = DynamoModel.BuiltInPackagesToken;
+                }
             }
         }
     }
