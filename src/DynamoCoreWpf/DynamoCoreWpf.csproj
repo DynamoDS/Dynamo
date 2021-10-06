@@ -178,6 +178,7 @@
     <Compile Include="UI\GuidedTour\Guide.cs" />
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
+    <Compile Include="UI\GuidedTour\GuidedTourResources.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
     <Compile Include="UI\GuidedTour\Step.cs" />
     <Compile Include="UI\GuidedTour\StepUIAutomation.cs" />
@@ -355,6 +356,9 @@
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\GuidedTour\WebBrowserWindow.xaml.cs">
+      <DependentUpon>WebBrowserWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GuidedTour\RealTimeInfoWindow.xaml.cs">
       <DependentUpon>RealTimeInfoWindow.xaml</DependentUpon>
     </Compile>
@@ -483,6 +487,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Prompts\DynamoMessageBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GuidedTour\WebBrowserWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1401,6 +1409,7 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
     <Resource Include="UI\Images\info_2.png" />
     <Resource Include="UI\Images\alert_2.png" />
     <Resource Include="UI\Images\close_blue.png" />

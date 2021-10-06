@@ -1701,8 +1701,8 @@ Do you want to install the latest Dynamo update?</value>
     <value>Copy</value>
     <comment>Context menu item</comment>
   </data>
-  <data name="ContextMenuHideAllGeometry" xml:space="preserve">
-    <value>Hide all geometry preview</value>
+  <data name="ContextMenuHideGeometry" xml:space="preserve">
+    <value>Hide geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="ContextMenuHideAllTextBubble" xml:space="preserve">
@@ -1717,8 +1717,8 @@ Do you want to install the latest Dynamo update?</value>
     <value>Paste</value>
     <comment>Context menu item</comment>
   </data>
-  <data name="ContextMenuShowAllGeometry" xml:space="preserve">
-    <value>Show all geometry preview</value>
+  <data name="ContextMenuShowGeometry" xml:space="preserve">
+    <value>Show geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
@@ -2680,6 +2680,12 @@ Delete the following packages: {2}?
   <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
     <value>Show Preview Bubbles</value>
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
+  </data>
+  <data name="PackagesGuide" xml:space="preserve">
+    <value>Packages</value>
+  </data>
+  <data name="PackagesGuideLearnAbout" xml:space="preserve">
+    <value>Learn about packages</value>
   </data>
   <data name="NodeAutoCompleteNotAvailableForCollapsedGroups" xml:space="preserve">
     <value>Node AutoComplete is not available on ports belonging to collapsed groups.</value>

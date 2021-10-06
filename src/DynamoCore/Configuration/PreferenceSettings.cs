@@ -445,6 +445,22 @@ namespace Dynamo.Configuration
         /// Show Run Preview flag.
         /// </summary>
         public bool ShowRunPreview { get; set; }
+
+        /// <summary>
+        /// Limits the size of the tags used by the SearchDictionary
+        /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value 
+        /// if found at deserialize time.
+        /// </summary>
+        internal static int NodeSearchTagSizeLimitValue = 300;
+
+        /// <summary>
+        /// Limits the size of the tags used by the SearchDictionary
+        /// </summary>
+        public int NodeSearchTagSizeLimit 
+        { 
+            get { return NodeSearchTagSizeLimitValue; } 
+            set { NodeSearchTagSizeLimitValue = value; } 
+        }
         #endregion
 
         /// <summary>
