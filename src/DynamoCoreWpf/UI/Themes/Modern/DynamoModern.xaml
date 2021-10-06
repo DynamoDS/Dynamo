@@ -2245,6 +2245,7 @@
     <SolidColorBrush x:Key="PreferencesWindowFontColor" Color="#E5E5E5" />
     <SolidColorBrush x:Key="PreferencesWindowButtonColor" Color="#0696D7" />
     <SolidColorBrush x:Key="PreferencesWindowTabSelectedColor" Color="#ADE4DE" />
+    <SolidColorBrush x:Key="CloseButtonMouseOverForeground" Color="#FFFFFF" />
     <SolidColorBrush x:Key="PreferencesWindowButtonPressedColor" Color="#0778B0" />
     <SolidColorBrush x:Key="PreferencesWindowButtonMouseOverFontColor" Color="#CDCBCB" />
     <SolidColorBrush x:Key="TabItemUnSelected" Color="DarkGray" />
