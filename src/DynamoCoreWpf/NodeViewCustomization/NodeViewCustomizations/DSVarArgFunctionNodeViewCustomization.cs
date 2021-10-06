@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Nodes;
+using Dynamo.UI;
 
 namespace Dynamo.Wpf
 {
@@ -10,8 +11,17 @@ namespace Dynamo.Wpf
     {
         public void CustomizeView(DSVarArgFunction nodeModel, NodeView nodeView)
         {
-            var addButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "AddInPort") { Content = "+", Width = 20 };
-            var subButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "RemoveInPort") { Content = "-", Width = 20 };
+            var addButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "AddInPort")
+            {
+                Content = "+",
+                Style= (Style)SharedDictionaryManager.DynamoModernDictionary["AddRemoveButton"]
+            };
+
+            var subButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "RemoveInPort")
+            {
+                Content = "-",
+                Style = (Style)SharedDictionaryManager.DynamoModernDictionary["AddRemoveButton"]
+            };
 
             var wp = new WrapPanel
             {

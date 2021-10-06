@@ -416,13 +416,13 @@
 
                     </controls:ParentMenuItem>
                     <MenuItem IsEnabled="{Binding Path=IsGeometryOperationEnabled}"
-                          Header="{x:Static  p:Resources.ContextMenuShowAllGeometry}"
+                          Header="{x:Static  p:Resources.ContextMenuShowGeometry}"
                           Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
                           CommandParameter="true"
                           Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
 
                     <MenuItem IsEnabled="{Binding Path=IsGeometryOperationEnabled}"
-                          Header="{x:Static p:Resources.ContextMenuHideAllGeometry}"
+                          Header="{x:Static p:Resources.ContextMenuHideGeometry}"
                           Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
                           CommandParameter="false"
                           Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />

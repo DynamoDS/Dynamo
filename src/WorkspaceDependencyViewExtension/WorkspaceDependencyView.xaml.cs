@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Logging;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -28,6 +31,9 @@ namespace Dynamo.WorkspaceDependency
         /// The hyper link where Dynamo user will be forwarded to for submitting comments.
         /// </summary>
         private readonly string FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
+        private readonly string sizeUnits = " KB";
+        private readonly string customNodeExtension = ".dyf";
+        private const long KbConversionConstant = 1024;
 
         private ViewLoadedParams loadedParams;
         private WorkspaceDependencyViewExtension dependencyViewExtension;
@@ -39,12 +45,13 @@ namespace Dynamo.WorkspaceDependency
         /// You are not expected to modify this but rather inspection.
         /// </summary>
         internal IEnumerable<PackageDependencyRow> dataRows;
+        internal IEnumerable<LocalDefinitionRow> localDefinitionDataRows;
 
         private Boolean hasDependencyIssue = false;
+
         /// <summary>
-        /// Property to check if the Dynamo active workspace has any package dependencies
-        /// issue worth workspace author's attention. This determines if the package dep 
-        /// viewer will be injected into right panel.
+        /// Property to raise to author's attention, if the Dynamo active workspace has any missing dependencies.
+        /// This determines if the package dep viewer will be injected into right panel.
         /// </summary>
         private Boolean HasDependencyIssue
         {
@@ -78,6 +85,8 @@ namespace Dynamo.WorkspaceDependency
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        internal CustomNodeManager CustomNodeManager { get; set; }
 
         /// <summary>
         /// Event handler for workspaceAdded event
@@ -114,7 +123,7 @@ namespace Dynamo.WorkspaceDependency
 
         private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName == nameof(currentWorkspace.NodeLibraryDependencies))
+            if (args.PropertyName == nameof(currentWorkspace.NodeLibraryDependencies) || args.PropertyName == nameof(currentWorkspace.NodeLocalDefinitions))
                 DependencyRegen(currentWorkspace);
         }
 
@@ -126,6 +135,37 @@ namespace Dynamo.WorkspaceDependency
         {
             RestartBanner.Visibility = Visibility.Hidden;
             var packageDependencies = ws.NodeLibraryDependencies.Where(d => d is PackageDependencyInfo).ToList();
+            var localDefinitions = ws.NodeLocalDefinitions.Where(d => d is LocalDefinitionInfo).ToList();
+
+            foreach (LocalDefinitionInfo info in localDefinitions)
+            {
+                try
+                {
+                    if (info.ReferenceType == ReferenceType.DYFFile)
+                    {
+                        // Try to get the Custom node information if possible. 
+                        string customNodeName = info.Name.Replace(customNodeExtension, "");
+                        dependencyViewExtension.DependencyView.CustomNodeManager.TryGetNodeInfo(customNodeName, out CustomNodeInfo customNodeInfo);
+
+                        if (customNodeInfo != null)
+                        {
+                            info.Path = customNodeInfo.Path;
+                        }
+                    }
+
+                    if (info.Path != null)
+                    {
+                        var localDefinitionFileInfo = new FileInfo(info.Path);
+                        long size = localDefinitionFileInfo.Length / KbConversionConstant;
+                        info.Size = size.ToString() + sizeUnits;
+                    }
+                }
+                catch (Exception ex) {
+                    dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
+                }
+                
+                HasDependencyIssue = info.Path == null;
+            }
 
             var pythonPackageDependencies = ws.OnRequestPackageDependencies();
             if (pythonPackageDependencies != null)
@@ -140,13 +180,14 @@ namespace Dynamo.WorkspaceDependency
             {
                 Boolean hasPackageMarkedForUninstall = false;
                 // If package is set to uninstall state, update the package info
-                foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion))
+                foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => 
+                x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion || x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload))
                 {
                     (packageDependencies.FirstOrDefault(x => x.Name == package.Name) as PackageDependencyInfo).State = 
                         PackageDependencyState.RequiresRestart;
                     hasPackageMarkedForUninstall = true;
                 }
-                this.RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible: Visibility.Hidden;
+                RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible: Visibility.Hidden;
             }
 
             var pmExtension = dependencyViewExtension.pmExtension;
@@ -163,7 +204,14 @@ namespace Dynamo.WorkspaceDependency
             }
 
             dataRows = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
+            localDefinitionDataRows = localDefinitions.Select(d => new LocalDefinitionRow(d as LocalDefinitionInfo));
+
+            Packages.IsExpanded = dataRows.Count() > 0;
+            LocalDefinitions.IsExpanded = localDefinitionDataRows.Count() > 0;
+
+
             PackageDependencyTable.ItemsSource = dataRows;
+            LocalDefinitionsTable.ItemsSource = localDefinitionDataRows;
         }
 
         /// <summary>
@@ -284,7 +332,9 @@ namespace Dynamo.WorkspaceDependency
             WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
             HomeWorkspaceModel.WorkspaceClosed -= this.CloseExtensionTab;
             PackageDependencyTable.ItemsSource = null;
+            LocalDefinitionsTable.ItemsSource = null;
             dataRows = null;
+            localDefinitionDataRows = null;
         }
 
         private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -402,5 +452,57 @@ namespace Dynamo.WorkspaceDependency
         /// Indicates whether to show/enable the package keep local button
         /// </summary>
         public bool ShowKeepLocalButton => this.DependencyInfo.State == PackageDependencyState.IncorrectVersion;
+    }
+
+    /// <summary>
+    /// Represents information about a local dependency as a row in the dependency table
+    /// </summary>
+    public class LocalDefinitionRow
+    {
+        internal LocalDefinitionInfo DependencyInfo { get; private set; }
+
+        internal LocalDefinitionRow(LocalDefinitionInfo localDefinitionInfo)
+        {
+            DependencyInfo = localDefinitionInfo;
+        }
+
+        /// <summary>
+        /// Name of this package dependency
+        /// </summary>
+        public string Name => DependencyInfo.Name;
+
+        /// <summary>
+        /// local dependency path
+        /// </summary>
+        public string Path => DependencyInfo.Path;
+
+        /// <summary>
+        /// local dependency size
+        /// </summary>
+        public string Size => DependencyInfo.Size;
+
+        /// <summary>
+        /// The icon representing the reference object.
+        /// </summary>
+        public ImageSource Icon
+        {
+            get
+            {
+                Bitmap bitmap = null;
+
+                switch (DependencyInfo.ReferenceType)
+                {
+                    case ReferenceType.DYFFile:
+                        bitmap = Properties.Resources.CustomNodeReferenceIcon;
+                        break;
+
+                    case ReferenceType.ZeroTouch:
+                        bitmap = Properties.Resources.ZeroTouchNodeReferenceIcon;
+                        break;
+                }
+
+                return ResourceUtilities.ConvertToImageSource(bitmap);
+            }
+        }
     }
 }
