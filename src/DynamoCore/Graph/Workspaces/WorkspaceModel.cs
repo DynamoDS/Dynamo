@@ -844,7 +844,7 @@ namespace Dynamo.Graph.Workspaces
                         if (data is string dataString)
                         {
                             // If the value exists on disk
-                            if (File.Exists(data.ToString()))
+                            if (data.ToString().Contains(@"\") && File.Exists(data.ToString()))
                             {
                                 var externalFilePath = Path.GetFullPath(data.ToString());
                                 var externalFileName = Path.GetFileName(data.ToString());
