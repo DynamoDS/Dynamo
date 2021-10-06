@@ -122,12 +122,15 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="ColorPaletteTests.cs" />
+    <Compile Include="ConnectorContextMenuTests.cs" />
+    <Compile Include="ConnectorViewModelTests.cs" />
     <Compile Include="ConverterViewModelTests.cs" />
     <Compile Include="GuidedTourTests.cs" />
     <Compile Include="InfoBubbleTests.cs" />
     <Compile Include="Libraries\LabelTests.cs" />
     <Compile Include="ListAtLevelTest.cs" />
     <Compile Include="MediatoDSColorConverterTest.cs" />
+    <Compile Include="PackageManager\PackageManagerSearchElementViewModelTests.cs" />
     <Compile Include="PreferencesGeometryScalingTests.cs" />
     <Compile Include="PreferencesViewModelTests.cs" />
     <Compile Include="UnitsUITests.cs" />
@@ -187,6 +190,7 @@
     <Compile Include="UpdateManagerUITests.cs" />
     <Compile Include="ViewExtensions\GraphMetadataViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\NodeAutoCompleteViewExtensionTests.cs" />
+    <Compile Include="ViewExtensions\NodeManipulatorExtensionTests.cs" />
     <Compile Include="ViewExtensions\PythonMigrationViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\ViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\DocumentationBrowserViewExtensionTests.cs" />
@@ -206,6 +210,10 @@
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DynamoManipulation\DynamoManipulation.csproj">
+      <Project>{33f88e8c-cc3c-4237-8aa9-cc891efcabfa}</Project>
+      <Name>DynamoManipulation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoPackagesWPF\DynamoPackagesWPF.csproj">
       <Project>{47D2166C-5261-4093-9660-E72B7035E666}</Project>

@@ -1014,7 +1014,7 @@ namespace Dynamo.Tests
                                     "of the graph will not execute; skipping test ...");
             }
 
-            if (((HomeWorkspaceModel)ws1).RunSettings.RunType == Models.RunType.Manual)
+            if (((HomeWorkspaceModel)ws1).RunSettings.RunType == Dynamo.Models.RunType.Manual)
             {
                 RunCurrentModel();
             }

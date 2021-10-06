@@ -2060,6 +2060,7 @@ namespace Dynamo.Models
             /// <param name="x"></param>
             /// <param name="y"></param>
             /// <param name="defaultPosition"></param>
+            [Obsolete("Use method with annotationTitelText argument instead.")]
             public CreateAnnotationCommand(Guid annotationId, string annotationText,
                 double x, double y, bool defaultPosition)
                 : base(new List<Guid> { annotationId })
@@ -2074,13 +2075,43 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            ///
+            /// Recordable command to create a new AnnotationModel
+            /// </summary>
+            /// <param name="annotationId">Id of the new AnnotationModel</param>
+            /// <param name="annotationText">Header text</param>
+            /// <param name="annotationDescriptionText">Description text</param>
+            /// <param name="x">X location</param>
+            /// <param name="y">Y location</param>
+            /// <param name="defaultPosition">The default position</param>
+            public CreateAnnotationCommand(Guid annotationId, string annotationText, string annotationDescriptionText,
+                double x, double y, bool defaultPosition)
+                : base(new List<Guid> { annotationId })
+            {
+                if (string.IsNullOrEmpty(annotationText))
+                {
+                    annotationText = Resources.GroupNameDefaultText;
+                }
+                if (string.IsNullOrEmpty(annotationDescriptionText))
+                {
+                    annotationDescriptionText = Resources.GroupDefaultText;
+                }
+
+                AnnotationText = annotationText;
+                AnnotationDescriptionText = annotationDescriptionText;
+                X = x;
+                Y = y;
+                DefaultPosition = defaultPosition;
+            }
+
+            /// <summary>
+            /// Recordable command to create a new AnnotationModel
             /// </summary>
             /// <param name="annotationId"></param>
             /// <param name="annotationText"></param>
             /// <param name="x"></param>
             /// <param name="y"></param>
             /// <param name="defaultPosition"></param>
+            [Obsolete("Use method with annotationTitelText argument instead.")]
             public CreateAnnotationCommand(IEnumerable<Guid> annotationId, string annotationText,
                 double x, double y, bool defaultPosition)
                 : base(annotationId)
@@ -2089,6 +2120,35 @@ namespace Dynamo.Models
                     annotationText = Resources.GroupDefaultText;
 
                 AnnotationText = annotationText;
+                X = x;
+                Y = y;
+                DefaultPosition = defaultPosition;
+            }
+
+            /// <summary>
+            /// Recordable command to create a new AnnotationModel
+            /// </summary>
+            /// <param name="annotationId">Collection of ids</param>
+            /// <param name="annotationText">Header text</param>
+            /// <param name="annotationDescriptionText">Description text</param>
+            /// <param name="x">X location</param>
+            /// <param name="y">Y location</param>
+            /// <param name="defaultPosition">The default position</param>
+            public CreateAnnotationCommand(IEnumerable<Guid> annotationId, string annotationText,
+                string annotationDescriptionText, double x, double y, bool defaultPosition)
+                : base(annotationId)
+            {
+                if (string.IsNullOrEmpty(annotationText))
+                {
+                    annotationText = Resources.GroupNameDefaultText;
+                }
+                if (string.IsNullOrEmpty(annotationDescriptionText))
+                {
+                    annotationDescriptionText = Resources.GroupDefaultText;
+                }
+
+                AnnotationText = annotationText;
+                AnnotationDescriptionText = annotationDescriptionText;
                 X = x;
                 Y = y;
                 DefaultPosition = defaultPosition;
@@ -2110,6 +2170,7 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
+            internal string AnnotationDescriptionText { get; private set; }
             internal string AnnotationText { get; private set; }
             internal double X { get; private set; }
             internal double Y { get; private set; }
@@ -2229,6 +2290,65 @@ namespace Dynamo.Models
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
                 dynamoModel.AddToGroupImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                base.SerializeCore(element);
+            }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// A command to add a AnnotationModel object to a group.
+        /// </summary>
+        public class AddGroupToGroupCommand : ModelBasedRecordableCommand
+        {
+            /// <summary>
+            /// Id of the the group that should host
+            /// the other group.
+            /// </summary>
+            public Guid HostGroupGuid { get; set; }
+
+            [JsonConstructor]
+            public AddGroupToGroupCommand(string modelGuid, string hostModelGuid) : base(new[] { Guid.Parse(modelGuid) }) 
+            {
+                HostGroupGuid = Guid.Parse(hostModelGuid);
+            }
+
+            /// <summary>
+            /// Creates a command to add a AnnotationModel object to another AnnotationModel.
+            /// </summary>
+            /// <param name="modelGuid">The guid of the AnnotationModel to group</param>
+            /// <param name="hostModelGuid">The guid of the host AnnotationModel</param>
+            public AddGroupToGroupCommand(Guid modelGuid, Guid hostModelGuid) : base(new[] { modelGuid })
+            {
+                HostGroupGuid = hostModelGuid;
+            }
+
+            /// <summary>
+            /// Creates a command to add a AnnotationModel object to another AnnotationModel.
+            /// </summary>
+            /// <param name="modelGuid">The guid of the AnnotationModel to group</param>
+            /// <param name="hostModelGuid">The guid of the host AnnotationModel</param>
+            public AddGroupToGroupCommand(IEnumerable<Guid> modelGuid, Guid hostModelGuid) : base(modelGuid) 
+            {
+                HostGroupGuid = hostModelGuid;
+            }
+
+            internal static AddGroupToGroupCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                var modelGuids = DeserializeGuid(element, helper);
+                return new AddGroupToGroupCommand(modelGuids, Guid.Empty);
+            }
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.AddGroupToGroupImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)

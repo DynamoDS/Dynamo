@@ -147,6 +147,12 @@ namespace Dynamo
             CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath));
         }
 
+        protected void OpenModelInManualMode(string relativeFilePath)
+        {
+            string openPath = Path.Combine(TestDirectory, relativeFilePath);
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath, true));
+        }
+
         protected void OpenSampleModel(string relativeFilePath)
         {
             string openPath = Path.Combine(SampleDirectory, relativeFilePath);

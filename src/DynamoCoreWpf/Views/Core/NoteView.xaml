@@ -10,7 +10,8 @@
              d:DesignHeight="100" d:DesignWidth="200" 
              MinWidth="50"
              MinHeight="20"
-             Height="Auto" Width="Auto" MaxWidth="300" Visibility="Visible"
+             Height="Auto" Width="Auto" MaxWidth="300"
+             Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}" 
              MouseDown="OnNoteMouseDown" >
@@ -131,7 +132,7 @@
             Visibility="{Binding Path=PinnedNode, Converter={StaticResource nullToVisibiltyConverter }, UpdateSourceTrigger=PropertyChanged}"
             >
             <Image
-                Source="/DynamoCoreWpf;component/UI/Images/Pin_NoBackground_16px.png"
+                Source="/DynamoCoreWpf;component/UI/Images/Pin_NoBackground_16_16.png"
                 Width="10"
                 />
         </Button>

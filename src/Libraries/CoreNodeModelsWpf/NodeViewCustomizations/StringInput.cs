@@ -39,7 +39,7 @@ namespace CoreNodeModelsWpf.Nodes
                 AcceptsTab = true,
                 TextWrapping = TextWrapping.Wrap,
                 MaxWidth = 200,
-                VerticalAlignment = VerticalAlignment.Stretch
+                VerticalAlignment = VerticalAlignment.Top
             };
 
             nodeView.inputGrid.Children.Add(tb);

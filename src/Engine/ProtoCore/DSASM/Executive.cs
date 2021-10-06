@@ -1521,7 +1521,7 @@ namespace ProtoCore.DSASM
                             }
 
                             bool found = exe.CompleteCodeBlockDict.TryGetValue(currentLangBlock, out CodeBlock cb);
-                            Validity.Assert(found, $"Could not find code block with codeBlockId {currentLangBlock}");
+                            Validity.Assert(found, "Could not find code block with codeBlockId {0}", currentLangBlock);
 
                             if (cb.IsMyAncestorBlock(graphNode.languageBlockId))
                             {
