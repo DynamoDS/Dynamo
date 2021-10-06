@@ -232,17 +232,31 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     HostControlInfo hostControlInfo = CreateHostControl(step);
                     Step newStep = CreateStep(step, hostControlInfo, totalTooltips);
 
-                    //If the UI Automation info was read from the json file then we create an StepUIAutomation instance containing all the info
+                    //If the UI Automation info was read from the json file then we create an StepUIAutomation instance containing all the info for each automation entry
                     if (step.UIAutomation != null)
-                        newStep.UIAutomation = CreateStepUIAutomationInfo(step.UIAutomation);
+                    {
+                        foreach (var automation in step.UIAutomation)
+                        {
+                            newStep.UIAutomation.Add(CreateStepUIAutomationInfo(automation));
+                        }
+                    }
+
+                    //If PreValidationInfo != null means that was deserialized correctly from the json file
+                    if (step.PreValidationInfo != null)
+                    {
+                        newStep.PreValidationInfo = new PreValidation(step.PreValidationInfo);
+                    }
 
                     if (newStep != null)
                     {
-                        //We subscribe the handler to the StepClosed even, so every time the popup is closed then this method will be called.
-                        newStep.StepClosed += Popup_StepClosed;
+                        //Passing the DynamoViewModel to each step so we can execute the Pre Validation methods 
+                        newStep.DynamoViewModelStep = dynamoViewModel;
 
                         //The step is added to the new Guide being created
                         newGuide.GuideSteps.Add(newStep);
+
+                        //We subscribe the handler to the StepClosed even, so every time the popup is closed then this method will be called.
+                        newStep.StepClosed += Popup_StepClosed;
                     }
                 }
                 Guides.Add(newGuide);
