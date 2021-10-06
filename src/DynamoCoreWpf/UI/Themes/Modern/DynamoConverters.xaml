@@ -66,6 +66,9 @@
     <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
     <controls:EmptyListToParameterValueConverter x:Key="EmptyListToParameterValueConverter" />
     <controls:DependencyListConverter x:Key="DependencyListConverter" />
+    <controls:PackageDetailsDependenciesConverter x:Key="PackageDetailsDependenciesConverter"/>
+    <controls:PackageDetailsPythonEngineConverter x:Key="PackageDetailsPythonEngineConverter"/>
+    <controls:PackageDetailsPackagesConverter x:Key="PackageDetailsPackagesConverter"/>
     <controls:PythonEngineConverter x:Key="PythonEngineConverter" />
     <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter" />
     <controls:InstalledButtonTextConverter x:Key="InstalledButtonTextConverter" />

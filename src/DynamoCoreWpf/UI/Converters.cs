@@ -418,6 +418,100 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Displays the dependencies in the PackageDetailsViewExtension.
+    /// Since host_dependencies stores all dependencies and Python engine types together,
+    /// this converter is used to split the Python engine types from the other dependencies.
+    /// </summary>
+    public class PackageDetailsDependenciesConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (!(value is List<string> stringList) || stringList.Count < 1) return "None";
+
+            List<string> values = new List<string>();
+
+            foreach (var stringValue in stringList)
+            {
+                if (stringValue == PythonEngineVersion.IronPython2.ToString() ||
+                    stringValue == PythonEngineVersion.CPython3.ToString()) continue;
+                values.Add(stringValue);
+            }
+
+            return values.Count < 1 ? "None" : string.Join(", ", values);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Displays the Python engine type in the PackageDetailsViewExtension.
+    /// Since host_dependencies stores all dependencies and Python engine types together,
+    /// this converter is used to split the Python engine types from the other dependencies.
+    /// </summary>
+    public class PackageDetailsPythonEngineConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (!(value is List<string> stringList) || stringList.Count < 1) return "None";
+
+            List<string> values = new List<string>();
+
+            foreach (var stringValue in stringList)
+            {
+                if (stringValue != PythonEngineVersion.IronPython2.ToString() &&
+                    stringValue != PythonEngineVersion.CPython3.ToString()) continue;
+                values.Add(stringValue);
+            }
+
+            return values.Count < 1 ? "None" : string.Join(", ", values);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Displays the Python engine type in the PackageDetailsViewExtension.
+    /// Since host_dependencies stores all dependencies and Python engine types together,
+    /// this converter is used to split the Python engine types from the other dependencies.
+    /// </summary>
+    public class PackageDetailsPackagesConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (!(value is List<Dependency> dependencyList) || dependencyList.Count < 1) return "None";
+
+            List<Button> buttons = new List<Button>();
+
+            foreach (Dependency dependency in dependencyList)
+            {
+                buttons.Add(new Button()
+                {
+                    Content = dependency.name,
+                });
+            }
+
+            return buttons;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     // This converter expects the following properties to be bound through XAML 
     // (these properties are also to be bound in the exact order as stated here):
     // 

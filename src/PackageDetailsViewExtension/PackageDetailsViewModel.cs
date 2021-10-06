@@ -35,7 +35,7 @@ namespace Dynamo.PackageDetails
             get => license;
             set
             {
-                license = value;
+                license = value ?? "MIT";
                 RaisePropertyChanged(nameof(License));
             }
         }
