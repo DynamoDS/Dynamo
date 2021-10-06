@@ -581,84 +581,74 @@
                                 <!--  Install Button  -->
                                 <Button Name="installButton"
                                         Command="{Binding DownloadLatestCommand}"
-                                        Content="{Binding IsInstalled, Converter={StaticResource InstalledButtonTextConverter}}"
+                                        Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
                                         DockPanel.Dock="Right">
-                                    <Button.Template>
-                                        <ControlTemplate TargetType="{x:Type Button}">
-                                            <Border Name="ButtonBorder"
-                                                    Height="25"
-                                                    Padding="5,0"
-                                                    BorderThickness="2"
-                                                    CornerRadius="2">
-                                                <DockPanel>
-                                                    <Rectangle Width="10"
-                                                               Height="10"
-                                                               Margin="0,0,0,0"
-                                                               VerticalAlignment="Center"
-                                                               DockPanel.Dock="Left">
-                                                        <Rectangle.Style>
-                                                            <Style TargetType="Rectangle">
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="True">
-                                                                        <Setter Property="Fill">
-                                                                            <Setter.Value>
-                                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - disabled.png" />
-                                                                            </Setter.Value>
-                                                                        </Setter>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsInstalled}" Value="True">
-                                                                        <Setter Property="Fill">
-                                                                            <Setter.Value>
-                                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/checkmark - grey.png" />
-                                                                            </Setter.Value>
-                                                                        </Setter>
-                                                                    </DataTrigger>
-                                                                    <MultiDataTrigger>
-                                                                        <MultiDataTrigger.Conditions>
-                                                                            <Condition Binding="{Binding Path=Model.IsDeprecated}" Value="False" />
-                                                                            <Condition Binding="{Binding Path=IsInstalled}" Value="False" />
-                                                                        </MultiDataTrigger.Conditions>
-                                                                        <Setter Property="Fill">
-                                                                            <Setter.Value>
-                                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
-                                                                            </Setter.Value>
-                                                                        </Setter>
-                                                                    </MultiDataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Rectangle.Style>
-                                                    </Rectangle>
-                                                    <TextBlock Name="textBlock"
-                                                               Padding="4,4,4,3"
-                                                               HorizontalAlignment="Right"
-                                                               VerticalAlignment="Center"
-                                                               Cursor="Hand"
-                                                               DockPanel.Dock="Right"
-                                                               FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                               FontSize="11"
-                                                               Text="{TemplateBinding Content}" />
-                                                </DockPanel>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#4A4A4A" />
-                                                </Trigger>
-                                                <Trigger Property="IsPressed" Value="True">
-                                                    <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#5F5F5F" />
-                                                </Trigger>
-                                                <Trigger Property="IsEnabled" Value="False">
-                                                    <Setter Property="TextBlock.Foreground" Value="#999999" />
-                                                </Trigger>
-                                                <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
-                                                    <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsInstalled}" Value="True">
-                                                    <Setter Property="TextBlock.Foreground" Value="#999999" />
-                                                </DataTrigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Button.Template>
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource resultButtonStyle}" TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type Button}">
+                                                        <TextBlock Name="textBlock"
+                                                                   Padding="4,4,4,3"
+                                                                   VerticalAlignment="Center"
+                                                                   Cursor="Hand"
+                                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                                   FontSize="11"
+                                                                   Text="{TemplateBinding Content}" />
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter Property="TextBlock.Foreground" Value="#999999" />
+                                                            </Trigger>
+                                                            <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
+                                                                <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding CanInstall}" Value="False">
+                                                                <Setter Property="TextBlock.Foreground" Value="#999999" />
+                                                            </DataTrigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
                                 </Button>
+                                <Rectangle Width="10"
+                                           Height="10"
+                                           Margin="5,0,0,0"
+                                           VerticalAlignment="Center"
+                                           DockPanel.Dock="Right">
+                                    <Rectangle.Style>
+                                        <Style TargetType="Rectangle">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="True">
+                                                    <Setter Property="Fill">
+                                                        <Setter.Value>
+                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - disabled.png" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=CanInstall}" Value="False">
+                                                    <Setter Property="Fill">
+                                                        <Setter.Value>
+                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/checkmark - grey.png" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Path=Model.IsDeprecated}" Value="False" />
+                                                        <Condition Binding="{Binding Path=CanInstall}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Fill">
+                                                        <Setter.Value>
+                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Rectangle.Style>
+                                </Rectangle>
 
                                 <!--  Contains Package Name and New Label  -->
                                 <Grid Margin="0,0,0,0" DockPanel.Dock="Left">
