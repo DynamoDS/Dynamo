@@ -24,15 +24,17 @@ namespace Dynamo.PackageManager.UI
             ViewModel = pm;
             this.DataContext = ViewModel;
             InitializeComponent();
-
-            pm.RequestShowFileDialog += OnRequestShowFileDialog;
+            ViewModel.RegisterTransientHandlers();
+            ViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
             Logging.Analytics.TrackScreenView("PackageManager");
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             var viewModel = DataContext as PackageManagerSearchViewModel;
-            viewModel.UnregisterHandlers();
+
+            ViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
+            viewModel.UnregisterTransientHandlers();
 
             Owner.Focus();
             base.OnClosing(e);

@@ -8,7 +8,6 @@ using Dynamo.Models;
 using CoreNodeModels;
 using Dynamo.UI.Commands;
 using System;
-using Dynamo.Graph;
 
 namespace Dynamo.ViewModels
 {

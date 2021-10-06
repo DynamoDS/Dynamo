@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Graph;
-using Dynamo.Selection;
 using Dynamo.UI.Commands;
-using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
