@@ -906,7 +906,6 @@ namespace DynamoCoreWpfTests
             CollectionAssert.AreEquivalent(expectedInPortNames, group1ViewModel.InPorts.Select(x => x.PortModel.Name));
             CollectionAssert.AreEquivalent(expectedOutPortNames, group1ViewModel.OutPorts.Select(x => x.PortModel.Name));
             Assert.That(group1ViewModel.NodeContentCount == 5);
-
         }
 
 
