@@ -450,6 +450,16 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void ASM228InstallationsAreValidated()
+        {
+            var incomplete228List = LoadListFromCsv("incomplete228List.csv");
+            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete228List, 228));
+            // Add missing DLLs. Now the the installation should be valid.
+            incomplete228List.Add("tsplines10A.dll");
+            Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete228List, 228));
+        }
+
+        [Test]
         public void ASM227InstallationsAreValidated()
         {
             var incomplete227List = LoadListFromCsv("incomplete227List.csv");

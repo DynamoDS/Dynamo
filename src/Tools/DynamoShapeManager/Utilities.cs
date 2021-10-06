@@ -110,6 +110,53 @@ namespace DynamoShapeManager
             "ADPSDKCORE.DLL"
         };
 
+        private static readonly ISet<string> ASM228DllNames = new HashSet<string>()
+        {
+			"tbb.dll",
+			"tbbmalloc.dll",
+			"tsplines10A.dll",
+			"ASMAHL228A.dll",
+			"ASMBASE228A.dll",
+			"ASMBLND228A.dll",
+			"ASMBOOL228A.dll",
+			"ASMCOVR228A.dll",
+			"ASMCSTR228A.dll",
+			"ASMCT228A.dll",
+			"ASMDATAX228A.dll",
+			"ASMDEFM228A.dll",
+			"ASMEULR228A.dll",
+			"ASMFCT228A.dll",
+			"ASMFREC228A.dll",
+			"ASMGA228A.dll",
+			"ASMHEAL228A.dll",
+			"ASMIMPORT228A.dll",
+			"ASMINTR228A.dll",
+			"ASMKERN228A.dll",
+			"ASMLAW228A.dll",
+			"ASMLOP228A.dll",
+			"ASMLOPT228A.dll",
+			"ASMNPCH228A.dll",
+			"ASMOFST228A.dll",
+			"ASMOPER228A.dll",
+			"ASMPID228A.dll",
+			"ASMRBASE228A.dll",
+			"ASMRBI228A.dll",
+			"ASMREM228A.dll",
+			"ASMSASM228A.dll",
+			"ASMSBAP228A.dll",
+			"ASMSBOOL228A.dll",
+			"ASMSHL228A.dll",
+			"ASMSKIN228A.dll",
+			"ASMSWP228A.dll",
+			"ASMTOPT228A.dll",
+			"ASMTWK228A.dll",
+			"ASMUFLD228A.dll",
+			"ASMWELD228A.dll",
+			"AdpSDKWrapper.dll",
+			"AdpSDKUI.dll",
+			"AdpSDKCore.dll"        
+};
+
         #endregion
 
         #region public properties
@@ -565,6 +612,8 @@ namespace DynamoShapeManager
             var fileNames = filePaths.Select(path => Path.GetFileName(path).ToUpper());
             switch (majorVersion)
             {
+                case 228:
+                    return !ASM228DllNames.Except(fileNames).Any();
                 case 227:
                     return !ASM227DllNames.Except(fileNames).Any();
                 case 226:
