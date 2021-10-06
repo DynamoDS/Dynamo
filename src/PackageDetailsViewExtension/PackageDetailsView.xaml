@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Dynamo.PackageDetails"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              xmlns:responses="clr-namespace:Greg.Responses;assembly=Greg"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-             xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              x:Name="PackageDetailsWindow"
              d:DesignHeight="450"
              d:DesignWidth="800"
@@ -248,21 +248,21 @@
                 <DataGrid Name="VersionsDataGrid"
                           Margin="0,0,0,15"
                           VerticalAlignment="Stretch"
-                          ItemsSource="{Binding PackageDetailItems, UpdateSourceTrigger=PropertyChanged}"
+                          ItemsSource="{Binding PackageDetailItems}"
                           PreviewMouseWheel="VersionsDataGrid_OnPreviewMouseWheel"
                           Style="{StaticResource DataGrid}"
                           VerticalScrollBarVisibility="Disabled">
                     <DataGrid.Columns>
 
                         <!--  Versions  -->
-                        <DataGridTextColumn MinWidth="80"
-                                            x:Name="VersionsColumn"
+                        <DataGridTextColumn x:Name="VersionsColumn"
+                                            MinWidth="80"
                                             Binding="{Binding Path=PackageVersionNumber}"
                                             Header="{x:Static p:Resources.PackageDetailsVersions}"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True">
                             <DataGridTextColumn.CellStyle>
-                                <Style TargetType="DataGridCell">
+                                <Style TargetType="{x:Type DataGridCell}">
                                     <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Standard" />
                                     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                                     <Setter Property="BorderThickness" Value="2" />
@@ -273,7 +273,7 @@
                                                     <StackPanel Margin="12,8,10,5">
                                                         <TextBlock HorizontalAlignment="Left"
                                                                    Foreground="#D8D8D8"
-                                                                   Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content.Text}" />
+                                                                   Text="{Binding PackageVersionNumber}" />
                                                         <Button Name="installButton"
                                                                 Command="{Binding ElementName=PackageDetailsWindow, Path=DataContext.OpenDependencyDetailsCommand}"
                                                                 CommandParameter="Test"
@@ -374,7 +374,8 @@
                                             IsReadOnly="True" />
 
                         <!--  Package  -->
-                        <DataGridTextColumn Width="*"
+                        <DataGridTextColumn x:Name="PackageColumn"
+                                            Width="*"
                                             MinWidth="100"
                                             Binding="{Binding Packages}"
                                             Header="{x:Static p:Resources.PackageDetailsPackage}"
@@ -388,25 +389,32 @@
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                                <ItemsControl Background="#535353" ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}">
-                                                    <ItemsControl.ItemsPanel>
-                                                        <ItemsPanelTemplate>
-                                                            <StackPanel Margin="8,5" Background="#535353">
-                                                                <StackPanel.Resources>
-                                                                    <Style TargetType="Button">
-                                                                        <Setter Property="Background" Value="Transparent" />
-                                                                        <Setter Property="BorderThickness" Value="0" />
-                                                                        <Setter Property="Foreground" Value="#6AC0E7" />
-                                                                        <Setter Property="HorizontalAlignment" Value="Left" />
-                                                                        <Setter Property="HorizontalContentAlignment" Value="Left" />
-                                                                        <Setter Property="Command" Value="{Binding ElementName=PackageDetailsWindow, Path=DataContext.OpenDependencyDetailsCommand}" />
-                                                                        <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Content}" />
-                                                                    </Style>
-                                                                </StackPanel.Resources>
-                                                            </StackPanel>
-                                                        </ItemsPanelTemplate>
-                                                    </ItemsControl.ItemsPanel>
-                                                </ItemsControl>
+                                                <Grid Background="#535353" IsHitTestVisible="True">
+                                                    <ItemsControl Margin="12,8,10,5" ItemsSource="{Binding Packages}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Button Content="{Binding}" />
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <StackPanel />
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                    </ItemsControl>
+                                                    <Grid.Resources>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Background" Value="Transparent" />
+                                                            <Setter Property="BorderThickness" Value="0" />
+                                                            <Setter Property="Margin" Value="0,0,5,0" />
+                                                            <Setter Property="Foreground" Value="#6AC0E7" />
+                                                            <Setter Property="HorizontalAlignment" Value="Left" />
+                                                            <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                                            <Setter Property="Command" Value="{Binding ElementName=PackageDetailsWindow, Path=DataContext.OpenDependencyDetailsCommand}" />
+                                                            <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Content}" />
+                                                        </Style>
+                                                    </Grid.Resources>
+                                                </Grid>
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>

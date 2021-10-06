@@ -113,6 +113,7 @@ namespace Dynamo.PackageDetails
         public PackageDetailItem(PackageDetailsViewExtension packageDetailsViewExtension, PackageVersion packageVersion)
         {
             this.PackageVersion = packageVersion;
+            this.PackageVersionNumber = PackageVersion.version;
             this.PackageDetailsViewExtension = packageDetailsViewExtension;
             this.Packages = PackageVersion.full_dependency_ids.Select(x => x.name).ToList();
             
