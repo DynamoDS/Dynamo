@@ -2498,7 +2498,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="NodeContextMenuStyle" TargetType="{x:Type ContextMenu}">
+    <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}">
         <Setter Property="Placement" Value="MousePoint" />
         <Setter Property="Foreground" Value="{StaticResource NodeContextMenuForeground}" />
         <Setter Property="FontSize" Value="13px" />

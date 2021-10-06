@@ -171,4 +171,6 @@
         x:Key="PinIconForegroundConverter"
         FalseBrush="{StaticResource UnpinnedIconForegroundColor}"
         TrueBrush="{StaticResource PinnedIconForegroundColor}" />
+    <controls:NestedGroupsLabelConverter x:Key="NestedGroupsLabelConverter" />
+    <controls:CollectionHasMoreThanNItemsToBoolConverter x:Key="CollectionHasMoreThanNItemsToBoolConverter" />
 </ResourceDictionary>
