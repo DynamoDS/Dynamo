@@ -677,6 +677,7 @@ namespace Dynamo.ViewModels
         {
             ConnectorAnchorViewModel.RequestDispose -= DisposeAnchor;
             ConnectorAnchorViewModel.Dispose();
+            ConnectorAnchorViewModel = null;
         }
 
         internal void CreateContextMenu()
@@ -696,6 +697,7 @@ namespace Dynamo.ViewModels
             PreviewState = PreviewState.None;
             ConnectorContextMenuViewModel.RequestDispose -= DisposeContextMenu;
             ConnectorContextMenuViewModel.Dispose();
+            ConnectorContextMenuViewModel = null;
         }
 
         /// <summary>
