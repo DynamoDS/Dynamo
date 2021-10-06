@@ -609,7 +609,7 @@
                                 </Rectangle>
                                 <Button Name="installButton"
                                         Command="{Binding DownloadLatestCommand}"
-                                        Content="{Binding IsInstalled, Converter={StaticResource InstalledButtonTextConverter}}"
+                                        Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
                                         DockPanel.Dock="Right">
                                     <Button.Style>
                                         <Style BasedOn="{StaticResource resultButtonStyle}" TargetType="Button">
@@ -630,7 +630,7 @@
                                                             <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
                                                                 <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding IsInstalled}" Value="True">
+                                                            <DataTrigger Binding="{Binding CanInstall}" Value="False">
                                                                 <Setter Property="TextBlock.Foreground" Value="#999999" />
                                                             </DataTrigger>
                                                         </ControlTemplate.Triggers>
@@ -655,7 +655,7 @@
                                                         </Setter.Value>
                                                     </Setter>
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=IsInstalled}" Value="True">
+                                                <DataTrigger Binding="{Binding Path=CanInstall}" Value="False">
                                                     <Setter Property="Fill">
                                                         <Setter.Value>
                                                             <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/checkmark - grey.png" />
@@ -665,7 +665,7 @@
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
                                                         <Condition Binding="{Binding Path=Model.IsDeprecated}" Value="False" />
-                                                        <Condition Binding="{Binding Path=IsInstalled}" Value="False" />
+                                                        <Condition Binding="{Binding Path=CanInstall}" Value="True" />
                                                     </MultiDataTrigger.Conditions>
                                                     <Setter Property="Fill">
                                                         <Setter.Value>
