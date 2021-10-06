@@ -20,7 +20,7 @@
             Canvas.Left="{Binding CurrentPosition.X}" Height="10" Width="10" Visibility="Hidden" MouseLeave="OnMouseLeave">
             <Button.ContextMenu>
             <ContextMenu Name="MainContextMenu"
-                         Style="{StaticResource NodeContextMenuStyle}"
+                         Style="{StaticResource ContextMenuStyle}"
                          MouseLeave="OnMouseLeave">
                 <MenuItem x:Name="BreakItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnections}" 
                           Command="{Binding BreakConnectionsSurrogateCommand}"/>

@@ -264,6 +264,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 HostUIElement = mainRootElement,
                 VerticalPopupOffSet = jsonStepInfo.HostPopupInfo.VerticalPopupOffSet,
                 HorizontalPopupOffSet = jsonStepInfo.HostPopupInfo.HorizontalPopupOffSet,
+                HtmlPage = jsonStepInfo.HostPopupInfo.HtmlPage,
                 HighlightColor = jsonStepInfo.HostPopupInfo.HighlightColor,
                 WidthBoxDelta = jsonStepInfo.HostPopupInfo.WidthBoxDelta,
                 HeightBoxDelta = jsonStepInfo.HostPopupInfo.HeightBoxDelta
@@ -317,7 +318,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             switch (jsonStepInfo.StepType)
             {
                 case Step.StepTypes.TOOLTIP:
-                    newStep = new Tooltip(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height, jsonStepInfo.TooltipPointerDirection)
+                    newStep = new Tooltip(hostControlInfo, jsonStepInfo.Width, jsonStepInfo.Height, jsonStepInfo.TooltipPointerDirection, jsonStepInfo.PointerVerticalOffset)
                     {
                         Name = jsonStepInfo.Name,
                         Sequence = jsonStepInfo.Sequence,

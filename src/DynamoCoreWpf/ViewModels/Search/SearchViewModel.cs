@@ -37,10 +37,16 @@ namespace Dynamo.ViewModels
         }
 
         public event EventHandler SearchTextChanged;
+
+        /// <summary>
+        /// Invokes the SearchTextChanged event handler and executes the SearchCommand
+        /// </summary>
         public void OnSearchTextChanged(object sender, EventArgs e)
         {
             if (SearchTextChanged != null)
                 SearchTextChanged(this, e);
+
+            SearchCommand?.Execute(null);
         }
 
         #endregion
@@ -65,13 +71,13 @@ namespace Dynamo.ViewModels
             set { browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
         }
 
+        private string searchText;
         /// <summary>
         ///     SearchText property
         /// </summary>
         /// <value>
         ///     This is the core UI for Dynamo, primarily used for logging.
         /// </value>
-        private string searchText;
         public string SearchText
         {
             get { return searchText; }
@@ -208,8 +214,6 @@ namespace Dynamo.ViewModels
                 }
                 strBuilder.Append(", ");
             }
-
-            Analytics.LogPiiInfo("Filter-categories", strBuilder.ToString().Trim());
         }
 
         /// <summary>
@@ -821,8 +825,6 @@ namespace Dynamo.ViewModels
         {
             if (Visible != true)
                 return;
-
-            Analytics.LogPiiInfo("Search", query);
 
             // if the search query is empty, go back to the default treeview
             if (string.IsNullOrEmpty(query))
