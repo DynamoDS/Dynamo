@@ -52,7 +52,7 @@ namespace Dynamo.Graph.Nodes
 
                 inputPorts.Add(new PortData(portName, name)
                 {
-                    Height = Configurations.CodeBlockPortHeightInPixels
+                    Height = Configurations.PortHeightInPixels
                 });
             }
 

@@ -408,6 +408,7 @@ namespace Dynamo.Controls
 
             var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
             ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
+
             view.mainGrid.Focus();
 
             Guid nodeGuid = ViewModel.NodeModel.GUID;
@@ -425,16 +426,7 @@ namespace Dynamo.Controls
                 }
             }
         }
-
-        private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            Guid nodeGuid = ViewModel.NodeModel.GUID;
-            ViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
-            //Debug.WriteLine("Node right selected.");
-            e.Handled = true;
-        }
-
+        
         private void NameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
@@ -695,5 +687,29 @@ namespace Dynamo.Controls
 
         #endregion
 
+        private void OptionsButton_Click(object sender, RoutedEventArgs e)
+        {
+            Guid nodeGuid = ViewModel.NodeModel.GUID;
+            ViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
+
+            viewModel.OnSelected(this, EventArgs.Empty);
+            grid.ContextMenu.DataContext = viewModel;
+            grid.ContextMenu.IsOpen = true;
+        }
+
+        private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Guid nodeGuid = ViewModel.NodeModel.GUID;
+            ViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
+
+            viewModel.OnSelected(this, EventArgs.Empty);
+
+            grid.ContextMenu.DataContext = viewModel;
+            grid.ContextMenu.IsOpen = true;
+            
+            e.Handled = true;
+        }
     }
 }

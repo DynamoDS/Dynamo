@@ -7,7 +7,7 @@
 				"Name": "welcome",
 				"Type": "welcome",
 				"Width": 480,
-				"Height": 180,
+				"Height": 200,
 				"StepContent": {
 					"Title": "GetStartedGuideWelcomeTitle",
 					"FormattedText": "GetStartedGuideWelcomeText"
@@ -23,6 +23,7 @@
 				"Sequence": 1,
 				"Name": "library",
 				"Type": "tooltip",
+				"ShowLibrary": true,
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
 				"Height": 250,
@@ -43,7 +44,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "bottom_left",
 				"Width": 480,
-				"Height": 240,
+				"Height": 260,
 				"StepContent": {
 					"Title": "GetStartedGuideRunStatusBarTitle",
 					"FormattedText": "GetStartedGuideRunStatusBarText"
@@ -57,7 +58,7 @@
 			},
 			{
 				"Sequence": 3,
-				"Name": "toolbar",
+				"Name": "toolbar2",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
@@ -69,8 +70,9 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "bottom",
 					"HostUIElementString": "shortcutsBarGrid",
+					"HighlightColor": "#ef9362",
 					"VerticalPopupOffset": -60,
-					"HorizontalPopupOffset": 200
+					"HorizontalPopupOffset": 225
 				}
 			},
 			{
@@ -87,8 +89,16 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
 					"HostUIElementString": "dynamoMenu",
-					"VerticalPopupOffset": 0,
-					"HorizontalPopupOffset": 150
+					"VerticalPopupOffset": 50,
+					"HighlightColor": "#EF9362",
+					"HorizontalPopupOffset": 230,
+					"HeightBoxDelta": 3
+				},
+				"UIAutomation": {
+					"Sequence": 1,
+					"ControlType": "MenuItem",
+					"Name": "dynamoMenu",
+					"Action": "open"
 				}
 			},
 			{
@@ -105,8 +115,16 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
 					"HostUIElementString": "HelpMenu",
-					"VerticalPopupOffset": 0,
-					"HorizontalPopupOffset": 170
+					"VerticalPopupOffset": 20,
+					"HorizontalPopupOffset": 170,
+					"HighlightColor": "#EF9362",
+					"HeightBoxDelta": 3
+				},
+				"UIAutomation": {
+					"Sequence": 1,
+					"ControlType": "MenuItem",
+					"Name": "HelpMenu",
+					"Action": "open"
 				}
 			},
 			{
@@ -130,6 +148,33 @@
 					"HostUIElementString": "WorkspaceTabs",
 					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 0
+				}
+			}
+		]
+	},
+	{
+		"Name": "Packages",
+		"GuideSteps": [
+			{
+				"Sequence": 0,
+				"Name": "packages",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"PointerVerticalOffset": -50,
+				"Width": 480,
+				"Height": 512,
+				"StepContent": {
+					"Title": "PackagesGuideLearnAbout",
+					"FormattedText": "PackagesGuideLearnAboutText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "relative",
+					"HostUIElementString": "PackageManagerMenu",
+					"VerticalPopupOffset": -20,
+					"HorizontalPopupOffset": 85,
+					"HighlightColor": "#EF9362",
+					"HtmlPage": "learnPackages.html",
+					"HeightBoxDelta": 3
 				}
 			}
 		]

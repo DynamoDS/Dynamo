@@ -321,6 +321,22 @@ namespace Dynamo.Models
                 PreferenceSettings.ShowConnector = value;
             }
         }
+        /// <summary>
+        /// Flag specifying the current state of whether or not to show 
+        /// tooltips in the graph. In addition to this toggle, tooltip is only
+        /// available when connectors are set to 'bezier' mode.
+        /// </summary>
+        public bool IsShowingConnectorTooltip
+        {
+            get
+            {
+                return PreferenceSettings.ShowConnectorToolTip;
+            }
+            set
+            {
+                PreferenceSettings.ShowConnectorToolTip = value;
+            }
+        }
 
         /// <summary>
         ///     Specifies how connectors are displayed in Dynamo.
@@ -758,11 +774,12 @@ namespace Dynamo.Models
             Loader.MessageLogged += LogMessage;
 
             // Create a core which is used for parsing code and loading libraries
-            var libraryCore = new ProtoCore.Core(new Options());
-
+            var libraryCore = new ProtoCore.Core(new Options())
+            {
+                ParsingMode = ParseMode.AllowNonAssignment
+            };
             libraryCore.Compilers.Add(Language.Associative, new Compiler(libraryCore));
             libraryCore.Compilers.Add(Language.Imperative, new ProtoImperative.Compiler(libraryCore));
-            libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             LibraryServices = new LibraryServices(libraryCore, pathManager, PreferenceSettings);
             LibraryServices.MessageLogged += LogMessage;
@@ -1801,9 +1818,10 @@ namespace Dynamo.Models
           bool forceManualExecutionMode,
           out WorkspaceModel workspace)
         {
-            CustomNodeManager.AddUninitializedCustomNodesInPath(
-                Path.GetDirectoryName(filePath),
-                IsTestMode);
+            CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filePath), IsTestMode);
+
+            var currentHomeSpace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            currentHomeSpace.UndefineCBNFunctionDefinitions();
 
             // TODO, QNTM-1108: WorkspaceModel.FromJson does not check a schema and so will not fail as long
             // as the fileContents are valid JSON, regardless of if all required data is present or not
@@ -1832,6 +1850,8 @@ namespace Dynamo.Models
             if (homeWorkspace != null)
             {
                 homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
+
+                homeWorkspace.ReCompileCodeBlockNodesForFunctionDefinitions();
 
                 RunType runType;
                 if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)
@@ -2014,7 +2034,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     OnRequestWorkspaceBackUpSave(savePath, true);
                     backupFilesDict[workspace.Guid] = savePath;
-                    Logger.Log("Backup file is saved: " + savePath);
+                    Logger.Log(Resources.BackupSavedMsg + ": " + savePath);
                 }
                 PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);
             });
@@ -2137,7 +2157,17 @@ namespace Dynamo.Models
         internal void AddToGroup(List<ModelBase> modelsToAdd)
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
-            var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.IsSelected);
+            var selectedGroups = workspaceAnnotations
+                .Where(x => x.IsSelected);
+
+            // If multiple groups are selected, chances are that we
+            // have a group that contains a nested group.
+            // If this is the case we want to make sure that we add the
+            // node to the parent folder.
+            var selectedGroup = selectedGroups.Count() > 1 ?
+                selectedGroups.FirstOrDefault(x => x.HasNestedGroups) :
+                selectedGroups.FirstOrDefault();
+
             if (selectedGroup != null)
             {
                 foreach (var model in modelsToAdd)
@@ -2147,6 +2177,19 @@ namespace Dynamo.Models
                 }
             }
 
+        }
+
+        internal void AddGroupToGroup(List<ModelBase> modelsToAdd, Guid hostGroupGuid)
+        {
+            var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
+            var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
+            if (selectedGroup is null) return;
+
+            foreach (var model in modelsToAdd)
+            {
+                CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
+                selectedGroup.AddToSelectedModels(model);
+            }
         }
 
         internal void DumpLibraryToXml(object parameter)
@@ -2351,6 +2394,11 @@ namespace Dynamo.Models
         /// directly in this point. </param>
         public void Paste(Point2D targetPoint, bool useOffset = true)
         {
+            //When called from somewhere other than StateMachine and only ConnectorPins are selected.
+            if (ClipBoard.All(m => m is ConnectorPinModel))
+            {
+                return;
+            }
             if (useOffset)
             {
                 // Provide a small offset when pasting so duplicate pastes aren't directly on top of each other
@@ -2372,7 +2420,12 @@ namespace Dynamo.Models
             var nodes = ClipBoard.OfType<NodeModel>();
             var connectors = ClipBoard.OfType<ConnectorModel>();
             var notes = ClipBoard.OfType<NoteModel>();
-            var annotations = ClipBoard.OfType<AnnotationModel>();
+            // we only want to get groups that either has nested groups
+            // or does not belong to a group here.
+            // We handle creation of nested groups when creating the
+            // parent group.
+            var annotations = ClipBoard.OfType<AnnotationModel>()
+                .Where(x=>x.HasNestedGroups || !currentWorkspace.Annotations.ContainsModel(x));
 
             var xmlDoc = new XmlDocument();
 
@@ -2488,34 +2541,24 @@ namespace Dynamo.Models
                 var newAnnotations = new List<AnnotationModel>();
                 foreach (var annotation in annotations)
                 {
-                    var annotationNodeModel = new List<NodeModel>();
-                    var annotationNoteModel = new List<NoteModel>();
-                    // some models can be deleted after copying them,
-                    // so they need to be in pasted annotation as well
-                    var modelsToRestore = annotation.DeletedModelBases.Intersect(ClipBoard);
-                    var modelsToAdd = annotation.Nodes.Concat(modelsToRestore);
-                    // checked condition here that supports pasting of multiple groups
-                    foreach (var models in modelsToAdd)
+                    // If this group has nested group we need to create them first
+                    if (annotation.HasNestedGroups)
                     {
-                        ModelBase mbase;
-                        modelLookup.TryGetValue(models.GUID, out mbase);
-                        if (mbase is NodeModel)
+                        foreach (var group in annotation.Nodes.OfType<AnnotationModel>())
                         {
-                            annotationNodeModel.Add(mbase as NodeModel);
-                        }
-                        if (mbase is NoteModel)
-                        {
-                            annotationNoteModel.Add(mbase as NoteModel);
+                            var nestedGroup = CreateAnnotationModel(
+                                group,
+                                modelLookup
+                                    .Where(x => group.Nodes.Select(y => y.GUID).Contains(x.Key))
+                                    .ToDictionary(x => x.Key, x => x.Value)
+                                );
+
+                            newAnnotations.Add(nestedGroup);
+                            modelLookup.Add(group.GUID, nestedGroup);
                         }
                     }
 
-                    var annotationModel = new AnnotationModel(annotationNodeModel, annotationNoteModel)
-                    {
-                        GUID = Guid.NewGuid(),
-                        AnnotationText = annotation.AnnotationText,
-                        Background = annotation.Background,
-                        FontSize = annotation.FontSize
-                    };
+                    var annotationModel = CreateAnnotationModel(annotation, modelLookup);
 
                     newAnnotations.Add(annotationModel);
                 }
@@ -2537,6 +2580,51 @@ namespace Dynamo.Models
                 // Record models that are created as part of the command.
                 CurrentWorkspace.RecordCreatedModels(createdModels);
             }
+        }
+
+        private AnnotationModel CreateAnnotationModel(
+            AnnotationModel model, Dictionary<Guid, ModelBase> modelLookup)
+        {
+            var annotationNodeModel = new List<NodeModel>();
+            var annotationNoteModel = new List<NoteModel>();
+            var annotationAnnotationModels = new List<AnnotationModel>();
+            // some models can be deleted after copying them,
+            // so they need to be in pasted annotation as well
+            var modelsToRestore = model.DeletedModelBases.Intersect(ClipBoard);
+            var modelsToAdd = model.Nodes.Concat(modelsToRestore);
+
+            // checked condition here that supports pasting of multiple groups
+            foreach (var models in modelsToAdd)
+            {
+                ModelBase mbase;
+                modelLookup.TryGetValue(models.GUID, out mbase);
+                if (mbase is NodeModel nodeBase)
+                {
+                    annotationNodeModel.Add(nodeBase);
+                }
+                else if (mbase is NoteModel noteBase)
+                {
+                    annotationNoteModel.Add(noteBase);
+                }
+                else if (mbase is AnnotationModel annotationM)
+                {
+                    annotationAnnotationModels.Add(annotationM);
+                }
+            }
+
+            var annotationModel = new AnnotationModel(annotationNodeModel, annotationNoteModel, annotationAnnotationModels)
+            {
+                GUID = Guid.NewGuid(),
+                AnnotationText = model.AnnotationText,
+                AnnotationDescriptionText = model.AnnotationDescriptionText,
+                HeightAdjustment = model.HeightAdjustment,
+                WidthAdjustment = model.WidthAdjustment,
+                Background = model.Background,
+                FontSize = model.FontSize,
+            };
+
+            modelLookup.Add(model.GUID, annotationModel);
+            return annotationModel;
         }
 
         /// <summary>

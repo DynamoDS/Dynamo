@@ -510,7 +510,7 @@ namespace ProtoImperative
             }
             else
             {
-                if (depth <= 0 && procName != ProtoCore.DSASM.Constants.kFunctionPointerCall)
+                if (depth <= 0 && procName != Constants.kFunctionPointerCall)
                 {
                     if (!hasLogError)
                     {
@@ -520,12 +520,18 @@ namespace ProtoImperative
                             if (CoreUtils.TryGetPropertyName(procName, out property))
                             {
                                 string message = String.Format(ProtoCore.Properties.Resources.kPropertyNotFound, property);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.PropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                                buildStatus.LogWarning(WarningID.PropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                             }
                             else
                             {
-                                string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                                // Log "function not found" warning for CBNs only after compiling all function definition nodes in the first pass
+                                // in CodeBlockNode.RecompileCodeBlockAST(). If not compiling CBNs log these warnings by default.
+                                if (core.IsParsingCodeBlockNode && !core.IsCodeBlockNodeFirstPass ||
+                                    !core.IsParsingCodeBlockNode)
+                                {
+                                    string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
+                                    buildStatus.LogWarning(WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                                }
                             }
                         }
                         inferedType.UID = (int)PrimitiveType.Null;
