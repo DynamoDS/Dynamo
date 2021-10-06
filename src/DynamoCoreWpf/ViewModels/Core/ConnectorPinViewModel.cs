@@ -90,11 +90,11 @@ namespace Dynamo.ViewModels
       /// bezier connectors through.
       /// </summary>
         [JsonIgnore]
-        public double OneThirdWidth
+        public static double OneThirdWidth
         {
             get
             {
-                return Model.Width * 0.33333;
+                return ConnectorPinModel.StaticWidth * 0.33333;
             }
         }
 
