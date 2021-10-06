@@ -695,6 +695,7 @@ namespace Dynamo.ViewModels
         private void DisposeContextMenu(object arg1, EventArgs arg2)
         {
             PreviewState = PreviewState.None;
+            ConnectorContextMenuViewModel.Dispose();
             ConnectorContextMenuViewModel.RequestDispose -= DisposeContextMenu;
             ConnectorContextMenuViewModel = null;
         }
@@ -1075,7 +1076,7 @@ namespace Dynamo.ViewModels
 
             if(ConnectorContextMenuViewModel!= null)
             {
-                ConnectorContextMenuViewModel.DisposeViewModel();
+                ConnectorContextMenuViewModel.RequestDisposeViewModel();
             }
         }
 
@@ -1107,6 +1108,10 @@ namespace Dynamo.ViewModels
 
             this.PropertyChanged -= ConnectorViewModelPropertyChanged;
             DiscardAllConnectorPinModels();
+
+            ConnectorContextMenuViewModel.Dispose();
+            ConnectorAnchorViewModel.Dispose();
+
             base.Dispose();
         }
 

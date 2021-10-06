@@ -37,7 +37,7 @@ namespace DynamoCoreWpfTests
             //Creates contextMenu.
             connectorViewModel.InstantiateContextMenuCommand.Execute(null);
             var contextMenuViewModel = connectorViewModel.ConnectorContextMenuViewModel;
-            contextMenuViewModel.DisposeViewModel();
+            contextMenuViewModel.RequestDisposeViewModel();
 
             //Assert property on ConnectorViewModel is set to null.
             Assert.IsNull(connectorViewModel.ConnectorContextMenuViewModel);
