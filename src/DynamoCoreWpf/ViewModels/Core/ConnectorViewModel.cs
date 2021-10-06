@@ -1100,9 +1100,14 @@ namespace Dynamo.ViewModels
             this.PropertyChanged -= ConnectorViewModelPropertyChanged;
             DiscardAllConnectorPinModels();
 
-            ConnectorContextMenuViewModel.Dispose();
-            ConnectorAnchorViewModel.Dispose();
-
+            if(ConnectorContextMenuViewModel != null)
+            {
+                ConnectorContextMenuViewModel.Dispose();
+            }
+            if(ConnectorAnchorViewModel != null)
+            {
+                ConnectorAnchorViewModel.Dispose();
+            }
             base.Dispose();
         }
 
