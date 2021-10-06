@@ -7,6 +7,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:responses="clr-namespace:Greg.Responses;assembly=Greg"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+             x:Name="PackageDetailsWindow"
              d:DesignHeight="450"
              d:DesignWidth="800"
              DataContext="{Binding PackageDetailsViewModel, RelativeSource={RelativeSource Self}}"
@@ -19,12 +21,6 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
-            <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
-            <controls:PythonEngineConverter x:Key="PythonEngineConverter" />
-            <controls:DependencyListConverter x:Key="DependencyListConverter" />
-            <controls:EmptyListToParameterValueConverter x:Key="EmptyListToParameterValueConverter" />
-            <controls:PackageDetailsDependenciesConverter x:Key="PackageDetailsDependenciesConverter" />
-            <controls:PackageDetailsPythonEngineConverter x:Key="PackageDetailsPythonEngineConverter" />
             <controls:PackageDetailsPackagesConverter x:Key="PackageDetailsPackagesConverter" />
             <Style x:Key="LabelStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
@@ -144,7 +140,7 @@
                            Margin="0,0,0,10"
                            FontSize="16px"
                            Foreground="White"
-                           Text="{Binding PackageManagerSearchElementViewModel.Model.Name}" />
+                           Text="{Binding PackageName}" />
 
                 <!--  Author Icon + Name  -->
                 <StackPanel MinWidth="200"
@@ -162,7 +158,7 @@
                                FontSize="16px"
                                Foreground="#C7C7C7"
                                Style="{StaticResource BodyTextStyle}"
-                               Text="{Binding PackageManagerSearchElementViewModel.Model.Maintainers}" />
+                               Text="{Binding PackageAuthorName}" />
                 </StackPanel>
 
                 <!--  Icons for Favourites, Downloads and Publish Date  -->
@@ -182,7 +178,7 @@
                                        Margin="5,2,0,0"
                                        VerticalAlignment="Center"
                                        Style="{StaticResource BodyTextStyle}"
-                                       Text="{Binding PackageManagerSearchElementViewModel.Model.Votes}" />
+                                       Text="{Binding NumberVotes}" />
                         </StackPanel>
                     </Border>
 
@@ -198,7 +194,7 @@
                                        Margin="5,2,0,0"
                                        VerticalAlignment="Center"
                                        Style="{StaticResource BodyTextStyle}"
-                                       Text="{Binding PackageManagerSearchElementViewModel.Model.Downloads}" />
+                                       Text="{Binding NumberDownloads}" />
                         </StackPanel>
                     </Border>
 
@@ -214,7 +210,7 @@
                                        Margin="5,2,0,0"
                                        VerticalAlignment="Center"
                                        Style="{StaticResource BodyTextStyle}"
-                                       Text="{Binding PackageManagerSearchElementViewModel.Model.LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" />
+                                       Text="{Binding DatePublished, Converter={StaticResource PrettyDateConverter}}" />
                         </StackPanel>
                     </Border>
                 </StackPanel>
@@ -222,20 +218,20 @@
                 <!--  Description  -->
                 <TextBlock Name="DescriptionTitle"
                            Style="{StaticResource LabelStyle}"
-                           Text="DESCRIPTION" />
+                           Text="{x:Static p:Resources.PackageDetailsDescription}" />
                 <TextBlock Name="DescriptionBody"
                            MinWidth="200px"
                            Margin="0,0,0,20"
                            FontSize="14px"
                            Style="{StaticResource BodyTextStyle}"
-                           Text="{Binding PackageManagerSearchElementViewModel.Model.Description}" />
+                           Text="{Binding PackageDescription}" />
 
                 <!--  License  -->
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Name="LicenseTitle"
                                MinWidth="0"
                                Style="{StaticResource LabelStyle}"
-                               Text="LICENSE:" />
+                               Text="{x:Static p:Resources.PackageDetailsLicense}" />
                     <TextBlock Name="LicenseBody"
                                Margin="5,0,0,20"
                                FontSize="14px"
@@ -247,12 +243,12 @@
                 <TextBlock Name="VersionsAndRequirementsGridLabel"
                            Margin="0,0,0,15"
                            Style="{StaticResource LabelStyle}"
-                           Text="VERSIONS AND PACKAGE REQUIREMENTS" />
+                           Text="{x:Static p:Resources.PackageDetailsVersionsAndPackageRequirements}" />
 
                 <DataGrid Name="VersionsDataGrid"
                           Margin="0,0,0,15"
                           VerticalAlignment="Stretch"
-                          ItemsSource="{Binding PackageVersions, UpdateSourceTrigger=PropertyChanged}"
+                          ItemsSource="{Binding PackageDetailItems, UpdateSourceTrigger=PropertyChanged}"
                           PreviewMouseWheel="VersionsDataGrid_OnPreviewMouseWheel"
                           Style="{StaticResource DataGrid}"
                           VerticalScrollBarVisibility="Disabled">
@@ -260,12 +256,11 @@
 
                         <!--  Versions  -->
                         <DataGridTextColumn MinWidth="80"
-                                            Binding="{Binding version}"
-                                            Header="Versions"
+                                            x:Name="VersionsColumn"
+                                            Binding="{Binding Path=PackageVersionNumber}"
+                                            Header="{x:Static p:Resources.PackageDetailsVersions}"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                            IsReadOnly="True"
-                                            SortDirection="Descending"
-                                            SortMemberPath="{Binding version}">
+                                            IsReadOnly="True">
                             <DataGridTextColumn.CellStyle>
                                 <Style TargetType="DataGridCell">
                                     <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Standard" />
@@ -275,11 +270,14 @@
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type DataGridCell}">
                                                 <Grid Background="#535353" IsHitTestVisible="True">
-                                                    <StackPanel Margin="12,8,10,0">
+                                                    <StackPanel Margin="12,8,10,5">
                                                         <TextBlock HorizontalAlignment="Left"
                                                                    Foreground="#D8D8D8"
                                                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content.Text}" />
-                                                        <Button Name="installButton" Content="Install">
+                                                        <Button Name="installButton"
+                                                                Command="{Binding ElementName=PackageDetailsWindow, Path=DataContext.OpenDependencyDetailsCommand}"
+                                                                CommandParameter="Test"
+                                                                Content="Install">
                                                             <Button.Template>
                                                                 <ControlTemplate TargetType="{x:Type Button}">
                                                                     <Border Name="ButtonBorder"
@@ -342,10 +340,10 @@
                                                                         <Trigger Property="IsEnabled" Value="False">
                                                                             <Setter Property="TextBlock.Foreground" Value="#999999" />
                                                                         </Trigger>
-                                                                        <DataTrigger Binding="{Binding Path=PackageManagerSearchElementViewModel.Model.IsDeprecated}" Value="False">
+                                                                        <DataTrigger Binding="{Binding Path=IsDeprecated}" Value="False">
                                                                             <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
                                                                         </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Path=PackageManagerSearchElementViewModel.Model.IsDeprecated}" Value="{x:Null}">
+                                                                        <DataTrigger Binding="{Binding Path=IsDeprecated}" Value="{x:Null}">
                                                                             <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
                                                                         </DataTrigger>
                                                                     </ControlTemplate.Triggers>
@@ -363,22 +361,23 @@
 
                         <!--  Host  -->
                         <DataGridTextColumn MinWidth="100"
-                                            Binding="{Binding host_dependencies, Converter={StaticResource PackageDetailsDependenciesConverter}}"
-                                            Header="Host"
+                                            Binding="{Binding Hosts}"
+                                            Header="{x:Static p:Resources.PackageDetailsHost}"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
 
                         <!--  Python  -->
                         <DataGridTextColumn MinWidth="110"
-                                            Binding="{Binding host_dependencies, Converter={StaticResource PackageDetailsPythonEngineConverter}}"
-                                            Header="Python"
+                                            Binding="{Binding PythonVersion}"
+                                            Header="{x:Static p:Resources.PackageDetailsPython}"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
 
                         <!--  Package  -->
                         <DataGridTextColumn Width="*"
                                             MinWidth="100"
-                                            Header="Package"
+                                            Binding="{Binding Packages}"
+                                            Header="{x:Static p:Resources.PackageDetailsPackage}"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True">
                             <DataGridTextColumn.CellStyle>
@@ -389,19 +388,22 @@
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                                <ItemsControl Background="#535353" ItemsSource="{Binding full_dependency_ids, Converter={StaticResource PackageDetailsPackagesConverter}}">
+                                                <ItemsControl Background="#535353" ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}">
                                                     <ItemsControl.ItemsPanel>
                                                         <ItemsPanelTemplate>
-                                                            <WrapPanel Margin="8,5" Background="#535353">
-                                                                <WrapPanel.Resources>
+                                                            <StackPanel Margin="8,5" Background="#535353">
+                                                                <StackPanel.Resources>
                                                                     <Style TargetType="Button">
                                                                         <Setter Property="Background" Value="Transparent" />
                                                                         <Setter Property="BorderThickness" Value="0" />
                                                                         <Setter Property="Foreground" Value="#6AC0E7" />
-                                                                        <Setter Property="Margin" Value="0,0,5,0" />
+                                                                        <Setter Property="HorizontalAlignment" Value="Left" />
+                                                                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                                                        <Setter Property="Command" Value="{Binding ElementName=PackageDetailsWindow, Path=DataContext.OpenDependencyDetailsCommand}" />
+                                                                        <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Content}" />
                                                                     </Style>
-                                                                </WrapPanel.Resources>
-                                                            </WrapPanel>
+                                                                </StackPanel.Resources>
+                                                            </StackPanel>
                                                         </ItemsPanelTemplate>
                                                     </ItemsControl.ItemsPanel>
                                                 </ItemsControl>

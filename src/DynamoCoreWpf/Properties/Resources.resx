@@ -1232,7 +1232,35 @@ You will get a chance to save your work.</value>
     <value>New</value>
     <comment>Displays next to the package name in the Package Search window if the package has been added in the last 30 days.</comment>
   </data>
-  <data name="PackageDownloadStateDownloaded" xml:space="preserve">
+	<data name="PackageDetailsDescription" xml:space="preserve">
+    <value>DESCRIPTION</value>
+    <comment>Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsLicense" xml:space="preserve">
+    <value>LICENSE:</value>
+    <comment>Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsVersionsAndPackageRequirements" xml:space="preserve">
+    <value>VERSIONS AND PACKAGE REQUIREMENTS</value>
+    <comment>Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsVersions" xml:space="preserve">
+    <value>Versions</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsHost" xml:space="preserve">
+    <value>Host</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsPython" xml:space="preserve">
+    <value>Python</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsPackage" xml:space="preserve">
+    <value>Package</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+	<data name="PackageDownloadStateDownloaded" xml:space="preserve">
     <value>Downloaded</value>
   </data>
   <data name="PackageDownloadStateDownloading" xml:space="preserve">

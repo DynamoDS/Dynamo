@@ -50,6 +50,7 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="PackageDetailItem.cs" />
     <Compile Include="PackageDetailsView.xaml.cs">
       <DependentUpon>PackageDetailsView.xaml</DependentUpon>
     </Compile>
@@ -81,6 +82,10 @@
     <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533B7C-0E1A-44A4-8511-B438645F052A}</Project>
       <Name>DynamoPackages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
+      <Project>{8872CA17-C10D-43B9-8393-5C5A57065EB0}</Project>
+      <Name>PythonNodeModels</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
