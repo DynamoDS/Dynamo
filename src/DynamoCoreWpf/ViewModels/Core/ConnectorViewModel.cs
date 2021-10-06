@@ -45,7 +45,6 @@ namespace Dynamo.ViewModels
         private bool connectorAnchorViewModelExists;
         private bool isDataFlowCollection;
         private bool anyPinSelected;
-        private bool anyPinHoveredOver = false;
         private double dotTop;
         private double dotLeft;
         private double endDotSize = 6;
@@ -494,23 +493,6 @@ namespace Dynamo.ViewModels
             {
                 anyPinSelected = value;
                 RaisePropertyChanged(nameof(AnyPinSelected));
-            }
-        }
-        /// <summary>
-        /// This flag let's the ConnectorViewModel when it can and cannot run a ConnectorContextMenu. It CANNOT
-        /// do so when IsHoveredOver for any pin is set to true, as in that case we want only that ConnectorPins 
-        /// ContextMenu to be enabled on right click.
-        /// </summary>
-        public bool AnyPinHoveredOver
-        {
-            get
-            {
-                return anyPinHoveredOver;
-            }
-            set
-            {
-                anyPinHoveredOver = value;
-                RaisePropertyChanged(nameof(AnyPinHoveredOver));
             }
         }
         public bool IsFrozen
