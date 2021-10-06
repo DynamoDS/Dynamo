@@ -837,6 +837,7 @@ namespace Dynamo.ViewModels
             var loadPackagesParams = new LoadPackageParams
             {
                 Preferences = preferenceSettings,
+                NewPaths = new List<string>()
             };
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            

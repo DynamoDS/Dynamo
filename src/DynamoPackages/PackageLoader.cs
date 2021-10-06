@@ -384,7 +384,7 @@ namespace Dynamo.PackageManager
         /// <param name="customNodeManager"></param>
         public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
-            foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
+            foreach (var path in loadPackageParams.NewPaths)
             {
                 // Append the definitions subdirectory for custom nodes.
                 var dir = path == DynamoModel.BuiltInPackagesToken ? PathManager.BuiltinPackagesDirectory : path;
@@ -395,7 +395,7 @@ namespace Dynamo.PackageManager
 
             foreach (var path in loadPackageParams.NewPaths)
             {
-                var packageDirectory = pathManager.PackagesDirectories.Where(x => x.StartsWith(path)).FirstOrDefault();
+                var packageDirectory = pathManager.PackagesDirectories.FirstOrDefault(x => x.StartsWith(path));
                 if (packageDirectory != null)
                 {
                     ScanPackageDirectories(packageDirectory, loadPackageParams.Preferences);
@@ -418,10 +418,7 @@ namespace Dynamo.PackageManager
             {
                 // Load only those recently addeed local packages (that are located in any of the new paths)
                 var newPackages = LocalPackages.Where(x => loadPackageParams.NewPaths.Any(y => x.RootDirectory.Contains(y)));
-                if (newPackages.Any())
-                {
-                    LoadPackages(newPackages);
-                }
+                LoadPackages(newPackages);
             }
         }
 
@@ -430,14 +427,7 @@ namespace Dynamo.PackageManager
             foreach (var packagesDirectory in pathManager.PackagesDirectories)
             {
 
-                if (!(preferences is IDisablePackageLoadingPreferences disablePrefs)) return;
-
-                var isACustomPackageDirectory = preferences.CustomPackageFolders.Where(x => packagesDirectory.StartsWith(x)).Any();
-                //if this directory is the builtin packages location
-                //and loading from there is disabled, don't scan the directory.
-                if ((disablePrefs.DisableBuiltinPackages && packagesDirectory == PathManager.BuiltinPackagesDirectory)
-                //or if custom package directories are disabled, and this is a custom package directory, don't scan.
-                || (disablePrefs.DisableCustomPackageLocations && isACustomPackageDirectory))
+                if (DynamoModel.IsDisabledPath(packagesDirectory, preferences))
                 {
                     Log(string.Format(Resources.PackagesDirectorySkipped, packagesDirectory));
                     continue;

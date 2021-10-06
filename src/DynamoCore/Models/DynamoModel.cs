@@ -805,7 +805,7 @@ namespace Dynamo.Models
             Logger.Log(string.Format("Dynamo -- Build {0}",
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
-            InitializeNodeLibrary(PreferenceSettings);
+            InitializeNodeLibrary();
 
             if (extensions.Any())
             {
@@ -1309,7 +1309,21 @@ namespace Dynamo.Models
             SearchModel.Add(outputSearchElement);
         }
 
-        private void InitializeNodeLibrary(IPreferences preferences)
+        internal static bool IsDisabledPath(string packagesDirectory, IPreferences preferences)
+        {
+            if (!(preferences is IDisablePackageLoadingPreferences disablePrefs)) return false;
+
+            var isACustomPackageDirectory = preferences.CustomPackageFolders.Where(x => packagesDirectory.StartsWith(x)).Any();
+
+            return
+            //if this directory is the builtin packages location
+            //and loading from there is disabled, don't scan the directory.
+            (disablePrefs.DisableBuiltinPackages && packagesDirectory == Core.PathManager.BuiltinPackagesDirectory)
+            //or if custom package directories are disabled, and this is a custom package directory, don't scan.
+            || (disablePrefs.DisableCustomPackageLocations && isACustomPackageDirectory);
+        }
+
+        private void InitializeNodeLibrary()
         {
             // Initialize all nodes inside of this assembly.
             InitializeIncludedNodes();
@@ -1336,6 +1350,10 @@ namespace Dynamo.Models
             // Load local custom nodes and locally imported libraries
             foreach (var path in pathManager.DefinitionDirectories)
             {
+                if(IsDisabledPath(Directory.GetParent(path).FullName, PreferenceSettings))
+                {
+                    continue;
+                }
                 // NOTE: extension will only be null if path is null
                 string extension = null;
                 try

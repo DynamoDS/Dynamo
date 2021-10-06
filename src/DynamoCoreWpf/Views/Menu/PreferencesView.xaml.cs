@@ -98,9 +98,7 @@ namespace Dynamo.Wpf.Views
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             managePackageCommandEvent?.Dispose();
-            Dynamo.Logging.Analytics.TrackEvent(
-                Actions.Close,
-                Categories.Preferences);
+            Analytics.TrackEvent(Actions.Close, Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
             viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();

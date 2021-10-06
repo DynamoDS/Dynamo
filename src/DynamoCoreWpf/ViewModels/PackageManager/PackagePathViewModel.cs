@@ -78,6 +78,7 @@ namespace Dynamo.ViewModels
         internal readonly PackageLoader packageLoader;
         internal LoadPackageParams loadPackageParams;
         private readonly CustomNodeManager customNodeManager;
+        private readonly List<string> packagePathsEnabled = new List<string>();
 
         public DelegateCommand AddPathCommand { get; private set; }
         public DelegateCommand DeletePathCommand { get; private set; }
@@ -257,12 +258,21 @@ namespace Dynamo.ViewModels
                     packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
                 }
             }
+            // Load packages from paths enabled by disable-path toggles if they are not already loaded.
+            LoadEnabledPackagePaths();
         }
 
         internal void SetPackagesScheduledState(string packagePath, bool packagePathDisabled)
         {
             var loadedPackages = packageLoader.LocalPackages.Where(x => x.LoadState.State == PackageLoadState.StateTypes.Loaded);
             var packagesInPath = loadedPackages.Where(x => x.RootDirectory.StartsWith(packagePath));
+
+            // If there are no packages loaded from packagePath and the toggle is turned off
+            // packages need to be loaded from packagePath once preferences dialog is closed.
+            if (!packagesInPath.Any() && !packagePathDisabled)
+            {
+                packagePathsEnabled.Add(packagePath);
+            }
 
             foreach (var pkg in packagesInPath)
             {
@@ -275,6 +285,16 @@ namespace Dynamo.ViewModels
                     pkg.UnmarkForUnload();
                 }
             }
+        }
+
+        internal void LoadEnabledPackagePaths()
+        {
+            if (packageLoader != null && packagePathsEnabled.Any())
+            {
+                loadPackageParams.NewPaths = packagePathsEnabled.Except(loadPackageParams.NewPaths);
+                packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+            }
+            packagePathsEnabled.Clear();
         }
 
         internal void InitializeRootLocations()
