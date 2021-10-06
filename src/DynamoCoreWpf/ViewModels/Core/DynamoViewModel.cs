@@ -725,6 +725,8 @@ namespace Dynamo.ViewModels
             model.ComputeModelDeserialized += model_ComputeModelDeserialized;
 
             preferencesViewModel = new PreferencesViewModel(this);
+
+            model.State = DynamoModel.DynamoModelState.StartedUI;
         }
 
         /// <summary>
