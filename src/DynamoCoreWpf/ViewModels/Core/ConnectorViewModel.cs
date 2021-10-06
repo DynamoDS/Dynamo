@@ -675,9 +675,8 @@ namespace Dynamo.ViewModels
 
         private void DisposeAnchor(object arg1, EventArgs arg2)
         {
-            ConnectorAnchorViewModel.Dispose();
             ConnectorAnchorViewModel.RequestDispose -= DisposeAnchor;
-            ConnectorAnchorViewModel = null;
+            ConnectorAnchorViewModel.Dispose();
         }
 
         internal void CreateContextMenu()
@@ -695,9 +694,8 @@ namespace Dynamo.ViewModels
         private void DisposeContextMenu(object arg1, EventArgs arg2)
         {
             PreviewState = PreviewState.None;
-            ConnectorContextMenuViewModel.Dispose();
             ConnectorContextMenuViewModel.RequestDispose -= DisposeContextMenu;
-            ConnectorContextMenuViewModel = null;
+            ConnectorContextMenuViewModel.Dispose();
         }
 
         /// <summary>
@@ -1073,11 +1071,6 @@ namespace Dynamo.ViewModels
             workspaceViewModel.Model.RecordAndDeleteModels(
                 new List<ModelBase>() { viewModelSender.Model });
             ConnectorModel.ConnectorPinModels.Remove(viewModelSender.Model);
-
-            if(ConnectorContextMenuViewModel!= null)
-            {
-                ConnectorContextMenuViewModel.RequestDisposeViewModel();
-            }
         }
 
         private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
