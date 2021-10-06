@@ -37,8 +37,6 @@ namespace Dynamo.PackageDetails
             // Private VM property, every time this is called we check if hte propety is null, if not do 
             // all fo the required cleanup and then creat itagain.
 
-            
-
             PackageDetailsViewModel packageDetailsViewModel = new PackageDetailsViewModel(packageManagerSearchElementViewModel);
             PackageDetailsView packageDetailsView = new PackageDetailsView(packageDetailsViewModel);
             

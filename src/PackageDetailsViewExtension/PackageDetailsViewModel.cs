@@ -3,7 +3,6 @@ using System.Linq;
 using Dynamo.Core;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.ViewModels;
-using Dynamo.ViewModels;
 using Greg.Responses;
 
 namespace Dynamo.PackageDetails
@@ -13,6 +12,7 @@ namespace Dynamo.PackageDetails
         public PackageManagerSearchElementViewModel PackageManagerSearchElementViewModel { get; }
 
         private List<PackageVersion> packageVersions;
+        private string license;
 
         /// <summary>
         /// Stores a reversed collection of the PackageVersions, since the DataGrid refuses to sort its collection in XAML.
@@ -24,6 +24,19 @@ namespace Dynamo.PackageDetails
             {
                 packageVersions = value;
                 RaisePropertyChanged(nameof(PackageVersions));
+            }
+        }
+
+        /// <summary>
+        /// This package's license type (e.g. MIT)
+        /// </summary>
+        public string License
+        {
+            get => license;
+            set
+            {
+                license = value;
+                RaisePropertyChanged(nameof(License));
             }
         }
 
@@ -42,8 +55,7 @@ namespace Dynamo.PackageDetails
                 .Reverse()
                 .ToList();
 
-            
-            
+            License = PackageManagerSearchElementViewModel.Model.Header.license;
         }
     }
 }

@@ -22,6 +22,7 @@
             <controls:PythonEngineConverter x:Key="PythonEngineConverter" />
             <controls:DependencyListConverter x:Key="DependencyListConverter" />
             <controls:EmptyListToParameterValueConverter x:Key="EmptyListToParameterValueConverter" />
+
             <Style x:Key="LabelStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                 <Setter Property="FontWeight" Value="Bold" />
@@ -58,7 +59,7 @@
                                     Background="#535353"
                                     BorderThickness="0"
                                     SnapsToDevicePixels="True">
-                                <TextBlock Margin="2,3,2,0"
+                                <TextBlock Margin="2,8,2,0"
                                            HorizontalAlignment="Stretch"
                                            VerticalAlignment="Top"
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -238,7 +239,135 @@
                            Style="{StaticResource LabelStyle}"
                            Text="VERSIONS AND PACKAGE REQUIREMENTS" />
 
-                <DataGrid Name="VersionsDataGrid"
+                <ListView Name="VersionsGrid"
+                          Padding="0"
+                          BorderThickness="0"
+                          Margin="-5,0,0,0"
+                          Background="#535353"
+                          ItemsSource="{Binding PackageManagerSearchElementViewModel.Model.Header.versions}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0"
+                                        BorderBrush="White"
+                                        BorderThickness="1">
+                                    <Grid Background="#535353" IsHitTestVisible="True">
+                                        <StackPanel Margin="10,8,10,4">
+                                            <StackPanel Margin="0,0,0,0" Orientation="Horizontal">
+                                                <TextBlock HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="#D8D8D8"
+                                                           Text="{Binding Path=version}" />
+                                                <Rectangle Width="10px"
+                                                           Height="10px"
+                                                           Margin="4,0,0,1"
+                                                           ToolTip="{Binding RelativeSource={RelativeSource AncestorType=local:PackageDetailsViewModel}, Path=License}"
+                                                           IsHitTestVisible="True">
+                                                    <Rectangle.Fill>
+                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Copyright.png" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                            </StackPanel>
+                                            <Button Name="installButton" Content="Install">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="{x:Type Button}">
+                                                        <Border Name="ButtonBorder"
+                                                                Height="25"
+                                                                Margin="-5,0,0,0"
+                                                                Padding="5,0"
+                                                                HorizontalAlignment="Left"
+                                                                BorderThickness="2"
+                                                                CornerRadius="2">
+                                                            <DockPanel>
+                                                                <Rectangle Width="10"
+                                                                           Height="10"
+                                                                           VerticalAlignment="Center"
+                                                                           DockPanel.Dock="Left">
+                                                                    <Rectangle.Style>
+                                                                        <Style TargetType="Rectangle">
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding Path=PackageManagerSearchElementViewModel.Model.IsDeprecated}" Value="True">
+                                                                                    <Setter Property="Fill">
+                                                                                        <Setter.Value>
+                                                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - disabled.png" />
+                                                                                        </Setter.Value>
+                                                                                    </Setter>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding Path=PackageManagerSearchElementViewModel.Model.IsDeprecated}" Value="False">
+                                                                                    <Setter Property="Fill">
+                                                                                        <Setter.Value>
+                                                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
+                                                                                        </Setter.Value>
+                                                                                    </Setter>
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding Path=PackageManagerSearchElementViewModel.Model.IsDeprecated}" Value="{x:Null}">
+                                                                                    <Setter Property="Fill">
+                                                                                        <Setter.Value>
+                                                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
+                                                                                        </Setter.Value>
+                                                                                    </Setter>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Rectangle.Style>
+                                                                </Rectangle>
+                                                                <TextBlock Name="textBlock"
+                                                                           Margin="3,0,0,0"
+                                                                           HorizontalAlignment="Left"
+                                                                           VerticalAlignment="Center"
+                                                                           Cursor="Hand"
+                                                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                                           FontSize="11px"
+                                                                           Text="{TemplateBinding Content}" />
+                                                            </DockPanel>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#4A4A4A" />
+                                                            </Trigger>
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#5F5F5F" />
+                                                            </Trigger>
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter Property="TextBlock.Foreground" Value="#999999" />
+                                                            </Trigger>
+                                                            <DataTrigger Binding="{Binding Path=PackageManagerSearchElementViewModel.Model.IsDeprecated}" Value="False">
+                                                                <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Path=PackageManagerSearchElementViewModel.Model.IsDeprecated}" Value="{x:Null}">
+                                                                <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                            </DataTrigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                                <Border Grid.Column="1"
+                                        BorderBrush="White"
+                                        BorderThickness="1">
+                                    <TextBlock Text="{Binding host_dependencies, Converter={StaticResource EmptyListToParameterValueConverter}, ConverterParameter=None}"/>
+                                </Border>
+                                <Border Grid.Column="2"
+                                        BorderBrush="White"
+                                        BorderThickness="1">
+                                    <TextBlock Text="{Binding full_dependency_ids, Converter={StaticResource DependencyListConverter}}"/>
+                                </Border>
+                                <Border Grid.Column="3"
+                                        BorderBrush="White"
+                                        BorderThickness="1" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <!--<DataGrid Name="VersionsDataGrid"
                           Margin="0,0,0,15"
                           VerticalAlignment="Stretch"
                           ItemsSource="{Binding PackageVersions, UpdateSourceTrigger=PropertyChanged}"
@@ -262,7 +391,7 @@
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type DataGridCell}">
                                                 <Grid Background="#535353" IsHitTestVisible="True">
-                                                    <StackPanel Margin="10,4">
+                                                    <StackPanel Margin="10,8,10,4">
                                                         <StackPanel Margin="0,0,0,0" Orientation="Horizontal">
                                                             <TextBlock HorizontalAlignment="Center"
                                                                        VerticalAlignment="Center"
@@ -370,7 +499,7 @@
                                             HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
                                             IsReadOnly="True" />
                     </DataGrid.Columns>
-                </DataGrid>
+                </DataGrid>-->
             </StackPanel>
         </ScrollViewer>
     </Grid>
