@@ -22,13 +22,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="width">Tooltip width</param>
         /// <param name="height">Tooltip height</param>
         /// <param name="direction">The pointer direction of the tooltip</param>
-        public Tooltip(HostControlInfo host, double width, double height, PointerDirection direction)
+        public Tooltip(HostControlInfo host, double width, double height, PointerDirection direction, double verticalTooltipOffset)
             :base(host, width, height)
         {
             SetPointerDirection(direction);
 
             //The offset represent the distance vertically from the top/bottom for showing the tooltip pointer (a triangle)
-            PointerVerticalOffset = Height / 8;
+            PointerVerticalOffset = (Height / 8) + verticalTooltipOffset;
             DrawPointerDirection(direction);
         }
 
@@ -126,6 +126,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             //The Popup Viewmodel and Host is passed as parameters to the PopupWindow so it will create the popup with the needed values (width, height)
             stepUIPopup = new PopupWindow(popupViewModel,HostPopupInfo);
+            
         }
     }
 }

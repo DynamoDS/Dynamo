@@ -210,21 +210,19 @@ b = c[w][x][y][z];";
 #endif
         protected double tolerance = 1e-4;
 
-        // Note: This test fails, even though the individual items pass as separate tests
-        //       This is preventing putting all of the tests in a single method
-        //[Test]
-        //[Category("UnitTests")]
-        //public void TestFunctionDefaultParameters()
-        //{
-        //    var codeBlockNode = CreateCodeBlockNode();
-        //    var guid = codeBlockNode.GUID.ToString();
+        [Test]
+        [Category("UnitTests")]
+        public void TestFunctionDefaultParameters()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            var guid = codeBlockNode.GUID.ToString();
 
-        //    UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1){return = x;}test();");
-        //    AssertPreviewValue(guid, 1);
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1){return = x;}test();");
+            AssertPreviewValue(guid, 1);
 
-        //    UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
-        //    AssertPreviewValue(guid, 3);
-        //}
+            UpdateCodeBlockNodeContent(codeBlockNode, "def test(x:int = 1, y:int= 2){return = x + y;}test();");
+            AssertPreviewValue(guid, 3);
+        }
 
         [Test]
         [Category("UnitTests")]
@@ -337,6 +335,162 @@ b = c[w][x][y][z];";
             Assert.AreEqual(1, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.AllConnectors.Count());
             AssertPreviewValue(guid, 3);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_NoWarning_WithFunctionDef()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunctionerror.dyn");
+            OpenModelInManualMode(openPath);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.AreEqual(string.Empty, cbn.ToolTipText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ImperativeFunctionCall_NoWarning_WithFunctionDef()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunctionerror_imperative.dyn");
+            OpenModelInManualMode(openPath);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.AreEqual(string.Empty, cbn.ToolTipText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_ThrowsWarning_WithoutFunctionDef()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunction_nodefn.dyn");
+            OpenModelInManualMode(openPath);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+            Assert.AreNotEqual(string.Empty, cbn.ToolTipText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ImperativeFunctionCall_ThrowsWarning_WithoutFunctionDef()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunction_nodefn_imperative.dyn");
+            OpenModelInManualMode(openPath);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+            Assert.AreNotEqual(string.Empty, cbn.ToolTipText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_ThrowsWarning_WithFunctionDefMarkedInactive()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunctionerror.dyn");
+            OpenModel(openPath);
+            
+            openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunction_nodefn.dyn");
+            OpenModelInManualMode(openPath);
+
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+            Assert.AreNotEqual(string.Empty, cbn.ToolTipText);
+
+            var core = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
+            var procedureNodes = core.CodeBlockList[0].procedureTable.Procedures;
+            var procNode = procedureNodes.Where(x => x.Name == "testfunc").FirstOrDefault();
+
+            Assert.NotNull(procNode);
+            Assert.False(procNode.IsActive);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ImperativeFunctionCall_ThrowsWarning_WithFunctionDefMarkedInactive()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunctionerror.dyn");
+            OpenModel(openPath);
+
+            openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunction_nodefn_imperative.dyn");
+            OpenModelInManualMode(openPath);
+
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+            Assert.AreNotEqual(string.Empty, cbn.ToolTipText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCallCBN_AfterFunctionDef_NoWarning()
+        {
+            var cbn1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(cbn1, "def test(x:int = 1, y:int= 2){return = x + y;}");
+
+            var cbn2 = CreateCodeBlockNode();
+
+            (CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel).RunSettings = 
+                new RunSettings(RunType.Manual, RunSettings.DefaultRunPeriod);
+            UpdateCodeBlockNodeContent(cbn2, "test();");
+
+            Assert.AreEqual(ElementState.Active, cbn2.State);
+            Assert.AreEqual(string.Empty, cbn2.ToolTipText);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCallCBN_NoFunctionDef_Warning()
+        {
+            var cbn1 = CreateCodeBlockNode();
+
+            (CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel).RunSettings =
+                new RunSettings(RunType.Manual, RunSettings.DefaultRunPeriod);
+            UpdateCodeBlockNodeContent(cbn1, "test();");
+
+            Assert.AreEqual(ElementState.PersistentWarning, cbn1.State);
+            Assert.AreNotEqual(string.Empty, cbn1.ToolTipText);
         }
 
         [Test]

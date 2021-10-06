@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Dynamo.Core
 {
@@ -60,6 +61,28 @@ namespace Dynamo.Core
             {
                 FilePath = filePath;
                 Options |= DisplayOptions.HasFilePath;
+            }
+        }
+
+        internal CrashPromptArgs(Exception e)
+        {
+            if (e != null)
+            {
+                var eDetails = new List<string>();
+                GetDetailsFromException(e, eDetails);
+
+                Details = string.Join($"\n\n-------- {nameof(Exception.InnerException)} --------\n\n", eDetails);
+                Options |= DisplayOptions.HasDetails;
+            }
+        }
+
+        private void GetDetailsFromException(Exception e, List<string> details)
+        {
+            details.Add(e.Message + "\n\n" + e.StackTrace);
+
+            if (e.InnerException != null)
+            {
+                GetDetailsFromException(e.InnerException, details);
             }
         }
 

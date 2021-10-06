@@ -24,7 +24,7 @@ namespace Dynamo.Wpf.Views
         {
             var digitRule = new HighlightingRule();
 
-            Color color = (Color)ColorConverter.ConvertFromString("#2585E5");
+            Color color = (Color)ColorConverter.ConvertFromString("#6ac0e7");
             digitRule.Color = new HighlightingColor()
             {
                 Foreground = new CustomizedBrush(color)
@@ -56,7 +56,7 @@ namespace Dynamo.Wpf.Views
         /// <returns></returns>
         public static HighlightingRule CreateClassHighlightRule(EngineController engineController)
         {
-            Color color = (Color)ColorConverter.ConvertFromString("#2E998F");
+            Color color = (Color)ColorConverter.ConvertFromString("#b7d78c");
             var classHighlightRule = new HighlightingRule
             {
                 Color = new HighlightingColor()
@@ -80,7 +80,7 @@ namespace Dynamo.Wpf.Views
         /// <returns></returns>
         public static HighlightingRule CreateMethodHighlightRule(EngineController engineController)
         {
-            Color color = (Color)ColorConverter.ConvertFromString("#417693");
+            Color color = (Color)ColorConverter.ConvertFromString("#84d7ce");
             var methodHighlightRule = new HighlightingRule
             {
                 Color = new HighlightingColor()
