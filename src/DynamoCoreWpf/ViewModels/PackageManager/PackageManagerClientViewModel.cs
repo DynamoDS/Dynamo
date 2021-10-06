@@ -711,10 +711,8 @@ namespace Dynamo.ViewModels
                     {
                         InstallPackage(matchingDownload.Result.handle, matchingDownload.Result.downloadPath, installPath);
                     }
-                   
                 }
             }
-
         }
 
         /// <summary>
@@ -741,7 +739,7 @@ namespace Dynamo.ViewModels
             Downloads.Add(packageDownloadHandle);
 
             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
-
+       
             return Task.Factory.StartNew(() =>
             {
                 // Attempt to download package
@@ -752,8 +750,9 @@ namespace Dynamo.ViewModels
                 if (!res.Success)
                 {
                     packageDownloadHandle.Error(res.Error);
-                    return (handle:packageDownloadHandle, downloadPath: string.Empty);
+                    pathDl = string.Empty;
                 }
+
                 return (handle: packageDownloadHandle, downloadPath: pathDl);
             });
         }
@@ -808,8 +807,6 @@ namespace Dynamo.ViewModels
             {
                 PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
-
-                dynPkg.LoadState.SetAsLoaded();
             }
             else
             {

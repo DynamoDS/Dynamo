@@ -105,8 +105,7 @@
                              Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              MinWidth="200"
                              CaretBrush="{StaticResource CommonSidebarTextColor}"
-                             Margin="26,0,0,-1"
-                             TextChanged="OnSearchTextBoxTextChanged" />
+                             Margin="26,0,0,-1"/>
                 </Grid>
             </Border>
         </Grid>

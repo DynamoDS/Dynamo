@@ -151,5 +151,32 @@
 				}
 			}
 		]
+	},
+	{
+		"Name": "Packages",
+		"GuideSteps": [
+			{
+				"Sequence": 0,
+				"Name": "packages",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"PointerVerticalOffset": -50,
+				"Width": 480,
+				"Height": 512,
+				"StepContent": {
+					"Title": "PackagesGuideLearnAbout",
+					"FormattedText": "PackagesGuideLearnAboutText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "relative",
+					"HostUIElementString": "PackageManagerMenu",
+					"VerticalPopupOffset": -20,
+					"HorizontalPopupOffset": 85,
+					"HighlightColor": "#EF9362",
+					"HtmlPage": "learnPackages.html",
+					"HeightBoxDelta": 3
+				}
+			}
+		]
 	}
 ]
