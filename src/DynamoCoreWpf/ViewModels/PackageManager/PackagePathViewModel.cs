@@ -288,6 +288,10 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Loads packages in added paths if paths are enabled and these packages are not already loaded.
+        /// </summary>
+        /// <param name="addedPaths"></param>
         internal void LoadEnabledPackagePaths(IEnumerable<string> addedPaths)
         {
             if (packageLoader != null && packagePathsEnabled.Any())
