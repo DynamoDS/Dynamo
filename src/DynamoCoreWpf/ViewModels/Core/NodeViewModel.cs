@@ -832,13 +832,13 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in nodeLogic.InPorts)
             {
-                PortViewModel inportViewModel = SubscribePortEvents(item);
+                PortViewModel inportViewModel = SubscribeInPortEvents(item);
                 InPorts.Add(inportViewModel);
             }
 
             foreach (var item in nodeLogic.OutPorts)
             {
-                PortViewModel outportViewModel = SubscribePortEvents(item);
+                PortViewModel outportViewModel = SubscribeOutPortEvents(item);
                 OutPorts.Add(outportViewModel);
             }
         }
@@ -1048,7 +1048,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    PortViewModel inportViewModel = SubscribePortEvents(item as PortModel);
+                    PortViewModel inportViewModel = SubscribeInPortEvents(item as PortModel);
                     InPorts.Add(inportViewModel);
                 }
             }
@@ -1084,7 +1084,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    PortViewModel outportViewModel = SubscribePortEvents(item as PortModel);
+                    PortViewModel outportViewModel = SubscribeOutPortEvents(item as PortModel);
                     OutPorts.Add(outportViewModel);
                 }
             }
@@ -1096,6 +1096,7 @@ namespace Dynamo.ViewModels
                 {
                     PortViewModel portToRemove = UnSubscribePortEvents(OutPorts.ToList().First(x => x.PortModel == item));
                     OutPorts.Remove(portToRemove);
+                    portToRemove.Dispose();
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Reset)
@@ -1103,6 +1104,7 @@ namespace Dynamo.ViewModels
                 foreach (var p in OutPorts)
                 {
                     UnSubscribePortEvents(p);
+                    p.Dispose();
                 }
                 OutPorts.Clear();
             }
@@ -1110,13 +1112,27 @@ namespace Dynamo.ViewModels
 
 
         /// <summary>
-        /// Registers the port events.
+        /// Registers the in port events.
         /// </summary>
         /// <param name="item">PortModel.</param>
         /// <returns></returns>
-        private PortViewModel SubscribePortEvents(PortModel item)
+        protected virtual PortViewModel SubscribeInPortEvents(PortModel item)
         {
-            PortViewModel portViewModel = new PortViewModel(this, item);
+            InPortViewModel portViewModel = new InPortViewModel(this, item);
+            portViewModel.MouseEnter += OnRectangleMouseEnter;
+            portViewModel.MouseLeave += OnRectangleMouseLeave;
+            portViewModel.MouseLeftButtonDown += OnMouseLeftButtonDown;
+            return portViewModel;
+        }
+
+        /// <summary>
+        /// Registers the out port events.
+        /// </summary>
+        /// <param name="item">PortModel.</param>
+        /// <returns></returns>
+        protected virtual PortViewModel SubscribeOutPortEvents(PortModel item)
+        {
+            OutPortViewModel portViewModel = new OutPortViewModel(this, item);
             portViewModel.MouseEnter += OnRectangleMouseEnter;
             portViewModel.MouseLeave += OnRectangleMouseLeave;
             portViewModel.MouseLeftButtonDown += OnMouseLeftButtonDown;

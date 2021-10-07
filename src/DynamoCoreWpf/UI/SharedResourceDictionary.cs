@@ -64,6 +64,8 @@ namespace Dynamo.UI
         private static ResourceDictionary _connectorsDictionary;
         private static ResourceDictionary _portsDictionary;
         private static ResourceDictionary _sidebarGridDictionary;
+        private static ResourceDictionary outPortsDictionary;
+        private static ResourceDictionary inPortsDictionary;
 
         public static string ThemesDirectory 
         {
@@ -117,6 +119,16 @@ namespace Dynamo.UI
         public static Uri PortsDictionaryUri
         {
             get { return new Uri(Path.Combine(ThemesDirectory, "Ports.xaml")); }
+        }
+
+        public static Uri OutPortsDictionaryUri
+        {
+            get { return new Uri(Path.Combine(ThemesDirectory, "OutPorts.xaml")); }
+        }
+
+        public static Uri InPortsDictionaryUri
+        {
+            get { return new Uri(Path.Combine(ThemesDirectory, "InPorts.xaml")); }
         }
 
         public static Uri SidebarGridDictionaryUri
@@ -188,10 +200,27 @@ namespace Dynamo.UI
             }
         }
 
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortsDictionary or OutPortsDictionary")]
         public static ResourceDictionary PortsDictionary
         {
             get {
                 return _portsDictionary ?? (_portsDictionary = new ResourceDictionary() {Source = PortsDictionaryUri});
+            }
+        }
+
+        public static ResourceDictionary OutPortsDictionary
+        {
+            get
+            {
+                return outPortsDictionary ?? (outPortsDictionary = new ResourceDictionary() { Source = OutPortsDictionaryUri });
+            }
+        }
+
+        public static ResourceDictionary InPortsDictionary
+        {
+            get
+            {
+                return inPortsDictionary ?? (inPortsDictionary = new ResourceDictionary() { Source = InPortsDictionaryUri });
             }
         }
 

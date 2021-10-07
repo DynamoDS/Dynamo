@@ -584,7 +584,7 @@
                                         Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
                                         DockPanel.Dock="Right">
                                     <Button.Style>
-                                        <Style BasedOn="{StaticResource resultButtonStyle}" TargetType="Button">
+                                        <Style BasedOn="{StaticResource CtaButtonStyle}" TargetType="Button">
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="{x:Type Button}">
