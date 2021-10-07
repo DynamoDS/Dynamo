@@ -374,6 +374,7 @@ namespace Dynamo.PackageManager
         /// This method is called when custom nodes and packages need to be reloaded if there are new package paths.
         /// </summary>
         /// <param name="newPaths"></param>
+        /// <param name="preferences"></param>
         /// <param name="customNodeManager"></param>
         internal void LoadCustomNodesAndPackages(IEnumerable<string> newPaths, IPreferences preferences, CustomNodeManager customNodeManager)
         {
