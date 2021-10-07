@@ -1,15 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
-using DynamoUnits;
-using ProtoCore.AST.AssociativeAST;
-using Newtonsoft.Json;
-using ProtoCore.AST.ImperativeAST;
-using AstFactory = ProtoCore.AST.AssociativeAST.AstFactory;
-using DoubleNode = ProtoCore.AST.AssociativeAST.DoubleNode;
-using System.Collections;
-using DynamoUnits.Properties;
 using Autodesk.DesignScript.Runtime;
 using System.Reflection;
 using System.IO;
@@ -46,10 +37,17 @@ namespace DynamoUnits
             return ForgeUnitsEngine.convert(value, fromUnit, toUnit);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="targetUnit"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         public static double ParseExpressionByUnit(Unit targetUnit, string expression)
         {
             return ForgeUnitsEngine.parse(targetUnit.TypeId, expression);
         }
+
         /// <summary>
         /// Parses a string to a unit value.
         /// </summary>
@@ -62,30 +60,35 @@ namespace DynamoUnits
             return ForgeUnitsEngine.parse(targetUnit, expression);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         public static double ParseExpression(string expression)
         {
             return ForgeUnitsEngine.parseUnitless(expression);
         }
 
         /// <summary>
-        /// Returns a formatted unit value string using unitType and unitSymbol type ids.
+        /// Returns a formatted unit value string using unit and symbol type ids.
         /// Sample: '12.345 m3' is a value of '12.345', of unit 'meter', of symbol 'meter cubed (m3)', of number format 'decimal', of precision '3'.
         /// </summary>
         /// <param name="numValue"></param>
         /// <param name="unitTypeId"></param>
-        /// <param name="unitSymbolId"></param>
+        /// <param name="symbolTypeId"></param>
         /// <param name="precision"></param>
         /// <param name="decimalFormat"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static string ReturnFormattedString(double numValue, string unitTypeId, string unitSymbolId, int precision, string numberFormat)
+        public static string ReturnFormattedString(double numValue, string unitTypeId, string symbolTypeId, int precision, string numberFormat)
         {
             NumberFormat actualNumberFormat = StringToNumberFormat(numberFormat);
 
             Unit unit = Unit.ByTypeID(unitTypeId);
-            UnitSymbol unitSymbol = UnitSymbol.ByTypeID(unitSymbolId);
+            Symbol symbol = Symbol.ByTypeID(symbolTypeId);
 
-            return ReturnFormattedString(numValue, unit, unitSymbol, precision, actualNumberFormat);
+            return ReturnFormattedString(numValue, unit, symbol, precision, actualNumberFormat);
         }
 
         public static NumberFormat StringToNumberFormat(object stringObject)
@@ -108,38 +111,38 @@ namespace DynamoUnits
         /// </summary>
         /// <param name="numValue"></param>
         /// <param name="unit"></param>
-        /// <param name="unitSymbol"></param>
+        /// <param name="symbol"></param>
         /// <param name="precision"></param>
-        /// <param name="decimalFormat"></param>
+        /// <param name="numberFormat"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static string ReturnFormattedString(double numValue, Unit unit, UnitSymbol unitSymbol, int precision, NumberFormat numberFormat)
+        public static string ReturnFormattedString(double numValue, Unit unit, Symbol symbol, int precision, NumberFormat numberFormat)
         {
             switch (numberFormat)
             {
                 case NumberFormat.Decimal:
-                    return UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
+                    return Symbol.StringifyDecimal(numValue, precision, symbol, true);
                 case NumberFormat.Fraction:
-                    return UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
+                    return Symbol.StringifyFraction(numValue, precision, symbol);
                 default:
                     throw new Exception("Cannot stringify as there is no correct number format provided.");
             }
         }
 
         /// <summary>
-        /// Helper function to cast an object to a type UnitSymbol.
+        /// Helper function to cast an object to a type Symbol.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static UnitSymbol CastToUnitSymbol(object value)
+        public static Symbol CastToSymbol(object value)
         {
             if (value is null) return null;
 
-            var symbol = value as UnitSymbol;
+            var symbol = value as Symbol;
             if (symbol is null)
             {
-                throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(UnitSymbol)}");
+                throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(Symbol)}");
             }
             return symbol;
         }
@@ -224,20 +227,20 @@ namespace DynamoUnits
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public static List<UnitSymbol> ConvertSymbolDictionaryToList(
+        public static List<Symbol> ConvertSymbolDictionaryToList(
             Dictionary<string, ForgeUnitsCLR.Symbol> forgeDictionary)
         {
-            var dynSymbols = new List<UnitSymbol>();
+            var dynSymbols = new List<Symbol>();
             var values = forgeDictionary.Values.ToArray();
             for (int i = 0; i < values.Length - 1; i++)
             {
                 if (TypeIdShortName(values[i].getTypeId()).Equals(TypeIdShortName(values[i + 1].getTypeId())))
                     continue;
 
-                dynSymbols.Add(new UnitSymbol(values[i]));
+                dynSymbols.Add(new Symbol(values[i]));
             }
 
-            dynSymbols.Add(new UnitSymbol(values.Last()));
+            dynSymbols.Add(new Symbol(values.Last()));
 
             return dynSymbols;
         }

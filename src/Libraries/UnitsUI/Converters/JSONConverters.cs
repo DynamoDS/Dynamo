@@ -48,4 +48,24 @@ namespace UnitsUI.Converters
             writer.WriteValue(unit.TypeId);
         }
     }
+
+    internal class ForgeSymbolConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(DynamoUnits.Symbol);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            string typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
+            return DynamoUnits.Symbol.ByTypeID(typedId);
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var symbol = (DynamoUnits.Symbol)value;
+            writer.WriteValue(symbol.TypeId);
+        }
+    }
 }

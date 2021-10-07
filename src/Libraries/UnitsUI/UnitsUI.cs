@@ -608,30 +608,6 @@ namespace UnitsUI
         #endregion
     }
 
-   
-
-    
-
-    internal class ForgeUnitSymbolConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(DynamoUnits.UnitSymbol);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            string typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
-            return DynamoUnits.UnitSymbol.ByTypeID(typedId);
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var unitSymbol = (DynamoUnits.UnitSymbol)value;
-            writer.WriteValue(unitSymbol.TypeId);
-        }
-    }
-
     [NodeName("Units")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeDescription("UnitsUIDescription", typeof(UnitsUI.Properties.Resources))]
@@ -773,7 +749,7 @@ namespace UnitsUI
                     AstFactory.BuildStringNode((string)Items[SelectedIndex].Item)
                 };
 
-                var func = new Func<string, DynamoUnits.UnitSymbol>(DynamoUnits.UnitSymbol.ByTypeID);
+                var func = new Func<string, DynamoUnits.Symbol>(DynamoUnits.Symbol.ByTypeID);
                 node = AstFactory.BuildFunctionCall(func, args);
             }
 
@@ -819,11 +795,11 @@ namespace UnitsUI
     public class UnitValueOutputDropdown: NodeModel
     {
         private DynamoUnits.Unit selectedUnit;
-        private DynamoUnits.UnitSymbol selectedSymbol;
+        private DynamoUnits.Symbol selectedSymbol;
         private int selectedPrecision;
         private NumberFormat selectedFormat;
         private List<DynamoUnits.Unit> allUnits;
-        private List<DynamoUnits.UnitSymbol> allSymbols;
+        private List<DynamoUnits.Symbol> allSymbols;
         private List<int> allPrecisions;
         private List<bool> allFormats;
         private string displayValue;
@@ -851,8 +827,8 @@ namespace UnitsUI
        /// <summary>
        /// The selected 'Symbol' from the Symbols UI dropdown.
        /// </summary>
-        [JsonProperty("UnitSymbol"), JsonConverter(typeof(ForgeUnitSymbolConverter))]
-        public UnitSymbol SelectedSymbol 
+        [JsonProperty("Symbol"), JsonConverter(typeof(ForgeSymbolConverter))]
+        public Symbol SelectedSymbol 
         {
             get { return selectedSymbol; }
             set
@@ -902,7 +878,7 @@ namespace UnitsUI
         /// The collection of all available symbols for the dropdown.
         /// </summary>
         [JsonIgnore]
-        public List<DynamoUnits.UnitSymbol> AllSymbols { get; set; }
+        public List<DynamoUnits.Symbol> AllSymbols { get; set; }
 
         /// <summary>
         /// The collection of all available precisions for the dropdown.
@@ -1004,8 +980,8 @@ namespace UnitsUI
         /// <summary>
         /// Property storing the node input of type unit symbol.
         /// </summary>
-        [JsonProperty("UnitSymbol"), JsonConverter(typeof(ForgeUnitSymbolConverter))]
-        public UnitSymbol Symbol { get; set; }
+        [JsonProperty("Symbol"), JsonConverter(typeof(ForgeSymbolConverter))]
+        public Symbol Symbol { get; set; }
 
         /// <summary>
         /// Property storing the node input of type int/precision.
@@ -1042,7 +1018,7 @@ namespace UnitsUI
 
             Value = Convert.ToDouble(inputs[0]);
             Unit = DynamoUnits.Utilities.CastToUnit(inputs[1]);
-            Symbol = DynamoUnits.Utilities.CastToUnitSymbol(inputs[2]);
+            Symbol = DynamoUnits.Utilities.CastToSymbol(inputs[2]);
             Precision = Convert.ToInt32(inputs[3]);
             Format = Utilities.StringToNumberFormat(inputs[4]);
 

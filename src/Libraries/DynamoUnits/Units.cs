@@ -1776,12 +1776,12 @@ namespace DynamoUnits
             return scale * Math.Round(d / scale, digits);
         }
 
-        public static double ParseUnit(string value, string unitSymbol)
+        public static double ParseUnit(string value, string symbol)
         {
             double m;
 
-            if (value.ToLower().Contains(unitSymbol))
-                value = value.Replace(unitSymbol, "");
+            if (value.ToLower().Contains(symbol))
+                value = value.Replace(symbol, "");
 
             if (!double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out m))
             {

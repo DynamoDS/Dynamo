@@ -1,15 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using DynamoUnits;
-using ProtoCore.AST.AssociativeAST;
-using Newtonsoft.Json;
-using ProtoCore.AST.ImperativeAST;
-using AstFactory = ProtoCore.AST.AssociativeAST.AstFactory;
-using DoubleNode = ProtoCore.AST.AssociativeAST.DoubleNode;
-using System.Collections;
-using DynamoUnits.Properties;
 
 namespace DynamoUnits
 {
@@ -22,7 +12,14 @@ namespace DynamoUnits
             this.forgeQuantity = quantity ?? throw new ArgumentNullException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string TypeId => forgeQuantity.getTypeId();
+        
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name => forgeQuantity.getName();
 
         /// <summary>

@@ -193,7 +193,7 @@ namespace UnitsUI
             }
         }
 
-        public DynamoUnits.UnitSymbol SelectedSymbol
+        public DynamoUnits.Symbol SelectedSymbol
         {
             get { return unitValueDropdownModel.SelectedSymbol; }
             set
@@ -232,7 +232,7 @@ namespace UnitsUI
                 RaisePropertyChanged(nameof(AllUnits));
             }
         }
-        public List<DynamoUnits.UnitSymbol> AllSymbols
+        public List<DynamoUnits.Symbol> AllSymbols
         {
             get { return unitValueDropdownModel.AllSymbols; }
             set

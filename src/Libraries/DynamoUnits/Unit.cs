@@ -1,18 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using System.Linq;
-using System.Windows;
-
-using DynamoUnits;
-using ProtoCore.AST.AssociativeAST;
-using Newtonsoft.Json;
-using ProtoCore.AST.ImperativeAST;
-using AstFactory = ProtoCore.AST.AssociativeAST.AstFactory;
-using DoubleNode = ProtoCore.AST.AssociativeAST.DoubleNode;
-using System.Collections;
-using DynamoUnits.Properties;
-
 namespace DynamoUnits
 {
     public class Unit
@@ -48,6 +36,9 @@ namespace DynamoUnits
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List<Quantity> QuantitiesContainingUnit
         {
             get
@@ -56,8 +47,6 @@ namespace DynamoUnits
                 return Utilities.CovertQuantityDictionaryToList(quantities);
             }
         }
-
-        //public ForgeUnitsCLR.UnitSystem UnitSystem => forgeUnit.getUnitSystem();
 
         /// <summary>
         /// Create a Unit by a TypeID
@@ -69,12 +58,12 @@ namespace DynamoUnits
             return new Unit(Utilities.ForgeUnitsEngine.getUnit(typeId));
         }
 
-        //[IsVisibleInDynamoLibrary(false)]
-        //public static ForgeUnitsCLR.UnitSystem UnitSystemById(int id)
-        //{
-        //    return (ForgeUnitsCLR.UnitSystem)id;
-        //}
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fromUnit"></param>
+        /// <param name="toUnit"></param>
+        /// <returns></returns>
         public static bool AreUnitsConvertible(Unit fromUnit, Unit toUnit)
         {
             return Utilities.ForgeUnitsEngine.areUnitsConvertible(fromUnit.TypeId, toUnit.TypeId);

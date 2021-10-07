@@ -827,31 +827,31 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.Name"
+                  "path": "DynamoUnits.DynamoUnits.Symbol.Name"
                 },
                 {
-                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.TypeId"
+                  "path": "DynamoUnits.DynamoUnits.Symbol.TypeId"
                 },
                 {
-                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.ByTypeID"
+                  "path": "DynamoUnits.DynamoUnits.Symbol.ByTypeID"
                 },
                 {
-                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.Unit"
+                  "path": "DynamoUnits.DynamoUnits.Symbol.Unit"
                 },
                 {
-                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.Text"
+                  "path": "DynamoUnits.DynamoUnits.Symbol.Text"
                 },
                 {
-                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.Space"
+                  "path": "DynamoUnits.DynamoUnits.Symbol.Space"
                 },
                 {
-                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.SymbolsByUnit"
+                  "path": "DynamoUnits.DynamoUnits.Symbol.SymbolsByUnit"
                 },
                 {
-                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.StringifyDecimal"
+                  "path": "DynamoUnits.DynamoUnits.Symbol.StringifyDecimal"
                 },
                 {
-                  "path": "DynamoUnits.DynamoUnits.UnitSymbol.StringifyFraction"
+                  "path": "DynamoUnits.DynamoUnits.Symbol.StringifyFraction"
                 }
               ],
               "childElements": []

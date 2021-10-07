@@ -47,6 +47,7 @@ using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
+using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Models
