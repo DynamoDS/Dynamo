@@ -240,6 +240,24 @@
                            Foreground="{StaticResource PreferencesWindowFontColor}"
                            Text="{x:Static p:Resources.PackageSearchHeader}"
                            TextAlignment="Left" />
+                <Image Name="DisablePackageInstallIcon"
+                           Width="24"
+                           Height="24"
+                           Margin="0,15,5,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           ToolTip="{x:Static p:Resources.DisablePackageInstallIconTooltip}">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Preferences.DisableCustomPackageLocations}" Value="True">
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/alert_2.png" />
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
             </DockPanel>
         </Border>
 
@@ -584,7 +602,7 @@
                                         Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
                                         DockPanel.Dock="Right">
                                     <Button.Style>
-                                        <Style BasedOn="{StaticResource resultButtonStyle}" TargetType="Button">
+                                        <Style BasedOn="{StaticResource CtaButtonStyle}" TargetType="Button">
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="{x:Type Button}">

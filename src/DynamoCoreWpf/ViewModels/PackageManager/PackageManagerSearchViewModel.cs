@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Interfaces;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.ViewModels;
@@ -388,6 +389,11 @@ namespace Dynamo.PackageManager
         public ObservableCollection<PackageDownloadHandle> Downloads
         {
             get { return PackageManagerClientViewModel.Downloads; }
+        }
+
+        public IPreferences Preferences
+        {
+            get { return PackageManagerClientViewModel.DynamoViewModel.PreferenceSettings; }
         }
 
         #endregion Properties & Fields

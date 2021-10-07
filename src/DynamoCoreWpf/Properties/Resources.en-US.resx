@@ -2649,6 +2649,10 @@ Delete the following packages: {2}?
     <value>Search for packages</value>
     <comment>The title of the package search manager window.</comment>
   </data>
+  <data name="DisablePackageInstallIconTooltip" xml:space="preserve">
+    <value>All custom package paths have been disabled in Preferences. Packages cannot be installed unless they are re-enabled.</value>
+    <comment>Disable package install icon tooltip.</comment>
+  </data>
   <data name="PackageSearchSortBy" xml:space="preserve">
     <value>SORT BY</value>
     <comment>Header in Package Search 'Sort By' Button  Context Menu</comment>

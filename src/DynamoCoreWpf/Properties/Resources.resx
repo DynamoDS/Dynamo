@@ -1295,6 +1295,10 @@ You will get a chance to save your work.</value>
     <value>Search for packages</value>
     <comment>The title of the package search manager window.</comment>
   </data>
+  <data name="DisablePackageInstallIconTooltip" xml:space="preserve">
+    <value>All custom package paths have been disabled in Preferences. Packages cannot be installed unless they are re-enabled.</value>
+    <comment>Disable package install icon tooltip.</comment>
+  </data>
   <data name="PackageSearchViewContextMenuSortByVotes" xml:space="preserve">
     <value>Votes</value>
     <comment>Sort package by user votes</comment>
