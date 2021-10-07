@@ -602,6 +602,7 @@
                                 <Button Name="installButton"
                                         Command="{Binding DownloadLatestCommand}"
                                         Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
+                                        IsEnabled="{Binding IsEnabled}"
                                         DockPanel.Dock="Right">
                                     <Button.Style>
                                         <Style BasedOn="{StaticResource CtaButtonStyle}" TargetType="Button">
@@ -616,12 +617,12 @@
                                                                    FontSize="11"
                                                                    Text="{TemplateBinding Content}" />
                                                         <ControlTemplate.Triggers>
-                                                            <Trigger Property="IsEnabled" Value="False">
-                                                                <Setter Property="TextBlock.Foreground" Value="#999999" />
-                                                            </Trigger>
                                                             <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
                                                                 <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
                                                             </DataTrigger>
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter Property="TextBlock.Foreground" Value="#999999" />
+                                                            </Trigger>
                                                             <DataTrigger Binding="{Binding CanInstall}" Value="False">
                                                                 <Setter Property="TextBlock.Foreground" Value="#999999" />
                                                             </DataTrigger>

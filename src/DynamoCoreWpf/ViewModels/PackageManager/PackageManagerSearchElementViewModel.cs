@@ -24,17 +24,19 @@ namespace Dynamo.PackageManager.ViewModels
         public new PackageManagerSearchElement Model { get; internal set; }
 
         /// <summary>
-        /// Alternative constructor which takes a Function object in order to
-        /// assist communication between the PackageManagerSearchViewModel
-        /// and the PackageManagerSearchElementViewModel.
+        /// Alternative constructor to assist communication between the 
+        /// PackageManagerSearchViewModel and the PackageManagerSearchElementViewModel.
         /// </summary>
         /// <param name="element">A PackageManagerSearchElement</param>
         /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
         /// <param name="install">Whether a package can be installed.</param>
-        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool install) : base(element)
+        /// <param name="isEnabled">Whether the package is enabled for install in the UI.</param>
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool install, bool isEnabled = true) 
+            : base(element)
         {
             this.Model = element;
             CanInstall = install;
+            IsEnabled = isEnabled;
 
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded);
 
@@ -55,7 +57,7 @@ namespace Dynamo.PackageManager.ViewModels
         }
 
         /// <summary>
-        /// PackageManagerSearchElementViewModel Constructor
+        /// PackageManagerSearchElementViewModel Constructor (only used for testing in Dynamo).
         /// </summary>
         /// <param name="element">A PackageManagerSearchElement</param>
         /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
@@ -77,6 +79,23 @@ namespace Dynamo.PackageManager.ViewModels
             {
                 canInstall = value;
                 RaisePropertyChanged(nameof(CanInstall));
+            }
+        }
+
+        private bool isEnabled;
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsEnabled
+        {
+            get 
+            {
+                return isEnabled;
+            }
+            private set
+            {
+                isEnabled = value;
+                RaisePropertyChanged(nameof(IsEnabled));
             }
         }
 

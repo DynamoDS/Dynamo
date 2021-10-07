@@ -873,12 +873,13 @@ namespace Dynamo.PackageManager
 
             List<PackageManagerSearchElementViewModel> list = null;
 
+            var isEnabled = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
             if (!String.IsNullOrEmpty(query))
             {
                 list = Filter(SearchDictionary.Search(query)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, 
-                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider, 
-                        CanInstallPackage(x.Name)))
+                    .Select(x => new PackageManagerSearchElementViewModel(x,
+                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
+                        CanInstallPackage(x.Name), isEnabled))
                     .Take(MaxNumSearchResults))
                     .ToList();
             }
@@ -886,9 +887,9 @@ namespace Dynamo.PackageManager
             {
                 // with null query, don't show deprecated packages
                 list = Filter(LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, 
-                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider, 
-                        CanInstallPackage(x.Name))))
+                    .Select(x => new PackageManagerSearchElementViewModel(x,
+                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
+                        CanInstallPackage(x.Name), isEnabled)))
                     .ToList();
                 Sort(list, this.SortingKey);
             }
