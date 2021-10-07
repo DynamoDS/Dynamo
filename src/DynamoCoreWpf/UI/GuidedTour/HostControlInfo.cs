@@ -111,7 +111,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public double HeightBoxDelta { get => heightBoxDelta; set => heightBoxDelta = value; }
 
         /// <summary>
-        /// The html page anme that is going to be rendered inside the popup
+        /// The html page that is going to be rendered inside the popup
         /// </summary>
         [JsonProperty("HtmlPage")]
         public HtmlPage HtmlPage { get => htmlPage; set => htmlPage = value; }
@@ -122,9 +122,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private string fileName;
         private Dictionary<string,string> resources;
 
+        /// <summary>
+        /// A dictionary containing the key word to be replaced in page and the filename as values
+        /// </summary>
         [JsonProperty("Resources")]
         public Dictionary<string, string> Resources { get => resources; set => resources = value; }
 
+        /// <summary>
+        /// Filename of the HTML page
+        /// </summary>
         [JsonProperty("FileName")]
         public string FileName { get => fileName; set => fileName = value; }
     }
