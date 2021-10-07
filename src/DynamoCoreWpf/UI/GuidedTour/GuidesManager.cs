@@ -237,7 +237,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     {
                         foreach (var automation in step.UIAutomation)
                         {
-                            newStep.UIAutomation.Add(CreateStepUIAutomationInfo(automation));
+                            var automationStepInfo = CreateStepUIAutomationInfo(automation);
+                            newStep.UIAutomation.Add(automationStepInfo);
                         }
                     }
 

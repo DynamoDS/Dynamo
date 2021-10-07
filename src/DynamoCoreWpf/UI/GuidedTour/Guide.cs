@@ -141,10 +141,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This method will be executed for moving to the next step, basically searchs the next step in the list, show it and hides the current one.
+        /// This method will be executed for moving to the next step, basically searches the next step in the list, shows it and hides the current one.
         /// </summary>
         /// <param name="CurrentStepSequence">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
-        public void NextStep(int CurrentStepSequence)
+        internal void NextStep(int CurrentStepSequence)
         {
             HideCurrentStep(CurrentStepSequence);
             if (CurrentStepSequence < TotalSteps)
@@ -154,10 +154,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This method will be executed for moving to the previous step, basically searchs the previous step in the list, show it and hides the current one.
+        /// This method will be executed for moving to the previous step, basically searches the previous step in the list, shows it and hides the current one.
         /// </summary>
         /// <param name="CurrentStepSequence">This parameter is the "sequence" of the current Step so we can get the previous Step from the list</param>
-        public void PreviousStep(int CurrentStepSequence)
+        internal void PreviousStep(int CurrentStepSequence)
         {
             HideCurrentStep(CurrentStepSequence);
             if (CurrentStepSequence > 0)
@@ -168,7 +168,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
 
         /// <summary>
-        /// This method will be executed for moving to the next, previous or current step, basically searchs the step in the list.
+        /// This method will be executed for moving to the next, previous or current step, basically searches the step in the list.
         /// </summary>
         /// <param name="stepFlow">The direction flow of the Guide, can be BACKWARD, FORWARD or CURRENT</param>
         /// <param name="CurrentStepSequence">This parameter is the current Step sequence</param>

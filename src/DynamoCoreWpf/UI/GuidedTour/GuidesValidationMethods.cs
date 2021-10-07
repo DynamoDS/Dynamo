@@ -10,7 +10,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         //This method will return a bool that describes if the Terms Of Service was accepted or not.
         internal static bool AcceptedTermsOfUse(DynamoViewModel dynViewModel)
         {
-            return dynViewModel.Model.PreferenceSettings.PackageDownloadTouAccepted;
+            bool termsOfServiceAccepted = false;
+            if(dynViewModel.Model.PreferenceSettings != null)
+                termsOfServiceAccepted = dynViewModel.Model.PreferenceSettings.PackageDownloadTouAccepted;
+            return termsOfServiceAccepted; 
         }
     }
 }
