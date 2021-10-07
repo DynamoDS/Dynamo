@@ -781,6 +781,19 @@
                                                                 VerticalAlignment="Center"
                                                                 Margin="10,0,0,0"
                                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Image Name="DisableBuiltInPackageToggleInfoIcon"
+                                               Width="16"
+                                               Height="16"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Source="/DynamoCoreWpf;component/UI/Images/whiteinfotab.png">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <TextBlock Text="{x:Static p:Resources.DisableBuiltInPackageToggleInfo}" TextWrapping="Wrap" Width="300"/>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
+
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" 
                                                 Margin="0,12,0,0" 
@@ -795,6 +808,18 @@
                                                            VerticalAlignment="Center"
                                                            Margin="10,0,0,0"
                                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Image Name="DisableCustomPackageToggleInfoIcon"
+                                               Width="16"
+                                               Height="16"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Source="/DynamoCoreWpf;component/UI/Images/whiteinfotab.png">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <TextBlock Text="{x:Static p:Resources.DisableCustomPackageToggleInfo}" TextWrapping="Wrap" Width="300"/>
+                                                </ToolTip> 
+                                            </Image.ToolTip>
+                                        </Image>
                                     </StackPanel>
                                 </Grid>
                             </Expander>

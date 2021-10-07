@@ -1044,6 +1044,26 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If the toggle is on built-in packages will not load on restart. Built-in packages that are currently loaded will be unloaded on restart. 
+        ///If the toggle is off built-in packages that are not already loaded will load once the preferences dialog is closed..
+        /// </summary>
+        public static string DisableBuiltInPackageToggleInfo {
+            get {
+                return ResourceManager.GetString("DisableBuiltInPackageToggleInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If the toggle is on custom packages will not load on restart. Custom packages that are currently loaded will be unloaded on restart. 
+        ///If the toggle is off custom packages that are not already loaded will load once the preferences dialog is closed..
+        /// </summary>
+        public static string DisableCustomPackageToggleInfo {
+            get {
+                return ResourceManager.GetString("DisableCustomPackageToggleInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All custom package paths have been disabled in Preferences. Packages cannot be installed unless they are re-enabled..
         /// </summary>
         public static string DisablePackageInstallIconTooltip {
