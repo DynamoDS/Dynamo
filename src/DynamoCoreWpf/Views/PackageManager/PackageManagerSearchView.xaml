@@ -243,10 +243,12 @@
                 <Image Name="DisablePackageInstallIcon"
                            Width="24"
                            Height="24"
-                           Margin="0,15,5,0"
+                           Margin="0,20,5,0"
                            HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
-                           ToolTip="{x:Static p:Resources.DisablePackageInstallIconTooltip}">
+                           VerticalAlignment="Top">
+                    <Image.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.DisablePackageInstallIconTooltip}" Style="{StaticResource GenericToolTipLight}" />
+                    </Image.ToolTip>
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>

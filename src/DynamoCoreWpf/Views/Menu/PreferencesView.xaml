@@ -470,15 +470,17 @@
                                                    Margin="10,0,0,0"
                                                    VerticalAlignment="Center"
                                                    Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        <Label HorizontalAlignment="Left" Name="Titleinfo" VerticalAlignment="Center" Height="26" Width="53" Margin="0 3 0 0" MouseLeftButtonUp="OnMoreInfoClicked">
+                                        <Label HorizontalAlignment="Left" 
+                                               Name="Titleinfo" 
+                                               VerticalAlignment="Center" 
+                                               Height="26" 
+                                               Width="53" 
+                                               Margin="0 3 0 0" 
+                                               MouseLeftButtonUp="OnMoreInfoClicked"
+                                               ToolTip="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteTooltipText}">
                                             <Label.Content>
                                                 <fa:ImageAwesome Width="15" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Left" Icon="QuestionCircleOutline" Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                             </Label.Content>
-                                            <Label.ToolTip>
-                                                <ToolTip>
-                                                    <TextBlock Text="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteTooltipText}" />
-                                                </ToolTip>
-                                            </Label.ToolTip>
                                         </Label>
                                     </StackPanel>
 
