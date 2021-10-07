@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilities = DynamoUnits.Utilities;
 
 namespace UnitsUI
 {
@@ -213,7 +214,7 @@ namespace UnitsUI
             }
         }
 
-        public NumberFormat SelectedFormat
+        public Utilities.NumberFormat SelectedFormat
         {
             get { return unitValueDropdownModel.SelectedFormat; }
             set
@@ -251,7 +252,7 @@ namespace UnitsUI
                 RaisePropertyChanged(nameof(AllPrecisions));
             }
         }
-        public List<NumberFormat> AllFormats
+        public List<Utilities.NumberFormat> AllFormats
         {
             get { return unitValueDropdownModel.AllFormats; }
             set

@@ -7,19 +7,36 @@ using System.IO;
 
 namespace DynamoUnits
 {
-
-    /// <summary>
-    /// This enum enables quick selection of value (string representation) formatting. It also enables us to add
-    /// additional formats should they be needed.
-    /// </summary>
-    public enum NumberFormat
-    {
-        None = 0,
-        Decimal = 1,
-        Fraction = 2
-    }
     public static class Utilities
     {
+        /// <summary>
+        /// This enum enables quick selection of value (string representation) formatting. It also enables us to add
+        /// additional formats should they be needed.
+        /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
+        public enum NumberFormat
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            None = 0,
+            /// <summary>
+            /// 
+            /// </summary>
+            Decimal = 1,
+            /// <summary>
+            /// 
+            /// </summary>
+            Fraction = 2
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="fromUnit"></param>
+        /// <param name="toUnit"></param>
+        /// <returns></returns>
         public static double ConvertByUnits(double value, Unit fromUnit, Unit toUnit)
         {
             return ForgeUnitsEngine.convert(value, fromUnit.TypeId, toUnit.TypeId);
@@ -91,15 +108,21 @@ namespace DynamoUnits
             return ReturnFormattedString(numValue, unit, symbol, precision, actualNumberFormat);
         }
 
-        public static NumberFormat StringToNumberFormat(object stringObject)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static NumberFormat StringToNumberFormat(string format)
         {
-            string inputString = stringObject as string;
-            switch (inputString)
+            switch (format)
             {
                 case string s when s.Contains("Decimal"):
                     return NumberFormat.Decimal;
                 case string s when s.Contains("Fraction"):
                     return NumberFormat.Fraction;
+                case string s when s.Contains("None"):
+                    return NumberFormat.None;
                 default:
                     throw new Exception("Incorrect format supplied.");
             }
@@ -145,6 +168,21 @@ namespace DynamoUnits
                 throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(Symbol)}");
             }
             return symbol;
+        }
+
+        /// <summary>
+        /// Helper function to cast an object to a Format.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static NumberFormat CastToFormat(object value)
+        {
+            if (value is null) return NumberFormat.None;
+
+            var format = value is NumberFormat numberFormat ? numberFormat : throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(NumberFormat)}");
+
+            return format;
         }
 
         /// <summary>

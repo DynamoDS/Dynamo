@@ -340,8 +340,6 @@ namespace UnitsUI
         }
     }
 
-   
-
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeName("Convert Units")]
     [NodeDescription("ConvertUnitsDescription", typeof(UnitsUI.Properties.Resources))]
@@ -797,7 +795,7 @@ namespace UnitsUI
         private DynamoUnits.Unit selectedUnit;
         private DynamoUnits.Symbol selectedSymbol;
         private int selectedPrecision;
-        private NumberFormat selectedFormat;
+        private Utilities.NumberFormat selectedFormat;
         private List<DynamoUnits.Unit> allUnits;
         private List<DynamoUnits.Symbol> allSymbols;
         private List<int> allPrecisions;
@@ -856,7 +854,7 @@ namespace UnitsUI
         /// <summary>
         /// The selected (number) 'Format' from the Format UI dropdown. The options currently are decimal or fraction.
         /// </summary>
-        public NumberFormat SelectedFormat
+        public Utilities.NumberFormat SelectedFormat
         {
             get { return selectedFormat; }
             set
@@ -890,7 +888,7 @@ namespace UnitsUI
         /// The collection of all available formats for the dropdown.
         /// </summary>
         [JsonIgnore]
-        public List<NumberFormat> AllFormats { get; set; }
+        public List<Utilities.NumberFormat> AllFormats { get; set; }
         
         /// <summary>
         /// The string output that gets calculated when the dropdown outputs change.
@@ -918,7 +916,7 @@ namespace UnitsUI
             {
                 0, 1, 2, 3, 4, 5
             };
-            AllFormats = new List<NumberFormat> { NumberFormat.Decimal, NumberFormat.Fraction };
+            AllFormats = new List<Utilities.NumberFormat> { Utilities.NumberFormat.Decimal, Utilities.NumberFormat.Fraction };
             ShouldDisplayPreviewCore = false;
         }
 
@@ -936,7 +934,7 @@ namespace UnitsUI
                 0, 1, 2, 3, 4, 5
             };
             SelectedPrecision = AllPrecisions[0];
-            AllFormats = new List<NumberFormat> { NumberFormat.Decimal, NumberFormat.Fraction };
+            AllFormats = new List<Utilities.NumberFormat> { Utilities.NumberFormat.Decimal, Utilities.NumberFormat.Fraction };
             SelectedFormat = AllFormats[0];
             RaisePropertyChanged(nameof(DisplayValue));
 
@@ -990,7 +988,7 @@ namespace UnitsUI
         /// <summary>
         /// Property storing the node input of type format.
         /// </summary>
-        public NumberFormat Format { get; set; }
+        public Utilities.NumberFormat Format { get; set; }
 
         private string displayValue;
         /// <summary>
@@ -1020,7 +1018,7 @@ namespace UnitsUI
             Unit = DynamoUnits.Utilities.CastToUnit(inputs[1]);
             Symbol = DynamoUnits.Utilities.CastToSymbol(inputs[2]);
             Precision = Convert.ToInt32(inputs[3]);
-            Format = Utilities.StringToNumberFormat(inputs[4]);
+            Format = Utilities.CastToFormat(inputs[4]);
 
             DisplayValue = DynamoUnits.Utilities.ReturnFormattedString(Value, Unit, Symbol, Precision, Format);
         }
@@ -1066,4 +1064,46 @@ namespace UnitsUI
                     VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)))};
         }
     }
+
+    [NodeName("Number Format")]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [OutPortTypes("Format")]
+    [IsDesignScriptCompatible]
+    public class NumberFormatTypes: EnumBase<Utilities.NumberFormat>
+    {
+        public NumberFormatTypes() : base()
+        {
+            var existing = OutPorts[0];
+            OutPorts[0] = new PortModel(PortType.Output, this,
+                new PortData("Category", "Tooltip", existing.DefaultValue));
+            OutPorts[0].GUID = existing.GUID;
+        }
+
+        [JsonConstructor]
+        private NumberFormatTypes(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node;
+            if (SelectedIndex < 0 || SelectedIndex >= Items.Count)
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                var args = new List<AssociativeNode>
+                {
+                    AstFactory.BuildStringNode(Items[SelectedIndex].Item.ToString())
+                };
+
+                var func = new Func<string, Utilities.NumberFormat>(Utilities.StringToNumberFormat);
+                node = AstFactory.BuildFunctionCall(func, args);
+            }
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
+    }
+
 }
