@@ -31,7 +31,7 @@ namespace DynamoWPFCLI
         private static XmlDocument RunCommandLineArgs(DynamoViewModel viewModel, StartupUtils.CommandLineArguments cmdLineArgs)
         {
             var evalComplete = false;
-            if (string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
+            if (!cmdLineArgs.KeepAlive && string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
             {
                 return null;
             }
@@ -46,6 +46,25 @@ namespace DynamoWPFCLI
             {
                 ImportAssembly(viewModel.Model, path);
             });
+
+            // KeepAlive mode -- allow loaded extensions to control the process lifetime
+            // and issue commands until the extension calls model.Shutdown().
+            if (cmdLineArgs.KeepAlive)
+            {
+                bool running = true;
+
+                viewModel.Model.ShutdownCompleted += (m) =>
+                {
+                    running = false;
+                };
+
+                while (running)
+                {
+                    Thread.Sleep(3000);
+                }
+
+                return null;
+            }
 
             viewModel.OpenCommand.Execute(new Tuple<string, bool>(cmdLineArgs.OpenFilePath, true));
             Console.WriteLine("loaded file");
