@@ -2696,4 +2696,7 @@ Delete the following packages: {2}?
   <data name="ConnectorContextMenuHeaderHideConnector" xml:space="preserve">
     <value>Hide Wire</value>
   </data>
+  <data name="ScriptTagsRemovalWarning" xml:space="preserve">
+    <value>Script tags detected in the help document have been removed.</value>
+  </data>
 </root>

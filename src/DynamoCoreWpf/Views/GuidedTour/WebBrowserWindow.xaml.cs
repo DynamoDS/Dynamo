@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using Dynamo.Utilities;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 
@@ -39,7 +40,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             //Vertical offset plus 50 is to compensate the header size
             VerticalOffset = hInfo.VerticalPopupOffSet + headerOffset;
 
-            var bodyHtmlPage = GuidedTourResources.LoadContentFromResources(hInfo.HtmlPage, GetType().Assembly);
+            var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(hInfo.HtmlPage, GetType().Assembly, false, false);
 
             webBrowser.NavigateToString(bodyHtmlPage);
         }
