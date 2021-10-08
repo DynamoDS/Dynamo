@@ -228,9 +228,8 @@ namespace Dynamo.ViewModels
 
             foreach (var pin in ConnectorPinViewCollection)
             {
-                var visibilityModified = !isHidden ? false : true;
                 //set visible or hidden based on connector
-                pin.IsHidden = visibilityModified;
+                pin.IsHidden = isHidden;
             }
         }
         private void SetPartialVisibilityOfPins(bool isHidden)
@@ -239,9 +238,8 @@ namespace Dynamo.ViewModels
 
             foreach (var pin in ConnectorPinViewCollection)
             {
-                var partialVisibilityModified = !isHidden ? false : true;
                 //set 'partlyVisible' based on connector (when selected while connector is hidden)
-                pin.IsTemporarilyVisible = partialVisibilityModified;
+                pin.IsTemporarilyVisible = isHidden;
             }
         }
 
