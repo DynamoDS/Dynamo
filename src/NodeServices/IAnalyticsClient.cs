@@ -91,6 +91,11 @@ namespace Dynamo.Logging
         /// Events Category related to Note operations
         /// </summary>
         NoteOperations,
+
+        /// <summary>
+        /// Events Category related to Workspace References Operations
+        /// </summary>
+        WorkspaceReferencesOperations,
     }
 
     /// <summary>
@@ -236,6 +241,16 @@ namespace Dynamo.Logging
         /// Unpin event, such as unpinning a note from a node
         /// </summary>
         Unpin,
+
+        /// <summary>
+        /// Download new event, such as downloading a new package
+        /// </summary>
+        DownloadNew,
+
+        /// <summary>
+        /// KeepOldPackage event, choosing to keep the old package
+        /// </summary>
+        KeepOldPackage,
     }
 
     /// <summary>
