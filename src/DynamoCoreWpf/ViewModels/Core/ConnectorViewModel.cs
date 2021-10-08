@@ -228,7 +228,6 @@ namespace Dynamo.ViewModels
 
             foreach (var pin in ConnectorPinViewCollection)
             {
-                //set visible or hidden based on connector
                 pin.IsHidden = isHidden;
             }
         }
@@ -238,7 +237,6 @@ namespace Dynamo.ViewModels
 
             foreach (var pin in ConnectorPinViewCollection)
             {
-                //set 'partlyVisible' based on connector (when selected while connector is hidden)
                 pin.IsTemporarilyVisible = isHidden;
             }
         }
