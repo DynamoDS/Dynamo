@@ -38,6 +38,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -112,6 +113,27 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CustomNodeReferenceIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ExternalFileIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ImageIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\JsonIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PDFIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CSVIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ExcelIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DWGIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">

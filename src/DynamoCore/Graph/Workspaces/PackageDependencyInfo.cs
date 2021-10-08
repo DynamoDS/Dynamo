@@ -193,7 +193,7 @@ namespace Dynamo.Graph.Workspaces
 
         /// <summary>
         /// Checks whether two Dependency's are equal
-        /// They are equal if their Name and Path are equal
+        /// They are equal if their Name, Path and ReferenceType are equal
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
