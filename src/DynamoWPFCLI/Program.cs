@@ -1,7 +1,9 @@
 ﻿using System;
 using Dynamo.Applications;
+using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace DynamoWPFCLI
@@ -35,6 +37,23 @@ namespace DynamoWPFCLI
                             CanBeActivated = false
                         }
                     });
+
+                var dynView = new DynamoView(viewModel);
+
+                var sharedViewExtensionLoadedParams = new ViewLoadedParams(dynView, viewModel);
+
+                foreach (var ext in dynView.viewExtensionManager.ViewExtensions)
+                {
+                    try
+                    {
+                        ext.Loaded(sharedViewExtensionLoadedParams);
+                        Console.WriteLine("loaded " + ext.Name);
+                    }
+                    catch (Exception exc)
+                    {
+                        Console.WriteLine(ext.Name + ": " + exc.Message);
+                    }
+                }
 
                 var runner = new CommandLineRunnerWPF(viewModel);
                 runner.Run(cmdLineArgs);
