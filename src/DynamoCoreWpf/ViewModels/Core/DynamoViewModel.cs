@@ -724,6 +724,11 @@ namespace Dynamo.ViewModels
             model.ComputeModelDeserialized += model_ComputeModelDeserialized;
 
             preferencesViewModel = new PreferencesViewModel(this);
+
+            if (!DynamoModel.IsTestMode && !DynamoModel.IsHeadless)
+            {
+                model.State = DynamoModel.DynamoModelState.StartedUI;
+            }
         }
 
         /// <summary>

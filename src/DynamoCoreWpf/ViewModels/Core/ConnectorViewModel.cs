@@ -1388,7 +1388,7 @@ namespace Dynamo.ViewModels
                 int count = 0;
                 foreach (var wirePin in ConnectorPinViewCollection)
                 {
-                    points[count] = new Point(wirePin.Left+ConnectorPinModel.StaticWidth - (wirePin.OneThirdWidth * 0.5), wirePin.Top+ ConnectorPinModel.StaticWidth - (wirePin.OneThirdWidth * 0.5));
+                    points[count] = new Point(wirePin.Left+ConnectorPinModel.StaticWidth - (ConnectorPinViewModel.OneThirdWidth * 0.5), wirePin.Top+ ConnectorPinModel.StaticWidth - (ConnectorPinViewModel.OneThirdWidth * 0.5));
                     count++;
                 }
 

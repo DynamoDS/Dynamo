@@ -721,6 +721,11 @@ namespace DynamoCoreWpfTests
                     DynamoModel = Model
                 });
 
+            var expectedState = startInTestMode
+                ? DynamoModel.DynamoModelState.StartedUIless
+                : DynamoModel.DynamoModelState.StartedUI;
+            Assert.AreEqual(ViewModel.Model.State, expectedState);
+
             //create the view
             View = new DynamoView(ViewModel);
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());

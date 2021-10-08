@@ -178,6 +178,7 @@
     <Compile Include="UI\GuidedTour\Guide.cs" />
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
+    <Compile Include="UI\GuidedTour\GuidedTourResources.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
     <Compile Include="UI\GuidedTour\Step.cs" />
     <Compile Include="UI\GuidedTour\StepUIAutomation.cs" />
@@ -185,6 +186,9 @@
     <Compile Include="UI\GuidedTour\Tooltip.cs" />
     <Compile Include="UI\GuidedTour\Welcome.cs" />
     <Compile Include="UI\MouseBehaviour.cs" />
+    <Compile Include="UI\Prompts\DynamoMessageBox.xaml.cs">
+      <DependentUpon>DynamoMessageBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
@@ -300,6 +304,8 @@
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\Core\InPortViewModel.cs" />
+    <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
@@ -351,6 +357,9 @@
     </Compile>
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\WebBrowserWindow.xaml.cs">
+      <DependentUpon>WebBrowserWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GuidedTour\RealTimeInfoWindow.xaml.cs">
       <DependentUpon>RealTimeInfoWindow.xaml</DependentUpon>
@@ -476,6 +485,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <None Include="UI\Themes\Modern\InPorts.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Themes\Modern\OutPorts.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Page Include="UI\Prompts\DynamoMessageBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GuidedTour\WebBrowserWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1394,6 +1419,12 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
+    <Resource Include="UI\Images\info_2.png" />
+    <Resource Include="UI\Images\alert_2.png" />
+    <Resource Include="UI\Images\close_blue.png" />
+    <Resource Include="UI\Images\close_grey.png" />
     <Resource Include="UI\Images\pin_hidden_48_48.png" />
     <Resource Include="UI\Images\pin_hover_48_48.png" />
     <Resource Include="UI\Images\wire_anchor_48_48.png" />
@@ -1401,7 +1432,6 @@
     <Resource Include="UI\Images\watch_hover_48_48.png" />
     <Resource Include="UI\Images\checkmark - grey.png" />
     <Resource Include="UI\Images\package_error.png" />
-    <Resource Include="UI\Images\close.png" />
     <Resource Include="UI\Images\icon-shape.png" />
     <Resource Include="UI\Images\Progress circle.png" />
     <Resource Include="UI\Images\Requirements - disabled.png" />
