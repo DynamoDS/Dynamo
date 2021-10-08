@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Dynamo.UI.Prompts;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -16,7 +17,7 @@ namespace Dynamo.Wpf.Utilities
         {
             MessageBoxResult IMessageBox.Show(string msg, string title, MessageBoxButton button, MessageBoxImage img)
             {
-                return MessageBox.Show(msg, title, button, img);
+                return DynamoMessageBox.Show(msg, title, button, img);
             }
         }
 

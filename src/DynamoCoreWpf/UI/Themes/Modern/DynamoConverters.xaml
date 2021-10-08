@@ -64,6 +64,7 @@
     <controls:ShowHideFullscreenWatchMenuItemConverter x:Key="ShowHideFullscreenWatchMenuConverter" />
     <controls:PackageSearchStateToStringConverter x:Key="PackageSearchStateToStringConverter" />
     <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
+    <controls:NegativeIntToZeroConverter x:Key="NegativeIntToZeroConverter" />
     <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter" />
     <controls:InstalledButtonTextConverter x:Key="InstalledButtonTextConverter" />
     <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
