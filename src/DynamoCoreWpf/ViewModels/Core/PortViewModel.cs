@@ -342,20 +342,9 @@ namespace Dynamo.ViewModels
             {
                 case "ActiveConnector":
                     RaisePropertyChanged(nameof(IsHitTestVisible));
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    ;
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -443,60 +432,6 @@ namespace Dynamo.ViewModels
                 Guid.Empty, node.NodeLogic.GUID, "ChangeLevel", string.Format("{0}:{1}", port.Index, level));
 
             node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
-        }
-
-        /// <summary>
-        /// Used by the 'Break Connection' button in the node output context menu.
-        /// Removes any current connections this port has.
-        /// </summary>
-        /// <param name="parameter"></param>
-        private void BreakConnections(object parameter)
-        {
-            for (int i = _port.Connectors.Count - 1; i >= 0; i--)
-            {
-                // Attempting to get the relevant ConnectorViewModel via matching GUID
-                ConnectorViewModel connectorViewModel = _node.WorkspaceViewModel.Connectors
-                    .FirstOrDefault(x => x.ConnectorModel.GUID == _port.Connectors[i].GUID);
-
-                if (connectorViewModel == null) continue;
-
-                connectorViewModel.BreakConnectionCommand.Execute(null);
-            }
-        }
-
-        /// <summary>
-        /// Used by the 'Hide Wires' button in the node output context menu.
-        /// Turns of the visibility of any connections this port has.
-        /// </summary>
-        /// <param name="parameter"></param>
-        private void HideConnections(object parameter)
-        {
-            for (int i = _port.Connectors.Count - 1; i >= 0; i--)
-            {
-                // Attempting to get the relevant ConnectorViewModel via matching GUID
-                ConnectorViewModel connectorViewModel = _node.WorkspaceViewModel.Connectors
-                    .FirstOrDefault(x => x.ConnectorModel.GUID == _port.Connectors[i].GUID);
-
-                if (connectorViewModel == null) continue;
-
-                connectorViewModel.HideConnectorCommand.Execute(!SetConnectorsVisibility);
-            }
-            RefreshHideWiresButton();
-        }
-        /// <summary>
-        /// Returns true if they are hidden.
-        /// </summary>
-        /// <returns></returns>
-        private bool CheckIfConnectorsAreHidden()
-        {
-            if (_port.Connectors.Count < 1 || _node.WorkspaceViewModel.Connectors.Count < 1) return false;
-
-            // Attempting to get a relevant ConnectorViewModel via matching NodeModel GUID
-            ConnectorViewModel connectorViewModel = _node.WorkspaceViewModel.Connectors
-                .FirstOrDefault(x => x.Nodevm.NodeModel.GUID == _port.Owner.GUID);
-
-            if (connectorViewModel == null) return false;
-            return connectorViewModel.IsHidden;
         }
         
         private void Connect(object parameter)
