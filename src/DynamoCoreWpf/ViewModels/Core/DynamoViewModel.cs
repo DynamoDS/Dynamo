@@ -726,7 +726,10 @@ namespace Dynamo.ViewModels
 
             preferencesViewModel = new PreferencesViewModel(this);
 
-            model.State = DynamoModel.DynamoModelState.StartedUI;
+            if (!DynamoModel.IsTestMode && !DynamoModel.IsHeadless)
+            {
+                model.State = DynamoModel.DynamoModelState.StartedUI;
+            }
         }
 
         /// <summary>
