@@ -125,6 +125,27 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(Top));
             }
         }
+        private bool isHoveredOver = false;
+        /// <summary>
+        /// This flag let's the ConnectorViewModel when it can and cannot run a ConnectorContextMenu. It CANNOT
+        /// do so when IsHoveredOver for any pin is set to true, as in that case we want only that ConnectorPins 
+        /// ContextMenu to be enabled on right click.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsHoveredOver
+        {
+            get => isHoveredOver;
+            set
+            {
+                if (isHoveredOver == value)
+                {
+                    return;
+                }
+
+                isHoveredOver = value;
+                RaisePropertyChanged(nameof(IsHoveredOver));
+            }
+        }
 
         /// <summary>
         /// Provides the ViewModel (this) with the selected state of the ConnectorPinModel.
@@ -135,7 +156,7 @@ namespace Dynamo.ViewModels
             get { return model.IsSelected; }
         }
 
-        private bool isCollapsed;
+        private bool isCollapsed = false;
         [JsonIgnore]
         public override bool IsCollapsed
         {
@@ -151,6 +172,23 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(IsCollapsed));
             }
         }
+
+        private bool isHidden;
+        public bool IsHidden
+        {
+            get => isHidden;
+            set
+            {
+                if (isHidden == value)
+                {
+                    return;
+                }
+
+                isHidden = value;
+                RaisePropertyChanged(nameof(IsHidden));
+            }
+        }
+
 
         private bool isTemporarilyVisible;
         /// <summary>

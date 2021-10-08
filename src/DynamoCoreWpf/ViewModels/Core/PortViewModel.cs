@@ -343,6 +343,8 @@ namespace Dynamo.ViewModels
                 case "ActiveConnector":
                     RaisePropertyChanged(nameof(IsHitTestVisible));
                     break;
+                default:
+                    break;
             }
         }
 
@@ -431,7 +433,7 @@ namespace Dynamo.ViewModels
 
             node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
-
+        
         private void Connect(object parameter)
         {
             DynamoViewModel dynamoViewModel = this.node.DynamoViewModel;

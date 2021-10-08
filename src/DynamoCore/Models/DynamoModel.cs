@@ -338,15 +338,16 @@ namespace Dynamo.Models
             }
         }
 
+        private ConnectorType connectorType = ConnectorType.BEZIER;
         /// <summary>
         ///     Specifies how connectors are displayed in Dynamo.
         /// </summary>
         public ConnectorType ConnectorType
         {
-            get { return PreferenceSettings.ConnectorType; }
+            get { return connectorType; }
             set
             {
-                PreferenceSettings.ConnectorType = value;
+                connectorType = value;
             }
         }
 
