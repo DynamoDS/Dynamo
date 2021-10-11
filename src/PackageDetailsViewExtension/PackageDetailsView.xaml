@@ -21,7 +21,6 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
-            <controls:PackageDetailsPackagesConverter x:Key="PackageDetailsPackagesConverter" />
             <Style x:Key="LabelStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                 <Setter Property="FontWeight" Value="Bold" />

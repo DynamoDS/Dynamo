@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Dynamo.Annotations;
 using Dynamo.PackageManager;
-using Dynamo.UI.Commands;
 using Greg.Responses;
 using PythonNodeModels;
 
@@ -97,28 +96,20 @@ namespace Dynamo.PackageDetails
             }
         }
 
-        public DelegateCommand OpenDependencyDetailsCommand { get; set; }
-
-        public void OpenDependencyDetails(object obj)
-        {
-            if (!(obj is string stringValue)) return;
-        }
-
-        private PackageDetailsViewExtension PackageDetailsViewExtension { get; }
+        private PackageLoader PackageLoader { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="packageLoader"></param>
         /// <param name="packageVersion"></param>
-        public PackageDetailItem(PackageDetailsViewExtension packageDetailsViewExtension, PackageVersion packageVersion)
+        public PackageDetailItem(PackageLoader packageLoader, PackageVersion packageVersion)
         {
             this.PackageVersion = packageVersion;
             this.PackageVersionNumber = PackageVersion.version;
-            this.PackageDetailsViewExtension = packageDetailsViewExtension;
+            this.PackageLoader = packageLoader;
             this.Packages = PackageVersion.full_dependency_ids.Select(x => x.name).ToList();
             
-            OpenDependencyDetailsCommand = new DelegateCommand(OpenDependencyDetails);
-
             DetectDependencies();
             DetectWhetherInstalled();
         }
@@ -160,15 +151,16 @@ namespace Dynamo.PackageDetails
         {
             // In order for IsInstalled to be true, both the name and installed package version must match
             // what is found in the PackageLoader.LocalPackages.
-            List<Package> sameNamePackages = PackageDetailsViewExtension
-                .PackageManagerExtension
-                .PackageLoader
+            List<Package> sameNamePackages = PackageLoader
                 .LocalPackages
                 .Where(x => x.Name == PackageVersion.name)
                 .ToList();
 
             if (sameNamePackages.Count < 1) return;
-            IsInstalled = sameNamePackages.Select(x => x.VersionName).Contains(packageVersion.version);
+            
+            IsInstalled = sameNamePackages
+                .Select(x => x.VersionName)
+                .Contains(packageVersion.version);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
