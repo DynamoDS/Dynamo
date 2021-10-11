@@ -409,14 +409,33 @@ namespace Dynamo.Configuration
         /// Settings that apply to view extensions.
         /// </summary>
         public List<ViewExtensionSettings> ViewExtensionSettings { get; set; }
+
+        private bool disableBuiltinPackages;
         /// <summary>
         /// If enabled Dynamo Built-In Packages will not be loaded.
         /// </summary>
-        public bool DisableBuiltinPackages { get; set; }
+        public bool DisableBuiltinPackages { 
+            get { return disableBuiltinPackages; }
+            set 
+            {
+                disableBuiltinPackages = value;
+                RaisePropertyChanged(nameof(DisableBuiltinPackages)); 
+            } 
+        }
+
+        private bool disableCustomPackageLocations;
         /// <summary>
         /// If enabled user's custom package locations will not be loaded.
         /// </summary>
-        public bool DisableCustomPackageLocations { get; set; }
+        public bool DisableCustomPackageLocations 
+        { 
+            get { return disableCustomPackageLocations; } 
+            set 
+            { 
+                disableCustomPackageLocations = value;
+                RaisePropertyChanged(nameof(DisableCustomPackageLocations));
+            } 
+        }
         /// <summary>
         /// Defines the default run type when opening a workspace
         /// </summary>
@@ -426,6 +445,22 @@ namespace Dynamo.Configuration
         /// Show Run Preview flag.
         /// </summary>
         public bool ShowRunPreview { get; set; }
+
+        /// <summary>
+        /// Limits the size of the tags used by the SearchDictionary
+        /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value 
+        /// if found at deserialize time.
+        /// </summary>
+        internal static int NodeSearchTagSizeLimitValue = 300;
+
+        /// <summary>
+        /// Limits the size of the tags used by the SearchDictionary
+        /// </summary>
+        public int NodeSearchTagSizeLimit 
+        { 
+            get { return NodeSearchTagSizeLimitValue; } 
+            set { NodeSearchTagSizeLimitValue = value; } 
+        }
         #endregion
 
         /// <summary>

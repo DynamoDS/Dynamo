@@ -41,11 +41,13 @@
         x:Key="ConnectionStateToColorConverter"
         ExecutionPreview="#F2930C"
         None="#444"
-        Selection="#6AC0E7" />
+        Selection="#0C92DF"
+        Hover="#808080"/>
 
     <controls:ConnectionStateToBrushConverter x:Key="ConnectionStateToBrushConverter"
                                               ExecutionPreviewBrush="#F2930C"
-                                              SelectionBrush="#6AC0E7"
+                                              SelectionBrush="#0C92DF"
+                                              HoverBrush="#808080"
                                               NoneBrush="#444">
     </controls:ConnectionStateToBrushConverter>
 
@@ -62,7 +64,9 @@
     <controls:ShowHideFullscreenWatchMenuItemConverter x:Key="ShowHideFullscreenWatchMenuConverter" />
     <controls:PackageSearchStateToStringConverter x:Key="PackageSearchStateToStringConverter" />
     <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
+    <controls:NegativeIntToZeroConverter x:Key="NegativeIntToZeroConverter" />
     <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter" />
+    <controls:InstalledButtonTextConverter x:Key="InstalledButtonTextConverter" />
     <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter" />
     <controls:PackageUploadStateToStringConverter x:Key="PackageUploadStateToStringConverter" />
@@ -168,4 +172,6 @@
         x:Key="PinIconForegroundConverter"
         FalseBrush="{StaticResource UnpinnedIconForegroundColor}"
         TrueBrush="{StaticResource PinnedIconForegroundColor}" />
+    <controls:NestedGroupsLabelConverter x:Key="NestedGroupsLabelConverter" />
+    <controls:CollectionHasMoreThanNItemsToBoolConverter x:Key="CollectionHasMoreThanNItemsToBoolConverter" />
 </ResourceDictionary>

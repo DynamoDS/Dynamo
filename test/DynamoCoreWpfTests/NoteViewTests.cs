@@ -245,5 +245,32 @@ namespace DynamoCoreWpfTests
             var canPinNodsToNotes = noteBView.ViewModel.PinToNodeCommand.CanExecute(null);
             Assert.IsFalse(canPinNodesToANote);
         }
+
+        /// <summary>
+        /// Check that workspace model is aware that changes were made 
+        /// when a node is pinned to a note.
+        /// </summary>
+        [Test]
+        public void HasUnsavedChangesWhenPinToNode()
+        {
+            // Open document and get node and note view
+            Open(@"UI\UI_PinNodeToNote.dyn");
+            var nodeAGUID = "cf46488c-6631-458e-bba0-25098e2273f5";
+            var noteAGUID = "c589c7ff-a481-4a21-bb18-ac01ed9486fc";
+            var nodeAView = NodeViewWithGuid(nodeAGUID);
+            var noteAView = NoteViewWithGuid(noteAGUID);
+
+            //Assert that workspace doesn't have unsaved changes
+            var workspace = nodeAView.ViewModel.WorkspaceViewModel;
+            Assert.IsFalse(workspace.HasUnsavedChanges);
+
+            // Select node, note and pin
+            DynamoSelection.Instance.Selection.AddUnique(nodeAView.ViewModel.NodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteAView.ViewModel.Model);
+            noteAView.ViewModel.PinToNodeCommand.Execute(null);
+
+            //Assert that workspace has unsaved changes
+            Assert.IsTrue(nodeAView.ViewModel.WorkspaceViewModel.HasUnsavedChanges);
+        }
     }
 }

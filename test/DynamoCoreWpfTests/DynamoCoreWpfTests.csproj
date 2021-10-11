@@ -122,6 +122,7 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="ColorPaletteTests.cs" />
+    <Compile Include="ConnectorContextMenuTests.cs" />
     <Compile Include="ConnectorViewModelTests.cs" />
     <Compile Include="ConverterViewModelTests.cs" />
     <Compile Include="GuidedTourTests.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="Libraries\LabelTests.cs" />
     <Compile Include="ListAtLevelTest.cs" />
     <Compile Include="MediatoDSColorConverterTest.cs" />
+    <Compile Include="PackageManager\PackageManagerSearchElementViewModelTests.cs" />
     <Compile Include="PreferencesGeometryScalingTests.cs" />
     <Compile Include="PreferencesViewModelTests.cs" />
     <Compile Include="UnitsUITests.cs" />

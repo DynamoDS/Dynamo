@@ -166,10 +166,24 @@
                                     Grid.Row="0"
                                     CornerRadius="{StaticResource ExpanderCornerRadius}"
                                     Padding="0"
-                                    Margin="0">
+                                    Margin="0"
+                                    ToolTipService.IsEnabled="{TemplateBinding IsExpanded, Converter={StaticResource InverseBooleanConverter}}">
                                 <Border.Background>
                                     <SolidColorBrush Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.Background}"></SolidColorBrush>
                                 </Border.Background>
+                                <Border.ToolTip>
+                                    <dynui:DynamoToolTip AttachmentSide="Top"
+                                                         Style="{DynamicResource ResourceKey=SLightToolTip}"
+                                                         Margin="5,0,0,0">
+                                        <StackPanel Orientation="Vertical"
+                                                    MaxWidth="320">
+                                            <TextBlock Text="{Binding AnnotationText}"
+                                                       Margin="0,0,0,10" />
+                                            <TextBlock Text="{Binding AnnotationDescriptionText}"
+                                                       TextWrapping="WrapWithOverflow" />
+                                        </StackPanel>
+                                    </dynui:DynamoToolTip>
+                                </Border.ToolTip>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -227,81 +241,11 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <Style x:Key="InputOutputNodesListViewTemplate"
-               TargetType="{x:Type ListView}">
-            <Setter Property="Background"
-                    Value="Transparent" />
-            <Setter Property="VerticalContentAlignment"
-                    Value="Center" />
-            <Setter Property="VerticalAlignment"
-                    Value="Center" />
-            <Setter Property="HorizontalAlignment"
-                    Value="Center" />
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-                    Value="Disabled" />
-            <Setter Property="BorderThickness"
-                    Value="0" />
-            <Setter Property="IsHitTestVisible"
-                    Value="False" />
-
-            <Setter Property="ItemContainerStyle">
-                <Setter.Value>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="Background"
-                                Value="Transparent" />
-                        <Setter Property="BorderBrush"
-                                Value="Transparent" />
-                        <Setter Property="BorderThickness"
-                                Value="0" />
-                        <Setter Property="Margin"
-                                Value="0" />
-                        <Setter Property="Padding"
-                                Value="0" />
-                    </Style>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="ItemsPanel">
-                <Setter.Value>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="ItemTemplate">
-                <Setter.Value>
-                    <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
-                        <Image Width="20"
-                               Source="/DynamoCoreWpf;component/UI/Images/NodeIcon_placeholder.png">
-                            <Image.Clip>
-                                <RectangleGeometry RadiusX="5"
-                                                   RadiusY="5"
-                                                   Rect="0,0,20,20"></RectangleGeometry>
-                            </Image.Clip>
-                        </Image>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </UserControl.Resources>
 
     <Grid Name="AnnotationGrid"
           Height="Auto"
           IsHitTestVisible="True">
-        <Grid.ToolTip>
-            <dynui:DynamoToolTip AttachmentSide="Top"
-                                 Style="{DynamicResource ResourceKey=SLightToolTip}"
-                                 Margin="5,0,0,0"
-                                 Visibility="{Binding IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
-                <StackPanel Orientation="Vertical"
-                            MaxWidth="320">
-                    <TextBlock Text="{Binding AnnotationText}"
-                               Margin="0,0,0,10" />
-                    <TextBlock Text="{Binding AnnotationDescriptionText}"
-                               TextWrapping="WrapWithOverflow" />
-                </StackPanel>
-            </dynui:DynamoToolTip>
-        </Grid.ToolTip>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -481,13 +425,13 @@
                                     Width="{Binding Width}"
                                     MinHeight="20"
                                     Margin="0,0,0,10">
-                        <Grid>
+                        <Grid Margin="0,0,20,0">
                             <TextBlock x:Name="GroupTextBlock"
                                        Text="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBlock'}"
                                        FontFamily="Trebuchet"
                                        FontSize="{Binding FontSize}"
                                        LineStackingStrategy="BlockLineHeight"
-                                       TextWrapping="Wrap"
+                                       TextWrapping="WrapWithOverflow"
                                        Visibility="Visible">
                             </TextBlock>
                             <TextBox Name="GroupTextBox"
@@ -495,7 +439,7 @@
                                      MaxLength="30"
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationText,Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBox'}"
-                                     TextWrapping="Wrap"
+                                     TextWrapping="WrapWithOverflow"
                                      FontFamily="Trebuchet"
                                      FontSize="{Binding FontSize}"
                                      IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
@@ -510,7 +454,9 @@
                     <ContentControl x:Name="GroupDescriptionControls"
                                     Grid.Row="1"
                                     MinHeight="20"
-                                    Margin="0,-10,30,0">
+                                    Margin="0,-10,30,0"
+                                    SizeChanged="GroupDescriptionControls_SizeChanged"
+                                    IsVisibleChanged="GroupDescriptionTextBlock_IsVisibleChanged">
                         <Grid>
                             <TextBlock x:Name="GroupDescriptionTextBlock"
                                        Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
@@ -518,8 +464,7 @@
                                        FontSize="12"
                                        LineStackingStrategy="BlockLineHeight"
                                        TextWrapping="Wrap"
-                                       Visibility="Visible"
-                                       IsVisibleChanged="GroupDescriptionTextBlock_IsVisibleChanged">
+                                       Visibility="Visible">
                             </TextBlock>
                             <TextBox Name="GroupDescriptionTextBox"
                                      MaxLength="280"
@@ -680,7 +625,8 @@
                          Height="{Binding ModelAreaHeight}"
                          IsHitTestVisible="True"
                          Background="Transparent"
-                         Opacity="0.5">
+                         Opacity="0.5"
+                         Visibility="{Binding IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                     <Path Stroke="Transparent"
                           StrokeThickness="0">
                         <Path.Fill>
@@ -739,11 +685,14 @@
                 Width="{Binding Width}"
                 Visibility="{Binding ElementName=GroupExpander, Path=IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
                 Grid.Row="1">
+            <Border.Background>
+                <SolidColorBrush Color="{Binding Background}" Opacity="0.5" />
+            </Border.Background>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -772,48 +721,70 @@
                               Margin="0,10">
                 </ItemsControl>
 
-                <!--Group content icons-->
-                <Grid x:Name="GroupContentIcons"
-                      Grid.Column="1"
+                <Grid x:Name="GroupContent"
                       Grid.Row="1"
-                      Background="Transparent"
-                      HorizontalAlignment="Center"
-                      Margin="10">
+                      Grid.ColumnSpan="3">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <ListView x:Name="InputPortIcons"
-                              Grid.Column="0"
-                              ItemsSource="{Binding InputNodes}"
-                              Style="{StaticResource InputOutputNodesListViewTemplate}">
-                    </ListView>
+                    <Label x:Name="NestedGroups"
+                           Grid.Column="0"
+                           Content="{Binding NestedGroups, Converter={StaticResource NestedGroupsLabelConverter}}"
+                           Margin="0"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           ToolTipService.ShowOnDisabled="False"
+                           ToolTipService.IsEnabled="{Binding NestedGroups, Converter={StaticResource CollectionHasMoreThanNItemsToBoolConverter}}">
+                        <Label.ToolTip>
+                            <dynui:DynamoToolTip AttachmentSide="Bottom"
+                                                 Style="{DynamicResource ResourceKey=SLightToolTip}"
+                                                 Margin="5,0,0,0">
+                                <ListView ItemsSource="{Binding NestedGroups}">
+                                    <ListView.Resources>
+                                        <DataTemplate x:Key="MultipleItems"
+                                                      DataType="{x:Type viewModels:AnnotationViewModel}">
+                                            <TextBlock Text="{Binding AnnotationText}" />
+                                        </DataTemplate>
+                                    </ListView.Resources>
+                                    <ListView.Style>
+                                        <Style TargetType="{x:Type ListView}">
+                                            <Setter Property="Background"
+                                                    Value="Transparent" />
+                                            <Setter Property="BorderThickness"
+                                                    Value="0" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding NestedGroups, 
+                                                                        Converter={StaticResource CollectionHasMoreThanNItemsToBoolConverter}}"
+                                                             Value="True">
+                                                    <Setter Property="ItemTemplate"
+                                                            Value="{StaticResource MultipleItems}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ListView.Style>
+                                </ListView>
+                            </dynui:DynamoToolTip>
+                        </Label.ToolTip>
+                    </Label>
 
-                    <Border x:Name="AddtionalNodesCount"
+                    <Border x:Name="NodeCount"
                             Grid.Column="1"
-                            VerticalAlignment="Center"
-                            BorderThickness="0.5"
+                            BorderThickness="1"
                             BorderBrush="#FFFFFF"
                             Background="#EEEEEE"
-                            CornerRadius="{Binding Path=ActualHeight, ElementName=AddtionalNodesCount}"
-                            Width="{Binding Path=ActualHeight, ElementName=AddtionalNodesCount}"
-                            Height="20"
-                            Padding="0">
-                        <TextBlock Text="{Binding InbetweenNodesCount, Mode=OneWay, StringFormat='+{0}'}"
+                            CornerRadius="{Binding Path=ActualHeight, ElementName=NodeCount}"
+                            Width="{Binding Path=ActualHeight, ElementName=NodeCount}"
+                            Height="32"
+                            Margin="10">
+                        <TextBlock Text="{Binding NodeContentCount, Mode=OneWay, StringFormat='+{0}'}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
-                                   FontSize="10" />
+                                   FontSize="14" />
                     </Border>
-
-                    <ListView x:Name="OutputPortIcons"
-                              Grid.Column="2"
-                              ItemsSource="{Binding OutputNodes}"
-                              Style="{StaticResource InputOutputNodesListViewTemplate}">
-                    </ListView>
                 </Grid>
             </Grid>
-
         </Border>
     </Grid>
 </UserControl>
