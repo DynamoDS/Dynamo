@@ -50,7 +50,7 @@
             <ContextMenu Name="MainContextMenu"
                          x:FieldModifier="public"
                          Closed="MainContextMenu_OnClosed"
-                         Style="{StaticResource NodeContextMenuStyle}">
+                         Style="{StaticResource ContextMenuStyle}">
                 <ContextMenu.Resources>
                     <ResourceDictionary>
                         <ResourceDictionary.MergedDictionaries>
