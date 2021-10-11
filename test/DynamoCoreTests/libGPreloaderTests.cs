@@ -450,6 +450,16 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void ASM228InstallationsAreValidated()
+        {
+            var incomplete228List = LoadListFromCsv("incomplete228List.csv");
+            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete228List, 228));
+            // Add missing DLLs. Now the the installation should be valid.
+            incomplete228List.Add("tsplines10A.dll");
+            Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete228List, 228));
+        }
+
+        [Test]
         public void ASM227InstallationsAreValidated()
         {
             var incomplete227List = LoadListFromCsv("incomplete227List.csv");
@@ -457,17 +467,6 @@ namespace Dynamo.Tests
             // Add missing DLLs. Now the the installation should be valid.
             incomplete227List.Add("tsplines9A.dll");
             Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete227List, 227));
-        }
-
-        [Test]
-        public void ASM226InstallationsAreValidated()
-        {
-            var incomplete226List = LoadListFromCsv("incomplete226List.csv");
-            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete226List, 226));
-            // Add missing DLLs. Now the the installation should be valid.
-            incomplete226List.Add("tsplines8A.dll");
-            incomplete226List.Add("AdpSDKUI.dll");
-            Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete226List, 226));
         }
 
         [Test]
