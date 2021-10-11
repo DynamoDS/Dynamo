@@ -273,8 +273,8 @@
     <value>Switch to Geometry _View</value>
     <comment>Context menu item</comment>
   </data>
-  <data name="ContextMenuHideAllGeometry" xml:space="preserve">
-    <value>Hide all geometry preview</value>
+  <data name="ContextMenuHideGeometry" xml:space="preserve">
+    <value>Hide geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="ContextMenuHideAllTextBubble" xml:space="preserve">
@@ -333,8 +333,8 @@
     <value>Publish This Custom Node...</value>
     <comment>Context menu item</comment>
   </data>
-  <data name="ContextMenuShowAllGeometry" xml:space="preserve">
-    <value>Show all geometry preview</value>
+  <data name="ContextMenuShowGeometry" xml:space="preserve">
+    <value>Show geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
@@ -2319,8 +2319,8 @@ Uninstall the following packages: {0}?</value>
   <data name="ConnectorContextMenuHeaderBreakConnections" xml:space="preserve">
     <value>Break Connections</value>
   </data>
-  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
-    <value>Pin Wire</value>
+  <data name="ConnectorContextMenuHeaderShowConnector" xml:space="preserve">
+    <value>Show Wire</value>
   </data>
   <data name="ConnectorContextMenuHeaderSelectConnected" xml:space="preserve">
     <value>Select Connected</value>
@@ -2669,6 +2669,12 @@ Delete the following packages: {2}?
     <value>Show Preview Bubbles</value>
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
   </data>
+  <data name="PackagesGuide" xml:space="preserve">
+    <value>Packages</value>
+  </data>
+  <data name="PackagesGuideLearnAbout" xml:space="preserve">
+    <value>Learn about packages</value>
+  </data>
   <data name="NodeAutoCompleteNotAvailableForCollapsedGroups" xml:space="preserve">
     <value>Node AutoComplete is not available on ports belonging to collapsed groups.</value>
   </data>
@@ -2676,12 +2682,9 @@ Delete the following packages: {2}?
     <value>Install</value>
     <comment>Used on the package manager search result card. If the package is not installed, the button will say 'Install'.</comment>
   </data>
-  <data name="PackageManagerPackageHasNoDependencies" xml:space="preserve">
-    <value>No dependencies.</value>
-  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Updated</value>
-	<comment>Displays next to the package name in the Package Search window if the package has been updated in the last 30 days.</comment>
+    <comment>Displays next to the package name in the Package Search window if the package has been updated in the last 30 days.</comment>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>New</value>
@@ -2714,5 +2717,11 @@ Delete the following packages: {2}?
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>Package</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageSortToolTip" xml:space="preserve">
+    <value>Sort Packages.</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderHideConnector" xml:space="preserve">
+    <value>Hide Wire</value>
   </data>
 </root>

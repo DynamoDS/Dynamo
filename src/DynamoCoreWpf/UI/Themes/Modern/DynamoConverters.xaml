@@ -64,12 +64,7 @@
     <controls:ShowHideFullscreenWatchMenuItemConverter x:Key="ShowHideFullscreenWatchMenuConverter" />
     <controls:PackageSearchStateToStringConverter x:Key="PackageSearchStateToStringConverter" />
     <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
-    <controls:EmptyListToParameterValueConverter x:Key="EmptyListToParameterValueConverter" />
-    <controls:DependencyListConverter x:Key="DependencyListConverter" />
-    <controls:PackageDetailsDependenciesConverter x:Key="PackageDetailsDependenciesConverter"/>
-    <controls:PackageDetailsPythonEngineConverter x:Key="PackageDetailsPythonEngineConverter"/>
-    <controls:PackageDetailsPackagesConverter x:Key="PackageDetailsPackagesConverter"/>
-    <controls:PythonEngineConverter x:Key="PythonEngineConverter" />
+    <controls:NegativeIntToZeroConverter x:Key="NegativeIntToZeroConverter" />
     <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter" />
     <controls:InstalledButtonTextConverter x:Key="InstalledButtonTextConverter" />
     <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
@@ -177,4 +172,6 @@
         x:Key="PinIconForegroundConverter"
         FalseBrush="{StaticResource UnpinnedIconForegroundColor}"
         TrueBrush="{StaticResource PinnedIconForegroundColor}" />
+    <controls:NestedGroupsLabelConverter x:Key="NestedGroupsLabelConverter" />
+    <controls:CollectionHasMoreThanNItemsToBoolConverter x:Key="CollectionHasMoreThanNItemsToBoolConverter" />
 </ResourceDictionary>

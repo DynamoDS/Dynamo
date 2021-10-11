@@ -11,6 +11,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
 
     <!--  Control colors.  -->
@@ -1461,6 +1462,67 @@
         </Setter>
     </Style>
 
+    <!--  Generic Dynamo ToolTip  -->
+    <Style x:Key="GenericToolTipDark" TargetType="ToolTip">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="MaxWidth" Value="300" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Border Padding="10,8"
+                            Background="{StaticResource DarkMidGreyBrush}"
+                            CornerRadius="2">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Resources>
+            <Style TargetType="ContentPresenter">
+                <Style.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                        <Setter Property="FontSize" Value="12px" />
+                        <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal100Brush}" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </Style.Resources>
+    </Style>
+
+    <Style x:Key="GenericToolTipLight" TargetType="ToolTip">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="MaxWidth" Value="300" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Border Padding="10,8"
+                            Background="White"
+                            BorderBrush="#999999"
+                            BorderThickness="1"
+                            CornerRadius="2">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Resources>
+            <Style TargetType="ContentPresenter">
+                <Style.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                        <Setter Property="FontSize" Value="12px" />
+                        <Setter Property="Foreground" Value="#232323" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </Style.Resources>
+    </Style>
+
+
+
     <Style x:Key="StartPageListBox" TargetType="ListBox">
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -2183,11 +2245,9 @@
     <SolidColorBrush x:Key="PreferencesWindowFontColor" Color="#E5E5E5" />
     <SolidColorBrush x:Key="PreferencesWindowButtonColor" Color="#0696D7" />
     <SolidColorBrush x:Key="PreferencesWindowTabSelectedColor" Color="#ADE4DE" />
+    <SolidColorBrush x:Key="CloseButtonMouseOverForeground" Color="#FFFFFF" />
     <SolidColorBrush x:Key="PreferencesWindowButtonPressedColor" Color="#0778B0" />
     <SolidColorBrush x:Key="PreferencesWindowButtonMouseOverFontColor" Color="#CDCBCB" />
-    <SolidColorBrush x:Key="CloseButtonMouseOverBackground" Color="#E81123" />
-    <SolidColorBrush x:Key="CloseButtonPressed" Color="#B70F1B" />
-    <SolidColorBrush x:Key="CloseButtonMouseOverForeground" Color="#FFFFFF" />
     <SolidColorBrush x:Key="TabItemUnSelected" Color="DarkGray" />
     <SolidColorBrush x:Key="SecondaryGray" Color="#707070" />
     <SolidColorBrush x:Key="SemiTransparent" Color="#80000000" />
@@ -2223,34 +2283,17 @@
         <Setter Property="FontSize" Value="14" />
     </Style>
 
-    <Style x:Key="CaptionButtonStyleClose" TargetType="Button">
+    <Style x:Key="CloseButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid x:Name="LayoutRoot"
-                          Width="46"
-                          Height="40"
-                          Background="Transparent">
-                        <TextBlock x:Name="txt"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontFamily="Segoe MDL2 Assets"
-                                   FontSize="14"
-                                   Foreground="{StaticResource PreferencesWindowFontColor}"
-                                   RenderOptions.ClearTypeHint="Auto"
-                                   Text="{TemplateBinding Content}"
-                                   TextOptions.TextFormattingMode="Display"
-                                   TextOptions.TextRenderingMode="Aliased" />
+                    <Grid>
+                        <Image Name="closeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/close_grey.png"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="LayoutRoot" Property="Background" Value="{StaticResource CloseButtonMouseOverBackground}" />
-                            <Setter TargetName="txt" Property="Foreground" Value="{StaticResource CloseButtonMouseOverForeground}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="LayoutRoot" Property="Background" Value="{StaticResource CloseButtonPressed}" />
-                            <Setter TargetName="txt" Property="Foreground" Value="{StaticResource CloseButtonMouseOverForeground}" />
-                            <Setter TargetName="txt" Property="FontSize" Value="12" />
+                            <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/close_blue.png" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -2258,10 +2301,56 @@
         </Setter>
     </Style>
 
-    <Style x:Key="CloseButtonStyle"
-           BasedOn="{StaticResource CaptionButtonStyleClose}"
-           TargetType="Button">
-        <Setter Property="Content" Value="&#xE8BB;" />
+    <Style x:Key="CtaButtonStyle" TargetType="Button">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="15,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="mouseOverBorder"
+                                Margin="2"
+                                BorderThickness="2"
+                                BorderBrush="#ECECEC"
+                                Visibility="Hidden"
+                                CornerRadius="2"/>
+                        <Border x:Name="mousePressedBorder"
+                                Margin="0"
+                                BorderThickness="4"
+                                Visibility="Hidden"
+                                BorderBrush="#DFDFDF"
+                                CornerRadius="4"/>
+                        <Border x:Name="border"
+                                Margin="4"
+                                Height="36px"
+                                Padding="8,0,8,0"
+                                BorderThickness="1"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="2">
+                            <TextBlock x:Name="textBlock"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="14px"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       Text="{TemplateBinding Content}" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.9" />
+                            <Setter TargetName="mouseOverBorder" Property="Visibility " Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.9" />
+                            <Setter TargetName="mousePressedBorder" Property="Visibility " Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="PopupButtonStyle" TargetType="Button">
@@ -2510,9 +2599,9 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ContextMenu}">
                     <Border x:Name="Border"
-                            Background="{TemplateBinding Background}"
+                            Background="{StaticResource NodeContextMenuBackground}"
                             BorderThickness="0px">
-                        <StackPanel Margin="0,5"
+                        <StackPanel Margin="0,10"
                                     ClipToBounds="True"
                                     IsItemsHost="True"
                                     Orientation="Vertical" />
@@ -3524,14 +3613,18 @@
         </Setter>
     </Style>
 
-    <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#808080" Opacity="0.15"/>
-    <SolidColorBrush x:Key="Button.Pressed.Border" Color="#808080" Opacity="0.25"/>
+    <SolidColorBrush x:Key="Button.MouseOver.Border"
+                     Opacity="0.15"
+                     Color="#808080" />
+    <SolidColorBrush x:Key="Button.Pressed.Border"
+                     Opacity="0.25"
+                     Color="#808080" />
     <Style x:Key="PoupButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="MinWidth" Value="80" />
         <Setter Property="MaxHeight" Value="36" />
         <Setter Property="BorderThickness" Value="36" />
         <Setter Property="Foreground" Value="{StaticResource PopupWhiteColor}" />
-        <Setter Property="Background" Value="{StaticResource PreferencesWindowButtonColor}" />        
+        <Setter Property="Background" Value="{StaticResource PreferencesWindowButtonColor}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -3545,13 +3638,13 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="BorderBrush" TargetName="PopupButtonBorder" Value="{StaticResource Button.MouseOver.Border}"/>
-                            <Setter Property="BorderThickness" TargetName="PopupButtonBorder" Value="2"/>
+                            <Setter TargetName="PopupButtonBorder" Property="BorderBrush" Value="{StaticResource Button.MouseOver.Border}" />
+                            <Setter TargetName="PopupButtonBorder" Property="BorderThickness" Value="2" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="BorderBrush" TargetName="PopupButtonBorder" Value="{StaticResource Button.Pressed.Border}"/>
-                            <Setter Property="BorderThickness" TargetName="PopupButtonBorder" Value="4"/>
-                            <Setter Property="Background" TargetName="PopupButtonBorder" Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter TargetName="PopupButtonBorder" Property="BorderBrush" Value="{StaticResource Button.Pressed.Border}" />
+                            <Setter TargetName="PopupButtonBorder" Property="BorderThickness" Value="4" />
+                            <Setter TargetName="PopupButtonBorder" Property="Background" Value="{StaticResource PreferencesWindowButtonColor}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

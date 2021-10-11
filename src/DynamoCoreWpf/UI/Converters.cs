@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -110,19 +111,19 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Converts the list of package dependencies to a string
+    /// Converts the list of package dependencies to a comma-separated string.
     /// </summary>
     public class DependencyListToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return Wpf.Properties.Resources.PackageManagerPackageHasNoDependencies;
+            if (value == null) return string.Empty;
 
             List<string> depList = (List<string>)value;
 
-            if(depList.Count < 1) return Wpf.Properties.Resources.PackageManagerPackageHasNoDependencies;
+            if(depList.Count < 1) return string.Empty;
 
-            return string.Join(Environment.NewLine, depList);
+            return string.Join(", ", depList);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -132,23 +133,26 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Takes a list of Greg dependencies and returns a comma separated stirng.
+    /// Returns Visibility.Visible if the collection has more than n items, otherwise returns Visibility.Collapsed.
     /// </summary>
-    public class DependencyListConverter : IValueConverter
+    public class ListHasMoreThanNItemsToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is List<Dependency> dependencies)) return string.Empty;
+            if (!(value is ICollection collection)) return Visibility.Collapsed;
 
-            return string.Join(", ", dependencies.Select(x => x.name).ToList());
+            // If no parameter is specified, we return Visible when there are more than 0 (i.e. any) items.
+            var n = (int)(parameter ?? 0);
+
+            return collection.Count <= n ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
-    
+
     /// <summary>
     /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
     /// </summary>
@@ -367,8 +371,8 @@ namespace Dynamo.Controls
             if (!(value is bool booleanValue)) return null;
             
             return booleanValue
-                ? Wpf.Properties.Resources.PackageDownloadStateInstalled
-                : Wpf.Properties.Resources.PackageManagerInstall;
+                ? Wpf.Properties.Resources.PackageManagerInstall
+                : Wpf.Properties.Resources.PackageDownloadStateInstalled;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -399,110 +403,16 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// If the given list of strings is empty, replaces with a string given as a parameter value.
+    /// Converts any numbers below 0 to 0, otherwise returns the original number.
+    /// For example, used to display the number of votes each package has received in the package manager.
     /// </summary>
-    public class EmptyListToParameterValueConverter : IValueConverter
+    public class NegativeIntToZeroConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
             CultureInfo culture)
         {
-            if (value is List<string> stringList && stringList.Count > 0) return string.Join(", ", stringList);
-            if (parameter is string parameterValue) return parameterValue;
-            return string.Empty;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter,
-            CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    /// <summary>
-    /// Displays the dependencies in the PackageDetailsViewExtension.
-    /// Since host_dependencies stores all dependencies and Python engine types together,
-    /// this converter is used to split the Python engine types from the other dependencies.
-    /// </summary>
-    public class PackageDetailsDependenciesConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter,
-            CultureInfo culture)
-        {
-            if (!(value is List<string> stringList) || stringList.Count < 1) return "None";
-
-            List<string> values = new List<string>();
-
-            foreach (var stringValue in stringList)
-            {
-                if (stringValue == PythonEngineVersion.IronPython2.ToString() ||
-                    stringValue == PythonEngineVersion.CPython3.ToString()) continue;
-                values.Add(stringValue);
-            }
-
-            return values.Count < 1 ? "None" : string.Join(", ", values);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter,
-            CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    /// <summary>
-    /// Displays the Python engine type in the PackageDetailsViewExtension.
-    /// Since host_dependencies stores all dependencies and Python engine types together,
-    /// this converter is used to split the Python engine types from the other dependencies.
-    /// </summary>
-    public class PackageDetailsPythonEngineConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter,
-            CultureInfo culture)
-        {
-            if (!(value is List<string> stringList) || stringList.Count < 1) return "None";
-
-            List<string> values = new List<string>();
-
-            foreach (var stringValue in stringList)
-            {
-                if (stringValue != PythonEngineVersion.IronPython2.ToString() &&
-                    stringValue != PythonEngineVersion.CPython3.ToString()) continue;
-                values.Add(stringValue);
-            }
-
-            return values.Count < 1 ? "None" : string.Join(", ", values);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter,
-            CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    /// <summary>
-    /// Displays the Python engine type in the PackageDetailsViewExtension.
-    /// Since host_dependencies stores all dependencies and Python engine types together,
-    /// this converter is used to split the Python engine types from the other dependencies.
-    /// </summary>
-    public class PackageDetailsPackagesConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter,
-            CultureInfo culture)
-        {
-            if (!(value is List<Dependency> dependencyList) || dependencyList.Count < 1) return "None";
-
-            List<Button> buttons = new List<Button>();
-
-            foreach (Dependency dependency in dependencyList)
-            {
-                buttons.Add(new Button()
-                {
-                    Content = dependency.name,
-                });
-            }
-
-            return buttons;
+            if (!(value is int intValue)) return 0;
+            return intValue > 0 ? intValue : 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -1006,6 +916,34 @@ namespace Dynamo.Controls
         {
             List<object> list = (List<object>)value;
             return list.Count > 0; //spacing for Inputs + title space + bottom space
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Check if the collection has more items than the provided
+    /// parameter. If no parameter is provided the converter will
+    /// check if the collection has more than 1 item.
+    /// </summary>
+    public class CollectionHasMoreThanNItemsToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is ICollection collection))
+            {
+                return false;
+            }
+
+            if (parameter is int n)
+            {
+                return collection.Count > n;
+            }
+
+            return collection.Count > 1;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -2349,10 +2287,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((int)value > 0)
-                return Visibility.Visible;
-
-            return Visibility.Collapsed;
+            return (int)value > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -3313,6 +3248,37 @@ namespace Dynamo.Controls
             }
 
             return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts an ICollection<AnnotationViewModel> to a string
+    /// that displays how many AnnotationViewModels there is in the
+    /// Collection.
+    /// </summary>
+    [ValueConversion(typeof(ICollection<AnnotationViewModel>), typeof(string))]
+    public class NestedGroupsLabelConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection<AnnotationViewModel> viewModels) ||
+                !viewModels.Any())
+            {
+                return string.Empty;
+            }
+
+            var numberOfNestedGroups = viewModels.Count;
+            if (numberOfNestedGroups > 1)
+            {
+                return $"{numberOfNestedGroups} Groups";
+            }
+
+            return viewModels.FirstOrDefault().AnnotationText;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

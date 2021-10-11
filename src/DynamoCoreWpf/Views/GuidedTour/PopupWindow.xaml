@@ -26,8 +26,8 @@
 
     <Canvas Background="Transparent"
             Name="RootLayout" >
-
-        <Path x:Name="PopupPathRectangle"   
+        
+        <Path x:Name="PopupPathRectangle" 
               Style="{StaticResource PoupPathRectangleStyle}">
             <Path.Data>
                 <RectangleGeometry x:Name="BackgroundRectangle">
@@ -85,7 +85,7 @@
                   DataContext="{Binding Step}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
-                    <RowDefinition Height="Auto" 
+                    <RowDefinition Height="*" 
                                    MinHeight="50"/>
                 </Grid.RowDefinitions>
                 

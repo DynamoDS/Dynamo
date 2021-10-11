@@ -338,15 +338,16 @@ namespace Dynamo.Models
             }
         }
 
+        private ConnectorType connectorType = ConnectorType.BEZIER;
         /// <summary>
         ///     Specifies how connectors are displayed in Dynamo.
         /// </summary>
         public ConnectorType ConnectorType
         {
-            get { return PreferenceSettings.ConnectorType; }
+            get { return connectorType; }
             set
             {
-                PreferenceSettings.ConnectorType = value;
+                connectorType = value;
             }
         }
 
@@ -418,8 +419,23 @@ namespace Dynamo.Models
 
             AnalyticsService.ShutDown();
 
+            State = DynamoModelState.NotStarted;
             OnShutdownCompleted(); // Notify possible event handlers.
         }
+
+        /// <summary>
+        /// Based on the DynamoModelState a dependent component can take certain 
+        /// decisions regarding its UI and functionality.
+        /// In order to be able to run a specified graph , DynamoModel needs to be 
+        /// at least in StartedUIless state. 
+        /// </summary>
+        public enum DynamoModelState { NotStarted, StartedUIless, StartedUI };
+
+        /// <summary>
+        /// The modelState tels us if the RevitDynamoModel was started and if has the
+        /// the Dynamo UI attached to it or not 
+        /// </summary>
+        public DynamoModelState State { get; internal set; } = DynamoModelState.NotStarted;
 
         protected virtual void PreShutdownCore(bool shutdownHost)
         {
@@ -860,6 +876,8 @@ namespace Dynamo.Models
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
+
+            State = DynamoModelState.StartedUIless;
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
         }
@@ -2546,11 +2564,20 @@ namespace Dynamo.Models
                     {
                         foreach (var group in annotation.Nodes.OfType<AnnotationModel>())
                         {
-                            newAnnotations.Add(CreateAnnotationModel(group, modelLookup));
+                            var nestedGroup = CreateAnnotationModel(
+                                group,
+                                modelLookup
+                                    .Where(x => group.Nodes.Select(y => y.GUID).Contains(x.Key))
+                                    .ToDictionary(x => x.Key, x => x.Value)
+                                );
+
+                            newAnnotations.Add(nestedGroup);
+                            modelLookup.Add(group.GUID, nestedGroup);
                         }
                     }
 
                     var annotationModel = CreateAnnotationModel(annotation, modelLookup);
+
                     newAnnotations.Add(annotationModel);
                 }
 
@@ -2583,6 +2610,7 @@ namespace Dynamo.Models
             // so they need to be in pasted annotation as well
             var modelsToRestore = model.DeletedModelBases.Intersect(ClipBoard);
             var modelsToAdd = model.Nodes.Concat(modelsToRestore);
+
             // checked condition here that supports pasting of multiple groups
             foreach (var models in modelsToAdd)
             {
