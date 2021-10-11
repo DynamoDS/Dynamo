@@ -2568,6 +2568,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string GenericTaskDialogOptionCancel {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string GenericTaskDialogOptionNo {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string GenericTaskDialogOptionOK {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string GenericTaskDialogOptionYes {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionYes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sample Left Button.
         /// </summary>
         public static string GenericTaskDialogSampleLeftButton {
@@ -4851,15 +4887,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sort Packages..
-        /// </summary>
-        public static string PackageSortToolTip {
-            get {
-                return ResourceManager.GetString("PackageSortToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Packages.
         /// </summary>
         public static string PackagesGuide {
@@ -4874,6 +4901,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagesGuideLearnAbout {
             get {
                 return ResourceManager.GetString("PackagesGuideLearnAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort Packages..
+        /// </summary>
+        public static string PackageSortToolTip {
+            get {
+                return ResourceManager.GetString("PackageSortToolTip", resourceCulture);
             }
         }
         

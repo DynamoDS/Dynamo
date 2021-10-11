@@ -2696,4 +2696,16 @@ Delete the following packages: {2}?
   <data name="ConnectorContextMenuHeaderHideConnector" xml:space="preserve">
     <value>Hide Wire</value>
   </data>
+  <data name="GenericTaskDialogOptionYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="GenericTaskDialogOptionNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="GenericTaskDialogOptionOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="GenericTaskDialogOptionCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
 </root>
