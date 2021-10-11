@@ -566,8 +566,8 @@ namespace DynamoCoreWpfTests
             ConnectorType expectedConnector = ConnectorType.BEZIER;
             ViewModel.SetConnectorType("BEZIER");
             Assert.AreEqual(expectedConnector, ViewModel.Model.PreferenceSettings.ConnectorType);
-
-            expectedConnector = ConnectorType.POLYLINE;
+            // Now we expect bezier to be created regardless of the preference settings.
+            expectedConnector = ConnectorType.BEZIER;
             ViewModel.SetConnectorType("POLYLINE");
             Assert.AreEqual(expectedConnector, ViewModel.Model.PreferenceSettings.ConnectorType);
             #endregion
@@ -634,6 +634,9 @@ namespace DynamoCoreWpfTests
                 initalSetting.GetIsBackgroundPreviewActive(backgroundPreviewName));
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
             Assert.AreEqual(resultSetting.ConsoleHeight, initalSetting.ConsoleHeight);
+
+            // Now we expect bezier to be created regardless of the preference settings.
+            Assert.AreEqual(Model.ConnectorType, ConnectorType.BEZIER);
             #endregion
 
             #endregion
@@ -717,6 +720,11 @@ namespace DynamoCoreWpfTests
                 {
                     DynamoModel = Model
                 });
+
+            var expectedState = startInTestMode
+                ? DynamoModel.DynamoModelState.StartedUIless
+                : DynamoModel.DynamoModelState.StartedUI;
+            Assert.AreEqual(ViewModel.Model.State, expectedState);
 
             //create the view
             View = new DynamoView(ViewModel);
