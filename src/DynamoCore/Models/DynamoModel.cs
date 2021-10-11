@@ -2538,7 +2538,7 @@ namespace Dynamo.Models
                 //so adding the group after nodes / notes are added to workspace.
                 //select only those nodes that are part of a group.
                 var newAnnotations = new List<AnnotationModel>();
-                foreach (var annotation in annotations.OrderByDescending(a=>a.HasNestedGroups))
+                foreach (var annotation in annotations.OrderByDescending(a => a.HasNestedGroups)) 
                 {
                     if (modelLookup.ContainsKey(annotation.GUID))
                     {
