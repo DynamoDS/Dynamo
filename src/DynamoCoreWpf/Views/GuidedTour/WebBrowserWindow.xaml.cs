@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using Dynamo.Utilities;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 
@@ -95,24 +96,11 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
             if (resourceStream != null)
             {
-                var resourceBase64 = ConvertToBase64(resourceStream);
+                var resourceBase64 = ResourceUtilities.ConvertToBase64(resourceStream);
                 bodyHtmlPage = bodyHtmlPage.Replace(key, resourceBase64);
             }
 
             return bodyHtmlPage;
-        }
-
-        private string ConvertToBase64(Stream stream)
-        {
-            byte[] bytes;
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                bytes = memoryStream.ToArray();
-            }
-
-            string base64 = Convert.ToBase64String(bytes);
-            return base64;
         }
     }
 }
