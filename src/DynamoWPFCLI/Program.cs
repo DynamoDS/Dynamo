@@ -53,6 +53,7 @@ namespace DynamoWPFCLI
 
                 var runner = new CommandLineRunnerWPF(viewModel);
                 runner.Run(cmdLineArgs);
+
             }
             catch (Exception e)
             {
@@ -74,15 +75,15 @@ namespace DynamoWPFCLI
         {
             var model = Dynamo.Applications.StartupUtils.MakeModel(true);
 
+            DefaultWatch3DViewModel defaultWatch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(null, new Watch3DViewModelStartupParams(model), model.Logger);
+            defaultWatch3DViewModel.Active = false;
+            defaultWatch3DViewModel.CanBeActivated = false;
+
             var viewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {
                     DynamoModel = model,
-                    Watch3DViewModel = new DefaultWatch3DViewModel(null, new Watch3DViewModelStartupParams(model))
-                    {
-                        Active = false,
-                        CanBeActivated = false
-                    }
+                    Watch3DViewModel = defaultWatch3DViewModel
                 });
 
             var dynView = new DynamoView(viewModel);

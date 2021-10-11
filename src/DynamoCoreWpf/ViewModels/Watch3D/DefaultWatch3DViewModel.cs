@@ -195,7 +195,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             get
             {
-                return viewModel.Workspaces.FirstOrDefault(vm => vm.Model == dynamoModel.CurrentWorkspace);
+                if (viewModel == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return viewModel.Workspaces.FirstOrDefault(vm => vm.Model == dynamoModel.CurrentWorkspace);
+                }
             }
         }
 
