@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading;
-using System.Windows;
 using Dynamo.Applications;
-using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.ViewModels;

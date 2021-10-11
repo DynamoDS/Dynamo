@@ -31,7 +31,7 @@ namespace DynamoWPFCLI
         private static XmlDocument RunCommandLineArgs(DynamoViewModel viewModel, StartupUtils.CommandLineArguments cmdLineArgs)
         {
             var evalComplete = false;
-            if (!cmdLineArgs.KeepAlive && string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
+            if (string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
             {
                 return null;
             }
