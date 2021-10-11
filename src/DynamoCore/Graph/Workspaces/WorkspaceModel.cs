@@ -27,6 +27,7 @@ using Dynamo.Properties;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using DynamoUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore.Namespace;
@@ -841,20 +842,22 @@ namespace Dynamo.Graph.Workspaces
                         var mirror = homeWorkspaceModel.EngineController.GetMirror(id);
                         var data = mirror?.GetData().Data;
 
-                        if (data is string dataString)
+                        if (data is string dataString && dataString.Contains(@"\"))
                         {
-                            // If the value exists on disk
-                            if (data.ToString().Contains(@"\") && File.Exists(data.ToString()))
+                            // Check if the value exists on disk
+                            PathHelper.FileInfoAtPath(dataString, out bool fileExists, out string fileSize);
+                            if (fileExists)
                             {
-                                var externalFilePath = Path.GetFullPath(data.ToString());
-                                var externalFileName = Path.GetFileName(data.ToString());
+                                var externalFilePath = Path.GetFullPath(dataString);
+                                var externalFileName = Path.GetFileName(dataString);
 
                                 if (!externalFiles.ContainsKey(externalFilePath))
                                 {
-                                    externalFiles[externalFilePath] = new DependencyInfo(externalFileName, data.ToString(), ReferenceType.External);
+                                    externalFiles[externalFilePath] = new DependencyInfo(externalFileName, dataString, ReferenceType.External);
                                 }
 
                                 externalFiles[externalFilePath].AddDependent(node.GUID);
+                                externalFiles[externalFilePath].Size = fileSize;
                             }
                             // Read the serialized value for that node.
                             else if (serializedDependencyInfo != null && dataString.Contains(serializedDependencyInfo.Name))

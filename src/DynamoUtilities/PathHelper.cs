@@ -197,5 +197,24 @@ namespace DynamoUtilities
 
             return null;
         }
+
+        /// <summary>
+        /// Checks if the file exists at the specified path and computes size.
+        /// </summary>
+        public static void FileInfoAtPath(string path, out bool fileExists, out string size)
+        {
+            try
+            {
+                FileInfo fileInfo = new FileInfo(path);
+                fileExists = true;
+                var fileLength = fileInfo.Length / KbConversionConstant;
+                size = fileLength.ToString() + sizeUnits;
+            }
+            catch
+            {
+                fileExists = false;
+                size = "";
+            }
+        }
     }
 }

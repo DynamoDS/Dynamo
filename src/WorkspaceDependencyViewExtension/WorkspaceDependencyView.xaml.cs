@@ -165,15 +165,6 @@ namespace Dynamo.WorkspaceDependency
 
             foreach (DependencyInfo info in externalFiles)
             {
-                try
-                {
-                    info.Size = PathHelper.GetFileSize(info.Path);
-                }
-                catch (Exception ex)
-                {
-                    dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
-                }
-
                 HasDependencyIssue = info.Path == null;
             }
 
