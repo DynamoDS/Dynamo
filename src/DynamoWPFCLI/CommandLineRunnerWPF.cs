@@ -47,25 +47,6 @@ namespace DynamoWPFCLI
                 ImportAssembly(viewModel.Model, path);
             });
 
-            // KeepAlive mode -- allow loaded extensions to control the process lifetime
-            // and issue commands until the extension calls model.Shutdown().
-            if (cmdLineArgs.KeepAlive)
-            {
-                bool running = true;
-
-                viewModel.Model.ShutdownCompleted += (m) =>
-                {
-                    running = false;
-                };
-
-                while (running)
-                {
-                    Thread.Sleep(3000);
-                }
-
-                return null;
-            }
-
             viewModel.OpenCommand.Execute(new Tuple<string, bool>(cmdLineArgs.OpenFilePath, true));
             Console.WriteLine("loaded file");
             viewModel.Model.EvaluationCompleted += (o, args) => { evalComplete = true; };

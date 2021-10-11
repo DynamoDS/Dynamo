@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Threading;
+using System.Windows;
 using Dynamo.Applications;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using static System.Windows.Threading.Dispatcher;
 
 namespace DynamoWPFCLI
 {
@@ -18,6 +22,17 @@ namespace DynamoWPFCLI
             {
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
+
+                if (cmdLineArgs.KeepAlive)
+                {
+                    var thread = new Thread(KeepAlive);
+
+                    thread.SetApartmentState(ApartmentState.STA);
+                    thread.Start();
+
+                    Console.ReadLine();
+                }
+                
                 DynamoModel model;
                 if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
                 {
@@ -38,26 +53,8 @@ namespace DynamoWPFCLI
                         }
                     });
 
-                var dynView = new DynamoView(viewModel);
-
-                var sharedViewExtensionLoadedParams = new ViewLoadedParams(dynView, viewModel);
-
-                foreach (var ext in dynView.viewExtensionManager.ViewExtensions)
-                {
-                    try
-                    {
-                        ext.Loaded(sharedViewExtensionLoadedParams);
-                        Console.WriteLine("loaded " + ext.Name);
-                    }
-                    catch (Exception exc)
-                    {
-                        Console.WriteLine(ext.Name + ": " + exc.Message);
-                    }
-                }
-
                 var runner = new CommandLineRunnerWPF(viewModel);
                 runner.Run(cmdLineArgs);
-                
             }
             catch (Exception e)
             {
@@ -73,6 +70,41 @@ namespace DynamoWPFCLI
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
             }
+        }
+
+        private static void KeepAlive()
+        {
+            var model = Dynamo.Applications.StartupUtils.MakeModel(true);
+
+            var viewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = model,
+                    Watch3DViewModel = new DefaultWatch3DViewModel(null, new Watch3DViewModelStartupParams(model))
+                    {
+                        Active = false,
+                        CanBeActivated = false
+                    }
+                });
+
+            var dynView = new DynamoView(viewModel);
+
+            var sharedViewExtensionLoadedParams = new ViewLoadedParams(dynView, viewModel);
+
+            foreach (var ext in dynView.viewExtensionManager.ViewExtensions)
+            {
+                try
+                {
+                    ext.Loaded(sharedViewExtensionLoadedParams);
+                    Console.WriteLine("loaded " + ext.Name);
+                }
+                catch (Exception exc)
+                {
+                    Console.WriteLine(ext.Name + ": " + exc.Message);
+                }
+            }
+
+            Run();
         }
 
     }
