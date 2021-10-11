@@ -8,11 +8,10 @@ using Dynamo.Models;
 using CoreNodeModels;
 using Dynamo.UI.Commands;
 using System;
-using Dynamo.Graph;
 
 namespace Dynamo.ViewModels
 {
-    public class ConnectorAnchorViewModel: NotificationObject
+    public class ConnectorAnchorViewModel: ViewModelBase
     {
         #region Properties 
         private Point currentPosition;
@@ -235,7 +234,7 @@ namespace Dynamo.ViewModels
         }
         #endregion
 
-        internal void DisposeViewModel()
+        internal void RequestDisposeViewModel()
         {
             OnRequestDispose(this, EventArgs.Empty);
         }
@@ -263,11 +262,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Dispose function
+        /// Dispose this.
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             ViewModel.PropertyChanged -= OnConnectorViewModelPropertyChanged;
+            base.Dispose();
         }
 
         private void OnConnectorViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

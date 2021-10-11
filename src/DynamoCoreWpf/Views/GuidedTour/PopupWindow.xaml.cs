@@ -1,5 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.IO;
+using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
+using System.Windows.Interop;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 
@@ -12,10 +16,15 @@ namespace Dynamo.Wpf.Views.GuidedTour
     {
         private const int popupBordersOffSet = 10;
         private PopupWindowViewModel popupViewModel;
+        private HostControlInfo hostControlInfo;
+
+        internal WebBrowserWindow webBrowserWindow;
 
         public PopupWindow(PopupWindowViewModel viewModel, HostControlInfo hInfo)
         {
             InitializeComponent();
+
+            hostControlInfo = hInfo;
             
             if (viewModel != null)
                 popupViewModel = viewModel;
@@ -40,6 +49,29 @@ namespace Dynamo.Wpf.Views.GuidedTour
             ContentRichTextBox.Width = popupViewModel.Width - (popupBordersOffSet * 4);
             HorizontalOffset = hInfo.HorizontalPopupOffSet;
             VerticalOffset = hInfo.VerticalPopupOffSet;
+
+            if (!string.IsNullOrEmpty(hInfo.HtmlPage))
+            {
+                ContentRichTextBox.Visibility = Visibility.Hidden;
+                Opened += PopupWindow_Opened;
+            }
+
+            Closed += PopupWindow_Closed;
+        }
+
+        private void PopupWindow_Closed(object sender, EventArgs e)
+        {
+            if(webBrowserWindow != null)
+                webBrowserWindow.IsOpen = false;
+
+            Opened -= PopupWindow_Opened;
+            Closed -= PopupWindow_Closed;
+        }
+
+        private void PopupWindow_Opened(object sender, EventArgs e)
+        {
+            webBrowserWindow = new WebBrowserWindow(popupViewModel, hostControlInfo);
+            webBrowserWindow.IsOpen = true;
         }
 
         private void StartTourButton_Click(object sender, System.Windows.RoutedEventArgs e)

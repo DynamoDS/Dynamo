@@ -114,7 +114,8 @@ namespace Dynamo.Controls
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.InPortsDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.OutPortsDictionary);
 
             InitializeComponent();
 
@@ -703,6 +704,8 @@ namespace Dynamo.Controls
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
+
+            viewModel.OnSelected(this, EventArgs.Empty);
 
             grid.ContextMenu.DataContext = viewModel;
             grid.ContextMenu.IsOpen = true;

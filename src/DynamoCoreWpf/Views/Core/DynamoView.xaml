@@ -612,11 +612,18 @@
                         </MenuItem>
                         <MenuItem x:Name="InteractiveGuidesMenuItem"
                                   Focusable="False"
+                                  Command="{Binding DisplayInteractiveGuideCommand}"
                                   Header="{x:Static p:Resources.InteractiveGuides}">
                             <MenuItem x:Name="GetStartedMenuItem"
                                       Focusable="False"
                                       Header="{x:Static p:Resources.GetStartedGuide}"
                                       Click="GetStartedMenuItem_Click">
+                            </MenuItem>
+                            <MenuItem x:Name="PackagesMenuGuide"
+                                      Focusable="False"     
+                                      
+                                      Header="{x:Static p:Resources.PackagesGuide}"
+                                      Click="PackagesMenuGuide_Click">
                             </MenuItem>
                         </MenuItem>
                         <MenuItem Focusable="False"
