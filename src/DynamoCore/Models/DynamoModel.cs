@@ -338,15 +338,16 @@ namespace Dynamo.Models
             }
         }
 
+        private ConnectorType connectorType = ConnectorType.BEZIER;
         /// <summary>
         ///     Specifies how connectors are displayed in Dynamo.
         /// </summary>
         public ConnectorType ConnectorType
         {
-            get { return PreferenceSettings.ConnectorType; }
+            get { return connectorType; }
             set
             {
-                PreferenceSettings.ConnectorType = value;
+                connectorType = value;
             }
         }
 
@@ -418,8 +419,23 @@ namespace Dynamo.Models
 
             AnalyticsService.ShutDown();
 
+            State = DynamoModelState.NotStarted;
             OnShutdownCompleted(); // Notify possible event handlers.
         }
+
+        /// <summary>
+        /// Based on the DynamoModelState a dependent component can take certain 
+        /// decisions regarding its UI and functionality.
+        /// In order to be able to run a specified graph , DynamoModel needs to be 
+        /// at least in StartedUIless state. 
+        /// </summary>
+        public enum DynamoModelState { NotStarted, StartedUIless, StartedUI };
+
+        /// <summary>
+        /// The modelState tels us if the RevitDynamoModel was started and if has the
+        /// the Dynamo UI attached to it or not 
+        /// </summary>
+        public DynamoModelState State { get; internal set; } = DynamoModelState.NotStarted;
 
         protected virtual void PreShutdownCore(bool shutdownHost)
         {
@@ -860,6 +876,8 @@ namespace Dynamo.Models
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
+
+            State = DynamoModelState.StartedUIless;
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
         }

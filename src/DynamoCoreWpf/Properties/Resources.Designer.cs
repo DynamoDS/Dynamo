@@ -4427,15 +4427,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No dependencies..
-        /// </summary>
-        public static string PackageManagerPackageHasNoDependencies {
-            get {
-                return ResourceManager.GetString("PackageManagerPackageHasNoDependencies", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to New.
         /// </summary>
         public static string PackageManagerPackageNew {
@@ -4945,6 +4936,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageSearchViewVisitWebSiteButton {
             get {
                 return ResourceManager.GetString("PackageSearchViewVisitWebSiteButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort Packages..
+        /// </summary>
+        public static string PackageSortToolTip {
+            get {
+                return ResourceManager.GetString("PackageSortToolTip", resourceCulture);
             }
         }
         

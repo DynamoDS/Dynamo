@@ -1790,7 +1790,7 @@ namespace Dynamo.Graph.Workspaces
                             connector.SetAttribute("start_index", c.Start.Index.ToString());
                             connector.SetAttribute("end", c.End.Owner.GUID.ToString());
                             connector.SetAttribute("end_index", c.End.Index.ToString());
-                            connector.SetAttribute(nameof(ConnectorModel.IsCollapsed), c.IsCollapsed.ToString());
+                            connector.SetAttribute(nameof(ConnectorModel.IsHidden), c.IsHidden.ToString());
 
                             if (c.End.PortType == PortType.Input)
                                 connector.SetAttribute("portType", "0");
