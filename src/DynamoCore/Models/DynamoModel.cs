@@ -2442,8 +2442,7 @@ namespace Dynamo.Models
             // or does not belong to a group here.
             // We handle creation of nested groups when creating the
             // parent group.
-            var annotations = ClipBoard.OfType<AnnotationModel>()
-                .Where(x=>x.HasNestedGroups || !currentWorkspace.Annotations.ContainsModel(x));
+            var annotations = ClipBoard.OfType<AnnotationModel>();
 
             var xmlDoc = new XmlDocument();
 
@@ -2557,8 +2556,13 @@ namespace Dynamo.Models
                 //so adding the group after nodes / notes are added to workspace.
                 //select only those nodes that are part of a group.
                 var newAnnotations = new List<AnnotationModel>();
-                foreach (var annotation in annotations)
+                foreach (var annotation in annotations.OrderByDescending(a => a.HasNestedGroups)) 
                 {
+                    if (modelLookup.ContainsKey(annotation.GUID))
+                    {
+                        continue;
+                    }
+
                     // If this group has nested group we need to create them first
                     if (annotation.HasNestedGroups)
                     {
