@@ -19,7 +19,8 @@ namespace Dynamo.PackageDetails
         private string hosts;
         private string pythonVersion;
         private List<string> packages;
-        private bool isInstalled;
+        private bool canInstall;
+        private string packageName;
 
         /// <summary>
         /// A reference to the PackageVersion object, a response from the GregClient.
@@ -31,6 +32,19 @@ namespace Dynamo.PackageDetails
             {
                 packageVersion = value;
                 OnPropertyChanged(nameof(PackageVersion));
+            }
+        }
+
+        /// <summary>
+        /// The name of the package this PackageDetailItem represents a specific version of.
+        /// </summary>
+        public string PackageName
+        {
+            get => packageName;
+            set
+            {
+                packageName = value; 
+                OnPropertyChanged(nameof(PackageName));
             }
         }
 
@@ -86,13 +100,13 @@ namespace Dynamo.PackageDetails
             }
         }
 
-        public bool IsInstalled
+        public bool CanInstall
         {
-            get => isInstalled;
+            get => canInstall;
             set
             {
-                isInstalled = value;
-                OnPropertyChanged(nameof(IsInstalled));
+                canInstall = value;
+                OnPropertyChanged(nameof(CanInstall));
             }
         }
 
@@ -101,19 +115,27 @@ namespace Dynamo.PackageDetails
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="packageName"></param>
         /// <param name="packageLoader"></param>
         /// <param name="packageVersion"></param>
-        public PackageDetailItem(PackageLoader packageLoader, PackageVersion packageVersion)
+        public PackageDetailItem(string packageName, PackageLoader packageLoader, PackageVersion packageVersion)
         {
+            this.PackageName = packageName;
             this.PackageVersion = packageVersion;
             this.PackageVersionNumber = PackageVersion.version;
             this.PackageLoader = packageLoader;
-            this.Packages = PackageVersion.full_dependency_ids.Select(x => x.name).ToList();
+            
+            // To avoid displaying package self-dependencies.
+            // For instance, avoiding Clockwork showing that it depends on Clockwork.
+            this.Packages = PackageVersion.full_dependency_ids
+                .Select(x => x.name)
+                .Where(x => x != PackageName)
+                .ToList();
             
             DetectDependencies();
-            DetectWhetherInstalled();
+            DetectWhetherCanInstall();
         }
-
+        
         /// <summary>
         /// Reads the GregResponse collection of dependency information and sets values
         /// for PythonVersion and Hosts respectively.
@@ -147,20 +169,23 @@ namespace Dynamo.PackageDetails
         /// Detects whether this particular package and version is installed on the user's machine
         /// using the PackageLoader.
         /// </summary>
-        private void DetectWhetherInstalled()
+        internal void DetectWhetherCanInstall()
         {
-            // In order for IsInstalled to be true, both the name and installed package version must match
-            // what is found in the PackageLoader.LocalPackages.
+            // In order for CanInstall to be true, both the name and installed package version must match
+            // what is found in the PackageLoader.LocalPackages which are designated as 'Loaded'.
             List<Package> sameNamePackages = PackageLoader
                 .LocalPackages
-                .Where(x => x.Name == PackageVersion.name)
+                .Where(x => x.Name == PackageName)
                 .ToList();
 
-            if (sameNamePackages.Count < 1) return;
-            
-            IsInstalled = sameNamePackages
-                .Select(x => x.VersionName)
-                .Contains(packageVersion.version);
+            if (sameNamePackages.Count < 1) CanInstall = true;
+            else
+            {
+                CanInstall = !sameNamePackages
+                    .Select(x => x.VersionName)
+                    .Contains(packageVersion.version);
+            }
+            OnPropertyChanged(nameof(CanInstall));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

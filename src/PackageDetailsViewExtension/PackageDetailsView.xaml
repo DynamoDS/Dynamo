@@ -20,7 +20,8 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <controls:NegativeIntToZeroConverter x:Key="NegativeIntToZeroConverter"/>
+            <controls:NegativeIntToZeroConverter x:Key="NegativeIntToZeroConverter" />
+            <controls:InverseBooleanConverter x:Key="InverseBooleanConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <Style x:Key="LabelStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
@@ -256,7 +257,7 @@
 
                         <!--  Versions  -->
                         <DataGridTextColumn x:Name="VersionsColumn"
-                                            MinWidth="80"
+                                            MinWidth="90"
                                             Binding="{Binding Path=PackageVersionNumber}"
                                             Header="{x:Static p:Resources.PackageDetailsVersions}"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
@@ -277,7 +278,8 @@
                                                         <Button Name="installButton"
                                                                 Command="{Binding ElementName=PackageDetailsWindow, Path=DataContext.TryInstallPackageVersionCommand}"
                                                                 CommandParameter="{Binding PackageVersionNumber}"
-                                                                Content="{x:Static p:Resources.PackageManagerInstall}">
+                                                                Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
+                                                                IsEnabled="{Binding IsInstalled, Converter={StaticResource InverseBooleanConverter}}">
                                                             <Button.Template>
                                                                 <ControlTemplate TargetType="{x:Type Button}">
                                                                     <Border Name="ButtonBorder"
@@ -295,21 +297,14 @@
                                                                                 <Rectangle.Style>
                                                                                     <Style TargetType="Rectangle">
                                                                                         <Style.Triggers>
-                                                                                            <DataTrigger Binding="{Binding Path=PackageManagerSearchElementViewModel.Model.IsDeprecated}" Value="True">
+                                                                                            <DataTrigger Binding="{Binding Path=CanInstall}" Value="False">
                                                                                                 <Setter Property="Fill">
                                                                                                     <Setter.Value>
-                                                                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - disabled.png" />
+                                                                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/checkmark - grey.png" />
                                                                                                     </Setter.Value>
                                                                                                 </Setter>
                                                                                             </DataTrigger>
-                                                                                            <DataTrigger Binding="{Binding Path=PackageManagerSearchElementViewModel.Model.IsDeprecated}" Value="False">
-                                                                                                <Setter Property="Fill">
-                                                                                                    <Setter.Value>
-                                                                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
-                                                                                                    </Setter.Value>
-                                                                                                </Setter>
-                                                                                            </DataTrigger>
-                                                                                            <DataTrigger Binding="{Binding Path=PackageManagerSearchElementViewModel.Model.IsDeprecated}" Value="{x:Null}">
+                                                                                            <DataTrigger Binding="{Binding Path=CanInstall}" Value="True">
                                                                                                 <Setter Property="Fill">
                                                                                                     <Setter.Value>
                                                                                                         <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
@@ -340,11 +335,11 @@
                                                                         <Trigger Property="IsEnabled" Value="False">
                                                                             <Setter Property="TextBlock.Foreground" Value="#999999" />
                                                                         </Trigger>
-                                                                        <DataTrigger Binding="{Binding Path=IsDeprecated}" Value="False">
+                                                                        <DataTrigger Binding="{Binding Path=CanInstall, UpdateSourceTrigger=PropertyChanged}" Value="True">
                                                                             <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
                                                                         </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Path=IsDeprecated}" Value="{x:Null}">
-                                                                            <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                                        <DataTrigger Binding="{Binding Path=CanInstall, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                                                            <Setter Property="TextBlock.Foreground" Value="#999999" />
                                                                         </DataTrigger>
                                                                     </ControlTemplate.Triggers>
                                                                 </ControlTemplate>

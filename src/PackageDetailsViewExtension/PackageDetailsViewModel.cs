@@ -92,18 +92,25 @@ namespace Dynamo.PackageDetails
         public DelegateCommand OpenDependencyDetailsCommand { get; set; }
         public DelegateCommand TryInstallPackageVersionCommand { get; set; }
 
+        /// <summary>
+        /// Retrieves a package by name and display its details in the PackageDetailsView.
+        /// </summary>
+        /// <param name="obj"></param>
         public void OpenDependencyDetails(object obj)
         {
             if (!(obj is string stringValue)) return;
-
+            
             PackageManagerSearchElement packageManagerSearchElement = GetPackageByName(stringValue);
             
             if (packageManagerSearchElement == null) return;
 
             PackageDetailsViewExtension.OpenPackageDetailsCommand.Execute(packageManagerSearchElement);
-
         }
 
+        /// <summary>
+        /// Attempts to retrieve a package by name and install it locally.
+        /// </summary>
+        /// <param name="obj"></param>
         public void TryInstallPackageVersion(object obj)
         {
             if (!(obj is string versionName)) return;
@@ -113,6 +120,20 @@ namespace Dynamo.PackageDetails
             PackageInfo packageInfo = new PackageInfo(PackageName, Version.Parse(versionName));
             
             this.PackageDetailsViewExtension.packageManagerClientViewModel.DownloadAndInstallPackage(packageInfo);
+            RefreshPackageDetailItemInstalledStatus(versionName);
+        }
+
+        /// <summary>
+        /// After installing a package version, the 
+        /// </summary>
+        public void RefreshPackageDetailItemInstalledStatus(string versionName)
+        {
+            foreach (PackageDetailItem packageDetailItem in PackageDetailItems)
+            {
+                if (packageDetailItem.PackageVersion.version != versionName) continue;
+                packageDetailItem.CanInstall = false;
+                RaisePropertyChanged(nameof(packageDetailItem.CanInstall));
+            }
         }
 
         /// <summary>
@@ -159,10 +180,16 @@ namespace Dynamo.PackageDetails
             PackagerLoader = packageDetailsViewExtension.PackageManagerExtension.PackageLoader;
             PackageManagerClientViewModel = packageDetailsViewExtension.packageManagerClientViewModel;
 
+            // Reversing the versions, so they appear newest-first.
             PackageDetailItems = packageManagerSearchElement.Header.versions
                 .AsEnumerable()
                 .Reverse()
-                .Select(x => new PackageDetailItem(packageDetailsViewExtension.PackageManagerExtension.PackageLoader, x))
+                .Select(x => new PackageDetailItem
+                (
+                    packageManagerSearchElement.Name,
+                    packageDetailsViewExtension.PackageManagerExtension.PackageLoader,
+                    x
+                ))
                 .ToList();
 
             PackageName = packageManagerSearchElement.Name;
@@ -177,8 +204,6 @@ namespace Dynamo.PackageDetails
 
             OpenDependencyDetailsCommand = new DelegateCommand(OpenDependencyDetails);
             TryInstallPackageVersionCommand = new DelegateCommand(TryInstallPackageVersion);
-
-            
         }
         
         public void Dispose()

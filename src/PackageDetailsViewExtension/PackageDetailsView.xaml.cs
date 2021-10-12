@@ -14,6 +14,11 @@ namespace Dynamo.PackageDetails
             DataContext = PackageDetailsViewModel;
         }
 
+        /// <summary>
+        /// Allows for mousewheel scrolling in the DataGrid.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void VersionsDataGrid_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (!e.Handled)
