@@ -273,8 +273,8 @@
     <value>Switch to Geometry _View</value>
     <comment>Context menu item</comment>
   </data>
-  <data name="ContextMenuHideAllGeometry" xml:space="preserve">
-    <value>Hide all geometry preview</value>
+  <data name="ContextMenuHideGeometry" xml:space="preserve">
+    <value>Hide geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="ContextMenuHideAllTextBubble" xml:space="preserve">
@@ -333,8 +333,8 @@
     <value>Publish This Custom Node...</value>
     <comment>Context menu item</comment>
   </data>
-  <data name="ContextMenuShowAllGeometry" xml:space="preserve">
-    <value>Show all geometry preview</value>
+  <data name="ContextMenuShowGeometry" xml:space="preserve">
+    <value>Show geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
@@ -2682,9 +2682,6 @@ Delete the following packages: {2}?
     <value>Install</value>
     <comment>Used on the package manager search result card. If the package is not installed, the button will say 'Install'.</comment>
   </data>
-  <data name="PackageManagerPackageHasNoDependencies" xml:space="preserve">
-    <value>No dependencies.</value>
-  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Updated</value>
     <comment>Displays next to the package name in the Package Search window if the package has been updated in the last 30 days.</comment>
@@ -2692,6 +2689,9 @@ Delete the following packages: {2}?
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>New</value>
     <comment>Displays next to the package name in the Package Search window if the package has been added in the last 30 days.</comment>
+  </data>
+  <data name="PackageSortToolTip" xml:space="preserve">
+    <value>Sort Packages.</value>
   </data>
   <data name="ConnectorContextMenuHeaderHideConnector" xml:space="preserve">
     <value>Hide Wire</value>
@@ -2719,5 +2719,17 @@ Delete the following packages: {2}?
   </data>
   <data name="PackagesGuideThirdPartyTitle" xml:space="preserve">
     <value>Third-party packages</value>
+  </data>
+  <data name="GenericTaskDialogOptionYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="GenericTaskDialogOptionNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="GenericTaskDialogOptionOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="GenericTaskDialogOptionCancel" xml:space="preserve">
+    <value>Cancel</value>
   </data>
 </root>

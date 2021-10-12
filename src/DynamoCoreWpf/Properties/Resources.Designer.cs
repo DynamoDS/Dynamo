@@ -574,20 +574,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide all geometry preview.
-        /// </summary>
-        public static string ContextMenuHideAllGeometry {
-            get {
-                return ResourceManager.GetString("ContextMenuHideAllGeometry", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Hide all text bubble.
         /// </summary>
         public static string ContextMenuHideAllTextBubble {
             get {
                 return ResourceManager.GetString("ContextMenuHideAllTextBubble", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide geometry preview.
+        /// </summary>
+        public static string ContextMenuHideGeometry {
+            get {
+                return ResourceManager.GetString("ContextMenuHideGeometry", resourceCulture);
             }
         }
         
@@ -709,20 +709,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show all geometry preview.
-        /// </summary>
-        public static string ContextMenuShowAllGeometry {
-            get {
-                return ResourceManager.GetString("ContextMenuShowAllGeometry", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show all text buble.
         /// </summary>
         public static string ContextMenuShowAllTextBubble {
             get {
                 return ResourceManager.GetString("ContextMenuShowAllTextBubble", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show geometry preview.
+        /// </summary>
+        public static string ContextMenuShowGeometry {
+            get {
+                return ResourceManager.GetString("ContextMenuShowGeometry", resourceCulture);
             }
         }
         
@@ -2568,6 +2568,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string GenericTaskDialogOptionCancel {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string GenericTaskDialogOptionNo {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string GenericTaskDialogOptionOK {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string GenericTaskDialogOptionYes {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionYes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sample Left Button.
         /// </summary>
         public static string GenericTaskDialogSampleLeftButton {
@@ -4338,15 +4374,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No dependencies..
-        /// </summary>
-        public static string PackageManagerPackageHasNoDependencies {
-            get {
-                return ResourceManager.GetString("PackageManagerPackageHasNoDependencies", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to New.
         /// </summary>
         public static string PackageManagerPackageNew {
@@ -4946,6 +4973,14 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagesGuideThirdPartyTitle {
             get {
                 return ResourceManager.GetString("PackagesGuideThirdPartyTitle", resourceCulture);
+            }
+        }
+        
+        ///   Looks up a localized string similar to Sort Packages..
+        /// </summary>
+        public static string PackageSortToolTip {
+            get {
+                return ResourceManager.GetString("PackageSortToolTip", resourceCulture);
             }
         }
         

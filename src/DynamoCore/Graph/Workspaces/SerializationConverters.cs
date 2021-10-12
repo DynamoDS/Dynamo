@@ -1187,9 +1187,9 @@ namespace Dynamo.Graph.Workspaces
             var obj = JObject.Load(reader);
             var startId = obj["Start"].Value<string>();
             var endId = obj["End"].Value<string>();
-            var isCollapsedExists = obj[nameof(ConnectorModel.IsCollapsed)];
-            
-            var isCollapsed = isCollapsedExists != null && obj[nameof(ConnectorModel.IsCollapsed)].Value<bool>();
+            var isHiddenExists = obj[nameof(ConnectorModel.IsHidden)];
+
+            var isHidden = isHiddenExists != null && obj[nameof(ConnectorModel.IsHidden)].Value<bool>();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 
@@ -1217,7 +1217,7 @@ namespace Dynamo.Graph.Workspaces
             if(startPort != null && endPort != null)
             {
                 var connectorModel = new ConnectorModel(startPort, endPort, connectorId);
-                connectorModel.IsCollapsed = isCollapsed;
+                connectorModel.IsHidden = isHidden;
                 return connectorModel;
             }
             else
@@ -1245,8 +1245,8 @@ namespace Dynamo.Graph.Workspaces
             writer.WriteValue(connector.End.GUID.ToString("N"));
             writer.WritePropertyName("Id");
             writer.WriteValue(connector.GUID.ToString("N"));
-            writer.WritePropertyName(nameof(ConnectorModel.IsCollapsed));
-            writer.WriteValue(connector.IsCollapsed.ToString());
+            writer.WritePropertyName(nameof(ConnectorModel.IsHidden));
+            writer.WriteValue(connector.IsHidden.ToString());
             writer.WriteEndObject();
         }
     }
