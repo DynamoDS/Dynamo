@@ -30,13 +30,13 @@ namespace Dynamo.PackageManager.ViewModels
         /// <param name="element">A PackageManagerSearchElement</param>
         /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
         /// <param name="install">Whether a package can be installed.</param>
-        /// <param name="isEnabled">Whether the package is enabled for install in the UI.</param>
-        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool install, bool isEnabled = true) 
+        /// <param name="isEnabledForInstall">Whether the package is enabled for install in the UI.</param>
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool install, bool isEnabledForInstall = true) 
             : base(element)
         {
             this.Model = element;
             CanInstall = install;
-            IsEnabled = isEnabled;
+            IsEnabledForInstall = isEnabledForInstall;
 
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded);
 
@@ -82,21 +82,21 @@ namespace Dynamo.PackageManager.ViewModels
             }
         }
 
-        private bool isEnabled;
+        private bool isEnabledForInstall;
         /// <summary>
         /// Package is enabled for download if custom package paths are not disabled.
         /// False if custom package paths are disabled.
         /// </summary>
-        public bool IsEnabled
+        public bool IsEnabledForInstall
         {
             get 
             {
-                return isEnabled;
+                return isEnabledForInstall;
             }
             private set
             {
-                isEnabled = value;
-                RaisePropertyChanged(nameof(IsEnabled));
+                isEnabledForInstall = value;
+                RaisePropertyChanged(nameof(IsEnabledForInstall));
             }
         }
 

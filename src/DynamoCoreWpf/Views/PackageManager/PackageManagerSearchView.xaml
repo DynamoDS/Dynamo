@@ -602,7 +602,7 @@
                                 <Button Name="installButton"
                                         Command="{Binding DownloadLatestCommand}"
                                         Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
-                                        IsEnabled="{Binding IsEnabled}"
+                                        IsEnabled="{Binding IsEnabledForInstall}"
                                         DockPanel.Dock="Right">
                                     <Button.Style>
                                         <Style BasedOn="{StaticResource CtaButtonStyle}" TargetType="Button">
