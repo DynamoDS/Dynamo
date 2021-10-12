@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Core;
+using Dynamo.Graph.Workspaces;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.UI.Commands;
@@ -89,56 +90,95 @@ namespace Dynamo.PackageDetails
         #region Commands
 
         public DelegateCommand OpenDependencyDetailsCommand { get; set; }
+        public DelegateCommand TryInstallPackageVersionCommand { get; set; }
+
         public void OpenDependencyDetails(object obj)
         {
             if (!(obj is string stringValue)) return;
 
-            List<PackageManagerSearchElement> packageManagerSearchElements =
-                this.PackageManagerClientViewModel.ListAll();
-
-            PackageManagerSearchElement packageManagerSearchElement = packageManagerSearchElements
-                .FirstOrDefault(x => x.Name == stringValue);
-
+            PackageManagerSearchElement packageManagerSearchElement = GetPackageByName(stringValue);
+            
             if (packageManagerSearchElement == null) return;
 
+            PackageDetailsViewExtension.OpenPackageDetailsCommand.Execute(packageManagerSearchElement);
 
         }
+
+        public void TryInstallPackageVersion(object obj)
+        {
+            if (!(obj is string versionName)) return;
+            PackageManagerSearchElement packageManagerSearchElement = GetPackageByName(PackageName);
+            if (packageManagerSearchElement == null) return;
+
+            PackageInfo packageInfo = new PackageInfo(PackageName, Version.Parse(versionName));
+            
+            this.PackageDetailsViewExtension.packageManagerClientViewModel.DownloadAndInstallPackage(packageInfo);
+        }
+
+        /// <summary>
+        /// Uses the PackageManagerClient to attempt to find a package with the same name
+        /// as the provided string.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public PackageManagerSearchElement GetPackageByName(string name)
+        {
+            List<PackageManagerSearchElement> packageManagerSearchElements;
+
+            // Checking if there are any cached values.
+            if (PackageManagerClientViewModel.CachedPackageList != null &&
+                PackageManagerClientViewModel.CachedPackageList.Count > 0)
+            {
+                packageManagerSearchElements = PackageManagerClientViewModel.CachedPackageList;
+            }
+            // If the cache is null or empty, we must call ListAll and await the results.
+            else
+            {
+                packageManagerSearchElements = PackageManagerClientViewModel.ListAll();
+            }
+
+            return packageManagerSearchElements
+                .FirstOrDefault(x => x.Name == name);
+        }
+
+        public PackageDetailsViewExtension PackageDetailsViewExtension { get; set; }
 
         #endregion
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="packageLoader"></param>
-        /// <param name="packageManagerClientViewModel"></param>
-        /// <param name="packageManagerSearchElementViewModel"></param>
+        /// <param name="packageDetailsViewExtension"></param>
+        /// <param name="packageManagerSearchElement"></param>
         public PackageDetailsViewModel
         (
-            PackageLoader packageLoader,
-            PackageManagerClientViewModel packageManagerClientViewModel,
-            PackageManagerSearchElementViewModel packageManagerSearchElementViewModel
+            PackageDetailsViewExtension packageDetailsViewExtension,
+            PackageManagerSearchElement packageManagerSearchElement
         )
         {
-            this.PackagerLoader = packageLoader;
-            this.PackageManagerClientViewModel = packageManagerClientViewModel;
+            PackagerLoader = packageDetailsViewExtension.PackageManagerExtension.PackageLoader;
+            PackageManagerClientViewModel = packageDetailsViewExtension.packageManagerClientViewModel;
 
-            this.PackageDetailItems = packageManagerSearchElementViewModel.Model.Header.versions
+            PackageDetailItems = packageManagerSearchElement.Header.versions
                 .AsEnumerable()
                 .Reverse()
-                .Select(x => new PackageDetailItem(packageLoader, x))
+                .Select(x => new PackageDetailItem(packageDetailsViewExtension.PackageManagerExtension.PackageLoader, x))
                 .ToList();
 
-            this.PackageName = packageManagerSearchElementViewModel.Model.Name;
-            this.PackageAuthorName = packageManagerSearchElementViewModel.Model.Maintainers;
-            this.PackageDescription = packageManagerSearchElementViewModel.Model.Description;
-            this.DatePublished = packageManagerSearchElementViewModel.Model.LatestVersionCreated;
-            this.NumberDownloads = packageManagerSearchElementViewModel.Model.Downloads;
-            this.NumberVotes = packageManagerSearchElementViewModel.Model.Votes;
-            this.IsPackageDeprecated = packageManagerSearchElementViewModel.Model.IsDeprecated;
+            PackageName = packageManagerSearchElement.Name;
+            PackageAuthorName = packageManagerSearchElement.Maintainers;
+            PackageDescription = packageManagerSearchElement.Description;
+            DatePublished = packageManagerSearchElement.LatestVersionCreated;
+            NumberDownloads = packageManagerSearchElement.Downloads;
+            NumberVotes = packageManagerSearchElement.Votes;
+            IsPackageDeprecated = packageManagerSearchElement.IsDeprecated;
+            PackageDetailsViewExtension = packageDetailsViewExtension;
+            License = packageManagerSearchElement.Header.license;
 
-            this.OpenDependencyDetailsCommand = new DelegateCommand(OpenDependencyDetails);
+            OpenDependencyDetailsCommand = new DelegateCommand(OpenDependencyDetails);
+            TryInstallPackageVersionCommand = new DelegateCommand(TryInstallPackageVersion);
 
-            License = packageManagerSearchElementViewModel.Model.Header.license;
+            
         }
         
         public void Dispose()

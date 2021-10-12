@@ -20,6 +20,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <controls:NegativeIntToZeroConverter x:Key="NegativeIntToZeroConverter"/>
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <Style x:Key="LabelStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
@@ -177,7 +178,7 @@
                                        Margin="5,2,0,0"
                                        VerticalAlignment="Center"
                                        Style="{StaticResource BodyTextStyle}"
-                                       Text="{Binding NumberVotes}" />
+                                       Text="{Binding NumberVotes, Converter={StaticResource NegativeIntToZeroConverter}}" />
                         </StackPanel>
                     </Border>
 
@@ -274,9 +275,9 @@
                                                                    Foreground="#D8D8D8"
                                                                    Text="{Binding PackageVersionNumber}" />
                                                         <Button Name="installButton"
-                                                                Command="{Binding ElementName=PackageDetailsWindow, Path=DataContext.OpenDependencyDetailsCommand}"
-                                                                CommandParameter="Test"
-                                                                Content="Install">
+                                                                Command="{Binding ElementName=PackageDetailsWindow, Path=DataContext.TryInstallPackageVersionCommand}"
+                                                                CommandParameter="{Binding PackageVersionNumber}"
+                                                                Content="{x:Static p:Resources.PackageManagerInstall}">
                                                             <Button.Template>
                                                                 <ControlTemplate TargetType="{x:Type Button}">
                                                                     <Border Name="ButtonBorder"

@@ -16,7 +16,7 @@ namespace Dynamo.PackageDetails
         public PackageManagerExtension PackageManagerExtension { get; set; }
         public PackageDetailsView PackageDetailsView { get; set; }
         public PackageDetailsViewModel PackageDetailsViewModel { get; set; }
-        private PackageManagerClientViewModel packageManagerClientViewModel;
+        public PackageManagerClientViewModel packageManagerClientViewModel;
 
         public DelegateCommand OpenPackageDetailsCommand { get; set; }
 
@@ -27,7 +27,7 @@ namespace Dynamo.PackageDetails
         public void Startup(ViewStartupParams viewStartupParams)
         {
             var packageManager = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            this.PackageManagerExtension = packageManager;
+            PackageManagerExtension = packageManager;
         }
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
@@ -37,19 +37,15 @@ namespace Dynamo.PackageDetails
             OpenPackageDetailsCommand = new DelegateCommand(OpenPackageDetails);
 
             DynamoViewModel dynamoViewModel = viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel;
-            this.packageManagerClientViewModel = dynamoViewModel.PackageManagerClientViewModel;
+            packageManagerClientViewModel = dynamoViewModel.PackageManagerClientViewModel;
         }
 
         private void OnViewExtensionOpenWithParameterRequest(string extensionName, object obj)
         {
             if (extensionName != Name ||
-                !(obj is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
+                !(obj is PackageManagerSearchElement packageManagerSearchElement)) return;
 
-            // We need to clean up the event handlers when switching the PackageDetailsViewModel.
-            // Private VM property, every time this is called we check if hte propety is null, if not do 
-            // all fo the required cleanup and then creat itagain.
-
-            OpenPackageDetailsCommand.Execute(packageManagerSearchElementViewModel);
+            OpenPackageDetailsCommand.Execute(packageManagerSearchElement);
         }
         
         public void Shutdown()
@@ -62,22 +58,16 @@ namespace Dynamo.PackageDetails
 
         }
 
-        private void OpenPackageDetails
-        (
-            object obj
-        )
+        private void OpenPackageDetails(object obj)
         {
-            if (!(obj is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
+            if (!(obj is PackageManagerSearchElement packageManagerSearchElement)) return;
 
-            this.PackageDetailsViewModel = new PackageDetailsViewModel
-            (
-                    this.PackageManagerExtension.PackageLoader,
-                    this.packageManagerClientViewModel,
-                    packageManagerSearchElementViewModel
-            );
-            this.PackageDetailsView = new PackageDetailsView(this.PackageDetailsViewModel);
+            PackageDetailsViewModel = new PackageDetailsViewModel(this, packageManagerSearchElement);
             
-            viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.PackageDetailsView);
+            if (PackageDetailsView == null) PackageDetailsView = new PackageDetailsView(PackageDetailsViewModel);
+            PackageDetailsView.DataContext = PackageDetailsViewModel;
+
+            viewLoadedParamsReference?.AddToExtensionsSideBar(this, PackageDetailsView);
         }
     }
 }
