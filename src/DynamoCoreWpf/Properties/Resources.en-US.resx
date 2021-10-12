@@ -2654,12 +2654,12 @@ Delete the following packages: {2}?
     <comment>Disable package install icon tooltip.</comment>
   </data>
   <data name="DisableBuiltInPackageToggleInfo" xml:space="preserve">
-    <value>If the toggle is on built-in packages will not load on restart. Built-in packages that are currently loaded will be unloaded on restart. 
+    <value>If the toggle is on, built-in packages will not load on restart. Built-in packages that are currently loaded will be unloaded on restart. 
 If the toggle is off built-in packages that are not already loaded will load once the preferences dialog is closed.</value>
     <comment>Disable built-in package toggle info.</comment>
   </data>
   <data name="DisableCustomPackageToggleInfo" xml:space="preserve">
-    <value>If the toggle is on custom packages will not load on restart. Custom packages that are currently loaded will be unloaded on restart. 
+    <value>If the toggle is on, custom packages will not load on restart. Custom packages that are currently loaded will be unloaded on restart. 
 If the toggle is off custom packages that are not already loaded will load once the preferences dialog is closed.</value>
     <comment>Disable custom package toggle info.</comment>
   </data>

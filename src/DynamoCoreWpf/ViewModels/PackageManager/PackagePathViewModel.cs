@@ -260,7 +260,12 @@ namespace Dynamo.ViewModels
                 }
             }
             // Load packages from paths enabled by disable-path toggles if they are not already loaded.
-            LoadEnabledPackagePaths(additionalPaths);
+            if (packageLoader != null && packagePathsEnabled.Any())
+            {
+                var newPaths = packagePathsEnabled.Except(additionalPaths);
+                packageLoader.LoadCustomNodesAndPackages(newPaths, PreferenceSettings, customNodeManager);
+            }
+            packagePathsEnabled.Clear();
         }
 
         internal void SetPackagesScheduledState(string packagePath, bool packagePathDisabled)
@@ -286,20 +291,6 @@ namespace Dynamo.ViewModels
                     pkg.UnmarkForUnload();
                 }
             }
-        }
-
-        /// <summary>
-        /// Loads packages in added paths if paths are enabled and these packages are not already loaded.
-        /// </summary>
-        /// <param name="addedPaths"></param>
-        internal void LoadEnabledPackagePaths(IEnumerable<string> addedPaths)
-        {
-            if (packageLoader != null && packagePathsEnabled.Any())
-            {
-                var newPaths = packagePathsEnabled.Except(addedPaths);
-                packageLoader.LoadCustomNodesAndPackages(newPaths, PreferenceSettings, customNodeManager);
-            }
-            packagePathsEnabled.Clear();
         }
 
         internal void InitializeRootLocations()

@@ -82,23 +82,11 @@ namespace Dynamo.PackageManager.ViewModels
             }
         }
 
-        private bool isEnabledForInstall;
         /// <summary>
         /// Package is enabled for download if custom package paths are not disabled.
         /// False if custom package paths are disabled.
         /// </summary>
-        public bool IsEnabledForInstall
-        {
-            get 
-            {
-                return isEnabledForInstall;
-            }
-            private set
-            {
-                isEnabledForInstall = value;
-                RaisePropertyChanged(nameof(IsEnabledForInstall));
-            }
-        }
+        public bool IsEnabledForInstall { get; private set; }
 
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)

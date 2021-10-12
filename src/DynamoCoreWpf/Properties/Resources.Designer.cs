@@ -1044,7 +1044,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If the toggle is on built-in packages will not load on restart. Built-in packages that are currently loaded will be unloaded on restart. 
+        ///   Looks up a localized string similar to If the toggle is on, built-in packages will not load on restart. Built-in packages that are currently loaded will be unloaded on restart. 
         ///If the toggle is off built-in packages that are not already loaded will load once the preferences dialog is closed..
         /// </summary>
         public static string DisableBuiltInPackageToggleInfo {
@@ -1054,7 +1054,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If the toggle is on custom packages will not load on restart. Custom packages that are currently loaded will be unloaded on restart. 
+        ///   Looks up a localized string similar to If the toggle is on, custom packages will not load on restart. Custom packages that are currently loaded will be unloaded on restart. 
         ///If the toggle is off custom packages that are not already loaded will load once the preferences dialog is closed..
         /// </summary>
         public static string DisableCustomPackageToggleInfo {
