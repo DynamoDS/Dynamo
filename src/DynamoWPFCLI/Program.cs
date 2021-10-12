@@ -23,37 +23,40 @@ namespace DynamoWPFCLI
 
                 if (cmdLineArgs.KeepAlive)
                 {
-                    var thread = new Thread(KeepAlive);
+                    var thread = new Thread(() => RunKeepAlive(cmdLineArgs));
 
                     thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
 
                     Console.ReadLine();
-                }
-                
-                DynamoModel model;
-                if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
-                {
-                    model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath);
+
+                    ShutDown();
                 }
                 else
                 {
-                    model = Dynamo.Applications.StartupUtils.MakeModel(true);
-                }
-                var viewModel = DynamoViewModel.Start(
-                    new DynamoViewModel.StartConfiguration()
+                    DynamoModel model;
+                    if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
                     {
-                        DynamoModel = model,
-                        Watch3DViewModel = new DefaultWatch3DViewModel(null, new Watch3DViewModelStartupParams(model))
+                        model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath);
+                    }
+                    else
+                    {
+                        model = Dynamo.Applications.StartupUtils.MakeModel(true);
+                    }
+                    var viewModel = DynamoViewModel.Start(
+                        new DynamoViewModel.StartConfiguration()
                         {
-                            Active = false,
-                            CanBeActivated = false
-                        }
-                    });
+                            DynamoModel = model,
+                            Watch3DViewModel = new DefaultWatch3DViewModel(null, new Watch3DViewModelStartupParams(model))
+                            {
+                                Active = false,
+                                CanBeActivated = false
+                            }
+                        });
 
-                var runner = new CommandLineRunnerWPF(viewModel);
-                runner.Run(cmdLineArgs);
-
+                    var runner = new CommandLineRunnerWPF(viewModel);
+                    runner.Run(cmdLineArgs);
+                }
             }
             catch (Exception e)
             {
@@ -71,39 +74,65 @@ namespace DynamoWPFCLI
             }
         }
 
-        private static void KeepAlive()
+        private static void RunKeepAlive(StartupUtils.CommandLineArguments cmdLineArgs)
         {
-            var model = Dynamo.Applications.StartupUtils.MakeModel(true);
-
-            DefaultWatch3DViewModel defaultWatch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(null, new Watch3DViewModelStartupParams(model), model.Logger);
-            defaultWatch3DViewModel.Active = false;
-            defaultWatch3DViewModel.CanBeActivated = false;
-
-            var viewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
-                {
-                    DynamoModel = model,
-                    Watch3DViewModel = defaultWatch3DViewModel
-                });
-
-            var dynView = new DynamoView(viewModel);
-
-            var sharedViewExtensionLoadedParams = new ViewLoadedParams(dynView, viewModel);
-
-            foreach (var ext in dynView.viewExtensionManager.ViewExtensions)
+            try
             {
-                try
+                DynamoModel model;
+                if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
                 {
-                    ext.Loaded(sharedViewExtensionLoadedParams);
-                    Console.WriteLine("loaded " + ext.Name);
+                    model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath);
                 }
-                catch (Exception exc)
+                else
                 {
-                    Console.WriteLine(ext.Name + ": " + exc.Message);
+                    model = Dynamo.Applications.StartupUtils.MakeModel(true);
                 }
-            }
 
-            Run();
+                model.ShutdownCompleted += (m) =>
+                {
+                    ShutDown();
+                };
+
+                DefaultWatch3DViewModel defaultWatch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(null, new Watch3DViewModelStartupParams(model), model.Logger);
+                defaultWatch3DViewModel.Active = false;
+                defaultWatch3DViewModel.CanBeActivated = false;
+
+                var viewModel = DynamoViewModel.Start(
+                    new DynamoViewModel.StartConfiguration()
+                    {
+                        DynamoModel = model,
+                        Watch3DViewModel = defaultWatch3DViewModel
+                    });
+
+                var dynView = new DynamoView(viewModel);
+
+                var sharedViewExtensionLoadedParams = new ViewLoadedParams(dynView, viewModel);
+
+                foreach (var ext in dynView.viewExtensionManager.ViewExtensions)
+                {
+                    try
+                    {
+                        ext.Loaded(sharedViewExtensionLoadedParams);
+                        Console.WriteLine("loaded " + ext.Name);
+                    }
+                    catch (Exception exc)
+                    {
+                        Console.WriteLine(ext.Name + ": " + exc.Message);
+                    }
+                }
+           
+                Run();
+
+            }
+            catch
+            {
+                Console.WriteLine("Server is shutting down due to an error");
+            }
+        }
+
+        private static void ShutDown()
+        {
+            Environment.Exit(0);
         }
 
     }
