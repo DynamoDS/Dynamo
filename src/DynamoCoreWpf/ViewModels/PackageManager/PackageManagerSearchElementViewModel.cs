@@ -83,7 +83,7 @@ namespace Dynamo.PackageManager.ViewModels
         }
 
         /// <summary>
-        /// Package is enabled for download if custom package paths are not disabled.
+        /// True if package is enabled for download if custom package paths are not disabled,
         /// False if custom package paths are disabled.
         /// </summary>
         public bool IsEnabledForInstall { get; private set; }
