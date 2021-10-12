@@ -203,12 +203,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Used to determine whether the node's context menu display an Output/Input menu
-        /// </summary>
-        [JsonIgnore]
-        public bool IsInputOrOutput => IsInput || IsOutput;
-
+        
         /// <summary>
         /// The Name of the nodemodel this view points to
         /// this is the name of the node as it is displayed in the UI.
@@ -283,7 +278,7 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.IsCustomFunction ? true : false; }
         }
-
+        
         /// <summary>
         /// Element's left position is two-way bound to this value
         /// </summary>
