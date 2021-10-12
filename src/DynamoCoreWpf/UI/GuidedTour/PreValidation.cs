@@ -3,7 +3,7 @@
     /// <summary>
     /// This class will store the information of the actions/methods that should be executed before showing a Popup
     /// </summary>
-    public class PreValidation
+    internal class PreValidation
     {
         /// <summary>
         /// Default parameterless constructor used when deserializing

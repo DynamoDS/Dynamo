@@ -96,7 +96,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This property will hold information about the methods/actions that should be executed before showing a Popup(Step)
         /// </summary>
         [JsonProperty("PreValidation")]
-        public PreValidation PreValidationInfo { get; set; }
+        internal PreValidation PreValidationInfo { get; set; }
 
         /// <summary>
         /// This property will show the library if It's set to true
