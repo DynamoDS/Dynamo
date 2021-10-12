@@ -51,7 +51,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="name"></param>
         /// <param name="version"></param>
-        public PackageInfo(string name, Version version)
+        internal PackageInfo(string name, Version version)
         {
             Name = name;
             Version = version;

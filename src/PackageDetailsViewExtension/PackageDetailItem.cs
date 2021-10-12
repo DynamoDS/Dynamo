@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Dynamo.Annotations;
+using Dynamo.Core;
 using Dynamo.PackageManager;
 using Greg.Responses;
 using PythonNodeModels;
@@ -12,7 +13,7 @@ namespace Dynamo.PackageDetails
     /// <summary>
     /// A wrapper class for a PackageVersion object, used in the PackageDetailsExtension.
     /// </summary>
-    public class PackageDetailItem : INotifyPropertyChanged
+    public class PackageDetailItem : NotificationObject
     {
         private PackageVersion packageVersion;
         private string packageVersionNumber;
@@ -31,7 +32,7 @@ namespace Dynamo.PackageDetails
             set
             {
                 packageVersion = value;
-                OnPropertyChanged(nameof(PackageVersion));
+                RaisePropertyChanged(nameof(PackageVersion));
             }
         }
 
@@ -44,7 +45,7 @@ namespace Dynamo.PackageDetails
             set
             {
                 packageName = value; 
-                OnPropertyChanged(nameof(PackageName));
+                RaisePropertyChanged(nameof(PackageName));
             }
         }
 
@@ -57,7 +58,7 @@ namespace Dynamo.PackageDetails
             set
             {
                 packageVersionNumber = value;
-                OnPropertyChanged(nameof(PackageVersionNumber));
+                RaisePropertyChanged(nameof(PackageVersionNumber));
             }
         }
 
@@ -70,7 +71,7 @@ namespace Dynamo.PackageDetails
             set
             {
                 hosts = value;
-                OnPropertyChanged(nameof(Hosts));
+                RaisePropertyChanged(nameof(Hosts));
             }
         }
 
@@ -83,7 +84,7 @@ namespace Dynamo.PackageDetails
             set
             {
                 pythonVersion = value;
-                OnPropertyChanged(nameof(PythonVersion));
+                RaisePropertyChanged(nameof(PythonVersion));
             }
         }
 
@@ -96,7 +97,7 @@ namespace Dynamo.PackageDetails
             set
             {
                 packages = value;
-                OnPropertyChanged(nameof(Packages));
+                RaisePropertyChanged(nameof(Packages));
             }
         }
 
@@ -106,7 +107,7 @@ namespace Dynamo.PackageDetails
             set
             {
                 canInstall = value;
-                OnPropertyChanged(nameof(CanInstall));
+                RaisePropertyChanged(nameof(CanInstall));
             }
         }
 
@@ -185,15 +186,7 @@ namespace Dynamo.PackageDetails
                     .Select(x => x.VersionName)
                     .Contains(packageVersion.version);
             }
-            OnPropertyChanged(nameof(CanInstall));
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            RaisePropertyChanged(nameof(CanInstall));
         }
     }
 }

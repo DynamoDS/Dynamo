@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Dynamo.PackageManager;
-using Dynamo.PackageManager.ViewModels;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
@@ -13,12 +11,12 @@ namespace Dynamo.PackageDetails
         private const string EXTENSION_NAME = "Package Details";
         private const string EXTENSION_GUID = "C71CA1B9-BF9F-425A-A12C-53DF56770406";
 
-        public PackageManagerExtension PackageManagerExtension { get; set; }
-        public PackageDetailsView PackageDetailsView { get; set; }
-        public PackageDetailsViewModel PackageDetailsViewModel { get; set; }
-        public PackageManagerClientViewModel packageManagerClientViewModel;
+        internal PackageManagerExtension PackageManagerExtension { get; set; }
+        internal PackageDetailsView PackageDetailsView { get; set; }
+        internal PackageDetailsViewModel PackageDetailsViewModel { get; set; }
+        internal PackageManagerClientViewModel packageManagerClientViewModel;
 
-        public DelegateCommand OpenPackageDetailsCommand { get; set; }
+        internal DelegateCommand OpenPackageDetailsCommand { get; set; }
 
         private ViewLoadedParams viewLoadedParamsReference;
         public string UniqueId => EXTENSION_GUID;
