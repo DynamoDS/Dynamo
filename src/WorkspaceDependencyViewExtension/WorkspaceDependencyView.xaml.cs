@@ -1,12 +1,4 @@
-﻿using Dynamo.Core;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
-using Dynamo.PackageManager;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
-using DynamoUtilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -15,6 +7,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Web;
+using Dynamo.Core;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
+using Dynamo.PackageManager;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
+using DynamoUtilities;
 
 namespace Dynamo.WorkspaceDependency
 {

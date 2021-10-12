@@ -186,6 +186,7 @@ namespace DynamoUtilities
         /// <summary>
         /// Computes the file size from the path.
         /// </summary>
+        /// <param name="path">File path</param>
         public static string GetFileSize(string path)
         {
             if (path != null)
@@ -201,6 +202,8 @@ namespace DynamoUtilities
         /// <summary>
         /// Checks if the file exists at the specified path and computes size.
         /// </summary>
+        /// <param name="filePath">File path</param>
+        /// <returns>Returns a boolean if the file exists at the path and also returns its size</returns>
         public static void FileInfoAtPath(string path, out bool fileExists, out string size)
         {
             try
@@ -213,7 +216,7 @@ namespace DynamoUtilities
             catch
             {
                 fileExists = false;
-                size = "";
+                size = string.Empty;
             }
         }
     }
