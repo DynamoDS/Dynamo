@@ -1350,10 +1350,21 @@ namespace Dynamo.Models
             // Load local custom nodes and locally imported libraries
             foreach (var path in pathManager.DefinitionDirectories)
             {
-                if(IsDisabledPath(Directory.GetParent(path).FullName, PreferenceSettings))
+                DirectoryInfo parentPath;
+                try
+                {
+                    parentPath = Directory.GetParent(path);
+                }
+                catch (ArgumentException)
+                {
+                    parentPath = null;
+                }
+                var pathName = parentPath != null ? parentPath.FullName : path;
+                if (IsDisabledPath(pathName, PreferenceSettings))
                 {
                     continue;
                 }
+                
                 // NOTE: extension will only be null if path is null
                 string extension = null;
                 try

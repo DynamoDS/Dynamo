@@ -378,7 +378,7 @@ namespace Dynamo.PackageManager
         /// <param name="customNodeManager"></param>
         internal void LoadCustomNodesAndPackages(IEnumerable<string> newPaths, IPreferences preferences, CustomNodeManager customNodeManager)
         {
-            foreach (var path in newPaths)
+            foreach (var path in preferences.CustomPackageFolders)
             {
                 // Append the definitions subdirectory for custom nodes.
                 var dir = path == DynamoModel.BuiltInPackagesToken ? PathManager.BuiltinPackagesDirectory : path;
