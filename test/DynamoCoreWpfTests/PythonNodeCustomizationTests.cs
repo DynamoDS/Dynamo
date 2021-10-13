@@ -636,12 +636,12 @@ namespace DynamoCoreWpfTests
             var pynode2view = NodeViewWithGuid("4050d23e-529c-43e9-b614-0506d8adb06b");
 
 
-            Assert.AreEqual(new List<string> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x=>x.Data));
+            Assert.AreEqual(new List<string> { "2.7.9 ", "2.7.9 " }, pynode2.CachedValue.GetElements().Select(x=>x.Data));
 
             SetEngineViaContextMenu(pynode1view, PythonEngineVersion.CPython3);
 
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(new List<string> { "3.8.10", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
+            Assert.AreEqual(new List<string> { "3.8.10", "2.7.9 " }, pynode2.CachedValue.GetElements().Select(x => x.Data));
 
             SetEngineViaContextMenu(pynode2view, PythonEngineVersion.CPython3);
 
@@ -652,11 +652,11 @@ namespace DynamoCoreWpfTests
             SetEngineViaContextMenu(pynode2view, PythonEngineVersion.IronPython2);
 
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(new List<string> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
+            Assert.AreEqual(new List<string> { "2.7.9 ", "2.7.9 " }, pynode2.CachedValue.GetElements().Select(x => x.Data));
             DispatcherUtil.DoEvents();
 
             Model.CurrentWorkspace.Undo();
-            Assert.AreEqual(new List<string> { "2.7.9", "3.8.10" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
+            Assert.AreEqual(new List<string> { "2.7.9 ", "3.8.10" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
             DispatcherUtil.DoEvents();
             Model.CurrentWorkspace.Undo();
             Assert.AreEqual(new List<string> { "3.8.10", "3.8.10" }, pynode2.CachedValue.GetElements().Select(x => x.Data));

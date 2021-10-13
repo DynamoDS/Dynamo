@@ -400,7 +400,7 @@ namespace Dynamo.Tests
 
                 if (pythonEngine == PythonEngineVersion.IronPython2)
                 {
-                    Assert.AreEqual("2.7.9", nodeValue);
+                    Assert.AreEqual("2.7.9 ", nodeValue);
                 }
                 else if (pythonEngine == PythonEngineVersion.CPython3)
                 {
@@ -474,11 +474,11 @@ namespace Dynamo.Tests
             var pynode1 = pythonNodes.ElementAt(0);
             var pynode2 = pythonNodes.ElementAt(1);
 
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9", "2.7.9" });
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9 ", "2.7.9 " });
 
             UpdatePythonEngineAndRun(pynode1, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.10", "2.7.9" });
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.10", "2.7.9 " });
 
             UpdatePythonEngineAndRun(pynode2, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
@@ -486,7 +486,7 @@ namespace Dynamo.Tests
 
             UpdateEngineAndRunForAllPythonNodes(pythonNodes, PythonEngineVersion.IronPython2);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9", "2.7.9" });
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9 ", "2.7.9 " });
         }
 
         [Test]
