@@ -105,7 +105,7 @@ namespace Dynamo.Controls
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.CanDisplayIcons = false;
-            ViewModel.DisposeViewModel();
+            ViewModel.RequestDisposeViewModel();
         }
 
         /// <summary>

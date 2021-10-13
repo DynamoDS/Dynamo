@@ -298,7 +298,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void VerifyLocalDefinitions()
         {
-            List<string> dependenciesList = new List<string>() { "RootNode.dyf", "DLL.dll"};
+            List<string> dependenciesList = new List<string>() { "RootNode.dyf"};
             DynamoModel.IsTestMode = false;
 
             // Load the custom node and the zero touch assembly.
@@ -314,13 +314,33 @@ namespace DynamoCoreWpfTests
             var workspaceViewExtension = (WorkspaceDependencyViewExtension)View.viewExtensionManager.ViewExtensions
                                                                                 .Where(x => x.Name.Equals("Workspace References")).FirstOrDefault();
 
-            Assert.AreEqual(2, workspaceViewExtension.DependencyView.localDefinitionDataRows.Count());
-            foreach (LocalDefinitionRow localDefinitionRow in workspaceViewExtension.DependencyView.localDefinitionDataRows)
+            Assert.AreEqual(1, workspaceViewExtension.DependencyView.localDefinitionDataRows.Count());
+            DependencyRow localDefinitionRow = workspaceViewExtension.DependencyView.localDefinitionDataRows.FirstOrDefault();
+            var dependencyInfo = localDefinitionRow.DependencyInfo;
+            Assert.Contains(dependencyInfo.Name, dependenciesList);
+        }
+
+        [Test]
+        public void VerifyExternalFileReferences()
+        {
+            List<string> dependenciesList = new List<string>() { "DynamoTest.xlsx", "Dynamo.png" };
+            DynamoModel.IsTestMode = false;
+
+            // Open test file to verify the external file references. 
+            var examplePath = Path.Combine(@"core\ExternalReferencesTest.dyn");
+            Open(examplePath);
+
+            var workspaceViewExtension = (WorkspaceDependencyViewExtension)View.viewExtensionManager.ViewExtensions
+                                                                                .Where(x => x.Name.Equals("Workspace References")).FirstOrDefault();
+
+            workspaceViewExtension.DependencyView.TriggerDependencyRegen();
+
+            Assert.AreEqual(2, workspaceViewExtension.DependencyView.externalFilesDataRows.Count());
+            foreach (DependencyRow localDefinitionRow in workspaceViewExtension.DependencyView.externalFilesDataRows)
             {
                 var dependencyInfo = localDefinitionRow.DependencyInfo;
                 Assert.Contains(dependencyInfo.Name, dependenciesList);
             }
-
         }
     }
 }
