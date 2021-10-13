@@ -4,9 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:UnitsUI.Converters"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" Width="400" Height="Auto">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
             <converters:ForgeUnitToTextConverter x:Key="ForgeUnitToTextConverter" />
             <converters:ForgeQuantityToTextConverter x:Key="ForgeQuantityToTextConverter" />
         </ResourceDictionary>
@@ -14,7 +18,7 @@
     
 
 
-    <Grid Width="Auto" Height="Auto">
+    <Grid Width="400" Height="Auto">
         
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -24,8 +28,11 @@
         <ComboBox Name="SelectConversionQuantity"                
                 ItemsSource="{Binding QuantityConversionSource}"   
                 Grid.Row="0"
-                Height ="26"
-                SelectedItem="{Binding SelectedQuantityConversion}">
+                Height ="29"
+                Width="400"
+                Margin="0,0,0, 3"
+                SelectedItem="{Binding SelectedQuantityConversion}"
+                Style="{StaticResource ResourceKey=RefreshComboBox}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Converter={StaticResource ForgeQuantityToTextConverter}}"></TextBlock>
@@ -36,19 +43,22 @@
         <Grid Grid.Row="1">
             
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="180"/>
                 <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="180"/>
             </Grid.ColumnDefinitions>
             
             <ComboBox Name="SelectConversionFrom" 
                 Grid.Column="0"
                 ItemsSource="{Binding SelectedFromConversionSource}"
-                Height ="26"                                        
+                Height ="29" 
+                MinWidth="180"
+                Margin="0,0,0, 3"
                 ToolTip="{Binding SelectionFromBoxToolTip}"
                 ToolTipService.ShowOnDisabled="True" 
                 IsEnabled="{Binding IsSelectionFromBoxEnabled}"
-                SelectedItem="{Binding SelectedFromConversion, Mode=TwoWay}">
+                SelectedItem="{Binding SelectedFromConversion, Mode=TwoWay}"
+                Style="{StaticResource ResourceKey=RefreshComboBox}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Converter={StaticResource ForgeUnitToTextConverter}}"></TextBlock>
@@ -61,14 +71,19 @@
                 Content="⇄"  
                 FontWeight="Bold"
                 FontSize="13"
-                Height ="26"
-                Width="40" Command="{Binding ToggleButtonClick}"/>
+                Height ="29"
+                Margin="3,0,3, 3"
+                Background="#666666"
+                Width="34" Command="{Binding ToggleButtonClick}"/>
 
             <ComboBox x:Name="SelectConversionTo"   
                 Grid.Column="2"
         	    ItemsSource="{Binding SelectedToConversionSource}"
-                Height ="26"                       
-        	    SelectedItem="{Binding SelectedToConversion, Mode=TwoWay}">
+                Height ="29"   
+                Margin="0,0,0, 3"
+                MinWidth="180"
+        	    SelectedItem="{Binding SelectedToConversion, Mode=TwoWay}"
+                Style="{StaticResource ResourceKey=RefreshComboBox}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Converter={StaticResource ForgeUnitToTextConverter}}"></TextBlock>

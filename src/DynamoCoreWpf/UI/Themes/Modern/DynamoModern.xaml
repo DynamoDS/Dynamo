@@ -1057,7 +1057,7 @@
                                       IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                       Template="{StaticResource RefreshComboBoxToggleButton}" />
                         <ContentPresenter Name="ContentSite"
-                                          Margin="10,0,0,0"
+                                          Margin="10,0,20,0"
                                           HorizontalAlignment="Left"
                                           VerticalAlignment="Center"
                                           Content="{TemplateBinding SelectionBoxItem}"

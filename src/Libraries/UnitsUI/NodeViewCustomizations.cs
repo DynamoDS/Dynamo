@@ -173,17 +173,15 @@ namespace UnitsUI
             grid.RowDefinitions.Add(rowDef1);
             grid.RowDefinitions.Add(rowDef2);
 
-
             //add a text box to the input grid of the control
             var tb = new StringTextBox
             {
                 TextWrapping = TextWrapping.Wrap,
                 MinHeight = Configurations.PortHeightInPixels,
-                MaxWidth = 200,
+                MinWidth = 200,
+                MaxWidth = 300,
                 VerticalAlignment = VerticalAlignment.Stretch
-
             };
-            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             grid.Children.Add(tb);
 
@@ -203,11 +201,16 @@ namespace UnitsUI
             var combo = new ComboBox
             {
                 Width = System.Double.NaN,
-                MinWidth = 100,
+                MinWidth = 200,
+                MaxWidth = 300,
                 Height = Configurations.PortHeightInPixels,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0,3,0,0)
             };
+
+            combo.Style = (Style)SharedDictionaryManager.DynamoModernDictionary["RefreshComboBox"];
+
             grid.Children.Add(combo);
             Grid.SetColumn(combo, 0);
             Grid.SetRow(combo, 1);
@@ -262,7 +265,7 @@ namespace UnitsUI
         }
     }
 
-    class ConverterNodeViewCustomization : INodeViewCustomization<ForgeDynamoConvert>
+    public class ConverterNodeViewCustomization : INodeViewCustomization<ForgeDynamoConvert>
     {
         private NodeModel nodeModel;
         private ForgeDynamoConverterControl converterControl;
