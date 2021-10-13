@@ -638,6 +638,13 @@
                                                                                         </Setter.Value>
                                                                                     </Setter>
                                                                                 </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding Path=IsEnabledForInstall}" Value="False">
+                                                                                    <Setter Property="Fill">
+                                                                                        <Setter.Value>
+                                                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - disabled.png" />
+                                                                                        </Setter.Value>
+                                                                                    </Setter>
+                                                                                </DataTrigger>
                                                                                 <DataTrigger Binding="{Binding Path=CanInstall}" Value="False">
                                                                                     <Setter Property="Fill">
                                                                                         <Setter.Value>
@@ -649,6 +656,7 @@
                                                                                     <MultiDataTrigger.Conditions>
                                                                                         <Condition Binding="{Binding Path=Model.IsDeprecated}" Value="False" />
                                                                                         <Condition Binding="{Binding Path=CanInstall}" Value="True" />
+                                                                                        <Condition Binding="{Binding Path=IsEnabledForInstall}" Value="True"/>
                                                                                     </MultiDataTrigger.Conditions>
                                                                                     <Setter Property="Fill">
                                                                                         <Setter.Value>
