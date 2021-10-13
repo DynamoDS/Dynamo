@@ -1111,6 +1111,18 @@ You will get a chance to save your work.</value>
   <data name="GenericTaskDialogTitle" xml:space="preserve">
     <value>Generic Task Dialog</value>
   </data>
+  <data name="GenericTaskDialogOptionYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="GenericTaskDialogOptionNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="GenericTaskDialogOptionOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="GenericTaskDialogOptionCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
     <value>Agreement to collect usability data on your use of {0}</value>
   </data>
@@ -2692,5 +2704,29 @@ Delete the following packages: {2}?
   </data>
   <data name="ConnectorContextMenuHeaderHideConnector" xml:space="preserve">
     <value>Hide Wire</value>
+  </data>
+  <data name="PackagesGuideFindPackageText" xml:space="preserve">
+    <value>Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**click Packages &gt; Search for Packages**.</value>
+  </data>
+  <data name="PackagesGuideFindPackageTitle" xml:space="preserve">
+    <value>Find a package</value>
+  </data>
+  <data name="PackagesGuideSearchFilterText" xml:space="preserve">
+    <value>You can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar.</value>
+  </data>
+  <data name="PackagesGuideSearchFilterTitle" xml:space="preserve">
+    <value>Search, filter, and sort</value>
+  </data>
+  <data name="PackagesGuideTermsOfServiceText" xml:space="preserve">
+    <value>Packages may come from third parties. Be aware that packages may pose security risks. More information \n\n**Click I Accept** in the Terms of Service to accept it and proceed with this guide.</value>
+  </data>
+  <data name="PackagesGuideTermsOfServiceTitle" xml:space="preserve">
+    <value>Accept the Terms of Service</value>
+  </data>
+  <data name="PackagesGuideThirdPartyText" xml:space="preserve">
+    <value>Packages may come from third parties. Be aware that packages may pose security risks.  More information</value>
+  </data>
+  <data name="PackagesGuideThirdPartyTitle" xml:space="preserve">
+    <value>Third-party packages</value>
   </data>
 </root>
