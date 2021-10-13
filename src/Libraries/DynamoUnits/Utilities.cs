@@ -9,6 +9,8 @@ namespace DynamoUnits
 {
     public static class Utilities
     {
+        private static ForgeUnitsCLR.UnitsEngine unitsEngine;
+
         static Utilities()
         {
             try
@@ -108,124 +110,6 @@ namespace DynamoUnits
         {
             return ForgeUnitsEngine.parseUnitless(expression);
         }
-
-        /// <summary>
-        /// Returns a formatted unit value string using unit and symbol type ids.
-        /// Sample: '12.345 m3' is a value of '12.345', of unit 'meter', of symbol 'meter cubed (m3)', of number format 'decimal', of precision '3'.
-        /// </summary>
-        /// <param name="numValue"></param>
-        /// <param name="unitTypeId"></param>
-        /// <param name="symbolTypeId"></param>
-        /// <param name="precision"></param>
-        /// <param name="decimalFormat"></param>
-        /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static string ReturnFormattedString(double numValue, string unitTypeId, string symbolTypeId, int precision, string numberFormat)
-        {
-            NumberFormat actualNumberFormat = StringToNumberFormat(numberFormat);
-
-            Unit unit = Unit.ByTypeID(unitTypeId);
-            Symbol symbol = Symbol.ByTypeID(symbolTypeId);
-
-            return ReturnFormattedString(numValue, unit, symbol, precision, actualNumberFormat);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public static NumberFormat StringToNumberFormat(string format)
-        {
-            switch (format)
-            {
-                case string s when s.Contains("Decimal"):
-                    return NumberFormat.Decimal;
-                case string s when s.Contains("Fraction"):
-                    return NumberFormat.Fraction;
-                case string s when s.Contains("None"):
-                    return NumberFormat.None;
-                default:
-                    throw new Exception("Incorrect format supplied.");
-            }
-        }
-
-        /// <summary>
-        /// Returns a formatted unit value string with only 2 number formatting options: decimal and fraction.
-        /// Sample: '12.345 m3' is a value of '12.345', of unit 'meter', of symbol 'meter cubed (m3)', of number format 'decimal', of precision '3'.
-        /// </summary>
-        /// <param name="numValue"></param>
-        /// <param name="unit"></param>
-        /// <param name="symbol"></param>
-        /// <param name="precision"></param>
-        /// <param name="numberFormat"></param>
-        /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static string ReturnFormattedString(double numValue, Unit unit, Symbol symbol, int precision, NumberFormat numberFormat)
-        {
-            switch (numberFormat)
-            {
-                case NumberFormat.Decimal:
-                    return Symbol.StringifyDecimal(numValue, precision, symbol, true);
-                case NumberFormat.Fraction:
-                    return Symbol.StringifyFraction(numValue, precision, symbol);
-                default:
-                    throw new Exception("Cannot stringify as there is no correct number format provided.");
-            }
-        }
-
-        /// <summary>
-        /// Helper function to cast an object to a type Symbol.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static Symbol CastToSymbol(object value)
-        {
-            if (value is null) return null;
-
-            var symbol = value as Symbol;
-            if (symbol is null)
-            {
-                throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(Symbol)}");
-            }
-            return symbol;
-        }
-
-        /// <summary>
-        /// Helper function to cast an object to a Format.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static NumberFormat CastToFormat(object value)
-        {
-            if (value is null) return NumberFormat.None;
-
-            var format = value is NumberFormat numberFormat ? numberFormat : throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(NumberFormat)}");
-
-            return format;
-        }
-
-        /// <summary>
-        /// Helper function to cast an object to a type Unit.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static Unit CastToUnit(object value)
-        {
-            if (value is null) return null;
-
-            var unit = value as Unit;
-            if (unit is null)
-            {
-                throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(Unit)}");
-            }
-            return unit;
-        }
-
-        private static ForgeUnitsCLR.UnitsEngine unitsEngine;
 
         /// <summary>
         /// Engine which loads schemas and is responsible for all ForgeUnit operations.
