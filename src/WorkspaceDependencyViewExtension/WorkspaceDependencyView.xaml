@@ -78,6 +78,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -127,7 +128,7 @@
                         Binding="{Binding Name}" 
                         Foreground="#aaaaaa" 
                         IsReadOnly="True" 
-                        Width="*">
+                        Width="2*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -142,7 +143,7 @@
                         Binding="{Binding Path}" 
                         Foreground="#aaaaaa" 
                         IsReadOnly="True" 
-                        Width="*">
+                        Width="3*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -156,7 +157,8 @@
                         Header="{x:Static w:Resources.VersionHeader}" 
                         Binding="{Binding Version}" 
                         Foreground="#aaaaaa" 
-                        IsReadOnly="True">
+                        IsReadOnly="True"
+                        Width="*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="VerticalAlignment" Value="Center" />
@@ -243,7 +245,7 @@
                         Binding="{Binding Name}" 
                         Foreground="#aaaaaa" 
                         IsReadOnly="True" 
-                        Width="*">
+                        Width="2*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -258,7 +260,7 @@
                         Binding="{Binding Path}" 
                         Foreground="#aaaaaa" 
                         IsReadOnly="True"
-                        Width="*">
+                        Width="3*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -272,7 +274,8 @@
                         Header="{x:Static w:Resources.SizeHeader}" 
                         Binding="{Binding Size}" 
                         Foreground="#aaaaaa" 
-                        IsReadOnly="True">
+                        IsReadOnly="True"
+                        Width="*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -283,17 +286,104 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Expander>
-        
+
+        <!-- External Files information-->
+        <Expander x:Name="ExternalFiles"
+                  Grid.Row="2"  
+                  Style="{StaticResource WorkspaceReferencesExpanderStyle}"
+                  Header="{x:Static w:Resources.ExternalFilesHeaderText}">
+            <DataGrid
+                Name="ExternalFilesTable"
+                AutoGenerateColumns="False"
+                Style="{StaticResource DataGridStyle1}"
+                CanUserAddRows="False"
+                GridLinesVisibility ="None"
+                Background="#353535"
+                FontSize="13"
+                VerticalAlignment="Center"
+                SelectionUnit="FullRow"
+                SelectionMode="Extended"
+                ScrollViewer.CanContentScroll="False" 
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                CanUserResizeColumns="False" 
+                CanUserResizeRows="False"
+                CanUserSortColumns="False"
+                HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <!-- State Icon -->
+                    <DataGridTemplateColumn 
+                        IsReadOnly="True"
+                        Width="38">
+                        <DataGridTemplateColumn.Header>
+                            <fa:ImageAwesome Name="RefreshExternalReferences" 
+                                             Icon="Refresh" 
+                                             ToolTip="{x:Static w:Resources.RefreshButtonTooltipText}" 
+                                             MouseLeftButtonDown="Refresh_MouseLeftButtonDown"/>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Icon}" Width="18" Height="18" Margin="0,8,0,8"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!-- External File Name -->
+                    <DataGridTextColumn 
+                        Header="{x:Static w:Resources.NameHeader}"
+                        Binding="{Binding Name}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True" 
+                        Width="2*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                                <Setter Property="ToolTip" Value="{Binding Name}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!-- External File Path -->
+                    <DataGridTextColumn 
+                        Header="{x:Static w:Resources.PathHeader}" 
+                        Binding="{Binding Path}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True"
+                        Width="3*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                                <Setter Property="ToolTip" Value="{Binding Path}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!-- External File Size -->
+                    <DataGridTextColumn
+                        Header="{x:Static w:Resources.SizeHeader}" 
+                        Binding="{Binding Size}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True"
+                        Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Expander>
+
         <!-- Fill Space -->
         <Grid x:Name="container"
             Background="Transparent"
-            Grid.Row="2"
+            Grid.Row="3"
             Height="10000"
             VerticalAlignment="Stretch">
         </Grid>
 
         <!-- Template for the feedback banner -->
-        <DockPanel Name="Feedback" VerticalAlignment="Bottom" Grid.Row="3" Width="600">
+        <DockPanel Name="Feedback" VerticalAlignment="Bottom" Grid.Row="4" Width="600">
             <!-- Restart Banner -->
             <StatusBar
                 Name="RestartBanner"
