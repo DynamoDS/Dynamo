@@ -73,7 +73,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             foreach (string word in Text.Split(' ').ToList())
             {
                 //A format for bold text was found
-                if (word.StartsWith("**"))
+                if (word.Trim().StartsWith("**"))
                 {
                     bBoldActive = true;
                 }
@@ -140,7 +140,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 }
 
                 //End of the text with bold formatting.
-                if (word.EndsWith("**"))
+                if (word.Trim().EndsWith("**"))
                 {
                     bBoldActive = false;
                 }
