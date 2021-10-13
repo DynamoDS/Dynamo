@@ -284,7 +284,6 @@ namespace UnitsUI
             };
             converterViewModel = converterControl.DataContext as ForgeConverterViewModel;
             nodeView.inputGrid.Children.Add(converterControl);
-            converterControl.Loaded += converterControl_Loaded;
             converterControl.SelectConversionQuantity.PreviewMouseUp += SelectConversionQuantity_PreviewMouseUp;
             converterControl.SelectConversionFrom.PreviewMouseUp += SelectConversionFrom_PreviewMouseUp;
             converterControl.SelectConversionTo.PreviewMouseUp += SelectConversionTo_MouseLeftButtonDown;
@@ -305,38 +304,14 @@ namespace UnitsUI
             nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
-        private void converterControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            var control = sender as ForgeDynamoConverterControl;
-            control.SelectConversionFrom.SelectedIndex = RetrieveSelectedItemIndex(convertModel.SelectedFromConversion.Name, control.SelectConversionFrom.Items);
-            control.SelectConversionTo.SelectedIndex = RetrieveSelectedItemIndex(convertModel.SelectedToConversion.Name, control.SelectConversionTo.Items);
-            control.SelectConversionQuantity.SelectedIndex = RetrieveSelectedItemIndex(convertModel.SelectedQuantityConversion.Name, control.SelectConversionQuantity.Items);
-        }
-
         public void Dispose()
         {
             converterControl.SelectConversionQuantity.PreviewMouseUp -= SelectConversionQuantity_PreviewMouseUp;
             converterControl.SelectConversionFrom.PreviewMouseUp -= SelectConversionFrom_PreviewMouseUp;
             converterControl.SelectConversionTo.PreviewMouseUp -= SelectConversionTo_MouseLeftButtonDown;
         }
-
-        int RetrieveSelectedItemIndex(string name, ItemCollection items)
-        {
-            int selectedIndex = -1;
-            int index = 0;
-
-            foreach (var item in items)
-            {
-                if (item.ToString().Contains(name))
-                {
-                    selectedIndex = index;
-                    return selectedIndex;
-                }
-                index++;
-            }
-            return selectedIndex;
-        }
     }
+    
     public class UnitValueOutputDropdownViewCustomization : NotificationObject, INodeViewCustomization<UnitValueOutputDropdown>
     {
         private NodeModel nodeModel;

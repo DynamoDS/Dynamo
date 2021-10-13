@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Autodesk.DesignScript.Runtime;
 
 namespace DynamoUnits
 {
@@ -73,5 +74,57 @@ namespace DynamoUnits
         {
             return Name; //"Unit" + "(Name = " + Name + ")";
         }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Name ?? String.Empty).GetHashCode() +
+                       (TypeId ?? String.Empty).GetHashCode();
+            }
+        }
+
+        public override bool Equals(object obj) => this.Equals(obj as Unit);
+
+        [IsVisibleInDynamoLibrary(false)]
+        public bool Equals(Unit u)
+        {
+            if (u is null)
+            {
+                return false;
+            }
+
+            if (Object.ReferenceEquals(this, u))
+            {
+                return true;
+            }
+
+            if (this.GetType() != u.GetType())
+            {
+                return false;
+            }
+
+            return (Name == u.Name) && (TypeId == u.TypeId);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static bool operator ==(Unit lhs, Unit rhs)
+        {
+            if (lhs is null)
+            {
+                if (rhs is null)
+                {
+                    return true;
+                }
+
+                // Only the left side is null.
+                return false;
+            }
+            // Equals handles case of null on right side.
+            return lhs.Equals(rhs);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static bool operator !=(Unit lhs, Unit rhs) => !(lhs == rhs);
     }
 }

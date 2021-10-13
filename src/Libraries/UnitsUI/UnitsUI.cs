@@ -218,7 +218,6 @@ namespace UnitsUI
             }
         }
         
-        
         private List<DynamoUnits.Unit> items;
 
         /// <summary>
@@ -256,8 +255,6 @@ namespace UnitsUI
             Items =
                 DynamoUnits.Utilities.ConvertUnitsDictionaryToList(
                     DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
-            SelectedUnit = Items[73];
-            Value = "";
             ShouldDisplayPreviewCore = true;
         }
 
@@ -270,8 +267,8 @@ namespace UnitsUI
             Items =
                 DynamoUnits.Utilities.ConvertUnitsDictionaryToList(
                     DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
-            SelectedUnit = Items[73];
-            
+            SelectedUnit = Items.Find(u => u.Name == "Feet");
+
             Value = "";
             ShouldDisplayPreviewCore = true;
         }
@@ -499,7 +496,6 @@ namespace UnitsUI
             QuantityConversionSource =
                 DynamoUnits.Utilities.CovertQuantityDictionaryToList(
                     DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities());
-            SelectedQuantityConversion = QuantityConversionSource[36];
             ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = true;
         }
@@ -509,7 +505,7 @@ namespace UnitsUI
             QuantityConversionSource =
                 DynamoUnits.Utilities.CovertQuantityDictionaryToList(
                     DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities());
-            SelectedQuantityConversion = QuantityConversionSource[36];
+            SelectedQuantityConversion = QuantityConversionSource.Find(q => q.Name == "Length");
             AssociativeNode defaultNode = new DoubleNode(0.0);
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("", "Tooltip", defaultNode)));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", "Tooltip")));
@@ -543,67 +539,9 @@ namespace UnitsUI
         /// </summary>
         public void ToggleDropdownValues()
         {
-            var temp = this.SelectedFromConversion;
-            this.SelectedFromConversion = this.SelectedToConversion;
-            this.SelectedToConversion = temp;
+            (this.SelectedFromConversion, this.SelectedToConversion) =
+                (this.SelectedToConversion, this.SelectedFromConversion);
         }
-
-        #region Serialization/Deserialization Methods
-
-        //protected override void SerializeCore(XmlElement element, SaveContext context)
-        //{
-        //    base.SerializeCore(element, context); // Base implementation must be called.
-
-        //    var helper = new XmlElementHelper(element);
-        //    helper.SetAttribute("conversionQuantity", SelectedQuantityConversion.ToString());
-        //    helper.SetAttribute("conversionFrom", SelectedFromConversion.ToString());
-        //    helper.SetAttribute("conversionTo", SelectedToConversion.ToString());
-        //}
-
-        //protected override void DeserializeCore(XmlElement element, SaveContext context)
-        //{
-        //    base.DeserializeCore(element, context); //Base implementation must be called.
-        //    var helper = new XmlElementHelper(element);
-        //    var quantityConversion = helper.ReadString("conversionQuantity");
-        //    var selectedQuantityConversionFrom = helper.ReadString("conversionFrom");
-        //    var selectedQuantityConversionTo = helper.ReadString("conversionTo");
-
-        //    SelectedQuantityConversion = Enum.Parse(typeof(ConversionQuantityUnit), quantityConversion) is ConversionQuantityUnit ?
-        //                        (ConversionQuantityUnit)Enum.Parse(typeof(ConversionQuantityUnit), quantityConversion) : ConversionQuantityUnit.Length;
-
-        //    SelectedFromConversion = Enum.Parse(typeof(ConversionUnit), selectedQuantityConversionFrom) is ConversionUnit ?
-        //                     (ConversionUnit)Enum.Parse(typeof(ConversionUnit), selectedQuantityConversionFrom) : ConversionUnit.Meters;
-
-        //    SelectedToConversion = Enum.Parse(typeof(ConversionUnit), selectedQuantityConversionTo) is ConversionUnit ?
-        //                        (ConversionUnit)Enum.Parse(typeof(ConversionUnit), selectedQuantityConversionTo) : ConversionUnit.Meters;
-
-        //}
-
-        //protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
-        //{
-        //    switch (updateValueParams.PropertyName)
-        //    {
-        //        case "Values":
-        //            // Here we expect a string that represents an array of [ quantity, from, to ] values which are separated by ";"
-        //            // For example "Length;Meters;Feet"
-        //            var vals = updateValueParams.PropertyValue.Split(';');
-        //            ConversionQuantityUnit quantity;
-        //            ConversionUnit from, to;
-        //            if (vals.Length == 3 && Enum.TryParse(vals[0], out quantity)
-        //                && Enum.TryParse(vals[1], out from) && Enum.TryParse(vals[2], out to))
-        //            {
-        //                SelectedQuantityConversion = quantity;
-        //                SelectedFromConversion = from;
-        //                SelectedToConversion = to;
-        //            }
-
-        //            return true;
-        //    }
-
-        //    return base.UpdateValueCore(updateValueParams);
-        //}
-
-        #endregion
     }
 
     [NodeName("Units")]
