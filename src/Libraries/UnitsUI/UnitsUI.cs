@@ -39,6 +39,7 @@ using System.Collections;
 using VMDataBridge;
 using UnitsUI.Converters;
 using System.Collections.ObjectModel;
+using ProtoCore.DSASM;
 using Utilities = DynamoUnits.Utilities;
 
 namespace UnitsUI
@@ -50,6 +51,7 @@ namespace UnitsUI
     [NodeSearchTags("LengthFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [OutPortTypes("number")]
     [IsDesignScriptCompatible]
+    [NodeDeprecated]
     public class LengthFromString : MeasurementInputBase
     {
         [JsonConstructor]
@@ -174,6 +176,7 @@ namespace UnitsUI
     [NodeSearchTags("UnitTypesSearchTags", typeof(UnitsUI.Properties.Resources))]
     [OutPortTypes("type")]
     [IsDesignScriptCompatible]
+    [NodeDeprecated]
     public class UnitTypes : AllChildrenOfType<SIUnit>
     {
         public UnitTypes() : base()

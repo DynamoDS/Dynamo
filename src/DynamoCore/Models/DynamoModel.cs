@@ -37,7 +37,6 @@ using Dynamo.Selection;
 using Dynamo.Updates;
 using Dynamo.Utilities;
 using DynamoServices;
-using DynamoUnits;
 using Greg;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -1454,7 +1453,7 @@ namespace Dynamo.Models
 
         private static void InitializePreferences(IPreferences preferences)
         {
-            BaseUnit.NumberFormat = preferences.NumberFormat;
+            DynamoUnits.Utilities.DisplayPrecisionFormat = preferences.NumberFormat;
 
             var settings = preferences as PreferenceSettings;
             if (settings != null)
@@ -1475,7 +1474,7 @@ namespace Dynamo.Models
             switch (e.PropertyName)
             {
                 case "NumberFormat":
-                    BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
+                    DynamoUnits.Utilities.DisplayPrecisionFormat = PreferenceSettings.NumberFormat;
                     break;
             }
         }

@@ -17,6 +17,7 @@ namespace UnitsUI
     /// Class defining the behaviour of a nodemodel which has no inputs, but rather uses wpf comboboxes to select items from collections.
     /// It then outputs a formatted string from the selections made.
     /// </summary>
+    [Obsolete("This method will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
     public abstract class MeasurementInputBase : NodeModel
     {
         [JsonIgnore]

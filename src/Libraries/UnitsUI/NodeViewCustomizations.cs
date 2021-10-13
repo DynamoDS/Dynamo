@@ -24,7 +24,7 @@ using UnitsUI.Converters;
 
 namespace UnitsUI
 {
-
+    [Obsolete("This method will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
     public abstract class MeasurementInputBaseNodeViewCustomization : INodeViewCustomization<MeasurementInputBase>
     {
         private MeasurementInputBase mesBaseModel;
@@ -114,6 +114,8 @@ namespace UnitsUI
             tb.OnChangeCommitted -= TextChangehandler;
         }
     }
+
+    [Obsolete("This method will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
     public class LengthFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
                                                         INodeViewCustomization<LengthFromString>
     {
@@ -123,6 +125,7 @@ namespace UnitsUI
         }
     }
 
+    [Obsolete("This method will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
     public class AreaFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
                                                  INodeViewCustomization<AreaFromString>
     {
@@ -132,6 +135,7 @@ namespace UnitsUI
         }
     }
 
+    [Obsolete("This method will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
     public class VolumeFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
                                                INodeViewCustomization<VolumeFromString>
     {

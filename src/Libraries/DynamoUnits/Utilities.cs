@@ -9,6 +9,28 @@ namespace DynamoUnits
 {
     public static class Utilities
     {
+        static Utilities()
+        {
+            try
+            {
+                unitsEngine = new ForgeUnitsCLR.UnitsEngine();
+                var directory = Path.Combine(AssemblyDirectory, "unit");
+                SchemasCLR.SchemaUtility.addDefinitionsFromFolder(directory, unitsEngine);
+                unitsEngine.resolveSchemas();
+            }
+            catch
+            {
+                //Schemas failed to resolve
+            }
+            
+        }
+
+        /// <summary>
+        /// Format used for display of numbers within Dynamo UI
+        /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
+        public static string DisplayPrecisionFormat { get; set; } = "f4";
+
         /// <summary>
         /// This enum enables quick selection of value (string representation) formatting. It also enables us to add
         /// additional formats should they be needed.
