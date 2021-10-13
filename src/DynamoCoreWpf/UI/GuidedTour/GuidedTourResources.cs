@@ -52,7 +52,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             return result;
         }
 
-        public static Assembly GetResourceAssembly(Assembly assembly, string name)
+        internal static Assembly GetResourceAssembly(Assembly assembly, string name)
         {
             var culture = CultureInfo.CurrentUICulture;
             var satelliteAssembly = GetSatelliteAssembly(assembly, culture);
@@ -94,7 +94,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
-        public static bool ContainsResource(Assembly assembly, string name)
+        internal static bool ContainsResource(Assembly assembly, string name)
         {
             if (assembly != null)
             {
