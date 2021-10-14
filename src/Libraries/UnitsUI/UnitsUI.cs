@@ -2,44 +2,20 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Media;
 using System.Xml;
-
 using DSCore;
-
 using CoreNodeModels;
-using Dynamo.Configuration;
-using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Workspaces;
 using Dynamo.Migration;
-using Dynamo.Nodes;
-using Dynamo.UI.Commands;
-using Dynamo.UI.Prompts;
-using Dynamo.ViewModels;
-using Dynamo.Wpf;
-
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
 using UnitsUI.Properties;
 using Newtonsoft.Json;
-using ProtoCore.AST.ImperativeAST;
-using UnitsUI.Controls;
 using AstFactory = ProtoCore.AST.AssociativeAST.AstFactory;
 using DoubleNode = ProtoCore.AST.AssociativeAST.DoubleNode;
 using Dynamo.Utilities;
-using Dynamo.Engine.CodeGeneration;
-using System.Collections;
-using VMDataBridge;
 using UnitsUI.Converters;
-using System.Collections.ObjectModel;
-using ProtoCore.DSASM;
 using Utilities = DynamoUnits.Utilities;
 
 namespace UnitsUI
@@ -58,6 +34,7 @@ namespace UnitsUI
         private LengthFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
         {
             Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
+            Warning("Number From Feet and Inches " + Properties.Resources.LegthFromStringObsoleteMessage, true);
         }
 
         public LengthFromString():base()
@@ -66,6 +43,7 @@ namespace UnitsUI
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("double", Resources.LengthFromStringPortDataLengthToolTip)));
             RegisterAllPorts();
+            Warning("Number From Feet and Inches " + Properties.Resources.LegthFromStringObsoleteMessage, true);
         }
 
         [NodeMigration(version: "0.6.2")]
@@ -181,11 +159,13 @@ namespace UnitsUI
     {
         public UnitTypes() : base()
         {
+            Warning("Unit Types " + Properties.Resources.UnitTypesObsoleteMessage, true);
         }
 
         [JsonConstructor]
         private UnitTypes(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            Warning("Unit Types " + Properties.Resources.UnitTypesObsoleteMessage, true);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)

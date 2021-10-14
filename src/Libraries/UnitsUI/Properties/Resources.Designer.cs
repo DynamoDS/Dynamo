@@ -115,6 +115,15 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to is obsolete, please use the Parse Unit Input node..
+        /// </summary>
+        internal static string LegthFromStringObsoleteMessage {
+            get {
+                return ResourceManager.GetString("LegthFromStringObsoleteMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A length defined as feet and inches is turned into a number representation in feet..
         /// </summary>
         internal static string LengthFromStringDescription {
@@ -223,101 +232,20 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to is obsolete, please use the Units dropdown node..
+        /// </summary>
+        internal static string UnitTypesObsoleteMessage {
+            get {
+                return ResourceManager.GetString("UnitTypesObsoleteMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to units;unittypes;.
         /// </summary>
         internal static string UnitTypesSearchTags {
             get {
                 return ResourceManager.GetString("UnitTypesSearchTags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Format.
-        /// </summary>
-        internal static string UnitValueOutputCustomizationFormat {
-            get {
-                return ResourceManager.GetString("UnitValueOutputCustomizationFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Precision.
-        /// </summary>
-        internal static string UnitValueOutputCustomizationPrecision {
-            get {
-                return ResourceManager.GetString("UnitValueOutputCustomizationPrecision", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Symbol.
-        /// </summary>
-        internal static string UnitValueOutputCustomizationSymbol {
-            get {
-                return ResourceManager.GetString("UnitValueOutputCustomizationSymbol", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unit.
-        /// </summary>
-        internal static string UnitValueOutputCustomizationUnit {
-            get {
-                return ResourceManager.GetString("UnitValueOutputCustomizationUnit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A custom formatted display of a unit value..
-        /// </summary>
-        internal static string UnitValueOutputDescription {
-            get {
-                return ResourceManager.GetString("UnitValueOutputDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A custom formatted display of a unit value..
-        /// </summary>
-        internal static string UnitValueOutputDropdownDescription {
-            get {
-                return ResourceManager.GetString("UnitValueOutputDropdownDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Output;Formatted.
-        /// </summary>
-        internal static string UnitValueOutputDropdownSearchTags {
-            get {
-                return ResourceManager.GetString("UnitValueOutputDropdownSearchTags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Specify formatting from dropdown options..
-        /// </summary>
-        internal static string UnitValueOutputDropdownTooltip {
-            get {
-                return ResourceManager.GetString("UnitValueOutputDropdownTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Output;Formatted.
-        /// </summary>
-        internal static string UnitValueOutputSearchTags {
-            get {
-                return ResourceManager.GetString("UnitValueOutputSearchTags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Wire up the formatting parameters to obstain the desired format..
-        /// </summary>
-        internal static string UnitValueOutputTooltip {
-            get {
-                return ResourceManager.GetString("UnitValueOutputTooltip", resourceCulture);
             }
         }
         

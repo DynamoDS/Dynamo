@@ -137,6 +137,9 @@
   <data name="EditHeader" xml:space="preserve">
     <value>Edit...</value>
   </data>
+  <data name="LegthFromStringObsoleteMessage" xml:space="preserve">
+    <value>is obsolete, please use the Pasrse Unit Input node.</value>
+  </data>
   <data name="LengthFromStringDescription" xml:space="preserve">
     <value>A length defined as feet and inches is turned into a number representation in feet.</value>
     <comment>Description for Length From String</comment>
@@ -176,42 +179,12 @@
     <value>Select a unit of measurement.</value>
     <comment>Description for Unit Types</comment>
   </data>
+  <data name="UnitTypesObsoleteMessage" xml:space="preserve">
+    <value>is obsolete, please use the Units dropdown node.</value>
+  </data>
   <data name="UnitTypesSearchTags" xml:space="preserve">
     <value>units;unittypes;</value>
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
-  </data>
-  <data name="UnitValueOutputCustomizationFormat" xml:space="preserve">
-    <value>Format</value>
-  </data>
-  <data name="UnitValueOutputCustomizationPrecision" xml:space="preserve">
-    <value>Precision</value>
-  </data>
-  <data name="UnitValueOutputCustomizationSymbol" xml:space="preserve">
-    <value>Symbol</value>
-  </data>
-  <data name="UnitValueOutputCustomizationUnit" xml:space="preserve">
-    <value>Unit</value>
-  </data>
-  <data name="UnitValueOutputDescription" xml:space="preserve">
-    <value>A custom formatted display of a unit value.</value>
-    <comment>Description for UnitValueOutput</comment>
-  </data>
-  <data name="UnitValueOutputDropdownDescription" xml:space="preserve">
-    <value>A custom formatted display of a unit value.</value>
-    <comment>Description for UnitValueOutputDropdown</comment>
-  </data>
-  <data name="UnitValueOutputDropdownSearchTags" xml:space="preserve">
-    <value>Output;Formatted</value>
-  </data>
-  <data name="UnitValueOutputDropdownTooltip" xml:space="preserve">
-    <value>Specify formatting from dropdown options.</value>
-  </data>
-  <data name="UnitValueOutputSearchTags" xml:space="preserve">
-    <value>Output;Formatted</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
-  </data>
-  <data name="UnitValueOutputTooltip" xml:space="preserve">
-    <value>Wire up the formatting parameters to obstain the desired format.</value>
   </data>
   <data name="VolumeFromStringDescription" xml:space="preserve">
     <value>Enter a volume.</value>

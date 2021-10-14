@@ -136,6 +136,7 @@ namespace CoreNodeModels
             SelectedMetricConversion = ConversionMetricUnit.Length;
             ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = true;
+            Warning("Convert Between Units " + Properties.Resources.ConversionNodeObsoleteMessage, true);
         }
 
         public DynamoConvert()
@@ -148,6 +149,7 @@ namespace CoreNodeModels
             ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = true;
             RegisterAllPorts();
+            Warning("Convert Between Units " + Properties.Resources.ConversionNodeObsoleteMessage, true);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(
