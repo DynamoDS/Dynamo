@@ -1,0 +1,273 @@
+{
+  "Uuid": "b6795ad8-130b-4b8a-a2d7-4fcdc3ad3c67",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ExternalReferencesTest",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "srcpath =\"C:\\\\test\\\\\";\npath = \"C:\\\\test\\\\DynamoTest.xlsx\";\n3;\nfilepath = srcpath + \"Dynamo.png\";",
+      "Id": "008eff7edf3e43a093d69defcd2ad1f3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "89ba352a6ee9407ba1f06f09c4808f21",
+          "Name": "",
+          "Description": "srcpath",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a8223907b53a47a3b8b02e2b3e304225",
+          "Name": "",
+          "Description": "path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e3f1673546ad4b208e70f0a457dd13b9",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "68637459f2b844fa91353fc49a22f09d",
+          "Name": "",
+          "Description": "filepath",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x;",
+      "Id": "4e5d9dcbce6d4e6fac1168c22c7e7f8c",
+      "Inputs": [
+        {
+          "Id": "3363d06f7bf24c57b9754790a28736d3",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c459ec2e974841d4801fc4fa66b781e3",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "b9613d6461aa42f0bfd565bc3d3badd6",
+      "Inputs": [
+        {
+          "Id": "fb5ec5b8a4bb4f568c849ec4f6a93296",
+          "Name": "path",
+          "Description": "Path to the file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4fc59e16af5b44468347fe371b730199",
+          "Name": "file",
+          "Description": "File object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a file object from a path."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.Image.ReadFromFile@var",
+      "Id": "255a8e0c8fea46b0aa28509f5813b147",
+      "Inputs": [
+        {
+          "Id": "5553800b8db742709808ca2c482106a9",
+          "Name": "file",
+          "Description": "File object to load image from\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "994a16f87643466d9c03010f1b0d005e",
+          "Name": "image",
+          "Description": "Image object from file",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Loads the file as a bitmap.\n\nImage.ReadFromFile (file: var): var"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "a8223907b53a47a3b8b02e2b3e304225",
+      "End": "3363d06f7bf24c57b9754790a28736d3",
+      "Id": "07b6b9e542fc4b72a775ba76bd67435c",
+      "IsCollapsed": "False"
+    },
+    {
+      "Start": "68637459f2b844fa91353fc49a22f09d",
+      "End": "fb5ec5b8a4bb4f568c849ec4f6a93296",
+      "Id": "e207eacee3ad4b81985abee32d71d69e",
+      "IsCollapsed": "False"
+    },
+    {
+      "Start": "4fc59e16af5b44468347fe371b730199",
+      "End": "5553800b8db742709808ca2c482106a9",
+      "Id": "a75b298a87524538a95d18fa68135128",
+      "IsCollapsed": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Dynamo.png",
+      "ReferenceType": "External",
+      "Nodes": [
+        "008eff7edf3e43a093d69defcd2ad1f3"
+      ]
+    },
+    {
+      "Name": "DynamoTest.xlsx",
+      "ReferenceType": "External",
+      "Nodes": [
+        "4e5d9dcbce6d4e6fac1168c22c7e7f8c"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.0.2773",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "008eff7edf3e43a093d69defcd2ad1f3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 31.0,
+        "Y": 169.5
+      },
+      {
+        "Id": "4e5d9dcbce6d4e6fac1168c22c7e7f8c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 722.0,
+        "Y": 71.5
+      },
+      {
+        "Id": "b9613d6461aa42f0bfd565bc3d3badd6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "File From Path",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 720.0,
+        "Y": 352.5
+      },
+      {
+        "Id": "255a8e0c8fea46b0aa28509f5813b147",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Image.ReadFromFile",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 695.0,
+        "Y": 600.5
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

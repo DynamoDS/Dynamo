@@ -179,7 +179,9 @@
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
     <Compile Include="UI\GuidedTour\GuidedTourResources.cs" />
+    <Compile Include="UI\GuidedTour\GuidesValidationMethods.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
+    <Compile Include="UI\GuidedTour\PreValidation.cs" />
     <Compile Include="UI\GuidedTour\Step.cs" />
     <Compile Include="UI\GuidedTour\StepUIAutomation.cs" />
     <Compile Include="UI\GuidedTour\Survey.cs" />
@@ -223,6 +225,7 @@
     <Compile Include="Utilities\CrashUtilities.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\MessageBoxUtilities.cs" />
+    <Compile Include="Utilities\NodeContextMenuBuilder.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
@@ -647,6 +650,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
@@ -1419,6 +1423,8 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\DynamoPackages_1_1.png" />
+    <Resource Include="UI\Images\default_info_16px.png" />
     <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
     <Resource Include="UI\Images\info_2.png" />
