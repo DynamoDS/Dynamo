@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Dynamo.PackageDetails;
 using Dynamo.PackageManager;
 using Greg.Responses;
@@ -73,7 +74,7 @@ namespace DynamoCoreWpfTests
             },
         };
         private static List<string> DependencyVersions { get; } = new List<string> {"1", "2", "3"};
-
+        
         /// <summary>
         /// Tests whether a PackageDetailItem detects its dependencies and sets correponding values properly.
         /// These display in the PackageDetailsView versions DataGrid as the 'Host' and 'Python' columns.
@@ -217,7 +218,7 @@ namespace DynamoCoreWpfTests
         /// This is fired when the user clicks a link to another dependency package.
         /// </summary>
         [Test]
-        public void TestLinkButton()
+        public void TestOpenDependencyDetails()
         {
             // Arrange
             string packageToOpen = "Sample View Extension";
@@ -268,6 +269,63 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(packageToOpen, newPackageDetailsViewModel.PackageName);
             Assert.AreEqual(packageAuthor, newPackageDetailsViewModel.PackageAuthorName);
             Assert.AreEqual(packageDescription, newPackageDetailsViewModel.PackageDescription);
+        }
+
+        /// <summary>
+        /// Tests whether the extension opens and display package details when a user
+        /// clicks on the 'View Details' button in the package manager searh view.
+        /// </summary>
+        [Test]
+        public void TestViewPackageDetailsCommand()
+        {
+            // Arrange
+            string packageToOpen = "Sample View Extension";
+            List<User> packageAuthor = new List<User> { new User{ _id = "1", username = "DynamoTeam" }};
+            string packageDescription = "Dynamo sample view extension.";
+
+            PackageDetailsViewExtension.PackageManagerClientViewModel = ViewModel.PackageManagerClientViewModel;
+
+            PackageHeader packageHeader = new PackageHeader
+            {
+                _id = null,
+                name = packageToOpen,
+                versions = PackageVersions,
+                latest_version_update = System.DateTime.Now,
+                num_versions = PackageVersions.Count,
+                comments = null,
+                num_comments = 0,
+                latest_comment = null,
+                votes = 0,
+                downloads = 0,
+                repository_url = null,
+                site_url = null,
+                banned = false,
+                deprecated = false,
+                @group = null,
+                engine = null,
+                license = null,
+                used_by = null,
+                host_dependencies = Hosts,
+                num_dependents = 0,
+                description = packageDescription,
+                maintainers = packageAuthor,
+                keywords = null
+            };
+            PackageManagerSearchElement packageManagerSearchElement = new PackageManagerSearchElement(packageHeader);
+            PackageDetailsViewExtension.OpenPackageDetails(packageManagerSearchElement);
+            PackageDetailsView packageDetailsView = PackageDetailsViewExtension.PackageDetailsView;
+            Assert.IsInstanceOf<PackageDetailsViewModel>(packageDetailsView.DataContext);
+            PackageDetailsViewModel packageDetailsViewModel = packageDetailsView.DataContext as PackageDetailsViewModel;
+
+            // Act
+            PackageDetailsViewExtension.PackageManagerClientViewModel
+                .DynamoViewModel
+                .OnViewExtensionOpenWithParameterRequest("Package Details", packageManagerSearchElement);
+
+            // Assert
+            Assert.AreEqual(packageToOpen, packageDetailsViewModel.PackageName);
+            Assert.AreEqual(packageAuthor.First().username, packageDetailsViewModel.PackageAuthorName);
+            Assert.AreEqual(packageDescription, packageDetailsViewModel.PackageDescription);
         }
     }
 }
