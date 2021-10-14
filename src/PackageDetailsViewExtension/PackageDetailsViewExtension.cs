@@ -10,7 +10,7 @@ namespace Dynamo.PackageDetails
         internal PackageManagerExtension PackageManagerExtension { get; set; }
         internal PackageDetailsView PackageDetailsView { get; set; }
         internal PackageDetailsViewModel PackageDetailsViewModel { get; set; }
-        internal PackageManagerClientViewModel packageManagerClientViewModel;
+        internal PackageManagerClientViewModel PackageManagerClientViewModel { get; set; }
         internal ViewLoadedParams ViewLoadedParamsReference { get; set; }
         
         public override string UniqueId => "C71CA1B9-BF9F-425A-A12C-53DF56770406";
@@ -29,7 +29,7 @@ namespace Dynamo.PackageDetails
             viewLoadedParams.ViewExtensionOpenRequestWithParameter += OnViewExtensionOpenWithParameterRequest;
             
             DynamoViewModel dynamoViewModel = viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel;
-            packageManagerClientViewModel = dynamoViewModel.PackageManagerClientViewModel;
+            PackageManagerClientViewModel = dynamoViewModel.PackageManagerClientViewModel;
         }
 
         internal void OnViewExtensionOpenWithParameterRequest(string extensionName, object obj)

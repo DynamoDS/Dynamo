@@ -1,22 +1,79 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using Dynamo.Graph.Workspaces;
 using Dynamo.PackageDetails;
 using Dynamo.PackageManager;
-using Dynamo.PackageManager.UI;
-using Dynamo.WorkspaceDependency;
-using Dynamo.Wpf.Extensions;
 using Greg.Responses;
 using NUnit.Framework;
 using PythonNodeModels;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {
-    public class PackageDetailsViewExtensionTests : DynamoTestUIBase
+    public class PackageDetailsViewExtensionTests : SystemTestBase
     {
-        private PackageDetailsViewExtension packageDetailsViewExtension = new PackageDetailsViewExtension();
-        
+        private PackageDetailsViewExtension PackageDetailsViewExtension { get; }= new PackageDetailsViewExtension
+        {
+            PackageManagerExtension = new PackageManagerExtension()
+        };
+        private static List<User> UsersList { get; } = new List<User>
+        {
+            new User
+            {
+                _id = "1",
+                username = "User 1"
+            },
+            new User
+            {
+                _id = "2",
+                username = "User 2"
+            }
+        };
+        private static List<string> Hosts { get; } = new List<string> {"Revit", "Civil3D"};
+        private static List<Dependency> Dependencies { get; } = new List<Dependency>
+        {
+            new Dependency {_id = string.Empty, name = "Dependency"},
+            new Dependency {_id = string.Empty, name = "Dependency"}
+        };
+        private static List<PackageVersion> PackageVersions = new List<PackageVersion>
+        {
+            new PackageVersion
+            {
+                engine_version = "1.0.0",
+                created = System.DateTime.Now.ToString(),
+                full_dependency_versions = DependencyVersions,
+                full_dependency_ids = Dependencies,
+                direct_dependency_versions = DependencyVersions,
+                direct_dependency_ids = Dependencies,
+                host_dependencies = new List<string>(Hosts),
+                version = "0.0.1",
+                name = "test",
+            },
+            new PackageVersion
+            {
+                engine_version = "1.0.0",
+                created = System.DateTime.Now.ToString(),
+                full_dependency_versions = DependencyVersions,
+                full_dependency_ids = Dependencies,
+                direct_dependency_versions = DependencyVersions,
+                direct_dependency_ids = Dependencies,
+                host_dependencies = new List<string>(Hosts),
+                version = "0.0.2",
+                name = "test",
+            },
+            new PackageVersion
+            {
+                engine_version = "1.0.0",
+                created = System.DateTime.Now.ToString(),
+                full_dependency_versions = DependencyVersions,
+                full_dependency_ids = Dependencies,
+                direct_dependency_versions = DependencyVersions,
+                direct_dependency_ids = Dependencies,
+                host_dependencies = new List<string>(Hosts),
+                version = "0.0.3",
+                name = "test",
+            },
+        };
+        private static List<string> DependencyVersions { get; } = new List<string> {"1", "2", "3"};
+
         /// <summary>
         /// Tests whether a PackageDetailItem detects its dependencies and sets correponding values properly.
         /// These display in the PackageDetailsView versions DataGrid as the 'Host' and 'Python' columns.
@@ -27,7 +84,7 @@ namespace DynamoCoreWpfTests
             // Arrange
             string hostName1 = "Revit";
             string hostName2 = "Civil3D";
-            List<string> hostNames = new List<string> { hostName1, hostName2 };
+            List<string> hostNames = new List<string> {hostName1, hostName2};
 
             PackageVersion packageVersionNoDependencies = new PackageVersion
             {
@@ -36,17 +93,17 @@ namespace DynamoCoreWpfTests
             };
             PackageVersion packageVersionWithPython2Dependency = new PackageVersion
             {
-                host_dependencies = new List<string> { PythonEngineVersion.IronPython2.ToString() },
+                host_dependencies = new List<string> {PythonEngineVersion.IronPython2.ToString()},
                 full_dependency_ids = new List<Dependency>()
             };
             PackageVersion packageVersionWithPython3Dependency = new PackageVersion
             {
-                host_dependencies = new List<string> { PythonEngineVersion.CPython3.ToString() },
+                host_dependencies = new List<string> {PythonEngineVersion.CPython3.ToString()},
                 full_dependency_ids = new List<Dependency>()
             };
             PackageVersion packageVersionWithHostDependency = new PackageVersion
             {
-                host_dependencies = new List<string> { hostName1 },
+                host_dependencies = new List<string> {hostName1},
                 full_dependency_ids = new List<Dependency>()
             };
             PackageVersion packageVersionWithMultipleHostDependencies = new PackageVersion
@@ -95,7 +152,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailItemNoDependencies.PythonVersion);
 
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailWithPython2Dependency.Hosts);
-            Assert.AreEqual(PythonEngineVersion.IronPython2.ToString(), packageDetailWithPython2Dependency.PythonVersion);
+            Assert.AreEqual(PythonEngineVersion.IronPython2.ToString(),
+                packageDetailWithPython2Dependency.PythonVersion);
 
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailWithPython3Dependency.Hosts);
             Assert.AreEqual(PythonEngineVersion.CPython3.ToString(), packageDetailWithPython3Dependency.PythonVersion);
@@ -104,79 +162,112 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailWithHostDependency.PythonVersion);
 
             Assert.AreEqual(string.Join(", ", hostNames), packageDetailWithMultipleHostDependencies.Hosts);
-            Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailWithMultipleHostDependencies.PythonVersion);
+            Assert.AreEqual(Dynamo.Properties.Resources.NoneString,
+                packageDetailWithMultipleHostDependencies.PythonVersion);
         }
 
         /// <summary>
-        /// Tests whether the PackageDetailsView's DataGrid displays package versions properly.
+        /// Tests whether the PackageDetailsViewModel receives the package versions properly.
         /// </summary>
         [Test]
-        public void TestVersionDisplay()
+        public void TestVersionsDisplayedInView()
         {
             // Arrange
-            PackageVersion packageVersion1 = new PackageVersion { full_dependency_ids = new List<Dependency>() };
-            PackageVersion packageVersion2 = new PackageVersion { full_dependency_ids = new List<Dependency>() };
-            List<PackageVersion> packageVersions = new List<PackageVersion> { packageVersion1, packageVersion2 };
-
-            PackageHeader packageHeader = new PackageHeader { versions = packageVersions };
-            PackageManagerSearchElement packageManagerSearchElement = new PackageManagerSearchElement(packageHeader)
-            {
-                Height = 0,
-                Visibility = true,
-                IsSelected = false,
-                IsExpanded = false,
-                Items = null,
-                Parent = null,
-                OldParent = null,
-                FullCategoryName = null,
-                Votes = 0,
-                Weight = 0,
-                Guid = default,
-                Keywords = null
-            };
-
-            PackageManagerExtension packageManagerExtension = new PackageManagerExtension();
-            packageDetailsViewExtension.PackageManagerExtension = packageManagerExtension;
+            PackageHeader packageHeader = new PackageHeader {
+                _id = null,
+                name = string.Empty,
+                versions = PackageVersions,
+                latest_version_update = System.DateTime.Now,
+                num_versions = PackageVersions.Count,
+                comments = null,
+                num_comments = 0,
+                latest_comment = null,
+                votes = 0,
+                downloads = 0,
+                repository_url = null,
+                site_url = null,
+                banned = false,
+                deprecated = false,
+                @group = null,
+                engine = null,
+                license = null,
+                used_by = null,
+                host_dependencies = Hosts,
+                num_dependents = 0,
+                description = null,
+                maintainers = UsersList,
+                keywords = null
+        };
+            PackageManagerSearchElement packageManagerSearchElement = new PackageManagerSearchElement(packageHeader);
 
             // Act
-            packageDetailsViewExtension.OpenPackageDetails(packageManagerSearchElement);
-            PackageDetailsView packageDetailsView = packageDetailsViewExtension.PackageDetailsView;
+            PackageDetailsViewExtension.OpenPackageDetails(packageManagerSearchElement);
+            PackageDetailsView packageDetailsView = PackageDetailsViewExtension.PackageDetailsView;
 
             // Assert
             Assert.IsNotNull(packageDetailsView.VersionsDataGrid);
-            Assert.AreEqual(packageVersions.Count, packageDetailsView.VersionsDataGrid.Items.Count);
+            Assert.IsInstanceOf<PackageDetailsViewModel>(packageDetailsView.DataContext);
+
+            PackageDetailsViewModel packageDetailsViewModel = packageDetailsView.DataContext as PackageDetailsViewModel;
+            Assert.AreEqual(PackageVersions.Count, packageDetailsViewModel.PackageDetailItems.Count);
         }
 
+        /// <summary>
+        /// Tests whether OpenDependencyDetails method works.
+        /// This is fired when the user clicks a link to another dependency package.
+        /// </summary>
         [Test]
-        public void DownloadSpecifiedVersionOfPackageTest()
+        public void TestLinkButton()
         {
-            RaiseLoadedEvent(this.View);
-            var extensionManager = View.viewExtensionManager;
-            extensionManager.Add(packageDetailsViewExtension);
+            // Arrange
+            string packageToOpen = "Sample View Extension";
+            string packageAuthor = "DynamoTeam";
+            string packageDescription = "Dynamo sample view extension.";
 
-            Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
+            PackageDetailsViewExtension.PackageManagerClientViewModel = ViewModel.PackageManagerClientViewModel;
 
-            var loadedParams = new ViewLoadedParams(View, ViewModel);
-            var currentWorkspace = ViewModel.Model.CurrentWorkspace;
+            PackageHeader packageHeader = new PackageHeader
+            {
+                _id = null,
+                name = string.Empty,
+                versions = PackageVersions,
+                latest_version_update = System.DateTime.Now,
+                num_versions = PackageVersions.Count,
+                comments = null,
+                num_comments = 0,
+                latest_comment = null,
+                votes = 0,
+                downloads = 0,
+                repository_url = null,
+                site_url = null,
+                banned = false,
+                deprecated = false,
+                @group = null,
+                engine = null,
+                license = null,
+                used_by = null,
+                host_dependencies = Hosts,
+                num_dependents = 0,
+                description = null,
+                maintainers = UsersList,
+                keywords = null
+            };
+            PackageManagerSearchElement packageManagerSearchElement = new PackageManagerSearchElement(packageHeader);
+            PackageDetailsViewExtension.OpenPackageDetails(packageManagerSearchElement);
+            PackageDetailsView packageDetailsView = PackageDetailsViewExtension.PackageDetailsView;
+            Assert.IsInstanceOf<PackageDetailsViewModel>(packageDetailsView.DataContext);
+            PackageDetailsViewModel packageDetailsViewModel = packageDetailsView.DataContext as PackageDetailsViewModel;
 
-            //// This is equivalent to uninstall the package
-            //var package = packageDetailsViewExtension..PackageLoader.LocalPackages.Where(x => x.Name == "Dynamo Samples").FirstOrDefault();
-            //package.LoadState.SetScheduledForDeletion();
+            // Act
+            packageDetailsViewModel.OpenDependencyDetails(packageToOpen);
 
-            //// Once choosing to install the specified version, info.State should reflect RequireRestart
-            //viewExtension.DependencyView.DependencyRegen(currentWorkspace);
+            // Assert
+            PackageDetailsView newPackageDetailsView = PackageDetailsViewExtension.PackageDetailsView;
+            PackageDetailsViewModel newPackageDetailsViewModel = newPackageDetailsView.DataContext as PackageDetailsViewModel;
 
-            //// Restart banner should display immediately
-            //Assert.AreEqual(Visibility.Visible, viewExtension.DependencyView.RestartBanner.Visibility);
-            //Assert.AreEqual(1, viewExtension.DependencyView.PackageDependencyTable.Items.Count);
-            //var newInfo = viewExtension.DependencyView.dataRows.FirstOrDefault().DependencyInfo;
-
-            //// Local loaded version was 2.0.0, but now will be update to date with dyn
-            //Assert.AreEqual("2.0.1", newInfo.Version.ToString());
-            //Assert.AreEqual(1, newInfo.Nodes.Count);
-            //Assert.AreEqual(newInfo.State, PackageDependencyState.RequiresRestart);
+            Assert.AreEqual(packageToOpen, newPackageDetailsViewModel.PackageName);
+            Assert.AreEqual(packageAuthor, newPackageDetailsViewModel.PackageAuthorName);
+            Assert.AreEqual(packageDescription, newPackageDetailsViewModel.PackageDescription);
         }
-
-       
     }
 }

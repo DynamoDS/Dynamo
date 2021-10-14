@@ -14,7 +14,7 @@ namespace Dynamo.PackageDetails
         #region Private Fields
 
         private readonly PackageManagerClientViewModel packageManagerClientViewModel;
-        private IEnumerable<PackageDetailItem> packageDetailItems;
+        private List<PackageDetailItem> packageDetailItems;
         private string license;
 
         #endregion
@@ -24,7 +24,7 @@ namespace Dynamo.PackageDetails
         /// <summary>
         /// Stores a  collection of the PackageDetailItems.
         /// </summary>
-        public IEnumerable<PackageDetailItem> PackageDetailItems
+        public List<PackageDetailItem> PackageDetailItems
         {
             get => packageDetailItems;
             set
@@ -98,7 +98,7 @@ namespace Dynamo.PackageDetails
         /// Retrieves a package by name and display its details in the PackageDetailsView.
         /// </summary>
         /// <param name="obj"></param>
-        private void OpenDependencyDetails(object obj)
+        internal void OpenDependencyDetails(object obj)
         {
             if (!(obj is string stringValue)) return;
             
@@ -112,7 +112,7 @@ namespace Dynamo.PackageDetails
         /// Attempts to retrieve a package by name and install it locally.
         /// </summary>
         /// <param name="obj"></param>
-        private void TryInstallPackageVersion(object obj)
+        internal void TryInstallPackageVersion(object obj)
         {
             if (!(obj is string versionName)) return;
             PackageManagerSearchElement packageManagerSearchElement = GetPackageByName(PackageName);
@@ -120,7 +120,7 @@ namespace Dynamo.PackageDetails
 
             PackageInfo packageInfo = new PackageInfo(PackageName, Version.Parse(versionName));
             
-            this.PackageDetailsViewExtension.packageManagerClientViewModel.DownloadAndInstallPackage(packageInfo);
+            this.PackageDetailsViewExtension.PackageManagerClientViewModel.DownloadAndInstallPackage(packageInfo);
             RefreshPackageDetailItemInstalledStatus(versionName);
         }
 
@@ -178,7 +178,7 @@ namespace Dynamo.PackageDetails
         )
         {
             PackageLoader packageLoader = packageDetailsViewExtension.PackageManagerExtension.PackageLoader;
-            packageManagerClientViewModel = packageDetailsViewExtension.packageManagerClientViewModel;
+            packageManagerClientViewModel = packageDetailsViewExtension.PackageManagerClientViewModel;
 
             // Reversing the versions, so they appear newest-first.
             PackageDetailItems = packageManagerSearchElement.Header.versions
@@ -189,7 +189,7 @@ namespace Dynamo.PackageDetails
                     packageManagerSearchElement.Name,
                     x,
                     DetectWhetherCanInstall(packageLoader, x.version)
-                ));
+                )).ToList();
 
             PackageName = packageManagerSearchElement.Name;
             PackageAuthorName = packageManagerSearchElement.Maintainers;
@@ -213,6 +213,8 @@ namespace Dynamo.PackageDetails
         {
             // In order for CanInstall to be false, both the name and installed package version must match
             // what is found in the PackageLoader.LocalPackages which are designated as 'Loaded'.
+
+            if (packageLoader == null) return false;
 
             List<Package> sameNamePackages = packageLoader
                 .LocalPackages
