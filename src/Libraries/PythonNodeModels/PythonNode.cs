@@ -36,7 +36,7 @@ namespace PythonNodeModels
 
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        [DefaultValue(nameof(PythonEngineVersion.IronPython2))]
+        [DefaultValue(nameof(PythonEngineVersion.CPython3))]
         /// <summary>
         /// Return the user selected python engine enum.
         /// </summary>
@@ -61,21 +61,16 @@ namespace PythonNodeModels
             }
         }
 
-        private static ObservableCollection<PythonEngineVersion> availableEngines;
         /// <summary>
         /// Available Python engines.
         /// </summary>
+        [Obsolete(@"This method will be removed in future versions of Dynamo.
+        Please use PythonEngineSelector.Instance.GetEnabledEngines instead")]
         public static ObservableCollection<PythonEngineVersion> AvailableEngines
         {
             get
             {
-                if (availableEngines == null)
-                {
-                    availableEngines = new ObservableCollection<PythonEngineVersion>();
-                    availableEngines.Add(PythonEngineVersion.IronPython2);
-                    availableEngines.Add(PythonEngineVersion.CPython3);
-                }
-                return availableEngines;
+                return new ObservableCollection<PythonEngineVersion>(PythonEngineSelector.Instance.GetEnabledEngines());
             }
         }
 
@@ -97,8 +92,10 @@ namespace PythonNodeModels
             }
             else
             {
-                // In the absence of both a setting and system default, default to deserialization default.
-                engine = PythonEngineVersion.IronPython2;
+                // If IronPython2 is available, use that as the default.
+                // Else use CPython
+                engine = PythonEngineSelector.Instance.IsIronPythonEnabled ? 
+                    PythonEngineVersion.IronPython2 : PythonEngineVersion.CPython3;
             }
         }
 
@@ -290,7 +287,7 @@ namespace PythonNodeModels
         }
 
         [Obsolete("This method is part of the temporary IronPython to CPython3 migration feature and will be removed in future versions of Dynamo.")]
-        /// <summary>
+        /// <suymmary>
         /// Updates the Script property of the node and raise the migration event notifications.
         /// NOTE: This is a temporary method used during the Python 2 to Python 3 transistion period,
         /// it will be removed when the transistion period is over.

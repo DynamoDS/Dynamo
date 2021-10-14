@@ -19,5 +19,5 @@ using System.Runtime.InteropServices;
 // Needed to use internal MigrationAssistantRequested event 
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
-
+[assembly: InternalsVisibleTo("DynamoCoreWpf")]
 

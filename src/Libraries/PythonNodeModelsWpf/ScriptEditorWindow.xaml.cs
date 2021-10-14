@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
@@ -30,6 +31,17 @@ namespace PythonNodeModelsWpf
         private bool nodeWasModified = false;
         private string originalScript;
         public PythonEngineVersion CachedEngine { get; set; }
+        
+        /// <summary>
+        /// Available Python engines.
+        /// </summary>
+        public ObservableCollection<PythonEngineVersion> AvailableEngines
+        {
+            get
+            {
+                return new ObservableCollection<PythonEngineVersion>(PythonEngineSelector.Instance.GetEnabledEngines());
+            }
+        }
 
         public ScriptEditorWindow(
             DynamoViewModel dynamoViewModel,
@@ -113,8 +125,10 @@ namespace PythonNodeModelsWpf
                     var subString = editText.Text.Substring(0, editText.CaretOffset);
                     var completions = completionProvider.GetCompletionData(subString, false);
 
-                    if (completions.Length == 0)
+                    if (completions == null || completions.Length == 0)
+                    {
                         return;
+                    }
 
                     completionWindow = new CompletionWindow(editText.TextArea);
                     var data = completionWindow.CompletionList.CompletionData;

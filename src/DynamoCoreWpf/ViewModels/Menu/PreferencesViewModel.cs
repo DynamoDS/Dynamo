@@ -705,49 +705,22 @@ namespace Dynamo.ViewModels
         /// Gets the different Python Engine versions availables from PythonNodeModels.dll
         /// </summary>
         /// <returns>Strings array with the different names</returns>
-        private string[] GetPythonEngineOptions()
+        private IEnumerable<string> GetPythonEngineOptions()
         {
-            try
-            {
-                var enumType = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(s =>
-                    {
-                        try
-                        {
-                            return s.GetTypes();
-                        }
-                        catch (ReflectionTypeLoadException)
-                        {
-                            return new Type[0];
-                        }
-                    }).FirstOrDefault(t => t.FullName.Equals("PythonNodeModels.PythonEngineVersion"));
-
-                return Enum.GetNames(enumType);
-            }
-            catch
-            {
-                return Array.Empty<string>();
-            }
+            return PythonNodeModels.PythonEngineSelector.Instance.GetEnabledEngines()
+                    .Select(x => x.ToString());
         }
 
         private void AddPythonEnginesOptions()
         {
-            var pythonEngineOptions = GetPythonEngineOptions();
-            if (pythonEngineOptions.Length != 0)
+            ObservableCollection<string> options = new ObservableCollection<string>();
+            options.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
+
+            foreach(var item in GetPythonEngineOptions())
             {
-                foreach (var option in pythonEngineOptions)
-                {
-                    if (option != "Unspecified")
-                    {
-                        PythonEnginesList.Add(option);
-                    }
-                }
+                options.Add(item);
             }
-            else
-            {
-                PythonEnginesList.Add("IronPython2");
-                PythonEnginesList.Add("CPython3");
-            }
+            PythonEnginesList = options;
         }
         #endregion
 
@@ -769,10 +742,9 @@ namespace Dynamo.ViewModels
             this.installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
                 dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
 
-            PythonEnginesList = new ObservableCollection<string>();
-            PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
             AddPythonEnginesOptions();
 
+            PythonNodeModels.PythonEngineSelector.OnPythonEngineScan += () => AddPythonEnginesOptions();
             //Sets SelectedPythonEngine.
             //If the setting is empty it corresponds to the default python engine
             _ = preferenceSettings.DefaultPythonEngine == string.Empty ? 

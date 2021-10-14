@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace PythonNodeModels
 {
@@ -28,6 +30,8 @@ namespace PythonNodeModels
             new Lazy<PythonEngineSelector>
             (() => new PythonEngineSelector());
 
+        internal static Action OnPythonEngineScan;
+
         /// <summary>
         /// The actual instance stored in the Singleton class
         /// </summary>
@@ -51,6 +55,48 @@ namespace PythonNodeModels
         private PythonEngineSelector()
         {
             ScanPythonEngines();
+            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(AssemblyLoadEventHandler);
+        }
+
+        static private void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args)
+        {
+            PythonEngineSelector.Instance.ScanPythonEngine(args.LoadedAssembly);
+        }
+
+        private void ScanPythonEngine(Assembly assembly)
+        {
+            if (assembly == null)
+            {
+                return;
+            }
+            // Currently we are using try-catch to validate loaded assembly and evaluation method exist
+            // but we can optimize by checking all loaded types against evaluators interface later
+            try
+            {
+                if (assembly.GetName().Name.Equals("DSIronPython") &&
+                    assembly.GetType("DSIronPython.IronPythonEvaluator").GetMethod(IronPythonEvaluationMethod) != null)
+                {
+                    IsIronPythonEnabled = true;
+                    OnPythonEngineScan?.Invoke();
+                }
+            }
+            catch
+            {
+                //Do nothing for now
+            }
+            try
+            {
+                if (assembly.GetName().Name.Equals("DSCPython") &&
+                    assembly.GetType("DSCPython.CPythonEvaluator").GetMethod(CPythonEvaluationMethod) != null)
+                {
+                    IsCPythonEnabled = true;
+                    OnPythonEngineScan?.Invoke();
+                }
+            }
+            catch
+            {
+                //Do nothing for now
+            }
         }
 
         /// <summary>
@@ -59,33 +105,9 @@ namespace PythonNodeModels
         internal void ScanPythonEngines()
         {
             var assems = AppDomain.CurrentDomain.GetAssemblies();
-            // Currently we are using try-catch to validate loaded assembly and evaluation method exist
-            // but we can optimize by checking all loaded types against evaluators interface later
-            try
+            foreach (var assembly in assems)
             {
-                var IronPythonAssem = assems.FirstOrDefault(x => x.GetName().Name.Equals("DSIronPython"));
-                if (IronPythonAssem != null &&
-                    IronPythonAssem.GetType("DSIronPython.IronPythonEvaluator").GetMethod(IronPythonEvaluationMethod) != null)
-                {
-                    IsIronPythonEnabled = true;
-                }
-            }
-            catch
-            {
-                //Do nothing for now
-            }
-            try
-            {
-                var CPythonAssem = assems.FirstOrDefault(x => x.GetName().Name.Equals("DSCPython"));
-                if (CPythonAssem != null &&
-                    CPythonAssem.GetType("DSCPython.CPythonEvaluator").GetMethod(CPythonEvaluationMethod) != null)
-                {
-                    IsCPythonEnabled = true;
-                }
-            }
-            catch
-            {
-                //Do nothing for now
+                ScanPythonEngine(assembly);
             }
         }
 
@@ -116,6 +138,20 @@ namespace PythonNodeModels
             // We handle this by providing a dummy Python evaluator that will evaluate to an error message.
             evaluatorClass = DummyEvaluatorClass;
             evaluationMethod = DummyEvaluatorMethod;
+        }
+
+        internal IEnumerable<PythonEngineVersion> GetEnabledEngines()
+        {
+            var output = new List<PythonEngineVersion>();
+            if (IsIronPythonEnabled)
+            {
+                output.Add(PythonEngineVersion.IronPython2);
+            }
+            if (IsCPythonEnabled)
+            {
+                output.Add(PythonEngineVersion.CPython3);
+            }
+            return output;
         }
     }
 }

@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonExtension", "IronPython\IronPythonExtension\IronPythonExtension.csproj", "{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSIronPython", "IronPython\DSIronPython\DSIronPython.csproj", "{9EEF4F42-6B3B-4358-9A8A-C2701539A822}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonTests", "..\test\IronPythonTests\IronPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Debug|x64.Build.0 = Debug|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Release|x64.ActiveCfg = Release|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Release|x64.Build.0 = Release|Any CPU
+		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Debug|x64.ActiveCfg = Debug|x64
+		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Debug|x64.Build.0 = Debug|x64
+		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Release|x64.ActiveCfg = Release|x64
+		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Release|x64.Build.0 = Release|x64
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Debug|x64.ActiveCfg = Debug|x64
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Debug|x64.Build.0 = Debug|x64
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Release|Any CPU.Build.0 = Release|Any CPU
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Release|x64.ActiveCfg = Release|x64
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F96DB62C-7A3D-4B03-8BC4-F69CA151DA54}
+	EndGlobalSection
+EndGlobal

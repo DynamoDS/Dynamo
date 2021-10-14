@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\AnyCPU\Debug\</OutputPath>
+    <OutputPath>..\bin\AnyCPU\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -27,12 +27,20 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\AnyCPU\Release\</OutputPath>
+    <OutputPath>..\bin\AnyCPU\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamoCore">
+      <HintPath>..\..\..\bin\$(Platform)\$(Configuration)\DynamoCore.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PythonNodeModels">
+      <HintPath>..\..\..\bin\$(Platform)\$(Configuration)\PythonNodeModels.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,20 +52,9 @@
   <ItemGroup>
     <Compile Include="IronPythonExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+    <Compile Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
-      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
-      <Name>DynamoCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
-      <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
-      <Name>PythonNodeModels</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="IronPythonExtension_ExtensionDefinition.xml" />
