@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using Dynamo.Annotations;
 using Dynamo.Core;
 using Dynamo.PackageManager;
 using Greg.Responses;
@@ -15,6 +12,8 @@ namespace Dynamo.PackageDetails
     /// </summary>
     public class PackageDetailItem : NotificationObject
     {
+        #region Private Fields
+
         private PackageVersion packageVersion;
         private string packageVersionNumber;
         private string hosts;
@@ -22,6 +21,11 @@ namespace Dynamo.PackageDetails
         private List<string> packages;
         private bool canInstall;
         private string packageName;
+        private PackageLoader PackageLoader { get; }
+
+        #endregion
+
+        #region Public Properties
 
         /// <summary>
         /// A reference to the PackageVersion object, a response from the GregClient.
@@ -111,20 +115,20 @@ namespace Dynamo.PackageDetails
             }
         }
 
-        private PackageLoader PackageLoader { get; }
+        #endregion
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="packageName"></param>
-        /// <param name="packageLoader"></param>
         /// <param name="packageVersion"></param>
-        public PackageDetailItem(string packageName, PackageLoader packageLoader, PackageVersion packageVersion)
+        /// <param name="canInstall"></param>
+        public PackageDetailItem(string packageName, PackageVersion packageVersion, bool canInstall)
         {
             this.PackageName = packageName;
             this.PackageVersion = packageVersion;
             this.PackageVersionNumber = PackageVersion.version;
-            this.PackageLoader = packageLoader;
+            this.CanInstall = canInstall;
             
             // To avoid displaying package self-dependencies.
             // For instance, avoiding Clockwork showing that it depends on Clockwork.
@@ -132,11 +136,10 @@ namespace Dynamo.PackageDetails
                 .Select(x => x.name)
                 .Where(x => x != PackageName)
                 .ToList();
-            
+
             DetectDependencies();
-            DetectWhetherCanInstall();
         }
-        
+
         /// <summary>
         /// Reads the GregResponse collection of dependency information and sets values
         /// for PythonVersion and Hosts respectively.
@@ -146,7 +149,7 @@ namespace Dynamo.PackageDetails
             List<string> pythonEngineVersions = new List<string>();
             List<string> hostDependencies = new List<string>();
 
-            if(PackageVersion != null && PackageVersion.host_dependencies != null)
+            if (PackageVersion?.host_dependencies != null)
             {
                 foreach (string stringValue in PackageVersion.host_dependencies)
                 {
@@ -162,31 +165,8 @@ namespace Dynamo.PackageDetails
                 }
             }
 
-            PythonVersion = pythonEngineVersions.Count > 0 ? string.Join(", ", pythonEngineVersions) : "None";
-            Hosts = hostDependencies.Count > 0 ? string.Join(", ", hostDependencies) : "None";
-        }
-
-        /// <summary>
-        /// Detects whether this particular package and version is installed on the user's machine
-        /// using the PackageLoader.
-        /// </summary>
-        internal void DetectWhetherCanInstall()
-        {
-            // In order for CanInstall to be true, both the name and installed package version must match
-            // what is found in the PackageLoader.LocalPackages which are designated as 'Loaded'.
-            List<Package> sameNamePackages = PackageLoader
-                .LocalPackages
-                .Where(x => x.Name == PackageName)
-                .ToList();
-
-            if (sameNamePackages.Count < 1) CanInstall = true;
-            else
-            {
-                CanInstall = !sameNamePackages
-                    .Select(x => x.VersionName)
-                    .Contains(packageVersion.version);
-            }
-            RaisePropertyChanged(nameof(CanInstall));
+            PythonVersion = pythonEngineVersions.Count > 0 ? string.Join(", ", pythonEngineVersions) : Dynamo.Properties.Resources.NoneString;
+            Hosts = hostDependencies.Count > 0 ? string.Join(", ", hostDependencies) : Dynamo.Properties.Resources.NoneString;
         }
     }
 }

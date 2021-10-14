@@ -191,6 +191,7 @@
     <Compile Include="ViewExtensions\GraphMetadataViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\NodeAutoCompleteViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\NodeManipulatorExtensionTests.cs" />
+    <Compile Include="ViewExtensions\PackageDetailsViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\PythonMigrationViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\ViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\DocumentationBrowserViewExtensionTests.cs" />
@@ -299,6 +300,10 @@
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\PackageDetailsViewExtension\PackageDetailsViewExtension.csproj">
+      <Project>{12FB4DA4-7E9C-4C2E-91CD-1D0B523A9535}</Project>
+      <Name>PackageDetailsViewExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\PythonMigrationViewExtension\PythonMigrationViewExtension.csproj">
       <Project>{10af430d-0d3a-49ce-a63d-848912959745}</Project>

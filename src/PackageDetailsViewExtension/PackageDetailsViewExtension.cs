@@ -1,71 +1,62 @@
 ﻿using System.Linq;
 using Dynamo.PackageManager;
-using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.PackageDetails
 {
-    public class PackageDetailsViewExtension : IViewExtension
+    public class PackageDetailsViewExtension : ViewExtensionBase
     {
-        private const string EXTENSION_NAME = "Package Details";
-        private const string EXTENSION_GUID = "C71CA1B9-BF9F-425A-A12C-53DF56770406";
-
         internal PackageManagerExtension PackageManagerExtension { get; set; }
         internal PackageDetailsView PackageDetailsView { get; set; }
         internal PackageDetailsViewModel PackageDetailsViewModel { get; set; }
         internal PackageManagerClientViewModel packageManagerClientViewModel;
+        internal ViewLoadedParams ViewLoadedParamsReference { get; set; }
+        
+        public override string UniqueId => "C71CA1B9-BF9F-425A-A12C-53DF56770406";
 
-        internal DelegateCommand OpenPackageDetailsCommand { get; set; }
+        public override string Name => "Package Details";
 
-        private ViewLoadedParams viewLoadedParamsReference;
-        public string UniqueId => EXTENSION_GUID;
-        public string Name => EXTENSION_NAME;
-
-        public void Startup(ViewStartupParams viewStartupParams)
+        public override void Startup(ViewStartupParams viewStartupParams)
         {
             var packageManager = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             PackageManagerExtension = packageManager;
         }
 
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            viewLoadedParamsReference = viewLoadedParams;
+            ViewLoadedParamsReference = viewLoadedParams;
             viewLoadedParams.ViewExtensionOpenRequestWithParameter += OnViewExtensionOpenWithParameterRequest;
-            OpenPackageDetailsCommand = new DelegateCommand(OpenPackageDetails);
-
+            
             DynamoViewModel dynamoViewModel = viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel;
             packageManagerClientViewModel = dynamoViewModel.PackageManagerClientViewModel;
         }
 
-        private void OnViewExtensionOpenWithParameterRequest(string extensionName, object obj)
+        internal void OnViewExtensionOpenWithParameterRequest(string extensionName, object obj)
         {
-            if (extensionName != Name ||
-                !(obj is PackageManagerSearchElement packageManagerSearchElement)) return;
-
-            OpenPackageDetailsCommand.Execute(packageManagerSearchElement);
+            if (extensionName != Name || !(obj is PackageManagerSearchElement pmSearchElement)) return;
+            OpenPackageDetails(pmSearchElement);
         }
         
-        public void Shutdown()
+        internal void OpenPackageDetails(PackageManagerSearchElement packageManagerSearchElement)
         {
-            viewLoadedParamsReference.ViewExtensionOpenRequestWithParameter -= OnViewExtensionOpenWithParameterRequest;
-        }
-
-        public void Dispose()
-        {
-
-        }
-
-        private void OpenPackageDetails(object obj)
-        {
-            if (!(obj is PackageManagerSearchElement packageManagerSearchElement)) return;
-
             PackageDetailsViewModel = new PackageDetailsViewModel(this, packageManagerSearchElement);
             
-            if (PackageDetailsView == null) PackageDetailsView = new PackageDetailsView(PackageDetailsViewModel);
+            if (PackageDetailsView == null) PackageDetailsView = new PackageDetailsView();
             PackageDetailsView.DataContext = PackageDetailsViewModel;
 
-            viewLoadedParamsReference?.AddToExtensionsSideBar(this, PackageDetailsView);
+            ViewLoadedParamsReference?.AddToExtensionsSideBar(this, PackageDetailsView);
+        }
+        
+        public override void Dispose()
+        {
+            ViewLoadedParamsReference.ViewExtensionOpenRequestWithParameter -= OnViewExtensionOpenWithParameterRequest;
+        }
+
+        public override void Closed()
+        {
+            PackageDetailsViewModel = null;
+            PackageDetailsView = null;
         }
     }
 }

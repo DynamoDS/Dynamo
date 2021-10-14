@@ -4,30 +4,27 @@ using System.Linq;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.PackageManager;
-using Dynamo.PackageManager.ViewModels;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 
 namespace Dynamo.PackageDetails
 {
-    public class PackageDetailsViewModel : NotificationObject, IDisposable
+    public class PackageDetailsViewModel : NotificationObject
     {
         #region Private Fields
 
-        private List<PackageDetailItem> packageDetailItems;
+        private readonly PackageManagerClientViewModel packageManagerClientViewModel;
+        private IEnumerable<PackageDetailItem> packageDetailItems;
         private string license;
 
         #endregion
 
         #region Public Properties
-
-        public PackageLoader PackagerLoader { get; set; }
-        public PackageManagerClientViewModel PackageManagerClientViewModel { get; set; }
-
+        
         /// <summary>
         /// Stores a  collection of the PackageDetailItems.
         /// </summary>
-        public List<PackageDetailItem> PackageDetailItems
+        public IEnumerable<PackageDetailItem> PackageDetailItems
         {
             get => packageDetailItems;
             set
@@ -85,6 +82,11 @@ namespace Dynamo.PackageDetails
         /// </summary>
         public bool IsPackageDeprecated { get; }
 
+        /// <summary>
+        /// A reference to the ViewExtension.
+        /// </summary>
+        private PackageDetailsViewExtension PackageDetailsViewExtension { get; set; }
+
         #endregion
 
         #region Commands
@@ -96,22 +98,21 @@ namespace Dynamo.PackageDetails
         /// Retrieves a package by name and display its details in the PackageDetailsView.
         /// </summary>
         /// <param name="obj"></param>
-        public void OpenDependencyDetails(object obj)
+        private void OpenDependencyDetails(object obj)
         {
             if (!(obj is string stringValue)) return;
             
             PackageManagerSearchElement packageManagerSearchElement = GetPackageByName(stringValue);
             
             if (packageManagerSearchElement == null) return;
-
-            PackageDetailsViewExtension.OpenPackageDetailsCommand.Execute(packageManagerSearchElement);
+            PackageDetailsViewExtension.OpenPackageDetails(packageManagerSearchElement);
         }
 
         /// <summary>
         /// Attempts to retrieve a package by name and install it locally.
         /// </summary>
         /// <param name="obj"></param>
-        public void TryInstallPackageVersion(object obj)
+        private void TryInstallPackageVersion(object obj)
         {
             if (!(obj is string versionName)) return;
             PackageManagerSearchElement packageManagerSearchElement = GetPackageByName(PackageName);
@@ -124,9 +125,11 @@ namespace Dynamo.PackageDetails
         }
 
         /// <summary>
-        /// After installing a package version, the 
+        /// After installing a package version, this method sets the CanInstall flag to false for
+        /// that specific version only. A dynamic check would be better, but the package has not been
+        /// added to PackageLoader.LocalPackages by the end of the DownloadAndInstallPackage method.
         /// </summary>
-        public void RefreshPackageDetailItemInstalledStatus(string versionName)
+        private void RefreshPackageDetailItemInstalledStatus(string versionName)
         {
             foreach (PackageDetailItem packageDetailItem in PackageDetailItems)
             {
@@ -142,28 +145,25 @@ namespace Dynamo.PackageDetails
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public PackageManagerSearchElement GetPackageByName(string name)
+        private PackageManagerSearchElement GetPackageByName(string name)
         {
             List<PackageManagerSearchElement> packageManagerSearchElements;
 
             // Checking if there are any cached values.
-            if (PackageManagerClientViewModel.CachedPackageList != null &&
-                PackageManagerClientViewModel.CachedPackageList.Count > 0)
+            if (packageManagerClientViewModel.CachedPackageList != null &&
+                packageManagerClientViewModel.CachedPackageList.Count > 0)
             {
-                packageManagerSearchElements = PackageManagerClientViewModel.CachedPackageList;
+                packageManagerSearchElements = packageManagerClientViewModel.CachedPackageList;
             }
-            // If the cache is null or empty, we must call ListAll and await the results.
+            // If the cache is null or empty, we must call ListAll and wait for the results.
             else
             {
-                packageManagerSearchElements = PackageManagerClientViewModel.ListAll();
+                packageManagerSearchElements = packageManagerClientViewModel.ListAll();
             }
 
             return packageManagerSearchElements
                 .FirstOrDefault(x => x.Name == name);
         }
-
-        public PackageDetailsViewExtension PackageDetailsViewExtension { get; set; }
-
         #endregion
 
         /// <summary>
@@ -177,8 +177,8 @@ namespace Dynamo.PackageDetails
             PackageManagerSearchElement packageManagerSearchElement
         )
         {
-            PackagerLoader = packageDetailsViewExtension.PackageManagerExtension.PackageLoader;
-            PackageManagerClientViewModel = packageDetailsViewExtension.packageManagerClientViewModel;
+            PackageLoader packageLoader = packageDetailsViewExtension.PackageManagerExtension.PackageLoader;
+            packageManagerClientViewModel = packageDetailsViewExtension.packageManagerClientViewModel;
 
             // Reversing the versions, so they appear newest-first.
             PackageDetailItems = packageManagerSearchElement.Header.versions
@@ -187,10 +187,9 @@ namespace Dynamo.PackageDetails
                 .Select(x => new PackageDetailItem
                 (
                     packageManagerSearchElement.Name,
-                    packageDetailsViewExtension.PackageManagerExtension.PackageLoader,
-                    x
-                ))
-                .ToList();
+                    x,
+                    DetectWhetherCanInstall(packageLoader, x.version)
+                ));
 
             PackageName = packageManagerSearchElement.Name;
             PackageAuthorName = packageManagerSearchElement.Maintainers;
@@ -205,9 +204,27 @@ namespace Dynamo.PackageDetails
             OpenDependencyDetailsCommand = new DelegateCommand(OpenDependencyDetails);
             TryInstallPackageVersionCommand = new DelegateCommand(TryInstallPackageVersion);
         }
-        
-        public void Dispose()
+
+        /// <summary>
+        /// Detects whether the user can install a particular package at a particular version.
+        /// Checks whether this is already installed using the PackageLoader.
+        /// </summary>
+        private bool DetectWhetherCanInstall(PackageLoader packageLoader, string packageVersion)
         {
+            // In order for CanInstall to be false, both the name and installed package version must match
+            // what is found in the PackageLoader.LocalPackages which are designated as 'Loaded'.
+
+            List<Package> sameNamePackages = packageLoader
+                .LocalPackages
+                .Where(x => x.Name == PackageName)
+                .Where(x => x.LoadState.State == PackageLoadState.StateTypes.Loaded)
+                .ToList();
+
+            if (sameNamePackages.Count < 1) return true;
+
+            return !sameNamePackages
+                .Select(x => x.VersionName)
+                .Contains(packageVersion);
         }
     }
 }
