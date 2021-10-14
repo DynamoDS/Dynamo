@@ -15,6 +15,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using DynamoUtilities;
+using Dynamo.Logging;
 
 namespace Dynamo.WorkspaceDependency
 {

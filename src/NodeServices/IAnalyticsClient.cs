@@ -96,6 +96,11 @@ namespace Dynamo.Logging
         /// Events Category related to Workspace References Operations
         /// </summary>
         WorkspaceReferencesOperations,
+
+        /// <summary>
+        /// Events Category related to saved Workspace References
+        /// </summary>
+        WorkspaceReferences,
     }
 
     /// <summary>
@@ -251,6 +256,21 @@ namespace Dynamo.Logging
         /// KeepOldPackage event, choosing to keep the old package
         /// </summary>
         KeepOldPackage,
+
+        /// <summary>
+        /// PackageReferences event, when a package refrence is saved in a workspace
+        /// </summary>
+        PackageReferences,
+
+        /// <summary>
+        /// KeepOldPackage event, when a local refrence is saved in a workspace
+        /// </summary>
+        LocalReferences,
+
+        /// <summary>
+        /// KeepOldPackage event, when an external refrence is saved in a workspace
+        /// </summary>
+        ExternalReferences,
     }
 
     /// <summary>
