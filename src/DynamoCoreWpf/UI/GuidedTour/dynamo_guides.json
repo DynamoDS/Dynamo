@@ -177,7 +177,12 @@
 					"VerticalPopupOffset": -20,
 					"HorizontalPopupOffset": 85,
 					"HighlightColor": "#EF9362",
-					"HtmlPage": "learnPackages.html",
+					"HtmlPage": {
+						"FileName": "learnPackages.html",
+						"Resources": {
+							"#DynamoPackages_1_1": "DynamoPackages_1_1.png"
+						}
+					},
 					"HeightBoxDelta": 3
 				}
 			},

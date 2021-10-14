@@ -68,7 +68,7 @@ namespace Dynamo.Utilities
             return imageSource;
         }
 
-        public static string LoadContentFromResources(string name, Assembly localAssembly = null, bool injectDPI = true, bool removeScriptTags = true)
+        internal static string LoadContentFromResources(string name, Assembly localAssembly = null, bool injectDPI = true, bool removeScriptTags = true)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
@@ -254,5 +254,25 @@ namespace Dynamo.Utilities
             }
         }
 
+        internal static Stream LoadResourceByUrl(string url)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var textStream = assembly.GetManifestResourceStream(url);
+            return textStream;
+        }
+
+
+        internal static string ConvertToBase64(Stream stream)
+        {
+            byte[] bytes;
+            using (var memoryStream = new MemoryStream())
+            {
+                stream.CopyTo(memoryStream);
+                bytes = memoryStream.ToArray();
+            }
+
+            string base64 = Convert.ToBase64String(bytes);
+            return base64;
+        }
     }
 }
