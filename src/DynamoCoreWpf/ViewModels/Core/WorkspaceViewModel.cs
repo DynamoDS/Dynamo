@@ -916,10 +916,18 @@ namespace Dynamo.ViewModels
                     // if annotation is selected its children should be added to selection too
                     foreach (var m in n.Nodes)
                     {
+                        if (m is AnnotationModel nestedGroup)
+                        {
+                            foreach (var model in nestedGroup.Nodes)
+                            {
+                                selection.AddUnique(model);
+                            }
+                        }
                         selection.AddUnique(m);
                     }
                 }
-                else if (n.IsSelected)
+                else if (n.IsSelected &&
+                    !Model.Annotations.ContainsModel(n))
                 {
                     selection.Remove(n);
                 }
@@ -1029,16 +1037,36 @@ namespace Dynamo.ViewModels
                 }
                     break;
                 case "HorizontalLeft":
-                {
-                    var xAll = GetSelectionMinX();
-                    toAlign.ForEach((x) => { x.X = xAll; });
-                }
+                    {
+                        var xAll = GetSelectionMinX();
+                        toAlign.ForEach((x) =>
+                        {
+                            if (x is ConnectorPinModel pin)
+                            {
+                                x.X = xAll - ConnectorPinViewModel.OneThirdWidth;
+                            }
+                            else
+                            {
+                                x.X = xAll;
+                            }
+                        });
+                    }
                     break;
                 case "HorizontalRight":
-                {
-                    var xAll = GetSelectionMaxX();
-                    toAlign.ForEach((x) => { x.X = xAll - x.Width; });
-                }
+                    {
+                        var xAll = GetSelectionMaxX();
+                        toAlign.ForEach((x) =>
+                        {
+                            if (x is ConnectorPinModel pin)
+                            {
+                                x.X = xAll - ConnectorPinViewModel.OneThirdWidth * 4;
+                            }
+                            else
+                            {
+                                x.X = xAll - x.Width;
+                            }
+                        });
+                    }
                     break;
                 case "VerticalCenter":
                 {
@@ -1047,16 +1075,36 @@ namespace Dynamo.ViewModels
                 }
                     break;
                 case "VerticalTop":
-                {
-                    var yAll = GetSelectionMinY();
-                    toAlign.ForEach((x) => { x.Y = yAll; });
-                }
+                    {
+                        var yAll = GetSelectionMinY();
+                        toAlign.ForEach((x) =>
+                        {
+                            if (x is ConnectorPinModel pin)
+                            {
+                                x.Y = yAll + ConnectorPinViewModel.OneThirdWidth;
+                            }
+                            else
+                            {
+                                x.Y = yAll;
+                            }
+                        });
+                    }
                     break;
                 case "VerticalBottom":
-                {
-                    var yAll = GetSelectionMaxY();
-                    toAlign.ForEach((x) => { x.Y = yAll - x.Height; });
-                }
+                    {
+                        var yAll = GetSelectionMaxY();
+                        toAlign.ForEach((x) =>
+                        {
+                            if (x is ConnectorPinModel pin)
+                            {
+                                x.Y = yAll - ConnectorPinViewModel.OneThirdWidth*2;
+                            }
+                            else
+                            {
+                                x.Y = yAll - x.Height;
+                            }
+                        });
+                    }
                     break;
                 case "VerticalDistribute":
                 {

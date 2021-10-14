@@ -78,6 +78,7 @@ namespace Dynamo.ViewModels
         internal readonly PackageLoader packageLoader;
         internal LoadPackageParams loadPackageParams;
         private readonly CustomNodeManager customNodeManager;
+        private readonly List<string> packagePathsEnabled = new List<string>();
 
         public DelegateCommand AddPathCommand { get; private set; }
         public DelegateCommand DeletePathCommand { get; private set; }
@@ -247,22 +248,37 @@ namespace Dynamo.ViewModels
         private void CommitChanges(object param)
         {
             var newpaths = CommitRootLocations();
+            IEnumerable<string> additionalPaths = new List<string>();
             //if paths are modified, reload packages and update prefs.
             if (!PreferenceSettings.CustomPackageFolders.SequenceEqual(newpaths))
             {
-                loadPackageParams.NewPaths = newpaths.Except(PreferenceSettings.CustomPackageFolders);
+                additionalPaths = newpaths.Except(PreferenceSettings.CustomPackageFolders);
                 PreferenceSettings.CustomPackageFolders = newpaths;
                 if (packageLoader != null)
                 {
-                    packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+                    packageLoader.LoadCustomNodesAndPackages(additionalPaths, PreferenceSettings, customNodeManager);
                 }
             }
+            // Load packages from paths enabled by disable-path toggles if they are not already loaded.
+            if (packageLoader != null && packagePathsEnabled.Any())
+            {
+                var newPaths = packagePathsEnabled.Except(additionalPaths);
+                packageLoader.LoadCustomNodesAndPackages(newPaths, PreferenceSettings, customNodeManager);
+            }
+            packagePathsEnabled.Clear();
         }
 
         internal void SetPackagesScheduledState(string packagePath, bool packagePathDisabled)
         {
             var loadedPackages = packageLoader.LocalPackages.Where(x => x.LoadState.State == PackageLoadState.StateTypes.Loaded);
             var packagesInPath = loadedPackages.Where(x => x.RootDirectory.StartsWith(packagePath));
+
+            // If there are no packages loaded from packagePath and the toggle is turned off
+            // packages need to be loaded from packagePath once preferences dialog is closed.
+            if (!packagesInPath.Any() && !packagePathDisabled)
+            {
+                packagePathsEnabled.Add(packagePath);
+            }
 
             foreach (var pkg in packagesInPath)
             {
