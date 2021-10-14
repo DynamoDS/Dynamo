@@ -29,5 +29,10 @@ namespace Dynamo.PackageDetails
             var parent = ((Control)sender).Parent as UIElement;
             parent?.RaiseEvent(eventArg);
         }
+
+        private void FrameworkElement_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            MainScrollViewer.ScrollToTop();
+        }
     }
 }

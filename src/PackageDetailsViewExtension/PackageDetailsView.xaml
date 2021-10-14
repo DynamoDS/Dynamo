@@ -129,7 +129,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Background="#535353">
-        <ScrollViewer Margin="17px" VerticalScrollBarVisibility="Visible">
+        <ScrollViewer Name="MainScrollViewer" DataContextChanged="FrameworkElement_OnDataContextChanged" Margin="17px" VerticalScrollBarVisibility="Visible">
 
             <!--  Contains Everything  -->
             <StackPanel Name="MainStackPanel">
