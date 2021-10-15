@@ -128,19 +128,25 @@ namespace DynamoUnits
         public static List<Quantity> CovertQuantityDictionaryToList(
             Dictionary<string, ForgeUnitsCLR.Quantity> forgeDictionary)
         {
-            var dynQauntities = new List<Quantity>();
+            var dynQuantities = new List<Quantity>();
+
+            if (!forgeDictionary.Any())
+            {
+                return dynQuantities;
+            }
+
             var values = forgeDictionary.Values.ToArray();
             for (int i = 0; i < values.Length - 1; i++)
             {
                 if (TypeIdShortName(values[i].getTypeId()).Equals(TypeIdShortName(values[i + 1].getTypeId())))
                     continue;
 
-                dynQauntities.Add(new Quantity(values[i]));
+                dynQuantities.Add(new Quantity(values[i]));
             }
 
-            dynQauntities.Add(new Quantity(values.Last()));
+            dynQuantities.Add(new Quantity(values.Last()));
 
-            return dynQauntities;
+            return dynQuantities;
         }
 
         [IsVisibleInDynamoLibrary(false)]
@@ -148,6 +154,12 @@ namespace DynamoUnits
             Dictionary<string, ForgeUnitsCLR.Symbol> forgeDictionary)
         {
             var dynSymbols = new List<Symbol>();
+
+            if (!forgeDictionary.Any())
+            {
+                return dynSymbols;
+            }
+
             var values = forgeDictionary.Values.ToArray();
             for (int i = 0; i < values.Length - 1; i++)
             {
@@ -167,6 +179,12 @@ namespace DynamoUnits
             Dictionary<string, ForgeUnitsCLR.Unit> forgeDictionary)
         {
             var dynUnits = new List<Unit>();
+
+            if (!forgeDictionary.Any())
+            {
+                return dynUnits;
+            }
+
             var values = forgeDictionary.Values.ToArray();
             for (int i = 0; i < values.Length - 1; i++)
             {
