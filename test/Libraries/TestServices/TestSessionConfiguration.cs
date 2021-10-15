@@ -18,8 +18,8 @@ namespace TestServices
         private const string CONFIG_FILE_NAME = "TestServices.dll.config";
         private  List<Version> supportedLibGVersions = new List<Version>
                 {
+                    new Version(228,0,0),
                     new Version(227,0,0),
-                    new Version(226,0,0),
                 };
 
         public string DynamoCorePath { get; private set; }

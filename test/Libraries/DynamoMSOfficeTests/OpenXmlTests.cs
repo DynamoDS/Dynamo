@@ -11,6 +11,7 @@ using ProtoCore.Mirror;
 namespace DynamoMSOfficeTests
 {
     [TestFixture]
+    [RequiresSTA]
     public class OpenXmlTests : DynamoViewModelUnitTest
     {
         protected override void GetLibrariesToPreload(List<string> libraries)

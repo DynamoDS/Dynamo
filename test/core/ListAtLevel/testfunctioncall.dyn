@@ -1,0 +1,245 @@
+{
+  "Uuid": "3a635bf8-9bad-49d4-a860-464d77cd8ce7",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "testfunctioncall",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Geometry": {
+        "Key": "Autodesk.DesignScript.Geometry.Geometry",
+        "Value": "ProtoGeometry.dll"
+      },
+      "List": {
+        "Key": "List",
+        "Value": "BuiltIn.ds"
+      },
+      "DSCore.Data.List": {
+        "Key": "DSCore.Data",
+        "Value": "DSCoreNodes.dll"
+      },
+      "DSCore.Data": {
+        "Key": "DSCore.Data",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "t3 = DSCore.List.RemoveItemAtIndex(l2,\nDSCore.List.Cycle(l1, num)@L1<1>);",
+      "Id": "65698898ba9b4ae7bd8cba0ca6da699a",
+      "Inputs": [
+        {
+          "Id": "2101bd2880504e759126a0c78af67f3b",
+          "Name": "l2",
+          "Description": "l2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fdc3f87efea340afacfadde6e5b05184",
+          "Name": "l1",
+          "Description": "l1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5a976dbe8c634abfa4feedd3b3b22974",
+          "Name": "num",
+          "Description": "num",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "edd66f972d764946b7c87374937de39e",
+          "Name": "",
+          "Description": "t3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "b3cd769e0f9d4b4fac8653a07edaba24",
+      "Inputs": [
+        {
+          "Id": "84ecbb1bb1e84317bba366e0d4ce1749",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ebc5338f635143f6b99737ec5845712d",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "l1 = [[1,2],[3,4]];\nl2 = [[5,6],[7,8]];\nnum = 1;",
+      "Id": "792e3a41ef644c5ebd1aa68f436577c2",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9f06903f9fb64852995f78a4cca0629f",
+          "Name": "",
+          "Description": "l1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fed6b2bbb75e44199bb8e03b38d8d43d",
+          "Name": "",
+          "Description": "l2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d59d9f5c469647bf82040a0b536f9119",
+          "Name": "",
+          "Description": "num",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "edd66f972d764946b7c87374937de39e",
+      "End": "84ecbb1bb1e84317bba366e0d4ce1749",
+      "Id": "abeb16ffd7ff49e897d470daf2710f1d"
+    },
+    {
+      "Start": "9f06903f9fb64852995f78a4cca0629f",
+      "End": "fdc3f87efea340afacfadde6e5b05184",
+      "Id": "ff4b6b42c1c44a4684e9db0a05fbce75"
+    },
+    {
+      "Start": "fed6b2bbb75e44199bb8e03b38d8d43d",
+      "End": "2101bd2880504e759126a0c78af67f3b",
+      "Id": "6a48824aba1a4e318f07d192c6462469"
+    },
+    {
+      "Start": "d59d9f5c469647bf82040a0b536f9119",
+      "End": "5a976dbe8c634abfa4feedd3b3b22974",
+      "Id": "f8ea3f9bd9704026a353c00c054a7b1b"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.0.2066",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "65698898ba9b4ae7bd8cba0ca6da699a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 406.0,
+        "Y": 181.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "b3cd769e0f9d4b4fac8653a07edaba24",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 940.0,
+        "Y": 177.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "792e3a41ef644c5ebd1aa68f436577c2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 99.0,
+        "Y": 182.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
