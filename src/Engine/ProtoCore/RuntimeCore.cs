@@ -15,18 +15,15 @@ namespace ProtoCore
     public class InterpreterProperties
     {
         public GraphNode executingGraphNode { get; set; }
-        public List<GraphNode> nodeIterations { get; }
+        public List<GraphNode> nodeIterations { get; set; }
 
-        public List<StackValue> functionCallArguments { get; }
-        public List<StackValue> functionCallDotCallDimensions { get; }
+        public List<StackValue> functionCallArguments { get; set; }
+        public List<StackValue> functionCallDotCallDimensions { get; set; }
         public DominantListStructure DominantStructure { get; set; }
 
         public InterpreterProperties()
         {
-            executingGraphNode = null;
-            nodeIterations = new List<GraphNode>();
-            functionCallArguments = new List<StackValue>();
-            functionCallDotCallDimensions = new List<StackValue>();
+            Reset();
         }
 
         public InterpreterProperties(InterpreterProperties rhs)
@@ -41,9 +38,9 @@ namespace ProtoCore
         public void Reset()
         {
             executingGraphNode = null;
-            nodeIterations.Clear();
-            functionCallArguments.Clear();
-            functionCallDotCallDimensions.Clear();
+            nodeIterations = new List<GraphNode>();
+            functionCallArguments = new List<StackValue>();
+            functionCallDotCallDimensions = new List<StackValue>();
         }
     }
 

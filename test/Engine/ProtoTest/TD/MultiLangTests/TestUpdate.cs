@@ -2939,7 +2939,7 @@ r = bar();
             thisTest.Verify("q", 1);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Category("SmokeTest")]
         public void T72_Cyclic_globalvariable_1467439()
         {
@@ -2960,7 +2960,7 @@ b = 0;
             thisTest.Verify("a", 1);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Category("SmokeTest")]
         public void T73_Cyclic_globalvariable_1467439()
         {
