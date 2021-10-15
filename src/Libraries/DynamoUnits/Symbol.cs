@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace DynamoUnits
 {
@@ -27,7 +28,7 @@ namespace DynamoUnits
         /// <summary>
         /// Returns the string representation of thi Symbol.
         /// </summary>
-        public string Text => forgePrefixOrSuffix != null ? forgePrefixOrSuffix.getText() : "";
+        public string Text => forgePrefixOrSuffix != null ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(forgePrefixOrSuffix.getText())) : "";
 
         /// <summary>
         /// 
@@ -66,12 +67,12 @@ namespace DynamoUnits
         public static string StringifyDecimal(double value, int precision, Symbol symbol,
             bool removeTrailingZeros)
         {
-            return Utilities.ForgeUnitsEngine.stringifyFixedPoint(value, (byte)precision, symbol.TypeId,
-                removeTrailingZeros);
+            return Encoding.UTF8.GetString(Encoding.Default.GetBytes(Utilities.ForgeUnitsEngine.stringifyFixedPoint(value, (byte)precision, symbol.TypeId,
+                removeTrailingZeros)));
         }
 
         /// <summary>
-        /// Returns the string expression of a fraction value..
+        /// Returns the string expression of a fraction value.
         /// </summary>
         /// <param name="value"></param>
         /// <param name="precision"></param>
@@ -79,7 +80,7 @@ namespace DynamoUnits
         /// <returns></returns>
         public static string StringifyFraction(double value, int precision, Symbol symbol)
         {
-            return Utilities.ForgeUnitsEngine.stringifyFraction(value, (byte)precision, symbol.TypeId);
+            return Encoding.UTF8.GetString(Encoding.Default.GetBytes(Utilities.ForgeUnitsEngine.stringifyFraction(value, (byte)precision, symbol.TypeId)));
         }
 
         public override string ToString()

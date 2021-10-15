@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using DSCore;
 using CoreNodeModels;
@@ -700,7 +701,7 @@ namespace UnitsUI
         private string SymbolDisplayText(ForgeUnitsCLR.Symbol symbol)
         {
             var symbolStr = symbol.getUnit().getName() + ": ";
-            var symbolTxt = symbol.getPrefixOrSuffix() != null ? symbol.getPrefixOrSuffix().getText() : "";
+            var symbolTxt = symbol.getPrefixOrSuffix() != null ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(symbol.getPrefixOrSuffix().getText())) : "";
 
             return symbolStr + symbolTxt;
         }
