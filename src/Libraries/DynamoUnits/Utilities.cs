@@ -28,33 +28,6 @@ namespace DynamoUnits
         }
 
         /// <summary>
-        /// Format used for display of numbers within Dynamo UI
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public static string DisplayPrecisionFormat { get; set; } = "f4";
-
-        /// <summary>
-        /// This enum enables quick selection of value (string representation) formatting. It also enables us to add
-        /// additional formats should they be needed.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public enum NumberFormat
-        {
-            /// <summary>
-            /// 
-            /// </summary>
-            None = 0,
-            /// <summary>
-            /// 
-            /// </summary>
-            Decimal = 1,
-            /// <summary>
-            /// 
-            /// </summary>
-            Fraction = 2
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="value"></param>

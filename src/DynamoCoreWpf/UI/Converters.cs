@@ -1638,9 +1638,9 @@ namespace Dynamo.Controls
             double dbl;
             if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
             {
-                return (dbl.ToString(DynamoUnits.Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture));
+                return (dbl.ToString(DynamoUnits.Display.PrecisionFormat, CultureInfo.InvariantCulture));
             }
-            return value ?? 0.ToString(DynamoUnits.Utilities.DisplayPrecisionFormat);
+            return value ?? 0.ToString(DynamoUnits.Display.PrecisionFormat);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

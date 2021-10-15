@@ -703,28 +703,28 @@ namespace DynamoUnits
             switch (unit)
             {
                 case LengthUnit.Millimeter:
-                    return (_value * ToMillimeter).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + MILLIMETERS;
+                    return (_value * ToMillimeter).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + MILLIMETERS;
 
                 case LengthUnit.Centimeter:
-                    return (_value * ToCentimeter).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + CENTIMETERS;
+                    return (_value * ToCentimeter).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CENTIMETERS;
 
                 case LengthUnit.Meter:
-                    return _value.ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + METERS;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + METERS;
 
                 case LengthUnit.DecimalInch:
-                    return (_value * ToInch).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + INCHES;
+                    return (_value * ToInch).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + INCHES;
 
                 case LengthUnit.FractionalInch:
                     return Utils.ToFractionalInches(_value * ToInch);
 
                 case LengthUnit.DecimalFoot:
-                    return (_value * ToFoot).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + FEET;
+                    return (_value * ToFoot).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + FEET;
 
                 case LengthUnit.FractionalFoot:
                     return Utils.ToFeetAndDecimalInches(_value * ToFoot);
 
                 default:
-                    return _value.ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + METERS;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + METERS;
             }
         }
 
@@ -1073,22 +1073,22 @@ namespace DynamoUnits
             switch (unit)
             {
                 case AreaUnit.SquareMillimeter:
-                    return (_value*ToSquareMillimeters).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_MILLIMETERS;
+                    return (_value*ToSquareMillimeters).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_MILLIMETERS;
 
                 case AreaUnit.SquareCentimeter:
-                    return (_value*ToSquareCentimeters).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_CENTIMETERS;
+                    return (_value*ToSquareCentimeters).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_CENTIMETERS;
 
                 case AreaUnit.SquareMeter:
-                    return _value.ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_METERS;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_METERS;
 
                 case AreaUnit.SquareInch:
-                    return (_value * ToSquareInch).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_INCHES;
+                    return (_value * ToSquareInch).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_INCHES;
 
                 case AreaUnit.SquareFoot:
-                    return (_value * ToSquareFoot).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_FEET;
+                    return (_value * ToSquareFoot).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_FEET;
 
                 default:
-                    return _value.ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_METERS;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_METERS;
             }
         }
 
@@ -1427,22 +1427,22 @@ namespace DynamoUnits
             switch (unit)
             {
                 case VolumeUnit.CubicMillimeter:
-                    return (_value * ToCubicMillimeter).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_MILLIMETERS;
+                    return (_value * ToCubicMillimeter).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_MILLIMETERS;
 
                 case VolumeUnit.CubicCentimeter:
-                    return (_value * ToCubicCentimeter).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_CENTIMETERS;
+                    return (_value * ToCubicCentimeter).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_CENTIMETERS;
 
                 case VolumeUnit.CubicMeter:
-                    return _value.ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_METERS;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_METERS;
 
                 case VolumeUnit.CubicInch:
-                    return (_value * ToCubicInch).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_INCHES;
+                    return (_value * ToCubicInch).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_INCHES;
 
                 case VolumeUnit.CubicFoot:
-                    return (_value * ToCubicFoot).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_FEET;
+                    return (_value * ToCubicFoot).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_FEET;
 
                 default:
-                    return _value.ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_METERS;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_METERS;
             }
         }
 
@@ -1681,15 +1681,15 @@ namespace DynamoUnits
             switch (InsolationUnit)
             {
                 case InsolationUnit.WattHoursPerMeterSquared:
-                    return _value.ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + WATT_HOURS_PER_SQUARE_METER;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + WATT_HOURS_PER_SQUARE_METER;
 
                 case InsolationUnit.KilowattHoursPerMeterSquared:
-                    return (_value * ToKwhMeter2).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + KILLOWATT_HOURS_PER_SQUARE_METER;
+                    return (_value * ToKwhMeter2).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + KILLOWATT_HOURS_PER_SQUARE_METER;
 
                 case InsolationUnit.BTUPerFootSquared:
-                    return (_value * ToBTUFoot2).ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + BTU_PER_SQUARE_FOOT;
+                    return (_value * ToBTUFoot2).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + BTU_PER_SQUARE_FOOT;
                 default:
-                    return _value.ToString(Utilities.DisplayPrecisionFormat, CultureInfo.InvariantCulture) + WATT_HOURS_PER_SQUARE_METER;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + WATT_HOURS_PER_SQUARE_METER;
             }
         }
     }
