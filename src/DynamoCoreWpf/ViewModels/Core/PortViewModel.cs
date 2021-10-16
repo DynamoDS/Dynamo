@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
@@ -8,24 +10,30 @@ using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
+    /// <summary>
+    /// Port View Model
+    /// </summary>
     public partial class PortViewModel : ViewModelBase
     {
-
         #region Properties/Fields
 
-        private readonly PortModel _port;
-        private readonly NodeViewModel _node;
-        private DelegateCommand _useLevelsCommand;
-        private DelegateCommand _keepListStructureCommand;
+        protected readonly PortModel port;
+        protected readonly NodeViewModel node;
+        private DelegateCommand useLevelsCommand;
+        private DelegateCommand keepListStructureCommand;
+        private bool showUseLevelMenu;
         private const double autocompletePopupSpacing = 2.5;
         internal bool inputPortDisconnectedByConnectCommand = false;
-
+        protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
+        protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
+        private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
+        private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;
         /// <summary>
         /// Port model.
         /// </summary>
         public PortModel PortModel
         {
-            get { return _port; }
+            get { return port; }
         }
 
         /// <summary>
@@ -33,7 +41,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string ToolTipContent
         {
-            get { return _port.ToolTip; }
+            get { return port.ToolTip; }
         }
 
         /// <summary>
@@ -41,7 +49,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string PortName
         {
-            get { return _port.Name; }
+            get { return GetPortDisplayName(port.Name); }
         }
 
         /// <summary>
@@ -49,15 +57,16 @@ namespace Dynamo.ViewModels
         /// </summary>
         public PortType PortType
         {
-            get { return _port.PortType; }
+            get { return port.PortType; }
         }
-        
+
+
         /// <summary>
         /// If port is selected.
         /// </summary>
         public bool IsSelected
         {
-            get { return _node.IsSelected; }
+            get { return node.IsSelected; }
         }
 
         /// <summary>
@@ -65,7 +74,19 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsConnected
         {
-            get { return _port.Owner.InPorts[_port.Index].IsConnected; }
+            get => port.IsConnected;
+        }
+
+        /// <summary>
+        /// Sets the condensed styling on Code Block output ports.
+        /// This is used to style the output ports on Code Blocks to be smaller.
+        /// </summary>
+        public bool IsPortCondensed
+        {
+            get
+            {
+                return this.PortModel.Owner is CodeBlockNodeModel && PortType == PortType.Output;
+            }
         }
 
         /// <summary>
@@ -73,7 +94,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsEnabled
         {
-            get { return _port.IsEnabled; }
+            get { return port.IsEnabled; }
         }
 
         /// <summary>
@@ -81,7 +102,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public double Height
         {
-            get { return _port.Height; }
+            get { return port.Height; }
         }
 
         /// <summary>
@@ -89,7 +110,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public Point Center
         {
-            get { return _port.Center.AsWindowsType(); }
+            get { return port.Center.AsWindowsType(); }
         }
 
         /// <summary>
@@ -97,24 +118,29 @@ namespace Dynamo.ViewModels
         /// </summary>
         public ElementState State
         {
-            get { return _node.State; }    
+            get { return node.State; }
         }
 
         /// <summary>
-        /// If should use default value on this port.
+        /// Returns whether this port has a default value that can be used.
         /// </summary>
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
         public bool DefaultValueEnabled
         {
-            get { return _port.DefaultValue != null; }
+            get { return port.DefaultValue != null; }
         }
-
+        
         /// <summary>
-        /// If default value is being used on this port.
+        /// Returns whether the port is using its default value, or whether this been disabled
         /// </summary>
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
         public bool UsingDefaultValue
         {
-            get { return _port.UsingDefaultValue; }
-            set { _port.UsingDefaultValue = value; }
+            get { return port.UsingDefaultValue; }
+            set
+            {
+                port.UsingDefaultValue = value;
+            }
         }
 
         /// <summary>
@@ -126,7 +152,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsHitTestVisible
         {
-            get { return _node.WorkspaceViewModel.FirstActiveConnector != null; }
+            get { return node.WorkspaceViewModel.FirstActiveConnector != null; }
         }
 
         /// <summary>
@@ -134,51 +160,53 @@ namespace Dynamo.ViewModels
         /// </summary>
         public System.Windows.Thickness MarginThickness
         {
-            get { return _port.MarginThickness.AsWindowsType(); }
+            get { return port.MarginThickness.AsWindowsType(); }
         }
 
         public PortEventType EventType { get; set; }
 
-        private bool _showUseLevelMenu;
-
         /// <summary>
         /// If should display Use Levels popup menu. 
         /// </summary>
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
         public bool ShowUseLevelMenu
         {
             get
             {
-                return _showUseLevelMenu;
+                return showUseLevelMenu;
             }
             set
             {
-                _showUseLevelMenu = value;
-                RaisePropertyChanged("ShowUseLevelMenu");
+                showUseLevelMenu = value;
+                RaisePropertyChanged(nameof(ShowUseLevelMenu));
             }
         }
 
         /// <summary>
         /// If UseLevel is enabled on this port.
         /// </summary>
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
         public bool UseLevels
         {
-            get { return _port.UseLevels; }
+            get { return port.UseLevels; }
         }
 
         /// <summary>
         /// If should keep list structure on this port.
         /// </summary>
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
         public bool ShouldKeepListStructure
         {
-            get { return _port.KeepListStructure; }
+            get { return port.KeepListStructure; }
         }
 
         /// <summary>
         /// Levle of list.
         /// </summary>
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
         public int Level
         {
-            get { return _port.Level; }
+            get { return port.Level; }
             set
             {
                 ChangeLevel(value);
@@ -188,11 +216,12 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The visibility of Use Levels menu.
         /// </summary>
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
         public Visibility UseLevelVisibility
         {
             get
             {
-                if (_node.ArgumentLacing != LacingStrategy.Disabled && PortType == PortType.Input)
+                if (node.ArgumentLacing != LacingStrategy.Disabled)
                 {
                     return Visibility.Visible;
                 }
@@ -202,6 +231,40 @@ namespace Dynamo.ViewModels
                 }
             }
         }
+
+        internal NodeViewModel NodeViewModel
+        {
+            get => node;
+        }
+        
+        /// <summary>
+        /// Sets the color of the port's border brush
+        /// </summary>
+        public SolidColorBrush PortBorderBrushColor
+        {
+            get => portBorderBrushColor;
+            set
+            {
+                portBorderBrushColor = value;
+                RaisePropertyChanged(nameof(PortBorderBrushColor));
+            }
+        }
+
+        /// <summary>
+        /// Sets the color of the port's background - affected by multiple factors such as
+        /// MouseOver, IsConnected, Node States (active, inactie, frozen 
+        /// </summary>
+        public SolidColorBrush PortBackgroundColor
+        {
+            get => portBackgroundColor;
+            set
+            {
+                portBackgroundColor = value;
+                RaisePropertyChanged(nameof(PortBackgroundColor));
+            }
+        }
+
+        internal bool IsProxyPort { get; set; } = false;
 
         #endregion
 
@@ -214,19 +277,26 @@ namespace Dynamo.ViewModels
 
         public PortViewModel(NodeViewModel node, PortModel port)
         {
-            _node = node;
-            _port = port;
+            this.node = node;
+            this.port = port;
 
-            _port.PropertyChanged += _port_PropertyChanged;
-            _node.PropertyChanged += _node_PropertyChanged;
-            _node.WorkspaceViewModel.PropertyChanged += Workspace_PropertyChanged;
+            this.port.PropertyChanged += PortPropertyChanged;
+            this.node.PropertyChanged += NodePropertyChanged;
+            this.node.WorkspaceViewModel.PropertyChanged += WorkspacePropertyChanged;
+
+            RefreshPortColors();
         }
 
         public override void Dispose()
         {
-            _port.PropertyChanged -= _port_PropertyChanged;
-            _node.PropertyChanged -= _node_PropertyChanged;
-            _node.WorkspaceViewModel.PropertyChanged -= Workspace_PropertyChanged;
+            port.PropertyChanged -= PortPropertyChanged;
+            node.PropertyChanged -= NodePropertyChanged;
+            node.WorkspaceViewModel.PropertyChanged -= WorkspacePropertyChanged;
+        }
+
+        internal virtual PortViewModel CreateProxyPortViewModel(PortModel portModel)
+        {
+            return new PortViewModel(node, portModel){IsProxyPort = true};
         }
 
         /// <summary>
@@ -235,16 +305,16 @@ namespace Dynamo.ViewModels
         /// <param name="popup">Node autocomplete popup.</param>
         internal void SetupNodeAutocompleteWindowPlacement(Popup popup)
         {
-            _node.OnRequestAutoCompletePopupPlacementTarget(popup);
+            node.OnRequestAutoCompletePopupPlacementTarget(popup);
             popup.CustomPopupPlacementCallback = PlaceAutocompletePopup;
         }
 
         private CustomPopupPlacement[] PlaceAutocompletePopup(Size popupSize, Size targetSize, Point offset)
         {
-            var zoom = _node.WorkspaceViewModel.Zoom;
+            var zoom = node.WorkspaceViewModel.Zoom;
 
             double x;
-            var scaledSpacing = autocompletePopupSpacing * targetSize.Width / _node.ActualWidth;
+            var scaledSpacing = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
             if (PortModel.PortType == PortType.Input)
             {
                 // Offset popup to the left by its width from left edge of node and spacing.
@@ -257,149 +327,121 @@ namespace Dynamo.ViewModels
             }
             // Offset popup down from the upper edge of the node by the node header and corresponding to the respective port.
             // Scale the absolute heights by the target height (passed to the callback) and the actual height of the node.
-            var scaledHeight = targetSize.Height / _node.ActualHeight;
+            var scaledHeight = targetSize.Height / node.ActualHeight;
             var absoluteHeight = NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
             var y = absoluteHeight * scaledHeight;
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
 
-            return new[] { placement }; 
+            return new[] { placement };
         }
 
-        private void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void WorkspacePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
                 case "ActiveConnector":
-                    RaisePropertyChanged("IsHitTestVisible");
+                    RaisePropertyChanged(nameof(IsHitTestVisible));
+                    break;
+                default:
                     break;
             }
         }
 
-        void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void NodePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case "IsSelected":
-                    RaisePropertyChanged("IsSelected");
+                case nameof(IsSelected):
+                    RaisePropertyChanged(nameof(IsSelected));
                     break;
-                case "State":
-                    RaisePropertyChanged("State");
+                case nameof(State):
+                    RaisePropertyChanged(nameof(State));
                     break;
-                case "ToolTipContent":
-                    RaisePropertyChanged("ToolTipContent");
+                case nameof(ToolTipContent):
+                    RaisePropertyChanged(nameof(ToolTipContent));
                     break;
             }
         }
 
-        void _port_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void PortPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
                 case "ToolTip":
-                    RaisePropertyChanged("ToolTipContent");
+                    RaisePropertyChanged(nameof(ToolTipContent));
                     break;
-                case "PortType":
-                    RaisePropertyChanged("PortType");
+                case nameof(PortType):
+                    RaisePropertyChanged(nameof(PortType));
                     break;
-                case "PortName":
-                    RaisePropertyChanged("PortName");
+                case nameof(PortName):
+                    RaisePropertyChanged(nameof(PortName));
                     break;
-                case "IsConnected":
-                    RaisePropertyChanged("IsConnected");
+                case nameof(IsConnected):
+                    RaisePropertyChanged(nameof(IsConnected));
+                    RefreshPortColors();
                     break;
-                case "IsEnabled":
-                    RaisePropertyChanged("IsEnabled");
+                case nameof(IsEnabled):
+                    RaisePropertyChanged(nameof(IsEnabled));
                     break;
-                case "Center":
-                    RaisePropertyChanged("Center");
+                case nameof(Center):
+                    RaisePropertyChanged(nameof(Center));
                     break;
-                case "DefaultValue":
-                    RaisePropertyChanged("DefaultValue");
-                    break;
-                case "UsingDefaultValue":
-                    RaisePropertyChanged("UsingDefaultValue");
-                    break;
-                case "MarginThickness":
-                    RaisePropertyChanged("MarginThickness");
-                    break;
-                case "UseLevels":
-                    RaisePropertyChanged("UseLevels");
-                    break;
-                case "Level":
-                    RaisePropertyChanged("Level");
-                    break;
-                case "KeepListStructure":
-                    RaisePropertyChanged("ShouldKeepListStructure");
+                case nameof(MarginThickness):
+                    RaisePropertyChanged(nameof(MarginThickness));
                     break;
             }
-            
         }
 
         /// <summary>
         /// UseLevels command
         /// </summary>
-        public DelegateCommand UseLevelsCommand 
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
+        public DelegateCommand UseLevelsCommand
         {
             get
             {
-                if (_useLevelsCommand == null)
+                if (useLevelsCommand == null)
                 {
-                    _useLevelsCommand = new DelegateCommand(UseLevel, p => true);
+                    useLevelsCommand = new DelegateCommand(null, p => true);
                 }
-                return _useLevelsCommand;
+                return useLevelsCommand;
             }
-        }
-
-        private void UseLevel(object parameter)
-        {
-            var useLevel = (bool)parameter;
-            var command = new DynamoModel.UpdateModelValueCommand(
-                Guid.Empty, _node.NodeLogic.GUID, "UseLevels", string.Format("{0}:{1}", _port.Index, useLevel));
-
-            _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
 
         /// <summary>
         /// ShouldKeepListStructure command
         /// </summary>
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
         public DelegateCommand KeepListStructureCommand
         {
             get
             {
-                if (_keepListStructureCommand == null)
+                if (keepListStructureCommand == null)
                 {
-                    _keepListStructureCommand = new DelegateCommand(KeepListStructure, p => true);
+                    keepListStructureCommand = new DelegateCommand(null, p => true);
                 }
-                return _keepListStructureCommand;
+                return keepListStructureCommand;
             }
         }
 
-        private void KeepListStructure(object parameter)
-        {
-            bool keepListStructure = (bool)parameter;
-            var command = new DynamoModel.UpdateModelValueCommand(
-                Guid.Empty, _node.NodeLogic.GUID, "KeepListStructure", string.Format("{0}:{1}", _port.Index, keepListStructure));
-
-            _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
-        }
-
+        //Todo remove in 2.13
         private void ChangeLevel(int level)
         {
             var command = new DynamoModel.UpdateModelValueCommand(
-                            Guid.Empty, _node.NodeLogic.GUID, "ChangeLevel", string.Format("{0}:{1}", _port.Index, level));
+                Guid.Empty, node.NodeLogic.GUID, "ChangeLevel", string.Format("{0}:{1}", port.Index, level));
 
-            _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+            node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
-
+        
         private void Connect(object parameter)
         {
-            DynamoViewModel dynamoViewModel = this._node.DynamoViewModel;
+            DynamoViewModel dynamoViewModel = this.node.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
             workspaceViewModel.HandlePortClicked(this);
         }
 
-        private bool CanConnect(object parameter)
+        protected bool CanConnect(object parameter)
         {
             return true;
         }
@@ -407,7 +449,7 @@ namespace Dynamo.ViewModels
         // Handler to invoke node Auto Complete
         private void AutoComplete(object parameter)
         {
-            var wsViewModel = _node.WorkspaceViewModel;
+            var wsViewModel = node.WorkspaceViewModel;
             wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 
             // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
@@ -423,9 +465,15 @@ namespace Dynamo.ViewModels
 
         private bool CanAutoComplete(object parameter)
         {
-            DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
-            // If the feature is enabled from Dynamo experiment setting and if user interaction is on input port.
-            return dynamoViewModel.EnableNodeAutoComplete;
+            DynamoViewModel dynamoViewModel = node.DynamoViewModel;
+            // If user trying to trigger Node AutoComplete from proxy ports, display notification
+            // telling user it is not available that way
+            if (IsProxyPort)
+            {
+                dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups);
+            }
+            // If the feature is enabled from Dynamo experiment setting and if user interaction is not on proxy ports.
+            return dynamoViewModel.EnableNodeAutoComplete && !(IsProxyPort);
         }
 
         /// <summary>
@@ -471,6 +519,42 @@ namespace Dynamo.ViewModels
         private void OnMouseLeftUseLevel(object parameter)
         {
             ShowUseLevelMenu = false;
+        }
+
+        /// <summary>
+        /// Handles the logic for updating the PortBackgroundColor and PortBackgroundBrushColor
+        /// </summary>
+        protected virtual void RefreshPortColors()
+        {
+            PortBackgroundColor = PortBackgroundColorDefault;
+            PortBorderBrushColor = PortBorderBrushColorDefault;
+        }
+
+        /// <summary>
+        /// Replaces the old PortNameConverter.
+        /// Ports without names are generally converter chevrons i.e. '>'. However, if an output
+        /// port is displaying its context menu chevron AND has no name (e.g. the Function node)
+        /// the output port is renamed in order to avoid confusing the user with double chevrons.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private string GetPortDisplayName(string value)
+        {
+            if (value is string && !string.IsNullOrEmpty(value as string))
+            {
+                return value as string;
+            }
+            if (node.ArgumentLacing != LacingStrategy.Disabled)
+            {
+                switch (port.PortType)
+                {
+                    case PortType.Input:
+                        return Properties.Resources.InputPortAlternativeName;
+                    case PortType.Output:
+                        return Properties.Resources.OutputPortAlternativeName;
+                }
+            }
+            return ">";
         }
     }
 }

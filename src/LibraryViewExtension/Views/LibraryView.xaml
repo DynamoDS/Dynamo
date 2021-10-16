@@ -9,7 +9,8 @@
              d:DesignHeight="525"
              d:DesignWidth="350">
 
-    <cefSharp:ChromiumWebBrowser x:Name="Browser" Address="{Binding Address}"/>
+    <cefSharp:ChromiumWebBrowser x:Name="Browser"
+                                 Address="{Binding Address}" />
 
 
 </UserControl>

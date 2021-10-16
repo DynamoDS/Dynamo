@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Interfaces;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Greg.Responses;
@@ -148,8 +149,7 @@ namespace Dynamo.PackageManager
         }
 
         private List<FilterEntry> hostFilter;
-
-
+        
         /// <summary>
         /// Dynamic Filter for package hosts, should include all Dynamo known hosts from PM backend
         ///  e.g. "Advance Steel", "Alias", "Civil 3D", "FormIt", "Revit"
@@ -280,6 +280,38 @@ namespace Dynamo.PackageManager
             get { return this.SearchResults.Count == 0; }
         }
 
+        /// <summary>
+        /// Checks if the package can be installed.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        internal bool CanInstallPackage(string name)
+        {
+            // Return true if there are no matching non built-in packages
+            return !PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.LocalPackages
+                .Any(x => (x.Name == name) && !x.BuiltInPackage);
+        }
+
+        /// <summary>
+        /// Checks if the package corresponding to the PackageDownloadHandle can be installed.
+        /// </summary>
+        /// <param name="dh"></param>
+        /// <returns></returns>
+        internal bool CanInstallPackage(PackageDownloadHandle dh)
+        {
+            switch (dh.DownloadState)
+            {
+                case PackageDownloadHandle.State.Uninitialized:
+                case PackageDownloadHandle.State.Error:
+                    return true;// Allowed if Download/Install not yet begun or if in Error state.
+                case PackageDownloadHandle.State.Downloaded:
+                case PackageDownloadHandle.State.Downloading:
+                case PackageDownloadHandle.State.Installing:
+                    return false;
+                default:
+                    return CanInstallPackage(dh.Name);// All other states need to check with PackageLoader's LocalPackages
+            }
+        }
 
         public PackageSearchState _searchState; // TODO: Set private for 3.0.
 
@@ -312,7 +344,7 @@ namespace Dynamo.PackageManager
         public List<string> SelectedHosts { get; set; }
 
         private SearchDictionary<PackageManagerSearchElement> SearchDictionary;
-
+        
         /// <summary>
         ///     Command to clear the completed package downloads
         /// </summary>
@@ -334,11 +366,34 @@ namespace Dynamo.PackageManager
         public DelegateCommand<object> SetSortingDirectionCommand { get; set; }
 
         /// <summary>
+        /// Opens the Package Details ViewExtension
+        /// </summary>
+        public DelegateCommand<object> ViewPackageDetailsCommand { get; set; }
+
+        /// <summary>
+        /// Clears the search text box and resets the search
+        /// </summary>
+        public DelegateCommand<object> ClearSearchTextBoxCommand { get; set; }
+
+        /// <summary>
+        /// When the user downloads new package via the package search manager, a toast notification
+        /// appears at the base of the window. This command fires when the user clicks to dismiss
+        /// one of these toast notifications.
+        /// </summary>
+        public DelegateCommand<object> ClearDownloadToastNotificationCommand { get; set; }
+
+
+        /// <summary>
         ///     Current downloads
         /// </summary>
         public ObservableCollection<PackageDownloadHandle> Downloads
         {
             get { return PackageManagerClientViewModel.Downloads; }
+        }
+
+        public IPreferences Preferences
+        {
+            get { return PackageManagerClientViewModel.DynamoViewModel.PreferenceSettings; }
         }
 
         #endregion Properties & Fields
@@ -352,7 +407,9 @@ namespace Dynamo.PackageManager
             SortCommand = new DelegateCommand(Sort, CanSort);
             SetSortingKeyCommand = new DelegateCommand<object>(SetSortingKey, CanSetSortingKey);
             SetSortingDirectionCommand = new DelegateCommand<object>(SetSortingDirection, CanSetSortingDirection);
-            SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
+            ViewPackageDetailsCommand = new DelegateCommand<object>(ViewPackageDetails);
+            ClearSearchTextBoxCommand = new DelegateCommand<object>(ClearSearchTextBox);
+            ClearDownloadToastNotificationCommand = new DelegateCommand<object>(ClearDownloadToastNotification);
             SearchText = string.Empty;
             SortingKey = PackageSortingKey.LastUpdate;
             SortingDirection = PackageSortingDirection.Ascending;
@@ -365,11 +422,8 @@ namespace Dynamo.PackageManager
         /// </summary>
         public PackageManagerSearchViewModel(PackageManagerClientViewModel client) : this()
         {
-            this.PackageManagerClientViewModel = client;
+            PackageManagerClientViewModel = client;
             HostFilter = InitializeHostFilter();
-            PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
-            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded += 
-                ConflictingCustomNodePackageLoaded;
         }
         
         /// <summary>
@@ -410,7 +464,7 @@ namespace Dynamo.PackageManager
             {
                 hostFilter.Add(new FilterEntry(host, this));
             }
-
+            
             return hostFilter;
         }
 
@@ -451,6 +505,42 @@ namespace Dynamo.PackageManager
             this.Sort();
         }
 
+        /// <summary>
+        /// Set the sorting direction.  Used by the associated command.
+        /// </summary>
+        /// <param name="obj"></param>
+        public void ViewPackageDetails(object obj)
+        {
+            // to be implemented in future PR   
+        }
+
+        /// <summary>
+        /// Clears the search text box and resets the search.
+        /// </summary>
+        public void ClearSearchTextBox(object obj)
+        {
+            SearchText = string.Empty;
+        }
+
+        /// <summary>
+        /// When the user downloads new package via the package search manager, a toast notification
+        /// appears at the base of the window. This command fires when the user clicks to dismiss
+        /// one of these toast notifications.
+        /// </summary>
+        /// <param name="obj"></param>
+        public void ClearDownloadToastNotification(object obj)
+        {
+            if (!(obj is PackageDownloadHandle packageDownloadHandle)) return;
+
+            PackageDownloadHandle packageDownloadHandleToRemove = PackageManagerClientViewModel.Downloads
+                .FirstOrDefault(x => x.Id == packageDownloadHandle.Id);
+
+            if (packageDownloadHandleToRemove == null) return;
+
+            PackageManagerClientViewModel.Downloads.Remove(packageDownloadHandleToRemove);
+            RaisePropertyChanged(nameof(Downloads));
+        }
+        
         /// <summary>
         /// Set the associated key
         /// </summary>
@@ -567,16 +657,16 @@ namespace Dynamo.PackageManager
                 }
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
-
+            
         }
 
-        private void AddToSearchResults(PackageManagerSearchElementViewModel element)
+        internal void AddToSearchResults(PackageManagerSearchElementViewModel element)
         {
             element.RequestDownload += this.PackageOnExecuted;
             this.SearchResults.Add(element);
         }
 
-        private void ClearSearchResults()
+        internal void ClearSearchResults()
         {
             foreach (var ele in this.SearchResults)
             {
@@ -586,7 +676,7 @@ namespace Dynamo.PackageManager
             this.SearchResults.Clear();
         }
 
-        private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
+        internal void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
         {
             this.PackageManagerClientViewModel.ExecutePackageDownload(element.Name, version, downloadPath);
         }
@@ -618,22 +708,49 @@ namespace Dynamo.PackageManager
 
         private void DownloadsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-            if (args.NewItems != null)
+            void canExecuteHandler(object o, PropertyChangedEventArgs eArgs)
+                => ClearCompletedCommand.RaiseCanExecuteChanged();
+
+            void canInstallHandler(object o, PropertyChangedEventArgs eArgs)
+            {
+                var handle = o as PackageDownloadHandle;
+                // Hooking into propertyChanged works only if each download handle is added to
+                // the Downloads collection before Download/Install begins.
+                if (eArgs.PropertyName == nameof(PackageDownloadHandle.DownloadState))
+                {
+                    PackageManagerSearchElementViewModel sr = SearchResults.FirstOrDefault(x => x.Model.Name == handle.Name);
+                    if (sr == null) return;
+
+                    sr.CanInstall = CanInstallPackage(o as PackageDownloadHandle);
+                }
+            }
+
+            if (args.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (var item in args.NewItems)
                 {
                     var handle = (PackageDownloadHandle)item;
-                    handle.PropertyChanged += (o, eventArgs) => this.ClearCompletedCommand.RaiseCanExecuteChanged();
+                    // Update CanInstall property every time the download handle's state changes
+                    handle.PropertyChanged += canInstallHandler;
+                    handle.PropertyChanged += canExecuteHandler;
+                }
+            } 
+            else if (args.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var item in args.OldItems)
+                {
+                    var handle = (PackageDownloadHandle)item;
+                    handle.PropertyChanged -= canInstallHandler;
+                    handle.PropertyChanged -= canExecuteHandler;
                 }
             }
 
             if (PackageManagerClientViewModel.Downloads.Count == 0)
             {
-                this.ClearCompletedCommand.RaiseCanExecuteChanged();
+                ClearCompletedCommand.RaiseCanExecuteChanged();
             }
 
-            this.RaisePropertyChanged("HasDownloads");
-
+            RaisePropertyChanged(nameof(HasDownloads));
         }
 
         private void SearchResultsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -701,9 +818,16 @@ namespace Dynamo.PackageManager
             SelectedIndex = SelectedIndex - 1;
         }
 
-        internal void UnregisterHandlers()
+        internal void RegisterTransientHandlers()
         {
-            RequestShowFileDialog -= OnRequestShowFileDialog;
+            SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
+            PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded +=
+                ConflictingCustomNodePackageLoaded;
+        }
+
+        internal void UnregisterTransientHandlers()
+        {
             SearchResults.CollectionChanged -= SearchResultsOnCollectionChanged;
             PackageManagerClientViewModel.Downloads.CollectionChanged -= DownloadsOnCollectionChanged;
             PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded -=
@@ -747,13 +871,15 @@ namespace Dynamo.PackageManager
         {
             if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
 
-            var canLogin = PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider;
             List<PackageManagerSearchElementViewModel> list = null;
 
+            var isEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
             if (!String.IsNullOrEmpty(query))
             {
                 list = Filter(SearchDictionary.Search(query)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
+                    .Select(x => new PackageManagerSearchElementViewModel(x,
+                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
+                        CanInstallPackage(x.Name), isEnabledForInstall))
                     .Take(MaxNumSearchResults))
                     .ToList();
             }
@@ -761,7 +887,9 @@ namespace Dynamo.PackageManager
             {
                 // with null query, don't show deprecated packages
                 list = Filter(LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin)))
+                    .Select(x => new PackageManagerSearchElementViewModel(x,
+                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
+                        CanInstallPackage(x.Name), isEnabledForInstall)))
                     .ToList();
                 Sort(list, this.SortingKey);
             }
@@ -834,6 +962,5 @@ namespace Dynamo.PackageManager
 
             SearchResults[SelectedIndex].Model.Execute();
         }
-
     }
 }

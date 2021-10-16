@@ -8,6 +8,7 @@ using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Extensions;
+using Dynamo.Interfaces;
 using Dynamo.LibraryViewExtensionMSWebBrowser.Handlers;
 using Dynamo.LibraryViewExtensionMSWebBrowser.ViewModels;
 using Dynamo.LibraryViewExtensionMSWebBrowser.Views;

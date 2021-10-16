@@ -298,6 +298,8 @@ namespace Dynamo.ViewModels
 
             SubscribeToPinnedNode();
 
+            WorkspaceViewModel.HasUnsavedChanges = true;
+
         }
 
         private bool CanPinToNode(object parameters)
@@ -334,6 +336,7 @@ namespace Dynamo.ViewModels
         {
             UnsuscribeFromPinnedNode();
             Model.PinnedNode = null;
+            WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
         private void SubscribeToPinnedNode()
@@ -344,9 +347,12 @@ namespace Dynamo.ViewModels
             Model.PinnedNode.PropertyChanged += PinnedNodeModel_PropertyChanged;
             PinnedNode.PropertyChanged += PinnedNodeViewModel_PropertyChanged;
 
-            // Subscribe to pinnedNode.RequestSelection (fires before node is selected)
+            // Subscribe to PinnedNode.Selected (fires before node is selected)
             // so that this note is added to the selection
             PinnedNode.Selected += PinnedNodeViewModel_OnPinnedNodeSelected;
+
+            //Subscribed to PinnedNode.Removed event of Node to remove pinned note when node is removed.
+            PinnedNode.Removed += PinnedNodeViewModel_OnPinnedNodeRemoved;
 
             Analytics.TrackEvent(
                 Actions.Pin,
@@ -359,12 +365,18 @@ namespace Dynamo.ViewModels
             if (PinnedNode != null)
             {
                 PinnedNode.PropertyChanged -= PinnedNodeViewModel_PropertyChanged;
-                PinnedNode.RequestsSelection -= PinnedNodeViewModel_OnPinnedNodeSelected;
+                PinnedNode.Selected -= PinnedNodeViewModel_OnPinnedNodeSelected;
+                PinnedNode.Removed -= PinnedNodeViewModel_OnPinnedNodeRemoved;
 
                 Analytics.TrackEvent(
                     Actions.Unpin,
                     Categories.NoteOperations, Model.PinnedNode.Name);
             }
+        }
+
+        private void PinnedNodeViewModel_OnPinnedNodeRemoved(object sender, EventArgs e)
+        {
+            WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
         }
 
         private void PinnedNodeModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -399,6 +411,8 @@ namespace Dynamo.ViewModels
 
         private void MoveNoteAbovePinnedNode()
         {
+            if (PinnedNode == null) return;
+
             var distanceToNode = DISTANCE_TO_PINNED_NODE;
             if (Model.PinnedNode.State == ElementState.Error ||
                 Model.PinnedNode.State == ElementState.Warning)

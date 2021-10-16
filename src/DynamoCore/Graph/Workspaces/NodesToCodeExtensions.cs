@@ -104,7 +104,6 @@ namespace Dynamo.Graph.Workspaces
 
                 var codeBlockNode = new CodeBlockNodeModel(
                     code,
-                    System.Guid.NewGuid(),
                     totalX / nodeCount,
                     totalY / nodeCount, engineController.LibraryServices, workspace.ElementResolver);
                 undoHelper.RecordCreation(codeBlockNode);

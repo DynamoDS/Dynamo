@@ -9,6 +9,9 @@ namespace DynamoUtilities
 {
     public class PathHelper
     {
+        private static readonly string sizeUnits = " KB";
+        private const long KbConversionConstant = 1024;
+
         // This return an exception if any operation failed and the folder
         // wasn't created. It's the responsibility of the caller of this function
         // to check whether the folder creation is successful or not.
@@ -178,6 +181,43 @@ namespace DynamoUtilities
             String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
             String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
             return snapshotName;
+        }
+
+        /// <summary>
+        /// Computes the file size from the path.
+        /// </summary>
+        /// <param name="path">File path</param>
+        public static string GetFileSize(string path)
+        {
+            if (path != null)
+            {
+                var fileInfo = new FileInfo(path);
+                long size = fileInfo.Length / KbConversionConstant;
+                return size.ToString() + sizeUnits;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Checks if the file exists at the specified path and computes size.
+        /// </summary>
+        /// <param name="filePath">File path</param>
+        /// <returns>Returns a boolean if the file exists at the path and also returns its size</returns>
+        public static void FileInfoAtPath(string path, out bool fileExists, out string size)
+        {
+            try
+            {
+                FileInfo fileInfo = new FileInfo(path);
+                fileExists = true;
+                var fileLength = fileInfo.Length / KbConversionConstant;
+                size = fileLength.ToString() + sizeUnits;
+            }
+            catch
+            {
+                fileExists = false;
+                size = string.Empty;
+            }
         }
     }
 }

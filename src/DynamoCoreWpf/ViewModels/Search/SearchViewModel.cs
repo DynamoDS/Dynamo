@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -33,10 +37,16 @@ namespace Dynamo.ViewModels
         }
 
         public event EventHandler SearchTextChanged;
+
+        /// <summary>
+        /// Invokes the SearchTextChanged event handler and executes the SearchCommand
+        /// </summary>
         public void OnSearchTextChanged(object sender, EventArgs e)
         {
             if (SearchTextChanged != null)
                 SearchTextChanged(this, e);
+
+            SearchCommand?.Execute(null);
         }
 
         #endregion
@@ -61,13 +71,13 @@ namespace Dynamo.ViewModels
             set { browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
         }
 
+        private string searchText;
         /// <summary>
         ///     SearchText property
         /// </summary>
         /// <value>
         ///     This is the core UI for Dynamo, primarily used for logging.
         /// </value>
-        private string searchText;
         public string SearchText
         {
             get { return searchText; }
@@ -204,8 +214,6 @@ namespace Dynamo.ViewModels
                 }
                 strBuilder.Append(", ");
             }
-
-            Analytics.LogPiiInfo("Filter-categories", strBuilder.ToString().Trim());
         }
 
         /// <summary>
@@ -818,8 +826,6 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
-            Analytics.LogPiiInfo("Search", query);
-
             // if the search query is empty, go back to the default treeview
             if (string.IsNullOrEmpty(query))
                 return;
@@ -1180,6 +1186,48 @@ namespace Dynamo.ViewModels
                     break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Attempts to find the node's icon, which is the same as its type name plus a Postfix, such as '.Small'.
+        /// </summary>
+        /// <returns>An ImageSource object pointing to the icon image for the NodeViewModel</returns>
+        internal bool TryGetNodeIcon(NodeViewModel nodeViewModel, out ImageSource iconSource)
+        {
+            string nodeTypeName;
+            string assemblyLocation;
+
+            switch (nodeViewModel.NodeModel)
+            {
+                // For ZeroTouch nodes
+                case DSFunction dsFunction:
+                    FunctionDescriptor functionDescriptor = dsFunction.Controller.Definition;
+                    assemblyLocation = functionDescriptor.Assembly;
+                    nodeTypeName = Graph.Nodes.Utilities.GetFunctionDescriptorIconName(functionDescriptor);
+                    break;
+                // For DSVarArgFunctions like String.Concat
+                case DSVarArgFunction dsVarArgFunction:
+                    nodeTypeName = dsVarArgFunction.Controller.Definition.QualifiedName;
+                    assemblyLocation = dsVarArgFunction.Controller.Definition.Assembly;
+                    break;
+                // For NodeModel nodes
+                case NodeModel nodeModel:
+                    nodeTypeName = nodeModel.GetType().FullName;
+                    assemblyLocation = nodeModel.GetType().Assembly.Location;
+                    break;
+                default:
+                    nodeTypeName = "";
+                    assemblyLocation = "";
+                    break;
+            }
+
+            iconSource = null;
+
+            IconWarehouse currentWarehouse = iconServices.GetForAssembly(assemblyLocation);
+            if (currentWarehouse is null) return false;
+
+            iconSource = currentWarehouse.LoadIconInternal(nodeTypeName + Configurations.SmallIconPostfix);
+            return !(iconSource is null);
         }
 
         #endregion

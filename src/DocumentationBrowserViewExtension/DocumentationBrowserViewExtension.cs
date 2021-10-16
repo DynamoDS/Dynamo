@@ -56,6 +56,7 @@ namespace Dynamo.DocumentationBrowser
         public override void Startup(ViewStartupParams viewStartupParams)
         {
             pmExtension = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            PackageDocumentationManager.Instance.AddDynamoPaths(viewStartupParams.PathManager);
         }
 
         public override void Loaded(ViewLoadedParams viewLoadedParams)
@@ -63,6 +64,7 @@ namespace Dynamo.DocumentationBrowser
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
 
             this.ViewModel.MessageLogged += OnViewModelMessageLogged;
+            PackageDocumentationManager.Instance.MessageLogged += OnMessageLogged;
 
             this.viewLoadedParamsReference = viewLoadedParams; 
 
@@ -84,19 +86,19 @@ namespace Dynamo.DocumentationBrowser
 
             // subscribe to package loaded so we can add the package documentation 
             // to the Package documentation manager when a package is loaded
-            pmExtension.PackageLoader.PackgeLoaded += OnPackgeLoaded;
+            pmExtension.PackageLoader.PackgeLoaded += OnPackageLoaded;
 
             // add packages already loaded to the PackageDocumentationManager
             foreach (var pkg in pmExtension.PackageLoader.LocalPackages)
             {
-                OnPackgeLoaded(pkg);
+                OnPackageLoaded(pkg);
             }
         }
 
-        private void OnPackgeLoaded(Package pkg)
+        private void OnPackageLoaded(Package pkg)
         {
             // Add documentation files from the package to the DocManager
-            PackageDocumentationManager.Instance.AddPackageDocumentation(pkg.NodeDocumentaionDirectory);
+            PackageDocumentationManager.Instance.AddPackageDocumentation(pkg.NodeDocumentaionDirectory, pkg.Name);
         }
 
         private void MenuItemUnCheckedHandler(object sender, RoutedEventArgs e)
@@ -139,7 +141,7 @@ namespace Dynamo.DocumentationBrowser
 
             if (this.pmExtension != null)
             {
-                this.pmExtension.PackageLoader.PackgeLoaded -= OnPackgeLoaded;
+                this.pmExtension.PackageLoader.PackgeLoaded -= OnPackageLoaded;
             }
             PackageDocumentationManager.Instance.Dispose();
         }
