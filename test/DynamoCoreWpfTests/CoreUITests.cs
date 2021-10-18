@@ -688,6 +688,33 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(ViewModel.PreferenceSettings.IsFirstRun);
         }
 
+        [Test]
+        public void PreferenceSettingsConnectorTypeRevertsToBezier()
+        {
+            // Arrange
+            var preferences = new PreferenceSettings()
+            {
+                ConnectorType = ConnectorType.POLYLINE
+            };
+
+            var config = new DynamoModel.DefaultStartConfiguration()
+            {
+                PathResolver = pathResolver,
+                StartInTestMode = true,
+                ProcessMode = TaskProcessMode.Synchronous,
+                Preferences = preferences,
+            };
+
+            // Act
+            RestartTestSetupWithNewSettings(config, true);
+
+            // Assert
+            // Check that prefferenceSettings are set to ConnectorType.POLYLINE
+            // but the Models connector type is BEZIER
+            Assert.That(Model.PreferenceSettings.ConnectorType == ConnectorType.POLYLINE);
+            Assert.That(Model.ConnectorType == ConnectorType.BEZIER);
+        }
+
         private void RestartTestSetup(bool startInTestMode)
         {
             // Shutdown Dynamo and restart it
@@ -730,6 +757,40 @@ namespace DynamoCoreWpfTests
             View = new DynamoView(ViewModel);
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
+
+        private void RestartTestSetupWithNewSettings(Dynamo.Models.DynamoModel.IStartConfiguration configuration, bool startInTestMode)
+        {
+            // Shutdown Dynamo and restart it
+            View.Close();
+            View = null;
+
+            if (ViewModel != null)
+            {
+                var shutdownParams = new DynamoViewModel.ShutdownParams(
+                    shutdownHost: false, allowCancellation: false);
+
+                ViewModel.PerformShutdownSequence(shutdownParams);
+                ViewModel = null;
+            }
+
+            Model = DynamoModel.Start(configuration);
+
+            ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = Model
+                });
+
+            var expectedState = startInTestMode
+                ? DynamoModel.DynamoModelState.StartedUIless
+                : DynamoModel.DynamoModelState.StartedUI;
+            Assert.AreEqual(ViewModel.Model.State, expectedState);
+
+            //create the view
+            View = new DynamoView(ViewModel);
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+        }
+
         #endregion
 
         #region InfoBubble
