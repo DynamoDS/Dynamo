@@ -11,7 +11,6 @@
         Height="710"
         MinWidth="630"
         MinHeight="500"
-        DataContext="{Binding PublishPackageViewModel, RelativeSource={RelativeSource Self}}"
         ResizeMode="CanResizeWithGrip"
         Visibility="Visible"
         WindowStartupLocation="CenterOwner"
@@ -28,6 +27,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <controls:EmptyStringToFalseConverter x:Key="EmptyStringToFalseConverter"/>
             <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
                 <Grid Height="29px"
                       HorizontalAlignment="Stretch"
@@ -185,6 +185,9 @@
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter TargetName="textBlock" Property="Foreground" Value="White" />
                                 </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="textBlock" Property="Foreground" Value="#999999" />
+                                </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
@@ -320,9 +323,9 @@
                                                   TextElement.FontFamily="{StaticResource ArtifaktElementRegular}"
                                                   TextElement.FontSize="10px"
                                                   TextElement.FontWeight="Regular"
-                                                  ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Content.Text}"
-                                                  ToolTipService.ShowDuration="30000"
-                                                  TextElement.Foreground="Blue" />
+                                                  TextElement.Foreground="Blue"
+                                                  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}"
+                                                  ToolTipService.ShowDuration="30000" />
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
@@ -428,7 +431,7 @@
                 <Setter Property="HeadersVisibility" Value="Column" />
                 <Setter Property="GridLinesVisibility" Value="None" />
                 <Setter Property="SelectionMode" Value="Extended" />
-                <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+                <Setter Property="HorizontalScrollBarVisibility" Value="Visible" />
                 <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
                 <Setter Property="EnableRowVirtualization" Value="False" />
             </Style>
@@ -531,7 +534,7 @@
         <Grid Name="midSectionGrid" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="265" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1" />
                 <ColumnDefinition Width="*" MinWidth="360" />
             </Grid.ColumnDefinitions>
 
@@ -759,36 +762,40 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <DockPanel Grid.Row="0">
 
-                    <!--  Add Files  -->
-                    <Button Command="{Binding Path=ShowAddFileDialogAndAddCommand}"
+                <!--  Top Row: Buttons and Label  -->
+                <DockPanel Grid.Row="0">
+                    <!--  Add Directory  -->
+                    <Button Command="{Binding Path=ShowAddFileDialogAndAddRecursivelyCommand}"
                             Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButton}"
                             DockPanel.Dock="Right"
                             Style="{StaticResource TextButtonStyle}"
                             ToolTip="{x:Static p:Resources.PublishPackageViewAddDirectoryButtonTooltip}" />
 
-                    <!--  Add Directory  -->
+                    <!--  Add Files  -->
                     <Button Command="{Binding Path=ShowAddFileDialogAndAddCommand}"
                             Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"
                             DockPanel.Dock="Right"
                             Style="{StaticResource TextButtonStyle}"
                             ToolTip="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}" />
 
-                    <!--  Package Contents  -->
+                    <!--  Package Contents Label  -->
                     <TextBlock DockPanel.Dock="Left"
                                Style="{StaticResource LabelStyle}"
                                Text="{x:Static p:Resources.PublishPackagePackageContent}" />
                 </DockPanel>
+
+                <!--  Middle: DataGrid  -->
                 <DataGrid Grid.Row="1"
                           Height="370"
                           Margin="0,0,0,15"
                           VerticalAlignment="Stretch"
                           CanUserReorderColumns="False"
-                          ItemsSource="{Binding PackageContents}"
+                          ItemsSource="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged}"
                           Style="{StaticResource DataGrid}">
                     <DataGrid.Columns>
-                        <DataGridCheckBoxColumn MinWidth="80"
+                        <DataGridCheckBoxColumn MinWidth="85"
+                                                MaxWidth="85"
                                                 Binding="{Binding Path=IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                 ElementStyle="{StaticResource CheckBoxStyle}"
                                                 Header="Node Library"
@@ -800,43 +807,91 @@
                                             Header="Name"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
-                        <DataGridTextColumn MinWidth="60"
+                        <DataGridTextColumn MinWidth="66"
+                                            Width="*"
                                             Binding="{Binding Path=FileInfo.FullName}"
                                             Header="File Path"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
-                        <DataGridTextColumn Width="*"
-                                            MinWidth="80"
-                                            Binding="{Binding Path=FileInfo.Directory}"
-                                            Header="Target Path"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
-                                            IsReadOnly="True" />
+                        <DataGridTemplateColumn Header="Target Path"
+                                                MinWidth="90"
+                                                HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
+                                                IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <Button Name="removeItemButton"
+                                                Width="16"
+                                                Height="16"
+                                                Margin="5,-1,0,0"
+                                                Command="{Binding ElementName=PublishInfoControl, Path=DataContext.RemoveItemCommand}"
+                                                CommandParameter="{Binding}"
+                                                Cursor="Hand"
+                                                DockPanel.Dock="Right"
+                                                ToolTip="{x:Static p:Resources.PublishPackageViewRemoveItemToolTip}">
+                                            <Button.Template>
+                                                <ControlTemplate>
+                                                    <Rectangle Width="16" Height="16">
+                                                        <Rectangle.Fill>
+                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/remove - default.png" />
+                                                        </Rectangle.Fill>
+                                                    </Rectangle>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                        <TextBlock Margin="0,0,0,0"
+                                                   Text="{Binding Path=FileInfo.Directory}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip="{Binding FileInfo.Directory}" />
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
 
+                <!--  Bottom: Markdown Files & Dependencies  -->
                 <StackPanel Grid.Row="2"
                             Margin="0,0,0,0"
                             VerticalAlignment="Top">
 
                     <!--  Markdown Files Directory  -->
-                    <TextBlock Style="{StaticResource LabelStyle}" Text="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectory}" />
-                    <Grid>
+                    <DockPanel>
+                        <TextBlock Style="{StaticResource LabelStyle}" Text="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectory}" />
+                        <Button Command="{Binding Path=ClearMarkdownDirectoryCommand}"
+                                Content="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButton}"
+                                DockPanel.Dock="Right"
+                                Style="{StaticResource TextButtonStyle}"
+                                IsEnabled="{Binding Path=MarkdownFilesDirectory, Converter={StaticResource EmptyStringToFalseConverter}}"
+                                ToolTip="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButtonToolTip}" />
+                    </DockPanel>
+                    <Grid Background="#353535" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
                         <TextBox HorizontalAlignment="Stretch"
                                  IsHitTestVisible="False"
                                  IsReadOnly="True"
+                                 Grid.Column="0"
+                                 Margin="0"
+                                 Background="Transparent"
                                  Style="{StaticResource InputStyle}"
-                                 Text="{Binding MarkdownFilesDirectory, UpdateSourceTrigger=PropertyChanged}"
-                                 Tag="..." />
+                                 Tag="{x:Static p:Resources.NoneString}"
+                                 Text="{Binding MarkdownFilesDirectory, UpdateSourceTrigger=PropertyChanged}" />
                         <Button Name="markdownFilesDirectoryButton"
                                 Width="20"
                                 Height="20"
-                                Margin="0,0,10,10"
+                                Grid.Column="1"
+                                Margin="5,10,10,10"
                                 HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
+                                VerticalAlignment="Top"
                                 BorderThickness="0"
-                                Command="{Binding Path=SelectMarkdownDirectoryCommand}"
-                                ToolTip="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectoryToolTip}"
-                                Cursor="Hand">
+                                Command="{Binding SelectMarkdownDirectoryCommand}"
+                                Cursor="Hand"
+                                IsHitTestVisible="True"
+                                DockPanel.Dock="Right"
+                                ToolTip="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectoryToolTip}">
                             <Button.Template>
                                 <ControlTemplate>
                                     <Rectangle Width="16" Height="16">
@@ -850,20 +905,23 @@
                     </Grid>
 
                     <!--  External Package Dependencies  -->
-                    <TextBlock Style="{StaticResource LabelStyle}" Text="External Package Dependencies" />
-                    <TextBlock Style="{StaticResource SubLabelStyle}" Text="None" />
+                    <TextBlock Style="{StaticResource LabelStyle}" Text="{x:Static p:Resources.PublishPackageExternalPackageDependencies}" />
+                    <TextBlock Style="{StaticResource SubLabelStyle}" Text="{Binding DependencyNames, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
             </Grid>
 
             <!--  Grid Splitter  -->
             <GridSplitter Grid.Column="1"
-                          BorderBrush="#787878"
-                          BorderThickness="1,0,0,0"
+                          Margin="-3,1"
+                          HorizontalAlignment="Stretch"
+                          BorderBrush="Transparent"
+                          BorderThickness="3,0"
+                          Opacity="0.3"
                           ResizeBehavior="PreviousAndNext"
                           ResizeDirection="Columns" />
         </Grid>
 
-        <!--  Bottom Section: Publish Buttons + Status Label -->
+        <!--  Bottom Section: Publish Buttons + Status Label  -->
         <DockPanel Grid.Row="2"
                    Margin="25,0"
                    VerticalAlignment="Center">
@@ -879,12 +937,15 @@
                     DockPanel.Dock="Right"
                     Style="{StaticResource CtaButtonStyle}" />
 
+            <!--  Status Label  -->
             <TextBlock Name="statusLabel"
                        Margin="0,5,0,0"
                        VerticalAlignment="Center"
                        FontFamily="{StaticResource ArtifaktElementRegular}"
                        Style="{StaticResource LabelStyle}"
-                       Text="Ready to publish" />
+                       Text="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
+                       TextTrimming="CharacterEllipsis" 
+                       ToolTip="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"/>
         </DockPanel>
     </Grid>
 </Window>

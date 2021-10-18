@@ -19,11 +19,11 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Internal reference of PublishPackageViewModel
         /// </summary>
-        public PublishPackageViewModel PublishPackageViewModel { get; }
+        private PublishPackageViewModel PublishPackageViewModel { get; }
 
         public PublishPackageView(PublishPackageViewModel publishPackageViewModel)
         {
-            this.DataContext = publishPackageViewModel;
+            DataContext = publishPackageViewModel;
             PublishPackageViewModel = publishPackageViewModel;
             publishPackageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
 
@@ -88,7 +88,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// When the use clicks close on this window, closes the window.
+        /// When the user clicks the close button on this window, closes the window.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -101,9 +101,14 @@ namespace Dynamo.PackageManager
             Close();
         }
 
+        /// <summary>
+        /// Allows for the dragging of this custom-styled window. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PreferencesPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //Drag functionality when the TitleBar is clicked with the left button and dragged to another place
+            // Drag functionality when the TitleBar is clicked with the left button and dragged to another place
             if (e.ChangedButton == MouseButton.Left)
             {
                 this.DragMove();
@@ -113,6 +118,12 @@ namespace Dynamo.PackageManager
             }
         }
 
+        /// <summary>
+        /// Navigates to a predefined URL in the user's default browser.
+        /// Currently used to make the MIT license text a clickable link.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));

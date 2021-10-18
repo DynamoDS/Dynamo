@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -536,18 +537,34 @@ namespace Dynamo.PackageManager
         public DelegateCommand PublishLocallyCommand { get; private set; }
 
         /// <summary>
-        /// SubmitCommand property </summary>
-        /// <value>
-        /// A command which, when executed, submits the current package</value>
+        /// A command which, when executed, adds the selected file(s) to the PackageContents.
+        /// </summary>
         public DelegateCommand ShowAddFileDialogAndAddCommand { get; private set; }
 
         /// <summary>
-        /// SelectMarkdownDirectoryCommand property </summary>
-        /// <value>
-        /// A command which, when executed, opens the directory selection dialog and prompts the user to
-        /// specify a directory for their (optional) markdown files.</value>
+        /// A command which, when executed, recursively adds the selected folders and their
+        /// subfolders to the PackageContents 
+        /// </summary>
+        public DelegateCommand ShowAddFileDialogAndAddRecursivelyCommand { get; set; }
+
+        /// <summary>
+        /// SelectMarkdownDirectoryCommand property. A command which, when executed,
+        /// opens the directory selection dialog and prompts the user to specify
+        /// a directory for their (optional) markdown files. </summary>
         public DelegateCommand SelectMarkdownDirectoryCommand { get; private set; }
-        
+
+        /// <summary>
+        /// A command, fired by the 'Reset' button in the PublishPackageView.
+        /// Sets the MarkdownDirectory property to an empty string.
+        /// </summary>
+        public DelegateCommand ClearMarkdownDirectoryCommand { get; private set; }
+
+        /// <summary>
+        /// A command, fired by the trash can icon in the Package Contents Datagrid.
+        /// Used to remove an item from the list of package contents.
+        /// </summary>
+        public Dynamo.UI.Commands.DelegateCommand RemoveItemCommand { get; private set; }
+
         /// <summary>
         /// ToggleMoreCommand property </summary>
         /// <value>
@@ -562,19 +579,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// PackageContents property 
         /// </summary>
-        private List<PackageItemRootViewModel> _packageContents = null;
-        public IEnumerable<PackageItemRootViewModel> PackageContents
-        {
-            get
-            {
-                _packageContents = CustomNodeDefinitions.Select(
-                    (def) => new PackageItemRootViewModel(def))
-                    .Concat(Assemblies.Select((pa) => new PackageItemRootViewModel(pa)))
-                    .Concat(AdditionalFiles.Select((s) => new PackageItemRootViewModel(new FileInfo(s))))
-                    .ToList();
-                return _packageContents;
-            }
-        }
+        public ObservableCollection<PackageItemRootViewModel> PackageContents { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
 
         /// <summary>
         /// CustomNodeDefinitions property 
@@ -619,7 +624,20 @@ namespace Dynamo.PackageManager
         /// Dependencies property </summary>
         /// <value>
         /// Computed and manually added package dependencies</value>
-        public ObservableCollection<PackageDependency> Dependencies { get; set; }
+        public ObservableCollection<PackageDependency> Dependencies { get; set; } = new ObservableCollection<PackageDependency>();
+
+        /// <summary>
+        /// A user-facing comma-separated string of this package's dependencies.
+        /// </summary>
+        public string DependencyNames
+        {
+            get => dependencyNames;
+            set
+            {
+                dependencyNames = value; 
+                RaisePropertyChanged(nameof(DependencyNames));
+            }
+        }
 
         /// <summary>
         /// BaseVersionHeader property </summary>
@@ -654,11 +672,41 @@ namespace Dynamo.PackageManager
             SubmitCommand = new DelegateCommand(Submit, CanSubmit);
             PublishLocallyCommand = new DelegateCommand(PublishLocally, CanPublishLocally);
             ShowAddFileDialogAndAddCommand = new DelegateCommand(ShowAddFileDialogAndAdd, CanShowAddFileDialogAndAdd);
+            ShowAddFileDialogAndAddRecursivelyCommand = new DelegateCommand(SelectDirectoryAndAddFilesRecursively);
             SelectMarkdownDirectoryCommand = new DelegateCommand(SelectMarkdownDirectory);
+            ClearMarkdownDirectoryCommand = new DelegateCommand(ClearMarkdownDirectory);
+            RemoveItemCommand = new Dynamo.UI.Commands.DelegateCommand(RemoveItem);
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
-            Dependencies = new ObservableCollection<PackageDependency>();
+            Dependencies.CollectionChanged += DependenciesOnCollectionChanged;
+            PackageContents.CollectionChanged += PackageContentsOnCollectionChanged;
             Assemblies = new List<PackageAssembly>();
             PropertyChanged += ThisPropertyChanged;
+            RefreshPackageContents();
+            RefreshDependencyNames();
+        }
+
+        private void PackageContentsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RefreshPackageContents();
+        
+        private void DependenciesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RefreshDependencyNames();
+        
+        private void RefreshDependencyNames()
+        {
+            if (Dependencies.Count < 1)
+            {
+                DependencyNames = Properties.Resources.NoneString;
+                return;
+            }
+            DependencyNames = string.Join(", ", Dependencies.Select(x => x.name));
+        }
+
+        private void RefreshPackageContents()
+        {
+            PackageContents = CustomNodeDefinitions.Select(
+                    (def) => new PackageItemRootViewModel(def))
+                .Concat(Assemblies.Select((pa) => new PackageItemRootViewModel(pa)))
+                .Concat(AdditionalFiles.Select((s) => new PackageItemRootViewModel(new FileInfo(s))))
+                .ToList()
+                .ToObservableCollection();
         }
 
         /// <summary>
@@ -1071,7 +1119,8 @@ namespace Dynamo.PackageManager
         }
 
         private string _errorString = "";
-        
+        private string dependencyNames;
+
         public string ErrorString
         {
             get { return _errorString; }
@@ -1085,7 +1134,7 @@ namespace Dynamo.PackageManager
         private void ShowAddFileDialogAndAdd()
         {
             // show file open dialog
-            var fDialog = new OpenFileDialog()
+            var fDialog = new OpenFileDialog
             {
                 Filter = string.Format(Resources.FileDialogCustomNodeDLLXML, "*.dyf;*.dll;*.xml") + "|" +
                          string.Format(Resources.FileDialogAllFiles, "*.*"),
@@ -1117,41 +1166,103 @@ namespace Dynamo.PackageManager
             {
                 AddFile(file);
             }
+            RefreshPackageContents();
+            RaisePropertyChanged(nameof(PackageContents));
+            RefreshDependencyNames();
         }
 
         /// <summary>
-        /// A command, fired when the user click the button to select a directory for their markdown documentation.
-        /// When clicked, prompts the user to specify a directory containing markdown files.
+        /// 
         /// </summary>
-        private void SelectMarkdownDirectory()
+        private void SelectDirectoryAndAddFilesRecursively()
         {
-            var pathManager = DynamoViewModel.Model.PathManager as PathManager;
-            
-            var args = new PackagePathEventArgs
+            PathManager pathManager = DynamoViewModel.Model.PathManager as PathManager;
+            PackagePathEventArgs packagePathEventArgs = new PackagePathEventArgs
             {
                 Path = pathManager.DefaultPackagesDirectory
             };
 
-            OnRequestShowFileDialog(this, args);
+            OnRequestShowFileDialog(this, packagePathEventArgs);
 
-            if (args.Cancel) return;
+            if (packagePathEventArgs.Cancel) return;
 
-            var folder = args.Path;
+            string directoryPath = packagePathEventArgs.Path;
 
-            if (!IsDirectoryWritable(folder))
+            List<string> filePaths = Directory
+                .GetFiles
+                (
+                    directoryPath,
+                    "*",
+                    SearchOption.AllDirectories
+                ).ToList();
+
+            if (filePaths.Count < 1) return;
+
+            List<string> existingPackageContents = PackageContents
+                .Select(x => x.FileInfo.FullName)
+                .ToList();
+
+            foreach (var filePath in filePaths)
             {
-                ErrorString = String.Format(Resources.FolderNotWritableError, folder);
-                var ErrorMessage = ErrorString + "\n" + Resources.SolutionToFolderNotWritatbleError;
-                if (DynamoModel.IsTestMode) return;
-                MessageBoxService.Show(ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                if (existingPackageContents.Contains(filePath)) continue;
+                AddFile(filePath);
             }
-            MarkdownFilesDirectory = folder;
+
+            RefreshPackageContents();
+            RaisePropertyChanged(nameof(PackageContents));
+            RefreshDependencyNames();
         }
 
-        private void ShowFileDialog(PackagePathEventArgs e)
+        /// <summary>
+        /// Method linked to the SelectMarkdownDirectoryCommand.
+        /// Prompts the user to specify a directory containing markdown files, which if successful,
+        /// is saved to the MarkdownFilesDirectory property.
+        /// </summary>
+        private void SelectMarkdownDirectory()
         {
-            OnRequestShowFileDialog(this, e);
+            PathManager pathManager = DynamoViewModel.Model.PathManager as PathManager;
+            PackagePathEventArgs packagePathEventArgs = new PackagePathEventArgs
+            {
+                Path = pathManager.DefaultPackagesDirectory
+            };
+
+            OnRequestShowFileDialog(this, packagePathEventArgs);
+
+            if (packagePathEventArgs.Cancel) return;
+
+            string directoryPath = packagePathEventArgs.Path;
+
+            if (!IsDirectoryWritable(directoryPath))
+            {
+                ErrorString = String.Format(Resources.FolderNotWritableError, directoryPath);
+                string errorMessage = ErrorString + Environment.NewLine + Resources.SolutionToFolderNotWritatbleError;
+                if (DynamoModel.IsTestMode) return;
+                MessageBoxService.Show(errorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            MarkdownFilesDirectory = directoryPath;
+        }
+
+        /// <summary>
+        /// Method linked to the ClearMarkdownDirectoryCommand.
+        /// Sets the MarkdownFilesDirectory to an empty string.
+        /// </summary>
+        private void ClearMarkdownDirectory() => MarkdownFilesDirectory = string.Empty;
+
+        /// <summary>
+        /// Removes an item from the package contents list.
+        /// </summary>
+        private void RemoveItem(object parameter)
+        {
+            if (!(parameter is PackageItemRootViewModel packageItemRootViewModel)) return;
+
+            PackageItemRootViewModel packageItemRootViewModelToRemove = PackageContents
+                .FirstOrDefault(x => x.FileInfo.FullName == packageItemRootViewModel.FileInfo.FullName);
+
+            if (packageItemRootViewModelToRemove == null) return;
+
+            PackageContents.Remove(PackageContents
+                .First(x => x.FileInfo.FullName == packageItemRootViewModel.FileInfo.FullName));
         }
 
         private bool CanShowAddFileDialogAndAdd()

@@ -2717,4 +2717,16 @@ This package will be unloaded after the next Dynamo restart.</value>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
     <value>An optional location for documenting your package in the markdown format.</value>
   </data>
+  <data name="PublishPackageViewResetMarkdownDirectoryButton" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="PublishPackageViewResetMarkdownDirectoryButtonToolTip" xml:space="preserve">
+    <value>Clears this package's Markdown directory.</value>
+  </data>
+  <data name="PublishPackageViewRemoveItemToolTip" xml:space="preserve">
+    <value>Removes this item from the package contents list.</value>
+  </data>
+  <data name="PublishPackageExternalPackageDependencies" xml:space="preserve">
+    <value>External Package Dependencies</value>
+  </data>
 </root>

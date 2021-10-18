@@ -5454,6 +5454,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to External Package Dependencies.
+        /// </summary>
+        public static string PublishPackageExternalPackageDependencies {
+            get {
+                return ResourceManager.GetString("PublishPackageExternalPackageDependencies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Group.
         /// </summary>
         public static string PublishPackageGroupWatermark {
@@ -5860,6 +5869,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Removes this item from the package contents list..
+        /// </summary>
+        public static string PublishPackageViewRemoveItemToolTip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewRemoveItemToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repository Url (optional).
         /// </summary>
         public static string PublishPackageViewRepositoryUrl {
@@ -5874,6 +5892,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewRepositoryUrlWatermark {
             get {
                 return ResourceManager.GetString("PublishPackageViewRepositoryUrlWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        public static string PublishPackageViewResetMarkdownDirectoryButton {
+            get {
+                return ResourceManager.GetString("PublishPackageViewResetMarkdownDirectoryButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clears this package&apos;s Markdown directory..
+        /// </summary>
+        public static string PublishPackageViewResetMarkdownDirectoryButtonToolTip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewResetMarkdownDirectoryButtonToolTip", resourceCulture);
             }
         }
         
