@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:props="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+             MouseLeave="OnMouseLeave">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -17,11 +18,12 @@
     <Canvas Canvas.Top="0"
             Canvas.Left="0">
         <Button Canvas.Top="{Binding CurrentPosition.Y}"
-            Canvas.Left="{Binding CurrentPosition.X}" Height="10" Width="10" Visibility="Hidden" MouseLeave="OnMouseLeave">
+            Canvas.Left="{Binding CurrentPosition.X}" Height="2" Width="2" Visibility="Hidden">
             <Button.ContextMenu>
             <ContextMenu Name="MainContextMenu"
                          Style="{StaticResource ContextMenuStyle}"
-                         MouseLeave="OnMouseLeave">
+                         MouseLeave="OnMouseLeaveContextMenu"
+                         ContextMenuClosing="OnContextMenuClosing">
                 <MenuItem x:Name="BreakItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnections}" 
                           Command="{Binding BreakConnectionsSurrogateCommand}"/>
                     <MenuItem x:Name="SelectItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderSelectConnected}" 

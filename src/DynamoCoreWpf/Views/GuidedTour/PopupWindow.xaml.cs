@@ -50,7 +50,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             HorizontalOffset = hInfo.HorizontalPopupOffSet;
             VerticalOffset = hInfo.VerticalPopupOffSet;
 
-            if (!string.IsNullOrEmpty(hInfo.HtmlPage))
+            if (hInfo.HtmlPage != null && !string.IsNullOrEmpty(hInfo.HtmlPage.FileName))
             {
                 ContentRichTextBox.Visibility = Visibility.Hidden;
                 Opened += PopupWindow_Opened;

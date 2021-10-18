@@ -1044,6 +1044,35 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If the toggle is on, built-in packages will not load on restart. Built-in packages that are currently loaded will be unloaded on restart. 
+        ///If the toggle is off built-in packages that are not already loaded will load once the preferences dialog is closed..
+        /// </summary>
+        public static string DisableBuiltInPackageToggleInfo {
+            get {
+                return ResourceManager.GetString("DisableBuiltInPackageToggleInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If the toggle is on, custom packages will not load on restart. Custom packages that are currently loaded will be unloaded on restart. 
+        ///If the toggle is off custom packages that are not already loaded will load once the preferences dialog is closed..
+        /// </summary>
+        public static string DisableCustomPackageToggleInfo {
+            get {
+                return ResourceManager.GetString("DisableCustomPackageToggleInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All custom package paths have been disabled in Preferences. Packages cannot be installed unless they are re-enabled..
+        /// </summary>
+        public static string DisablePackageInstallIconTooltip {
+            get {
+                return ResourceManager.GetString("DisablePackageInstallIconTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download Warning.
         /// </summary>
         public static string DownloadWarningMessageBoxTitle {
@@ -2564,6 +2593,42 @@ namespace Dynamo.Wpf.Properties {
         public static string GalleryDynamoVersion {
             get {
                 return ResourceManager.GetString("GalleryDynamoVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string GenericTaskDialogOptionCancel {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string GenericTaskDialogOptionNo {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string GenericTaskDialogOptionOK {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string GenericTaskDialogOptionYes {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionYes", resourceCulture);
             }
         }
         
@@ -4851,15 +4916,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sort Packages..
-        /// </summary>
-        public static string PackageSortToolTip {
-            get {
-                return ResourceManager.GetString("PackageSortToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Packages.
         /// </summary>
         public static string PackagesGuide {
@@ -4869,11 +4925,93 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**click Packages &gt; Search for Packages**..
+        /// </summary>
+        public static string PackagesGuideFindPackageText {
+            get {
+                return ResourceManager.GetString("PackagesGuideFindPackageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find a package.
+        /// </summary>
+        public static string PackagesGuideFindPackageTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideFindPackageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Learn about packages.
         /// </summary>
         public static string PackagesGuideLearnAbout {
             get {
                 return ResourceManager.GetString("PackagesGuideLearnAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar..
+        /// </summary>
+        public static string PackagesGuideSearchFilterText {
+            get {
+                return ResourceManager.GetString("PackagesGuideSearchFilterText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search, filter, and sort.
+        /// </summary>
+        public static string PackagesGuideSearchFilterTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideSearchFilterTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packages may come from third parties. Be aware that packages may pose security risks. More information \n\n**Click I Accept** in the Terms of Service to accept it and proceed with this guide..
+        /// </summary>
+        public static string PackagesGuideTermsOfServiceText {
+            get {
+                return ResourceManager.GetString("PackagesGuideTermsOfServiceText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accept the Terms of Service.
+        /// </summary>
+        public static string PackagesGuideTermsOfServiceTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideTermsOfServiceTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packages may come from third parties. Be aware that packages may pose security risks. 
+        ///More information.
+        /// </summary>
+        public static string PackagesGuideThirdPartyText {
+            get {
+                return ResourceManager.GetString("PackagesGuideThirdPartyText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Third-party packages.
+        /// </summary>
+        public static string PackagesGuideThirdPartyTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideThirdPartyTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort Packages..
+        /// </summary>
+        public static string PackageSortToolTip {
+            get {
+                return ResourceManager.GetString("PackageSortToolTip", resourceCulture);
             }
         }
         
