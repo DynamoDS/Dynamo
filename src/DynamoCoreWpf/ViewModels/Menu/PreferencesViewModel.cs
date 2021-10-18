@@ -713,10 +713,12 @@ namespace Dynamo.ViewModels
 
         private void AddPythonEnginesOptions()
         {
-            ObservableCollection<string> options = new ObservableCollection<string>();
-            options.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
+            var options = new ObservableCollection<string>
+            {
+                Res.DefaultPythonEngineNone
+            };
 
-            foreach(var item in GetPythonEngineOptions())
+            foreach (var item in GetPythonEngineOptions())
             {
                 options.Add(item);
             }
@@ -742,8 +744,11 @@ namespace Dynamo.ViewModels
             this.installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
                 dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
 
+            // Scan for engines
+            PythonNodeModels.PythonEngineSelector.Instance.ScanPythonEngines();
             AddPythonEnginesOptions();
 
+            // Listen to for any new python engine that might be dynamically loaded
             PythonNodeModels.PythonEngineSelector.OnPythonEngineScan += () => AddPythonEnginesOptions();
             //Sets SelectedPythonEngine.
             //If the setting is empty it corresponds to the default python engine
