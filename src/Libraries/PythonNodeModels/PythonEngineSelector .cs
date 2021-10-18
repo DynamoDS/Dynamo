@@ -30,7 +30,7 @@ namespace PythonNodeModels
             new Lazy<PythonEngineSelector>
             (() => new PythonEngineSelector());
 
-        internal static Action OnPythonEngineScan;
+        internal Action OnPythonEngineScan;
 
         /// <summary>
         /// The actual instance stored in the Singleton class

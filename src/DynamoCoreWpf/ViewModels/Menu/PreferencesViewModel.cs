@@ -713,11 +713,7 @@ namespace Dynamo.ViewModels
 
         private void AddPythonEnginesOptions()
         {
-            var options = new ObservableCollection<string>
-            {
-                Res.DefaultPythonEngineNone
-            };
-
+            var options = new ObservableCollection<string> { Res.DefaultPythonEngineNone };
             foreach (var item in GetPythonEngineOptions())
             {
                 options.Add(item);
@@ -749,7 +745,7 @@ namespace Dynamo.ViewModels
             AddPythonEnginesOptions();
 
             // Listen to for any new python engine that might be dynamically loaded
-            PythonNodeModels.PythonEngineSelector.OnPythonEngineScan += () => AddPythonEnginesOptions();
+            PythonNodeModels.PythonEngineSelector.Instance.OnPythonEngineScan += AddPythonEnginesOptions;
             //Sets SelectedPythonEngine.
             //If the setting is empty it corresponds to the default python engine
             _ = preferenceSettings.DefaultPythonEngine == string.Empty ? 
@@ -850,8 +846,8 @@ namespace Dynamo.ViewModels
         {
             PropertyChanged -= Model_PropertyChanged;
             WorkspaceEvents.WorkspaceSettingsChanged -= PreferencesViewModel_WorkspaceSettingsChanged;
+            PythonNodeModels.PythonEngineSelector.Instance.OnPythonEngineScan -= AddPythonEnginesOptions;
         }
-
 
         /// <summary>
         /// Listen for changes to the custom package paths and update package paths for install accordingly
