@@ -42,7 +42,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="ProtoGeometry, Version=2.12.0.6444, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_228_0_0.2.12.0.6444\lib\net48\ProtoGeometry.dll</HintPath>
+      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_228_0_0.2.12.0.6565\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="StarMath, Version=2.0.14.1114, Culture=neutral, processorArchitecture=MSIL">
