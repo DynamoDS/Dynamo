@@ -234,7 +234,7 @@ namespace Dynamo.ViewModels
                 return false;
             }
 
-            return connectorViewModel.IsCollapsed;
+            return connectorViewModel.IsHidden;
         }
 
         /// <summary>
