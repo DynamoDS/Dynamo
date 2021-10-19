@@ -175,54 +175,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(this.ViewModel.CurrentSpaceViewModel.Nodes.Count, initialNodeCount + 1);
         }
 
-        public string SettingDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "settings"); } }
-
-        [Test]
-        public void LoadGraphWithPolylineSetting()
-        {
-            var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
-            preloader.Preload();
-
-            var settingsFilePath = Path.Combine(SettingDirectory, "DynamoSettings-polylineConnectors.xml");
-            Assert.IsTrue(File.Exists(settingsFilePath));
-            PreferenceSettings.DynamoTestPath = settingsFilePath;
-
-            TestPathResolver pathResolver = null;
-            var preloadedLibraries = new List<string>();
-            GetLibrariesToPreload(preloadedLibraries);
-
-            if (preloadedLibraries.Any())
-            {
-                pathResolver = new TestPathResolver();
-                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
-                {
-                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
-                }
-            }
-
-            Model = DynamoModel.Start(
-               this.CreateStartConfiguration(pathResolver));
-
-            ViewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
-                {
-                    DynamoModel = Model
-                });
-
-            //create the view
-            View = new DynamoView(ViewModel);
-            View.Show();
-
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), "UI", "ConnectorPinTests.dyn");
-            Assert.IsTrue(File.Exists(openPath));
-
-            Model.OpenFileFromPath(openPath);
-
-            Assert.AreEqual(Model.ConnectorType, ConnectorType.BEZIER);
-            Assert.AreEqual(Model.CurrentWorkspace.Connectors.Count(), 1);
-        }
-
         #endregion
 
         #region Undo/Redo Tests

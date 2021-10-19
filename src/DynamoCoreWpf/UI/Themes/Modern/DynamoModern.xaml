@@ -2325,6 +2325,17 @@
         <Setter Property="FontSize" Value="14" />
     </Style>
 
+    <Style x:Key="ToggleInfoStyle" TargetType="{x:Type Image}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/default_info_16px.png" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="CloseButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
