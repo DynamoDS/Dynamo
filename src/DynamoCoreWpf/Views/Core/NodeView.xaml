@@ -242,7 +242,7 @@
                     <Setter Property="Background" Value="{StaticResource DarkerGreyBrush}"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsVisible}" Value="False">
-                            <Setter Property="Background" Value="#3B4453"/>
+                            <Setter Property="Background" Value="{StaticResource NodeBodyPreviewOffBackground}"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -292,7 +292,7 @@
                     <Setter Property="Background" Value="{StaticResource DarkMidGreyBrush}"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsVisible}" Value="False">
-                            <Setter Property="Background" Value="#454F61"/>
+                            <Setter Property="Background" Value="{StaticResource NodeHeaderPreviewOffBackground}"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
