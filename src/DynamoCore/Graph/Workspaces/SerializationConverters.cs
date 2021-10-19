@@ -853,16 +853,23 @@ namespace Dynamo.Graph.Workspaces
             referencesList = referencesList.Concat(ws.NodeLocalDefinitions).Concat(ws.ExternalFiles);
             foreach (INodeLibraryDependencyInfo item in referencesList) 
             {
-                string refName = item.Name + (item.Version != null ? " " + item.Version.ToString(3): null);
+                string refName = string.Empty;
+                string refExtension = System.IO.Path.GetExtension(item.Name);
 
                 Actions refType = Actions.ExternalReferences;
                 if (item.ReferenceType == ReferenceType.Package)
                 {
+                    refName = item.Name + (item.Version != null ? " " + item.Version.ToString(3) : null);
                     refType = Actions.PackageReferences;
                 }
                 else if (item.ReferenceType == ReferenceType.ZeroTouch || item.ReferenceType == ReferenceType.DYFFile || item.ReferenceType == ReferenceType.NodeModel || item.ReferenceType == ReferenceType.DSFile)
                 {
+                    refName = refExtension;
                     refType = Actions.LocalReferences;
+                }
+                else 
+                {
+                    refName = refExtension;
                 }
 
                 Logging.Analytics.TrackEvent(refType, Categories.WorkspaceReferences, refName);
