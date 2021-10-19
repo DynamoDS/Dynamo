@@ -63,7 +63,7 @@
                                          Value="true">
                                     <Setter TargetName="container"
                                             Property="BorderBrush"
-                                            Value="#808080" />
+                                            Value="#26808080" />
                                     <Setter TargetName="container"
                                             Property="BorderThickness"
                                             Value="2" />
@@ -73,7 +73,7 @@
                                          Value="true">
                                     <Setter TargetName="container"
                                             Property="BorderBrush"
-                                            Value="#808080" />
+                                            Value="#40808080" />
                                     <Setter TargetName="container"
                                             Property="BorderThickness"
                                             Value="4" />
