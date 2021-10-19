@@ -10,13 +10,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
     public class HostControlInfo
     {
         private string name;
-        private string hostClass;
         private UIElement hostUIElement;
         private double verticalPopupOffSet;
         private double horizontalPopupOffSet;
         private string htmlPage;
-        private double widthBoxDelta;
-        private double heightBoxDelta;
 
         /// <summary>
         /// Host Name, this property will contain the name of the host control located in the TreeView
@@ -61,12 +58,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public PlacementMode PopupPlacement { get; set; }
 
         /// <summary>
-        /// This property will highlight the clickable area if its set to true
-        /// </summary>
-        [JsonProperty("HighlightColor")]
-        public string HighlightColor { get; set; }
-
-        /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Vertically (by specifying an offset) 
         /// </summary>
         [JsonProperty("VerticalPopupOffset")]
@@ -99,15 +90,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// Since the box that highlights the elements has its size fixed, this variable applies a value to fix its Width
+        /// Property that represents the highlight rectangle that will be shown over the Overlay
         /// </summary>
-        [JsonProperty("WidthBoxDelta")]
-        public double WidthBoxDelta { get => widthBoxDelta; set => widthBoxDelta = value; }
+        [JsonProperty("HighlightRectArea")]
+        internal HighlightArea HighlightRectArea { get; set; }
+
         /// <summary>
-        /// Since the box that highlights the elements has its size fixed, this variable applies a value to fix its Height
+        /// Property that represents the cut off section that will be removed from the Overlay
         /// </summary>
-        [JsonProperty("HeightBoxDelta")]
-        public double HeightBoxDelta { get => heightBoxDelta; set => heightBoxDelta = value; }
+        [JsonProperty("CutOffRectArea")]
+        internal CutOffArea CutOffRectArea { get; set; }
 
         /// <summary>
         /// The html page anme that is going to be rendered inside the popup
