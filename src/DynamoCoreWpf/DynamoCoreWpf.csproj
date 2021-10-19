@@ -73,9 +73,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoGeometry, Version=2.12.0.5595, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5595\lib\net48\ProtoGeometry.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="ProtoGeometry, Version=2.12.0.6565, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_228_0_0.2.12.0.6565\lib\net48\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
@@ -178,13 +178,19 @@
     <Compile Include="UI\GuidedTour\Guide.cs" />
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
+    <Compile Include="UI\GuidedTour\GuidedTourResources.cs" />
+    <Compile Include="UI\GuidedTour\GuidesValidationMethods.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
+    <Compile Include="UI\GuidedTour\PreValidation.cs" />
     <Compile Include="UI\GuidedTour\Step.cs" />
     <Compile Include="UI\GuidedTour\StepUIAutomation.cs" />
     <Compile Include="UI\GuidedTour\Survey.cs" />
     <Compile Include="UI\GuidedTour\Tooltip.cs" />
     <Compile Include="UI\GuidedTour\Welcome.cs" />
     <Compile Include="UI\MouseBehaviour.cs" />
+    <Compile Include="UI\Prompts\DynamoMessageBox.xaml.cs">
+      <DependentUpon>DynamoMessageBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
@@ -219,6 +225,7 @@
     <Compile Include="Utilities\CrashUtilities.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\MessageBoxUtilities.cs" />
+    <Compile Include="Utilities\NodeContextMenuBuilder.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
@@ -300,6 +307,8 @@
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\Core\InPortViewModel.cs" />
+    <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
@@ -308,6 +317,7 @@
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\Preview\CompactBubbleViewModel.cs" />
     <Compile Include="ViewModels\Preview\ConnectorAnchorViewModel.cs" />
+    <Compile Include="ViewModels\Preview\ConnectorContextMenuViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
@@ -335,6 +345,9 @@
     <Compile Include="Views\Core\ConnectorAnchorView.xaml.cs">
       <DependentUpon>ConnectorAnchorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Core\ConnectorContextMenuView.xaml.cs">
+      <DependentUpon>ConnectorContextMenuView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
       <DependentUpon>ConnectorPinView.xaml</DependentUpon>
@@ -347,6 +360,9 @@
     </Compile>
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\WebBrowserWindow.xaml.cs">
+      <DependentUpon>WebBrowserWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GuidedTour\RealTimeInfoWindow.xaml.cs">
       <DependentUpon>RealTimeInfoWindow.xaml</DependentUpon>
@@ -474,6 +490,26 @@
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <None Include="UI\Themes\Modern\InPorts.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Themes\Modern\OutPorts.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Page Include="UI\Prompts\DynamoMessageBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GuidedTour\WebBrowserWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Core\ConnectorContextMenuView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GuidedTour\RealTimeInfoWindow.xaml">
       <SubType>Designer</SubType>
@@ -607,10 +643,14 @@
     <None Include="UI\Fonts\OpenSans-SemiboldItalic.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="UI\Fonts\SourceCodePro-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="UI\GuidedTour\dynamo_guides.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
@@ -1383,13 +1423,44 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\watch_selected_48_48.png" />
-    <Resource Include="UI\Images\pin_48_48.png" />
-    <Resource Include="UI\Images\pin_default_48_48.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\DynamoPackages_1_1.png" />
+    <Resource Include="UI\Images\default_info_16px.png" />
+    <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
+    <Resource Include="UI\Images\info_2.png" />
+    <Resource Include="UI\Images\alert_2.png" />
+    <Resource Include="UI\Images\close_blue.png" />
+    <Resource Include="UI\Images\close_grey.png" />
     <Resource Include="UI\Images\pin_hidden_48_48.png" />
+    <Resource Include="UI\Images\pin_hover_48_48.png" />
+    <Resource Include="UI\Images\wire_anchor_48_48.png" />
+    <Resource Include="UI\Images\watch_hidden_48_48.png" />
+    <Resource Include="UI\Images\watch_hover_48_48.png" />
+    <Resource Include="UI\Images\checkmark - grey.png" />
+    <Resource Include="UI\Images\package_error.png" />
+    <Resource Include="UI\Images\icon-shape.png" />
+    <Resource Include="UI\Images\Progress circle.png" />
+    <Resource Include="UI\Images\Requirements - disabled.png" />
+    <Resource Include="UI\Images\View details - disabled.png" />
+    <Resource Include="UI\Images\Add - default.png" />
+    <Resource Include="UI\Images\Add - disabled.png" />
+    <Resource Include="UI\Images\Checkmark - menu selected.png" />
+    <Resource Include="UI\Images\Checkmark.png" />
+    <Resource Include="UI\Images\Circle close.png" />
+    <Resource Include="UI\Images\Copyright.png" />
+    <Resource Include="UI\Images\Date.png" />
+    <Resource Include="UI\Images\Download.png" />
+    <Resource Include="UI\Images\Favorite.png" />
+    <Resource Include="UI\Images\Filter.png" />
+    <Resource Include="UI\Images\Flag.png" />
+    <Resource Include="UI\Images\Profile.png" />
+    <Resource Include="UI\Images\Requirements.png" />
+    <Resource Include="UI\Images\Sort.png" />
+    <Resource Include="UI\Images\View details.png" />
+    <Resource Include="UI\Images\more-vertical_selected_16px.png" />
+    <Resource Include="UI\Images\pin_default_48_48.png" />
     <Resource Include="UI\Images\pin_selected_48_48.png" />
     <Resource Include="UI\Images\watch_default_48_48.png" />
-    <Resource Include="UI\Images\watch_hidden_48_48.png" />
     <Resource Include="UI\Images\error.png" />
     <Resource Include="UI\Images\info.png" />
     <Resource Include="UI\Images\warning.png" />
@@ -1400,12 +1471,8 @@
     <Resource Include="UI\Images\hidden.png" />
     <Resource Include="UI\Images\default-node-icon.png" />
     <Resource Include="UI\Images\more-vertical.png" />
-    <Resource Include="UI\Images\pin_default_16_16.png" />
-    <Resource Include="UI\Images\watch_default_16_16.png" />
-    <Resource Include="UI\Images\wire_anchor_12_12.png" />
     <Resource Include="UI\Images\watch_hidden_16_16.png" />
     <Resource Include="UI\Images\alert.png" />
-    <Resource Include="UI\Images\Pin_NoBackground_16_16.png" />
     <Resource Include="UI\Images\menu_16_16.png" />
     <Resource Include="UI\Images\caret_down.png" />
     <Resource Include="UI\Images\caret_up.png" />
@@ -1413,10 +1480,6 @@
     <Resource Include="UI\Images\PackageManager\down_16_16.png" />
     <Resource Include="UI\Images\PackageManager\folder_16_16.png" />
     <Resource Include="UI\Images\PackageManager\up_16_16.png" />
-    <Resource Include="UI\Images\pin_hidden_16_16.png" />
-    <Resource Include="UI\Images\pin_selected_16_16.png" />
-    <Resource Include="UI\Images\Pin_16_16.png" />
-    <Resource Include="UI\Images\Watch_16_16.png" />
     <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

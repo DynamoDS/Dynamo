@@ -588,6 +588,7 @@ namespace Dynamo.Graph.Workspaces
             IEnumerable<INodeLibraryDependencyInfo> workspaceReferences;
             var nodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
             var nodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+            var externalFiles = new List<INodeLibraryDependencyInfo>();
 
             if (obj[NodeLibraryDependenciesPropString] != null)
             {
@@ -604,9 +605,13 @@ namespace Dynamo.Graph.Workspaces
                 {
                     nodeLibraryDependencies.Add(depInfo);
                 }
-                else if (depInfo is LocalDefinitionInfo) 
+                else if (depInfo is DependencyInfo && (depInfo.ReferenceType == ReferenceType.ZeroTouch || depInfo.ReferenceType == ReferenceType.DYFFile))
                 {
                     nodeLocalDefinitions.Add(depInfo);
+                }
+                else if (depInfo is DependencyInfo && depInfo.ReferenceType == ReferenceType.External)
+                {
+                    externalFiles.Add(depInfo);
                 }
             }
 
@@ -693,6 +698,7 @@ namespace Dynamo.Graph.Workspaces
 
             ws.NodeLibraryDependencies = nodeLibraryDependencies;
             ws.NodeLocalDefinitions = nodeLocalDefinitions;
+            ws.ExternalFiles = externalFiles;
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
 
@@ -844,7 +850,8 @@ namespace Dynamo.Graph.Workspaces
             writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
 
             IEnumerable<INodeLibraryDependencyInfo> referencesList = ws.NodeLibraryDependencies;
-            referencesList = referencesList.Concat(ws.NodeLocalDefinitions);
+            referencesList = referencesList.Concat(ws.NodeLocalDefinitions).Concat(ws.ExternalFiles);
+
             serializer.Serialize(writer, referencesList);
 
             if (!isCustomNode && ws is HomeWorkspaceModel hws)
@@ -1088,14 +1095,17 @@ namespace Dynamo.Graph.Workspaces
                     depInfo = new PackageDependencyInfo(name, version);
                     break;
                 case ReferenceType.DYFFile:
-                    depInfo = new LocalDefinitionInfo(name, ReferenceType.DYFFile);
+                    depInfo = new DependencyInfo(name, ReferenceType.DYFFile);
 
                     break;
                 case ReferenceType.ZeroTouch:
-                    depInfo = new LocalDefinitionInfo(name, ReferenceType.ZeroTouch);
+                    depInfo = new DependencyInfo(name, ReferenceType.ZeroTouch);
+                    break;
+                case ReferenceType.External:
+                    depInfo = new DependencyInfo(name, ReferenceType.External);
                     break;
                 default:
-                    depInfo = new LocalDefinitionInfo(name);
+                    depInfo = new DependencyInfo(name);
                     break;
             }
 
@@ -1187,11 +1197,9 @@ namespace Dynamo.Graph.Workspaces
             var obj = JObject.Load(reader);
             var startId = obj["Start"].Value<string>();
             var endId = obj["End"].Value<string>();
-            var isDisplayedExists = obj[nameof(ConnectorModel.IsDisplayed)];
-            
-            var isDiplayed = isDisplayedExists != null ?
-                obj[nameof(ConnectorModel.IsDisplayed)].Value<bool>()
-                : true;
+            var isHiddenExists = obj[nameof(ConnectorModel.IsHidden)];
+
+            var isHidden = isHiddenExists != null && obj[nameof(ConnectorModel.IsHidden)].Value<bool>();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 
@@ -1219,7 +1227,7 @@ namespace Dynamo.Graph.Workspaces
             if(startPort != null && endPort != null)
             {
                 var connectorModel = new ConnectorModel(startPort, endPort, connectorId);
-                connectorModel.IsDisplayed = isDiplayed;
+                connectorModel.IsHidden = isHidden;
                 return connectorModel;
             }
             else
@@ -1247,8 +1255,8 @@ namespace Dynamo.Graph.Workspaces
             writer.WriteValue(connector.End.GUID.ToString("N"));
             writer.WritePropertyName("Id");
             writer.WriteValue(connector.GUID.ToString("N"));
-            writer.WritePropertyName(nameof(ConnectorModel.IsDisplayed));
-            writer.WriteValue(connector.IsDisplayed.ToString());
+            writer.WritePropertyName(nameof(ConnectorModel.IsHidden));
+            writer.WriteValue(connector.IsHidden.ToString());
             writer.WriteEndObject();
         }
     }

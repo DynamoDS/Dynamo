@@ -134,16 +134,15 @@
     <SolidColorBrush x:Key="PortDefaultBackground" Color="Transparent" />
     <SolidColorBrush x:Key="PortIsConnectedBackground" Color="#465A63" />
     <SolidColorBrush x:Key="PortIsNotConnectedBackground" Color="#6B4343" />
-    <SolidColorBrush x:Key="PortKeepListStructureBackground" Color="#5EA5C4" />
+    <SolidColorBrush x:Key="PortKeepListStructureBackground" Color="#537E91" />
 
     <SolidColorBrush x:Key="PortDefaultBorderBrush" Color="{StaticResource PrimaryCharcoal300}" />
     <SolidColorBrush x:Key="PortIsConnectedBorderBrush" Color="#6AC0E7" />
     <SolidColorBrush x:Key="PortIsNotConnectedBorderBrush" Color="#F48686" />
     <SolidColorBrush x:Key="PortKeepListStructureBorderBrush" Color="#6AC0E7" />
 
-    <SolidColorBrush x:Key="PortUsingDefaultValueMarkerColor" Color="#6AC0E7" />
     <SolidColorBrush x:Key="PortUseLevelsCheckBoxColor" Color="#808080" />
 
     <!--  Connector  -->
-    <SolidColorBrush x:Key="ConnectorHoverStateOutline" Color="#B6B6B6" />
+    <SolidColorBrush x:Key="ConnectorHoverStateColor" Color="#808080" />
 </ResourceDictionary>

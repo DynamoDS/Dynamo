@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Graph;
-using Dynamo.Selection;
 using Dynamo.UI.Commands;
-using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
@@ -93,11 +90,11 @@ namespace Dynamo.ViewModels
       /// bezier connectors through.
       /// </summary>
         [JsonIgnore]
-        public double OneThirdWidth
+        public static double OneThirdWidth
         {
             get
             {
-                return Model.Width * 0.33333;
+                return ConnectorPinModel.StaticWidth * 0.33333;
             }
         }
 
@@ -119,11 +116,34 @@ namespace Dynamo.ViewModels
         /// </summary>
         public double Top
         {
-            get { return model.Y; }
+            get { return model.Y- OneThirdWidth; }
             set
             {
-                model.Y = value;
+                //Through trial and error using the OneThirdWidth value to offset the pin location works 
+                //better than using OneHalf.
+                model.Y = value + OneThirdWidth;
                 RaisePropertyChanged(nameof(Top));
+            }
+        }
+        private bool isHoveredOver = false;
+        /// <summary>
+        /// This flag let's the ConnectorViewModel when it can and cannot run a ConnectorContextMenu. It CANNOT
+        /// do so when IsHoveredOver for any pin is set to true, as in that case we want only that ConnectorPins 
+        /// ContextMenu to be enabled on right click.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsHoveredOver
+        {
+            get => isHoveredOver;
+            set
+            {
+                if (isHoveredOver == value)
+                {
+                    return;
+                }
+
+                isHoveredOver = value;
+                RaisePropertyChanged(nameof(IsHoveredOver));
             }
         }
 
@@ -136,39 +156,56 @@ namespace Dynamo.ViewModels
             get { return model.IsSelected; }
         }
 
-        private bool isVisible;
+        private bool isCollapsed = false;
         [JsonIgnore]
-        public bool IsVisible
+        public override bool IsCollapsed
         {
-            get
-            {
-                return isVisible;
-            }
+            get => isCollapsed;
             set
             {
-                isVisible = value;
-                RaisePropertyChanged(nameof(IsVisible));
-                RaisePropertyChanged(nameof(IsPartlyVisible));
+                if (isCollapsed == value)
+                {
+                    return;
+                }
+
+                isCollapsed = value;
+                RaisePropertyChanged(nameof(IsCollapsed));
             }
         }
 
-        private bool isPartlyVisible;
+        private bool isHidden;
+        public bool IsHidden
+        {
+            get => isHidden;
+            set
+            {
+                if (isHidden == value)
+                {
+                    return;
+                }
+
+                isHidden = value;
+                RaisePropertyChanged(nameof(IsHidden));
+            }
+        }
+
+
+        private bool isTemporarilyVisible;
         /// <summary>
         /// Provides the ViewModel (this) with the visibility state of the Connector.
         /// When set to 'hidden', 'IsHalftone' is set to true, and viceversa.
         /// </summary>
         [JsonIgnore]
-        public bool IsPartlyVisible
+        public bool IsTemporarilyVisible
         {
             get
             {
-                return isPartlyVisible;
+                return isTemporarilyVisible;
             }
             set
             {
-                isPartlyVisible = value;
-                RaisePropertyChanged(nameof(IsPartlyVisible));
-                RaisePropertyChanged(nameof(IsVisible));
+                isTemporarilyVisible = value;
+                RaisePropertyChanged(nameof(IsTemporarilyVisible));
             }
         }
 

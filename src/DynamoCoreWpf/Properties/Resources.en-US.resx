@@ -254,7 +254,7 @@
     <comment>Context menu item</comment>
   </data>
   <data name="ContextMenuDelete" xml:space="preserve">
-    <value>Remove</value>
+    <value>Delete</value>
     <comment>Context menu for selected node - delete selected node</comment>
   </data>
   <data name="ContextMenuEditCustomNode" xml:space="preserve">
@@ -273,8 +273,8 @@
     <value>Switch to Geometry _View</value>
     <comment>Context menu item</comment>
   </data>
-  <data name="ContextMenuHideAllGeometry" xml:space="preserve">
-    <value>Hide all geometry preview</value>
+  <data name="ContextMenuHideGeometry" xml:space="preserve">
+    <value>Hide geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="ContextMenuHideAllTextBubble" xml:space="preserve">
@@ -333,8 +333,8 @@
     <value>Publish This Custom Node...</value>
     <comment>Context menu item</comment>
   </data>
-  <data name="ContextMenuShowAllGeometry" xml:space="preserve">
-    <value>Show all geometry preview</value>
+  <data name="ContextMenuShowGeometry" xml:space="preserve">
+    <value>Show geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
   <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
@@ -820,6 +820,14 @@ You will get a chance to save your work.</value>
   <data name="PreferencesViewSelectedPackagePathForDownload" xml:space="preserve">
     <value>Selected package path for download</value>
     <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory | Selected package path for download</comment>
+  </data>
+  <data name="PreferencesViewDisableBuiltInPackages" xml:space="preserve">
+    <value>Disable Loading Built-In Packages</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | Disable Loading Built-In Packages</comment>
+  </data>
+  <data name="PreferencesViewDisableCustomPackages" xml:space="preserve">
+    <value>Disable Loading Custom Packages</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | Disable Loading Custom Packages</comment>
   </data>
   <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
     <value>Square Centimeter</value>
@@ -2311,8 +2319,8 @@ Uninstall the following packages: {0}?</value>
   <data name="ConnectorContextMenuHeaderBreakConnections" xml:space="preserve">
     <value>Break Connections</value>
   </data>
-  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
-    <value>Pin Wire</value>
+  <data name="ConnectorContextMenuHeaderShowConnector" xml:space="preserve">
+    <value>Show Wire</value>
   </data>
   <data name="ConnectorContextMenuHeaderSelectConnected" xml:space="preserve">
     <value>Select Connected</value>
@@ -2517,8 +2525,8 @@ Uninstall the following packages: {0}?</value>
   <data name="HideWiresPopupMenuItem" xml:space="preserve">
     <value>Hide Wires</value>
   </data>
-  <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
-    <value>Unhide Wires</value>
+  <data name="ShowWiresPopupMenuItem" xml:space="preserve">
+    <value>Show Wires</value>
   </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this guide later from the Help menu.</value>
@@ -2637,8 +2645,106 @@ Delete the following packages: {2}?
   <data name="PackageFilter_Name_All" xml:space="preserve">
     <value>All</value>
   </data>
+  <data name="PackageSearchHeader" xml:space="preserve">
+    <value>Search for packages</value>
+    <comment>The title of the package search manager window.</comment>
+  </data>
+  <data name="DisablePackageInstallIconTooltip" xml:space="preserve">
+    <value>All custom package paths have been disabled in Preferences. Packages cannot be installed unless they are re-enabled.</value>
+    <comment>Disable package install icon tooltip.</comment>
+  </data>
+  <data name="DisableBuiltInPackageToggleInfo" xml:space="preserve">
+    <value>If the toggle is on, built-in packages will not load on restart. Built-in packages that are currently loaded will be unloaded on restart. 
+If the toggle is off built-in packages that are not already loaded will load once the preferences dialog is closed.</value>
+    <comment>Disable built-in package toggle info.</comment>
+  </data>
+  <data name="DisableCustomPackageToggleInfo" xml:space="preserve">
+    <value>If the toggle is on, custom packages will not load on restart. Custom packages that are currently loaded will be unloaded on restart. 
+If the toggle is off custom packages that are not already loaded will load once the preferences dialog is closed.</value>
+    <comment>Disable custom package toggle info.</comment>
+  </data>
+  <data name="PackageSearchSortBy" xml:space="preserve">
+    <value>SORT BY</value>
+    <comment>Header in Package Search 'Sort By' Button  Context Menu</comment>
+  </data>
+  <data name="PackageSearchResultViewDetails" xml:space="preserve">
+    <value>View Details</value>
+    <comment>In package search result card.</comment>
+  </data>
+  <data name="PackageSearchResultRequirements" xml:space="preserve">
+    <value>Requirements</value>
+    <comment>In package search result card.</comment>
+  </data>
+  <data name="PackageSearchOrder" xml:space="preserve">
+    <value>ORDER</value>
+    <comment>Header in Package Search 'Sort By' Button Context Menu</comment>
+  </data>
   <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
     <value>Show Preview Bubbles</value>
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
+  </data>
+  <data name="PackagesGuide" xml:space="preserve">
+    <value>Packages</value>
+  </data>
+  <data name="PackagesGuideLearnAbout" xml:space="preserve">
+    <value>Learn about packages</value>
+  </data>
+  <data name="NodeAutoCompleteNotAvailableForCollapsedGroups" xml:space="preserve">
+    <value>Node AutoComplete is not available on ports belonging to collapsed groups.</value>
+  </data>
+  <data name="PackageManagerInstall" xml:space="preserve">
+    <value>Install</value>
+    <comment>Used on the package manager search result card. If the package is not installed, the button will say 'Install'.</comment>
+  </data>
+  <data name="PackageManagerPackageUpdated" xml:space="preserve">
+    <value>Updated</value>
+    <comment>Displays next to the package name in the Package Search window if the package has been updated in the last 30 days.</comment>
+  </data>
+  <data name="PackageManagerPackageNew" xml:space="preserve">
+    <value>New</value>
+    <comment>Displays next to the package name in the Package Search window if the package has been added in the last 30 days.</comment>
+  </data>
+  <data name="PackageSortToolTip" xml:space="preserve">
+    <value>Sort Packages.</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderHideConnector" xml:space="preserve">
+    <value>Hide Wire</value>
+  </data>
+  <data name="PackagesGuideFindPackageText" xml:space="preserve">
+    <value>Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**click Packages &gt; Search for Packages**.</value>
+  </data>
+  <data name="PackagesGuideFindPackageTitle" xml:space="preserve">
+    <value>Find a package</value>
+  </data>
+  <data name="PackagesGuideSearchFilterText" xml:space="preserve">
+    <value>You can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar.</value>
+  </data>
+  <data name="PackagesGuideSearchFilterTitle" xml:space="preserve">
+    <value>Search, filter, and sort</value>
+  </data>
+  <data name="PackagesGuideTermsOfServiceText" xml:space="preserve">
+    <value>Packages may come from third parties. Be aware that packages may pose security risks. More information \n\n**Click I Accept** in the Terms of Service to accept it and proceed with this guide.</value>
+  </data>
+  <data name="PackagesGuideTermsOfServiceTitle" xml:space="preserve">
+    <value>Accept the Terms of Service</value>
+  </data>
+  <data name="PackagesGuideThirdPartyText" xml:space="preserve">
+    <value>Packages may come from third parties. Be aware that packages may pose security risks. 
+More information</value>
+  </data>
+  <data name="PackagesGuideThirdPartyTitle" xml:space="preserve">
+    <value>Third-party packages</value>
+  </data>
+  <data name="GenericTaskDialogOptionYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="GenericTaskDialogOptionNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="GenericTaskDialogOptionOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="GenericTaskDialogOptionCancel" xml:space="preserve">
+    <value>Cancel</value>
   </data>
 </root>

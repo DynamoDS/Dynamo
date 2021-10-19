@@ -27,6 +27,7 @@ using Dynamo.Properties;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using DynamoUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore.Namespace;
@@ -728,7 +729,7 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-               var nodeLocalDefinitions = new Dictionary<object, LocalDefinitionInfo>();
+               var nodeLocalDefinitions = new Dictionary<object, DependencyInfo>();
 
                 foreach (var node in Nodes)
                 {
@@ -742,9 +743,9 @@ namespace Dynamo.Graph.Workspaces
                         {
                             localDefinitionName = node.Name + customNodeExtension;
 
-                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName)) 
+                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
                             {
-                                nodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName);
+                                nodeLocalDefinitions[localDefinitionName] = new DependencyInfo(localDefinitionName);
                             }
 
                             nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
@@ -753,15 +754,21 @@ namespace Dynamo.Graph.Workspaces
                         else if (node is DSFunctionBase functionNode)
                         {
                             string assemblyPath = functionNode.Controller.Definition.Assembly;
-                            localDefinitionName = Path.GetFileName(assemblyPath);
+                            var directoryName = Path.GetDirectoryName(assemblyPath);
 
-                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
+                            // For the local definition reference, the assembly directory exists on disc.
+                            if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName))
                             {
-                                nodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName, assemblyPath);
-                            }
+                                localDefinitionName = Path.GetFileName(assemblyPath);
 
-                            nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
-                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.ZeroTouch;
+                                if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
+                                {
+                                    nodeLocalDefinitions[localDefinitionName] = new DependencyInfo(localDefinitionName, assemblyPath);
+                                }
+
+                                nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
+                                nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.ZeroTouch;
+                            }
                         }
                         else if (node is DummyNode)
                         {
@@ -784,7 +791,7 @@ namespace Dynamo.Graph.Workspaces
                     {
                         foreach (var node in dependency.Nodes)
                         {
-                            localDefinitionsDictionary[node] = dependency as LocalDefinitionInfo;
+                            localDefinitionsDictionary[node] = dependency as DependencyInfo;
                         }
                     }
                 }
@@ -793,8 +800,85 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        internal List<INodeLibraryDependencyInfo> ExternalFiles
+        {
+            get
+            {
+                return GetExternalFiles();
+            }
+            set
+            {
+                foreach (var dependency in value)
+                {
+                    if (dependency.ReferenceType == ReferenceType.External)
+                    {
+                        foreach (var node in dependency.Nodes)
+                        {
+                            externalFilesDictionary[node] = dependency as DependencyInfo;
+                        }
+                    }
+                }
+
+                RaisePropertyChanged(nameof(ExternalFiles));
+            }
+        }
+
+        private List<INodeLibraryDependencyInfo> GetExternalFiles()
+        {
+            var externalFiles = new Dictionary<object, DependencyInfo>();
+
+            // Computes the external file references if the Workspace Model is a HomeWorkspaceModel.
+            // The workspace should be executed for the external references to be computed because the node output port values are needed.
+            if (this is HomeWorkspaceModel homeWorkspaceModel)
+            {
+                foreach (var node in nodes)
+                {
+                    externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
+
+                    // Check for the file path string value at each of the output ports of all nodes in the workspace. 
+                    foreach (var port in node.OutPorts)
+                    {
+                        var id = node.GetAstIdentifierForOutputIndex(port.Index).Name;
+                        var mirror = homeWorkspaceModel.EngineController.GetMirror(id);
+                        var data = mirror?.GetData().Data;
+
+                        if (data is string dataString && dataString.Contains(@"\"))
+                        {
+                            // Check if the value exists on disk
+                            PathHelper.FileInfoAtPath(dataString, out bool fileExists, out string fileSize);
+                            if (fileExists)
+                            {
+                                var externalFilePath = Path.GetFullPath(dataString);
+                                var externalFileName = Path.GetFileName(dataString);
+
+                                if (!externalFiles.ContainsKey(externalFilePath))
+                                {
+                                    externalFiles[externalFilePath] = new DependencyInfo(externalFileName, dataString, ReferenceType.External);
+                                }
+
+                                externalFiles[externalFilePath].AddDependent(node.GUID);
+                                externalFiles[externalFilePath].Size = fileSize;
+                            }
+                            // Read the serialized value for that node.
+                            else if (serializedDependencyInfo != null && dataString.Contains(serializedDependencyInfo.Name))
+                            {
+                                if (!externalFiles.ContainsKey(serializedDependencyInfo.Name))
+                                {
+                                    externalFiles[serializedDependencyInfo.Name] = new DependencyInfo(serializedDependencyInfo.Name, ReferenceType.External);
+                                }
+                                externalFiles[serializedDependencyInfo.Name].AddDependent(node.GUID);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return externalFiles.Values.ToList<INodeLibraryDependencyInfo>();
+        }
+
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
-        private Dictionary<Guid, LocalDefinitionInfo> localDefinitionsDictionary = new Dictionary<Guid, LocalDefinitionInfo>();
+        private Dictionary<Guid, DependencyInfo> localDefinitionsDictionary = new Dictionary<Guid, DependencyInfo>();
+        private Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
 
 
         /// <summary>
@@ -1151,6 +1235,7 @@ namespace Dynamo.Graph.Workspaces
 
             this.NodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
             this.NodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+            this.ExternalFiles = new List<INodeLibraryDependencyInfo>();
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -1791,7 +1876,7 @@ namespace Dynamo.Graph.Workspaces
                             connector.SetAttribute("start_index", c.Start.Index.ToString());
                             connector.SetAttribute("end", c.End.Owner.GUID.ToString());
                             connector.SetAttribute("end_index", c.End.Index.ToString());
-                            connector.SetAttribute(nameof(ConnectorModel.IsDisplayed), c.IsDisplayed.ToString());
+                            connector.SetAttribute(nameof(ConnectorModel.IsHidden), c.IsHidden.ToString());
 
                             if (c.End.PortType == PortType.Input)
                                 connector.SetAttribute("portType", "0");

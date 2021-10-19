@@ -82,8 +82,8 @@ limitations under the License.
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ProtoGeometry, Version=2.12.0.5595, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5595\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.12.0.6565, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_228_0_0.2.12.0.6565\lib\net48\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
@@ -400,15 +400,14 @@ limitations under the License.
   </Choose>
   <Target Name="BeforeBuild">
     <PropertyGroup>
-      <LibGProtoGeometryLibGLocale>$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\libg_locale</LibGProtoGeometryLibGLocale>
+      <LibGProtoGeometryLibGLocale>$(SolutionDir)\packages\DynamoVisualProgramming.LibG_228_0_0*\tools\net48\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>
-      <LibGInterface Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\LibG.Interface.dll" />
-      <LibGProtoGeometryXml Include="$(solutiondir)\packages\dynamovisualprogramming.libg_227_0_0*\lib\net48\protogeometry.xml" />
-      <LibGProtoGeometryUICulture Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\$(UICulture)\*" />
-      <LibG225 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_225_0_0*\tools\net48\LibG_225_0_0\*" />
-      <LibG226 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_226_0_0*\tools\net48\LibG_226_0_0\*" />
+      <LibGInterface Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_228_0_0*\tools\net48\LibG.Interface.dll" />
+      <LibGProtoGeometryXml Include="$(solutiondir)\packages\dynamovisualprogramming.libg_228_0_0*\lib\net48\protogeometry.xml" />
+      <LibGProtoGeometryUICulture Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_228_0_0*\tools\net48\$(UICulture)\*" />
       <LibG227 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\LibG_227_0_0\*" />
+      <LibG228 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_228_0_0*\tools\net48\LibG_228_0_0\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
@@ -429,9 +428,8 @@ limitations under the License.
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(LibGProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path $(LibGProtoGeometryLibGLocale) -Destination $(OutputPath) -Recurse -Force" />
-    <Copy SourceFiles="@(LibG225)" DestinationFolder="$(OutputPath)libg_225_0_0\" />
-    <Copy SourceFiles="@(LibG226)" DestinationFolder="$(OutputPath)libg_226_0_0\" />
     <Copy SourceFiles="@(LibG227)" DestinationFolder="$(OutputPath)libg_227_0_0\" />
+    <Copy SourceFiles="@(LibG228)" DestinationFolder="$(OutputPath)libg_228_0_0\" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />

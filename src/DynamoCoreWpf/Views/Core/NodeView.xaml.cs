@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,7 @@ using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 
@@ -61,13 +63,13 @@ namespace Dynamo.Controls
                 if (viewModel.PreviewPinned)
                 {
                     CreatePreview(viewModel);
-                }                
+                }
             }
         }
 
         private void NodeView_MouseLeave(object sender, MouseEventArgs e)
         {
-            if (viewModel!=null && viewModel.OnMouseLeave != null)
+            if (viewModel != null && viewModel.OnMouseLeave != null)
                 viewModel.OnMouseLeave();
         }
 
@@ -114,7 +116,8 @@ namespace Dynamo.Controls
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.InPortsDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.OutPortsDictionary);
 
             InitializeComponent();
 
@@ -426,7 +429,7 @@ namespace Dynamo.Controls
                 }
             }
         }
-        
+
         private void NameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
@@ -678,7 +681,8 @@ namespace Dynamo.Controls
                 {
                     PreviewControl.TransitionToState(PreviewControl.State.Condensed);
                     PreviewControl.TransitionToState(PreviewControl.State.Hidden);
-                } else if (PreviewControl.IsCondensed)
+                }
+                else if (PreviewControl.IsCondensed)
                 {
                     PreviewControl.TransitionToState(PreviewControl.State.Hidden);
                 }
@@ -687,20 +691,64 @@ namespace Dynamo.Controls
 
         #endregion
 
-        private void OptionsButton_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// A dictionary of MenuItems which are added during certain nodes' NodeViewCustomization process.
+        /// </summary>
+        private OrderedDictionary NodeViewCustomizationMenuItems { get; } = new OrderedDictionary();
+
+        /// <summary>
+        /// Saves a persistent list of unique MenuItems that are added by certain nodes during their NodeViewCustomization process.
+        /// Because nodes' ContextMenus are loaded lazily, and their MenuItems are disposed on closing,
+        /// these custom MenuItems need to be manually re-injected into the context menu whenever it is opened.
+        /// </summary>
+        private void StashNodeViewCustomizationMenuItems()
+        {
+            foreach (var obj in grid.ContextMenu.Items)
+            {
+                if (!(obj is MenuItem menuItem)) continue;
+
+                // We don't stash default MenuItems, such as 'Freeze'.
+                if (NodeContextMenuBuilder.NodeContextMenuDefaultItemNames.Contains(menuItem.Header.ToString())) continue;
+
+                // We don't stash the same MenuItem multiple times.
+                if (NodeViewCustomizationMenuItems.Contains(menuItem.Header.ToString())) continue;
+                
+                // The MenuItem gets stashed.
+                NodeViewCustomizationMenuItems.Add(menuItem.Header.ToString(), menuItem);
+            }
+        }
+
+        /// <summary>
+        /// A common method to handle the node Options Button being clicked and
+        /// the user right-clicking on the node body to open its ContextMenu.
+        /// </summary>
+        private void DisplayNodeContextMenu(object sender, RoutedEventArgs e)
         {
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
-            grid.ContextMenu.DataContext = viewModel;
-            grid.ContextMenu.IsOpen = true;
+            var contextMenu = grid.ContextMenu;
+
+            // Stashing any injected MenuItems from the Node View Customization process.
+            if (contextMenu.Items.Count > 0 && NodeViewCustomizationMenuItems.Count < 1)
+            {
+                StashNodeViewCustomizationMenuItems();
+            }
+
+            // Clearing any existing items in the node's ContextMenu.
+            contextMenu.Items.Clear();
+            NodeContextMenuBuilder.Build(contextMenu, viewModel, NodeViewCustomizationMenuItems);
+            
+            contextMenu.DataContext = viewModel;
+            contextMenu.IsOpen = true;
+
+            e.Handled = true;
         }
 
-        private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        private void MainContextMenu_OnClosed(object sender, RoutedEventArgs e)
         {
-            if (!(ViewModel.WorkspaceViewModel.Zoom < 0.4)) return;
-            grid.ContextMenu.IsOpen = true;
+            grid.ContextMenu.Items.Clear();
             e.Handled = true;
         }
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -36,6 +37,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null) return string.Empty;
             string incomingString = value as string;
             return incomingString.Split(new[] { '\r', '\n' }, 2)[0].Trim();
         }
@@ -50,6 +52,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null) return string.Empty;
             string incomingString = value as string;
             return incomingString.Split(new[] { '\r', '\n' }, 2)[1].Trim();
         }
@@ -106,29 +109,19 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Converts the list of package dependencies to a string
+    /// Converts the list of package dependencies to a comma-separated string.
     /// </summary>
     public class DependencyListToStringConverter : IValueConverter
     {
-        private readonly string[] PythonEngineList = { PythonNodeModels.PythonEngineVersion.CPython3.ToString(), PythonNodeModels.PythonEngineVersion.IronPython2.ToString() };
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string depString = string.Empty;
-            bool flag = false;
-            if (value != null)
-            {
-                List<string> depList = (List<string>)value;
-                foreach (var dep in depList)
-                {
-                    if (PythonEngineList.IndexOf(dep) != -1)
-                    {
-                        depString += dep + ", ";
-                        flag = true;
-                    }
-                }
-                return flag ? depString.Remove(depString.Length - 2) : null;
-            }
-            return null;
+            if (value == null) return string.Empty;
+
+            List<string> depList = (List<string>)value;
+
+            if(depList.Count < 1) return string.Empty;
+
+            return string.Join(", ", depList);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -136,6 +129,28 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+    /// <summary>
+    /// Returns Visibility.Visible if the collection has more than n items, otherwise returns Visibility.Collapsed.
+    /// </summary>
+    public class ListHasMoreThanNItemsToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection collection)) return Visibility.Collapsed;
+
+            // If no parameter is specified, we return Visible when there are more than 0 (i.e. any) items.
+            var n = (int)(parameter ?? 0);
+
+            return collection.Count <= n ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     /// <summary>
     /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
     /// </summary>
@@ -312,6 +327,29 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Determines what the Install button says on the Package Manager Search.
+    /// If the package is installed it says 'Installed', otherwise 'Install'.
+    /// </summary>
+    public class InstalledButtonTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (!(value is bool booleanValue)) return null;
+            
+            return booleanValue
+                ? Wpf.Properties.Resources.PackageManagerInstall
+                : Wpf.Properties.Resources.PackageDownloadStateInstalled;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class EmptyStringToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -327,6 +365,26 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter,
           CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Converts any numbers below 0 to 0, otherwise returns the original number.
+    /// For example, used to display the number of votes each package has received in the package manager.
+    /// </summary>
+    public class NegativeIntToZeroConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (!(value is int intValue)) return 0;
+            return intValue > 0 ? intValue : 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
         {
             return null;
         }
@@ -602,6 +660,8 @@ namespace Dynamo.Controls
         public SolidColorBrush NoneBrush { get; set; }
         public SolidColorBrush SelectionBrush { get; set; }
 
+        public SolidColorBrush HoverBrush { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var state = (PreviewState)value;
@@ -613,6 +673,8 @@ namespace Dynamo.Controls
                     return NoneBrush;
                 case PreviewState.Selection:
                     return SelectionBrush;
+                case PreviewState.Hover:
+                    return HoverBrush;
                 default:
                     return NoneBrush;
             }
@@ -629,6 +691,7 @@ namespace Dynamo.Controls
         public Color ExecutionPreview { get; set; }
         public Color None { get; set; }
         public Color Selection { get; set; }
+        public Color Hover { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -641,6 +704,8 @@ namespace Dynamo.Controls
                     return None;
                 case PreviewState.Selection:
                     return Selection;
+                case PreviewState.Hover:
+                    return Hover;
                 default:
                     return None;
             }
@@ -819,6 +884,34 @@ namespace Dynamo.Controls
         {
             List<object> list = (List<object>)value;
             return list.Count > 0; //spacing for Inputs + title space + bottom space
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Check if the collection has more items than the provided
+    /// parameter. If no parameter is provided the converter will
+    /// check if the collection has more than 1 item.
+    /// </summary>
+    public class CollectionHasMoreThanNItemsToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is ICollection collection))
+            {
+                return false;
+            }
+
+            if (parameter is int n)
+            {
+                return collection.Count > n;
+            }
+
+            return collection.Count > 1;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1182,6 +1275,60 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Used in the Dynamo package manager search window to hide or show a label next to each package's name.
+    /// The label only appears if the package has been recently created/updated (in the last 30 days).
+    /// Label text is set via the DateToPackageLabelConverter.
+    /// </summary>
+    public class DateToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is string)) return Visibility.Collapsed;
+            
+            DateTime.TryParse(value.ToString(), out DateTime dateTime);
+
+            TimeSpan difference = DateTime.Now - dateTime;
+
+            if (difference.TotalDays >= 30) return Visibility.Collapsed;
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Used to determine the text which appears next to a package when it's either
+    /// brand new or has been recently updated.
+    /// If the package was updated in the last 30 days it says 'Updated'.
+    /// If the package is brand new (only has 1 version) and is less than 30 days it says 'New'.
+    /// </summary>
+    public class DateToPackageLabelConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is PackageManagerSearchElement packageManagerSearchElement)) return Visibility.Collapsed;
+
+            DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateLastUpdated);
+            TimeSpan difference = DateTime.Now - dateLastUpdated;
+            int numberVersions = packageManagerSearchElement.Header.num_versions;
+
+            if (numberVersions > 1)
+            {
+                return difference.TotalDays >= 30 ? "" : Wpf.Properties.Resources.PackageManagerPackageUpdated;
+            }
+            return Wpf.Properties.Resources.PackageManagerPackageNew;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class InverseBoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1253,7 +1400,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             string originalName = value.ToString();
-            if (originalName == "Code Block") return new Thickness(0, 13, 0, 0);
+            if (originalName == "Code Block") return new Thickness(0, 12, 0, 0);
             return new Thickness(0, 3, 0, 5);
         }
 
@@ -2108,10 +2255,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((int)value > 0)
-                return Visibility.Visible;
-
-            return Visibility.Collapsed;
+            return (int)value > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -3072,6 +3216,37 @@ namespace Dynamo.Controls
             }
 
             return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts an ICollection<AnnotationViewModel> to a string
+    /// that displays how many AnnotationViewModels there is in the
+    /// Collection.
+    /// </summary>
+    [ValueConversion(typeof(ICollection<AnnotationViewModel>), typeof(string))]
+    public class NestedGroupsLabelConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection<AnnotationViewModel> viewModels) ||
+                !viewModels.Any())
+            {
+                return string.Empty;
+            }
+
+            var numberOfNestedGroups = viewModels.Count;
+            if (numberOfNestedGroups > 1)
+            {
+                return $"{numberOfNestedGroups} Groups";
+            }
+
+            return viewModels.FirstOrDefault().AnnotationText;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

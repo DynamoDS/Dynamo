@@ -52,6 +52,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal UIElement MainWindow { get; set; }
 
+        internal enum GuideFlow { FORWARD = 1, BACKWARD = -1, CURRENT=0  }
+
         public Guide()
         {
             GuideSteps = new List<Step>();
@@ -70,8 +72,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         private void UnsubscribeFlowEvents()
         {
-            GuideFlowEvents.GuidedTourNextStep -= Next;
-            GuideFlowEvents.GuidedTourPrevStep -= Back;
+            GuideFlowEvents.GuidedTourNextStep -= GuideFlowEvents_GuidedTourNextStep;
+            GuideFlowEvents.GuidedTourPrevStep -= GuideFlowEvents_GuidedTourPrevStep;
         }
 
         /// <summary>
@@ -79,8 +81,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         private void SubscribeFlowEvents()
         {
-            GuideFlowEvents.GuidedTourNextStep += Next;
-            GuideFlowEvents.GuidedTourPrevStep += Back;
+            GuideFlowEvents.GuidedTourNextStep += GuideFlowEvents_GuidedTourNextStep;
+            GuideFlowEvents.GuidedTourPrevStep += GuideFlowEvents_GuidedTourPrevStep;
         }
 
         /// <summary>
@@ -92,6 +94,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Step firstStep = (from step in GuideSteps where step.Sequence == 0 select step).FirstOrDefault();
                 CurrentStep = firstStep;
+
+                //When the first step of the guide is a tooltip, then it need to have a background and a hole to highlight the element
+                if (firstStep.HostPopupInfo != null && 
+                    firstStep.StepType == Step.StepTypes.TOOLTIP)
+                    SetupBackgroundHole(firstStep);
+
                 firstStep.Show();
             }
         }
@@ -103,7 +111,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             TotalSteps = GuideSteps.Count;
 
-            SetLibraryViewVisible(false);   
+            SetLibraryViewVisible(false);
 
             SubscribeFlowEvents();
         }
@@ -114,7 +122,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="visible">This parameter will contain a boolean to define if the library should be visible or not</param>
         private void SetLibraryViewVisible(bool visible)
         {
-            if(LibraryView != null)
+            if (LibraryView != null)
             {
                 if (visible)
                     LibraryView.Visibility = Visibility.Visible;
@@ -133,39 +141,98 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This event method will be executed then the user press the Next button in the tooltip/popup
-        /// basically it searchs the next step in the list, show it and hides the current one.
+        /// This method will be executed for moving to the next step, basically searches the next step in the list, shows it and hides the current one.
         /// </summary>
-        /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
-        internal void Next(GuidedTourMovementEventArgs args)
+        /// <param name="CurrentStepSequence">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
+        internal void NextStep(int CurrentStepSequence)
         {
-            Step nextStep = null;
-
-            CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
-            if (CurrentStep != null)
+            HideCurrentStep(CurrentStepSequence);
+            if (CurrentStepSequence < TotalSteps)
             {
-                CurrentStep.Hide();
+                CalculateStep(GuideFlow.FORWARD, CurrentStepSequence);           
             }
+        }
 
-            if (args.StepSequence < TotalSteps)
+        /// <summary>
+        /// This method will be executed for moving to the previous step, basically searches the previous step in the list, shows it and hides the current one.
+        /// </summary>
+        /// <param name="CurrentStepSequence">This parameter is the "sequence" of the current Step so we can get the previous Step from the list</param>
+        internal void PreviousStep(int CurrentStepSequence)
+        {
+            HideCurrentStep(CurrentStepSequence);
+            if (CurrentStepSequence > 0)
             {
-                nextStep = (from step in GuideSteps where step.Sequence == args.StepSequence + 1 select step).FirstOrDefault();
+                CalculateStep(GuideFlow.BACKWARD, CurrentStepSequence);
+            }     
+        }
 
-                if (nextStep != null)
+
+        /// <summary>
+        /// This method will be executed for moving to the next, previous or current step, basically searches the step in the list.
+        /// </summary>
+        /// <param name="stepFlow">The direction flow of the Guide, can be BACKWARD, FORWARD or CURRENT</param>
+        /// <param name="CurrentStepSequence">This parameter is the current Step sequence</param>
+        private void CalculateStep(GuideFlow stepFlow, int CurrentStepSequence)
+        {
+            Step resultStep = null;
+            int stepFlowOffSet = Convert.ToInt32(stepFlow);
+            var possibleSteps = (from step in GuideSteps where step.Sequence == CurrentStepSequence + stepFlowOffSet select step);
+            if (possibleSteps != null && possibleSteps.Count() > 0)
+            {
+                //This section validates if the Current Step can be several ones, so we need to get the one validated
+                //Means that there only one possible Current Steps
+                if (possibleSteps.Count() == 1)
+                    resultStep = possibleSteps.FirstOrDefault();
+                //Means that there are several posible current Steps then we need to take the one validated
+                else
                 {
-                    SetLibraryViewVisible(nextStep.ShowLibrary);
-                    CurrentStep = nextStep;
+                    foreach (var step in possibleSteps)
+                    {
+                        step.ExecutePreValidation();
+                    }
+                    resultStep = (from step in possibleSteps
+                                  where step.PreValidationIsOpenFlag
+                                  select step).FirstOrDefault();
+                }
+                if (resultStep != null)
+                {
+                    SetLibraryViewVisible(resultStep.ShowLibrary);
+                    CurrentStep = resultStep;
 
-                    if (nextStep.StepType != Step.StepTypes.WELCOME &&
-                        nextStep.StepType != Step.StepTypes.SURVEY
-                        && nextStep.HostPopupInfo != null)
-                        SetupBackgroundHole(nextStep);
+                    if (resultStep.StepType != Step.StepTypes.WELCOME &&
+                       resultStep.StepType != Step.StepTypes.SURVEY
+                       && resultStep.HostPopupInfo != null)
+                        SetupBackgroundHole(resultStep);
                     else
                         GuideBackgroundElement.HoleRect = new Rect();
 
-                    nextStep.Show();
+                    resultStep.Show();
                 }
-            }                        
+            }
+        }
+
+        private void HideCurrentStep(int CurrentStepSequence)
+        {
+            CalculateStep(GuideFlow.CURRENT, CurrentStepSequence);
+            CurrentStep.Hide();
+        }
+
+        /// <summary>
+        /// This event method will be executed when the user press the Back button in the tooltip/popup
+        /// </summary>
+        /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the previous Step from the list</param>
+        private void GuideFlowEvents_GuidedTourPrevStep(GuidedTourMovementEventArgs args)
+        {
+            PreviousStep(args.StepSequence);
+        }
+
+        /// <summary>
+        /// This event method will be executed then the user press the Next button in the tooltip/popup
+        /// </summary>
+        /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
+        private void GuideFlowEvents_GuidedTourNextStep(GuidedTourMovementEventArgs args)
+        {
+            NextStep(args.StepSequence);
         }
 
         /// <summary>
@@ -174,7 +241,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="step">This parameter represents the step with informations of the element and color of the border</param>
         private void SetupBackgroundHole(Step step)
         {
-            SetupBackgroundHoleSize(step.HostPopupInfo.HostUIElement);
+            SetupBackgroundHoleSize(step.HostPopupInfo);
             SetupBackgroundHoleBorderColor(step.HostPopupInfo.HighlightColor);
         }
 
@@ -186,7 +253,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             if (string.IsNullOrEmpty(highlightColor))
             {
-                GuideBackgroundElement.HolePath.Stroke = Brushes.Black;
+                GuideBackgroundElement.HolePath.Stroke = Brushes.Transparent;
             }
             else
             {
@@ -200,50 +267,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This method will update the hole size everytime that the step change
         /// </summary>
         /// <param name="hostElement">Element for size and position reference</param>
-        private void SetupBackgroundHoleSize(UIElement hostElement)
+        private void SetupBackgroundHoleSize(HostControlInfo hostControlInfo)
         {
-            Point relativePoint = hostElement.TransformToAncestor(MainWindow)
+            Point relativePoint = hostControlInfo.HostUIElement.TransformToAncestor(MainWindow)
                               .Transform(new Point(0, 0));
 
-            GuideBackgroundElement.HoleRect = new Rect(relativePoint.X, relativePoint.Y,
-                            hostElement.DesiredSize.Width, hostElement.DesiredSize.Height);
+            var holeWidth = hostControlInfo.HostUIElement.DesiredSize.Width + hostControlInfo.WidthBoxDelta;
+            var holeHeight = hostControlInfo.HostUIElement.DesiredSize.Height + hostControlInfo.HeightBoxDelta;
 
-        }
-
-        /// <summary>
-        /// This event method will be executed then the user press the Back button in the tooltip/popup
-        /// basically it searchs the previous step in the list, show it and hides the current one.
-        /// </summary>
-        /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the previous Step from the list</param>
-        internal void Back(GuidedTourMovementEventArgs args)
-        {
-            Step prevStep = null;
-
-            CurrentStep = (from step in GuideSteps where step.Sequence == args.StepSequence select step).FirstOrDefault();
-            if (CurrentStep != null)
-            {
-                CurrentStep.Hide();
-            }
-
-            if (args.StepSequence > 0)
-            {
-                prevStep = (from step in GuideSteps where step.Sequence == args.StepSequence - 1 select step).FirstOrDefault();
-                if (prevStep != null)
-                {
-                    SetLibraryViewVisible(prevStep.ShowLibrary);
-
-                    if (prevStep.StepType != Step.StepTypes.WELCOME &&
-                        prevStep.StepType != Step.StepTypes.SURVEY
-                        && prevStep.HostPopupInfo != null)
-                        SetupBackgroundHole(prevStep);
-                    else
-                        GuideBackgroundElement.HoleRect = new Rect();
-
-                    CurrentStep = prevStep;
-                    prevStep.Show();
-                }
-            }
-
+            GuideBackgroundElement.HoleRect = new Rect(relativePoint.X, relativePoint.Y, holeWidth, holeHeight);
         }
 
         /// <summary>

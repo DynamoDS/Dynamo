@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using Dynamo.Wpf.Views.GuidedTour;
+using Dynamo.ViewModels;
 using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.UI.GuidedTour
@@ -84,10 +87,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public HostControlInfo HostPopupInfo { get; set; }
 
         /// <summary>
-        /// This property will hold the UI Automation action (information) will be executed when the Next or Back button are pressed
+        /// This property will hold a list of UI Automation actions (information) that will be executed when the Next or Back button are pressed
         /// </summary>
         [JsonProperty("UIAutomation")]
-        public StepUIAutomation UIAutomation { get; set; }
+        public List<StepUIAutomation> UIAutomation { get; set; }
+
+        /// <summary>
+        /// This property will hold information about the methods/actions that should be executed before showing a Popup(Step)
+        /// </summary>
+        [JsonProperty("PreValidation")]
+        internal PreValidation PreValidationInfo { get; set; }
 
         /// <summary>
         /// This property will show the library if It's set to true
@@ -102,6 +111,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This will contains the 3 points needed for drawing the Tooltip pointer direction
         /// </summary>
         public PointCollection TooltipPointerPoints { get; set; }
+
+        /// <summary>
+        /// This property holds the DynamoViewModel that will be used when executing PreValidation functions
+        /// </summary>
+        internal DynamoViewModel DynamoViewModelStep { get; set; }
+
+        /// <summary>
+        /// This property is for the Visibility of each Popup in conditional flows, then it will decide if the this Step should be shown or not
+        /// </summary>
+        internal bool PreValidationIsOpenFlag { get; set; } = false;
+
         #endregion
 
         #region Protected Properties
@@ -113,6 +133,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         [JsonProperty("TooltipPointerDirection")]
         public PointerDirection TooltipPointerDirection { get; set; } = PointerDirection.TOP_LEFT;
+        /// <summary>
+        /// A vertical offfset to the pointer of the popups 
+        /// </summary>
+        [JsonProperty("PointerVerticalOffset")]
+        public double PointerVerticalOffset { get; set; }
         #endregion
 
         #region Public Methods
@@ -128,6 +153,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             HostPopupInfo = host;
             Width = width;
             Height = height;
+            UIAutomation = new List<StepUIAutomation>();
             CreatePopup();
         }
 
@@ -138,10 +164,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             stepUIPopup.IsOpen = true;
 
-            //In case the UIAutomation info is set for the Step we execute the action when the Next button is pressed
+            //In case the UIAutomation info is set for the Step we execute all the UI Automation actions when the Next button is pressed
             if (UIAutomation != null)
             {
-                ExecuteUIAutomationStep(UIAutomation, true);
+                foreach (var automation in UIAutomation)
+                    ExecuteUIAutomationStep(automation, true);
+            }
+
+            //If the PreValidation info was read from the json file then is executed and it will decide which Step should be shown and which not
+            if (PreValidationInfo != null)
+            {
+                ExecutePreValidation();
             }
         }
 
@@ -155,7 +188,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Disable the current action automation that is executed for the Current Step (if there is one)
             if (UIAutomation != null)
             {
-                ExecuteUIAutomationStep(UIAutomation, false);
+                foreach (var automation in UIAutomation)
+                    ExecuteUIAutomationStep(automation, false);
             }
         }
 
@@ -164,11 +198,21 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         public void UpdateLocation()
         {
-            if(stepUIPopup.IsOpen == true)
+            UpdatePopupLocationInvoke(stepUIPopup);
+            if(stepUIPopup is PopupWindow)
+            {
+                var stepUiPopupWindow = (PopupWindow)stepUIPopup;
+                UpdatePopupLocationInvoke(stepUiPopupWindow?.webBrowserWindow);
+            }
+        }
+        
+        private void UpdatePopupLocationInvoke(Popup popUp)
+        {
+            if(popUp != null && popUp.IsOpen)
             {
                 var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                positionMethod.Invoke(stepUIPopup, null);
-            }         
+                positionMethod.Invoke(popUp, null);             
+            }
         }
 
         /// <summary>
@@ -191,6 +235,33 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         }
                     }
                     break;
+            }
+        }
+
+        /// <summary>
+        /// This method will execute the PreValidation action/method for this Step.
+        /// </summary>
+        internal void ExecutePreValidation()
+        {
+            if (PreValidationInfo != null)
+            {
+                if (PreValidationInfo.ControlType.Equals("visibility"))
+                {
+                    if (!string.IsNullOrEmpty(PreValidationInfo.FuncName))
+                    {
+                        //Due that the function name was read from a json file then we need to use Reflection for executing the Static method in the GuidesValidationMethods class 
+                        MethodInfo builderMethod = typeof(GuidesValidationMethods).GetMethod(PreValidationInfo.FuncName, BindingFlags.Static | BindingFlags.NonPublic);
+                        object[] parametersArray = new object[] { DynamoViewModelStep };
+                        var validationResult = (bool)builderMethod.Invoke(null, parametersArray);
+                        bool expectedValue = bool.Parse(PreValidationInfo.ExpectedValue);
+
+                        //Once the execution of the PreValidation method was done we compare the result against the expected (also described in the json) so we set a flag
+                        if (validationResult == expectedValue)
+                            PreValidationIsOpenFlag = true;
+                        else
+                            PreValidationIsOpenFlag = false;
+                    }
+                }
             }
         }
 

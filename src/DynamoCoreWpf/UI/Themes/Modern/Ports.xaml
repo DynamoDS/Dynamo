@@ -43,7 +43,7 @@
                 This logic is defined in the ViewModel. None of the elements in this Border are interactive, so they
                 can live in the lowest level of Z-Order
             -->
-            <Border x:Name="mainBorder" UseLayoutRounding="true">
+            <Border x:Name="mainBorder" SnapsToDevicePixels="True">
                 <!--  DockPanel that positions the visible port name and the UseLevelArrow  -->
                 <DockPanel x:Name="mainDockPanel" FlowDirection="LeftToRight">
                     <Grid Name="portNameGrid"
@@ -77,33 +77,18 @@
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
                                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                                   FontSize="17px"
+                                   FontSize="12px"
                                    FontWeight="Medium"
                                    Foreground="#DCDCDC"
                                    IsHitTestVisible="False"
                                    Text="{Binding Path=PortName}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Margin" Value="13,0,10,7" />
+                                    <Setter Property="Margin" Value="13,0,10,5" />
                                     <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding Path=IsPortCondensed}" Value="True" />
-                                                <Condition Binding="{Binding Path=IsConnected}" Value="False" />
-                                            </MultiDataTrigger.Conditions>
-                                            <MultiDataTrigger.Setters>
-                                                <Setter Property="Margin" Value="3,2,0,0" />
-                                            </MultiDataTrigger.Setters>
-                                        </MultiDataTrigger>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding Path=IsPortCondensed}" Value="True" />
-                                                <Condition Binding="{Binding Path=IsConnected}" Value="True" />
-                                            </MultiDataTrigger.Conditions>
-                                            <MultiDataTrigger.Setters>
-                                                <Setter Property="Margin" Value="2,-2,0,0" />
-                                            </MultiDataTrigger.Setters>
-                                        </MultiDataTrigger>
+                                        <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
+                                            <Setter Property="Margin" Value="7,0,0,0" />
+                                        </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
@@ -114,8 +99,8 @@
                                 <Setter Property="Grid.Margin" Value="{Binding Path=MarginThickness}" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
-                                        <Setter Property="Grid.Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
-                                        <Setter Property="Grid.Margin" Value="0,0,0,1" />
+                                        <Setter Property="Grid.Height" Value="14px" />
+                                        <Setter Property="Grid.Margin" Value="0,1,2,0" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -142,10 +127,15 @@
                                IsHitTestVisible="False"
                                Style="{StaticResource SZoomFadeLabel}" />
                         <Grid.Style>
-                            <Style>
-                                <Setter Property="Grid.Height" Value="{Binding Path=Height}" />
-                                <Setter Property="Grid.Margin" Value="0,0,10,0" />
+                            <Style TargetType="Grid">
+                                <Setter Property="Height" Value="{Binding Path=Height}" />
                                 <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Input}">
+                                        <Setter Property="Margin" Value="0,1,6,0" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
+                                        <Setter Property="Margin" Value="0,1,10,0" />
+                                    </DataTrigger>
                                     <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                                         <Setter Property="Grid.Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
                                         <Setter Property="Grid.Margin" Value="0" />
@@ -164,51 +154,47 @@
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Input}">
                                 <Setter Property="CornerRadius" Value="0,11,11,0" />
-                                <Setter Property="BorderThickness" Value="0,2,2,2" />
+                                <Setter Property="BorderThickness" Value="0,1,1,1" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
                                 <Setter Property="CornerRadius" Value="11,0,0,11" />
-                                <Setter Property="BorderThickness" Value="2,2,0,2" />
+                                <Setter Property="BorderThickness" Value="1,1,0,1" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                                 <Setter Property="CornerRadius" Value="0" />
                                 <Setter Property="BorderThickness" Value="0" />
-                                <Setter Property="Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
-                                <Setter Property="Width" Value="16px" />
+                                <Setter Property="Height" Value="14px" />
+                                <Setter Property="Width" Value="20px" />
                             </DataTrigger>
                             <!--  Used for styling output ports when they are 'condensed' i.e. on a code block  -->
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=IsPortCondensed}" Value="True" />
-                                    <Condition Binding="{Binding Path=IsConnected}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <MultiDataTrigger.Setters>
-                                    <Setter Property="Background" Value="{Binding PortBackgroundColor}" />
-                                    <Setter Property="BorderBrush" Value="{Binding PortBorderBrushColor}" />
-                                    <Setter Property="BorderThickness" Value="2,2,0,2" />
-                                </MultiDataTrigger.Setters>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=IsPortCondensed}" Value="True" />
-                                    <Condition Binding="{Binding Path=IsConnected}" Value="False" />
-                                </MultiDataTrigger.Conditions>
-                                <MultiDataTrigger.Setters>
-                                    <Setter Property="Background" Value="#666666" />
-                                </MultiDataTrigger.Setters>
-                            </MultiDataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
+                                <Setter Property="Background" Value="#666666" />
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="BorderThickness" Value="0" />
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
             </Border>
-            <!--  Blue marker that appears to the left side of an input port, indicating it's using its default value.  -->
-            <Rectangle x:Name="usingDefaultValueMarker"
+            <!--  Marker that appears to the left side of an input port  -->
+            <Rectangle x:Name="portValueMarker"
                        Width="6px"
                        Height="29px"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
-                       Fill="{StaticResource PortUsingDefaultValueMarkerColor}"
-                       Visibility="{Binding UsingDefaultValueMarkerVisibile, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                       Fill="{Binding PortValueMarkerColor, UpdateSourceTrigger=PropertyChanged}"
+                       SnapsToDevicePixels="True">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
             <!--
                 Interactive overlay for the port, highlights the port on MouseOver and
                 contains MouseClick event handling and ToolTip logic. Since the overlay is interactive, it needs to
@@ -218,18 +204,18 @@
             <Border x:Name="mainBorderHighlightOverlay"
                     BorderBrush="Transparent"
                     Opacity="0.2"
-                    UseLayoutRounding="true">
+                    SnapsToDevicePixels="True">
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Height" Value="29px" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Input}">
                                 <Setter Property="CornerRadius" Value="0,11,11,0" />
-                                <Setter Property="BorderThickness" Value="0,2,2,2" />
+                                <Setter Property="BorderThickness" Value="0,1,1,1" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
                                 <Setter Property="CornerRadius" Value="11,0,0,11" />
-                                <Setter Property="BorderThickness" Value="2,2,0,2" />
+                                <Setter Property="BorderThickness" Value="1,1,0,1" />
                             </DataTrigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="White" />
@@ -242,7 +228,7 @@
                                 <Setter Property="BorderThickness" Value="0" />
                                 <Setter Property="Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
                                 <Setter Property="Margin" Value="0" />
-                                <Setter Property="Width" Value="16px" />
+                                <Setter Property="Width" Value="20px" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -311,7 +297,7 @@
                         <Style TargetType="{x:Type Rectangle}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Input}">
-                                    <Setter Property="Margin" Value="0,0,10,0" />
+                                    <Setter Property="Margin" Value="3,0,5,0" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
                                     <Setter Property="Margin" Value="0,0,8,0" />
@@ -330,12 +316,12 @@
                 </Rectangle>
                 <TextBlock Name="fakePortNameTb"
                            Width="Auto"
-                           Margin="13,0,10,7"
+                           Margin="13,0,10,5"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Center"
                            DockPanel.Dock="Left"
                            FontFamily="{StaticResource ArtifaktElementRegular}"
-                           FontSize="17px"
+                           FontSize="12px"
                            FontWeight="Medium"
                            Foreground="Transparent"
                            IsHitTestVisible="False"
@@ -344,8 +330,9 @@
                            Text="{Binding Path=PortName}" />
                 <dynui:UseLevelSpinner x:Name="useLevelControl"
                                        Width="50"
-                                       Height="20"
-                                       Margin="-3,0,0,0"
+                                       Height="25"
+                                       Margin="0,0,0,0"
+                                       Background="{Binding UseLevelsMenuColor, UpdateSourceTrigger=PropertyChanged}"
                                        HorizontalAlignment="Right"
                                        VerticalAlignment="Center"
                                        DockPanel.Dock="Right"
@@ -377,15 +364,15 @@
                                                                Grid.Column="0"
                                                                Width="14px"
                                                                Height="14px"
-                                                               Stroke="{StaticResource PortUseLevelsCheckBoxColor}"
-                                                               StrokeThickness="2" />
+                                                               Stroke="{StaticResource PrimaryCharcoal300Brush}"
+                                                               StrokeThickness="1" />
                                                     <Rectangle x:Name="highlightRectangle"
                                                                Grid.Column="0"
                                                                Width="14px"
                                                                Height="14px"
                                                                Fill="Transparent"
-                                                               Stroke="{StaticResource PortUseLevelsCheckBoxColor}"
-                                                               StrokeThickness="2" />
+                                                               Stroke="{StaticResource PrimaryCharcoal300Brush}"
+                                                               StrokeThickness="1" />
                                                     <Path x:Name="tick"
                                                           Grid.Column="0"
                                                           Width="14px"
@@ -468,8 +455,7 @@
                                         Content="{x:Static p:Resources.BreakConnectionPopupMenuItem}"
                                         IsEnabled="{Binding OutputPortBreakConnectionsButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
                                         Style="{StaticResource PopupButtonStyle}"
-                                        Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                </Button>
+                                        Visibility="{Binding OutputPortConnectionsButtonsVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                                 <Button Margin="0,3"
                                         HorizontalAlignment="Left"
                                         Command="{Binding Path=HideConnectionsCommand}"
@@ -491,7 +477,7 @@
                     <Setter Property="Grid.Height" Value="35px" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
-                            <Setter Property="Grid.Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
+                            <Setter Property="Grid.Height" Value="14px" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using CoreNodeModels.Input;
 using Dynamo.Configuration;
@@ -19,6 +20,7 @@ using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
+using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
@@ -564,8 +566,8 @@ namespace DynamoCoreWpfTests
             ConnectorType expectedConnector = ConnectorType.BEZIER;
             ViewModel.SetConnectorType("BEZIER");
             Assert.AreEqual(expectedConnector, ViewModel.Model.PreferenceSettings.ConnectorType);
-
-            expectedConnector = ConnectorType.POLYLINE;
+            // Now we expect bezier to be created regardless of the preference settings.
+            expectedConnector = ConnectorType.BEZIER;
             ViewModel.SetConnectorType("POLYLINE");
             Assert.AreEqual(expectedConnector, ViewModel.Model.PreferenceSettings.ConnectorType);
             #endregion
@@ -632,6 +634,9 @@ namespace DynamoCoreWpfTests
                 initalSetting.GetIsBackgroundPreviewActive(backgroundPreviewName));
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
             Assert.AreEqual(resultSetting.ConsoleHeight, initalSetting.ConsoleHeight);
+
+            // Now we expect bezier to be created regardless of the preference settings.
+            Assert.AreEqual(Model.ConnectorType, ConnectorType.BEZIER);
             #endregion
 
             #endregion
@@ -683,6 +688,33 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(ViewModel.PreferenceSettings.IsFirstRun);
         }
 
+        [Test]
+        public void PreferenceSettingsConnectorTypeRevertsToBezier()
+        {
+            // Arrange
+            var preferences = new PreferenceSettings()
+            {
+                ConnectorType = ConnectorType.POLYLINE
+            };
+
+            var config = new DynamoModel.DefaultStartConfiguration()
+            {
+                PathResolver = pathResolver,
+                StartInTestMode = true,
+                ProcessMode = TaskProcessMode.Synchronous,
+                Preferences = preferences,
+            };
+
+            // Act
+            RestartTestSetupWithNewSettings(config, true);
+
+            // Assert
+            // Check that prefferenceSettings are set to ConnectorType.POLYLINE
+            // but the Models connector type is BEZIER
+            Assert.That(Model.PreferenceSettings.ConnectorType == ConnectorType.POLYLINE);
+            Assert.That(Model.ConnectorType == ConnectorType.BEZIER);
+        }
+
         private void RestartTestSetup(bool startInTestMode)
         {
             // Shutdown Dynamo and restart it
@@ -716,10 +748,49 @@ namespace DynamoCoreWpfTests
                     DynamoModel = Model
                 });
 
+            var expectedState = startInTestMode
+                ? DynamoModel.DynamoModelState.StartedUIless
+                : DynamoModel.DynamoModelState.StartedUI;
+            Assert.AreEqual(ViewModel.Model.State, expectedState);
+
             //create the view
             View = new DynamoView(ViewModel);
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
+
+        private void RestartTestSetupWithNewSettings(Dynamo.Models.DynamoModel.IStartConfiguration configuration, bool startInTestMode)
+        {
+            // Shutdown Dynamo and restart it
+            View.Close();
+            View = null;
+
+            if (ViewModel != null)
+            {
+                var shutdownParams = new DynamoViewModel.ShutdownParams(
+                    shutdownHost: false, allowCancellation: false);
+
+                ViewModel.PerformShutdownSequence(shutdownParams);
+                ViewModel = null;
+            }
+
+            Model = DynamoModel.Start(configuration);
+
+            ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = Model
+                });
+
+            var expectedState = startInTestMode
+                ? DynamoModel.DynamoModelState.StartedUIless
+                : DynamoModel.DynamoModelState.StartedUI;
+            Assert.AreEqual(ViewModel.Model.State, expectedState);
+
+            //create the view
+            View = new DynamoView(ViewModel);
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+        }
+
         #endregion
 
         #region InfoBubble
@@ -861,6 +932,30 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
             Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void InCanvasSearchTextChangeTriggersOneSearchCommand()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+
+            // open context menu
+            RightClick(currentWs.zoomBorder);
+
+            // show in-canvas search
+            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+
+            var searchControl = currentWs.ChildrenOfType<Popup>().Select(x => (x as Popup)?.Child as InCanvasSearchControl).Where(c => c != null).FirstOrDefault();
+            Assert.IsNotNull(searchControl);
+
+            int count = 0;
+            (searchControl.DataContext as SearchViewModel).SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
+            searchControl.SearchTextBox.Text = "dsfdf";
+            
+
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+            Assert.AreEqual(count, 1);
         }
 
         [Test]

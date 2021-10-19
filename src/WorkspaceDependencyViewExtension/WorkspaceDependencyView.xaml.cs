@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Dynamo.Controls;
+using System.Web;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -15,7 +14,7 @@ using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
-using Dynamo.Logging;
+using DynamoUtilities;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -31,9 +30,7 @@ namespace Dynamo.WorkspaceDependency
         /// The hyper link where Dynamo user will be forwarded to for submitting comments.
         /// </summary>
         private readonly string FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
-        private readonly string sizeUnits = " KB";
         private readonly string customNodeExtension = ".dyf";
-        private const long KbConversionConstant = 1024;
 
         private ViewLoadedParams loadedParams;
         private WorkspaceDependencyViewExtension dependencyViewExtension;
@@ -45,7 +42,8 @@ namespace Dynamo.WorkspaceDependency
         /// You are not expected to modify this but rather inspection.
         /// </summary>
         internal IEnumerable<PackageDependencyRow> dataRows;
-        internal IEnumerable<LocalDefinitionRow> localDefinitionDataRows;
+        internal IEnumerable<DependencyRow> localDefinitionDataRows;
+        internal IEnumerable<DependencyRow> externalFilesDataRows;
 
         private Boolean hasDependencyIssue = false;
 
@@ -104,6 +102,7 @@ namespace Dynamo.WorkspaceDependency
                 DependencyRegen(obj as WorkspaceModel);
                 // Update current workspace
                 currentWorkspace = obj as WorkspaceModel;
+                currentWorkspace.Saved += TriggerDependencyRegen;
                 currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
             }
         }
@@ -123,7 +122,7 @@ namespace Dynamo.WorkspaceDependency
 
         private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName == nameof(currentWorkspace.NodeLibraryDependencies) || args.PropertyName == nameof(currentWorkspace.NodeLocalDefinitions))
+            if (args.PropertyName == nameof(currentWorkspace.NodeLibraryDependencies) || args.PropertyName == nameof(currentWorkspace.NodeLocalDefinitions) || args.PropertyName == nameof(currentWorkspace.ExternalFiles))
                 DependencyRegen(currentWorkspace);
         }
 
@@ -135,15 +134,16 @@ namespace Dynamo.WorkspaceDependency
         {
             RestartBanner.Visibility = Visibility.Hidden;
             var packageDependencies = ws.NodeLibraryDependencies.Where(d => d is PackageDependencyInfo).ToList();
-            var localDefinitions = ws.NodeLocalDefinitions.Where(d => d is LocalDefinitionInfo).ToList();
+            var localDefinitions = ws.NodeLocalDefinitions.Where(d => d is DependencyInfo).ToList();
+            var externalFiles = ws.ExternalFiles.Where(d => d is DependencyInfo).ToList();
 
-            foreach (LocalDefinitionInfo info in localDefinitions)
+            foreach (DependencyInfo info in localDefinitions)
             {
                 try
                 {
                     if (info.ReferenceType == ReferenceType.DYFFile)
                     {
-                        // Try to get the Custom node information if possible. 
+                        // Try to get the Custom node information if possible.
                         string customNodeName = info.Name.Replace(customNodeExtension, "");
                         dependencyViewExtension.DependencyView.CustomNodeManager.TryGetNodeInfo(customNodeName, out CustomNodeInfo customNodeInfo);
 
@@ -153,17 +153,18 @@ namespace Dynamo.WorkspaceDependency
                         }
                     }
 
-                    if (info.Path != null)
-                    {
-                        var localDefinitionFileInfo = new FileInfo(info.Path);
-                        long size = localDefinitionFileInfo.Length / KbConversionConstant;
-                        info.Size = size.ToString() + sizeUnits;
-                    }
+                    info.Size = PathHelper.GetFileSize(info.Path);
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
                 }
-                
+
+                HasDependencyIssue = info.Path == null;
+            }
+
+            foreach (DependencyInfo info in externalFiles)
+            {
                 HasDependencyIssue = info.Path == null;
             }
 
@@ -180,13 +181,15 @@ namespace Dynamo.WorkspaceDependency
             {
                 Boolean hasPackageMarkedForUninstall = false;
                 // If package is set to uninstall state, update the package info
-                foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion))
+                foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => 
+                x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion || x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload))
                 {
-                    (packageDependencies.FirstOrDefault(x => x.Name == package.Name) as PackageDependencyInfo).State = 
+                    (packageDependencies.FirstOrDefault(x => x.Name == package.Name) as PackageDependencyInfo).State =
                         PackageDependencyState.RequiresRestart;
                     hasPackageMarkedForUninstall = true;
                 }
-                this.RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible: Visibility.Hidden;
+
+                RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible: Visibility.Hidden;
             }
 
             var pmExtension = dependencyViewExtension.pmExtension;
@@ -203,14 +206,17 @@ namespace Dynamo.WorkspaceDependency
             }
 
             dataRows = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
-            localDefinitionDataRows = localDefinitions.Select(d => new LocalDefinitionRow(d as LocalDefinitionInfo));
+            localDefinitionDataRows = localDefinitions.Select(d => new DependencyRow(d as DependencyInfo));
+            externalFilesDataRows = externalFiles.Select(d => new DependencyRow(d as DependencyInfo));
 
             Packages.IsExpanded = dataRows.Count() > 0;
             LocalDefinitions.IsExpanded = localDefinitionDataRows.Count() > 0;
+            ExternalFiles.IsExpanded = externalFilesDataRows.Count() > 0;
 
 
             PackageDependencyTable.ItemsSource = dataRows;
             LocalDefinitionsTable.ItemsSource = localDefinitionDataRows;
+            ExternalFilesTable.ItemsSource = externalFilesDataRows;
         }
 
         /// <summary>
@@ -231,6 +237,7 @@ namespace Dynamo.WorkspaceDependency
             this.DataContext = this;
             currentWorkspace = p.CurrentWorkspaceModel as WorkspaceModel;
             WorkspaceModel.DummyNodesReloaded += TriggerDependencyRegen;
+            currentWorkspace.Saved += TriggerDependencyRegen;
             p.CurrentWorkspaceChanged += OnWorkspaceChanged;
             p.CurrentWorkspaceCleared += OnWorkspaceCleared;
             currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
@@ -329,11 +336,14 @@ namespace Dynamo.WorkspaceDependency
             loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
             currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
             WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
+            currentWorkspace.Saved -= TriggerDependencyRegen;
             HomeWorkspaceModel.WorkspaceClosed -= this.CloseExtensionTab;
             PackageDependencyTable.ItemsSource = null;
             LocalDefinitionsTable.ItemsSource = null;
+            ExternalFilesTable.ItemsSource = null;
             dataRows = null;
             localDefinitionDataRows = null;
+            externalFilesDataRows = null;
         }
 
         private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -454,19 +464,19 @@ namespace Dynamo.WorkspaceDependency
     }
 
     /// <summary>
-    /// Represents information about a local dependency as a row in the dependency table
+    /// Represents information about a dependency as a row in the dependency table
     /// </summary>
-    public class LocalDefinitionRow
+    public class DependencyRow
     {
-        internal LocalDefinitionInfo DependencyInfo { get; private set; }
+        internal DependencyInfo DependencyInfo { get; private set; }
 
-        internal LocalDefinitionRow(LocalDefinitionInfo localDefinitionInfo)
+        internal DependencyRow(DependencyInfo localDefinitionInfo)
         {
             DependencyInfo = localDefinitionInfo;
         }
 
         /// <summary>
-        /// Name of this package dependency
+        /// Name of this dependency
         /// </summary>
         public string Name => DependencyInfo.Name;
 
@@ -497,6 +507,34 @@ namespace Dynamo.WorkspaceDependency
 
                     case ReferenceType.ZeroTouch:
                         bitmap = Properties.Resources.ZeroTouchNodeReferenceIcon;
+                        break;
+
+                    case ReferenceType.External when MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("image"):
+                        bitmap = Properties.Resources.ImageIcon;
+                        break;
+
+                    case ReferenceType.External when MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("excel") || MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("spreadsheet"):
+                        bitmap = Properties.Resources.ExcelIcon;
+                        break;
+
+                    case ReferenceType.External when MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("json"):
+                        bitmap = Properties.Resources.JsonIcon;
+                        break;
+
+                    case ReferenceType.External when MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("pdf"):
+                        bitmap = Properties.Resources.PDFIcon;
+                        break;
+
+                    case ReferenceType.External when MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("csv"):
+                        bitmap = Properties.Resources.CSVIcon;
+                        break;
+
+                    case ReferenceType.External when MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("dwg"):
+                        bitmap = Properties.Resources.DWGIcon;
+                        break;
+
+                    case ReferenceType.External:
+                        bitmap = Properties.Resources.ExternalFileIcon;
                         break;
                 }
 

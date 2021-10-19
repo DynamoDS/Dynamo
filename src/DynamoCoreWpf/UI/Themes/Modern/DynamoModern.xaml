@@ -11,6 +11,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
 
     <!--  Control colors.  -->
@@ -107,7 +108,7 @@
     <FontFamily x:Key="OpenSansBoldItalic">../../Fonts/#Open Sans Bold Italic</FontFamily>
     <FontFamily x:Key="ArtifaktElementRegular">../../Fonts/Autodesk/#Artifakt Element Regular</FontFamily>
     <FontFamily x:Key="ArtifaktElementBold">../../Fonts/Autodesk/#Artifakt Element Bold</FontFamily>
-    <FontFamily x:Key="CourierPrime">../../Fonts/#Courier Prime Regular</FontFamily>
+    <FontFamily x:Key="SourceCodePro">../../Fonts/#Source Code Pro</FontFamily>
 
     <!--  Window Common Styling  -->
     <Style x:Key="DynamoWindowStyle" TargetType="{x:Type Window}">
@@ -830,19 +831,20 @@
                                 Background="#4D4D4D"
                                 CornerRadius="4">
                             <TextBlock x:Name="text"
-                                   Margin="0,1,0,0"
-                                   Padding="0"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
-                                   FontSize="17px"
-                                   FontWeight="Bold"
-                                   Style="{StaticResource SZoomFadeText}" />
+                                       Margin="0,1,0,0"
+                                       Padding="0"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="17px"
+                                       FontWeight="Bold"
+                                       Style="{StaticResource SZoomFadeText}"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Button.IsMouseOver" Value="true">
                             <Setter TargetName="roundedBorder" Property="Background" Value="#535353" />
+                            <Setter TargetName="text" Property="Foreground" Value="{StaticResource Blue300Brush}" />
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="false">
@@ -854,38 +856,65 @@
                         </Trigger>
 
                         <DataTrigger Binding="{Binding ElementName=text, Path=Text}" Value="+">
-                            <Setter TargetName="text"
-                                    Property="FontSize"
-                                    Value="28px" />
-                            <Setter TargetName="text"
-                                    Property="Margin"
-                                    Value="1,3,0,0" />
-                            <Setter TargetName="container"
-                                    Property="Height"
-                                    Value="22px" />
-                            <Setter TargetName="container"
-                                    Property="Width"
-                                    Value="22px" />
-                            <Setter TargetName="roundedBorder"
-                                    Property="CornerRadius"
-                                    Value="4,0,0,4" />
+                            <Setter TargetName="text" Property="FontSize" Value="28px" />
+                            <Setter TargetName="text" Property="Margin" Value="1,3,0,0" />
+                            <Setter TargetName="text" Property="Foreground" Value="#999999" />
+                            <Setter TargetName="container" Property="Height" Value="22px" />
+                            <Setter TargetName="container" Property="Width" Value="22px" />
+                            <Setter TargetName="roundedBorder" Property="CornerRadius" Value="4,0,0,4" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding ElementName=text, Path=Text}" Value="-">
-                            <Setter TargetName="text"
-                                    Property="FontSize"
-                                    Value="28px" />
-                            <Setter TargetName="text"
-                                    Property="Margin"
-                                    Value="0,3,1,0" />
-                            <Setter TargetName="container"
-                                    Property="Height"
-                                    Value="22px" />
-                            <Setter TargetName="container"
-                                    Property="Width"
-                                    Value="22px" />
-                            <Setter TargetName="roundedBorder"
-                                    Property="CornerRadius"
-                                    Value="0,4,4,0" />
+                            <Setter TargetName="text" Property="FontSize" Value="28px" />
+                            <Setter TargetName="text" Property="Margin" Value="0,3,1,0" />
+                            <Setter TargetName="text" Property="Foreground" Value="#999999" />
+                            <Setter TargetName="container" Property="Height" Value="22px" />
+                            <Setter TargetName="container" Property="Width" Value="22px" />
+                            <Setter TargetName="roundedBorder" Property="CornerRadius" Value="0,4,4,0" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="AddRemoveButton" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Grid x:Name="container" Background="Transparent">
+                        <Border x:Name="roundedBorder"
+                                Width="22px"
+                                Height="22px"
+                                HorizontalAlignment="Stretch"
+                                Background="#4D4D4D"
+                                CornerRadius="4">
+                            <TextBlock x:Name="text"
+                                       Margin="0,1,0,0"
+                                       Padding="0"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="28px"
+                                       FontWeight="Bold"
+                                       Foreground="#999999"
+                                       Style="{StaticResource SZoomFadeText}"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Button.IsMouseOver" Value="true">
+                            <Setter TargetName="roundedBorder" Property="Background" Value="#535353" />
+                            <Setter TargetName="text" Property="Foreground" Value="{StaticResource Blue300Brush}" />
+                        </Trigger>
+
+                        <DataTrigger Binding="{Binding ElementName=text, Path=Text}" Value="+">
+                            <Setter TargetName="text" Property="Margin" Value="1,3,0,0" />
+                            <Setter TargetName="container" Property="Margin" Value="0,0,1,0" />
+                            <Setter TargetName="roundedBorder" Property="CornerRadius" Value="4,0,0,4" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=text, Path=Text}" Value="-">
+                            <Setter TargetName="text" Property="Margin" Value="0,3,1,0" />
+                            <Setter TargetName="container" Property="Margin" Value="1,0,0,0" />
+                            <Setter TargetName="roundedBorder" Property="CornerRadius" Value="0,4,4,0" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -1432,6 +1461,67 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!--  Generic Dynamo ToolTip  -->
+    <Style x:Key="GenericToolTipDark" TargetType="ToolTip">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="MaxWidth" Value="300" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Border Padding="10,8"
+                            Background="{StaticResource DarkMidGreyBrush}"
+                            CornerRadius="2">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Resources>
+            <Style TargetType="ContentPresenter">
+                <Style.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                        <Setter Property="FontSize" Value="12px" />
+                        <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal100Brush}" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </Style.Resources>
+    </Style>
+
+    <Style x:Key="GenericToolTipLight" TargetType="ToolTip">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="MaxWidth" Value="300" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Border Padding="10,8"
+                            Background="White"
+                            BorderBrush="#999999"
+                            BorderThickness="1"
+                            CornerRadius="2">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Resources>
+            <Style TargetType="ContentPresenter">
+                <Style.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                        <Setter Property="FontSize" Value="12px" />
+                        <Setter Property="Foreground" Value="#232323" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </Style.Resources>
+    </Style>
+
+
 
     <Style x:Key="StartPageListBox" TargetType="ListBox">
         <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -2026,7 +2116,7 @@
             <Style x:Key="IncreaseButton"
                    BasedOn="{x:Null}"
                    TargetType="{x:Type RepeatButton}">
-                <Setter Property="MinWidth" Value="10" />
+                <Setter Property="MinWidth" Value="12" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type RepeatButton}">
@@ -2034,23 +2124,19 @@
                                 <Border Name="Border"
                                         Margin="0"
                                         Padding="0"
-                                        Background="#3C3C3C"
-                                        BorderThickness="0" />
-                                <ContentPresenter x:Name="ContentPresenter"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"
-                                                  Content="{TemplateBinding Content}"
-                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
+                                        Background="{TemplateBinding Background}"
+                                        BorderThickness="0">
+                                    <Path Margin="1,1,0,0"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Data="M-2.5,1 L0,-2 L2.5,1"
+                                          Stretch="None"
+                                          Stroke="#6AC0E7" />
+                                </Border>
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SpinnerHoverBrush}" />
-                                </Trigger>
-
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SpinnerPressedBrush}" />
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SpinnerPressedBorderBrush}" />
+                                    <Setter TargetName="Border" Property="Background" Value="Gray" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -2061,7 +2147,7 @@
             <Style x:Key="DecreaseButton"
                    BasedOn="{x:Null}"
                    TargetType="{x:Type RepeatButton}">
-                <Setter Property="MinWidth" Value="10" />
+                <Setter Property="MinWidth" Value="12" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type RepeatButton}">
@@ -2069,22 +2155,18 @@
                                 <Border Name="Border"
                                         Margin="0"
                                         Padding="0"
-                                        Background="#3C3C3C" />
-                                <ContentPresenter x:Name="ContentPresenter"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"
-                                                  Content="{TemplateBinding Content}"
-                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
+                                        Background="{TemplateBinding Background}">
+                                    <Path Margin="1,0,0,1"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Data="M-2.5,-1 L0,2 L2.5,-1"
+                                          Stretch="None"
+                                          Stroke="#6AC0E7" />
+                                </Border>
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SpinnerHoverBrush}" />
-                                </Trigger>
-
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SpinnerPressedBrush}" />
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SpinnerPressedBorderBrush}" />
+                                    <Setter TargetName="Border" Property="Background" Value="Gray" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -2092,7 +2174,6 @@
                 </Setter>
             </Style>
         </Style.Resources>
-        <Setter Property="Background" Value="#3C3C3C" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type dynui:UseLevelSpinner}">
@@ -2103,7 +2184,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="1" />
-                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="12" />
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
@@ -2117,11 +2198,11 @@
                                  Margin="0"
                                  Padding="0"
                                  VerticalContentAlignment="Center"
-                                 Background="#3C3C3C"
+                                 Background="{TemplateBinding Background}"
                                  BorderThickness="0"
                                  CaretBrush="Transparent"
                                  FontFamily="{StaticResource ArtifaktElementRegular}"
-                                 FontSize="11px"
+                                 FontSize="10px"
                                  FontWeight="Medium"
                                  Foreground="White"
                                  IsHitTestVisible="False"
@@ -2130,42 +2211,28 @@
                         <Rectangle Grid.Row="0"
                                    Grid.RowSpan="2"
                                    Grid.Column="1"
-                                   Fill="#4A4A4A" />
+                                   Fill="#666666" />
                         <RepeatButton Grid.Row="0"
                                       Grid.Column="2"
                                       Margin="0"
                                       Padding="0"
+                                      Background="{TemplateBinding Background}"
                                       Command="{x:Static dynui:UseLevelSpinner.IncreaseCommand}"
                                       Focusable="False"
-                                      Style="{StaticResource IncreaseButton}">
-                            <Path HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  Data="M-2,1 L0,-1 L2,1"
-                                  Fill="{x:Null}"
-                                  Stretch="None"
-                                  Stroke="#6AC0E7" />
-                        </RepeatButton>
-
+                                      Style="{StaticResource IncreaseButton}" />
                         <RepeatButton Grid.Row="1"
                                       Grid.Column="2"
                                       Margin="0"
                                       Padding="0"
+                                      Background="{TemplateBinding Background}"
                                       Command="{x:Static dynui:UseLevelSpinner.DecreaseCommand}"
                                       Focusable="False"
-                                      Style="{StaticResource DecreaseButton}">
-                            <Path HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  Data="M-2,-1 L0,1 L2,-1"
-                                  Fill="{x:Null}"
-                                  Stretch="None"
-                                  Stroke="#6AC0E7" />
-                        </RepeatButton>
-
+                                      Style="{StaticResource DecreaseButton}" />
                         <Border Grid.Row="0"
                                 Grid.RowSpan="2"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
-                                BorderBrush="#4A4A4A"
+                                BorderBrush="{TemplateBinding Background}"
                                 BorderThickness="1" />
                     </Grid>
                 </ControlTemplate>
@@ -2178,11 +2245,9 @@
     <SolidColorBrush x:Key="PreferencesWindowFontColor" Color="#E5E5E5" />
     <SolidColorBrush x:Key="PreferencesWindowButtonColor" Color="#0696D7" />
     <SolidColorBrush x:Key="PreferencesWindowTabSelectedColor" Color="#ADE4DE" />
+    <SolidColorBrush x:Key="CloseButtonMouseOverForeground" Color="#FFFFFF" />
     <SolidColorBrush x:Key="PreferencesWindowButtonPressedColor" Color="#0778B0" />
     <SolidColorBrush x:Key="PreferencesWindowButtonMouseOverFontColor" Color="#CDCBCB" />
-    <SolidColorBrush x:Key="CloseButtonMouseOverBackground" Color="#E81123" />
-    <SolidColorBrush x:Key="CloseButtonPressed" Color="#B70F1B" />
-    <SolidColorBrush x:Key="CloseButtonMouseOverForeground" Color="#FFFFFF" />
     <SolidColorBrush x:Key="TabItemUnSelected" Color="DarkGray" />
     <SolidColorBrush x:Key="SecondaryGray" Color="#707070" />
     <SolidColorBrush x:Key="SemiTransparent" Color="#80000000" />
@@ -2218,34 +2283,28 @@
         <Setter Property="FontSize" Value="14" />
     </Style>
 
-    <Style x:Key="CaptionButtonStyleClose" TargetType="Button">
+    <Style x:Key="ToggleInfoStyle" TargetType="{x:Type Image}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/default_info_16px.png" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="CloseButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid x:Name="LayoutRoot"
-                          Width="46"
-                          Height="40"
-                          Background="Transparent">
-                        <TextBlock x:Name="txt"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontFamily="Segoe MDL2 Assets"
-                                   FontSize="14"
-                                   Foreground="{StaticResource PreferencesWindowFontColor}"
-                                   RenderOptions.ClearTypeHint="Auto"
-                                   Text="{TemplateBinding Content}"
-                                   TextOptions.TextFormattingMode="Display"
-                                   TextOptions.TextRenderingMode="Aliased" />
+                    <Grid>
+                        <Image Name="closeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/close_grey.png"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="LayoutRoot" Property="Background" Value="{StaticResource CloseButtonMouseOverBackground}" />
-                            <Setter TargetName="txt" Property="Foreground" Value="{StaticResource CloseButtonMouseOverForeground}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="LayoutRoot" Property="Background" Value="{StaticResource CloseButtonPressed}" />
-                            <Setter TargetName="txt" Property="Foreground" Value="{StaticResource CloseButtonMouseOverForeground}" />
-                            <Setter TargetName="txt" Property="FontSize" Value="12" />
+                            <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/close_blue.png" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -2253,10 +2312,56 @@
         </Setter>
     </Style>
 
-    <Style x:Key="CloseButtonStyle"
-           BasedOn="{StaticResource CaptionButtonStyleClose}"
-           TargetType="Button">
-        <Setter Property="Content" Value="&#xE8BB;" />
+    <Style x:Key="CtaButtonStyle" TargetType="Button">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="15,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="mouseOverBorder"
+                                Margin="2"
+                                BorderThickness="2"
+                                BorderBrush="#ECECEC"
+                                Visibility="Hidden"
+                                CornerRadius="2"/>
+                        <Border x:Name="mousePressedBorder"
+                                Margin="0"
+                                BorderThickness="4"
+                                Visibility="Hidden"
+                                BorderBrush="#DFDFDF"
+                                CornerRadius="4"/>
+                        <Border x:Name="border"
+                                Margin="4"
+                                Height="36px"
+                                Padding="8,0,8,0"
+                                BorderThickness="1"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="2">
+                            <TextBlock x:Name="textBlock"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="14px"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       Text="{TemplateBinding Content}" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.9" />
+                            <Setter TargetName="mouseOverBorder" Property="Visibility " Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Opacity" Value="0.9" />
+                            <Setter TargetName="mousePressedBorder" Property="Visibility " Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="PopupButtonStyle" TargetType="Button">
@@ -2273,12 +2378,12 @@
                                 Padding="4"
                                 Background="Transparent"
                                 BorderBrush="Transparent"
-                                BorderThickness="0"/>
+                                BorderThickness="0" />
                         <ContentPresenter Name="contentpresenter"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            TextBlock.Foreground="#4D4D4D"
-                                            TextBlock.FontSize="13px" />
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          TextBlock.FontSize="13px"
+                                          TextBlock.Foreground="#4D4D4D" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
@@ -2291,12 +2396,8 @@
                             <Setter Property="Foreground" Value="{StaticResource PreferencesWindowButtonMouseOverFontColor}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border"
-                                    Property="Background"
-                                    Value="#99E0FF" />
-                            <Setter TargetName="border"
-                                    Property="Opacity"
-                                    Value="0.5" />
+                            <Setter TargetName="border" Property="Background" Value="#99E0FF" />
+                            <Setter TargetName="border" Property="Opacity" Value="0.5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -2493,6 +2594,143 @@
                 <ItemsPanelTemplate>
                     <StackPanel Margin="-25,0,0,0" />
                 </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}">
+        <Setter Property="Placement" Value="MousePoint" />
+        <Setter Property="Foreground" Value="{StaticResource NodeContextMenuForeground}" />
+        <Setter Property="FontSize" Value="13px" />
+        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border"
+                            Background="{StaticResource NodeContextMenuBackground}"
+                            BorderThickness="0px">
+                        <StackPanel Margin="0,10"
+                                    ClipToBounds="True"
+                                    IsItemsHost="True"
+                                    Orientation="Vertical" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ContextMenuItemStyle" TargetType="{x:Type MenuItem}">
+        <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Width" Value="240" />
+        <Setter Property="Padding" Value="15,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <DockPanel x:Name="dockPanel"
+                               HorizontalAlignment="Stretch"
+                               Background="Transparent"
+                               SnapsToDevicePixels="true">
+                        <Label x:Name="checkBox"
+                               Margin="10,0,-10,0"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Content="✓"
+                               DockPanel.Dock="Left"
+                               FontSize="9px"
+                               Foreground="White"
+                               Visibility="Collapsed" />
+                        <ContentPresenter x:Name="ContentPresenter"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center"
+                                          ContentSource="Header"
+                                          DockPanel.Dock="Left"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          TextBlock.Foreground="{StaticResource NodeContextMenuForeground}" />
+                        <Label x:Name="subMenuArrow"
+                               Margin="0,0,15,7"
+                               Padding="0"
+                               VerticalAlignment="Center"
+                               Content="&gt;"
+                               DockPanel.Dock="Right"
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               FontSize="13px"
+                               Foreground="{StaticResource Blue300Brush}">
+                            <Label.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1.5" />
+                            </Label.RenderTransform>
+                            <Label.Style>
+                                <Style TargetType="{x:Type Label}">
+                                    <Setter Property="Visibility" Value="Hidden" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <Popup x:Name="PART_Popup"
+                               AllowsTransparency="true"
+                               Focusable="false"
+                               HorizontalOffset="0"
+                               IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                               Placement="Left"
+                               VerticalOffset="-2">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0">
+                                <ScrollViewer x:Name="SubMenuScrollViewer"
+                                              CanContentScroll="true"
+                                              Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
+                                                                                            TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                    <Grid RenderOptions.ClearTypeHint="Enabled">
+                                        <ItemsPresenter x:Name="ItemsPresenter"
+                                                        Margin="2"
+                                                        Grid.IsSharedSizeScope="true"
+                                                        KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                        KeyboardNavigation.TabNavigation="Cycle"
+                                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Grid>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="False">
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ContextMenuSeparatorStyle" TargetType="Separator">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Separator}">
+                    <Border Height="1"
+                            Margin="15,8,15,8"
+                            Background="{StaticResource NodeContextMenuSeparatorColor}" />
+                </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
@@ -3386,6 +3624,12 @@
         </Setter>
     </Style>
 
+    <SolidColorBrush x:Key="Button.MouseOver.Border"
+                     Opacity="0.15"
+                     Color="#808080" />
+    <SolidColorBrush x:Key="Button.Pressed.Border"
+                     Opacity="0.25"
+                     Color="#808080" />
     <Style x:Key="PoupButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="MinWidth" Value="80" />
         <Setter Property="MaxHeight" Value="36" />
@@ -3403,6 +3647,17 @@
                                           VerticalAlignment="Center"
                                           Content="{TemplateBinding Content}" />
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PopupButtonBorder" Property="BorderBrush" Value="{StaticResource Button.MouseOver.Border}" />
+                            <Setter TargetName="PopupButtonBorder" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PopupButtonBorder" Property="BorderBrush" Value="{StaticResource Button.Pressed.Border}" />
+                            <Setter TargetName="PopupButtonBorder" Property="BorderThickness" Value="4" />
+                            <Setter TargetName="PopupButtonBorder" Property="Background" Value="{StaticResource PreferencesWindowButtonColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -3416,11 +3671,11 @@
     </Style>
 
     <Style x:Key="PoupPathRectangleStyle" TargetType="{x:Type Path}">
-        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}" />
     </Style>
 
     <Style x:Key="PoupPolygonPointerStyle" TargetType="{x:Type Polygon}">
-        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}" />
     </Style>
 
     <Style x:Key="CustomRichTextBoxStyle" TargetType="{x:Type RichTextBox}">
@@ -3445,54 +3700,47 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
     </Style>
 
-    <!--Style for the Exit Tour popup, that will appear when a tooltip is closed before the tour completion-->
+    <!--  Style for the Exit Tour popup, that will appear when a tooltip is closed before the tour completion  -->
     <Style x:Key="RealTimeInfoCloseButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border x:Name="CloseButtonBorder"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    BorderBrush="Transparent">
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0">
                         <Canvas Margin="0,0,0,0">
-                            <Line x:Name="line1" 
-                                          X1="0" Y1="0" X2="13" Y2="13" 
-                                          Stroke="#D9D9D9" 
-                                          StrokeThickness="1"></Line>
-                            <Line x:Name="line2" 
-                                          X1="0" Y1="13" X2="13" Y2="0" 
-                                          Stroke="#D9D9D9" 
-                                          StrokeThickness="1"></Line>
+                            <Line x:Name="line1"
+                                  Stroke="#D9D9D9"
+                                  StrokeThickness="1"
+                                  X1="0"
+                                  X2="13"
+                                  Y1="0"
+                                  Y2="13" />
+                            <Line x:Name="line2"
+                                  Stroke="#D9D9D9"
+                                  StrokeThickness="1"
+                                  X1="0"
+                                  X2="13"
+                                  Y1="13"
+                                  Y2="0" />
                         </Canvas>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsPressed" 
-                                         Value="True">
-                            <Setter Property="Stroke" 
-                                            TargetName="line1" 
-                                            Value="{StaticResource PreferencesWindowButtonColor}"/>
-                            <Setter Property="Stroke" 
-                                            TargetName="line2" 
-                                            Value="{StaticResource PreferencesWindowButtonColor}"/>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="line1" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="line2" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
                         </Trigger>
-                        <Trigger Property="IsMouseOver" 
-                                         Value="True">
-                            <Setter Property="Stroke" 
-                                            TargetName="line1" 
-                                            Value="{StaticResource PreferencesWindowButtonColor}"/>
-                            <Setter Property="Stroke" 
-                                            TargetName="line2" 
-                                            Value="{StaticResource PreferencesWindowButtonColor}"/>
-                            <Setter Property="Cursor" 
-                                            Value="Hand"/>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="line1" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="line2" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter Property="Cursor" Value="Hand" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    <SolidColorBrush x:Key="RealTimeInfoWindowIconColor" 
-                     Color="#38ABDF" />
-    <SolidColorBrush x:Key="RealTimeInfoWindowBackgroundColor" 
-                     Color="#535353" />
+    <SolidColorBrush x:Key="RealTimeInfoWindowIconColor" Color="#38ABDF" />
+    <SolidColorBrush x:Key="RealTimeInfoWindowBackgroundColor" Color="#535353" />
 </ResourceDictionary>

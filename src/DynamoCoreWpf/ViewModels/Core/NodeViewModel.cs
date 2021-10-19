@@ -203,12 +203,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Used to determine whether the node's context menu display an Output/Input menu
-        /// </summary>
-        [JsonIgnore]
-        public bool IsInputOrOutput => IsInput || IsOutput;
-
+        
         /// <summary>
         /// The Name of the nodemodel this view points to
         /// this is the name of the node as it is displayed in the UI.
@@ -283,7 +278,7 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.IsCustomFunction ? true : false; }
         }
-
+        
         /// <summary>
         /// Element's left position is two-way bound to this value
         /// </summary>
@@ -669,6 +664,15 @@ namespace Dynamo.ViewModels
             Selected?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Event to determine when Node is removed
+        /// </summary>
+        internal event EventHandler Removed;
+        internal void OnRemoved(object sender, EventArgs e)
+        {
+            Removed?.Invoke(this, e);
+        }
+
         #endregion
 
         #region constructors
@@ -823,13 +827,13 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in nodeLogic.InPorts)
             {
-                PortViewModel inportViewModel = SubscribePortEvents(item);
+                PortViewModel inportViewModel = SubscribeInPortEvents(item);
                 InPorts.Add(inportViewModel);
             }
 
             foreach (var item in nodeLogic.OutPorts)
             {
-                PortViewModel outportViewModel = SubscribePortEvents(item);
+                PortViewModel outportViewModel = SubscribeOutPortEvents(item);
                 OutPorts.Add(outportViewModel);
             }
         }
@@ -999,6 +1003,7 @@ namespace Dynamo.ViewModels
         {
             var command = new DynamoModel.DeleteModelCommand(nodeLogic.GUID);
             DynamoViewModel.ExecuteCommand(command);
+            OnRemoved(this, EventArgs.Empty);
         }
 
         private void SetLacingType(object param)
@@ -1038,7 +1043,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    PortViewModel inportViewModel = SubscribePortEvents(item as PortModel);
+                    PortViewModel inportViewModel = SubscribeInPortEvents(item as PortModel);
                     InPorts.Add(inportViewModel);
                 }
             }
@@ -1074,7 +1079,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    PortViewModel outportViewModel = SubscribePortEvents(item as PortModel);
+                    PortViewModel outportViewModel = SubscribeOutPortEvents(item as PortModel);
                     OutPorts.Add(outportViewModel);
                 }
             }
@@ -1086,6 +1091,7 @@ namespace Dynamo.ViewModels
                 {
                     PortViewModel portToRemove = UnSubscribePortEvents(OutPorts.ToList().First(x => x.PortModel == item));
                     OutPorts.Remove(portToRemove);
+                    portToRemove.Dispose();
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Reset)
@@ -1093,6 +1099,7 @@ namespace Dynamo.ViewModels
                 foreach (var p in OutPorts)
                 {
                     UnSubscribePortEvents(p);
+                    p.Dispose();
                 }
                 OutPorts.Clear();
             }
@@ -1100,13 +1107,27 @@ namespace Dynamo.ViewModels
 
 
         /// <summary>
-        /// Registers the port events.
+        /// Registers the in port events.
         /// </summary>
         /// <param name="item">PortModel.</param>
         /// <returns></returns>
-        private PortViewModel SubscribePortEvents(PortModel item)
+        protected virtual PortViewModel SubscribeInPortEvents(PortModel item)
         {
-            PortViewModel portViewModel = new PortViewModel(this, item);
+            InPortViewModel portViewModel = new InPortViewModel(this, item);
+            portViewModel.MouseEnter += OnRectangleMouseEnter;
+            portViewModel.MouseLeave += OnRectangleMouseLeave;
+            portViewModel.MouseLeftButtonDown += OnMouseLeftButtonDown;
+            return portViewModel;
+        }
+
+        /// <summary>
+        /// Registers the out port events.
+        /// </summary>
+        /// <param name="item">PortModel.</param>
+        /// <returns></returns>
+        protected virtual PortViewModel SubscribeOutPortEvents(PortModel item)
+        {
+            OutPortViewModel portViewModel = new OutPortViewModel(this, item);
             portViewModel.MouseEnter += OnRectangleMouseEnter;
             portViewModel.MouseLeave += OnRectangleMouseLeave;
             portViewModel.MouseLeftButtonDown += OnMouseLeftButtonDown;
