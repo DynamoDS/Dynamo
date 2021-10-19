@@ -111,6 +111,10 @@
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoUnitsImages.resx" OutputResources="$(ProjectDir)DynamoUnitsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoUnitsImages.resources" OutputAssembly="$(OutDir)DynamoUnits.customization.dll" Version="%(AssemblyInfo.Version)" />
+    <ItemGroup>
+      <UnitSchemas Include="..\..\packages\ForgeUnits.Schemas.1.0.0\Content\unit\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(UnitSchemas)" DestinationFolder="$(OutDir)unit\%(RecursiveDir)" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
