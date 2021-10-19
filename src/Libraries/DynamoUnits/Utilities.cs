@@ -4,6 +4,7 @@ using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using System.Reflection;
 using System.IO;
+using System.Configuration;
 
 namespace DynamoUnits
 {
@@ -11,18 +12,35 @@ namespace DynamoUnits
     {
         private static ForgeUnitsCLR.UnitsEngine unitsEngine;
 
+        public static readonly string SchemaDirectory = Path.Combine(AssemblyDirectory, "unit");
+
         static Utilities()
         {
+            var assemblyFilePath = Assembly.GetExecutingAssembly().Location;
+
+            var config = ConfigurationManager.OpenExeConfiguration(assemblyFilePath);
+            var key = config.AppSettings.Settings["schemaPath"];
+            string path = null;
+            if (key != null)
+            {
+                path = key.Value;
+            }
+
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+            {
+                SchemaDirectory = path;
+            }
+
             try
             {
                 unitsEngine = new ForgeUnitsCLR.UnitsEngine();
-                var directory = Path.Combine(AssemblyDirectory, "unit");
-                SchemasCLR.SchemaUtility.addDefinitionsFromFolder(directory, unitsEngine);
+                SchemasCLR.SchemaUtility.addDefinitionsFromFolder(SchemaDirectory, unitsEngine);
                 unitsEngine.resolveSchemas();
             }
             catch
             {
-                //Schemas failed to resolve
+                unitsEngine = null;
+                //There was an issue initializing the schemas at the specified path.
             }
             
         }
@@ -94,10 +112,8 @@ namespace DynamoUnits
             {
                 if (unitsEngine == null)
                 {
-                    unitsEngine = new ForgeUnitsCLR.UnitsEngine();
-                    var directory = Path.Combine(AssemblyDirectory, "unit");
-                    SchemasCLR.SchemaUtility.addDefinitionsFromFolder(directory, unitsEngine);
-                    unitsEngine.resolveSchemas();
+                    throw new Exception("There was an issue loading Unit Schemas from the specified path: " 
+                                        + SchemaDirectory);
                 }
 
                 return unitsEngine;
