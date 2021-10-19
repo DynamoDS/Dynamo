@@ -766,7 +766,7 @@
                 <!--  Top Row: Buttons and Label  -->
                 <DockPanel Grid.Row="0">
                     <!--  Add Directory  -->
-                    <Button Command="{Binding Path=ShowAddFileDialogAndAddRecursivelyCommand}"
+                    <Button Command="{Binding Path=SelectDirectoryAndAddFilesRecursivelyCommand}"
                             Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButton}"
                             DockPanel.Dock="Right"
                             Style="{StaticResource TextButtonStyle}"

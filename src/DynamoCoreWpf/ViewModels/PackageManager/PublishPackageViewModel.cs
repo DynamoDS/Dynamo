@@ -23,6 +23,7 @@ using Microsoft.Practices.Prism.Commands;
 using PythonNodeModels;
 using Double = System.Double;
 using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
+using QueryContinueDragEventArgs = System.Windows.QueryContinueDragEventArgs;
 using String = System.String;
 
 namespace Dynamo.PackageManager
@@ -545,7 +546,7 @@ namespace Dynamo.PackageManager
         /// A command which, when executed, recursively adds the selected folders and their
         /// subfolders to the PackageContents 
         /// </summary>
-        public DelegateCommand ShowAddFileDialogAndAddRecursivelyCommand { get; set; }
+        public DelegateCommand SelectDirectoryAndAddFilesRecursivelyCommand { get; set; }
 
         /// <summary>
         /// SelectMarkdownDirectoryCommand property. A command which, when executed,
@@ -672,7 +673,7 @@ namespace Dynamo.PackageManager
             SubmitCommand = new DelegateCommand(Submit, CanSubmit);
             PublishLocallyCommand = new DelegateCommand(PublishLocally, CanPublishLocally);
             ShowAddFileDialogAndAddCommand = new DelegateCommand(ShowAddFileDialogAndAdd, CanShowAddFileDialogAndAdd);
-            ShowAddFileDialogAndAddRecursivelyCommand = new DelegateCommand(SelectDirectoryAndAddFilesRecursively);
+            SelectDirectoryAndAddFilesRecursivelyCommand = new DelegateCommand(SelectDirectoryAndAddFilesRecursively);
             SelectMarkdownDirectoryCommand = new DelegateCommand(SelectMarkdownDirectory);
             ClearMarkdownDirectoryCommand = new DelegateCommand(ClearMarkdownDirectory);
             RemoveItemCommand = new Dynamo.UI.Commands.DelegateCommand(RemoveItem);
@@ -1172,7 +1173,9 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// 
+        /// Method linked to SelectDirectoryAndAddFilesRecursivelyCommand.
+        /// Opens the Select Folder dialog and prompts the user to select a directory.
+        /// Recursively adds any files found in the given directory to PackageContents.
         /// </summary>
         private void SelectDirectoryAndAddFilesRecursively()
         {
@@ -1199,6 +1202,7 @@ namespace Dynamo.PackageManager
             if (filePaths.Count < 1) return;
 
             List<string> existingPackageContents = PackageContents
+                .Where(x => x.FileInfo != null)
                 .Select(x => x.FileInfo.FullName)
                 .ToList();
 
@@ -1256,10 +1260,12 @@ namespace Dynamo.PackageManager
         {
             if (!(parameter is PackageItemRootViewModel packageItemRootViewModel)) return;
 
-            PackageItemRootViewModel packageItemRootViewModelToRemove = PackageContents
-                .FirstOrDefault(x => x.FileInfo.FullName == packageItemRootViewModel.FileInfo.FullName);
-
-            if (packageItemRootViewModelToRemove == null) return;
+            if (packageItemRootViewModel.FileInfo == null || packageItemRootViewModel.FileInfo == null)
+            {
+                PackageContents.Remove(PackageContents
+                    .First(x => x.Name == packageItemRootViewModel.Name));
+                return;
+            }
 
             PackageContents.Remove(PackageContents
                 .First(x => x.FileInfo.FullName == packageItemRootViewModel.FileInfo.FullName));
