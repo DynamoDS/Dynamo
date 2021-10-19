@@ -241,12 +241,12 @@
 						"UIElementTypeString": "MenuItem",
 						"WindowElementNameString": "showPMSearch",
 						"WidthBoxDelta": 0,
-						"HeightBoxDelta": 0
+						"HeightBoxDelta": 3
 					},
 					"CutOffRectArea": {
 						"WindowElementNameString": "showPMSearch",
 						"WidthBoxDelta": 0,
-						"HeightBoxDelta": 0
+						"HeightBoxDelta": 3
 					}
 				},
 				"UIAutomation": [
