@@ -6956,6 +6956,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You haven&apos;t saved this file yet..
+        /// </summary>
+        public static string WorkspaceTabNotSavedYet {
+            get {
+                return ResourceManager.GetString("WorkspaceTabNotSavedYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is a brand new file..
+        /// </summary>
+        public static string WorkspaceTabSavingBrandNewFile {
+            get {
+                return ResourceManager.GetString("WorkspaceTabSavingBrandNewFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to save updates to this file..
+        /// </summary>
+        public static string WorkspaceTabSavingNecessary {
+            get {
+                return ResourceManager.GetString("WorkspaceTabSavingNecessary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No need to save!.
+        /// </summary>
+        public static string WorkspaceTabSavingUnnecessary {
+            get {
+                return ResourceManager.GetString("WorkspaceTabSavingUnnecessary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DLL.
         /// </summary>
         public static string ZeroTouchTypeShortString {

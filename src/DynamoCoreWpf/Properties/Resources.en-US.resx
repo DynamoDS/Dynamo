@@ -2747,4 +2747,16 @@ More information</value>
   <data name="GenericTaskDialogOptionCancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="WorkspaceTabSavingUnnecessary" xml:space="preserve">
+    <value>No need to save!</value>
+  </data>
+  <data name="WorkspaceTabSavingNecessary" xml:space="preserve">
+    <value>You need to save updates to this file.</value>
+  </data>
+  <data name="WorkspaceTabSavingBrandNewFile" xml:space="preserve">
+    <value>This is a brand new file.</value>
+  </data>
+  <data name="WorkspaceTabNotSavedYet" xml:space="preserve">
+    <value>You haven't saved this file yet.</value>
+  </data>
 </root>
