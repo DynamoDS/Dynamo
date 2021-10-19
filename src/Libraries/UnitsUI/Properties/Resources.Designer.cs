@@ -187,6 +187,15 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There was an issue loading Unit Schemas from the specified path:.
+        /// </summary>
+        internal static string SchemaLoadWarning {
+            get {
+                return ResourceManager.GetString("SchemaLoadWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         internal static string SymbolsUIDescription {

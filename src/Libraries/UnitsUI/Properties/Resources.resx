@@ -163,6 +163,9 @@
   <data name="QuantitiesUISearchTags" xml:space="preserve">
     <value />
   </data>
+  <data name="SchemaLoadWarning" xml:space="preserve">
+    <value>There was an issue loading Unit Schemas from the specified path:</value>
+  </data>
   <data name="SymbolsUIDescription" xml:space="preserve">
     <value />
   </data>

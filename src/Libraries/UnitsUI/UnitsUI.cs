@@ -236,9 +236,18 @@ namespace UnitsUI
         [JsonConstructor]
         private UnitInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            Items =
-                DynamoUnits.Utilities.ConvertUnitsDictionaryToList(
-                    DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
+            try
+            {
+                Items =
+                    DynamoUnits.Utilities.ConvertUnitsDictionaryToList(
+                        DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
+            }
+            catch
+            {
+                //continue with empty node and warning 
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
+
             ShouldDisplayPreviewCore = true;
         }
 
@@ -248,10 +257,18 @@ namespace UnitsUI
             this.OutPorts.Add(new PortModel(PortType.Output, (NodeModel)this, new PortData("Value", "Value")));
             this.OutPorts.Add(new PortModel(PortType.Output, (NodeModel)this, new PortData("TypeId", "TypeId")));
             RegisterAllPorts();
-            Items =
-                DynamoUnits.Utilities.ConvertUnitsDictionaryToList(
-                    DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
-            SelectedUnit = Items.Find(u => u.Name == "Feet");
+            try
+            {
+                Items =
+                    DynamoUnits.Utilities.ConvertUnitsDictionaryToList(
+                        DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
+                SelectedUnit = Items.Find(u => u.Name == "Feet");
+            }
+            catch
+            {
+                //continue with empty node and warning 
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
 
             Value = "";
             ShouldDisplayPreviewCore = true;
@@ -259,13 +276,13 @@ namespace UnitsUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if(string.IsNullOrEmpty(Value))
+            if(string.IsNullOrEmpty(Value) || SelectedUnit is null)
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
 
             var expression = AstFactory.BuildStringNode(Value);
 
             var unitID =
-                AstFactory.BuildStringNode(SelectedUnit.TypeId);
+                AstFactory.BuildStringNode(SelectedUnit?.TypeId);
 
            var node = AstFactory.BuildFunctionCall(
                 new Func<string, string, double>(DynamoUnits.Utilities.ParseExpressionByUnitId),
@@ -407,11 +424,11 @@ namespace UnitsUI
             {
                 selectedQuantityConversion = value;
                 SelectedFromConversionSource =
-                    selectedQuantityConversion.Units;
+                    selectedQuantityConversion?.Units;
                 SelectedToConversionSource =
-                    selectedQuantityConversion.Units;
-                SelectedFromConversion = SelectedFromConversionSource.First();
-                SelectedToConversion = SelectedToConversionSource.First();
+                    selectedQuantityConversion?.Units;
+                SelectedFromConversion = SelectedFromConversionSource?.First();
+                SelectedToConversion = SelectedToConversionSource?.First();
 
                 RaisePropertyChanged(nameof(SelectedQuantityConversion));
             }
@@ -477,19 +494,40 @@ namespace UnitsUI
         [JsonConstructor]
         private ForgeDynamoConvert(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            QuantityConversionSource =
-                DynamoUnits.Utilities.CovertQuantityDictionaryToList(
-                    DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities());
+            try
+            {
+                QuantityConversionSource =
+                    DynamoUnits.Utilities.CovertQuantityDictionaryToList(
+                        DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities());
+            }
+            catch
+            {
+                //continue with empty node and warning 
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
+
+            AssociativeNode defaultNode = new DoubleNode(0.0);
+            if (inPorts != null) inPorts.First().DefaultValue = defaultNode;
+
             ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = true;
         }
 
         public ForgeDynamoConvert()
         {
-            QuantityConversionSource =
-                DynamoUnits.Utilities.CovertQuantityDictionaryToList(
-                    DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities());
-            SelectedQuantityConversion = QuantityConversionSource.Find(q => q.Name == "Length");
+            try
+            {
+                QuantityConversionSource =
+                    DynamoUnits.Utilities.CovertQuantityDictionaryToList(
+                        DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities());
+                SelectedQuantityConversion = QuantityConversionSource.Find(q => q.Name == "Length");
+            }
+            catch
+            {
+                //continue with empty node and warning 
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
+
             AssociativeNode defaultNode = new DoubleNode(0.0);
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("", "Tooltip", defaultNode)));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", "Tooltip")));
@@ -502,14 +540,14 @@ namespace UnitsUI
         public override IEnumerable<AssociativeNode> BuildOutputAst(
             List<AssociativeNode> inputAstNodes)
         {
-            if (null == inputAstNodes || inputAstNodes.Count == 0 || inputAstNodes[0] is ProtoCore.AST.AssociativeAST.NullNode)
+            if (null == inputAstNodes || inputAstNodes.Count == 0 || inputAstNodes[0] is ProtoCore.AST.AssociativeAST.NullNode || SelectedToConversion is null || SelectedFromConversion is null)
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
             
             var conversionToNode =
-                AstFactory.BuildStringNode(SelectedToConversion.TypeId);
+                AstFactory.BuildStringNode(SelectedToConversion?.TypeId);
 
             var conversionFromNode =
-                AstFactory.BuildStringNode(SelectedFromConversion.TypeId);
+                AstFactory.BuildStringNode(SelectedFromConversion?.TypeId);
             AssociativeNode node = null;
 
             node = AstFactory.BuildFunctionCall(
@@ -567,7 +605,20 @@ namespace UnitsUI
         {
             Items.Clear();
 
-            var dictionary = DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits();
+            Dictionary<string, ForgeUnitsCLR.Unit> dictionary = null;
+            try
+            {
+                dictionary = DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits();
+            }
+            catch
+            {
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
+
+            if (dictionary == null)
+            {
+                return SelectionState.Restore;
+            }
 
             var units = dictionary.Values.ToArray();
             for (int i = 0; i < units.Length - 1; i++)
@@ -624,7 +675,20 @@ namespace UnitsUI
         {
             Items.Clear();
 
-            var dictionary = DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities();
+            Dictionary<string, ForgeUnitsCLR.Quantity> dictionary = null;
+            try
+            {
+                dictionary = DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities();
+            }
+            catch
+            {
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
+
+            if (dictionary == null)
+            {
+                return SelectionState.Restore;
+            }
 
             var quantities = dictionary.Values.ToArray();
             for (int i = 0; i < quantities.Length - 1; i++)
@@ -680,7 +744,20 @@ namespace UnitsUI
         {
             Items.Clear();
 
-            var dictionary = DynamoUnits.Utilities.ForgeUnitsEngine.getAllSymbols();
+            Dictionary<string, ForgeUnitsCLR.Symbol> dictionary = null;
+            try
+            {
+                dictionary = DynamoUnits.Utilities.ForgeUnitsEngine.getAllSymbols();
+            }
+            catch
+            {
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
+
+            if (dictionary == null)
+            {
+                return SelectionState.Restore;
+            }
 
             var symbols = dictionary.Values.ToArray();
             for (int i = 0; i < symbols.Length - 1; i++)

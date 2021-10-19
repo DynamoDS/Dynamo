@@ -19,7 +19,14 @@ namespace UnitsUI.Converters
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             string typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
-            return DynamoUnits.Quantity.ByTypeID(typedId);
+            try
+            {
+                return DynamoUnits.Quantity.ByTypeID(typedId);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -39,7 +46,15 @@ namespace UnitsUI.Converters
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             string typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
-            return DynamoUnits.Unit.ByTypeID(typedId);
+
+            try
+            {
+                return DynamoUnits.Unit.ByTypeID(typedId);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -59,7 +74,14 @@ namespace UnitsUI.Converters
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             string typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
-            return DynamoUnits.Symbol.ByTypeID(typedId);
+            try
+            {
+                return DynamoUnits.Symbol.ByTypeID(typedId);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
