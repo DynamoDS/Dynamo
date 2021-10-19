@@ -32,8 +32,11 @@
   <ItemGroup>
     <Reference Include="Greg, Version=2.0.7843.19074, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Greg.2.0.7843.19074\lib\net48\Greg.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -78,15 +81,17 @@
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533B7C-0E1A-44A4-8511-B438645F052A}</Project>
       <Name>DynamoPackages</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
       <Project>{8872CA17-C10D-43B9-8393-5C5A57065EB0}</Project>
       <Name>PythonNodeModels</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
