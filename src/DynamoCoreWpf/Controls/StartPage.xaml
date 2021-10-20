@@ -45,7 +45,7 @@
             <TextBlock Margin="8,0,0,0"
                        FontSize="11"
                        Width="172"
-                       FontFamily="{StaticResource OpenSansRegular}"
+                       FontFamily="{StaticResource ArtifaktElementRegular}"
                        Text="{x:Static p:Resources.StartPageStart}"
                        Foreground="#888888"
                        VerticalAlignment="Center" />
@@ -104,8 +104,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{x:Static p:Resources.StartPageFiles}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#3395a2"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -120,8 +120,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{x:Static p:Resources.StartPageRecent}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#62895b"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -138,8 +138,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{Binding Path=BackupTitle}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#ad5446"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -163,7 +163,7 @@
 
                         <Label Grid.Column="0"
                            Name ="openAll"
-                           FontFamily="{StaticResource OpenSansRegular}"
+                           FontFamily="{StaticResource ArtifaktElementRegular}"
                            Margin="0,0,0,0"
                            HorizontalAlignment="Left"
                            Style="{StaticResource StartPageLabel}"
@@ -171,7 +171,7 @@
                            MouseLeftButtonUp="OpenAllFilesOnCrash" />
                         <Label Grid.Column="1"
                            Name ="backupLocation"
-                           FontFamily="{StaticResource OpenSansRegular}"
+                           FontFamily="{StaticResource ArtifaktElementRegular}"
                            Margin="0,0,0,0"
                            HorizontalAlignment="Right"
                            Style="{StaticResource StartPageLabel}"
@@ -190,8 +190,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{x:Static p:Resources.StartPageAsk}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#a55553"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -206,8 +206,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{x:Static p:Resources.StartPageReference}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#6f4c76"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -222,8 +222,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{x:Static p:Resources.StartPageCode}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#4b9dbf"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -238,8 +238,8 @@
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{x:Static p:Resources.StartPageSamples}"
-                                   FontSize="13"
-                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   FontSize="18"
+                                   FontFamily="{StaticResource ArtifaktElementBold}"
                                    Foreground="#5e8f80"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
@@ -250,7 +250,7 @@
                               Grid.Row="3"
                               Grid.ColumnSpan="2"
                               BorderThickness="0"
-                              FontSize="15"
+                              FontSize="16"
                               ItemContainerStyle="{StaticResource StartPageTreeViewItem}"
                               Style="{StaticResource StartPageTreeView}">
                         <TreeView.ItemTemplate>
@@ -263,7 +263,7 @@
                         </TreeView.ItemTemplate>
                     </TreeView>
 
-                    <Label FontFamily="{StaticResource OpenSansRegular}"
+                    <Label FontFamily="{StaticResource ArtifaktElementBold}"
                            Margin="0,0,12,0"
                            HorizontalAlignment="Left"
                            Style="{StaticResource StartPageLabel}"
