@@ -22,7 +22,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand useLevelsCommand;
         private DelegateCommand keepListStructureCommand;
         private bool showUseLevelMenu;
-        private const double autocompletePopupSpacing = 2.5;
+        private const double inPortContextMenuPopupSpacing = 2.5;
         internal bool inputPortDisconnectedByConnectCommand = false;
         protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
@@ -309,12 +309,49 @@ namespace Dynamo.ViewModels
             popup.CustomPopupPlacementCallback = PlaceAutocompletePopup;
         }
 
+        /// <summary>
+        /// Sets up the InPortContextMenu window to be placed relative to the port.
+        /// </summary>
+        /// <param name="popup">Node autocomplete popup.</param>
+        internal void SetupInPortContextMenuPlacement(Popup popup)
+        {
+            node.OnRequestInPortContextMenuPlacementTarget(popup);
+            popup.CustomPopupPlacementCallback = PlaceInPortContextMenu;
+        }
+
         private CustomPopupPlacement[] PlaceAutocompletePopup(Size popupSize, Size targetSize, Point offset)
         {
             var zoom = node.WorkspaceViewModel.Zoom;
 
             double x;
-            var scaledSpacing = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
+            var scaledSpacing = inPortContextMenuPopupSpacing * targetSize.Width / node.ActualWidth;
+            if (PortModel.PortType == PortType.Input)
+            {
+                // Offset popup to the left by its width from left edge of node and spacing.
+                x = -scaledSpacing - popupSize.Width;
+            }
+            else
+            {
+                // Offset popup to the right by node width and spacing from left edge of node.
+                x = scaledSpacing + targetSize.Width;
+            }
+            // Offset popup down from the upper edge of the node by the node header and corresponding to the respective port.
+            // Scale the absolute heights by the target height (passed to the callback) and the actual height of the node.
+            var scaledHeight = targetSize.Height / node.ActualHeight;
+            var absoluteHeight = NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
+            var y = absoluteHeight * scaledHeight;
+
+            var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
+
+            return new[] { placement };
+        }
+
+        private CustomPopupPlacement[] PlaceInPortContextMenu(Size popupSize, Size targetSize, Point offset)
+        {
+            var zoom = node.WorkspaceViewModel.Zoom;
+
+            double x;
+            var scaledSpacing = inPortContextMenuPopupSpacing * targetSize.Width / node.ActualWidth;
             if (PortModel.PortType == PortType.Input)
             {
                 // Offset popup to the left by its width from left edge of node and spacing.
@@ -461,6 +498,19 @@ namespace Dynamo.ViewModels
             // Bail out from connect state
             wsViewModel.CancelActiveState();
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+        }
+
+        /// <summary>
+        /// Handler to open the node's InPort Context Menu
+        /// </summary>
+        /// <param name="obj"></param>
+        private void NodeInPortContextMenu(object obj)
+        {
+            var wsViewModel = node.WorkspaceViewModel;
+            wsViewModel.InPortViewModel = this;
+
+            wsViewModel.CancelActiveState();
+            wsViewModel.OnRequestInPortContextMenu(ShowHideFlags.Show);
         }
 
         private bool CanAutoComplete(object parameter)

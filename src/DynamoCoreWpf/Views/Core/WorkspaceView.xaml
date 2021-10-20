@@ -354,6 +354,15 @@
             <ui:NodeAutoCompleteSearchControl RequestShowNodeAutoCompleteSearch="ShowHideNodeAutoCompleteControl" />
         </Popup>
 
+        <Popup Name="InPortContextMenu" 
+               StaysOpen="True"
+               AllowsTransparency="True"
+               IsOpen="False"
+               Placement="Custom"
+               DataContext="{Binding InPortViewModel}">
+            <ui:PortContextMenu RequestShowInPortContextMenu="ShowHideInPortContextMenu" />
+        </Popup>
+
         <Popup Name="ContextMenuPopup" Style="{StaticResource WorkspaceContextMenuStylePopup}"
                Opened="OnContextMenuOpened" StaysOpen="True" AllowsTransparency="True" Placement="MousePoint">
             <Popup.Resources>

@@ -191,6 +191,9 @@
     <Compile Include="UI\Prompts\DynamoMessageBox.xaml.cs">
       <DependentUpon>DynamoMessageBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PortContextMenu.xaml.cs">
+      <DependentUpon>PortContextMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
@@ -502,6 +505,10 @@
     <Page Include="UI\Prompts\DynamoMessageBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\PortContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GuidedTour\WebBrowserWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

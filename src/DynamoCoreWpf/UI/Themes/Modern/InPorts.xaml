@@ -12,24 +12,6 @@
                     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
                     xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
                     xmlns:views="clr-namespace:Dynamo.UI.Views;assembly=DynamoCoreWpf">
-
-    <!-- Templates
-
-    Use this to add color resources:
-    ==========================================
-    <Color x:Key="ColorKey" >#FFFFFFAE</Color>
-
-    You can use this to create a style for a button, just change the TargetType or add
-    other control separated by commas and add setter nodes to change properties:
-    ==========================================
-    <Style x:Key="SimpleStyle" TargetType="Button">
-        <Setter Property="Background" Value="Red" />
-    </Style>
-
-    -->
-
-    <!--  Add your resources here  -->
-
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
@@ -207,12 +189,10 @@
                            DockPanel.Dock="Right"
                            IsHitTestVisible="True"
                            Margin="3,0,5,0">
-                            <!--Visibility="{Binding Path=UseLevelVisibility}"-->
-                    <interactivity:Interaction.Triggers>
-                        <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
-                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnLevelCommand}" CommandParameter="{Binding}" />
-                        </views:HandlingEventTrigger>
-                    </interactivity:Interaction.Triggers>
+                    <!--  Bind InPortContextMenu to left click  -->
+                    <Rectangle.InputBindings>
+                        <MouseBinding Command="{Binding Path=NodeInPortContextMenuCommand}" MouseAction="LeftClick" />
+                    </Rectangle.InputBindings>
                     <Rectangle.Style>
                         <Style TargetType="{x:Type Rectangle}">
                             <Style.Triggers>
