@@ -1176,7 +1176,7 @@
                                                                                 <Condition Binding="{Binding Path=HasUnsavedChanges}" Value="True"/>
                                                                             </MultiDataTrigger.Conditions>
                                                                             <MultiDataTrigger.Setters>
-                                                                                <Setter Property="Text" Value="{x:Static p:Resources.WorkspaceTabSavingUnnecessary}"/>
+                                                                                <Setter Property="Text" Value="{x:Static p:Resources.WorkspaceTabSavingNecessary}"/>
                                                                             </MultiDataTrigger.Setters>
                                                                         </MultiDataTrigger>
                                                                         <MultiDataTrigger>
