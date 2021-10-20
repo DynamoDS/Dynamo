@@ -241,6 +241,26 @@
                            Foreground="{StaticResource PreferencesWindowFontColor}"
                            Text="{x:Static p:Resources.PackageSearchHeader}"
                            TextAlignment="Left" />
+                <Image Name="DisablePackageInstallIcon"
+                           Width="24"
+                           Height="24"
+                           Margin="0,20,5,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top">
+                    <Image.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.DisablePackageInstallIconTooltip}" Style="{StaticResource GenericToolTipLight}" />
+                    </Image.ToolTip>
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Preferences.DisableCustomPackageLocations}" Value="True">
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/alert_2.png" />
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
             </DockPanel>
         </Border>
 
@@ -583,6 +603,7 @@
                                 <Button Name="installButton"
                                         Command="{Binding DownloadLatestCommand}"
                                         Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
+                                        IsEnabled="{Binding IsEnabledForInstall}"
                                         DockPanel.Dock="Right">
                                     <Button.Style>
                                         <Style TargetType="Button">
@@ -617,6 +638,13 @@
                                                                                         </Setter.Value>
                                                                                     </Setter>
                                                                                 </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding Path=IsEnabledForInstall}" Value="False">
+                                                                                    <Setter Property="Fill">
+                                                                                        <Setter.Value>
+                                                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - disabled.png" />
+                                                                                        </Setter.Value>
+                                                                                    </Setter>
+                                                                                </DataTrigger>
                                                                                 <DataTrigger Binding="{Binding Path=CanInstall}" Value="False">
                                                                                     <Setter Property="Fill">
                                                                                         <Setter.Value>
@@ -628,6 +656,7 @@
                                                                                     <MultiDataTrigger.Conditions>
                                                                                         <Condition Binding="{Binding Path=Model.IsDeprecated}" Value="False" />
                                                                                         <Condition Binding="{Binding Path=CanInstall}" Value="True" />
+                                                                                        <Condition Binding="{Binding Path=IsEnabledForInstall}" Value="True"/>
                                                                                     </MultiDataTrigger.Conditions>
                                                                                     <Setter Property="Fill">
                                                                                         <Setter.Value>
@@ -648,12 +677,12 @@
                                                             <Trigger Property="IsPressed" Value="True">
                                                                 <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#5F5F5F" />
                                                             </Trigger>
-                                                            <Trigger Property="IsEnabled" Value="False">
-                                                                <Setter Property="TextBlock.Foreground" Value="#999999" />
-                                                            </Trigger>
                                                             <DataTrigger Binding="{Binding Model.IsDeprecated}" Value="False">
                                                                 <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
                                                             </DataTrigger>
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter Property="TextBlock.Foreground" Value="#999999" />
+                                                            </Trigger>
                                                             <DataTrigger Binding="{Binding CanInstall}" Value="False">
                                                                 <Setter Property="TextBlock.Foreground" Value="#999999" />
                                                             </DataTrigger>

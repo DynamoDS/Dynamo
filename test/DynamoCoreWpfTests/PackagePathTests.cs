@@ -295,6 +295,40 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void EnableCustomPackagePathsLoadsPackagesOnClosingPreferences()
+        {
+            var setting = new PreferenceSettings()
+            {
+                CustomPackageFolders = { PackagesDirectory }
+            };
+
+            var vm = CreatePackagePathViewModel(setting);
+            var libraryLoader = new ExtensionLibraryLoader(ViewModel.Model);
+
+            vm.packageLoader.PackagesLoaded += libraryLoader.LoadPackages;
+            vm.packageLoader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            (setting as IDisablePackageLoadingPreferences).DisableCustomPackageLocations = true;
+
+            // Load packages in package path.
+            vm.packageLoader.LoadAll(vm.loadPackageParams);
+
+            Assert.AreEqual(0, vm.packageLoader.LocalPackages.Count());
+
+            // simulate turning off "disable custom package paths" toggle.
+            vm.SetPackagesScheduledState(setting.CustomPackageFolders.First(), false);
+
+            // simulate closing preferences dialog by saving changes to packagepathviewmodel 
+            vm.SaveSettingCommand.Execute(null);
+
+            // packages are expected to load from 'PackagesDirectory' above when toggle is turned off
+            Assert.AreEqual(19, vm.packageLoader.LocalPackages.Count());
+
+            vm.packageLoader.PackagesLoaded -= libraryLoader.LoadPackages;
+            vm.packageLoader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+        }
+
+        [Test]
         public void PathEnabledConverterCustomPaths()
         {
             var setting = new PreferenceSettings()

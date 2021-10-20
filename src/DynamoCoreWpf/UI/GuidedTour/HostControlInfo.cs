@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls.Primitives;
 using Newtonsoft.Json;
 
@@ -13,7 +14,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private UIElement hostUIElement;
         private double verticalPopupOffSet;
         private double horizontalPopupOffSet;
-        private string htmlPage;
+        private HtmlPage htmlPage;
 
         /// <summary>
         /// Host Name, this property will contain the name of the host control located in the TreeView
@@ -102,9 +103,27 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal CutOffArea CutOffRectArea { get; set; }
 
         /// <summary>
-        /// The html page anme that is going to be rendered inside the popup
+        /// The html page that is going to be rendered inside the popup
         /// </summary>
         [JsonProperty("HtmlPage")]
-        public string HtmlPage { get => htmlPage; set => htmlPage = value; }
+        public HtmlPage HtmlPage { get => htmlPage; set => htmlPage = value; }
+    }
+
+    public class HtmlPage
+    {
+        private string fileName;
+        private Dictionary<string,string> resources;
+
+        /// <summary>
+        /// A dictionary containing the key word to be replaced in page and the filename as values
+        /// </summary>
+        [JsonProperty("Resources")]
+        public Dictionary<string, string> Resources { get => resources; set => resources = value; }
+
+        /// <summary>
+        /// Filename of the HTML page
+        /// </summary>
+        [JsonProperty("FileName")]
+        public string FileName { get => fileName; set => fileName = value; }
     }
 }
