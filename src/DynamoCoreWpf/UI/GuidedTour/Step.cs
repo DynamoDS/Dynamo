@@ -282,66 +282,71 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// Calculate the Popup.PlacementTarget dynamically if is the case and highlight the sub MenuItem if the needed information was provided
+        /// Calculate the Popup.PlacementTarget dynamically if is the case and highlight the sub MenuItem if the information was provided
         /// </summary>
-        /// <param name="bVisible">When the Step is shown this variable will be false then is hidden(due to passing to the next Step) it will be false</param>
+        /// <param name="bVisible">When the Step is shown this variable will be false when is hidden(due to passing to the next Step) it will be false</param>
         internal void CalculateTargetHost(bool bVisible)
         {
-            //Check if the HighlightRectArea was provided in the json file
-            if (HostPopupInfo.HighlightRectArea != null && HostPopupInfo.HostUIElement != null)
+            //Check if the HighlightRectArea was provided in the json file and the HostUIElement was found in the DynamoView VisualTree
+            if (HostPopupInfo.HighlightRectArea == null || HostPopupInfo.HostUIElement == null)
             {
-                //Check if the WindowElementNameString was provided in the json, meaning that the UIElement that will be highlighted is not the same than HostPopupInfo.HostUIElement
-                if (!string.IsNullOrEmpty(HostPopupInfo.HighlightRectArea.WindowElementNameString))
-                {
-                    //Check if the UIElementTypeString was provided in the json(if was provided means Popup.TargetPlacement will be calculated dinamically)
-                    if (HostPopupInfo.HighlightRectArea.UIElementTypeString.Equals(typeof(MenuItem).Name))
-                    {
-                        //We try to find the WindowElementNameString in the DynamoView VisualTree
-                        var foundUIElement = Guide.FindChild(HostPopupInfo.HostUIElement, HostPopupInfo.HighlightRectArea.WindowElementNameString);
-
-                        if(foundUIElement != null)
-                        {
-                            var subMenuItem = foundUIElement as MenuItem;
-
-                            //If the HighlightRectArea.WindowElementNameString described is a MenuItem (Dynamo menu) then we need to activate the Rectangle in the MenuStyleDictionary.xaml style
-                            HighlightMenuItem(subMenuItem, bVisible);
-                        }
-                    }
-                    //This case is because the Highlight rectangle will appear in a UIElement from the DynamoView VisualTree but is not the same than the provided in the HostPopupInfo.HostUIElement
-                    else if (HostPopupInfo.HighlightRectArea.UIElementTypeString.Equals(typeof(DynamoView).Name))
-                    {
-                        string highlightColor = HostPopupInfo.HighlightRectArea.HighlightColor;
-
-                        //Find the in the DynamoView VisualTree the specified Element (WindowElementNameString)
-                        var hostUIElement = Guide.FindChild(MainWindow, HostPopupInfo.HighlightRectArea.WindowElementNameString);
-
-                        if(hostUIElement != null)
-                        {
-                            //If the Element was found we need to calculate the X,Y coordinates based in the UIElement Ancestor
-                            Point relativePoint = hostUIElement.TransformToAncestor(MainWindow)
-                                      .Transform(new Point(0, 0));
-
-                            var holeWidth = hostUIElement.DesiredSize.Width + HostPopupInfo.HighlightRectArea.WidthBoxDelta;
-                            var holeHeight = hostUIElement.DesiredSize.Height + HostPopupInfo.HighlightRectArea.HeightBoxDelta;
-
-                            //Activate the Highlight rectangle from the GuideBackground
-                            StepGuideBackground.HighlightBackgroundArea.SetHighlighRectSize(relativePoint.Y, relativePoint.X, holeWidth, holeHeight);
-
-                            if (string.IsNullOrEmpty(highlightColor))
-                            {
-                                StepGuideBackground.GuideHighlightRectangle.Stroke = Brushes.Transparent;
-                            }
-                            else
-                            {
-                                //This section will put the desired color in the Highlight rectangle (read from the json file)
-                                var converter = new BrushConverter();
-                                var brush = (Brush)converter.ConvertFromString(highlightColor);
-                                StepGuideBackground.GuideHighlightRectangle.Stroke = brush;
-                            }
-                        }               
-                    }                              
-                }               
+                return;
             }
+            //Check if the WindowElementNameString was provided in the json and is not empty
+            if (string.IsNullOrEmpty(HostPopupInfo.HighlightRectArea.WindowElementNameString))
+            {
+                return;
+            }
+
+            //If the HighlightRectArea.UIElementTypeString was provided in the json file and is MenuItem type means that the Popup.TargetPlacement will be calculated dinamically due that the element is not in the DynamoView VisualTree.
+            if (HostPopupInfo.HighlightRectArea.UIElementTypeString.Equals(typeof(MenuItem).Name))
+            {
+                //We try to find the WindowElementNameString in the DynamoView VisualTree
+                var foundUIElement = Guide.FindChild(HostPopupInfo.HostUIElement, HostPopupInfo.HighlightRectArea.WindowElementNameString);
+
+                if(foundUIElement != null)
+                {
+                    var subMenuItem = foundUIElement as MenuItem;
+
+                    //If the HighlightRectArea.WindowElementNameString described is a MenuItem (Dynamo menu) then we need to activate the Rectangle in the MenuStyleDictionary.xaml style
+                    HighlightMenuItem(subMenuItem, bVisible);
+                }
+            }
+            //The HighlightRectArea.UIElementTypeString was provided but the type is DynamoView then we will search the element in the DynamoView VisualTree
+            else if (HostPopupInfo.HighlightRectArea.UIElementTypeString.Equals(typeof(DynamoView).Name))
+            {
+                string highlightColor = HostPopupInfo.HighlightRectArea.HighlightColor;
+
+                //Find the in the DynamoView VisualTree the specified Element (WindowElementNameString)
+                var hostUIElement = Guide.FindChild(MainWindow, HostPopupInfo.HighlightRectArea.WindowElementNameString);
+
+                if (hostUIElement == null)
+                {
+                    return;
+                }
+
+                //If the Element was found we need to calculate the X,Y coordinates based in the UIElement Ancestor
+                Point relativePoint = hostUIElement.TransformToAncestor(MainWindow)
+                            .Transform(new Point(0, 0));
+
+                var holeWidth = hostUIElement.DesiredSize.Width + HostPopupInfo.HighlightRectArea.WidthBoxDelta;
+                var holeHeight = hostUIElement.DesiredSize.Height + HostPopupInfo.HighlightRectArea.HeightBoxDelta;
+
+                //Activate the Highlight rectangle from the GuideBackground
+                StepGuideBackground.HighlightBackgroundArea.SetHighlighRectSize(relativePoint.Y, relativePoint.X, holeWidth, holeHeight);
+
+                if (string.IsNullOrEmpty(highlightColor))
+                {
+                    StepGuideBackground.GuideHighlightRectangle.Stroke = Brushes.Transparent;
+                }
+                else
+                {
+                    //This section will put the desired color in the Highlight rectangle (read from the json file)
+                    var converter = new BrushConverter();
+                    var brush = (Brush)converter.ConvertFromString(highlightColor);
+                    StepGuideBackground.GuideHighlightRectangle.Stroke = brush;
+                }                            
+            }                              
         }
 
         /// <summary>
