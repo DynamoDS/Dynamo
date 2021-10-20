@@ -15,6 +15,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using DynamoUtilities;
+using Dynamo.Logging;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -267,10 +268,11 @@ namespace Dynamo.WorkspaceDependency
             {
                 var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
                 DownloadSpecifiedPackageAndRefresh(info);
+                Analytics.TrackEvent(Actions.DownloadNew, Categories.WorkspaceReferencesOperations);
             }
             catch (Exception ex)
             {
-                dependencyViewExtension.OnMessageLogged(LogMessage.Info(String.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
+                dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
             }
         }
 
@@ -297,6 +299,7 @@ namespace Dynamo.WorkspaceDependency
             {
                 var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
                 UpdateWorkspaceToUseInstalledPackage(info);
+                Analytics.TrackEvent(Actions.KeepOldPackage, Categories.WorkspaceReferencesOperations, info.Name);
             }
             catch (Exception ex)
             {
