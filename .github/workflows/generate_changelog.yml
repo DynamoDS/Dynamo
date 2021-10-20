@@ -1,0 +1,24 @@
+# This is a basic workflow to help you get started with Actions
+
+name: create-release
+  on:
+    workflow_dispatch:
+  
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # To use this repository's private action, you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v1.0.0
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+          head-ref: 'v2.12.0'
+          base-ref: 'v2.11.1'
+
+      - name: Get the changelog
+        run: echo "${{ steps.changelog.outputs.changelog }}"
