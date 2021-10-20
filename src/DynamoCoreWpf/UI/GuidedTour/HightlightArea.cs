@@ -19,20 +19,20 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Since the box that highlights the elements has its size fixed, this variable applies a value to fix its Width
         /// </summary>
-        [JsonProperty("WidthBoxDelta")]
+        [JsonProperty(nameof(WidthBoxDelta))]
         public double WidthBoxDelta { get => widthBoxDelta; set => widthBoxDelta = value; }
 
 
         /// <summary>
         /// Since the box that highlights the elements has its size fixed, this variable applies a value to fix its Height
         /// </summary>
-        [JsonProperty("HeightBoxDelta")]
+        [JsonProperty(nameof(HeightBoxDelta))]
         public double HeightBoxDelta { get => heightBoxDelta; set => heightBoxDelta = value; }
 
         /// <summary>
         /// This property will highlight the clickable area if its set to true
         /// </summary>
-        [JsonProperty("HighlightColor")]
+        [JsonProperty(nameof(HighlightColor))]
         public string HighlightColor { get; set; }
 
         /// <summary>
@@ -54,14 +54,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This represent the UIElement as string of the VisualTree that will be highlighted (readed from the json file)
         /// </summary>
-        [JsonProperty("WindowElementNameString")]
+        [JsonProperty(nameof(WindowElementNameString))]
         public string WindowElementNameString { get; set; }
 
 
         /// <summary>
         /// This property represent the Window that containss the UIElement (WindowElementName) due that in some cases is not the DynamoView (like the sub MenuItems)
         /// </summary>
-        [JsonProperty("UIElementTypeString")]
+        [JsonProperty(nameof(UIElementTypeString))]
         public string UIElementTypeString { get; set; }
 
 
