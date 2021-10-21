@@ -1152,9 +1152,15 @@
                                                             <TextBlock.Style>
                                                                 <Style TargetType="TextBlock">
                                                                     <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Path=HasUnsavedChanges}" Value="True">
+                                                                            <Setter Property="Text" Value="{x:Static p:Resources.WorkspaceTabSavingNecessary}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=HasUnsavedChanges}" Value="False">
+                                                                            <Setter Property="Text" Value="{x:Static p:Resources.WorkspaceTabSavingUnnecessary}"/>
+                                                                        </DataTrigger>
                                                                         <MultiDataTrigger>
                                                                             <MultiDataTrigger.Conditions>
-                                                                                <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}" Value="Unsaved"/>
+                                                                                <Condition Binding="{Binding Path=FileName}" Value=""/>
                                                                                 <Condition Binding="{Binding Path=HasUnsavedChanges}" Value="True"/>
                                                                             </MultiDataTrigger.Conditions>
                                                                             <MultiDataTrigger.Setters>
@@ -1163,29 +1169,11 @@
                                                                         </MultiDataTrigger>
                                                                         <MultiDataTrigger>
                                                                             <MultiDataTrigger.Conditions>
-                                                                                <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}" Value="Unsaved"/>
+                                                                                <Condition Binding="{Binding Path=FileName}" Value=""/>
                                                                                 <Condition Binding="{Binding Path=HasUnsavedChanges}" Value="False"/>
                                                                             </MultiDataTrigger.Conditions>
                                                                             <MultiDataTrigger.Setters>
                                                                                 <Setter Property="Text" Value="{x:Static p:Resources.WorkspaceTabSavingBrandNewFile}"/>
-                                                                            </MultiDataTrigger.Setters>
-                                                                        </MultiDataTrigger>
-                                                                        <MultiDataTrigger>
-                                                                            <MultiDataTrigger.Conditions>
-                                                                                <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}" Value="Saved"/>
-                                                                                <Condition Binding="{Binding Path=HasUnsavedChanges}" Value="True"/>
-                                                                            </MultiDataTrigger.Conditions>
-                                                                            <MultiDataTrigger.Setters>
-                                                                                <Setter Property="Text" Value="{x:Static p:Resources.WorkspaceTabSavingNecessary}"/>
-                                                                            </MultiDataTrigger.Setters>
-                                                                        </MultiDataTrigger>
-                                                                        <MultiDataTrigger>
-                                                                            <MultiDataTrigger.Conditions>
-                                                                                <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}" Value="Saved"/>
-                                                                                <Condition Binding="{Binding Path=HasUnsavedChanges}" Value="False"/>
-                                                                            </MultiDataTrigger.Conditions>
-                                                                            <MultiDataTrigger.Setters>
-                                                                                <Setter Property="Text" Value="{x:Static p:Resources.WorkspaceTabSavingUnnecessary}"/>
                                                                             </MultiDataTrigger.Setters>
                                                                         </MultiDataTrigger>
                                                                     </Style.Triggers>
