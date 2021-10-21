@@ -14,20 +14,21 @@ namespace DynamoUnits
         }
 
         /// <summary>
-        /// Name of Unit
+        /// Gets the Name of for a Unit
         /// </summary>
-        /// <returns name="string">Name of location</returns>
+        /// <returns name="string">Name of Unit</returns>
         public string Name => forgeUnit.getName();
 
         /// <summary>
-        /// TypeId of Unit
+        /// Gets the Forge type schema identifier for a Unit
         /// </summary>
-        /// <returns name="string">TypeId of Unit</returns>
+        /// <returns name="string">Forge TypeId</returns>
         public string TypeId => forgeUnit.getTypeId();
 
         /// <summary>
-        /// Convertible Units associated with this unit
+        /// Gets a list of Units are convertible from a Unit.
         /// </summary>
+        /// <returns name="Unit[]">List of Units</returns>
         public List<Unit> ConvertibleUnits 
         {
             get
@@ -38,8 +39,9 @@ namespace DynamoUnits
         }
 
         /// <summary>
-        /// 
+        /// Gets a list of Quantity objects which contain a Unit. 
         /// </summary>
+        /// /// <returns name="Quantity[]">List of Quantities</returns>
         public List<Quantity> QuantitiesContainingUnit
         {
             get
@@ -50,21 +52,20 @@ namespace DynamoUnits
         }
 
         /// <summary>
-        /// Create a Unit by a TypeID
+        /// Creates a Unit object from its Forge type schema identifier string.
         /// </summary>
-        /// <param name="typeId">string representing the type</param>
-        /// <returns>Unit</returns>
+        /// <param name="typeId">Forge TypeId string</param>
+        /// <returns name="Unit">Unit object</returns>
         public static Unit ByTypeID(string typeId)
         {
             return new Unit(Utilities.ForgeUnitsEngine.getUnit(typeId));
         }
 
         /// <summary>
-        /// 
+        /// Determine whether two Unit objects are convertible
         /// </summary>
-        /// <param name="fromUnit"></param>
-        /// <param name="toUnit"></param>
-        /// <returns></returns>
+        /// <param name="fromUnit">Unit Object</param>
+        /// <param name="toUnit">Unit Object</param>
         public static bool AreUnitsConvertible(Unit fromUnit, Unit toUnit)
         {
             return Utilities.ForgeUnitsEngine.areUnitsConvertible(fromUnit.TypeId, toUnit.TypeId);
@@ -72,7 +73,7 @@ namespace DynamoUnits
 
         public override string ToString()
         {
-            return Name; //"Unit" + "(Name = " + Name + ")";
+            return "Unit" + "(Name = " + Name + ")";
         }
 
         public override int GetHashCode()

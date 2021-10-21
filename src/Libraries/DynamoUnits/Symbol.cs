@@ -16,40 +16,44 @@ namespace DynamoUnits
         }
 
         /// <summary>
-        /// Returns the forge TypeId of this Symbol
+        /// Gets the Forge type schema identifier for a Symbol
         /// </summary>
+        /// <returns name="string">Forge TypeId</returns>
         public string TypeId => forgeSymbol.getTypeId();
-        
+
         /// <summary>
-        /// Returns the corresponding unit of this Symbol
+        /// Gets the corresponding Unit of a Symbol
         /// </summary>
+        /// <returns name="Unit">Unit object</returns>
         public Unit Unit => new Unit(forgeSymbol.getUnit());
 
         /// <summary>
-        /// Returns the string representation of thi Symbol.
+        /// Gets the string representation of a Symbol.
         /// </summary>
+        /// <returns name="string">Symbol text</returns>
         public string Text => forgePrefixOrSuffix != null ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(forgePrefixOrSuffix.getText())) : "";
 
         /// <summary>
-        /// 
+        /// Gets a boolean indicating if there is typically a space between the unit value and symbol.
         /// </summary>
+        /// <returns name="bool">Space between unit and symbol</returns>
         public bool Space => forgePrefixOrSuffix == null || forgePrefixOrSuffix.hasSpace();
 
         /// <summary>
-        /// Returns a Symbol from its typeId.
+        /// Creates a Symbol object from its Forge type schema identifier string.
         /// </summary>
-        /// <param name="typeId"></param>
-        /// <returns></returns>
+        /// <param name="typeId">Forge TypeId string</param>
+        /// <returns name="Symbol">Symbol object</returns>
         public static Symbol ByTypeID(string typeId)
         {
             return new Symbol(Utilities.ForgeUnitsEngine.getSymbol(typeId));
         }
 
         /// <summary>
-        /// Returns all available Symbols, given a Unit.
+        /// Gets a list of all available Symbols associated with a Unit.
         /// </summary>
-        /// <param name="unit"></param>
-        /// <returns></returns>
+        /// <param name="unit">Unit object</param>
+        /// <returns name="Symbol[]">List of Symbols</returns>
         public static List<Symbol> SymbolsByUnit(Unit unit)
         {
             var symbols = Utilities.ForgeUnitsEngine.getSymbols(unit.TypeId);
@@ -57,27 +61,27 @@ namespace DynamoUnits
         }
 
         /// <summary>
-        /// Returns the string expression of a decimal value.
+        /// Returns the formatted unit expression for a given value and symbol in a decimal format.
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="precision"></param>
-        /// <param name="symbol"></param>
-        /// <param name="removeTrailingZeros"></param>
-        /// <returns></returns>
+        /// <param name="value">Number value for the unit</param>
+        /// <param name="precision">Decimal precession for the expression</param>
+        /// <param name="symbol">Symbol type</param>
+        /// <param name="removeTrailingZeros">Remove trailing zeros in the output</param>
+        /// <returns name="string">Formatted unit expression</returns>
         public static string StringifyDecimal(double value, int precision, Symbol symbol,
-            bool removeTrailingZeros)
+            bool removeTrailingZeros = false)
         {
             return Encoding.UTF8.GetString(Encoding.Default.GetBytes(Utilities.ForgeUnitsEngine.stringifyFixedPoint(value, (byte)precision, symbol.TypeId,
                 removeTrailingZeros)));
         }
 
         /// <summary>
-        /// Returns the string expression of a fraction value.
+        /// Returns the formatted expression for a given value and symbol in a fraction format.
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="precision"></param>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
+        /// <param name="value">Number value for the expression</param>
+        /// <param name="precision">precession associated with the fraction</param>
+        /// <param name="symbol">Symbol type</param>
+        /// <returns name="string">Formatted unit expression</returns>
         public static string StringifyFraction(double value, int precision, Symbol symbol)
         {
             return Encoding.UTF8.GetString(Encoding.Default.GetBytes(Utilities.ForgeUnitsEngine.stringifyFraction(value, (byte)precision, symbol.TypeId)));

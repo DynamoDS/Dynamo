@@ -46,12 +46,12 @@ namespace DynamoUnits
         }
 
         /// <summary>
-        /// 
+        /// Converts a value from one Unit System to another Unit System
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="fromUnit"></param>
-        /// <param name="toUnit"></param>
-        /// <returns></returns>
+        /// <param name="value">Value to convert</param>
+        /// <param name="fromUnit">Unit object</param>
+        /// <param name="toUnit">Unit object</param>
+        /// <returns name="double">Converted value</returns>
         public static double ConvertByUnits(double value, Unit fromUnit, Unit toUnit)
         {
             return ForgeUnitsEngine.convert(value, fromUnit.TypeId, toUnit.TypeId);
@@ -70,11 +70,12 @@ namespace DynamoUnits
         }
 
         /// <summary>
-        /// 
+        /// Parses a string containing values with units and math functions to a unit value.
+        /// For example, "1ft + 2.54cm + 3in" could be converted to 14in
         /// </summary>
-        /// <param name="targetUnit"></param>
-        /// <param name="expression"></param>
-        /// <returns></returns>
+        /// <param name="targetUnit">Unit system to target</param>
+        /// <param name="expression">String to convert to a value</param>
+        /// <returns name="double">Converted value</returns>
         public static double ParseExpressionByUnit(Unit targetUnit, string expression)
         {
             return ForgeUnitsEngine.parse(targetUnit.TypeId, expression);
@@ -93,10 +94,11 @@ namespace DynamoUnits
         }
 
         /// <summary>
-        /// 
+        /// Parses a string containing math functions to a unit value.
+        /// For example, "(1 + 3)^2 - 4 * 2" could be converted to 8
         /// </summary>
-        /// <param name="expression"></param>
-        /// <returns></returns>
+        /// <param name="expression">String to convert to a value</param>
+        /// <returns name="double">Converted value</returns>
         public static double ParseExpression(string expression)
         {
             return ForgeUnitsEngine.parseUnitless(expression);

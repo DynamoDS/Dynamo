@@ -88,7 +88,7 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Convert Between Many Units.
+        ///   Looks up a localized string similar to Convert a value between selected Unit systems..
         /// </summary>
         internal static string ConvertUnitsDescription {
             get {
@@ -102,6 +102,24 @@ namespace UnitsUI.Properties {
         internal static string ConvertUnitsSearchTags {
             get {
                 return ResourceManager.GetString("ConvertUnitsSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A value to convert.
+        /// </summary>
+        internal static string CovertUnitInputTooltip {
+            get {
+                return ResourceManager.GetString("CovertUnitInputTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Converted value.
+        /// </summary>
+        internal static string CovertUnitOutputTooltip {
+            get {
+                return ResourceManager.GetString("CovertUnitOutputTooltip", resourceCulture);
             }
         }
         
@@ -151,7 +169,7 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converts a formatted measurement into the equivalent measurement in a differen unit..
+        ///   Looks up a localized string similar to Converts input string with unit values into the equivalent value of the expression..
         /// </summary>
         internal static string ParseUnitInputDescription {
             get {
@@ -169,7 +187,25 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Selected Unit.
+        /// </summary>
+        internal static string ParseUnitInputUnitTooltip {
+            get {
+                return ResourceManager.GetString("ParseUnitInputUnitTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Converted value of expresion.
+        /// </summary>
+        internal static string ParseUnitInputValueTooltip {
+            get {
+                return ResourceManager.GetString("ParseUnitInputValueTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a Quantity type.
         /// </summary>
         internal static string QuantitiesUIDescription {
             get {
@@ -196,7 +232,7 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Select a Symbol type.
         /// </summary>
         internal static string SymbolsUIDescription {
             get {
@@ -214,7 +250,7 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Select a Unit type.
         /// </summary>
         internal static string UnitsUIDescription {
             get {

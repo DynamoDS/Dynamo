@@ -14,18 +14,21 @@ namespace DynamoUnits
         }
 
         /// <summary>
-        /// 
+        /// Gets the Forge type schema identifier for a Quantity
         /// </summary>
+        /// <returns name="string">Forge TypeId</returns>
         public string TypeId => forgeQuantity.getTypeId();
-        
+
         /// <summary>
-        /// 
+        /// Gets the Name of for a Quantity
         /// </summary>
+        /// <returns name="string">Name of Quantity</returns>
         public string Name => forgeQuantity.getName();
 
         /// <summary>
-        /// Returns a list of all available Units.
+        /// Gets a list of all available Units associated with a Quantity.
         /// </summary>
+        /// <returns name="Unit[]">List of Units</returns>
         public List<Unit> Units
         {
             get
@@ -41,10 +44,10 @@ namespace DynamoUnits
             }
         }
         /// <summary>
-        /// Returns an object of type Quantity from its typeId string.
+        /// Creates a Quantity object from its Forge type schema identify string.
         /// </summary>
-        /// <param name="typeId"></param>
-        /// <returns></returns>
+        /// <param name="typeId">Forge TypeId string</param>
+        /// <returns name="Quantity">Quantity object</returns>
         public static Quantity ByTypeID(string typeId)
         {
             return new Quantity(Utilities.ForgeUnitsEngine.getQuantity(typeId));
@@ -52,7 +55,7 @@ namespace DynamoUnits
 
         public override string ToString()
         {
-            return Name; //"Quantity" + "(Name = " + Name + ")";
+            return "Quantity" + "(Name = " + Name + ")";
         }
 
         public override int GetHashCode()
@@ -106,6 +109,5 @@ namespace DynamoUnits
 
         [IsVisibleInDynamoLibrary(false)]
         public static bool operator !=(Quantity lhs, Quantity rhs) => !(lhs == rhs);
-
     }
 }

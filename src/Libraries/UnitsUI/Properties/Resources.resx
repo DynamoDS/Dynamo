@@ -129,10 +129,16 @@
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="ConvertUnitsDescription" xml:space="preserve">
-    <value>Convert Between Many Units</value>
+    <value>Convert a value between selected Unit systems.</value>
   </data>
   <data name="ConvertUnitsSearchTags" xml:space="preserve">
     <value />
+  </data>
+  <data name="CovertUnitInputTooltip" xml:space="preserve">
+    <value>A value to convert</value>
+  </data>
+  <data name="CovertUnitOutputTooltip" xml:space="preserve">
+    <value>Converted value</value>
   </data>
   <data name="EditHeader" xml:space="preserve">
     <value>Edit...</value>
@@ -152,13 +158,19 @@
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="ParseUnitInputDescription" xml:space="preserve">
-    <value>Converts a formatted measurement into the equivalent measurement in a differen unit.</value>
+    <value>Converts input string with unit values into the equivalent value of the expression.</value>
   </data>
   <data name="ParseUnitInputSearchTags" xml:space="preserve">
     <value />
   </data>
+  <data name="ParseUnitInputUnitTooltip" xml:space="preserve">
+    <value>Selected Unit</value>
+  </data>
+  <data name="ParseUnitInputValueTooltip" xml:space="preserve">
+    <value>Converted value of expresion</value>
+  </data>
   <data name="QuantitiesUIDescription" xml:space="preserve">
-    <value />
+    <value>Select a Quantity type</value>
   </data>
   <data name="QuantitiesUISearchTags" xml:space="preserve">
     <value />
@@ -167,13 +179,13 @@
     <value>There was an issue loading Unit Schemas from the specified path:</value>
   </data>
   <data name="SymbolsUIDescription" xml:space="preserve">
-    <value />
+    <value>Select a Symbol type</value>
   </data>
   <data name="SymbolsUISearchTags" xml:space="preserve">
     <value />
   </data>
   <data name="UnitsUIDescription" xml:space="preserve">
-    <value />
+    <value>Select a Unit type</value>
   </data>
   <data name="UnitsUISearchTags" xml:space="preserve">
     <value />

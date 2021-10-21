@@ -254,8 +254,8 @@ namespace UnitsUI
         public UnitInput()
         {
             this.OutPorts.Clear();
-            this.OutPorts.Add(new PortModel(PortType.Output, (NodeModel)this, new PortData("Value", "Value")));
-            this.OutPorts.Add(new PortModel(PortType.Output, (NodeModel)this, new PortData("TypeId", "TypeId")));
+            this.OutPorts.Add(new PortModel(PortType.Output, (NodeModel)this, new PortData("Value", Resources.ParseUnitInputValueTooltip)));
+            this.OutPorts.Add(new PortModel(PortType.Output, (NodeModel)this, new PortData("Unit", Resources.ParseUnitInputUnitTooltip)));
             RegisterAllPorts();
             try
             {
@@ -339,7 +339,7 @@ namespace UnitsUI
     }
 
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
-    [NodeName("Convert Units")]
+    [NodeName("Convert By Units")]
     [NodeDescription("ConvertUnitsDescription", typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("ConvertUnitsSearchTags", typeof(UnitsUI.Properties.Resources))]
     [OutPortTypes("number")]
@@ -529,8 +529,8 @@ namespace UnitsUI
             }
 
             AssociativeNode defaultNode = new DoubleNode(0.0);
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", "Tooltip", defaultNode)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", "Tooltip")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Resources.CovertUnitInputTooltip, defaultNode)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Resources.CovertUnitOutputTooltip)));
 
             ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = true;
