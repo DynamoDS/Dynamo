@@ -215,7 +215,7 @@ namespace Dynamo.ViewModels
         {
             var pinLocations = ViewModel.CollectPinLocations();
             ViewModel.DiscardAllConnectorPinModels();
-            PlaceWatchNode(pinLocations);
+            PlaceWatchNode(ViewModel, pinLocations);
         }
 
         /// <summary>
@@ -280,7 +280,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Places watch node at the midpoint of the connector
         /// </summary>
-        internal void PlaceWatchNode(IEnumerable<Point> connectorPinLocations)
+        internal void PlaceWatchNode(ConnectorViewModel connectorVm, IEnumerable<Point> connectorPinLocations)
         {
             NodeModel startNode = ViewModel.ConnectorModel.Start.Owner;
             NodeModel endNode = ViewModel.ConnectorModel.End.Owner;
@@ -290,7 +290,7 @@ namespace Dynamo.ViewModels
                 var nodeX = CurrentPosition.X - (watchNode.Width / 2);
                 var nodeY = CurrentPosition.Y - (watchNode.Height / 2);
                 DynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(watchNode, nodeX, nodeY, false, false));
-                WireNewNode(DynamoModel, startNode, endNode, watchNode, connectorPinLocations);
+                WireNewNode(DynamoModel, startNode, endNode, watchNode, connectorVm, connectorPinLocations);
             });
         }
 
@@ -301,10 +301,15 @@ namespace Dynamo.ViewModels
         /// <param name="startNode"></param>
         /// <param name="endNode"></param>
         /// <param name="watchNodeModel"></param>
-        private void WireNewNode(DynamoModel dynamoModel, NodeModel startNode, NodeModel endNode, NodeModel watchNodeModel,
+        private void WireNewNode(
+            DynamoModel dynamoModel, 
+            NodeModel startNode,
+            NodeModel endNode, 
+            NodeModel watchNodeModel,
+            ConnectorViewModel connectorVm,
             IEnumerable<Point> connectorPinLocations)
         {
-            (List<int> startIndex, List<int> endIndex) = GetPortIndex(startNode, endNode);
+            (List<int> startIndex, List<int> endIndex) = GetPortIndex(connectorVm, startNode, endNode);
 
             // Connect startNode and watch node
             foreach (var idx in startIndex)
@@ -348,7 +353,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private static (List<int> StartIndex, List<int> EndIndex) GetPortIndex(NodeModel startNode, NodeModel endNode)
+        private static (List<int> StartIndex, List<int> EndIndex) GetPortIndex(ConnectorViewModel connectorVm, NodeModel startNode, NodeModel endNode)
         {
             var connectors = startNode.AllConnectors;
             var filter = connectors.Where(c => c.End.Owner.GUID == endNode.GUID);
@@ -357,10 +362,7 @@ namespace Dynamo.ViewModels
             //Handles CodeBlockPort case
             if(startNode is CodeBlockNodeModel)
             {
-                startIndex.Add(filter
-                    .Select(c => c.Start.Index)
-                    .Distinct()
-                    .Last());
+                startIndex.Add(connectorVm.ConnectorModel.Start.Index);
             }
             //Normal node case
             else
@@ -375,10 +377,7 @@ namespace Dynamo.ViewModels
             //Handles CodeBlockPort case
             if (endNode is CodeBlockNodeModel)
             {
-                endIndex.Add(filter
-                   .Select(c => c.End.Index)
-                   .Distinct()
-                   .Last());
+               endIndex.Add(connectorVm.ConnectorModel.End.Index+1);
             }
             //Normal node case
             else
