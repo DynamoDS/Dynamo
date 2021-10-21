@@ -32,6 +32,9 @@ namespace Dynamo.Wpf.Views.GuidedTour
             HorizontalOffset = (mainRootElement.ActualWidth / 2) - (Width / 2);
         }
 
+        /// <summary>
+        /// This method hides the text box to give the possibility to use this popup in other steps
+        /// </summary>
         private void HideRichTextBox()
         {
             Height -= ContentRichTextBox.ActualHeight;

@@ -56,7 +56,7 @@
                     </Grid>
                 </Border>
 
-                <!--This is the content (text/media) section of the Popup-->
+                <!--This is the text section of the Popup-->
                 <localui:CustomRichTextBox x:Name="ContentRichTextBox" 
                                            IsDocumentEnabled="True"            
                                                
@@ -67,7 +67,7 @@
 
                 </localui:CustomRichTextBox>
 
-
+                <!--Group of buttons Exit/Continue-->
                 <Grid Grid.Row="3" 
                   Margin="0,10,0,0">
                     <Grid.ColumnDefinitions>
