@@ -2606,12 +2606,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// Convert a <see cref="BoundingBox"/> to a <see cref="Rect3D"/>
         /// </summary>
         /// <param name="bounds">The <see cref="BoundingBox"/> to be converted.</param>
+        /// <param name="minRectSize"> No dimension of the resulting Rect3d will be smaller than this length.</param>
         /// <returns>A <see cref="Rect3D"/> object.</returns>
-        internal static Rect3D ToRect3D(this BoundingBox bounds)
+        internal static Rect3D ToRect3D(this BoundingBox bounds, double minRectSize = 0.0)
         {
             var min = bounds.Minimum;
             var max = bounds.Maximum;
-            var size = new Size3D((max.X - min.X), (max.Y - min.Y), (max.Z - min.Z));
+            var size = new Size3D(Math.Max(minRectSize, max.X - min.X), Math.Max(minRectSize, max.Y - min.Y), Math.Max(minRectSize, max.Z - min.Z));
             return new Rect3D(min.ToPoint3D(), size);
         }
 
