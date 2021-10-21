@@ -213,6 +213,17 @@ namespace UnitsUI
                 Margin = new Thickness(0,3,0,0)
             };
 
+            var dataTemplate = new DataTemplate();
+            var fef = new FrameworkElementFactory(typeof(TextBlock));
+            fef.SetBinding(TextBlock.TextProperty, new Binding()
+            {
+                Converter = new ForgeUnitToTextConverter()
+            });
+
+            dataTemplate.DataType = (typeof(TextBlock));
+            dataTemplate.VisualTree = fef;
+
+            combo.ItemTemplate = dataTemplate;
             combo.Style = (Style)SharedDictionaryManager.DynamoModernDictionary["RefreshComboBox"];
 
             grid.Children.Add(combo);
