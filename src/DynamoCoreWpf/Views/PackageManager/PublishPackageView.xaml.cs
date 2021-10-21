@@ -29,8 +29,12 @@ namespace Dynamo.PackageManager
 
             InitializeComponent();
 
-            Title = string.Format(Wpf.Properties.Resources.PublishPackageViewTitle,
-                publishPackageViewModel.DynamoViewModel.BrandingResourceProvider.ProductName);
+            Title = string.Format
+            (
+                Wpf.Properties.Resources.PublishPackageViewTitle,
+                publishPackageViewModel.DynamoViewModel.BrandingResourceProvider.ProductName
+            );
+
             publishPackageViewModel.RequestShowFolderBrowserDialog += OnRequestShowFolderBrowserDialog;
             Logging.Analytics.TrackScreenView("PackageManager");
         }
