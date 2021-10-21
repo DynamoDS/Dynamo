@@ -224,13 +224,13 @@ namespace Dynamo.Views
                         {
                             if (ViewModel.InPortViewModel == null) return;
                             popup.Child.Visibility = Visibility.Collapsed;
-                            ViewModel.InPortViewModel.SetupPortContextMenuPlacement(popup);
+                            ViewModel.InPortViewModel.SetupInPortContextMenuPlacement(popup);
                         }
                         else if (popup == OutPortContextMenu)
                         {
                             if (ViewModel.InPortViewModel == null) return;
                             popup.Child.Visibility = Visibility.Collapsed;
-                            ViewModel.OutPortViewModel.SetupPortContextMenuPlacement(popup);
+                            ViewModel.OutPortViewModel.SetupOutPortContextMenuPlacement(popup);
                         }
                     }
 

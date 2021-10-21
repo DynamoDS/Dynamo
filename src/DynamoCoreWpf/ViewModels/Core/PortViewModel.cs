@@ -310,12 +310,21 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Sets up the PortContextMenu window to be placed relative to the port.
+        /// Sets up the InPortContextMenu window to be placed relative to the port.
         /// </summary>
         /// <param name="popup">Node context menu popup.</param>
-        internal void SetupPortContextMenuPlacement(Popup popup)
+        internal void SetupInPortContextMenuPlacement(Popup popup)
         {
             node.OnRequestInPortContextMenuPlacementTarget(popup);
+            popup.CustomPopupPlacementCallback = PlacePortContextMenu;
+        }
+        /// <summary>
+        /// Sets up the OutPortContextMenu window to be placed relative to the port.
+        /// </summary>
+        /// <param name="popup">Node context menu popup.</param>
+        internal void SetupOutPortContextMenuPlacement(Popup popup)
+        {
+            node.OnRequestOutPortContextMenuPlacementTarget(popup);
             popup.CustomPopupPlacementCallback = PlacePortContextMenu;
         }
 
@@ -339,7 +348,7 @@ namespace Dynamo.ViewModels
             // Offset popup down from the upper edge of the node by the node header and corresponding to the respective port.
             // Scale the absolute heights by the target height (passed to the callback) and the actual height of the node.
             var scaledHeight = targetSize.Height / node.ActualHeight;
-            var absoluteHeight = NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
+            var absoluteHeight = NodeModel.HeaderHeight + (PortModel.Index * PortModel.Height);
             var y = absoluteHeight * scaledHeight;
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);

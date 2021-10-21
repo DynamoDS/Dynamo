@@ -176,7 +176,7 @@ namespace Dynamo.ViewModels
             RequestInPortContextMenu?.Invoke(flag);
         }
 
-        public void OnRequestOutPortContextMenu(ShowHideFlags flag)
+        internal void OnRequestOutPortContextMenu(ShowHideFlags flag)
         {
             RequestOutPortContextMenu?.Invoke(flag);
         }
