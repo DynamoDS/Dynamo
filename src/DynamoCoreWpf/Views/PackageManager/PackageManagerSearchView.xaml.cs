@@ -164,7 +164,10 @@ namespace Dynamo.PackageManager.UI
         /// <param name="e"></param>
         private void ViewDetailsButton_OnClick(object sender, RoutedEventArgs e)
         {
-            this.ViewModel.ViewPackageDetailsCommand.Execute(null);
+            if (!(sender is Button button)) return;
+            if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
+
+            ViewModel.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
         }
 
         /// <summary>
