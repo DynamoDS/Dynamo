@@ -255,14 +255,14 @@ namespace Dynamo.ViewModels
             else if (UsingDefaultValue && DefaultValueEnabled)
             {
                 PortValueMarkerColor = PortValueMarkerBlue;
-                PortBackgroundColor = PortBackgroundColorDefault;
+                PortBackgroundColor = node.IsVisible ? PortBackgroundColorDefault : PortBackgroundColorPreviewOff;
                 PortBorderBrushColor = PortBorderBrushColorDefault;
             }
             // Port isn't connected and has no default value (or isn't using it)
             else
             {
                 PortValueMarkerColor = port.IsConnected ? PortValueMarkerBlue : PortValueMarkerRed;
-                PortBackgroundColor = PortBackgroundColorDefault;
+                PortBackgroundColor = node.IsVisible ? PortBackgroundColorDefault : PortBackgroundColorPreviewOff;
                 PortBorderBrushColor = PortBorderBrushColorDefault;
             }
         }

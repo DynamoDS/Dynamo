@@ -1571,7 +1571,7 @@
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
-        <Setter Property="MaxHeight" Value="190" />
+        <Setter Property="MaxHeight" Value="220" />
         <Setter Property="Margin" Value="0,0,0,60" />
         <Setter Property="Template">
             <Setter.Value>
@@ -1596,13 +1596,13 @@
                                    Visibility="{Binding IconVisibility}" />
                             <TextBlock Margin="6,7,0,8"
                                        VerticalAlignment="Center"
-                                       FontFamily="{StaticResource OpenSansRegular}"
-                                       FontSize="14"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="16"
                                        Text="{Binding Caption}" />
                             <TextBlock Margin="16,0,0,0"
                                        VerticalAlignment="Center"
-                                       FontFamily="{StaticResource OpenSansRegular}"
-                                       FontSize="10"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="12"
                                        Foreground="#888"
                                        Text="{Binding SubScript}" />
                         </StackPanel>
@@ -1658,8 +1658,8 @@
                             <ContentControl />
                             <Label x:Name="label"
                                    Content="{TemplateBinding Content}"
-                                   FontFamily="{StaticResource OpenSansRegular}"
-                                   FontSize="12"
+                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                   FontSize="16"
                                    Foreground="#888888" />
                         </StackPanel>
                     </Border>

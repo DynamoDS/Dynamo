@@ -46,9 +46,10 @@ namespace Dynamo.Wpf.Views.GuidedTour
             HorizontalOffset = hInfo.HorizontalPopupOffSet + tooltipOffset;
             //Vertical offset plus 50 is to compensate the header size
             VerticalOffset = hInfo.VerticalPopupOffSet + headerOffset;
-                        
-            LoadWebBrowser(hInfo.HtmlPage);            
+
+            LoadWebBrowser(hInfo.HtmlPage);
         }
+
 
         /// <summary>
         /// Loads HTML file from resource assembly and replace it's key values by base64 files
@@ -56,7 +57,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         /// <param name="htmlPage">Contains filename and resources to be loaded in page</param>
         private void LoadWebBrowser(HtmlPage htmlPage)
         {
-            var bodyHtmlPage = GuidedTourResources.LoadContentFromResources(htmlPage.FileName, GetType().Assembly);
+            var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(htmlPage.FileName, GetType().Assembly, false, false);
 
             bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage.Resources);
             bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", mainFontStylePath);
@@ -92,7 +93,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         /// <returns></returns>
         private string LoadResourceAndReplaceByKey(string bodyHtmlPage, string key, string resourceFile)
         {
-            Stream resourceStream = GuidedTourResources.LoadResource(resourceFile);
+            Stream resourceStream = ResourceUtilities.LoadResourceByUrl(resourceFile);
 
             if (resourceStream != null)
             {
