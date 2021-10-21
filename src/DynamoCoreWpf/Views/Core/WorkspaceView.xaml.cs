@@ -152,6 +152,7 @@ namespace Dynamo.Views
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
             ViewModel.RequestInPortContextMenu += ShowHideInPortContextMenu;
+            ViewModel.RequestOutPortContextMenu += ShowHideOutPortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             ViewModel.ZoomChanged += vm_ZoomChanged;
@@ -178,6 +179,11 @@ namespace Dynamo.Views
         private void ShowHideInPortContextMenu(ShowHideFlags flag)
         {
             ShowHidePopup(flag, InPortContextMenu);
+        }
+
+        private void ShowHideOutPortContextMenu(ShowHideFlags flag)
+        {
+            ShowHidePopup(flag, OutPortContextMenu);
         }
 
         private void ShowHideInCanvasControl(ShowHideFlags flag)
@@ -218,7 +224,13 @@ namespace Dynamo.Views
                         {
                             if (ViewModel.InPortViewModel == null) return;
                             popup.Child.Visibility = Visibility.Collapsed;
-                            ViewModel.InPortViewModel.SetupInPortContextMenuPlacement(popup);
+                            ViewModel.InPortViewModel.SetupPortContextMenuPlacement(popup);
+                        }
+                        else if (popup == OutPortContextMenu)
+                        {
+                            if (ViewModel.InPortViewModel == null) return;
+                            popup.Child.Visibility = Visibility.Collapsed;
+                            ViewModel.OutPortViewModel.SetupPortContextMenuPlacement(popup);
                         }
                     }
 
@@ -678,6 +690,8 @@ namespace Dynamo.Views
         {
             ContextMenuPopup.IsOpen = false;
             InCanvasSearchBar.IsOpen = false;
+            InPortContextMenu.IsOpen = false;
+            OutPortContextMenu.IsOpen = false;
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)

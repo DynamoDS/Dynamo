@@ -360,7 +360,16 @@
                IsOpen="False"
                Placement="Custom"
                DataContext="{Binding InPortViewModel}">
-            <ui:PortContextMenu RequestShowInPortContextMenu="ShowHideInPortContextMenu" />
+            <ui:InPortContextMenu RequestShowInPortContextMenu="ShowHideInPortContextMenu" />
+        </Popup>
+
+        <Popup Name="OutPortContextMenu" 
+               StaysOpen="True"
+               AllowsTransparency="True"
+               IsOpen="False"
+               Placement="Custom"
+               DataContext="{Binding OutPortViewModel}">
+            <ui:OutPortContextMenu RequestShowOutPortContextMenu="ShowHideOutPortContextMenu" />
         </Popup>
 
         <Popup Name="ContextMenuPopup" Style="{StaticResource WorkspaceContextMenuStylePopup}"

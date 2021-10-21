@@ -5,13 +5,13 @@ using Dynamo.ViewModels;
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// Interaction logic for PortContextMenu.xaml
+    /// Interaction logic for InPortContextMenu.xaml
     /// </summary>
-    public partial class PortContextMenu : UserControl
+    public partial class InPortContextMenu : UserControl
     {
         internal event Action<ShowHideFlags> RequestShowInPortContextMenu;
 
-        public PortContextMenu()
+        public InPortContextMenu()
         {
             InitializeComponent();
         }

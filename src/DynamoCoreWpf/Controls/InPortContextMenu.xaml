@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.UI.Controls.PortContextMenu"
+﻿<UserControl x:Class="Dynamo.UI.Controls.InPortContextMenu"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -79,15 +79,10 @@
             </ResourceDictionary>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="10" />
         </Grid.ColumnDefinitions>
-        <Path Grid.Column="0"
-              Margin="1,0,0,0"
-              Data="M 0,10 L 12,5 12,15 Z"
-              Fill="White"
-              Stroke="#999999" />
-        <Border Grid.Column="1"
+        <Border Grid.Column="0"
                 Padding="5"
                 Background="White"
                 BorderBrush="#999999 "
@@ -106,9 +101,17 @@
                           Content="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}" />
             </StackPanel>
         </Border>
-        <Path Grid.Column="1"
-              Data="M 0,7.5 L 1,7.5 L 1,12.5 L0,12.5 Z"
+        <Path Grid.Column="0"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Center"
+              Data="M 1,7.5 L 0,7.5 L 0,12.5 L1,12.5 Z"
               Fill="White"
               Stroke="White" />
+        <Path Grid.Column="1"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Center"
+              Data="M 12,10 L -1,5 -1,15 Z"
+              Fill="White"
+              Stroke="#999999" />
     </Grid>
 </UserControl>

@@ -164,6 +164,7 @@ namespace Dynamo.ViewModels
 
         internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
         internal event Action<ShowHideFlags> RequestInPortContextMenu;
+        internal event Action<ShowHideFlags> RequestOutPortContextMenu;
 
         internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag)
         {
@@ -173,6 +174,11 @@ namespace Dynamo.ViewModels
         internal void OnRequestInPortContextMenu(ShowHideFlags flag)
         {
             RequestInPortContextMenu?.Invoke(flag);
+        }
+
+        public void OnRequestOutPortContextMenu(ShowHideFlags flag)
+        {
+            RequestOutPortContextMenu?.Invoke(flag);
         }
 
         #endregion
@@ -248,10 +254,16 @@ namespace Dynamo.ViewModels
         public NodeAutoCompleteSearchViewModel NodeAutoCompleteSearchViewModel { get; private set; }
 
         /// <summary>
-        /// 
+        /// A reference to the InPortViewModel the user clicked on
         /// </summary>
         [JsonIgnore]
         public PortViewModel InPortViewModel { get; set; }
+
+        /// <summary>
+        /// A reference to the OutPortViewModel the user clicked on
+        /// </summary>
+        [JsonIgnore]
+        public PortViewModel OutPortViewModel { get; set; }
 
         /// <summary>
         /// Cursor Property Binding for WorkspaceView
@@ -427,6 +439,8 @@ namespace Dynamo.ViewModels
 
         [JsonIgnore]
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
+
+        
 
         #endregion
 
@@ -1524,6 +1538,7 @@ namespace Dynamo.ViewModels
             return foundModels;
         }
 
+        
     }
 
     public class ViewModelEventArgs : EventArgs

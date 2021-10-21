@@ -246,11 +246,6 @@
                            IsHitTestVisible="True"
                            Margin="0,0,8,0"
                            Visibility="{Binding Path=UseContextMenuVisibility}">
-                    <interactivity:Interaction.Triggers>
-                        <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
-                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnContextCommand}" CommandParameter="{Binding}" />
-                        </views:HandlingEventTrigger>
-                    </interactivity:Interaction.Triggers>
                     <Rectangle.Style>
                         <Style TargetType="{x:Type Rectangle}">
                             <Style.Triggers>
@@ -265,6 +260,10 @@
                             </Style.Triggers>
                         </Style>
                     </Rectangle.Style>
+                    <!--  Bind InPortContextMenu to left click  -->
+                    <Rectangle.InputBindings>
+                        <MouseBinding Command="{Binding Path=NodeOutPortContextMenuCommand}" MouseAction="LeftClick" />
+                    </Rectangle.InputBindings>
                 </Rectangle>
                 <TextBlock Name="fakePortNameTb"
                            Width="Auto"
@@ -285,42 +284,7 @@
                                      IsOpen="{Binding Path=ShowContextMenu}"
                                      Placement="Right"
                                      StaysOpen="False">
-                    <Grid Background="Transparent">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Path Grid.Column="0"
-                              Margin="1,0,0,0"
-                              Data="M 0,10 L 12,5 12,15 Z"
-                              Fill="White"
-                              Stroke="#999999" />
-                        <Border Grid.Column="1"
-                                Padding="5"
-                                Background="White"
-                                BorderBrush="#999999 "
-                                BorderThickness="1"
-                                CornerRadius="2">
-                            <StackPanel>
-                                <Button Margin="0,3"
-                                        HorizontalAlignment="Left"
-                                        Command="{Binding Path=BreakConnectionsCommand}"
-                                        Content="{x:Static p:Resources.BreakConnectionPopupMenuItem}"
-                                        IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}"
-                                        Style="{StaticResource PopupButtonStyle}" />
-                                <Button Margin="0,3"
-                                        HorizontalAlignment="Left"
-                                        Command="{Binding Path=HideConnectionsCommand}"
-                                        Content="{Binding ShowHideWiresButtonContent, UpdateSourceTrigger=PropertyChanged}"
-                                        IsEnabled="{Binding HideWiresButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
-                                        Style="{StaticResource PopupButtonStyle}" />
-                            </StackPanel>
-                        </Border>
-                        <Path Grid.Column="1"
-                              Data="M 0,7.5 L 1,7.5 L 1,12.5 L0,12.5 Z"
-                              Fill="White"
-                              Stroke="White" />
-                    </Grid>
+                    
                 </dynui:UseLevelPopup>
             </DockPanel>
             <Grid.Style>

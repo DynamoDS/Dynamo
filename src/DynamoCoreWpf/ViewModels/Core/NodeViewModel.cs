@@ -38,6 +38,7 @@ namespace Dynamo.ViewModels
 
         internal delegate void NodeAutoCompletePopupEventHandler(Popup popup);
         internal delegate void InPortContextMenuPopupEventHandler(Popup popup);
+        internal delegate void OutPortContextMenuPopupEventHandler(Popup popup);
         #endregion
 
         #region events
@@ -624,6 +625,7 @@ namespace Dynamo.ViewModels
 
         internal event NodeAutoCompletePopupEventHandler RequestAutoCompletePopupPlacementTarget;
         internal event InPortContextMenuPopupEventHandler RequestInPortContextMenuPopupPlacementTarget;
+        internal event OutPortContextMenuPopupEventHandler RequestOutPortContextMenuPopupPlacementTarget;
 
         internal void OnRequestAutoCompletePopupPlacementTarget(Popup popup)
         {
@@ -633,6 +635,11 @@ namespace Dynamo.ViewModels
         public void OnRequestInPortContextMenuPlacementTarget(Popup popup)
         {
             RequestInPortContextMenuPopupPlacementTarget?.Invoke(popup);
+        }
+
+        public void OnRequestOutPortContextMenuPlacementTarget(Popup popup)
+        {
+            RequestOutPortContextMenuPopupPlacementTarget?.Invoke(popup);
         }
 
         public event NodeDialogEventHandler RequestShowNodeHelp;
