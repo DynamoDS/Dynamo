@@ -339,8 +339,9 @@ namespace Dynamo.ViewModels
             PortModel startNodePort = startNode.OutPorts[0];
             PortModel watchNodePort = watchNodeModel.OutPorts[0];
             Graph.Connectors.ConnectorModel[] connectors = new Graph.Connectors.ConnectorModel[2];
-            connectors[0] = startNodePort.Connectors[0]??null;
-            connectors[1] = watchNodePort.Connectors[0]??null;
+
+            connectors[0] = startNodePort.Connectors.FirstOrDefault(c=> c.End.Owner.GUID == watchNodeModel.GUID)?? null;
+            connectors[1] = watchNodePort.Connectors.FirstOrDefault(c=> c.Start.Owner.GUID == watchNodeModel.GUID)??null;
             if(connectors.Any(c=>c is null))
             {
                 return;
@@ -359,10 +360,12 @@ namespace Dynamo.ViewModels
             var filter = connectors.Where(c => c.End.Owner.GUID == endNode.GUID);
 
             List<int> startIndex = new List<int>();
+            List<int> endIndex = new List<int>();
             //Handles CodeBlockPort case
-            if(startNode is CodeBlockNodeModel)
+            if (startNode is CodeBlockNodeModel || endNode is CodeBlockNodeModel)
             {
                 startIndex.Add(connectorVm.ConnectorModel.Start.Index);
+                endIndex.Add(connectorVm.ConnectorModel.End.Index);
             }
             //Normal node case
             else
@@ -371,23 +374,11 @@ namespace Dynamo.ViewModels
                     .Select(c => c.Start.Index)
                     .Distinct()
                     .ToList();
-            }
-
-            List<int> endIndex = new List<int>();
-            //Handles CodeBlockPort case
-            if (endNode is CodeBlockNodeModel)
-            {
-               endIndex.Add(connectorVm.ConnectorModel.End.Index+1);
-            }
-            //Normal node case
-            else
-            {
                 endIndex = filter
-                    .Select(c => c.End.Index)
-                    .Distinct()
-                    .ToList();
+                   .Select(c => c.End.Index)
+                   .Distinct()
+                   .ToList();
             }
-
             return (startIndex, endIndex);
         }
 
