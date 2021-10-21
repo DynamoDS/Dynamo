@@ -37,28 +37,28 @@
     </ResourceDictionary.MergedDictionaries>
     <DataTemplate DataType="{x:Type viewModels:InPortViewModel}">
         <!--  Grid that contains the entire port  -->
-        <Grid Name="mainGrid" 
-              HorizontalAlignment="Stretch"
-              Height="35px">
+        <Grid Name="mainGrid"
+              Height="35px"
+              HorizontalAlignment="Stretch">
             <!--
                 The main border shows rounded edges and changes color according to multiple conditions
                 This logic is defined in the ViewModel. None of the elements in this Border are interactive, so they
                 can live in the lowest level of Z-Order
             -->
             <Border x:Name="mainBorder"
-                    SnapsToDevicePixels="True"
                     Height="29px"
                     Background="{Binding PortBackgroundColor, UpdateSourceTrigger=PropertyChanged}"
                     BorderBrush="{Binding PortBorderBrushColor, UpdateSourceTrigger=PropertyChanged}"
+                    BorderThickness="0,1,1,1"
                     CornerRadius="0,11,11,0"
-                    BorderThickness="0,1,1,1">
+                    SnapsToDevicePixels="True">
                 <!--  DockPanel that positions the visible port name and the UseLevelArrow  -->
                 <DockPanel x:Name="mainDockPanel" FlowDirection="LeftToRight">
                     <Grid Name="portNameGrid"
+                          Height="{Binding Path=Height}"
                           DockPanel.Dock="Left"
                           IsEnabled="{Binding Path=IsEnabled}"
                           IsHitTestVisible="True"
-                          Height="{Binding Path=Height}"
                           ToolTipService.ShowDuration="60000">
                         <Rectangle Fill="Transparent"
                                    IsHitTestVisible="{Binding IsHitTestVisible}"
@@ -83,6 +83,7 @@
                         </Rectangle>
                         <TextBlock Name="portNameTb"
                                    Width="Auto"
+                                   Margin="13,0,10,5"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
                                    FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -90,17 +91,15 @@
                                    FontWeight="Medium"
                                    Foreground="#DCDCDC"
                                    IsHitTestVisible="False"
-                                   Margin="13,0,10,5"
-                                   Text="{Binding Path=PortName}">
-                        </TextBlock>
+                                   Text="{Binding Path=PortName}" />
                     </Grid>
                     <Grid Width="50"
                           DockPanel.Dock="Left"
                           Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                     <Grid Name="useLevelArrowGrid"
-                          HorizontalAlignment="Right"
                           Height="{Binding Path=Height}"
                           Margin="0,1,6,0"
+                          HorizontalAlignment="Right"
                           Visibility="{Binding Path=UseLevelVisibility}">
                         <Label x:Name="useLevelArrow"
                                Height="{Binding Path=Height}"
@@ -114,7 +113,7 @@
                                FontSize="16px"
                                FontWeight="Medium"
                                Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                               IsHitTestVisible="False"/>
+                               IsHitTestVisible="False" />
                     </Grid>
                 </DockPanel>
             </Border>
@@ -125,8 +124,7 @@
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        Fill="{Binding PortValueMarkerColor, UpdateSourceTrigger=PropertyChanged}"
-                       SnapsToDevicePixels="True">
-            </Rectangle>
+                       SnapsToDevicePixels="True" />
             <!--
                 Interactive overlay for the port, highlights the port on MouseOver and
                 contains MouseClick event handling and ToolTip logic. Since the overlay is interactive, it needs to
@@ -134,11 +132,11 @@
                 MouseClick events to fire.
             -->
             <Border x:Name="mainBorderHighlightOverlay"
-                    BorderBrush="Transparent"
-                    Opacity="0.2"
-                    CornerRadius="0,11,11,0"
-                    BorderThickness="0,1,1,1"
                     Height="29px"
+                    BorderBrush="Transparent"
+                    BorderThickness="0,1,1,1"
+                    CornerRadius="0,11,11,0"
+                    Opacity="0.2"
                     SnapsToDevicePixels="True">
                 <Border.Style>
                     <Style TargetType="Border">
@@ -203,11 +201,11 @@
                 <Rectangle x:Name="useLevelArrowHighlightOverlay"
                            Width="15"
                            Height="15px"
+                           Margin="3,0,5,0"
                            HorizontalAlignment="Right"
                            DockPanel.Dock="Right"
-                           IsHitTestVisible="True"
-                           Margin="3,0,5,0">
-                            <!--Visibility="{Binding Path=UseLevelVisibility}"-->
+                           IsHitTestVisible="True">
+                    <!--  Visibility="{Binding Path=UseLevelVisibility}"  -->
                     <interactivity:Interaction.Triggers>
                         <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                             <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnLevelCommand}" CommandParameter="{Binding}" />
@@ -246,9 +244,9 @@
                                        Width="50"
                                        Height="25"
                                        Margin="0,0,0,0"
-                                       Background="{StaticResource DarkGreyBrush}"
                                        HorizontalAlignment="Right"
                                        VerticalAlignment="Center"
+                                       Background="{StaticResource DarkGreyBrush}"
                                        DockPanel.Dock="Right"
                                        KeepListStructure="{Binding Path=ShouldKeepListStructure}"
                                        Level="{Binding Path=Level, Mode=TwoWay}"
@@ -348,14 +346,14 @@
                                           Command="{Binding Path=UseLevelsCommand}"
                                           CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                           Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
-                                          IsChecked="{Binding Path=UseLevels, Mode=OneWay}"/>
+                                          IsChecked="{Binding Path=UseLevels, Mode=OneWay}" />
                                 <CheckBox Margin="0,3,5,3"
                                           HorizontalAlignment="Left"
                                           Command="{Binding Path=KeepListStructureCommand}"
                                           CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                           Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
                                           IsChecked="{Binding Path=ShouldKeepListStructure, Mode=OneWay}"
-                                          IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
+                                          IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}" />
                                 <CheckBox Margin="0,3,5,3"
                                           HorizontalAlignment="Left"
                                           Content="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"

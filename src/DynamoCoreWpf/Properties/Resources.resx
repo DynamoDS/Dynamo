@@ -2756,4 +2756,7 @@ More information</value>
   <data name="PackagesGuideThirdPartyTitle" xml:space="preserve">
     <value>Third-party packages</value>
   </data>
+  <data name="ScriptTagsRemovalWarning" xml:space="preserve">
+    <value>Script tags detected in the help document have been removed.</value>
+  </data>
 </root>

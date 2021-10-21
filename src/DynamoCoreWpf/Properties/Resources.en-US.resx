@@ -2758,5 +2758,7 @@ More information</value>
   </data>
   <data name="WorkspaceTabNotSavedYet" xml:space="preserve">
     <value>You haven't saved this file yet.</value>
+  <data name="ScriptTagsRemovalWarning" xml:space="preserve">
+    <value>Script tags detected in the help document have been removed.</value>
   </data>
 </root>
