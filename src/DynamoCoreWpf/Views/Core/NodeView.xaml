@@ -49,6 +49,7 @@
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu"
                          x:FieldModifier="public"
+                         Background="{StaticResource NodeContextMenuBackground}"
                          Closed="MainContextMenu_OnClosed"
                          Style="{StaticResource ContextMenuStyle}">
                 <ContextMenu.Resources>
