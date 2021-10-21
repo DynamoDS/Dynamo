@@ -3582,7 +3582,7 @@
         </Setter>
     </Style>
 
-    <!--  Style for the close popup button in a Tooltip part of the Dynamo Guided Tours  -->
+    <!--  Style for the exit button in a Tooltip part of the Dynamo Guided Tours  -->
     <Style x:Key="PopupCloseButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Template">
             <Setter.Value>
@@ -3608,17 +3608,6 @@
                                   Y2="0" />
                         </Canvas>
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="line1" Property="Stroke" Value="Red" />
-                            <Setter TargetName="line2" Property="Stroke" Value="Red" />
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="line1" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
-                            <Setter TargetName="line2" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
-                            <Setter Property="Cursor" Value="Hand" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -3659,6 +3648,44 @@
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PoupExitButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="MinWidth" Value="100" />
+        <Setter Property="MaxHeight" Value="36" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="BorderThickness" Value="36" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="PopupButtonBorder"
+                            Background="{StaticResource PopupWhiteColor}"
+                            BorderBrush="#808080"
+                            Opacity="0.5"
+                            BorderThickness="1"
+                            CornerRadius="2">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PopupContentStyle" TargetType="{x:Type ContentControl}">
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Border BorderBrush="White" BorderThickness="2" 
+                            Background="White"
+                         CornerRadius="5,5,5,5" >
+
+                    </Border>
+                </DataTemplate>
             </Setter.Value>
         </Setter>
     </Style>
