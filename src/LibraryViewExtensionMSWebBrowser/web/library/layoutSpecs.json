@@ -780,16 +780,10 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "Core.Units.Convert Between Units"
-                },
-                {
-                  "path": "Core.Units.Convert Units"
+                  "path": "Core.Units.Convert By Units"
                 },
                 {
                   "path": "Core.Units.Parse Unit Input"
-                },
-                {
-                  "path": "Core.Units.Number From Feet and Inches"
                 },
                 {
                   "path": "DSCoreNodes.DSCore.Math.RadiansToDegrees"
@@ -808,9 +802,6 @@
                 },
                 {
                   "path": "DynamoUnits.DynamoUnits.Utilities.ConvertByUnits"
-                },
-                {
-                  "path": "DynamoUnits.DynamoUnits.Utilities.ConvertByUnitIds"
                 },
                 {
                   "path": "DynamoUnits.DynamoUnits.Utilities.ParseExpressionByUnit"

@@ -64,6 +64,7 @@ namespace DynamoUnits
         /// <param name="fromUnit"></param>
         /// <param name="toUnit"></param>
         /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
         public static double ConvertByUnitIds(double value, string fromUnit, string toUnit)
         {
             return ForgeUnitsEngine.convert(value, fromUnit, toUnit);
