@@ -5,12 +5,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             DataContextChanged="InPortContextMenu_OnDataContextChanged"
              mc:Ignorable="d">
     <Grid Background="Transparent">
         <Grid.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
                     <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                    <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                     <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 </ResourceDictionary.MergedDictionaries>
                 <Style TargetType="CheckBox">
@@ -82,6 +84,8 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="10" />
         </Grid.ColumnDefinitions>
+
+        <!--  Main Border  -->
         <Border Grid.Column="0"
                 Padding="5"
                 Background="White"
@@ -89,18 +93,42 @@
                 BorderThickness="1"
                 CornerRadius="2">
             <StackPanel>
+
+                <!--  Use Levels  -->
                 <CheckBox Name="UseLevel"
                           Margin="0,3,5,3"
                           HorizontalAlignment="Left"
-                          Content="{x:Static p:Resources.UseLevelPopupMenuItem}" />
-                <CheckBox Margin="0,3,5,3"
+                          Checked="UseLevel_OnChecked"
+                          Unchecked="UseLevel_OnUnchecked"
+                          IsThreeState="False"
+                          Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
+                          IsChecked="{Binding Path=UseLevels, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <!--  Keep List Structure  -->
+                <CheckBox Name="KeepListStructure"
+                          Margin="0,3,5,3"
                           HorizontalAlignment="Left"
-                          Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}" />
-                <CheckBox Margin="0,3,5,3"
+                          Checked="KeepListStructure_OnChecked"
+                          Unchecked="KeepListStructure_OnUnchecked"
+                          IsThreeState="False"
+                          Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
+                          IsChecked="{Binding Path=ShouldKeepListStructure, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                          IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked, UpdateSourceTrigger=PropertyChanged}" />
+
+                <!--  Use Default Value  -->
+                <CheckBox Name="UseDefaultValue"
+                          Margin="0,3,5,3"
                           HorizontalAlignment="Left"
-                          Content="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}" />
+                          Checked="UseDefaultValue_OnChecked"
+                          Unchecked="UseDefaultValue_OnUnchecked"
+                          Content="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
+                          IsThreeState="False"
+                          IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          Visibility="{Binding DefaultValueEnabled, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
             </StackPanel>
         </Border>
+
+        <!--  Small Chevron Arrow  -->
         <Path Grid.Column="0"
               HorizontalAlignment="Right"
               VerticalAlignment="Center"

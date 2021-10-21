@@ -257,13 +257,13 @@ namespace Dynamo.ViewModels
         /// A reference to the InPortViewModel the user clicked on
         /// </summary>
         [JsonIgnore]
-        public PortViewModel InPortViewModel { get; set; }
+        public InPortViewModel InPortViewModel { get; set; }
 
         /// <summary>
         /// A reference to the OutPortViewModel the user clicked on
         /// </summary>
         [JsonIgnore]
-        public PortViewModel OutPortViewModel { get; set; }
+        public OutPortViewModel OutPortViewModel { get; set; }
 
         /// <summary>
         /// Cursor Property Binding for WorkspaceView

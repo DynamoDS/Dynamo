@@ -518,7 +518,7 @@ namespace Dynamo.ViewModels
         private void NodeInPortContextMenu(object obj)
         {
             var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel.InPortViewModel = this;
+            wsViewModel.InPortViewModel = this as InPortViewModel;
 
             wsViewModel.CancelActiveState();
             wsViewModel.OnRequestInPortContextMenu(ShowHideFlags.Show);
@@ -531,7 +531,7 @@ namespace Dynamo.ViewModels
         private void NodeOutPortContextMenu(object obj)
         {
             var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel.OutPortViewModel = this;
+            wsViewModel.OutPortViewModel = this as OutPortViewModel;
 
             wsViewModel.CancelActiveState();
             wsViewModel.OnRequestOutPortContextMenu(ShowHideFlags.Show);

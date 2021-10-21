@@ -223,12 +223,14 @@ namespace Dynamo.Views
                         else if (popup == InPortContextMenu)
                         {
                             if (ViewModel.InPortViewModel == null) return;
+                            OutPortContextMenu.IsOpen = false;
                             popup.Child.Visibility = Visibility.Collapsed;
                             ViewModel.InPortViewModel.SetupInPortContextMenuPlacement(popup);
                         }
                         else if (popup == OutPortContextMenu)
                         {
-                            if (ViewModel.InPortViewModel == null) return;
+                            if (ViewModel.OutPortViewModel == null) return;
+                            InPortContextMenu.IsOpen = false;
                             popup.Child.Visibility = Visibility.Collapsed;
                             ViewModel.OutPortViewModel.SetupOutPortContextMenuPlacement(popup);
                         }

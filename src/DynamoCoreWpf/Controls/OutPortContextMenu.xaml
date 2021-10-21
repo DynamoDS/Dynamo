@@ -6,6 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             DataContextChanged="OutPortContextMenu_OnDataContextChanged"
              mc:Ignorable="d">
     <Grid Background="Transparent">
         <Grid.ColumnDefinitions>
@@ -20,6 +21,8 @@
                 </ResourceDictionary.MergedDictionaries>
             </ResourceDictionary>
         </Grid.Resources>
+
+        <!--  Main Border  -->
         <Border Grid.Column="1"
                 Padding="5"
                 Background="White"
@@ -27,18 +30,29 @@
                 BorderThickness="1"
                 CornerRadius="2">
             <StackPanel>
-                <Button Margin="0,3"
+
+                <!--  Break Connection  -->
+                <Button Name="BreakConnectionsButton"
+                        Margin="0,3"
                         HorizontalAlignment="Left"
+                        Click="BreakConnectionsButton_OnClick"
                         Content="{x:Static p:Resources.BreakConnectionPopupMenuItem}"
-                        IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding OutPortViewModel.IsConnected, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource PopupButtonStyle}" />
-                <Button Margin="0,3"
+
+                <!--  Show/Hide Wires  -->
+                <Button Name="ShowHideWiresButton"
+                        Margin="0,3"
                         HorizontalAlignment="Left"
-                        Content="{Binding ShowHideWiresButtonContent, UpdateSourceTrigger=PropertyChanged}"
-                        IsEnabled="{Binding HideWiresButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
+                        Click="ShowHideWiresButton_OnClick"
+                        Content="{Binding OutPortViewModel.ShowHideWiresButtonContent, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding OutPortViewModel.HideWiresButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource PopupButtonStyle}" />
+
             </StackPanel>
         </Border>
+
+        <!--  Small Chevron Arrow  -->
         <Path Grid.Column="0"
               Margin="1,0,0,0"
               VerticalAlignment="Center"
@@ -47,7 +61,7 @@
               Stroke="#999999" />
         <Path Grid.Column="1"
               VerticalAlignment="Center"
-              Data="M 0,7.5 L 1,7.5 L 1,12.5 L0,12.5 Z"
+              Data="M 1,5 L 0,5.5 L 0,10.5 L1,11 Z"
               Fill="White"
               Stroke="White" />
     </Grid>

@@ -359,7 +359,7 @@
                AllowsTransparency="True"
                IsOpen="False"
                Placement="Custom"
-               DataContext="{Binding InPortViewModel}">
+               DataContext="{Binding}">
             <ui:InPortContextMenu RequestShowInPortContextMenu="ShowHideInPortContextMenu" />
         </Popup>
 
