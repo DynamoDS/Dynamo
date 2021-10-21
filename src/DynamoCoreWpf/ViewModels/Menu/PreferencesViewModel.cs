@@ -748,9 +748,9 @@ namespace Dynamo.ViewModels
             PythonNodeModels.PythonEngineSelector.Instance.OnPythonEngineScan += AddPythonEnginesOptions;
             //Sets SelectedPythonEngine.
             //If the setting is empty it corresponds to the default python engine
-            _ = preferenceSettings.DefaultPythonEngine == string.Empty ? 
-                SelectedPythonEngine = Res.DefaultPythonEngineNone : 
-                SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
+
+            var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
+            SelectedPythonEngine  = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
 
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
