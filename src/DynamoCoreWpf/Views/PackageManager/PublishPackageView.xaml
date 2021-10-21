@@ -27,7 +27,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <controls:EmptyStringToFalseConverter x:Key="EmptyStringToFalseConverter"/>
+            <controls:EmptyStringToFalseConverter x:Key="EmptyStringToFalseConverter" />
             <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
                 <Grid Height="29px"
                       HorizontalAlignment="Stretch"
@@ -807,14 +807,14 @@
                                             Header="Name"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
-                        <DataGridTextColumn MinWidth="66"
-                                            Width="*"
+                        <DataGridTextColumn Width="*"
+                                            MinWidth="66"
                                             Binding="{Binding Path=FileInfo.FullName}"
                                             Header="File Path"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
-                        <DataGridTemplateColumn Header="Target Path"
-                                                MinWidth="90"
+                        <DataGridTemplateColumn MinWidth="90"
+                                                Header="Target Path"
                                                 HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
                                                 IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
@@ -861,36 +861,36 @@
                         <Button Command="{Binding Path=ClearMarkdownDirectoryCommand}"
                                 Content="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButton}"
                                 DockPanel.Dock="Right"
-                                Style="{StaticResource TextButtonStyle}"
                                 IsEnabled="{Binding Path=MarkdownFilesDirectory, Converter={StaticResource EmptyStringToFalseConverter}}"
+                                Style="{StaticResource TextButtonStyle}"
                                 ToolTip="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButtonToolTip}" />
                     </DockPanel>
-                    <Grid Background="#353535" Margin="0,0,0,10">
+                    <Grid Margin="0,0,0,10" Background="#353535">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBox HorizontalAlignment="Stretch"
+                        <TextBox Grid.Column="0"
+                                 Margin="0"
+                                 HorizontalAlignment="Stretch"
+                                 Background="Transparent"
                                  IsHitTestVisible="False"
                                  IsReadOnly="True"
-                                 Grid.Column="0"
-                                 Margin="0"
-                                 Background="Transparent"
                                  Style="{StaticResource InputStyle}"
                                  Tag="{x:Static p:Resources.NoneString}"
                                  Text="{Binding MarkdownFilesDirectory, UpdateSourceTrigger=PropertyChanged}" />
                         <Button Name="markdownFilesDirectoryButton"
+                                Grid.Column="1"
                                 Width="20"
                                 Height="20"
-                                Grid.Column="1"
                                 Margin="5,10,10,10"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
                                 BorderThickness="0"
                                 Command="{Binding SelectMarkdownDirectoryCommand}"
                                 Cursor="Hand"
-                                IsHitTestVisible="True"
                                 DockPanel.Dock="Right"
+                                IsHitTestVisible="True"
                                 ToolTip="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectoryToolTip}">
                             <Button.Template>
                                 <ControlTemplate>
@@ -927,12 +927,13 @@
                    VerticalAlignment="Center">
 
             <!--  Publish Online  -->
-            <Button Content="{x:Static p:Resources.PublishPackageOnline}"
+            <Button Command="{Binding Path=SubmitCommand}"
+                    Content="{x:Static p:Resources.PublishPackageOnline}"
                     DockPanel.Dock="Right"
                     Style="{StaticResource CtaButtonStyle}" />
 
             <!--  Publish Locally  -->
-            <Button Command="{Binding Path=SubmitCommand}"
+            <Button Command="{Binding Path=PublishLocallyCommand}"
                     Content="{x:Static p:Resources.PublishPackageLocally}"
                     DockPanel.Dock="Right"
                     Style="{StaticResource CtaButtonStyle}" />
@@ -944,8 +945,8 @@
                        FontFamily="{StaticResource ArtifaktElementRegular}"
                        Style="{StaticResource LabelStyle}"
                        Text="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
-                       TextTrimming="CharacterEllipsis" 
-                       ToolTip="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"/>
+                       TextTrimming="CharacterEllipsis"
+                       ToolTip="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}" />
         </DockPanel>
     </Grid>
 </Window>
