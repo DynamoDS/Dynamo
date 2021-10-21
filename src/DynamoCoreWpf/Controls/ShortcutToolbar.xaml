@@ -22,6 +22,8 @@
                 <ResourceDictionary.MergedDictionaries>
                     <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.ToolbarStyleDictionaryUri}" />
                     <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                    <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
+                    <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 </ResourceDictionary.MergedDictionaries>
             </ResourceDictionary>
         </Border.Resources>
@@ -32,56 +34,6 @@
             <Grid Name="ShortcutToolbarGrid">
                 <ItemsControl x:Name="ShortcutItemsControl"
                               ItemsSource="{Binding ElementName='MenuUserControl', Path=ShortcutBarItems}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button ToolTip="{Binding ShortcutToolTip}"
-                                    Command="{Binding ShortcutCommand}"
-                                    CommandParameter="{Binding ShortcutCommandParameter}">
-                            <Button.Resources>
-                                <Image x:Key="Normal"
-                                           Width="25"
-                                           Height="25"
-                                           Source="{Binding ImgNormalSource}" />
-                                <Image x:Key="Disabled"
-                                           Width="25"
-                                           Height="25"
-                                           Source="{Binding ImgDisabledSource}" />
-                                <Image x:Key="Hover"
-                                           Width="25"
-                                           Height="25"
-                                           Source="{Binding ImgHoverSource}" />
-                            </Button.Resources>
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource ShortCutButton}" TargetType="{x:Type Button}">
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsMouseOver}" Value="false" />
-                                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsEnabled}" Value="true" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="Content" Value="{StaticResource Normal}" />
-                                        </MultiDataTrigger>
-                                        <Trigger Property="IsEnabled" Value="false">
-                                            <Setter Property="Content" Value="{StaticResource Disabled}" />
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="true">
-                                            <Setter Property="Content" Value="{StaticResource Hover}" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel x:Name="ShortcutBarLeft" Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-
-                <ItemsControl x:Name="ShortcutRightSideItemsControl"
-                              ItemsSource="{Binding ElementName='MenuUserControl', Path=ShortcutBarRightSideItems}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button ToolTip="{Binding ShortcutToolTip}"
@@ -125,11 +77,51 @@
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel x:Name="ShortcutBarRight" Orientation="Horizontal" HorizontalAlignment="Right"/>
+                            <StackPanel x:Name="ShortcutBarLeft" Orientation="Horizontal" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
-                
+
+                <Menu HorizontalAlignment="Right"
+                      Style="{StaticResource MainMenu}"
+                      IsMainMenu="True">
+                    <MenuItem Name="exportMenu"
+                              Cursor="Hand"
+                              Focusable="False"
+                              SubmenuOpened="exportMenu_SubmenuOpened"
+                              SubmenuClosed="exportMenu_SubmenuClosed">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/image-icon.png"
+                                       Width="14px" />
+                                <TextBlock x:Name="HeaderText"
+                                           Text="Export as Image"
+                                           VerticalAlignment="Center"
+                                           Margin="10 0 10 0"
+                                           FontFamily="{StaticResource ArtifaktElementBold}" />
+                                <Path x:Name="Arrow"
+                                      Grid.Column="1"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
+                                      Fill="White" />
+                            </StackPanel>
+                        </MenuItem.Header>
+
+                        <MenuItem Focusable="False"
+                                  Header="Workspace"
+                                  Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                  Name="saveImage">
+                        </MenuItem>
+
+                        <MenuItem Focusable="False"
+                                  Header="Background 3D Preview"
+                                  Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                  Name="save3DImage">
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
+
                 <controls:GraphUpdateNotificationControl x:Name="UpdateControl" HorizontalAlignment="Right" 
                                                          Margin="0,0,50,0"
                                                          Visibility="{Binding Path=DataContext.IsUpdateAvailable, RelativeSource={RelativeSource AncestorType={x:Type Window}}, 
