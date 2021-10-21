@@ -133,7 +133,7 @@
                                         <DataTrigger Binding="{Binding Enabled}"
                                                      Value="False">
                                             <Setter Property="Foreground"
-                                                    Value="#1AF5F5F5" />
+                                                    Value="#33F5F5F5" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding IsSelected}"
                                                      Value="True">
