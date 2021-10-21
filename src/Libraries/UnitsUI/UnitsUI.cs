@@ -288,7 +288,11 @@ namespace UnitsUI
                 new Func<string, string, double>(DynamoUnits.Utilities.ParseExpressionByUnitId),
                 new List<AssociativeNode> { unitID, expression });
 
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node), AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), unitID) };
+           var node2 = AstFactory.BuildFunctionCall(
+               new Func<string, DynamoUnits.Unit>(DynamoUnits.Unit.ByTypeID),
+               new List<AssociativeNode> { unitID });
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node), AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), node2) };
         }
 
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
