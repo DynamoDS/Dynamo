@@ -727,8 +727,7 @@ namespace Dynamo.Controls
 
             viewModel.ErrorBubble.UndismissMessageCommand.Execute(textBlock.Tag);
         }
-
-        private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        
         /// <summary>
         /// A common method to handle the node Options Button being clicked and
         /// the user right-clicking on the node body to open its ContextMenu.
