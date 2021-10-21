@@ -1196,7 +1196,7 @@
                                                                    FontFamily="{StaticResource ArtifaktElementRegular}"
                                                                    FontSize="11px"
                                                                    Foreground="Black">
-                                                            <Run Text="Last saved at:"/>
+                                                            <Run Text="{x:Static p:Resources.PreferencesViewSavedChangesTooltip}"/>
                                                             <Run Text="{Binding DynamoViewModel.HomeSpace.LastSaved}"/>
                                                             <TextBlock.Style>
                                                                 <Style TargetType="TextBlock">
