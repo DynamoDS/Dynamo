@@ -617,7 +617,7 @@
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
                 Margin="-1"
-                BorderBrush="#F9F9F9"
+                BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
                 BorderThickness="1"
                 Canvas.ZIndex="5"
                 CornerRadius="8,8,0,0"

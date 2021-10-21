@@ -37,7 +37,15 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid PreviewKeyDown="OnInCanvasSearchKeyDown">
+    <Grid>
+        <Border Margin="0"
+                BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
+                BorderThickness="1"
+                CornerRadius="7,7,0,0"
+                Panel.ZIndex="1"
+                IsHitTestVisible="False" />
+
+        <Grid PreviewKeyDown="OnInCanvasSearchKeyDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition Height="*" />
@@ -50,7 +58,8 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Border Background="{StaticResource autocompletionWindow}"
-                    Padding="0">
+                    Padding="0"
+                    CornerRadius="8,8,0,0">
                 <Grid>
                     <StackPanel Name="AutoCompletionHeader"
                                 Grid.ColumnSpan="1"
@@ -60,7 +69,7 @@
                         <TextBlock Text="{x:Static resx:Resources.Autocomplete}"
                                TextWrapping="Wrap"
                                Padding="4"
-                               Margin="80,0,0,0"
+                               Margin="80,1.75,0,0"
                                Foreground="{StaticResource SearchTextBoxBackground}"
                                TextAlignment="Center"
                                FontSize="14">
@@ -187,7 +196,7 @@
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
                                    HorizontalAlignment="Center"
                                    Height="18"
-                                   Margin="2,0,0,0"
+                                   Margin="2,2,0,0"
                                    Text="{x:Static resx:Resources.AutocompleteSearchTextBlockText}" />
 
                     </StackPanel>
@@ -209,5 +218,6 @@
             </Border>
         </Grid>
 
+    </Grid>
     </Grid>
 </UserControl>
