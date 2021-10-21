@@ -68,7 +68,7 @@ namespace Dynamo.PackageDetails
         public int NumberVotes { get; }
 
         /// <summary>
-        /// How many votes times this package has been downloaded.
+        /// How many times this package has been downloaded.
         /// </summary>
         public int NumberDownloads { get; }
 

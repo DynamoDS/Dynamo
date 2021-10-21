@@ -15,7 +15,7 @@ namespace Dynamo.PackageDetails
         
         public override string UniqueId => "C71CA1B9-BF9F-425A-A12C-53DF56770406";
 
-        public override string Name => "Package Details";
+        public override string Name => Properties.Resources.PackageDetailsViewExtensionName;
 
         public override void Startup(ViewStartupParams viewStartupParams)
         {

@@ -59,5 +59,14 @@ namespace Dynamo.PackageDetails.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Details.
+        /// </summary>
+        internal static string PackageDetailsViewExtensionName {
+            get {
+                return ResourceManager.GetString("PackageDetailsViewExtensionName", resourceCulture);
+            }
+        }
     }
 }
