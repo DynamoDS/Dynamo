@@ -27,7 +27,7 @@ Check these if you believe they are true
 
 ### Release Notes
 
-(FILL ME IN) Brief description of the fix / enhacement.
+(FILL ME IN) Brief description of the fix / enhacement. **Mandatory section** 
 
 
 ### Reviewers
