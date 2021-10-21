@@ -2384,7 +2384,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             return
                 workspace.Nodes
-                    .SelectMany(n => n.OutPorts.Select(p => n.GetAstIdentifierForOutputIndex(p.Index).Value));
+                .Where(n => n.State != ElementState.Error)
+                .SelectMany(n => n.OutPorts.Select(p => n.GetAstIdentifierForOutputIndex(p.Index).Value));
         } 
 
         internal static IEnumerable<GeometryModel3D> FindGeometryForIdentifiers(IEnumerable<GeometryModel3D> geometry, IEnumerable<string> identifiers)
