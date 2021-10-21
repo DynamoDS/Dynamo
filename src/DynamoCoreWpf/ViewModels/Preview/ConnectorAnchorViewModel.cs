@@ -325,13 +325,21 @@ namespace Dynamo.ViewModels
 
         private void PlacePinsOnWires(NodeModel startNode, NodeModel watchNodeModel, IEnumerable<Point> connectorPinLocations)
         {
+            if(connectorPinLocations.Count()<1)
+            {
+                return;
+            }
             // Collect ports & connectors of newly connected nodes
             // so that old pins (that need to remain) can be transferred over correctly.
             PortModel startNodePort = startNode.OutPorts[0];
             PortModel watchNodePort = watchNodeModel.OutPorts[0];
             Graph.Connectors.ConnectorModel[] connectors = new Graph.Connectors.ConnectorModel[2];
-            connectors[0] = startNodePort.Connectors[0];
-            connectors[1] = watchNodePort.Connectors[0];
+            connectors[0] = startNodePort.Connectors[0]??null;
+            connectors[1] = watchNodePort.Connectors[0]??null;
+            if(connectors.Any(c=>c is null))
+            {
+                return;
+            }
             // Place each pin where required on the newly connected connectors.
             foreach (var connectorPinLocation in connectorPinLocations)
             {
@@ -345,15 +353,41 @@ namespace Dynamo.ViewModels
             var connectors = startNode.AllConnectors;
             var filter = connectors.Where(c => c.End.Owner.GUID == endNode.GUID);
 
-            var startIndex = filter
-                .Select(c => c.Start.Index)
-                .Distinct()
-                .ToList();
+            List<int> startIndex = new List<int>();
+            //Handles CodeBlockPort case
+            if(startNode is CodeBlockNodeModel)
+            {
+                startIndex.Add(filter
+                    .Select(c => c.Start.Index)
+                    .Distinct()
+                    .Last());
+            }
+            //Normal node case
+            else
+            {
+                startIndex = filter
+                    .Select(c => c.Start.Index)
+                    .Distinct()
+                    .ToList();
+            }
 
-            var endIndex = filter
-                .Select(c => c.End.Index)
-                .Distinct()
-                .ToList();
+            List<int> endIndex = new List<int>();
+            //Handles CodeBlockPort case
+            if (endNode is CodeBlockNodeModel)
+            {
+                endIndex.Add(filter
+                   .Select(c => c.End.Index)
+                   .Distinct()
+                   .Last());
+            }
+            //Normal node case
+            else
+            {
+                endIndex = filter
+                    .Select(c => c.End.Index)
+                    .Distinct()
+                    .ToList();
+            }
 
             return (startIndex, endIndex);
         }
