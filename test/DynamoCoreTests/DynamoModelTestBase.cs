@@ -101,6 +101,7 @@ namespace Dynamo
             }
 
             this.CurrentDynamoModel = DynamoModel.Start(CreateStartConfiguration(settings));
+            Assert.AreEqual(CurrentDynamoModel.State, DynamoModel.DynamoModelState.StartedUIless);
         }
 
         /// <summary>

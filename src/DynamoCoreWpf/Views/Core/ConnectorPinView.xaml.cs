@@ -1,22 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Threading;
 using Dynamo.Configuration;
-using Dynamo.Controls;
-using Dynamo.Graph.Connectors;
 using Dynamo.Selection;
 using Dynamo.UI;
-using Dynamo.UI.Controls;
-using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynCmd = Dynamo.Models.DynamoModel;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace Dynamo.Nodes
@@ -104,6 +93,15 @@ namespace Dynamo.Nodes
                     DynamoSelection.Instance.Selection.Remove(ViewModel.Model);
                 }
             }
+        }
+        private void OnPinRightMouseButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.IsHoveredOver = true;
+        }
+
+        private void OnPinRightMouseButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.IsHoveredOver = false;
         }
     }
 }

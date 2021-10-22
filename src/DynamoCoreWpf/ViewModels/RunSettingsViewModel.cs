@@ -20,6 +20,7 @@ namespace Dynamo.Wpf.ViewModels
     public class RunTypeItem : NotificationObject
     {
         private bool enabled;
+        private bool isSelected;
 
         /// <summary>
         /// The enabled flag sets whether the RunType is selectablable
@@ -33,6 +34,19 @@ namespace Dynamo.Wpf.ViewModels
                 enabled = value;
                 RaisePropertyChanged("Enabled");
                 RaisePropertyChanged("ToolTipText");
+            }
+        }
+
+        /// <summary>
+        /// If this RunTypeItem is selected
+        /// </summary>
+        public bool IsSelected
+        {
+            get => isSelected;
+            internal set
+            {
+                isSelected = value;
+                RaisePropertyChanged(nameof(IsSelected));
             }
         }
 
@@ -182,6 +196,8 @@ namespace Dynamo.Wpf.ViewModels
             {
                 selectedRunTypeItem = value;
                 Model.RunType = selectedRunTypeItem.RunType;
+                RunTypeItems.ToList().ForEach(x => x.IsSelected = false);
+                selectedRunTypeItem.IsSelected = true;
             }
         }
 

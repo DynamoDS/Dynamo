@@ -6,7 +6,7 @@ using System;
 
 namespace Dynamo.ViewModels
 {
-    public class ConnectorContextMenuViewModel : NotificationObject
+    public class ConnectorContextMenuViewModel : ViewModelBase
     {
         #region Properties
         private Point currentPosition;
@@ -56,13 +56,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Called from code-bedhing when mouse leaves this control.
+        /// Calls for ConnectorViewModel to dispose this instance.
         /// </summary>
-        internal void DisposeViewModel()
+        internal void RequestDisposeViewModel()
         {
             OnRequestDispose(this, EventArgs.Empty);
         }
-
         #region Events
         public event EventHandler RequestDispose;
         public virtual void OnRequestDispose(Object sender, EventArgs e)
@@ -71,6 +70,10 @@ namespace Dynamo.ViewModels
         }
         #endregion
 
+        public override void Dispose()
+        {
+            base.Dispose();
+        }
         #region Commands
 
         /// <summary>

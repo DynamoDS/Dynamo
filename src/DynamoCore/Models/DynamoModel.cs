@@ -338,15 +338,16 @@ namespace Dynamo.Models
             }
         }
 
+        private ConnectorType connectorType = ConnectorType.BEZIER;
         /// <summary>
         ///     Specifies how connectors are displayed in Dynamo.
         /// </summary>
         public ConnectorType ConnectorType
         {
-            get { return PreferenceSettings.ConnectorType; }
+            get { return connectorType; }
             set
             {
-                PreferenceSettings.ConnectorType = value;
+                connectorType = value;
             }
         }
 
@@ -418,8 +419,23 @@ namespace Dynamo.Models
 
             AnalyticsService.ShutDown();
 
+            State = DynamoModelState.NotStarted;
             OnShutdownCompleted(); // Notify possible event handlers.
         }
+
+        /// <summary>
+        /// Based on the DynamoModelState a dependent component can take certain 
+        /// decisions regarding its UI and functionality.
+        /// In order to be able to run a specified graph , DynamoModel needs to be 
+        /// at least in StartedUIless state. 
+        /// </summary>
+        public enum DynamoModelState { NotStarted, StartedUIless, StartedUI };
+
+        /// <summary>
+        /// The modelState tels us if the RevitDynamoModel was started and if has the
+        /// the Dynamo UI attached to it or not 
+        /// </summary>
+        public DynamoModelState State { get; internal set; } = DynamoModelState.NotStarted;
 
         protected virtual void PreShutdownCore(bool shutdownHost)
         {
@@ -805,7 +821,7 @@ namespace Dynamo.Models
             Logger.Log(string.Format("Dynamo -- Build {0}",
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
-            InitializeNodeLibrary(PreferenceSettings);
+            InitializeNodeLibrary();
 
             if (extensions.Any())
             {
@@ -860,6 +876,8 @@ namespace Dynamo.Models
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
+
+            State = DynamoModelState.StartedUIless;
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
         }
@@ -1309,7 +1327,21 @@ namespace Dynamo.Models
             SearchModel.Add(outputSearchElement);
         }
 
-        private void InitializeNodeLibrary(IPreferences preferences)
+        internal static bool IsDisabledPath(string packagesDirectory, IPreferences preferences)
+        {
+            if (!(preferences is IDisablePackageLoadingPreferences disablePrefs)) return false;
+
+            var isACustomPackageDirectory = preferences.CustomPackageFolders.Where(x => packagesDirectory.StartsWith(x)).Any();
+
+            return
+            //if this directory is the builtin packages location
+            //and loading from there is disabled, don't scan the directory.
+            (disablePrefs.DisableBuiltinPackages && packagesDirectory == Core.PathManager.BuiltinPackagesDirectory)
+            //or if custom package directories are disabled, and this is a custom package directory, don't scan.
+            || (disablePrefs.DisableCustomPackageLocations && isACustomPackageDirectory);
+        }
+
+        private void InitializeNodeLibrary()
         {
             // Initialize all nodes inside of this assembly.
             InitializeIncludedNodes();
@@ -1336,6 +1368,21 @@ namespace Dynamo.Models
             // Load local custom nodes and locally imported libraries
             foreach (var path in pathManager.DefinitionDirectories)
             {
+                DirectoryInfo parentPath;
+                try
+                {
+                    parentPath = Directory.GetParent(path);
+                }
+                catch (ArgumentException)
+                {
+                    parentPath = null;
+                }
+                var pathName = parentPath != null ? parentPath.FullName : path;
+                if (IsDisabledPath(pathName, PreferenceSettings))
+                {
+                    continue;
+                }
+                
                 // NOTE: extension will only be null if path is null
                 string extension = null;
                 try
@@ -2424,8 +2471,7 @@ namespace Dynamo.Models
             // or does not belong to a group here.
             // We handle creation of nested groups when creating the
             // parent group.
-            var annotations = ClipBoard.OfType<AnnotationModel>()
-                .Where(x=>x.HasNestedGroups || !currentWorkspace.Annotations.ContainsModel(x));
+            var annotations = ClipBoard.OfType<AnnotationModel>();
 
             var xmlDoc = new XmlDocument();
 
@@ -2539,8 +2585,13 @@ namespace Dynamo.Models
                 //so adding the group after nodes / notes are added to workspace.
                 //select only those nodes that are part of a group.
                 var newAnnotations = new List<AnnotationModel>();
-                foreach (var annotation in annotations)
+                foreach (var annotation in annotations.OrderByDescending(a => a.HasNestedGroups)) 
                 {
+                    if (modelLookup.ContainsKey(annotation.GUID))
+                    {
+                        continue;
+                    }
+
                     // If this group has nested group we need to create them first
                     if (annotation.HasNestedGroups)
                     {

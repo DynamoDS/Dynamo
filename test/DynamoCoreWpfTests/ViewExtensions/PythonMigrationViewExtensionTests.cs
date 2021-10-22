@@ -366,7 +366,7 @@ namespace DynamoCoreWpfTests
             var editMenuItem = nodeView.MainContextMenu
                 .Items
                 .OfType<MenuItem>()
-                .First(x => x.Header.ToString() == "Edit...");
+                .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.EditHeader);
 
             editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             DispatcherUtil.DoEvents();
@@ -409,7 +409,7 @@ namespace DynamoCoreWpfTests
             var editMenuItem = nodeView.MainContextMenu
                 .Items
                 .OfType<MenuItem>()
-                .First(x => x.Header.ToString() == "Edit...");
+                .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.EditHeader);
 
             editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             DispatcherUtil.DoEvents();
