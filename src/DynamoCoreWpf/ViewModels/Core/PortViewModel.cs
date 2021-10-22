@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -22,7 +21,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand useLevelsCommand;
         private DelegateCommand keepListStructureCommand;
         private bool showUseLevelMenu;
-        private const double nodeAutoCompletePopupSpacing = 2.5;
+        private const double autocompletePopupSpacing = 2.5;
         internal bool inputPortDisconnectedByConnectCommand = false;
         protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(59, 68, 83));
         protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
@@ -335,7 +334,7 @@ namespace Dynamo.ViewModels
             var zoom = node.WorkspaceViewModel.Zoom;
 
             double x;
-            var scaledSpacing = nodeAutoCompletePopupSpacing * targetSize.Width / node.ActualWidth;
+            var scaledSpacing = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
             if (PortModel.PortType == PortType.Input)
             {
                 // Offset popup to the left by its width from left edge of node and spacing.
@@ -362,7 +361,7 @@ namespace Dynamo.ViewModels
           var zoom = node.WorkspaceViewModel.Zoom;
 
             double x;
-            var scaledWidth = nodeAutoCompletePopupSpacing * targetSize.Width / node.ActualWidth;
+            var scaledWidth = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
             var scaledHeight = targetSize.Height / node.ActualHeight;
 
             if (PortModel.PortType == PortType.Input)
