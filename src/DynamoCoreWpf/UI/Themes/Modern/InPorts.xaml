@@ -15,8 +15,7 @@
 
         <!--  Grid that contains the entire port  -->
         <Grid Name="MainGrid"
-              Height="35px"
-              Margin="-25,0,0,0">
+              Height="35px">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Name="PortSnappingColumn" Width="25px" />
                 <ColumnDefinition Name="ValueMarkerColumn" Width="5px" />
@@ -29,8 +28,10 @@
 
             <Rectangle x:Name="PortSnapping"
                        Grid.Column="0"
-                       Fill="Red"
+                       Grid.ColumnSpan="7"
+                       Fill="Transparent"
                        IsHitTestVisible="{Binding IsHitTestVisible}"
+                       Canvas.ZIndex="1"
                        SnapsToDevicePixels="True">
                 <interactivity:Interaction.Triggers>
                     <views:HandlingEventTrigger EventName="MouseEnter">
