@@ -1,33 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
                     xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
-                    xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCore"
-                    xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
                     xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
-                    xmlns:fa="http://schemas.fontawesome.io/icons/"
                     xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-                    xmlns:nodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore"
-                    xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
                     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
                     xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
                     xmlns:views="clr-namespace:Dynamo.UI.Views;assembly=DynamoCoreWpf">
-
-    <!-- Templates
-
-    Use this to add color resources:
-    ==========================================
-    <Color x:Key="ColorKey" >#FFFFFFAE</Color>
-
-    You can use this to create a style for a button, just change the TargetType or add
-    other control separated by commas and add setter nodes to change properties:
-    ==========================================
-    <Style x:Key="SimpleStyle" TargetType="Button">
-        <Setter Property="Background" Value="Red" />
-    </Style>
-
-    -->
-
     <!--  Add your resources here  -->
 
     <ResourceDictionary.MergedDictionaries>

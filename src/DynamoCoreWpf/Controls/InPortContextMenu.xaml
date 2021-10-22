@@ -132,7 +132,8 @@
         <Path Grid.Column="0"
               HorizontalAlignment="Right"
               VerticalAlignment="Center"
-              Data="M 2,6.5 L 0,7.5 L 0,12.5 L2,12.5 Z"
+              Data="M 2,6 0,6 L0,10 L2,10 Z"
+              Stretch="None"
               Fill="White"
               Stroke="White" />
     </Grid>
