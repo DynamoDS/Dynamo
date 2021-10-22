@@ -24,6 +24,7 @@ namespace Dynamo.ViewModels
         private bool showUseLevelMenu;
         private const double nodeAutoCompletePopupSpacing = 2.5;
         internal bool inputPortDisconnectedByConnectCommand = false;
+        protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(59, 68, 83));
         protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
@@ -409,6 +410,9 @@ namespace Dynamo.ViewModels
                 case nameof(ToolTipContent):
                     RaisePropertyChanged(nameof(ToolTipContent));
                     break;
+                case nameof(node.IsVisible):
+                    RefreshPortColors();
+                    break;
             }
         }
 
@@ -600,7 +604,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         protected virtual void RefreshPortColors()
         {
-            PortBackgroundColor = PortBackgroundColorDefault;
+            PortBackgroundColor = node.IsVisible ? PortBackgroundColorDefault : PortBackgroundColorPreviewOff;
             PortBorderBrushColor = PortBorderBrushColorDefault;
         }
 
