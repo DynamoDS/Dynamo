@@ -46,8 +46,8 @@ namespace PythonNodeModels
         internal string CPythonEvaluatorClass = "CPythonEvaluator";
         internal string CPythonEvaluationMethod = "EvaluatePythonScript";
 
-        const string DummyEvaluatorClass = "DummyPythonEvaluator";
-        const string DummyEvaluatorMethod = "Evaluate";
+        internal const string DummyEvaluatorClass = "DummyPythonEvaluator";
+        internal const string DummyEvaluatorMethod = "Evaluate";
 
         /// <summary>
         /// Singleton class initialization logic which will be run in a lazy way the first time Dynamo try to evaluate a Python node

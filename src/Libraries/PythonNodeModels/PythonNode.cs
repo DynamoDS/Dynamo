@@ -287,7 +287,7 @@ namespace PythonNodeModels
         }
 
         [Obsolete("This method is part of the temporary IronPython to CPython3 migration feature and will be removed in future versions of Dynamo.")]
-        /// <suymmary>
+        /// <summary>
         /// Updates the Script property of the node and raise the migration event notifications.
         /// NOTE: This is a temporary method used during the Python 2 to Python 3 transistion period,
         /// it will be removed when the transistion period is over.
