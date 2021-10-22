@@ -31,7 +31,7 @@
                 </Style>
             </Grid.Style>
 
-            <!--  Rectangle for port snapping  -->
+            <!--  Transparent rectangle used for port snapping, overhangs the edge of the port  -->
             <Rectangle Grid.Column="0"
                        Grid.ColumnSpan="2"
                        Fill="Transparent"
@@ -121,6 +121,7 @@
                 </Grid.Style>
             </Grid>
 
+            <!--  A semi-transparent border, which displays when the user's mouse moves over the port  -->
             <Border x:Name="BorderHighlightOverlay"
                     Grid.Column="0"
                     BorderBrush="Transparent"
