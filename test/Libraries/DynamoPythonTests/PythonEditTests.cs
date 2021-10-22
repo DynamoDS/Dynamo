@@ -425,24 +425,24 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(TestDirectory, @"core\python", "WorkspaceWithMultiplePythonEngines.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
-            var pythonNode2GUID = "4050d23e529c43e9b6140506d8adb06b";
-
             var nodeModels = ViewModel.Model.CurrentWorkspace.Nodes.Where(n => n.NodeType == "PythonScriptNode");
             List<PythonNode> pythonNodes = nodeModels.Cast<PythonNode>().ToList();
 
             var pynode1 = pythonNodes.ElementAt(0);
             var pynode2 = pythonNodes.ElementAt(1);
 
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9", "2.7.9" });
+            Assert.AreEqual(new List<PythonEngineVersion>() { PythonEngineVersion.CPython3 }, PythonEngineSelector.Instance.GetEnabledEngines());
+            // Error when running IronPython2 script while IronPython2 engine is not installed
+            AssertPreviewValue(pynode1.GUID.ToString("N"), null);
+            AssertPreviewValue(pynode2.GUID.ToString("N"), null);
 
             UpdatePythonEngineAndRun(pynode1, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.10", "2.7.9" });
+            AssertPreviewValue(pynode1.GUID.ToString("N"), "3.8.10");
 
             UpdatePythonEngineAndRun(pynode2, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.10", "3.8.10" });
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.10", "3.8.10" });
+            AssertPreviewValue(pynode2.GUID.ToString("N"), new List<string> { "3.8.10", "3.8.10" });
         }
 
         [Test]
