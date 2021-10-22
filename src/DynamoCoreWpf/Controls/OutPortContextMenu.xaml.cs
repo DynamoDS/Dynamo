@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels.Core;
 
 namespace Dynamo.UI.Controls
 {
@@ -13,11 +12,6 @@ namespace Dynamo.UI.Controls
     {
         internal event Action<ShowHideFlags> RequestShowOutPortContextMenu;
 
-        /// <summary>
-        /// A reference to the PortViewModel which the user is interacting with.
-        /// </summary>
-        public OutPortViewModel OutPortViewModel { get; set; }
-
         public OutPortContextMenu()
         {
             InitializeComponent();
@@ -26,6 +20,11 @@ namespace Dynamo.UI.Controls
             Unloaded += OutPortContextMenuControl_Unloaded;
         }
 
+        /// <summary>
+        /// Disposes of the event listener when the control is unloaded.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OutPortContextMenuControl_Unloaded(object sender, RoutedEventArgs e)
         {
             if (Application.Current != null)
@@ -33,7 +32,18 @@ namespace Dynamo.UI.Controls
                 Application.Current.Deactivated -= CurrentApplicationDeactivated;
             }
         }
+
+        /// <summary>
+        /// Closes the popup when Dynamo is not the active application.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CurrentApplicationDeactivated(object sender, EventArgs e) => OnRequestShowOutPortContextMenu(ShowHideFlags.Hide);
+
+        /// <summary>
+        /// Requests to open the OutPortContextMenu popup.
+        /// </summary>
+        /// <param name="flags"></param>
         private void OnRequestShowOutPortContextMenu(ShowHideFlags flags)
         {
             if (RequestShowOutPortContextMenu != null)

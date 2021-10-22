@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels.Core;
 
 namespace Dynamo.UI.Controls
 {
@@ -13,11 +12,6 @@ namespace Dynamo.UI.Controls
     {
         internal event Action<ShowHideFlags> RequestShowInPortContextMenu;
 
-        /// <summary>
-        /// A reference to the PortViewModel which the user is interacting with.
-        /// </summary>
-        public InPortViewModel InPortViewModel { get; set; }
-
         public InPortContextMenu()
         {
             InitializeComponent();
@@ -26,6 +20,11 @@ namespace Dynamo.UI.Controls
             Unloaded += InPortContextMenuControl_Unloaded;
         }
         
+        /// <summary>
+        /// Disposes of the event listener when the control is unloaded.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void InPortContextMenuControl_Unloaded(object sender, RoutedEventArgs e)
         {
             if (Application.Current != null)
@@ -33,38 +32,24 @@ namespace Dynamo.UI.Controls
                 Application.Current.Deactivated -= CurrentApplicationDeactivated;
             }
         }
+        
+        /// <summary>
+        /// Closes the popup when Dynamo is not the active application.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CurrentApplicationDeactivated(object sender, EventArgs e) => OnRequestShowInPortContextMenu(ShowHideFlags.Hide);
+        
+        /// <summary>
+        /// Requests to open the InPortContextMenu popup.
+        /// </summary>
+        /// <param name="flags"></param>
         private void OnRequestShowInPortContextMenu(ShowHideFlags flags)
         {
             if (RequestShowInPortContextMenu != null)
             {
                 RequestShowInPortContextMenu(flags);
             }
-        }
-        
-        private void UseLevel_OnChecked(object sender, RoutedEventArgs e)
-        {
-            InPortViewModel.UseLevelsCommand.Execute(true);
-        }
-        private void UseLevel_OnUnchecked(object sender, RoutedEventArgs e)
-        {
-            InPortViewModel.UseLevelsCommand.Execute(false);
-        }
-        private void KeepListStructure_OnChecked(object sender, RoutedEventArgs e)
-        {
-            InPortViewModel.KeepListStructureCommand.Execute(true);
-        }
-        private void KeepListStructure_OnUnchecked(object sender, RoutedEventArgs e)
-        {
-            InPortViewModel.KeepListStructureCommand.Execute(false);
-        }
-        private void UseDefaultValue_OnChecked(object sender, RoutedEventArgs e)
-        {
-            InPortViewModel.UsingDefaultValue = true;
-        }
-        private void UseDefaultValue_OnUnchecked(object sender, RoutedEventArgs e)
-        {
-            InPortViewModel.UsingDefaultValue = false;
         }
     }
 }
