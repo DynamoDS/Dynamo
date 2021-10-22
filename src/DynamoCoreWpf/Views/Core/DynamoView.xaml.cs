@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
@@ -44,11 +45,10 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.Gallery;
-using Dynamo.Wpf.Views.PackageManager;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
-using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Res = Dynamo.Wpf.Properties.Resources;
+using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using String = System.String;
 
 namespace Dynamo.Controls
@@ -63,8 +63,8 @@ namespace Dynamo.Controls
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
-
-        private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
+        // internal for testing.
+        internal readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
         private readonly Stopwatch _timer;
         private StartPageViewModel startPage;
@@ -587,9 +587,12 @@ namespace Dynamo.Controls
         private void OnRequestPaste()
         {
             var clipBoard = dynamoViewModel.Model.ClipBoard;
-            var locatableModels = clipBoard.Where(item => item is NoteModel || item is NodeModel);
 
-            var modelBounds = locatableModels.Select(lm =>
+            var locatableModels = clipBoard.Where(item => item is NoteModel || item is NodeModel);
+            var modelsExcludingConnectorPins = locatableModels.Where(model => !(model is ConnectorPinModel));
+            if(modelsExcludingConnectorPins is null || modelsExcludingConnectorPins.Count()<1) { return; }
+
+            var modelBounds = modelsExcludingConnectorPins.Select(lm =>
                 new Rect { X = lm.X, Y = lm.Y, Height = lm.Height, Width = lm.Width });
 
             // Find workspace view.
@@ -617,7 +620,7 @@ namespace Dynamo.Controls
 
             // All nodes are inside of workspace and visible for user.
             // Order them by CenterX and CenterY.
-            var orderedItems = locatableModels.OrderBy(item => item.CenterX + item.CenterY);
+            var orderedItems = modelsExcludingConnectorPins.OrderBy(item => item.CenterX + item.CenterY);
 
             // Search for the rightmost item. It's item with the biggest X, Y coordinates of center.
             var rightMostItem = orderedItems.Last();
@@ -643,8 +646,8 @@ namespace Dynamo.Controls
                 return;
             }
 
-            var x = shiftX + locatableModels.Min(m => m.X);
-            var y = shiftY + locatableModels.Min(m => m.Y);
+            var x = shiftX + modelsExcludingConnectorPins.Min(m => m.X);
+            var y = shiftY + modelsExcludingConnectorPins.Min(m => m.Y);
 
             // All copied nodes are inside of workspace.
             // Paste them with little offset.           
@@ -731,12 +734,20 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.Model.PreferenceSettings.WindowX = Left;
             dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
+
+            //When the Dynamo window is moved to another place we need to update the Steps location
+            if(dynamoViewModel.MainGuideManager != null)
+                dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             dynamoViewModel.Model.PreferenceSettings.WindowW = e.NewSize.Width;
             dynamoViewModel.Model.PreferenceSettings.WindowH = e.NewSize.Height;
+
+            //When the Dynamo window size is changed then we need to update the Steps location
+            if (dynamoViewModel.MainGuideManager != null)
+                dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
         }
 
         private void InitializeLogin()
@@ -916,6 +927,10 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation += DynamoViewModelRequestViewOperation;
             dynamoViewModel.PostUiActivationCommand.Execute(null);
+
+            // Initialize Guide Manager as a member on Dynamo ViewModel so other than guided tour,
+            // other part of application can also leverage it.
+            dynamoViewModel.MainGuideManager = new GuidesManager(_this, dynamoViewModel);
 
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
@@ -1124,7 +1139,7 @@ namespace Dynamo.Controls
 
         private PackageManagerSearchView _searchPkgsView;
         private PackageManagerSearchViewModel _pkgSearchVM;
-
+        
         private void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
             if (!DisplayTermsOfUseForAcceptance())
@@ -2335,158 +2350,33 @@ namespace Dynamo.Controls
         /// </summary>
         private void ShowGetStartedGuidedTour()
         {
-
-            Step.TotalSteps = 6;
-
-            //Welcome Popup
-            var hostPopupInfo = new HostControlInfo()
+            //We pass the root UIElement to the GuidesManager so we can found other child UIElements
+            try
             {
-                HostClass = string.Empty,
-                PopupPlacement = PlacementMode.Center,
-                HostUIElement = WorkspaceTabs,
-                VerticalPopupOffSet = 0,
-                HorizontalPopupOffSet = 0
-            };
-
-            var customWelcome = new Welcome(hostPopupInfo, 480, 180)
+                dynamoViewModel.MainGuideManager.LaunchTour(Res.GetStartedGuide);
+            }
+            catch (Exception ex)
             {
-                Sequence = 0,
-                StepContent = new Content()
-                {
-                    Title = Res.GetStartedGuideWelcomeTitle,
-                    FormattedText = Res.GetStartedGuideWelcomeText
-                }
-            };
-            customWelcome.Show();
-
-            //Library Popup
-            var libraryPopupInfo = new HostControlInfo()
-            {
-                HostClass = string.Empty,
-                PopupPlacement = PlacementMode.Right,
-                HostUIElement = sidebarGrid,
-                VerticalPopupOffSet = 250,
-                HorizontalPopupOffSet = 0
-            };
-
-            var customTooltip = new Tooltip(libraryPopupInfo, 480, 250, Step.PointerDirection.BOTTOM_LEFT)
-            {
-                Sequence = 1,
-                StepContent = new Content()
-                {
-                    Title = Res.GetStartedGuideLibraryTitle,        
-                    FormattedText = Res.GetStartedGuideLibraryText
-                }
-            };
-            customTooltip.Show();
-
-            //Run Status Bar Popup
-            var runStatusPopupInfo = new HostControlInfo()
-            {
-                HostClass = string.Empty,
-                PopupPlacement = PlacementMode.Center,
-                HostUIElement = WorkspaceTabs,
-                VerticalPopupOffSet = 300,
-                HorizontalPopupOffSet = 100
-            };
-            var runStatusTooltip = new Tooltip(runStatusPopupInfo, 480, 250, Step.PointerDirection.BOTTOM_LEFT)
-            {
-                Sequence = 2,
-                StepContent = new Content()
-                {
-                    Title = Res.GetStartedGuideRunStatusBarTitle,
-                    FormattedText = Res.GetStartedGuideRunStatusBarText
-                }
-            };
-            runStatusTooltip.Show();
-
-            //Toolbar Popup
-            var toolbarPopupInfo = new HostControlInfo()
-            {
-                HostClass = string.Empty,
-                PopupPlacement = PlacementMode.Right,
-                HostUIElement = sidebarGrid,
-                VerticalPopupOffSet = 50,
-                HorizontalPopupOffSet = 500
-            };
-            var toolbarTooltip = new Tooltip(toolbarPopupInfo, 480, 250, Step.PointerDirection.TOP_LEFT)
-            {
-                Sequence = 3,
-                StepContent = new Content()
-                {
-                    Title = Res.GetStartedGuideToolbarTitle,
-                    FormattedText = Res.GetStartedGuideToolbarText
-                }
-            };
-            toolbarTooltip.Show();
-
-            //Preferences Popup
-            var preferencesPopupInfo = new HostControlInfo()
-            {
-                HostClass = string.Empty,
-                PopupPlacement = PlacementMode.Right,
-                HostUIElement = dynamoMenu,
-                VerticalPopupOffSet = 0,
-                HorizontalPopupOffSet = 0
-            };
-            var preferencesTooltip = new Tooltip(preferencesPopupInfo, 480, 190, Step.PointerDirection.TOP_LEFT)
-            {
-                Sequence = 4,
-                StepContent = new Content()
-                {
-                    Title = Res.GetStartedGuidePreferencesTitle,
-                    FormattedText = Res.GetStartedGuidePreferencesText
-                }
-            };
-            preferencesTooltip.Show();
-
-            //Resources Popup
-            var resourcesPopupInfo = new HostControlInfo()
-            {
-                HostClass = string.Empty,
-                PopupPlacement = PlacementMode.Right,
-                HostUIElement = ExtensionsMenu,
-                VerticalPopupOffSet = 150,
-                HorizontalPopupOffSet = 750
-            };
-            var resourcesTooltip = new Tooltip(resourcesPopupInfo, 480, 230, Step.PointerDirection.BOTTOM_RIGHT)
-            {
-                Sequence = 5,
-                StepContent = new Content()
-                {
-                    Title = Res.GetStartedGuideResourcesTitle,
-                    FormattedText = Res.GetStartedGuideResourcesText
-                }
-            };
-            resourcesTooltip.Show();
-
-            //Survey Popup (final step)
-            var surveyPopupInfo = new HostControlInfo()
-            {
-                HostClass = string.Empty,
-                PopupPlacement = PlacementMode.Right,
-                HostUIElement = sidebarGrid,
-                VerticalPopupOffSet = 500,
-                HorizontalPopupOffSet = 100
-            };
-            var surveyPopup = new Survey(surveyPopupInfo, 400, 450)
-            {
-                Sequence = 4,
-                ContentWidth = 300,
-                RatingTextTitle = Res.GetStartedGuideRatingTextTitle,
-                StepContent = new Content()
-                {
-                    Title = Res.GetStartedGuideSurveyTitle,
-                    FormattedText = Res.GetStartedGuideSurveyText
-                }
-            };
-            surveyPopup.Show();
+                sidebarGrid.Visibility = Visibility.Visible;
+            }
         }
 
         private void RightExtensionSidebar_DragCompleted(object sender, DragCompletedEventArgs e)
         {
             //Setting the width of right extension after resize to
             extensionsColumnWidth = RightExtensionsViewColumn.Width;
+        }
+
+        private void PackagesMenuGuide_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                dynamoViewModel.MainGuideManager.LaunchTour(Res.PackagesGuide);
+            }
+            catch (Exception)
+            {
+                sidebarGrid.Visibility = Visibility.Visible;
+            }
         }
 
         public void Dispose()

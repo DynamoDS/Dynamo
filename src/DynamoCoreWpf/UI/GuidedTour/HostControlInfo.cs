@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls.Primitives;
+using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -9,15 +11,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
     public class HostControlInfo
     {
         private string name;
-        private string hostClass;
         private UIElement hostUIElement;
         private double verticalPopupOffSet;
         private double horizontalPopupOffSet;
+        private HtmlPage htmlPage;
 
         /// <summary>
         /// Host Name, this property will contain the name of the host control located in the TreeView
         /// </summary>
-        public string Name 
+        public string Name
         {
             get
             {
@@ -26,21 +28,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
             set
             {
                 name = value;
-            }
-        }
-
-        /// <summary>
-        /// Host Class, this property will contain the class of the host control located in the TreeView
-        /// </summary>
-        public string HostClass
-        {
-            get
-            {
-                return hostClass;
-            }
-            set
-            {
-                hostClass = value;
             }
         }
 
@@ -60,13 +47,21 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
+        /// This variable will hold the name of the host (UIElement) in a string representation
+        /// </summary>
+        [JsonProperty("HostUIElementString")]
+        public string HostUIElementString { get; set; }
+
+        /// <summary>
         /// This property will hold the placement location of the popup, for now we are just using Right, Left, Top and Bottom
         /// </summary>
+        [JsonProperty("PopupPlacement")]
         public PlacementMode PopupPlacement { get; set; }
 
         /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Vertically (by specifying an offset) 
         /// </summary>
+        [JsonProperty("VerticalPopupOffset")]
         public double VerticalPopupOffSet
         {
             get
@@ -82,6 +77,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Horizontally (by specifying an offset) 
         /// </summary>
+        [JsonProperty("HorizontalPopupOffset")]
         public double HorizontalPopupOffSet
         {
             get
@@ -90,8 +86,44 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
             set
             {
-                horizontalPopupOffSet  = value;
+                horizontalPopupOffSet = value;
             }
         }
+
+        /// <summary>
+        /// Property that represents the highlight rectangle that will be shown over the Overlay
+        /// </summary>
+        [JsonProperty("HighlightRectArea")]
+        internal HighlightArea HighlightRectArea { get; set; }
+
+        /// <summary>
+        /// Property that represents the cut off section that will be removed from the Overlay
+        /// </summary>
+        [JsonProperty("CutOffRectArea")]
+        internal CutOffArea CutOffRectArea { get; set; }
+
+        /// <summary>
+        /// The html page that is going to be rendered inside the popup
+        /// </summary>
+        [JsonProperty("HtmlPage")]
+        public HtmlPage HtmlPage { get => htmlPage; set => htmlPage = value; }
+    }
+
+    public class HtmlPage
+    {
+        private string fileName;
+        private Dictionary<string,string> resources;
+
+        /// <summary>
+        /// A dictionary containing the key word to be replaced in page and the filename as values
+        /// </summary>
+        [JsonProperty("Resources")]
+        public Dictionary<string, string> Resources { get => resources; set => resources = value; }
+
+        /// <summary>
+        /// Filename of the HTML page
+        /// </summary>
+        [JsonProperty("FileName")]
+        public string FileName { get => fileName; set => fileName = value; }
     }
 }

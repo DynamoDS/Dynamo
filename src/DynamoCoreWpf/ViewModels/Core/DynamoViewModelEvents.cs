@@ -178,13 +178,22 @@ namespace Dynamo.ViewModels
             SaveWarningOnUnresolvedIssuesShows?.Invoke(e);
         }
 
-        // <summary>
+        /// <summary>
         /// Event raised when there's a request to open the view extension in the side panel.
         /// </summary>
         internal event Action<string> ViewExtensionOpenRequest;
         internal void OnViewExtensionOpenRequest(string extensionName)
         {
             ViewExtensionOpenRequest?.Invoke(extensionName);
+        }
+
+        /// <summary>
+        /// Event raised when there's a request to open the view extension in the side panel.
+        /// </summary>
+        internal event Action<string, object> ViewExtensionOpenWithParameterRequest;
+        internal void OnViewExtensionOpenWithParameterRequest(string extensionName, object obj)
+        {
+            ViewExtensionOpenWithParameterRequest?.Invoke(extensionName, obj);
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Engine;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Library;
 using ProtoCore;
 
@@ -571,6 +572,38 @@ namespace Dynamo.Graph.Nodes
                     new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
 
             return indexOfSeparator >= 0;
+        }
+
+        /// <summary>
+        /// Returns the icon path for a ZeroTouch node
+        /// </summary>
+        /// <returns></returns>
+        internal static string GetFunctionDescriptorIconName(FunctionDescriptor functionDescriptor)
+        {
+            string name = NormalizeAsResourceName(functionDescriptor.QualifiedName);
+
+            if (string.IsNullOrEmpty(name))
+            {
+                name = NormalizeAsResourceName(functionDescriptor.FunctionName);
+            }
+
+            // Usual case.
+            if (!functionDescriptor.IsOverloaded)
+            {
+                return name;
+            }
+
+            // Case for overloaded methods.
+            if (name == functionDescriptor.QualifiedName)
+            {
+                return TypedParametersToString(functionDescriptor);
+            }
+            
+            // Some nodes contain names with invalid symbols like %, <, >, etc. In this 
+            // case the value of "FunctionDescriptor.Name" property should be used. For 
+            // an example, "DynamoUnits.SUnit.%" to be renamed as "DynamoUnits.SUnit.mod".
+            string shortName = NormalizeAsResourceName(functionDescriptor.FunctionName);
+            return TypedParametersToString(functionDescriptor, name + shortName);
         }
     }
 }

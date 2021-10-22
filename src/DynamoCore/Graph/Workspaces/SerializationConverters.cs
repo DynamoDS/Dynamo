@@ -585,14 +585,34 @@ namespace Dynamo.Graph.Workspaces
             // relevant ports.
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
-            IEnumerable<INodeLibraryDependencyInfo> nodeLibraryDependencies;
+            IEnumerable<INodeLibraryDependencyInfo> workspaceReferences;
+            var nodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            var nodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+            var externalFiles = new List<INodeLibraryDependencyInfo>();
+
             if (obj[NodeLibraryDependenciesPropString] != null)
             {
-                nodeLibraryDependencies = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
+                workspaceReferences = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
             }
             else
             {
-                nodeLibraryDependencies = new List<PackageDependencyInfo>();
+                workspaceReferences = new List<INodeLibraryDependencyInfo>();
+            }
+
+            foreach(INodeLibraryDependencyInfo depInfo in workspaceReferences) 
+            {
+                if (depInfo is PackageDependencyInfo)
+                {
+                    nodeLibraryDependencies.Add(depInfo);
+                }
+                else if (depInfo is DependencyInfo && (depInfo.ReferenceType == ReferenceType.ZeroTouch || depInfo.ReferenceType == ReferenceType.DYFFile))
+                {
+                    nodeLocalDefinitions.Add(depInfo);
+                }
+                else if (depInfo is DependencyInfo && depInfo.ReferenceType == ReferenceType.External)
+                {
+                    externalFiles.Add(depInfo);
+                }
             }
 
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
@@ -676,8 +696,9 @@ namespace Dynamo.Graph.Workspaces
                 ws = homeWorkspace;
             }
 
-            ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
-
+            ws.NodeLibraryDependencies = nodeLibraryDependencies;
+            ws.NodeLocalDefinitions = nodeLocalDefinitions;
+            ws.ExternalFiles = externalFiles;
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
 
@@ -825,10 +846,37 @@ namespace Dynamo.Graph.Workspaces
             }
             writer.WriteEndArray();
 
-            // NodeLibraryDependencies
+            // Join NodeLibraryDependencies & NodeLocalDefinitions and serialze them.
             writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
-            serializer.Serialize(writer, ws.NodeLibraryDependencies);
-            
+
+            IEnumerable<INodeLibraryDependencyInfo> referencesList = ws.NodeLibraryDependencies;
+            referencesList = referencesList.Concat(ws.NodeLocalDefinitions).Concat(ws.ExternalFiles);
+            foreach (INodeLibraryDependencyInfo item in referencesList) 
+            {
+                string refName = string.Empty;
+                string refExtension = System.IO.Path.GetExtension(item.Name);
+
+                Actions refType = Actions.ExternalReferences;
+                if (item.ReferenceType == ReferenceType.Package)
+                {
+                    refName = item.Name + (item.Version != null ? " " + item.Version.ToString(3) : null);
+                    refType = Actions.PackageReferences;
+                }
+                else if (item.ReferenceType == ReferenceType.ZeroTouch || item.ReferenceType == ReferenceType.DYFFile || item.ReferenceType == ReferenceType.NodeModel || item.ReferenceType == ReferenceType.DSFile)
+                {
+                    refName = refExtension;
+                    refType = Actions.LocalReferences;
+                }
+                else 
+                {
+                    refName = refExtension;
+                }
+
+                Logging.Analytics.TrackEvent(refType, Categories.WorkspaceReferences, refName);
+            }
+
+            serializer.Serialize(writer, referencesList);
+
             if (!isCustomNode && ws is HomeWorkspaceModel hws)
             {
                 // Thumbnail
@@ -1006,8 +1054,10 @@ namespace Dynamo.Graph.Workspaces
                 writer.WriteStartObject();
                 writer.WritePropertyName(NamePropString);
                 writer.WriteValue(p.Name);
-                writer.WritePropertyName(VersionPropString);
-                writer.WriteValue(p.Version.ToString());
+                if (p.Version != null) {
+                    writer.WritePropertyName(VersionPropString);
+                    writer.WriteValue(p.Version.ToString());
+                }
                 writer.WritePropertyName(ReferenceTypePropString);
                 writer.WriteValue(p.ReferenceType.ToString("G"));
                 writer.WritePropertyName(NodesPropString);
@@ -1032,16 +1082,6 @@ namespace Dynamo.Graph.Workspaces
             // Get dependency name
             var name = obj["Name"].Value<string>();
 
-            // Try get dependency version
-            var versionString = obj["Version"].Value<string>();
-            Version version;
-            if (!Version.TryParse(versionString, out version))
-            {
-                logger.LogWarning(
-                    string.Format("The version of Package Dependency {0} could not be deserialized.", name), 
-                    Logging.WarningLevel.Moderate);
-            }
-
             //default to package.
             ReferenceType parsedType = ReferenceType.Package;
             JToken referenceTypeToken;
@@ -1056,7 +1096,20 @@ namespace Dynamo.Graph.Workspaces
                 }
 
             }
-        
+
+            Version version = null;
+            // Try get dependency version
+            if (obj["Version"] != null)
+            {
+                var versionString = obj["Version"].Value<string>();
+                if (!Version.TryParse(versionString, out version))
+                {
+                    logger.LogWarning(
+                        string.Format("The Version of Dependency: {0}, ReferenceType: {1} could not be deserialized.", name, parsedType),
+                        Logging.WarningLevel.Moderate);
+                }
+            }
+
             INodeLibraryDependencyInfo depInfo;
             //select correct constructor based on referenceType
             switch (parsedType)
@@ -1064,16 +1117,20 @@ namespace Dynamo.Graph.Workspaces
                 case ReferenceType.Package:
                     depInfo = new PackageDependencyInfo(name, version);
                     break;
-                /*TODO add other cases: for example
-                 * case ReferenceType.ZeroTouch
-                 * depInfp = new ZeroTouchDependencyInfo(name,version)
-                */
+                case ReferenceType.DYFFile:
+                    depInfo = new DependencyInfo(name, ReferenceType.DYFFile);
+
+                    break;
+                case ReferenceType.ZeroTouch:
+                    depInfo = new DependencyInfo(name, ReferenceType.ZeroTouch);
+                    break;
+                case ReferenceType.External:
+                    depInfo = new DependencyInfo(name, ReferenceType.External);
+                    break;
                 default:
-                    depInfo = new PackageDependencyInfo(name, version);
+                    depInfo = new DependencyInfo(name);
                     break;
             }
-
-           
 
             // Try get dependent node IDs
             var nodes = obj["Nodes"].Values<string>();
@@ -1163,6 +1220,9 @@ namespace Dynamo.Graph.Workspaces
             var obj = JObject.Load(reader);
             var startId = obj["Start"].Value<string>();
             var endId = obj["End"].Value<string>();
+            var isHiddenExists = obj[nameof(ConnectorModel.IsHidden)];
+
+            var isHidden = isHiddenExists != null && obj[nameof(ConnectorModel.IsHidden)].Value<bool>();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 
@@ -1189,7 +1249,9 @@ namespace Dynamo.Graph.Workspaces
             Guid connectorId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
             if(startPort != null && endPort != null)
             {
-                return new ConnectorModel(startPort, endPort, connectorId);
+                var connectorModel = new ConnectorModel(startPort, endPort, connectorId);
+                connectorModel.IsHidden = isHidden;
+                return connectorModel;
             }
             else
             {
@@ -1216,6 +1278,8 @@ namespace Dynamo.Graph.Workspaces
             writer.WriteValue(connector.End.GUID.ToString("N"));
             writer.WritePropertyName("Id");
             writer.WriteValue(connector.GUID.ToString("N"));
+            writer.WritePropertyName(nameof(ConnectorModel.IsHidden));
+            writer.WriteValue(connector.IsHidden.ToString());
             writer.WriteEndObject();
         }
     }

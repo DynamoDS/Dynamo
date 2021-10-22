@@ -101,17 +101,154 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 
+    /// <summary>
+    /// Class containing info about a LocalDefinition or an External File
+    /// </summary>
+    internal class DependencyInfo: INodeLibraryDependencyInfo
+    {
+        /// <summary>
+        /// Name of the Dependency
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// Path of the Dependency
+        /// </summary>
+        public string Path { get; internal set; }
+
+        /// <summary>
+        /// Size of the Dependency
+        /// </summary>
+        public string Size { get; internal set; }
+
+        /// <summary>
+        /// ReferenceType of the Dependency
+        /// </summary>
+        public ReferenceType ReferenceType { get; internal set; }
+
+        private HashSet<Guid> nodes;
+
+        public HashSet<Guid> Nodes
+        {
+            get { return nodes; }
+        }
+
+        public Version Version { get; internal set; }
+
+        /// <summary>
+        /// Indicates whether this Dependency is loaded in the current session
+        /// </summary>
+        [Obsolete("This property is obsolete", false)]
+        public bool IsLoaded { get; set; }
+
+        public PackageDependencyState State { get; internal set; }
+
+        /// <summary>
+        /// Create a Dependency info object from the Name and Path
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="path"></param>
+        internal DependencyInfo(string name, string path)
+        {
+            Name = name;
+            Path = path;
+            nodes = new HashSet<Guid>();
+        }
+
+        /// <summary>
+        /// Create a Dependency info object from the Name, Path and ReferenceType
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="path"></param>
+        /// <param name="referenceType"></param>
+        internal DependencyInfo(string name, string path, ReferenceType referenceType)
+        {
+            Name = name;
+            Path = path;
+            ReferenceType = referenceType;
+            nodes = new HashSet<Guid>();
+        }
+
+        /// <summary>
+        /// Create a Dependency info object from the Name and ReferenceType
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="referenceType"></param>
+        internal DependencyInfo(string name, ReferenceType referenceType)
+        {
+            Name = name;
+            ReferenceType = referenceType;
+            nodes = new HashSet<Guid>();
+        }
+
+        /// <summary>
+        /// Create a Dependency info object from the name
+        /// </summary>
+        /// <param name="name"></param>
+        internal DependencyInfo(string name)
+        {
+            Name = name;
+            nodes = new HashSet<Guid>();
+        }
+
+        /// <summary>
+        /// Checks whether two Dependency's are equal
+        /// They are equal if their Name, Path and ReferenceType are equal
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            if (!(obj is DependencyInfo))
+            {
+                return false;
+            }
+
+            var other = obj as DependencyInfo;
+            if (other.Name == this.Name && other.Path == this.Path && other.ReferenceType == this.ReferenceType)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the hashcode for this dependency
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode() ^ Size.GetHashCode();
+        }
+
+        /// <summary>
+        /// Get the string representing this dependency.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return Name + ", Size=" + Size;
+        }
+
+        public void AddDependent(Guid guid)
+        {
+            Nodes.Add(guid);
+        }
+    }
+
     internal enum ReferenceType
     {
         NodeModel,
         Package,
         ZeroTouch,
         DSFile,
-        //TODO - This is already covered by the older Dependencies property
-        DYFFILE
+        DYFFile,
+        External
     }
-
-
 
     /// <summary>
     /// An interface that describes a dependency a workspace can have on other code.
@@ -196,7 +333,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Indicates whether this package is loaded in the current session
         /// </summary>
-        [Obsolete("This property is obsolete, use PackageDependencyState property instead", false)]
+        [Obsolete("This property is obsolete, use State property instead", false)]
         public bool IsLoaded{ get; set;}
 
         /// <summary>

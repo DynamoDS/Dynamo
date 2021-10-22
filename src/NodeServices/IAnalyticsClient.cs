@@ -86,6 +86,21 @@ namespace Dynamo.Logging
         /// Events Category related to package manager operations
         /// </summary>
         PackageManagerOperations,
+
+        /// <summary>
+        /// Events Category related to Note operations
+        /// </summary>
+        NoteOperations,
+
+        /// <summary>
+        /// Events Category related to Workspace References Operations
+        /// </summary>
+        WorkspaceReferencesOperations,
+
+        /// <summary>
+        /// Events Category related to saved Workspace References
+        /// </summary>
+        WorkspaceReferences,
     }
 
     /// <summary>
@@ -217,6 +232,45 @@ namespace Dynamo.Logging
         /// Undock event, such as undocking view extension
         /// </summary>
         Undock,
+
+        /// <summary>
+        /// Rate event, such as rating guided tour
+        /// </summary>
+        Rate,
+
+        /// Pin event, such as pinning a note to a node
+        /// </summary>
+        Pin,
+
+        /// <summary>
+        /// Unpin event, such as unpinning a note from a node
+        /// </summary>
+        Unpin,
+
+        /// <summary>
+        /// Download new event, such as downloading a new package
+        /// </summary>
+        DownloadNew,
+
+        /// <summary>
+        /// KeepOldPackage event, choosing to keep the old package
+        /// </summary>
+        KeepOldPackage,
+
+        /// <summary>
+        /// PackageReferences event, when a package refrence is saved in a workspace
+        /// </summary>
+        PackageReferences,
+
+        /// <summary>
+        /// KeepOldPackage event, when a local refrence is saved in a workspace
+        /// </summary>
+        LocalReferences,
+
+        /// <summary>
+        /// KeepOldPackage event, when an external refrence is saved in a workspace
+        /// </summary>
+        ExternalReferences,
     }
 
     /// <summary>

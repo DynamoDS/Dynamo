@@ -28,9 +28,19 @@ namespace Dynamo.Wpf.Controls
 
         private void MoreButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var button = (Button)sender;
-            button.ContextMenu.DataContext = button.DataContext;
-            button.ContextMenu.IsOpen = true;
+            if (sender is Button button && button.ContextMenu != null)
+            {
+                button.ContextMenu.DataContext = button.DataContext;
+                button.ContextMenu.IsOpen = true;
+            }
+        }
+
+        private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
+        {
+            if (sender is RadioButton radioButton && radioButton.DataContext is PackageFilter filter)
+            {
+                filter.ViewModel.ApplyPackageFilter();
+            }
         }
     }
 }

@@ -120,7 +120,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="packageInfo">Name and version of a package</param>
         /// <returns>Package version metadata</returns>
-        internal PackageVersion GetPackageVersionHeader(string id, string version)
+        internal virtual PackageVersion GetPackageVersionHeader(string id, string version)
         {
             var req = new HeaderVersionDownload(id, version);
             var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageVersion>(req);

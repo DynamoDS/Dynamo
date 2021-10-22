@@ -192,6 +192,25 @@ namespace Dynamo.Tests.ModelsTest
         }
 
         /// <summary>
+        /// This test method will execute the SelectModelImpl method from the DynamoModel class and does not crash
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void SelectModelImplShouldNotCrashTest()
+        {
+            //Assert
+            Assert.DoesNotThrow(
+                () => {
+                    //Insert a node GUID that does not exist in workspace
+                    var ids = new System.Collections.Generic.List<Guid>() { Guid.NewGuid() };
+                    var selectCommand = new DynamoModel.SelectModelCommand(ids, ModifierKeys.Shift);
+
+                    //Act
+                    CurrentDynamoModel.ExecuteCommand(selectCommand);
+                });
+        }
+
+        /// <summary>
         /// This test method will execute the BeginDuplicateConnection method from the DynamoModel class
         /// </summary>
         [Test]
