@@ -41,25 +41,5 @@ namespace Dynamo.UI.Controls
                 RequestShowOutPortContextMenu(flags);
             }
         }
-
-        private void OutPortContextMenu_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (this.DataContext is HomeWorkspaceViewModel homeWorkspaceViewModel)
-            {
-                OutPortViewModel = homeWorkspaceViewModel.OutPortViewModel;
-            }
-        }
-
-        private void BreakConnectionsButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (OutPortViewModel == null) return;
-            OutPortViewModel.BreakConnectionsCommand.Execute(null);
-        }
-
-        private void ShowHideWiresButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (OutPortViewModel == null) return;
-            OutPortViewModel.HideConnectionsCommand.Execute(null);
-        }
     }
 }

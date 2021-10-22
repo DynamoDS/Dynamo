@@ -5,7 +5,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             DataContextChanged="InPortContextMenu_OnDataContextChanged"
              mc:Ignorable="d">
     <Grid Background="Transparent">
         <Grid.Resources>
@@ -98,9 +97,8 @@
                 <CheckBox Name="UseLevel"
                           Margin="0,3,5,3"
                           HorizontalAlignment="Left"
-                          Checked="UseLevel_OnChecked"
-                          Unchecked="UseLevel_OnUnchecked"
-                          IsThreeState="False"
+                          Command="{Binding Path=UseLevelsCommand}"
+                          CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                           Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
                           IsChecked="{Binding Path=UseLevels, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -108,38 +106,34 @@
                 <CheckBox Name="KeepListStructure"
                           Margin="0,3,5,3"
                           HorizontalAlignment="Left"
-                          Checked="KeepListStructure_OnChecked"
-                          Unchecked="KeepListStructure_OnUnchecked"
-                          IsThreeState="False"
+                          Command="{Binding Path=KeepListStructureCommand}"
+                          CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                           Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
-                          IsChecked="{Binding Path=ShouldKeepListStructure, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                          IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked, UpdateSourceTrigger=PropertyChanged}" />
+                          IsChecked="{Binding Path=ShouldKeepListStructure, Mode=OneWay}"
+                          IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}" />
 
                 <!--  Use Default Value  -->
                 <CheckBox Name="UseDefaultValue"
                           Margin="0,3,5,3"
                           HorizontalAlignment="Left"
-                          Checked="UseDefaultValue_OnChecked"
-                          Unchecked="UseDefaultValue_OnUnchecked"
                           Content="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
-                          IsThreeState="False"
-                          IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}"
                           Visibility="{Binding DefaultValueEnabled, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
             </StackPanel>
         </Border>
 
         <!--  Small Chevron Arrow  -->
-        <Path Grid.Column="0"
-              HorizontalAlignment="Right"
-              VerticalAlignment="Center"
-              Data="M 1,7.5 L 0,7.5 L 0,12.5 L1,12.5 Z"
-              Fill="White"
-              Stroke="White" />
         <Path Grid.Column="1"
               HorizontalAlignment="Right"
               VerticalAlignment="Center"
               Data="M 12,10 L -1,5 -1,15 Z"
               Fill="White"
               Stroke="#999999" />
+        <Path Grid.Column="0"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Center"
+              Data="M 2,6.5 L 0,7.5 L 0,12.5 L2,12.5 Z"
+              Fill="White"
+              Stroke="White" />
     </Grid>
 </UserControl>

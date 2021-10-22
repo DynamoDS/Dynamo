@@ -359,7 +359,7 @@
                AllowsTransparency="True"
                IsOpen="False"
                Placement="Custom"
-               DataContext="{Binding}">
+               DataContext="{Binding Path=InPortViewModel}">
             <ui:InPortContextMenu RequestShowInPortContextMenu="ShowHideInPortContextMenu" />
         </Popup>
 
@@ -368,7 +368,7 @@
                AllowsTransparency="True"
                IsOpen="False"
                Placement="Custom"
-               DataContext="{Binding OutPortViewModel}">
+               DataContext="{Binding Path=OutPortViewModel}">
             <ui:OutPortContextMenu RequestShowOutPortContextMenu="ShowHideOutPortContextMenu" />
         </Popup>
 

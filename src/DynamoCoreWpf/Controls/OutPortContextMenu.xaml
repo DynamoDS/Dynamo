@@ -6,7 +6,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             DataContextChanged="OutPortContextMenu_OnDataContextChanged"
              mc:Ignorable="d">
     <Grid Background="Transparent">
         <Grid.ColumnDefinitions>
@@ -35,18 +34,18 @@
                 <Button Name="BreakConnectionsButton"
                         Margin="0,3"
                         HorizontalAlignment="Left"
-                        Click="BreakConnectionsButton_OnClick"
+                        Command="{Binding Path=BreakConnectionsCommand}"
                         Content="{x:Static p:Resources.BreakConnectionPopupMenuItem}"
-                        IsEnabled="{Binding OutPortViewModel.IsConnected, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource PopupButtonStyle}" />
 
                 <!--  Show/Hide Wires  -->
                 <Button Name="ShowHideWiresButton"
                         Margin="0,3"
                         HorizontalAlignment="Left"
-                        Click="ShowHideWiresButton_OnClick"
-                        Content="{Binding OutPortViewModel.ShowHideWiresButtonContent, UpdateSourceTrigger=PropertyChanged}"
-                        IsEnabled="{Binding OutPortViewModel.HideWiresButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
+                        Command="{Binding Path=HideConnectionsCommand}"
+                        Content="{Binding ShowHideWiresButtonContent, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding HideWiresButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource PopupButtonStyle}" />
 
             </StackPanel>

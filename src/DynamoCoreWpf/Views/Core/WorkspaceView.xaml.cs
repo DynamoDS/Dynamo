@@ -178,11 +178,37 @@ namespace Dynamo.Views
 
         private void ShowHideInPortContextMenu(ShowHideFlags flag)
         {
+            // Setting or tidying up the DataContext as needed before displaying.
+            switch (flag)
+            {
+                case ShowHideFlags.Hide:
+                    InPortContextMenu.DataContext = null;
+                    break;
+                case ShowHideFlags.Show:
+                    InPortContextMenu.DataContext = ViewModel.InPortViewModel;
+                    break;
+                default:
+                    InPortContextMenu.DataContext = null;
+                    break;
+            }
             ShowHidePopup(flag, InPortContextMenu);
         }
 
         private void ShowHideOutPortContextMenu(ShowHideFlags flag)
         {
+            // Setting or tidying up the DataContext as needed before displaying.
+            switch (flag)
+            {
+                case ShowHideFlags.Hide:
+                    OutPortContextMenu.DataContext = null;
+                    break;
+                case ShowHideFlags.Show:
+                    OutPortContextMenu.DataContext = ViewModel.OutPortViewModel;
+                    break;
+                default:
+                    OutPortContextMenu.DataContext = null;
+                    break;
+            }
             ShowHidePopup(flag, OutPortContextMenu);
         }
 

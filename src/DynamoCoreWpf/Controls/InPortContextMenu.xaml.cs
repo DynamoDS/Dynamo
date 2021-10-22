@@ -25,14 +25,7 @@ namespace Dynamo.UI.Controls
             if (Application.Current != null) Application.Current.Deactivated += CurrentApplicationDeactivated;
             Unloaded += InPortContextMenuControl_Unloaded;
         }
-        private void InPortContextMenu_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (this.DataContext is HomeWorkspaceViewModel homeWorkspaceViewModel)
-            {
-                InPortViewModel = homeWorkspaceViewModel.InPortViewModel;
-            }
-        }
-
+        
         private void InPortContextMenuControl_Unloaded(object sender, RoutedEventArgs e)
         {
             if (Application.Current != null)
@@ -51,32 +44,26 @@ namespace Dynamo.UI.Controls
         
         private void UseLevel_OnChecked(object sender, RoutedEventArgs e)
         {
-            if (InPortViewModel == null) return;
             InPortViewModel.UseLevelsCommand.Execute(true);
         }
         private void UseLevel_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            if (InPortViewModel == null) return;
             InPortViewModel.UseLevelsCommand.Execute(false);
         }
         private void KeepListStructure_OnChecked(object sender, RoutedEventArgs e)
         {
-            if (InPortViewModel == null) return;
             InPortViewModel.KeepListStructureCommand.Execute(true);
         }
         private void KeepListStructure_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            if (InPortViewModel == null) return;
             InPortViewModel.KeepListStructureCommand.Execute(false);
         }
         private void UseDefaultValue_OnChecked(object sender, RoutedEventArgs e)
         {
-            if (InPortViewModel == null) return;
             InPortViewModel.UsingDefaultValue = true;
         }
         private void UseDefaultValue_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            if (InPortViewModel == null) return;
             InPortViewModel.UsingDefaultValue = false;
         }
     }

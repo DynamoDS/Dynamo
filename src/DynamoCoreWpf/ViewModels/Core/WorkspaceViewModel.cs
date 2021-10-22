@@ -253,17 +253,31 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public NodeAutoCompleteSearchViewModel NodeAutoCompleteSearchViewModel { get; private set; }
 
+        private InPortViewModel inPortViewModel;
+
         /// <summary>
         /// A reference to the InPortViewModel the user clicked on
         /// </summary>
         [JsonIgnore]
-        public InPortViewModel InPortViewModel { get; set; }
+        public InPortViewModel InPortViewModel
+        {
+            get => inPortViewModel;
+            set
+            {
+                inPortViewModel = value;
+                //MessageBox.Show($"WorkspaceViewModel.InPortViewModel was set to {value}");
+            }
+        }
 
         /// <summary>
         /// A reference to the OutPortViewModel the user clicked on
         /// </summary>
         [JsonIgnore]
-        public OutPortViewModel OutPortViewModel { get; set; }
+        public OutPortViewModel OutPortViewModel
+        {
+            get; 
+            set;
+        }
 
         /// <summary>
         /// Cursor Property Binding for WorkspaceView
