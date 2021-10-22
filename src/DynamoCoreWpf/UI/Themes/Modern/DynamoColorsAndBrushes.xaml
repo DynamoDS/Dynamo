@@ -50,14 +50,14 @@
 
     <Color x:Key="WorkspaceBackgroundHome">#F9F9F9</Color>
     <Color x:Key="WorkspaceBackgroundCustom">#FFFFDC</Color>
-    <SolidColorBrush x:Key="WorkspaceTabHeaderActiveTextBrush" Color="#BBBBBB" />
+    <SolidColorBrush x:Key="WorkspaceTabHeaderActiveTextBrush" Color="#EEEEEE" />
     <SolidColorBrush x:Key="WorkspaceTabHeaderInactiveTextBrush" Color="#777777" />
     <SolidColorBrush x:Key="WorkspaceBackgroundHomeBrush" Color="{StaticResource WorkspaceBackgroundHome}" />
     <SolidColorBrush x:Key="WorkspaceBackgroundCustomBrush" Color="{StaticResource WorkspaceBackgroundCustom}" />
     <SolidColorBrush x:Key="WorkspaceBackGroundHomeBrush" Color="{StaticResource WorkspaceBackgroundHome}" />
 
-    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedTrue" Color="#353535" />
-    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#232323" />
+    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedTrue" Color="#2A2A2A" />
+    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#3C3C3C" />
 
     <!--  Nodes  -->
     <SolidColorBrush x:Key="NodeFrozenOverlayBackground" Color="#BCD3EE" />
