@@ -82,7 +82,8 @@
 
             <!--Restore-->
             <Style x:Key="RestoreButtonStyle"
-                   TargetType="Button">
+                   TargetType="Button"
+                   BasedOn="{StaticResource CaptionButtonStyle}">
                 <Setter Property="Content"
                         Value="&#xE923;" />
             </Style>
@@ -159,8 +160,8 @@
                                         Margin="0 0 0 25"
                                         Visibility="Collapsed">
                                     <TextBlock Text="{Binding DetailedMessage}"
-                                                   TextWrapping="Wrap"
-                                                   FontSize="12"
+                                               TextWrapping="Wrap"
+                                               FontSize="12"
                                                Foreground="#F5F5F5"
                                                Margin="10"/>
                                 </Border>
@@ -170,7 +171,7 @@
                                         <ColumnDefinition Width="auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <Button Content="Show details"
+                                    <Button Content="{x:Static p:Resources.ButtonDetails}"
                                             Background="Transparent"
                                             Foreground="#6DD2FF"
                                             FontSize="12"
@@ -192,7 +193,7 @@
                                             </Style>
                                         </Button.Style>
                                     </Button>
-                                    <Button Content="OK"
+                                    <Button Content="{x:Static p:Resources.ButtonOK}"
                                             Grid.Column="1"
                                             Style="{StaticResource CtaButtonStyle}"
                                             HorizontalAlignment="Right"
@@ -226,23 +227,20 @@
     </Window.CommandBindings>
 
 
-    <Grid x:Name="MainContainer"
-          Height="{Binding ElementName=notificationsWindow, Path=Height }">
-        <!--<Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="10" />
-        </Grid.ColumnDefinitions>-->
+    <Grid x:Name="MainContainer">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.ColumnSpan="2">
+        <StackPanel Orientation="Vertical" 
+                    Grid.Row="0"
+                    VerticalAlignment="Top">
             <Grid IsHitTestVisible="True">
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center">
-                    <TextBlock Text="Notification"
+                    <TextBlock Text="{x:Static p:Resources.ExtensionName}"
                                FontFamily="{StaticResource ArtifaktElementRegular}"
                                Foreground="#F5F5F5"
                                FontSize="20"
@@ -254,23 +252,19 @@
                             HorizontalAlignment="Right">
                     <Button Style="{StaticResource MinimizeButtonStyle}"
                             WindowChrome.IsHitTestVisibleInChrome="True"
-                            ToolTip="Minimize"
                             Command="{x:Static SystemCommands.MinimizeWindowCommand}" />
                     <Button x:Name="RestoreButton"
                             Visibility="Collapsed"
                             Style="{StaticResource RestoreButtonStyle}"
                             Command="{x:Static SystemCommands.RestoreWindowCommand}"
-                            WindowChrome.IsHitTestVisibleInChrome="True"
-                            ToolTip="Restore" />
+                            WindowChrome.IsHitTestVisibleInChrome="True"/>
                     <Button x:Name="MaximizeButton"
                             Visibility="Visible"
                             Style="{StaticResource MaximizeButtonStyle}"
                             Command="{x:Static SystemCommands.MaximizeWindowCommand}"
-                            WindowChrome.IsHitTestVisibleInChrome="True"
-                            ToolTip="Maximize" />
+                            WindowChrome.IsHitTestVisibleInChrome="True" />
                     <Button Style="{StaticResource CloseButtonStyle}"
                             WindowChrome.IsHitTestVisibleInChrome="True"
-                            ToolTip="Close"
                             Command="{x:Static SystemCommands.CloseWindowCommand}" />
                 </StackPanel>
             </Grid>

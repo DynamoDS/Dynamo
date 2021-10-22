@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -15,6 +16,7 @@ namespace Dynamo.Notifications
             this.model = model;
             DataContext = model;
             InitializeComponent();
+            this.StateChanged += MainWindowStateChangeRaised;
             this.Owner = model.dynamoWindow;
         }
 
@@ -67,6 +69,21 @@ namespace Dynamo.Notifications
         private void CommandBinding_Executed_Close(object sender, ExecutedRoutedEventArgs e)
         {
             SystemCommands.CloseWindow(this);
+        }
+
+        // State change
+        private void MainWindowStateChangeRaised(object sender, EventArgs e)
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                RestoreButton.Visibility = Visibility.Visible;
+                MaximizeButton.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                RestoreButton.Visibility = Visibility.Collapsed;
+                MaximizeButton.Visibility = Visibility.Visible;
+            }
         }
     }
 }
