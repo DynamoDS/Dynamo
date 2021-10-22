@@ -3783,6 +3783,17 @@
                                   Y2="0" />
                         </Canvas>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="line1" Property="Stroke" Value="Red" />
+                            <Setter TargetName="line2" Property="Stroke" Value="Red" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="line1" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="line2" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
