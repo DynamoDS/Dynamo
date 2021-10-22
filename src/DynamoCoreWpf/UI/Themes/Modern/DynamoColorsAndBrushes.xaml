@@ -54,6 +54,7 @@
     <SolidColorBrush x:Key="WorkspaceTabHeaderInactiveTextBrush" Color="#777777" />
     <SolidColorBrush x:Key="WorkspaceBackgroundHomeBrush" Color="{StaticResource WorkspaceBackgroundHome}" />
     <SolidColorBrush x:Key="WorkspaceBackgroundCustomBrush" Color="{StaticResource WorkspaceBackgroundCustom}" />
+    <SolidColorBrush x:Key="WorkspaceBackGroundHomeBrush" Color="{StaticResource WorkspaceBackgroundHome}" />
 
     <SolidColorBrush x:Key="WorkspaceTabBorderSelectedTrue" Color="#353535" />
     <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#232323" />
@@ -76,7 +77,9 @@
     <!--  Node colors in selected state  -->
     <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
 
-    <SolidColorBrush x:Key="autocompletionWindow" Color="#4192d9" />
+    <!-- Node Autocomplete -->
+    <SolidColorBrush x:Key="autocompletionWindow" Color="#535353" />
+    <SolidColorBrush x:Key="autocompletionWindowFont" Color="#F5F5F5" />
 
     <!--  Update Manager  -->
     <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed" />
