@@ -2,11 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-using System.Linq;
-using System.IO;
 using Dynamo;
 
-namespace DSPythonTests
+namespace IronPythonTests
 {
     public class PythonEvalTests : UnitTestBase
     {

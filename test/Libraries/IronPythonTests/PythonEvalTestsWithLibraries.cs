@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Numerics;
 using Dynamo;
 using NUnit.Framework;
-using static DSPythonTests.PythonEvalTests;
 
-namespace DynamoPythonTests
+namespace IronPythonTests
 {
     public class PythonEvalTestsWithLibraries : DynamoModelTestBase
     {
+        public delegate object PythonEvaluatorDelegate(string code, IList bindingNames, IList bindingValues);
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("FFITarget.dll");

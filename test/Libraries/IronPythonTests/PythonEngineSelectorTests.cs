@@ -6,7 +6,7 @@ using NUnit.Framework;
 using PythonNodeModels;
 using static Dynamo.Models.DynamoModel;
 
-namespace DynamoPythonTests
+namespace IronPythonTests
 {
     [TestFixture]
     class PythonEngineSelectorTests : DynamoModelTestBase

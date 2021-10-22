@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,12 +8,13 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Tests;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using PythonNodeModels;
 using DynCmd = Dynamo.Models.DynamoModel;
 
-namespace Dynamo.Tests
+namespace IronPythonTests
 {
     [RequiresSTA]
     public class PythonEditTests : DynamoViewModelUnitTest
@@ -403,7 +403,7 @@ namespace Dynamo.Tests
                 }
                 else if (pythonEngine == PythonEngineVersion.CPython3)
                 {
-                    Assert.AreEqual(nodeValue, "3.8.3");
+                    Assert.AreEqual(nodeValue, "3.8.10");
                 }
             }
         }
@@ -477,11 +477,11 @@ namespace Dynamo.Tests
 
             UpdatePythonEngineAndRun(pynode1, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.3", "2.7.9" });
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.10", "2.7.9" });
 
             UpdatePythonEngineAndRun(pynode2, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.3", "3.8.3" });
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.10", "3.8.10" });
 
             UpdateEngineAndRunForAllPythonNodes(pythonNodes, PythonEngineVersion.IronPython2);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
