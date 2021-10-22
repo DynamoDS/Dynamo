@@ -120,6 +120,9 @@
   <data name="ButtonDetails" xml:space="preserve">
     <value>Show Details</value>
   </data>
+  <data name="ButtonHideDetails" xml:space="preserve">
+    <value>Hide Details</value>
+  </data>
   <data name="ButtonOK" xml:space="preserve">
     <value>OK</value>
   </data>

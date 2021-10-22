@@ -27,12 +27,12 @@ namespace Dynamo.Notifications
             if (detailsText.Visibility == Visibility.Collapsed)
             {
                 detailsText.Visibility = Visibility.Visible;
-                btn.Content = "Hide details";
+                btn.Content = Properties.Resources.ButtonHideDetails;
             }
             else
             {
                 detailsText.Visibility = Visibility.Collapsed;
-                btn.Content = "Show details";
+                btn.Content = Properties.Resources.ButtonDetails;
             }
         }
 
