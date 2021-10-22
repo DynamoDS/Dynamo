@@ -261,9 +261,7 @@
                                      AllowsTransparency="True"
                                      IsOpen="{Binding Path=ShowContextMenu}"
                                      Placement="Right"
-                                     StaysOpen="False">
-                    
-                </dynui:UseLevelPopup>
+                                     StaysOpen="False"/>
             </DockPanel>
             <Grid.Style>
                 <Style>

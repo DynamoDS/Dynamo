@@ -179,8 +179,7 @@
                            Margin="3,0,5,0"
                            HorizontalAlignment="Right"
                            DockPanel.Dock="Right"
-                           IsHitTestVisible="True"
-                           Margin="3,0,5,0">
+                           IsHitTestVisible="True">
                     <!--  Bind InPortContextMenu to left click  -->
                     <Rectangle.InputBindings>
                         <MouseBinding Command="{Binding Path=NodeInPortContextMenuCommand}" MouseAction="LeftClick" />
