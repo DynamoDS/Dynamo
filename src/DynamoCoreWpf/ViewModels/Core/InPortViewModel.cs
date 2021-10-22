@@ -20,7 +20,7 @@ namespace Dynamo.ViewModels
 
         private bool showUseLevelMenu;
 
-        private static SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
+        private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
         private static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
         private static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
 
@@ -255,14 +255,14 @@ namespace Dynamo.ViewModels
             else if (UsingDefaultValue && DefaultValueEnabled)
             {
                 PortValueMarkerColor = PortValueMarkerBlue;
-                PortBackgroundColor = PortBackgroundColorDefault;
+                PortBackgroundColor = node.IsVisible ? PortBackgroundColorDefault : PortBackgroundColorPreviewOff;
                 PortBorderBrushColor = PortBorderBrushColorDefault;
             }
             // Port isn't connected and has no default value (or isn't using it)
             else
             {
-                PortValueMarkerColor = !port.IsConnected ? PortValueMarkerRed : PortValueMarkerBlue;
-                PortBackgroundColor = PortBackgroundColorDefault;
+                PortValueMarkerColor = port.IsConnected ? PortValueMarkerBlue : PortValueMarkerRed;
+                PortBackgroundColor = node.IsVisible ? PortBackgroundColorDefault : PortBackgroundColorPreviewOff;
                 PortBorderBrushColor = PortBorderBrushColorDefault;
             }
         }

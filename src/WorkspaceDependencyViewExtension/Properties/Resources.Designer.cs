@@ -63,6 +63,16 @@ namespace Dynamo.WorkspaceDependency.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap CSVIcon {
+            get {
+                object obj = ResourceManager.GetObject("CSVIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap CustomNodeReferenceIcon {
             get {
                 object obj = ResourceManager.GetObject("CustomNodeReferenceIcon", resourceCulture);
@@ -125,6 +135,26 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap DWGIcon {
+            get {
+                object obj = ResourceManager.GetObject("DWGIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ExcelIcon {
+            get {
+                object obj = ResourceManager.GetObject("ExcelIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Workspace References.
         /// </summary>
         public static string ExtensionName {
@@ -134,11 +164,50 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ExternalFileIcon {
+            get {
+                object obj = ResourceManager.GetObject("ExternalFileIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External Files.
+        /// </summary>
+        public static string ExternalFilesHeaderText {
+            get {
+                return ResourceManager.GetString("ExternalFilesHeaderText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ImageIcon {
+            get {
+                object obj = ResourceManager.GetObject("ImageIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Install Specified Version.
         /// </summary>
         public static string InstallButtonText {
             get {
                 return ResourceManager.GetString("InstallButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap JsonIcon {
+            get {
+                object obj = ResourceManager.GetObject("JsonIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -223,6 +292,16 @@ namespace Dynamo.WorkspaceDependency.Properties {
         public static string PathHeader {
             get {
                 return ResourceManager.GetString("PathHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap PDFIcon {
+            get {
+                object obj = ResourceManager.GetObject("PDFIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
