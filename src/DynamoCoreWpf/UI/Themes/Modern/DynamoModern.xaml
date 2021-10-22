@@ -2785,7 +2785,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ContextMenu}">
                     <Border x:Name="Border"
-                            Background="{StaticResource NodeContextMenuBackground}"
+                            Background="{TemplateBinding Background}"
                             BorderThickness="0px">
                         <StackPanel Margin="0,10"
                                     ClipToBounds="True"
