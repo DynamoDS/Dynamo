@@ -3757,7 +3757,7 @@
         </Setter>
     </Style>
 
-    <!--  Style for the exit button in a Tooltip part of the Dynamo Guided Tours  -->
+    <!--  Style for the close popup button in a Tooltip part of the Dynamo Guided Tours  -->
     <Style x:Key="PopupCloseButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Template">
             <Setter.Value>
@@ -3838,6 +3838,8 @@
         </Setter>
     </Style>
 
+
+    <!--  Style for the exit button in the exit modal of Dynamo Guided Tours  -->
     <Style x:Key="PoupExitButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="MinWidth" Value="100" />
         <Setter Property="MaxHeight" Value="36" />
