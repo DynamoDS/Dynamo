@@ -44,3 +44,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("GraphMetadataViewExtension")]
 [assembly: InternalsVisibleTo("SystemTestServices")]
 [assembly: InternalsVisibleTo("DynamoManipulation")]
+[assembly: InternalsVisibleTo("IronPythonTests")]

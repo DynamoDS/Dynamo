@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
-using DSCPython;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -483,6 +482,10 @@ namespace Dynamo.Tests
             UpdatePythonEngineAndRun(pynode2, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
             AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.3", "3.8.3" });
+
+            UpdateEngineAndRunForAllPythonNodes(pythonNodes, PythonEngineVersion.IronPython2);
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9", "2.7.9" });
         }
 
         [Test]
@@ -538,78 +541,6 @@ namespace Dynamo.Tests
 
             ViewModel.HomeSpace.Run();
             AssertPreviewValue(downstream2.GUID.ToString(), "joe");
-        }
-
-        [Test]
-        public void TwoCPythonHandlesReturnedFromSameNodeHaveSameHandleID()
-        {
-            // open test graph
-            var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_returnManyInstances.dyn");
-            ViewModel.OpenCommand.Execute(examplePath);
-
-            var classdef = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "classdef");
-
-            ViewModel.HomeSpace.Run();
-            var handles = classdef.CachedValue.GetElements().Select(x => x.Data).Cast<DynamoCPythonHandle>().ToList<DynamoCPythonHandle>();
-            var firstMemLoc = handles.First().PythonObjectID;
-            Assert.IsTrue(handles.All(x => x.PythonObjectID == firstMemLoc));
-        }
-
-        [Test]
-        public void TwoCPythonHandlesReturnedFromDifferentNodesHaveSameHandleID()
-        {
-            // open test graph
-            var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_returnManyInstancesFromManyNodes.dyn");
-            ViewModel.OpenCommand.Execute(examplePath);
-
-            var classdef = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "classdef");
-            var downstream1 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream1");
-
-            ViewModel.HomeSpace.Run();
-            var handles = classdef.CachedValue.GetElements().Select(x => x.Data);
-            handles = handles.Concat(downstream1.CachedValue.GetElements().Select(x => x.Data));
-            var dynamoHandles = handles.Cast<DynamoCPythonHandle>().ToList();
-
-            var firstMemLoc = dynamoHandles.First().PythonObjectID;
-            Assert.IsTrue(dynamoHandles.All(x => x.PythonObjectID == firstMemLoc));
-        }
-
-        [Test]
-        public void CPythonClassCanBeReturnedAndSafelyDisposedInDownStreamNode()
-        {
-            // open test graph
-            var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_modified.dyn");
-            ViewModel.OpenCommand.Execute(examplePath);
-
-            var classdef = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "classdef");
-            var downstream1 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream1");
-            var downstream2 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream2");
-
-            ViewModel.HomeSpace.Run();
-            AssertPreviewValue(downstream2.GUID.ToString(), "joe");
-            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
-
-
-            ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().First().UpdateValue(new UpdateValueParams("Code", "\"foo\";"));
-
-            ViewModel.HomeSpace.Run();
-            AssertPreviewValue(downstream2.GUID.ToString(), "foo");
-            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
-
-            ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().First().UpdateValue(new UpdateValueParams("Code", "\"bar\";"));
-
-            ViewModel.HomeSpace.Run();
-            AssertPreviewValue(downstream2.GUID.ToString(), "bar");
-
-            var deleteCmd = new DynamoModel.DeleteModelCommand(downstream1.GUID);
-            ViewModel.Model.ExecuteCommand(deleteCmd);
-
-            Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
-
-            var deleteCmd2 = new DynamoModel.DeleteModelCommand(classdef.GUID);
-            ViewModel.Model.ExecuteCommand(deleteCmd2);
-
-            Assert.IsEmpty(DynamoCPythonHandle.HandleCountMap.Where(x => x.ToString().Contains("myClass")));
         }
 
         [Test]
@@ -746,83 +677,6 @@ OUT = {modName}.value";
             finally
             {
                 File.Delete(tempPath);
-            }
-        }
-
-        //This test creates some instances with a class defined in a loaded module
-        //then calls a method on these instances - then reloads the module and runs the graph again.
-        [Test]
-        public void Cpython_reloaded_class_instances()
-        {
-           
-            RunModel(@"core\python\cpython_reloaded_class_instances.dyn");
-            var leafPythonNode = "27af4862d5e7446babea7ff42f5bc80c";
-            AssertPreviewValue(leafPythonNode, new string[] { "initial", "initial" });
-
-            var modulePath = Path.Combine(TestDirectory, "core", "python", "module_reload", "reloaded_class.py");
-
-            var originalContents = File.ReadAllText(modulePath);
-            try
-            {
-                //now we modify the module and force reload.
-                var newContent =
-@"class reloaded_class:
-    def __init__(self):
-        self.data = 'reloaded'
-
-    def get_data(self):
-        return self.data";
-                File.WriteAllText(modulePath, newContent);
-
-                this.ViewModel.Model.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
-                RunCurrentModel();
-                AssertPreviewValue(leafPythonNode, new string[] { "reloaded", "reloaded" });
-                //after a second run - the old instance shoud have been disposed
-                //only the new one should remain.
-                Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("reloaded_class")).Value);
-
-            }
-            finally
-            {
-                File.WriteAllText(modulePath, originalContents);
-            }
-        }
-
-        [Test]
-        public void Cpython_reloaded_class_instances_AUTO()
-        {
-            this.ViewModel.Model.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
-            RunModel(@"core\python\cpython_reloaded_class_instances.dyn");
-            var leafPythonNode = "27af4862d5e7446babea7ff42f5bc80c";
-            AssertPreviewValue(leafPythonNode, new string[] { "initial", "initial" });
-
-            var modulePath = Path.Combine(TestDirectory, "core", "python", "module_reload", "reloaded_class.py");
-
-            var originalContents = File.ReadAllText(modulePath);
-            try
-            {
-                //now we modify the module and force reload.
-                var newContent =
-@"class reloaded_class:
-    def __init__(self):
-        self.data = 'reloaded'
-
-    def get_data(self):
-        return self.data";
-                File.WriteAllText(modulePath, newContent);
-
-                (ViewModel.CurrentSpace as HomeWorkspaceModel).RunSettings.RunType = RunType.Automatic;
-                this.ViewModel.Model.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
-                
-                AssertPreviewValue(leafPythonNode, new string[] { "reloaded", "reloaded" });
-                //after a second run - the old instance shoud have been disposed
-                //only the new one should remain.
-                Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("reloaded_class")).Value);
-
-            }
-            finally
-            {
-                File.WriteAllText(modulePath, originalContents);
             }
         }
     }
