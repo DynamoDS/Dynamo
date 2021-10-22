@@ -50,6 +50,7 @@
     <Reference Include="Greg, Version=2.0.7843.19074, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\src\packages\Greg.2.0.7843.19074\lib\net48\Greg.dll</HintPath>
+    </Reference>
     <Reference Include="Greg, Version=2.1.7962.24801, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\Greg.2.1.7962.24801\lib\net48\Greg.dll</HintPath>
     </Reference>
@@ -218,6 +219,10 @@
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DynamoManipulation\DynamoManipulation.csproj">
+      <Project>{33F88E8C-CC3C-4237-8AA9-CC891EFCABFA}</Project>
+      <Name>DynamoManipulation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoPackagesWPF\DynamoPackagesWPF.csproj">
       <Project>{47D2166C-5261-4093-9660-E72B7035E666}</Project>

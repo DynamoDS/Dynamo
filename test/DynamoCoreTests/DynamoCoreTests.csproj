@@ -48,6 +48,7 @@
     <Reference Include="Greg, Version=2.0.7843.19074, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\src\packages\Greg.2.0.7843.19074\lib\net48\Greg.dll</HintPath>
+    </Reference>
     <Reference Include="Greg, Version=2.1.7962.24801, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\Greg.2.1.7962.24801\lib\net48\Greg.dll</HintPath>
     </Reference>
