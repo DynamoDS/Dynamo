@@ -11,8 +11,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand portMouseLeftButtonCommand;
         private DelegateCommand portMouseLeftButtonOnLevelCommand;
         private DelegateCommand portMouseLeftUseLevelCommand;
-        private DelegateCommand nodeInPortContextMenuCommand;
-        private DelegateCommand nodeOutPortContextMenuCommand;
+        private DelegateCommand nodePortContextMenuCommand;
 
         public DelegateCommand ConnectCommand
         {
@@ -40,32 +39,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Command to open an InPort's Context Menu popup
+        /// Command to open an Port's Context Menu popup
         /// </summary>
-        public DelegateCommand NodeInPortContextMenuCommand
+        public DelegateCommand NodePortContextMenuCommand
         {
             get
             {
-                if (nodeInPortContextMenuCommand == null)
+                if (nodePortContextMenuCommand == null)
                 {
-                    nodeInPortContextMenuCommand = new DelegateCommand(NodeInPortContextMenu);
+                    nodePortContextMenuCommand = new DelegateCommand(NodePortContextMenu);
                 }
-                return nodeInPortContextMenuCommand;
-            }
-        }
-
-        /// <summary>
-        /// Command to open an OutPort's Context Menu popup
-        /// </summary>
-        public DelegateCommand NodeOutPortContextMenuCommand
-        {
-            get
-            {
-                if (nodeOutPortContextMenuCommand == null)
-                {
-                    nodeOutPortContextMenuCommand = new DelegateCommand(NodeOutPortContextMenu);
-                }
-                return nodeOutPortContextMenuCommand;
+                return nodePortContextMenuCommand;
             }
         }
 

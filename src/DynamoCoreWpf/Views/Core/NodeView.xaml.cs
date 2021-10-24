@@ -139,8 +139,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
             ViewModel.RequestAutoCompletePopupPlacementTarget -= ViewModel_RequestAutoCompletePopupPlacementTarget;
-            ViewModel.RequestInPortContextMenuPopupPlacementTarget -= ViewModel_RequestInPortContextMenuPlacementTarget;
-            ViewModel.RequestOutPortContextMenuPopupPlacementTarget -= ViewModel_RequestOutPortContextMenuPlacementTarget;
+            ViewModel.RequestPortContextMenuPopupPlacementTarget -= ViewModel_RequestPortContextMenuPlacementTarget;
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded -= NodeModel_ConnectorAdded;
             MouseLeave -= NodeView_MouseLeave;
@@ -217,8 +216,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
             ViewModel.RequestAutoCompletePopupPlacementTarget += ViewModel_RequestAutoCompletePopupPlacementTarget;
-            ViewModel.RequestInPortContextMenuPopupPlacementTarget += ViewModel_RequestInPortContextMenuPlacementTarget;
-            ViewModel.RequestOutPortContextMenuPopupPlacementTarget += ViewModel_RequestOutPortContextMenuPlacementTarget;
+            ViewModel.RequestPortContextMenuPopupPlacementTarget += ViewModel_RequestPortContextMenuPlacementTarget;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded += NodeModel_ConnectorAdded;
             MouseLeave += NodeView_MouseLeave;
@@ -299,15 +297,7 @@ namespace Dynamo.Controls
             ViewModel.ActualWidth = ActualWidth;
         }
 
-        private void ViewModel_RequestInPortContextMenuPlacementTarget(Popup popup)
-        {
-            popup.PlacementTarget = this;
-
-            ViewModel.ActualHeight = ActualHeight;
-            ViewModel.ActualWidth = ActualWidth;
-        }
-
-        private void ViewModel_RequestOutPortContextMenuPlacementTarget(Popup popup)
+        private void ViewModel_RequestPortContextMenuPlacementTarget(Popup popup)
         {
             popup.PlacementTarget = this;
 

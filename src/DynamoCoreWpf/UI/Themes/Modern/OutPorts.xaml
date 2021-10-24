@@ -240,7 +240,7 @@
                     </Rectangle.Style>
                     <!--  Bind InPortContextMenu to left click  -->
                     <Rectangle.InputBindings>
-                        <MouseBinding Command="{Binding Path=NodeOutPortContextMenuCommand}" MouseAction="LeftClick" />
+                        <MouseBinding Command="{Binding Path=NodePortContextMenuCommand}" MouseAction="LeftClick" />
                     </Rectangle.InputBindings>
                 </Rectangle>
                 <TextBlock Name="fakePortNameTb"

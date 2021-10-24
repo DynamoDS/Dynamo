@@ -125,6 +125,7 @@ namespace Dynamo.Views
         {
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
            
             ViewModel.ZoomChanged -= vm_ZoomChanged;
@@ -151,8 +152,7 @@ namespace Dynamo.Views
         {
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
-            ViewModel.RequestInPortContextMenu += ShowHideInPortContextMenu;
-            ViewModel.RequestOutPortContextMenu += ShowHideOutPortContextMenu;
+            ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             ViewModel.ZoomChanged += vm_ZoomChanged;
@@ -176,40 +176,10 @@ namespace Dynamo.Views
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
         }
 
-        private void ShowHideInPortContextMenu(ShowHideFlags flag)
+        private void ShowHidePortContextMenu(ShowHideFlags flag)
         {
-            // Setting or tidying up the DataContext as needed before displaying.
-            switch (flag)
-            {
-                case ShowHideFlags.Hide:
-                    InPortContextMenu.DataContext = null;
-                    break;
-                case ShowHideFlags.Show:
-                    InPortContextMenu.DataContext = ViewModel.InPortViewModel;
-                    break;
-                default:
-                    InPortContextMenu.DataContext = null;
-                    break;
-            }
-            ShowHidePopup(flag, InPortContextMenu);
-        }
-
-        private void ShowHideOutPortContextMenu(ShowHideFlags flag)
-        {
-            // Setting or tidying up the DataContext as needed before displaying.
-            switch (flag)
-            {
-                case ShowHideFlags.Hide:
-                    OutPortContextMenu.DataContext = null;
-                    break;
-                case ShowHideFlags.Show:
-                    OutPortContextMenu.DataContext = ViewModel.OutPortViewModel;
-                    break;
-                default:
-                    OutPortContextMenu.DataContext = null;
-                    break;
-            }
-            ShowHidePopup(flag, OutPortContextMenu);
+            ShowHidePopup(flag, PortContextMenu);
+            
         }
 
         private void ShowHideInCanvasControl(ShowHideFlags flag)
@@ -246,24 +216,18 @@ namespace Dynamo.Views
                             popup.Child.Visibility = Visibility.Collapsed;
                             ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
                         }
-                        else if (popup == InPortContextMenu)
+
+                        else if (popup == PortContextMenu)
                         {
-                            if (ViewModel.InPortViewModel == null) return;
-                            OutPortContextMenu.IsOpen = false;
+                            if (ViewModel.ContextMenuPortViewModel == null) return;
                             popup.Child.Visibility = Visibility.Collapsed;
-                            ViewModel.InPortViewModel.SetupInPortContextMenuPlacement(popup);
-                        }
-                        else if (popup == OutPortContextMenu)
-                        {
-                            if (ViewModel.OutPortViewModel == null) return;
-                            InPortContextMenu.IsOpen = false;
-                            popup.Child.Visibility = Visibility.Collapsed;
-                            ViewModel.OutPortViewModel.SetupOutPortContextMenuPlacement(popup);
+                            ViewModel.ContextMenuPortViewModel.SetupPortContextMenuPlacement(popup);
                         }
                     }
 
                     popup.Child.Visibility = Visibility.Visible;
                     popup.IsOpen = displayPopup;
+                    popup.Child.UpdateLayout();
                     popup.CustomPopupPlacementCallback = null;
 
                     ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
@@ -718,8 +682,7 @@ namespace Dynamo.Views
         {
             ContextMenuPopup.IsOpen = false;
             InCanvasSearchBar.IsOpen = false;
-            InPortContextMenu.IsOpen = false;
-            OutPortContextMenu.IsOpen = false;
+            PortContextMenu.IsOpen = false;
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)

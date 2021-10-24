@@ -10,7 +10,7 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class OutPortContextMenu : UserControl
     {
-        internal event Action<ShowHideFlags> RequestShowOutPortContextMenu;
+        internal event Action<ShowHideFlags> RequestShowPortContextMenu;
 
         public OutPortContextMenu()
         {
@@ -18,6 +18,7 @@ namespace Dynamo.UI.Controls
 
             if (Application.Current != null) Application.Current.Deactivated += CurrentApplicationDeactivated;
             Unloaded += OutPortContextMenuControl_Unloaded;
+            OnRequestShowPortContextMenu(ShowHideFlags.Show);
         }
 
         /// <summary>
@@ -38,17 +39,17 @@ namespace Dynamo.UI.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CurrentApplicationDeactivated(object sender, EventArgs e) => OnRequestShowOutPortContextMenu(ShowHideFlags.Hide);
+        private void CurrentApplicationDeactivated(object sender, EventArgs e) => OnRequestShowPortContextMenu(ShowHideFlags.Hide);
 
         /// <summary>
         /// Requests to open the OutPortContextMenu popup.
         /// </summary>
         /// <param name="flags"></param>
-        private void OnRequestShowOutPortContextMenu(ShowHideFlags flags)
+        private void OnRequestShowPortContextMenu(ShowHideFlags flags)
         {
-            if (RequestShowOutPortContextMenu != null)
+            if (RequestShowPortContextMenu != null)
             {
-                RequestShowOutPortContextMenu(flags);
+                RequestShowPortContextMenu(flags);
             }
         }
     }

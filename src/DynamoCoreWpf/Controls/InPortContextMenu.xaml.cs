@@ -10,7 +10,7 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class InPortContextMenu : UserControl
     {
-        internal event Action<ShowHideFlags> RequestShowInPortContextMenu;
+        internal event Action<ShowHideFlags> RequestShowPortContextMenu;
 
         public InPortContextMenu()
         {
@@ -18,8 +18,9 @@ namespace Dynamo.UI.Controls
 
             if (Application.Current != null) Application.Current.Deactivated += CurrentApplicationDeactivated;
             Unloaded += InPortContextMenuControl_Unloaded;
+            OnRequestShowPortContextMenu(ShowHideFlags.Show);
         }
-        
+
         /// <summary>
         /// Disposes of the event listener when the control is unloaded.
         /// </summary>
@@ -38,17 +39,17 @@ namespace Dynamo.UI.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CurrentApplicationDeactivated(object sender, EventArgs e) => OnRequestShowInPortContextMenu(ShowHideFlags.Hide);
+        private void CurrentApplicationDeactivated(object sender, EventArgs e) => OnRequestShowPortContextMenu(ShowHideFlags.Hide);
         
         /// <summary>
         /// Requests to open the InPortContextMenu popup.
         /// </summary>
         /// <param name="flags"></param>
-        private void OnRequestShowInPortContextMenu(ShowHideFlags flags)
+        private void OnRequestShowPortContextMenu(ShowHideFlags flags)
         {
-            if (RequestShowInPortContextMenu != null)
+            if (RequestShowPortContextMenu != null)
             {
-                RequestShowInPortContextMenu(flags);
+                RequestShowPortContextMenu(flags);
             }
         }
     }

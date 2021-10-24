@@ -182,7 +182,7 @@
                            IsHitTestVisible="True">
                     <!--  Bind InPortContextMenu to left click  -->
                     <Rectangle.InputBindings>
-                        <MouseBinding Command="{Binding Path=NodeInPortContextMenuCommand}" MouseAction="LeftClick" />
+                        <MouseBinding Command="{Binding Path=NodePortContextMenuCommand}" MouseAction="LeftClick" />
                     </Rectangle.InputBindings>
                     <Rectangle.Style>
                         <Style TargetType="{x:Type Rectangle}">

@@ -310,24 +310,14 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Sets up the InPortContextMenu window to be placed relative to the port.
+        /// Sets up the PortContextMenu window to be placed relative to the port.
         /// </summary>
         /// <param name="popup">Node context menu popup.</param>
-        internal void SetupInPortContextMenuPlacement(Popup popup)
+        internal void SetupPortContextMenuPlacement(Popup popup)
         {
-            node.OnRequestInPortContextMenuPlacementTarget(popup);
+            node.OnRequestPortContextMenuPlacementTarget(popup);
             popup.CustomPopupPlacementCallback = PlacePortContextMenu;
         }
-        /// <summary>
-        /// Sets up the OutPortContextMenu window to be placed relative to the port.
-        /// </summary>
-        /// <param name="popup">Node context menu popup.</param>
-        internal void SetupOutPortContextMenuPlacement(Popup popup)
-        {
-            node.OnRequestOutPortContextMenuPlacementTarget(popup);
-            popup.CustomPopupPlacementCallback = PlacePortContextMenu;
-        }
-
 
         private CustomPopupPlacement[] PlaceAutocompletePopup(Size popupSize, Size targetSize, Point offset)
         {
@@ -358,7 +348,7 @@ namespace Dynamo.ViewModels
 
         private CustomPopupPlacement[] PlacePortContextMenu(Size popupSize, Size targetSize, Point offset)
         {
-          var zoom = node.WorkspaceViewModel.Zoom;
+            var zoom = node.WorkspaceViewModel.Zoom;
 
             double x;
             var scaledWidth = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
@@ -514,30 +504,13 @@ namespace Dynamo.ViewModels
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
         }
 
-        /// <summary>
-        /// Handler to open the node's InPort Context Menu
-        /// </summary>
-        /// <param name="obj"></param>
-        private void NodeInPortContextMenu(object obj)
+        private void NodePortContextMenu(object obj)
         {
             var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel.InPortViewModel = this as InPortViewModel;
-
+            wsViewModel.ContextMenuPortViewModel = this;
+            
             wsViewModel.CancelActiveState();
-            wsViewModel.OnRequestInPortContextMenu(ShowHideFlags.Show);
-        }
-
-        /// <summary>
-        /// Handler to open the node's OutPort Context Menu
-        /// </summary>
-        /// <param name="obj"></param>
-        private void NodeOutPortContextMenu(object obj)
-        {
-            var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel.OutPortViewModel = this as OutPortViewModel;
-
-            wsViewModel.CancelActiveState();
-            wsViewModel.OnRequestOutPortContextMenu(ShowHideFlags.Show);
+            wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Show);
         }
 
         private bool CanAutoComplete(object parameter)

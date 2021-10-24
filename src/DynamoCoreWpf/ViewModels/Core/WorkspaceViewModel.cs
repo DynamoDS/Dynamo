@@ -163,22 +163,16 @@ namespace Dynamo.ViewModels
         }
 
         internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
-        internal event Action<ShowHideFlags> RequestInPortContextMenu;
-        internal event Action<ShowHideFlags> RequestOutPortContextMenu;
+        internal event Action<ShowHideFlags> RequestPortContextMenu;
 
         internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag)
         {
             RequestNodeAutoCompleteSearch?.Invoke(flag);
         }
 
-        internal void OnRequestInPortContextMenu(ShowHideFlags flag)
+        internal void OnRequestPortContextMenu(ShowHideFlags flag)
         {
-            RequestInPortContextMenu?.Invoke(flag);
-        }
-
-        internal void OnRequestOutPortContextMenu(ShowHideFlags flag)
-        {
-            RequestOutPortContextMenu?.Invoke(flag);
+            RequestPortContextMenu?.Invoke(flag);
         }
 
         #endregion
@@ -253,17 +247,22 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public NodeAutoCompleteSearchViewModel NodeAutoCompleteSearchViewModel { get; private set; }
 
+        private PortViewModel contextMenuPortViewModel;
+
         /// <summary>
-        /// A reference to the InPortViewModel the user clicked on
+        /// A reference to the PortViewModel the user clicked on to
+        /// show its context menu
         /// </summary>
         [JsonIgnore]
-        public InPortViewModel InPortViewModel { get; set; }
-        
-        /// <summary>
-        /// A reference to the OutPortViewModel the user clicked on
-        /// </summary>
-        [JsonIgnore]
-        public OutPortViewModel OutPortViewModel { get; set; }
+        public PortViewModel ContextMenuPortViewModel
+        {
+            get => contextMenuPortViewModel;
+            set
+            {
+                contextMenuPortViewModel = value;
+                RaisePropertyChanged(nameof(ContextMenuPortViewModel));
+            } 
+        }
 
         /// <summary>
         /// Cursor Property Binding for WorkspaceView
