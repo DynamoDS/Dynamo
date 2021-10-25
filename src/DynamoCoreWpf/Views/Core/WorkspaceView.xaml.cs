@@ -220,22 +220,31 @@ namespace Dynamo.Views
                         else if (popup == PortContextMenu)
                         {
                             if (ViewModel.ContextMenuPortViewModel == null) return;
-                            popup.Child.Visibility = Visibility.Collapsed;
+                            popup.Child.Visibility = Visibility.Hidden;
                             ViewModel.ContextMenuPortViewModel.SetupPortContextMenuPlacement(popup);
                         }
                     }
 
-                    popup.Child.Visibility = Visibility.Visible;
-                    popup.IsOpen = displayPopup;
-                    popup.Child.UpdateLayout();
-                    popup.CustomPopupPlacementCallback = null;
+                    // We need to use the dispatcher here to make sure that
+                    // the popup is fully updated before we show it.
+                    // This was mainly an issue with the PortContextMenu as
+                    // it uses a DataTemplate bound to the WorkspaceViewModel
+                    // to display the correct content.
+                    // If the dispatcher is not used in this scenario when switching
+                    // from inputPort context menu to Output port context menu,
+                    // the popup will dispaly before the new content is fully rendered
+                    this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() =>{
+                        popup.Child.Visibility = Visibility.Visible;
+                        popup.Child.UpdateLayout();
+                        popup.IsOpen = displayPopup;
+                        popup.CustomPopupPlacementCallback = null;
+                    }));
 
                     ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
                     ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                     break;
             }
         }
-
 
         /// <summary>
         /// Hides Context Menu as well as InCanvasControl (Right Click PopUp)

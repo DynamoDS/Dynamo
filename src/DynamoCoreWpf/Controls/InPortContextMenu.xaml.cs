@@ -18,7 +18,6 @@ namespace Dynamo.UI.Controls
 
             if (Application.Current != null) Application.Current.Deactivated += CurrentApplicationDeactivated;
             Unloaded += InPortContextMenuControl_Unloaded;
-            OnRequestShowPortContextMenu(ShowHideFlags.Show);
         }
 
         /// <summary>

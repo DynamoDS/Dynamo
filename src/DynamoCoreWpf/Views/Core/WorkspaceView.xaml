@@ -386,7 +386,7 @@
                         <ui:OutPortContextMenu RequestShowPortContextMenu="ShowHidePortContextMenu" />
                     </DataTemplate>
                 </Grid.Resources>
-                <ContentPresenter x:Name="PortContextMenuContent" Content="{Binding}" DataContext="{Binding}"  />
+                <ContentPresenter x:Name="PortContextMenuContent" Content="{Binding}" />
             </Grid>
         </Popup>
 
