@@ -175,10 +175,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
+    <Compile Include="UI\GuidedTour\CutOffArea.cs" />
     <Compile Include="UI\GuidedTour\Guide.cs" />
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
     <Compile Include="UI\GuidedTour\GuidesValidationMethods.cs" />
+    <Compile Include="UI\GuidedTour\HightlightArea.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
     <Compile Include="UI\GuidedTour\PreValidation.cs" />
     <Compile Include="UI\GuidedTour\Step.cs" />
@@ -1429,6 +1431,9 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\custom-node.png" />
+    <Resource Include="UI\Images\image-icon-default.png" />
+    <Resource Include="UI\Images\image-icon.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\DynamoPackages_1_1.png" />
     <Resource Include="UI\Images\default_info_16px.png" />
     <Resource Include="UI\Images\clock-icon.png" />
