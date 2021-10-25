@@ -108,7 +108,7 @@
                      TargetUpdated="OnMembersListBoxUpdated">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <ScrollViewer Width="200"
+                        <ScrollViewer MinWidth="200"
                                       CanContentScroll="True"
                                       Style="{StaticResource InCanvasScrollViewerStyle}"
                                       Template="{StaticResource InCanvasScrollViewerControlTemplate}">

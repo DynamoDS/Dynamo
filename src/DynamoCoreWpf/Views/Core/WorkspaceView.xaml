@@ -338,7 +338,93 @@
                     <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
                     <Setter Property="HorizontalAlignment" Value="Left" />
                     <Setter Property="Height" Value="28" />
-                    <Setter Property="Width" Value="200" />
+                    <Setter Property="MinWidth" Value="200" />
+                    <Setter Property="Padding" Value="10,0,10,0" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type MenuItem}">
+                                <DockPanel x:Name="dockPanel"
+                                           HorizontalAlignment="Stretch"
+                                           Background="Transparent"
+                                           SnapsToDevicePixels="true">
+                                    <ContentPresenter x:Name="ContentPresenter"
+                                                      Margin="{TemplateBinding Padding}"
+                                                      VerticalAlignment="Center"
+                                                      ContentSource="Header"
+                                                      DockPanel.Dock="Left"
+                                                      RecognizesAccessKey="True"
+                                                      SnapsToDevicePixels="True"
+                                                      TextBlock.Foreground="#F5F5F5" />
+                                    <Label x:Name="subMenuArrow"
+                                           Margin="0,0,8,7"
+                                           Padding="0"
+                                           VerticalAlignment="Center"
+                                           Content="&gt;"
+                                           DockPanel.Dock="Right"
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           FontSize="13px"
+                                           Foreground="{StaticResource Blue300Brush}">
+                                        <Label.RenderTransform>
+                                            <ScaleTransform ScaleX="1" ScaleY="1.5" />
+                                        </Label.RenderTransform>
+                                        <Label.Style>
+                                            <Style TargetType="{x:Type Label}">
+                                                <Setter Property="Visibility" Value="Hidden" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Label.Style>
+                                    </Label>
+                                    <Popup x:Name="PART_Popup"
+                                           AllowsTransparency="true"
+                                           Focusable="false"
+                                           HorizontalOffset="0"
+                                           IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                           Placement="Left"
+                                           VerticalOffset="-2">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="Transparent"
+                                                BorderThickness="0">
+                                            <ScrollViewer x:Name="SubMenuScrollViewer"
+                                                          CanContentScroll="true"
+                                                          Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
+                                                                                                        TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                                <Grid RenderOptions.ClearTypeHint="Enabled">
+                                                    <ItemsPresenter x:Name="ItemsPresenter"
+                                                                    Margin="2"
+                                                                    Grid.IsSharedSizeScope="true"
+                                                                    KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                                    KeyboardNavigation.TabNavigation="Cycle"
+                                                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                </Grid>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </Popup>
+                                </DockPanel>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
+                                        <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="False">
+                                        <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <Style TargetType="{x:Type controls:ParentMenuItem  }">
+                    <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+                    <Setter Property="Height" Value="28" />
+                    <Setter Property="MinWidth" Value="200" />
                     <Setter Property="Padding" Value="10,0,10,0" />
                     <Setter Property="Template">
                         <Setter.Value>
@@ -437,7 +523,7 @@
                     </Style>
                 </ItemsControl.Resources>
                 <ItemsControl.Items>
-                    <MenuItem x:Name="WorkspaceLacingMenu" Header="{x:Static p:Resources.ContextMenuLacing}">
+                    <controls:ParentMenuItem  x:Name="WorkspaceLacingMenu" Header="{x:Static p:Resources.ContextMenuLacing}">
                         
                         <!--  Lacing: Auto  -->
                         <MenuItem Command="{Binding Path=SetArgumentLacingCommand}"
@@ -490,7 +576,7 @@
                                          Path="SelectionArgumentLacing" />
                             </MenuItem.IsChecked>
                         </MenuItem>
-                    </MenuItem>
+                    </controls:ParentMenuItem>
 
                     <!--  Show Geometry Preview  -->
                     <MenuItem Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
@@ -507,7 +593,7 @@
                               Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
                     <!--  Align Menu  -->
-                    <MenuItem x:Name="Align" Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}">
+                    <controls:ParentMenuItem  x:Name="Align" Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}">
                         <MenuItem Command="{Binding AlignSelectedCommand}"
                                   CommandParameter="HorizontalCenter"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuAlignXAverage}" />
@@ -532,7 +618,7 @@
                         <MenuItem Command="{Binding AlignSelectedCommand}"
                                   CommandParameter="HorizontalDistribute"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuAlignXDistribute}" />
-                    </MenuItem>
+                    </controls:ParentMenuItem>
 
                     <!--  Create Custom Node  -->
                     <MenuItem Command="{Binding NodeFromSelectionCommand}"
