@@ -329,14 +329,15 @@ namespace Dynamo.ViewModels
             {
                 return;
             }
+
             // Collect ports & connectors of newly connected nodes
             // so that old pins (that need to remain) can be transferred over correctly.
             PortModel startNodePort = startNode.OutPorts.FirstOrDefault(p=>p.GUID == connector.Start.GUID);
             PortModel watchNodePort = watchNodeModel.OutPorts[0];
             Graph.Connectors.ConnectorModel[] connectors = new Graph.Connectors.ConnectorModel[2];
 
-            connectors[0] = startNodePort.Connectors.FirstOrDefault(c=> c.End.Owner.GUID == watchNodeModel.GUID);
-            connectors[1] = watchNodePort.Connectors.FirstOrDefault(c=> c.Start.Owner.GUID == watchNodeModel.GUID);
+            connectors[0] = startNodePort.Connectors.FirstOrDefault(c=> c.End.Owner.GUID == watchNodeModel.GUID && c.GUID != connector.GUID);
+            connectors[1] = watchNodePort.Connectors.FirstOrDefault(c=> c.Start.Owner.GUID == watchNodeModel.GUID && c.GUID != connector.GUID);
             if(connectors.Any(c=>c is null))
             {
                 return;
