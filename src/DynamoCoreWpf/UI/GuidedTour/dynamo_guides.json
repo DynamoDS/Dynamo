@@ -35,7 +35,11 @@
 					"PopupPlacement": "right",
 					"HostUIElementString": "sidebarGrid",
 					"VerticalPopupOffset": 100,
-					"HorizontalPopupOffset": 50
+					"HorizontalPopupOffset": 50,
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
 				}
 			},
 			{
@@ -53,7 +57,11 @@
 					"PopupPlacement": "bottom",
 					"HostUIElementString": "bottomBarGrid",
 					"VerticalPopupOffset": 50,
-					"HorizontalPopupOffset": 320
+					"HorizontalPopupOffset": 320,
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
 				}
 			},
 			{
@@ -70,9 +78,17 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "bottom",
 					"HostUIElementString": "shortcutsBarGrid",
-					"HighlightColor": "#ef9362",
 					"VerticalPopupOffset": -60,
-					"HorizontalPopupOffset": 225
+					"HorizontalPopupOffset": 225,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
 				}
 			},
 			{
@@ -92,7 +108,15 @@
 					"VerticalPopupOffset": 50,
 					"HighlightColor": "#EF9362",
 					"HorizontalPopupOffset": 230,
-					"HeightBoxDelta": 3
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					}
 				},
 				"UIAutomation": [
 					{
@@ -119,8 +143,15 @@
 					"HostUIElementString": "HelpMenu",
 					"VerticalPopupOffset": 20,
 					"HorizontalPopupOffset": 170,
-					"HighlightColor": "#EF9362",
-					"HeightBoxDelta": 3
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					}
 				},
 				"UIAutomation": [
 					{
@@ -176,14 +207,21 @@
 					"HostUIElementString": "PackageManagerMenu",
 					"VerticalPopupOffset": -20,
 					"HorizontalPopupOffset": 85,
-					"HighlightColor": "#EF9362",
 					"HtmlPage": {
 						"FileName": "learnPackages.html",
 						"Resources": {
 							"#DynamoPackages_1_1": "DynamoPackages_1_1.png"
 						}
 					},
-					"HeightBoxDelta": 3
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					}
 				}
 			},
 			{
@@ -200,10 +238,20 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
 					"HostUIElementString": "PackageManagerMenu",
-					"HighlightColor": "#EF9362",
 					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 200,
-					"HeightBoxDelta": 3
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "MenuItem",
+						"WindowElementNameString": "showPMSearch",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					},
+					"CutOffRectArea": {
+						"WindowElementNameString": "showPMSearch",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					}
 				},
 				"UIAutomation": [
 					{
