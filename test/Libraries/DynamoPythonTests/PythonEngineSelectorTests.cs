@@ -33,8 +33,8 @@ namespace DynamoPythonTests
             Assert.AreEqual(evaluatorClass, PythonEngineSelector.Instance.CPythonEvaluatorClass);
             Assert.AreEqual(evaluationMethod, PythonEngineSelector.Instance.CPythonEvaluationMethod);
 
-            Assert.AreEqual(true, PythonEngineSelector.Instance.IsCPythonEnabled);
-            Assert.AreEqual(false, PythonEngineSelector.Instance.IsIronPythonEnabled);
+            Assert.AreEqual(true, PythonEngineSelector.Instance.AvailableEngines.Contains(PythonEngineVersion.CPython3));
+            Assert.AreEqual(false, PythonEngineSelector.Instance.AvailableEngines.Contains(PythonEngineVersion.IronPython2));
         }
 
         [Test]

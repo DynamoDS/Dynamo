@@ -65,7 +65,7 @@ namespace PythonNodeModels
         /// Available Python engines.
         /// </summary>
         [Obsolete(@"This method will be removed in future versions of Dynamo.
-        Please use PythonEngineSelector.Instance.GetEnabledEngines instead")]
+        Please use PythonEngineSelector.Instance.AvailableEngines instead")]
         public static ObservableCollection<PythonEngineVersion> AvailableEngines
         {
             get

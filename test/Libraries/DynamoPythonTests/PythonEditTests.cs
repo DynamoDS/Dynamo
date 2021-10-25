@@ -431,7 +431,7 @@ namespace Dynamo.Tests
             var pynode1 = pythonNodes.ElementAt(0);
             var pynode2 = pythonNodes.ElementAt(1);
 
-            Assert.AreEqual(new List<PythonEngineVersion>() { PythonEngineVersion.CPython3 }, PythonEngineSelector.Instance.GetEnabledEngines());
+            Assert.AreEqual(new List<PythonEngineVersion>() { PythonEngineVersion.CPython3 }, PythonEngineSelector.Instance.AvailableEngines);
             // Error when running IronPython2 script while IronPython2 engine is not installed
             AssertPreviewValue(pynode1.GUID.ToString("N"), null);
             AssertPreviewValue(pynode2.GUID.ToString("N"), null);
