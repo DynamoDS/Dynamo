@@ -6,7 +6,7 @@
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
-             MinWidth="200"
+             MinWidth="250"
              IsVisibleChanged="OnInCanvasSearchControlVisibilityChanged"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -77,7 +77,7 @@
                                    Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" />
                     </DockPanel>
                     <TextBox Name="SearchTextBox"
-                             MinWidth="200"
+                             MinWidth="250"
                              Margin="7,3,0,0"
                              VerticalAlignment="Center"
                              Background="Transparent"
@@ -108,7 +108,7 @@
                      TargetUpdated="OnMembersListBoxUpdated">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <ScrollViewer MinWidth="200"
+                        <ScrollViewer MinWidth="250"
                                       CanContentScroll="True"
                                       Style="{StaticResource InCanvasScrollViewerStyle}"
                                       Template="{StaticResource InCanvasScrollViewerControlTemplate}">

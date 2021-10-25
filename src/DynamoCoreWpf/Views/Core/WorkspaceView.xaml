@@ -338,7 +338,7 @@
                     <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
                     <Setter Property="HorizontalAlignment" Value="Left" />
                     <Setter Property="Height" Value="28" />
-                    <Setter Property="MinWidth" Value="200" />
+                    <Setter Property="MinWidth" Value="250" />
                     <Setter Property="Padding" Value="10,0,10,0" />
                     <Setter Property="Template">
                         <Setter.Value>
@@ -424,7 +424,7 @@
                     <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
                     <Setter Property="HorizontalAlignment" Value="Left" />
                     <Setter Property="Height" Value="28" />
-                    <Setter Property="MinWidth" Value="200" />
+                    <Setter Property="MinWidth" Value="250" />
                     <Setter Property="Padding" Value="10,0,10,0" />
                     <Setter Property="Template">
                         <Setter.Value>
