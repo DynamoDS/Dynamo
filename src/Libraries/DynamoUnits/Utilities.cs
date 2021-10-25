@@ -8,10 +8,16 @@ using System.Configuration;
 
 namespace DynamoUnits
 {
+    /// <summary>
+    /// Utility functions for unit conversion work flows and helper functions.
+    /// </summary>
     public static class Utilities
     {
         private static ForgeUnitsCLR.UnitsEngine unitsEngine;
 
+        /// <summary>
+        /// Path to the directory used load the 
+        /// </summary>
         public static readonly string SchemaDirectory = Path.Combine(AssemblyDirectory, "unit");
 
         static Utilities()

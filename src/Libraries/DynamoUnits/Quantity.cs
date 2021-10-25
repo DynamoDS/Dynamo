@@ -4,6 +4,9 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DynamoUnits
 {
+    /// <summary>
+    /// An object representing a property which is measurable.  A Quantity can be defined or derived from other quantities.
+    /// </summary>
     public class Quantity
     {
         internal readonly ForgeUnitsCLR.Quantity forgeQuantity;
@@ -44,7 +47,7 @@ namespace DynamoUnits
             }
         }
         /// <summary>
-        /// Creates a Quantity object from its Forge type schema identify string.
+        /// Creates a Quantity object from its Forge type schema identifier string.
         /// </summary>
         /// <param name="typeId">Forge TypeId string</param>
         /// <returns name="Quantity">Quantity object</returns>

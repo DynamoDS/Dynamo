@@ -4,6 +4,9 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DynamoUnits
 {
+    /// <summary>
+    /// An object representing a standard system for measuring a quantity.
+    /// </summary>
     public class Unit
     {
         internal readonly ForgeUnitsCLR.Unit forgeUnit;

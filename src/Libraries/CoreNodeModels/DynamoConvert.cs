@@ -19,7 +19,6 @@ namespace CoreNodeModels
     [OutPortTypes("number")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.DynamoConvert")]
-    [IsVisibleInDynamoLibrary(false)]
     [NodeDeprecated]
     public class DynamoConvert : NodeModel
     {

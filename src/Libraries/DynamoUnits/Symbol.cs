@@ -4,6 +4,9 @@ using System.Text;
 
 namespace DynamoUnits
 {
+    /// <summary>
+    /// A text symbol used to associate a value with a Unit system.
+    /// </summary>
     public class Symbol
     {
         internal readonly ForgeUnitsCLR.Symbol forgeSymbol;

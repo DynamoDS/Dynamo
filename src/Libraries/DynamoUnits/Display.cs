@@ -4,6 +4,9 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DynamoUnits
 {
+    /// <summary>
+    /// Data used to set display and formatting preferences for Dynamo UI
+    /// </summary>
     public class Display
     {
         /// <summary>
