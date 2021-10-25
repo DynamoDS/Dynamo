@@ -70,10 +70,9 @@ namespace DynamoUnits
             }
         }
 
-        public override bool Equals(object obj) => this.Equals(obj as Quantity);
+        public override bool Equals(object obj) => this.EqualsImpl(obj as Quantity);
 
-        [IsVisibleInDynamoLibrary(false)]
-        public bool Equals(Quantity q)
+        internal bool EqualsImpl(Quantity q)
         {
             if (q is null)
             {
@@ -107,7 +106,7 @@ namespace DynamoUnits
                 return false;
             }
             // Equals handles case of null on right side.
-            return lhs.Equals(rhs);
+            return lhs.EqualsImpl(rhs);
         }
 
         [IsVisibleInDynamoLibrary(false)]

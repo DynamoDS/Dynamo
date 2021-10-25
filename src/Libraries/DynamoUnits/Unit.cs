@@ -88,10 +88,9 @@ namespace DynamoUnits
             }
         }
 
-        public override bool Equals(object obj) => this.Equals(obj as Unit);
+        public override bool Equals(object obj) => this.EqualsImpl(obj as Unit);
 
-        [IsVisibleInDynamoLibrary(false)]
-        public bool Equals(Unit u)
+        internal bool EqualsImpl(Unit u)
         {
             if (u is null)
             {
@@ -125,7 +124,7 @@ namespace DynamoUnits
                 return false;
             }
             // Equals handles case of null on right side.
-            return lhs.Equals(rhs);
+            return lhs.EqualsImpl(rhs);
         }
 
         [IsVisibleInDynamoLibrary(false)]
