@@ -232,7 +232,7 @@ namespace Dynamo.Views
                     // to display the correct content.
                     // If the dispatcher is not used in this scenario when switching
                     // from inputPort context menu to Output port context menu,
-                    // the popup will dispaly before the new content is fully rendered
+                    // the popup will display before the new content is fully rendered
                     this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() =>{
                         popup.Child.Visibility = Visibility.Visible;
                         popup.Child.UpdateLayout();
