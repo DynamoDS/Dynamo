@@ -1424,6 +1424,7 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\searchmagnifier.png" />
     <Resource Include="UI\Images\custom-node.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\DynamoPackages_1_1.png" />
     <Resource Include="UI\Images\default_info_16px.png" />

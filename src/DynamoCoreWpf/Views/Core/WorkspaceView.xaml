@@ -20,32 +20,6 @@
              Drop="OnWorkspaceDrop">
 
     <UserControl.Resources>
-        <Style TargetType="{x:Type Border}" x:Key="ShadowBorder">
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="0" ShadowDepth="0" Opacity="0.7" />
-                </Setter.Value>
-            </Setter>
-
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.SearchRootCategories.Count}" Value="0">
-                    <Setter Property="Effect">
-                        <Setter.Value>
-                            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.7" />
-                        </Setter.Value>
-                    </Setter>
-                </DataTrigger>
-
-                <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.CurrentMode,
-                             Converter={StaticResource LibraryViewModeToBoolConverter}}" Value="True">
-                    <Setter Property="Effect">
-                        <Setter.Value>
-                            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.7" />
-                        </Setter.Value>
-                    </Setter>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
         <Style TargetType="{x:Type ItemsControl}"
                x:Key="WorkspaceContextMenuStyle">
             <Setter Property="SnapsToDevicePixels"
@@ -57,19 +31,18 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ItemsControl}">
-                        <Border Style="{StaticResource ShadowBorder}">
+                        <Border>
                             <StackPanel Margin="8,4,8,8"
                                     Name="ContextMenuPanel"
                                     Height="{Binding ElementName=MenuItems, Path=ActualHeight, 
                                                      Converter={StaticResource WorkspaceContextMenuHeightConverter}}">
                                 <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}" RequestShowInCanvasSearch="ShowHideContextMenu"
                                                       Width="{Binding ElementName=ContextMenuPanel, Path=ActualWidth}" />
-                            <Border BorderThickness="1"
+                            <Border BorderThickness="0"
                                     Name="MenuItems"
-                                    Background="White"
+                                    Background="#666666"
                                     BorderBrush="#bbbbbb"
-                                    Padding="0,3,0,3"
-                                    CornerRadius="4">
+                                    Padding="0,3,0,3">
                                 <StackPanel IsItemsHost="True"
                                             KeyboardNavigation.DirectionalNavigation="Cycle" />
 
@@ -358,10 +331,107 @@
                Opened="OnContextMenuOpened" StaysOpen="True" AllowsTransparency="True" Placement="MousePoint">
             <Popup.Resources>
                 <Style TargetType="{x:Type MenuItem}">
-                    <Setter Property="Focusable" Value="False" />
+                    <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
+                    <Setter Property="Height" Value="35" />
+                    <Setter Property="Width" Value="240" />
+                    <Setter Property="Padding" Value="8,0,8,0" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type MenuItem}">
+                                <DockPanel x:Name="dockPanel"
+                                                   HorizontalAlignment="Stretch"
+                                                   Background="Transparent"
+                                                   SnapsToDevicePixels="true">
+                                    <ContentPresenter x:Name="ContentPresenter"
+                                                              Margin="{TemplateBinding Padding}"
+                                                              VerticalAlignment="Center"
+                                                              ContentSource="Header"
+                                                              DockPanel.Dock="Left"
+                                                              RecognizesAccessKey="True"
+                                                              SnapsToDevicePixels="True"
+                                                              TextBlock.Foreground="#F5F5F5" />
+                                    <Label x:Name="subMenuArrow"
+                                           Margin="0,0,0,7"
+                                           Padding="0"
+                                           VerticalAlignment="Center"
+                                           Content="&gt;"
+                                           DockPanel.Dock="Right"
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           FontSize="13px"
+                                           Foreground="{StaticResource Blue300Brush}">
+                                        <Label.RenderTransform>
+                                            <ScaleTransform ScaleX="1" ScaleY="1.5" />
+                                        </Label.RenderTransform>
+                                        <Label.Style>
+                                            <Style TargetType="{x:Type Label}">
+                                                <Setter Property="Visibility" Value="Hidden" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Label.Style>
+                                    </Label>
+                                    <Popup x:Name="PART_Popup"
+                                                   AllowsTransparency="true"
+                                                   Focusable="false"
+                                                   HorizontalOffset="0"
+                                                   IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                                   Placement="Left"
+                                                   VerticalOffset="-2">
+                                        <Border Background="{TemplateBinding Background}"
+                                                        BorderBrush="Transparent"
+                                                        BorderThickness="0">
+                                            <ScrollViewer x:Name="SubMenuScrollViewer"
+                                                                  CanContentScroll="true"
+                                                                  Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
+                                                                                                                TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                                <Grid RenderOptions.ClearTypeHint="Enabled">
+                                                    <ItemsPresenter x:Name="ItemsPresenter"
+                                                                            Margin="2"
+                                                                            Grid.IsSharedSizeScope="true"
+                                                                            KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                                            KeyboardNavigation.TabNavigation="Cycle"
+                                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                </Grid>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </Popup>
+                                </DockPanel>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
+                                        <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="False">
+                                        <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
                 </Style>
+                
             </Popup.Resources>
             <ItemsControl Style="{StaticResource WorkspaceContextMenuStyle}">
+                <ItemsControl.Resources>
+                    <Style TargetType="Separator">
+                        <Setter Property="OverridesDefaultStyle" Value="true" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Separator}">
+                                    <Border Height="1"
+                                            Margin="0,8,0,8"
+                                            Background="#757575" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ItemsControl.Resources>
                 <ItemsControl.Items>
                     <controls:ParentMenuItem x:Name="WorkspaceLacingMenu"
                           Header="{x:Static p:Resources.ContextMenuLacing}">
@@ -508,6 +578,5 @@
                 </ItemsControl.Items>
             </ItemsControl>
         </Popup>
-
     </Grid>
 </UserControl>
