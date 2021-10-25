@@ -6,7 +6,7 @@
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
-             MinWidth="250"
+             MinWidth="200"
              IsVisibleChanged="OnInCanvasSearchControlVisibilityChanged"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -108,7 +108,7 @@
                      TargetUpdated="OnMembersListBoxUpdated">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <ScrollViewer Width="250"
+                        <ScrollViewer Width="200"
                                       CanContentScroll="True"
                                       Style="{StaticResource InCanvasScrollViewerStyle}"
                                       Template="{StaticResource InCanvasScrollViewerControlTemplate}">
