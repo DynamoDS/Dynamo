@@ -174,7 +174,7 @@ namespace DynamoCoreWpfTests
 
             // Show Node AutoCompleteSearchBar
             ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
-            DispatcherUtil.DoEvents()
+            DispatcherUtil.DoEvents();
             var currentWs = View.ChildOfType<WorkspaceView>();
             Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
 
