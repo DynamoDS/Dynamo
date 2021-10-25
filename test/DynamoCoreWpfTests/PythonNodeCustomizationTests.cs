@@ -46,7 +46,6 @@ namespace DynamoCoreWpfTests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("DSCPython.dll");
-            libraries.Add("DSIronPython.dll");
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
