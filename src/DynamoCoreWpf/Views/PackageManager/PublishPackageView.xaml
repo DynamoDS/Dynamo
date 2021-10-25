@@ -856,8 +856,14 @@
                             VerticalAlignment="Top">
 
                     <!--  Markdown Files Directory  -->
-                    <DockPanel>
+                    <DockPanel ToolTip="{x:Static p:Resources.PreferencesViewMarkdownDirectoryTooltip}">
                         <TextBlock Style="{StaticResource LabelStyle}" Text="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectory}" />
+                        <Image Width="16px"
+                               Height="16px"
+                               DockPanel.Dock="Left"
+                               VerticalAlignment="Top"
+                               Margin="5,0,0,0"
+                               Source="/DynamoCoreWpf;component/UI/Images/info-grey.png" />
                         <Button Command="{Binding Path=ClearMarkdownDirectoryCommand}"
                                 Content="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButton}"
                                 DockPanel.Dock="Right"

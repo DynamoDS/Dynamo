@@ -5109,6 +5109,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Markdown documentation can be added to your package that will leverage the Documentation Browser to display author generated information on a per-node basis..
+        /// </summary>
+        public static string PreferencesViewMarkdownDirectoryTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewMarkdownDirectoryTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Package Download Directory.
         /// </summary>
         public static string PreferencesViewPackageDownloadDirectory {

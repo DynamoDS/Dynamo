@@ -2470,6 +2470,9 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewSavedChangesTooltip" xml:space="preserve">
     <value>Last saved:</value>
   </data>
+  <data name="PreferencesViewMarkdownDirectoryTooltip" xml:space="preserve">
+    <value>Markdown documentation can be added to your package that will leverage the Documentation Browser to display author generated information on a per-node basis.</value>
+  </data>
   <data name="NodeAutocompleteDocumentationUriString" xml:space="preserve">
     <value>DynamoCoreWpf;NodeAutocompleteDocumentation.html</value>
   </data>

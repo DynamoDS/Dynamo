@@ -2729,4 +2729,7 @@ This package will be unloaded after the next Dynamo restart.</value>
   <data name="PublishPackageExternalPackageDependencies" xml:space="preserve">
     <value>External Package Dependencies</value>
   </data>
+  <data name="PreferencesViewMarkdownDirectoryTooltip" xml:space="preserve">
+    <value>Markdown documentation can be added to your package that will leverage the Documentation Browser to display author generated information on a per-node basis.</value>
+  </data>
 </root>
