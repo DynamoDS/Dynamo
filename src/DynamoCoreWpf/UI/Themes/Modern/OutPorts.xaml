@@ -34,6 +34,8 @@
             <!--  Transparent rectangle used for port snapping, overhangs the edge of the port  -->
             <Rectangle Grid.Column="0"
                        Grid.ColumnSpan="2"
+                       Canvas.ZIndex="1"
+                       Margin="-25,0,0,0"
                        Fill="Transparent"
                        IsHitTestVisible="{Binding IsHitTestVisible}"
                        SnapsToDevicePixels="True">
