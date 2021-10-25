@@ -8,6 +8,7 @@ using Dynamo.Models;
 using CoreNodeModels;
 using Dynamo.UI.Commands;
 using System;
+using Dynamo.Graph.Connectors;
 
 namespace Dynamo.ViewModels
 {
@@ -215,7 +216,7 @@ namespace Dynamo.ViewModels
         {
             var pinLocations = ViewModel.CollectPinLocations();
             ViewModel.DiscardAllConnectorPinModels();
-            PlaceWatchNode(ViewModel, pinLocations);
+            PlaceWatchNode(ViewModel.ConnectorModel, pinLocations);
         }
 
         /// <summary>
@@ -280,7 +281,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Places watch node at the midpoint of the connector
         /// </summary>
-        internal void PlaceWatchNode(ConnectorViewModel connectorVm, IEnumerable<Point> connectorPinLocations)
+        internal void PlaceWatchNode(ConnectorModel connector, IEnumerable<Point> connectorPinLocations)
         {
             NodeModel startNode = ViewModel.ConnectorModel.Start.Owner;
             NodeModel endNode = ViewModel.ConnectorModel.End.Owner;
@@ -290,7 +291,7 @@ namespace Dynamo.ViewModels
                 var nodeX = CurrentPosition.X - (watchNode.Width / 2);
                 var nodeY = CurrentPosition.Y - (watchNode.Height / 2);
                 DynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(watchNode, nodeX, nodeY, false, false));
-                WireNewNode(DynamoModel, startNode, endNode, watchNode, connectorVm, connectorPinLocations);
+                WireNewNode(DynamoModel, startNode, endNode, watchNode, connector, connectorPinLocations);
             });
         }
 
@@ -306,10 +307,10 @@ namespace Dynamo.ViewModels
             NodeModel startNode,
             NodeModel endNode, 
             NodeModel watchNodeModel,
-            ConnectorViewModel connectorVm,
+            ConnectorModel connector,
             IEnumerable<Point> connectorPinLocations)
         {
-            (List<int> startIndex, List<int> endIndex) = GetPortIndex(connectorVm, startNode, endNode);
+            (List<int> startIndex, List<int> endIndex) = GetPortIndex(connector, startNode, endNode);
 
             // Connect startNode and watch node
             foreach (var idx in startIndex)
@@ -354,7 +355,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private static (List<int> StartIndex, List<int> EndIndex) GetPortIndex(ConnectorViewModel connectorVm, NodeModel startNode, NodeModel endNode)
+        private static (List<int> StartIndex, List<int> EndIndex) GetPortIndex(ConnectorModel connector, NodeModel startNode, NodeModel endNode)
         {
             var connectors = startNode.AllConnectors;
             var filter = connectors.Where(c => c.End.Owner.GUID == endNode.GUID);
@@ -362,23 +363,23 @@ namespace Dynamo.ViewModels
             List<int> startIndex = new List<int>();
             List<int> endIndex = new List<int>();
             //Handles CodeBlockPort case
-            if (startNode is CodeBlockNodeModel || endNode is CodeBlockNodeModel)
+          //  if (startNode is CodeBlockNodeModel || endNode is CodeBlockNodeModel)
             {
-                startIndex.Add(connectorVm.ConnectorModel.Start.Index);
-                endIndex.Add(connectorVm.ConnectorModel.End.Index);
+                startIndex.Add(connector.Start.Index);
+                endIndex.Add(connector.End.Index);
             }
             //Normal node case
-            else
-            {
-                startIndex = filter
-                    .Select(c => c.Start.Index)
-                    .Distinct()
-                    .ToList();
-                endIndex = filter
-                   .Select(c => c.End.Index)
-                   .Distinct()
-                   .ToList();
-            }
+            //else
+            //{
+            //    startIndex = filter
+            //        .Select(c => c.Start.Index)
+            //        .Distinct()
+            //        .ToList();
+            //    endIndex = filter
+            //       .Select(c => c.End.Index)
+            //       .Distinct()
+            //       .ToList();
+            //}
             return (startIndex, endIndex);
         }
 
