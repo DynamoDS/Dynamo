@@ -793,15 +793,6 @@ namespace Dynamo.Controls
                 ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png"
             };
 
-            var screenShotButton = new ImageExportShortcutBarItem(dynamoViewModel)
-            {
-                ShortcutCommand = dynamoViewModel.ShowSaveImageDialogAndSaveResultCommand,
-                ShortcutCommandParameter = Wpf.Properties.Resources.ScreenShotFrom3DShortcutParameter,
-                ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/screenshot_normal.png",
-                ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/screenshot_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/screenshot_normal.png"
-            };
-
             var undoButton = new ShortcutBarItem
             {
                 ShortcutToolTip = Wpf.Properties.Resources.DynamoViewToolbarUndoButtonTooltip,
@@ -827,8 +818,6 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
-
-            shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
 
             shortcutBarGrid.Children.Add(shortcutBar);
         }

@@ -7,6 +7,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:um="clr-namespace:Dynamo.Updates"
              xmlns:updateManager="clr-namespace:Dynamo.Updates;assembly=DynamoCore"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"
              Height="Auto"
              Width="Auto"
@@ -22,6 +23,8 @@
                 <ResourceDictionary.MergedDictionaries>
                     <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.ToolbarStyleDictionaryUri}" />
                     <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                    <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
+                    <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 </ResourceDictionary.MergedDictionaries>
             </ResourceDictionary>
         </Border.Resources>
@@ -125,11 +128,57 @@
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel x:Name="ShortcutBarRight" Orientation="Horizontal" HorizontalAlignment="Right"/>
+                            <StackPanel x:Name="ShortcutBarLeft" Orientation="Horizontal" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
 
+                <Menu HorizontalAlignment="Right"
+                      Style="{StaticResource MainMenu}"
+                      IsMainMenu="True">
+                    <MenuItem Name="exportMenu"
+                              Cursor="Hand"
+                              Focusable="False"
+                              SubmenuOpened="exportMenu_SubmenuOpened"
+                              SubmenuClosed="exportMenu_SubmenuClosed"
+                              MouseEnter="exportMenu_MouseEnter"
+                              MouseLeave="exportMenu_MouseLeave">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <Image x:Name="Icon"
+                                       Source="/DynamoCoreWpf;component/UI/Images/image-icon-default.png"
+                                       Width="14px" />
+                                <TextBlock x:Name="HeaderText"
+                                           Text="{x:Static p:Resources.ShortcutExportAsImageMainMenu}"
+                                           VerticalAlignment="Center"
+                                           Margin="10 0 10 0"
+                                           Foreground="#DCDCDC"
+                                           FontFamily="{StaticResource ArtifaktElementRegular}">
+                                </TextBlock>
+                                <Path x:Name="Arrow"
+                                      Grid.Column="1"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
+                                      Fill="#DCDCDC" />
+                            </StackPanel>
+                        </MenuItem.Header>
+
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.ShortcutExportWorkspace}"
+                                  Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                  ToolTip="{x:Static p:Resources.DynamoViewToolbarExportButtonTooltip}"
+                                  Name="saveImage">
+                        </MenuItem>
+
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.ShortcutExportBackground3DPreview}"
+                                  Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                  ToolTip="{x:Static p:Resources.DynamoViewToolbarExport3DButtonTooltip}"
+                                  Name="save3DImage">
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
                 <controls:GraphUpdateNotificationControl x:Name="UpdateControl" HorizontalAlignment="Right" 
                                                          Margin="0,0,50,0"
                                                          Visibility="{Binding Path=DataContext.IsUpdateAvailable, RelativeSource={RelativeSource AncestorType={x:Type Window}}, 

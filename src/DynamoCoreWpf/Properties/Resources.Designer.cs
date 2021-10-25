@@ -5004,24 +5004,13 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("PackagesGuideFindPackageTitle", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Learn about packages.
         /// </summary>
-        public static string PackagesGuideLearnAbout
-        {
-            get
-            {
-                return ResourceManager.GetString("PackagesGuideLearnAbout", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Sort Packages..
-        /// </summary>
-        public static string PackageSortToolTip {
+        public static string PackagesGuideLearnAbout {
             get {
-                return ResourceManager.GetString("PackageSortToolTip", resourceCulture);
+                return ResourceManager.GetString("PackagesGuideLearnAbout", resourceCulture);
             }
         }
         
@@ -5077,6 +5066,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagesGuideThirdPartyTitle {
             get {
                 return ResourceManager.GetString("PackagesGuideThirdPartyTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort Packages..
+        /// </summary>
+        public static string PackageSortToolTip {
+            get {
+                return ResourceManager.GetString("PackageSortToolTip", resourceCulture);
             }
         }
         
@@ -6311,6 +6309,33 @@ namespace Dynamo.Wpf.Properties {
         public static string SelectNodeButtonSelect {
             get {
                 return ResourceManager.GetString("SelectNodeButtonSelect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export as Image.
+        /// </summary>
+        public static string ShortcutExportAsImageMainMenu {
+            get {
+                return ResourceManager.GetString("ShortcutExportAsImageMainMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background 3D Preview.
+        /// </summary>
+        public static string ShortcutExportBackground3DPreview {
+            get {
+                return ResourceManager.GetString("ShortcutExportBackground3DPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workspace.
+        /// </summary>
+        public static string ShortcutExportWorkspace {
+            get {
+                return ResourceManager.GetString("ShortcutExportWorkspace", resourceCulture);
             }
         }
         
