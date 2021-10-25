@@ -47,40 +47,5 @@ namespace DynamoUnits
         /// Remove trailing zeros for unitized decimal values within the Dynamo UI
         /// </summary>
         public static bool RemoveTrailingZeros { get; set; } = true;
-
-        internal static Symbol SetSymbolCases(Unit unit)
-        {
-            Symbol symbol;
-            var specialCaseLast = new string[6] { "Angle", "Flow", "Power", "Pressure", "Stress", "Temperature Interval" };
-
-            var quantity = unit.QuantitiesContainingUnit;
-            var quantityName = quantity.First().Name;
-
-            if (quantityName == "Length")
-            {
-                if (unit.Name == "Feet")
-                {
-                    symbol = Symbol.SymbolsByUnit(unit).Find(s => s.Text == "ft");
-                }
-                else
-                {
-                    symbol = Symbol.SymbolsByUnit(unit).First();
-                }
-            }
-            else if (quantityName == "Currency")
-            {
-                symbol = Symbol.SymbolsByUnit(unit).Find(s => s.Text == "$");
-            }
-            else if (specialCaseLast.Contains(quantityName))
-            {
-                symbol = Symbol.SymbolsByUnit(unit).First();
-            }
-            else
-            {
-                symbol = Symbol.SymbolsByUnit(unit).Last();
-            }
-
-            return symbol;
-        }
     }
 }
