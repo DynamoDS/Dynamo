@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
@@ -39,7 +41,7 @@ namespace PythonNodeModelsWpf
         {
             get
             {
-                return new ObservableCollection<PythonEngineVersion>(PythonEngineSelector.Instance.GetEnabledEngines());
+                return PythonEngineSelector.Instance.AvailableEngines;
             }
         }
 
@@ -95,7 +97,6 @@ namespace PythonNodeModelsWpf
             CachedEngine = nodeModel.Engine;
             EngineSelectorComboBox.SelectedItem = CachedEngine;
         }
-
         #region Autocomplete Event Handlers
 
         private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)

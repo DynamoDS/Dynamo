@@ -70,7 +70,7 @@ namespace PythonNodeModels
         {
             get
             {
-                return new ObservableCollection<PythonEngineVersion>(PythonEngineSelector.Instance.GetEnabledEngines());
+                return PythonEngineSelector.Instance.AvailableEngines;
             }
         }
 
@@ -92,10 +92,8 @@ namespace PythonNodeModels
             }
             else
             {
-                // If IronPython2 is available, use that as the default.
-                // Else use CPython
-                engine = PythonEngineSelector.Instance.IsIronPythonEnabled ? 
-                    PythonEngineVersion.IronPython2 : PythonEngineVersion.CPython3;
+                // Use CPython as default
+                engine = PythonEngineVersion.CPython3;
             }
         }
 

@@ -701,22 +701,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Gets the different Python Engine versions availables from PythonNodeModels.dll
-        /// </summary>
-        /// <returns>Strings array with the different names</returns>
-        private IEnumerable<string> GetPythonEngineOptions()
-        {
-            return PythonNodeModels.PythonEngineSelector.Instance.GetEnabledEngines()
-                    .Select(x => x.ToString());
-        }
-
         private void AddPythonEnginesOptions()
         {
             var options = new ObservableCollection<string> { Res.DefaultPythonEngineNone };
-            foreach (var item in GetPythonEngineOptions())
+            foreach (var item in PythonNodeModels.PythonEngineSelector.Instance.AvailableEngines)
             {
-                options.Add(item);
+                options.Add(item.ToString());
             }
             PythonEnginesList = options;
         }
@@ -741,14 +731,12 @@ namespace Dynamo.ViewModels
                 dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
 
             // Scan for engines
-            PythonNodeModels.PythonEngineSelector.Instance.ScanPythonEngines();
             AddPythonEnginesOptions();
 
-            // Listen to for any new python engine that might be dynamically loaded
-            PythonNodeModels.PythonEngineSelector.Instance.OnPythonEngineScan += AddPythonEnginesOptions;
+            PythonNodeModels.PythonEngineSelector.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
+
             //Sets SelectedPythonEngine.
             //If the setting is empty it corresponds to the default python engine
-
             var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
             SelectedPythonEngine  = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
 
@@ -846,7 +834,7 @@ namespace Dynamo.ViewModels
         {
             PropertyChanged -= Model_PropertyChanged;
             WorkspaceEvents.WorkspaceSettingsChanged -= PreferencesViewModel_WorkspaceSettingsChanged;
-            PythonNodeModels.PythonEngineSelector.Instance.OnPythonEngineScan -= AddPythonEnginesOptions;
+            PythonNodeModels.PythonEngineSelector.Instance.AvailableEngines.CollectionChanged -= PythonEnginesChanged;
         }
 
         /// <summary>
@@ -1054,6 +1042,14 @@ namespace Dynamo.ViewModels
             Random r = new Random();
             Color color = Color.FromArgb(255, (byte)r.Next(), (byte)r.Next(), (byte)r.Next());
             return ColorTranslator.ToHtml(color).Replace("#", "");
+        }
+
+        private void PythonEnginesChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                AddPythonEnginesOptions();
+            }
         }
     }
 
