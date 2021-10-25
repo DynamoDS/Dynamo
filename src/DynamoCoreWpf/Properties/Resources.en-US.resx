@@ -2790,6 +2790,12 @@ More information</value>
   <data name="ScriptTagsRemovalWarning" xml:space="preserve">
     <value>Script tags detected in the help document have been removed.</value>
   </data>
+  <data name="PackagesGuideContinueButton" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="PackagesGuideExitButton" xml:space="preserve">
+    <value>Exit</value>
+  </data>
   <data name="ShortcutExportAsImageMainMenu" xml:space="preserve">
     <value>Export as Image</value>
   </data>

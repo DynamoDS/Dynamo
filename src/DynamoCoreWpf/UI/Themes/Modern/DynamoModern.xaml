@@ -3838,6 +3838,46 @@
         </Setter>
     </Style>
 
+
+    <!--  Style for the exit button in the exit modal of Dynamo Guided Tours  -->
+    <Style x:Key="PoupExitButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="MinWidth" Value="100" />
+        <Setter Property="MaxHeight" Value="36" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="BorderThickness" Value="36" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="PopupButtonBorder"
+                            Background="{StaticResource PopupWhiteColor}"
+                            BorderBrush="#808080"
+                            Opacity="0.5"
+                            BorderThickness="1"
+                            CornerRadius="2">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PopupContentStyle" TargetType="{x:Type ContentControl}">
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Border BorderBrush="White" BorderThickness="2" 
+                            Background="White"
+                         CornerRadius="5,5,5,5" >
+
+                    </Border>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="PoupTitleLabelStyle" TargetType="{x:Type Label}">
         <Setter Property="FontFamily" Value="Artifakt Element" />
         <Setter Property="FontSize" Value="20" />

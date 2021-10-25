@@ -4988,6 +4988,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Continue.
+        /// </summary>
+        public static string PackagesGuideContinueButton {
+            get {
+                return ResourceManager.GetString("PackagesGuideContinueButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit.
+        /// </summary>
+        public static string PackagesGuideExitButton {
+            get {
+                return ResourceManager.GetString("PackagesGuideExitButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**click Packages &gt; Search for Packages**..
         /// </summary>
         public static string PackagesGuideFindPackageText {

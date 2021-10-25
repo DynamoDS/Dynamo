@@ -362,6 +362,9 @@
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\GuidedTour\ExitGuideWindow.xaml.cs">
+      <DependentUpon>ExitGuideWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GuidedTour\WebBrowserWindow.xaml.cs">
       <DependentUpon>WebBrowserWindow.xaml</DependentUpon>
     </Compile>
@@ -503,6 +506,10 @@
     <Page Include="UI\Prompts\DynamoMessageBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GuidedTour\ExitGuideWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GuidedTour\WebBrowserWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
