@@ -115,7 +115,7 @@ namespace DynamoUnits
         /// Engine which loads schemas and is responsible for all ForgeUnit operations.
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public static ForgeUnitsCLR.UnitsEngine ForgeUnitsEngine
+        internal static ForgeUnitsCLR.UnitsEngine ForgeUnitsEngine
         {
             get
             {

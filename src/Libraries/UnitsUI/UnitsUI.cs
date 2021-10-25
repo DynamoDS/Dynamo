@@ -203,6 +203,7 @@ namespace UnitsUI
         }
         
         private List<DynamoUnits.Unit> items;
+        private const string defaultUnit = "Feet";
 
         /// <summary>
         /// List of unit type ids.
@@ -262,7 +263,7 @@ namespace UnitsUI
                 Items =
                     DynamoUnits.Utilities.ConvertUnitsDictionaryToList(
                         DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
-                SelectedUnit = Items.Find(u => u.Name == "Feet");
+                SelectedUnit = Items.Find(u => u.Name == defaultUnit);
             }
             catch
             {
@@ -358,6 +359,7 @@ namespace UnitsUI
         private List<DynamoUnits.Quantity> quantityConversionSource;
         private List<DynamoUnits.Unit> selectedFromConversionSource;
         private List<DynamoUnits.Unit> selectedToConversionSource;
+        private const string defaultSelectedQuantity = "Length"; 
 
         /// <summary>
         /// The NodeType property provides a name which maps to the
@@ -524,7 +526,7 @@ namespace UnitsUI
                 QuantityConversionSource =
                     DynamoUnits.Utilities.CovertQuantityDictionaryToList(
                         DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities());
-                SelectedQuantityConversion = QuantityConversionSource.Find(q => q.Name == "Length");
+                SelectedQuantityConversion = QuantityConversionSource.Find(q => q.Name == defaultSelectedQuantity);
             }
             catch
             {
