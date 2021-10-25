@@ -10,7 +10,6 @@
         Title="{x:Static p:Resources.ExtensionName}"
         Height="450"
         Width="450"
-        Background="#535353"
         MinWidth="400"
         MaxWidth="450"
         x:Name="notificationsWindow"
@@ -41,7 +40,7 @@
                                            Text="{TemplateBinding Content}"
                                            FontFamily="Segoe MDL2 Assets"
                                            FontSize="12"
-                                           Foreground="#D8D8D8"
+                                           Foreground="{StaticResource DefaultFontColorBrush}"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            RenderOptions.ClearTypeHint="Auto"
@@ -105,7 +104,7 @@
                         Margin="11 11 22 11">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="0"
-                                          Color="#535353"
+                                          Color="{StaticResource DarkMidGrey}"
                                           Opacity="1"
                                           BlurRadius="6" />
                     </Border.Effect>
@@ -117,7 +116,7 @@
 
                         <Border Grid.Column="0"
                                 CornerRadius="4 0 0 4"
-                                Background="#FAA21B" />
+                                Background="{StaticResource YellowOrange500Brush}" />
 
                         <Grid Grid.Column="1"
                               Margin="0 16 14 0">
@@ -142,27 +141,27 @@
                                            Grid.Row="0"
                                            TextWrapping="Wrap"
                                            FontSize="14"
-                                           Foreground="#F5F5F5"
+                                           Foreground="{StaticResource DefaultFontColorBrush}"
                                            FontFamily="{StaticResource ArtifaktElementBold}"
                                            Margin="0 0 0 18" />
                                 <TextBlock Text="{Binding ShortMessage}"
                                            Grid.Row="1"
                                            TextWrapping="Wrap"
                                            FontSize="12"
-                                           Foreground="#F5F5F5"
+                                           Foreground="{StaticResource DefaultFontColorBrush}"
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
                                            Margin="0 0 0 18" />
                                 <Border x:Name="Details"
                                         Grid.Row="2"
                                         CornerRadius="4"
-                                        BorderBrush="#FAA21B"
+                                        BorderBrush="{StaticResource YellowOrange500Brush}"
                                         BorderThickness="1"
                                         Margin="0 0 0 25"
                                         Visibility="Collapsed">
                                     <TextBlock Text="{Binding DetailedMessage}"
                                                TextWrapping="Wrap"
                                                FontSize="12"
-                                               Foreground="#F5F5F5"
+                                               Foreground="{StaticResource DefaultFontColorBrush}"
                                                Margin="10"/>
                                 </Border>
                                 <Grid Grid.Row="3"
@@ -197,8 +196,8 @@
                                             Grid.Column="1"
                                             Style="{StaticResource CtaButtonStyle}"
                                             HorizontalAlignment="Right"
-                                            Background="#0696D7"
-                                            Foreground="#FFFFFF"
+                                            Background="{StaticResource PreferencesWindowButtonColor}"
+                                            Foreground="{StaticResource DefaultFontColorBrush}"
                                             Width="46"
                                             Click="OKButton_Click" />
                                 </Grid>
@@ -209,6 +208,10 @@
             </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
+
+    <Window.Background>
+        <SolidColorBrush Color="{StaticResource DarkMidGrey}" />
+    </Window.Background>
 
     <!--Title bar button commands-->
     <Window.CommandBindings>
@@ -242,7 +245,7 @@
                             VerticalAlignment="Center">
                     <TextBlock Text="{x:Static p:Resources.ExtensionName}"
                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                               Foreground="#F5F5F5"
+                               Foreground="{StaticResource DefaultFontColorBrush}"
                                FontSize="20"
                                Margin="20 16 0 16" />
                 </StackPanel>
