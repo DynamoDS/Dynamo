@@ -310,26 +310,20 @@ namespace Dynamo.ViewModels
             ConnectorModel connector,
             IEnumerable<Point> connectorPinLocations)
         {
-            (List<int> startIndex, List<int> endIndex) = GetPortIndex(connector, startNode, endNode);
+            (int startIndex, int endIndex) = GetPortIndex(connector);
 
             // Connect startNode and watch node
-            foreach (var idx in startIndex)
-            {
-                dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(startNode.GUID, idx, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin));
-                dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchNodeModel.GUID, 0, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End));
-            }
+            dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(startNode.GUID, startIndex, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin));
+            dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchNodeModel.GUID, 0, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End));
 
             // Connect watch node and endNode
-            foreach (var idx in endIndex)
-            {
-                dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchNodeModel.GUID, 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin));
-                dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(endNode.GUID, idx, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End));
-            }
+            dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchNodeModel.GUID, 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin));
+            dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(endNode.GUID, endIndex, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End));
 
-            PlacePinsOnWires(startNode, watchNodeModel, connectorPinLocations);
+            PlacePinsOnWires(startNode, watchNodeModel, connector, connectorPinLocations);
         }
 
-        private void PlacePinsOnWires(NodeModel startNode, NodeModel watchNodeModel, IEnumerable<Point> connectorPinLocations)
+        private void PlacePinsOnWires(NodeModel startNode, NodeModel watchNodeModel, ConnectorModel connector, IEnumerable<Point> connectorPinLocations)
         {
             if(connectorPinLocations.Count()<1)
             {
@@ -337,7 +331,7 @@ namespace Dynamo.ViewModels
             }
             // Collect ports & connectors of newly connected nodes
             // so that old pins (that need to remain) can be transferred over correctly.
-            PortModel startNodePort = startNode.OutPorts[0];
+            PortModel startNodePort = startNode.OutPorts.FirstOrDefault(p=>p.GUID == connector.Start.GUID);
             PortModel watchNodePort = watchNodeModel.OutPorts[0];
             Graph.Connectors.ConnectorModel[] connectors = new Graph.Connectors.ConnectorModel[2];
 
@@ -355,32 +349,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private static (List<int> StartIndex, List<int> EndIndex) GetPortIndex(ConnectorModel connector, NodeModel startNode, NodeModel endNode)
+        private static (int StartIndex, int EndIndex) GetPortIndex(ConnectorModel connector)
         {
-            var connectors = startNode.AllConnectors;
-            var filter = connectors.Where(c => c.End.Owner.GUID == endNode.GUID);
-
-            List<int> startIndex = new List<int>();
-            List<int> endIndex = new List<int>();
-            //Handles CodeBlockPort case
-          //  if (startNode is CodeBlockNodeModel || endNode is CodeBlockNodeModel)
-            {
-                startIndex.Add(connector.Start.Index);
-                endIndex.Add(connector.End.Index);
-            }
-            //Normal node case
-            //else
-            //{
-            //    startIndex = filter
-            //        .Select(c => c.Start.Index)
-            //        .Distinct()
-            //        .ToList();
-            //    endIndex = filter
-            //       .Select(c => c.End.Index)
-            //       .Distinct()
-            //       .ToList();
-            //}
-            return (startIndex, endIndex);
+            return (connector.Start.Index, connector.End.Index);
         }
 
 
