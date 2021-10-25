@@ -441,7 +441,7 @@
                                     <Popup x:Name="PART_Popup"
                                            AllowsTransparency="true"
                                            Focusable="false"
-                                           HorizontalOffset="0"
+                                           HorizontalOffset="-1"
                                            IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                            Placement="Left"
                                            VerticalOffset="-2">
