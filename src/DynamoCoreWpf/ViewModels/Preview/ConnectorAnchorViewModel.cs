@@ -340,8 +340,8 @@ namespace Dynamo.ViewModels
             PortModel watchNodePort = watchNodeModel.OutPorts[0];
             Graph.Connectors.ConnectorModel[] connectors = new Graph.Connectors.ConnectorModel[2];
 
-            connectors[0] = startNodePort.Connectors.FirstOrDefault(c=> c.End.Owner.GUID == watchNodeModel.GUID)?? null;
-            connectors[1] = watchNodePort.Connectors.FirstOrDefault(c=> c.Start.Owner.GUID == watchNodeModel.GUID)??null;
+            connectors[0] = startNodePort.Connectors.FirstOrDefault(c=> c.End.Owner.GUID == watchNodeModel.GUID);
+            connectors[1] = watchNodePort.Connectors.FirstOrDefault(c=> c.Start.Owner.GUID == watchNodeModel.GUID);
             if(connectors.Any(c=>c is null))
             {
                 return;
