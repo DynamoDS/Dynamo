@@ -28,6 +28,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
             ContentRichTextBox.Width = Width;
 
+            //Calculates the middle of the screen to add an offset for the modal
             VerticalOffset = (mainRootElement.ActualHeight / 2) - (Height / 2);
             HorizontalOffset = (mainRootElement.ActualWidth / 2) - (Width / 2);
         }
