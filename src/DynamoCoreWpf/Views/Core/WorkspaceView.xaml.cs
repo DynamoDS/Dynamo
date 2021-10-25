@@ -534,6 +534,7 @@ namespace Dynamo.Views
         void vm_ZoomChanged(object sender, EventArgs e)
         {
             zoomBorder.SetZoom((e as ZoomEventArgs).Zoom);
+            if (PortContextMenu.IsOpen) DestroyPortContextMenu();
         }
 
         void vm_ZoomAtViewportCenter(object sender, EventArgs e)
@@ -682,9 +683,15 @@ namespace Dynamo.Views
         {
             ContextMenuPopup.IsOpen = false;
             InCanvasSearchBar.IsOpen = false;
-            PortContextMenu.IsOpen = false;
+            
+            if(PortContextMenu.IsOpen) DestroyPortContextMenu();
         }
 
+        /// <summary>
+        /// Closes the port's context menu and sets its references to null.
+        /// </summary>
+        private void DestroyPortContextMenu() => PortContextMenu.IsOpen = false;
+        
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
             if (e == null) return; // in certain bizarre cases, e can be null
