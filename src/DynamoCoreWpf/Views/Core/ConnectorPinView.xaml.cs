@@ -1,10 +1,7 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using Dynamo.Configuration;
 using Dynamo.Selection;
 using Dynamo.UI;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
