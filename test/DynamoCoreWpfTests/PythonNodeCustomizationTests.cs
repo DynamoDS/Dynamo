@@ -61,8 +61,9 @@ namespace DynamoCoreWpfTests
             // Arrange
             var expectedAvailableEngines = new List<PythonEngineVersion>()
             {
+                PythonEngineVersion.CPython3,
                 PythonEngineVersion.IronPython2,
-                PythonEngineVersion.CPython3
+                
             };
             var expectedDefaultEngine = PythonEngineVersion.IronPython2;
             var engineChange = PythonEngineVersion.CPython3;
