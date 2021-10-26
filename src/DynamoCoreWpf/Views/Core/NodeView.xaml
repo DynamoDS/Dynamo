@@ -349,7 +349,7 @@
             <!--  Ellipse sits within Grid to increase size of MouseOver/ToolTip area  -->
             <Grid HorizontalAlignment="Right"
                   VerticalAlignment="Center"
-                  Panel.ZIndex="100"
+                  Panel.ZIndex="5"
                   Background="Transparent"
                   DockPanel.Dock="Right">
                 <Ellipse Name="nodeRenamedBlueDot"
@@ -410,7 +410,6 @@
             </Grid.RowDefinitions>
 
             <!--  INPUT GRID  -->
-
             <Grid Name="inputGrid"
                   MinHeight="{Binding Source={x:Static configuration:Configurations.PortHeightInPixels}}"
                   HorizontalAlignment="Stretch"
