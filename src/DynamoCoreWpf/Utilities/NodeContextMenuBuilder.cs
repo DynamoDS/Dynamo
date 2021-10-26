@@ -1,14 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Runtime.Remoting.Messaging;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.Utilities
@@ -363,6 +360,12 @@ namespace Dynamo.Wpf.Utilities
             return dismissedAlertsMenuItem;
         }
 
+        /// <summary>
+        /// Allows for any previously-dismissed errors/warnings/info messages to be un-dismissed
+        /// and re-displayed on the node in question.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private static void DismissedAlertsMenuItemOnClick(object sender, RoutedEventArgs e)
         {
             if (!(e.OriginalSource is MenuItem menuItem)) return;
@@ -370,6 +373,12 @@ namespace Dynamo.Wpf.Utilities
             NodeViewModel.ErrorBubble.UndismissMessageCommand.Execute(menuItem.Header);
         }
 
+        /// <summary>
+        /// Loops through the previously-stashed collection of MenuItems that were injected
+        /// during the NodeViewCustomization process and adds them back into the node's
+        /// context menu. This ensures they appear in a consistent location.
+        /// </summary>
+        /// <param name="nodeViewCustomizationMenuItems"></param>
         internal static void AddInjectedNodeViewCustomizationMenuItems(OrderedDictionary nodeViewCustomizationMenuItems)
         {
             foreach (DictionaryEntry keyValuePair in nodeViewCustomizationMenuItems)
