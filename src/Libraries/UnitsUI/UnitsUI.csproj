@@ -61,7 +61,6 @@
     </Compile>
     <Compile Include="Converters\Converters.cs" />
     <Compile Include="Converters\JSONConverters.cs" />
-    <Compile Include="NodeModels.cs" />
     <Compile Include="NodeViewCustomizations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
