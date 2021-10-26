@@ -99,6 +99,11 @@ namespace DynamoCoreWpfTests
             var topLeft = new Point(dummyNodeModel.X, dummyNodeModel.Y);
             var botRight = new Point(dummyNodeModel.X + dummyNodeModel.Width, dummyNodeModel.Y + dummyNodeModel.Height);
 
+            if (dummyNodeViewModel.ErrorBubble == null)
+            {
+                dummyNodeViewModel.ErrorBubble = new InfoBubbleViewModel(ViewModel);
+            }
+            
             InfoBubbleViewModel infoBubbleViewModel = dummyNodeViewModel.ErrorBubble;
 
             // The collection of messages the node receives
@@ -167,6 +172,11 @@ namespace DynamoCoreWpfTests
             var topLeft = new Point(dummyNodeModel.X, dummyNodeModel.Y);
             var botRight = new Point(dummyNodeModel.X + dummyNodeModel.Width, dummyNodeModel.Y + dummyNodeModel.Height);
 
+            if (dummyNodeViewModel.ErrorBubble == null)
+            {
+                dummyNodeViewModel.ErrorBubble = new InfoBubbleViewModel(ViewModel);
+            }
+
             InfoBubbleViewModel infoBubbleViewModel = dummyNodeViewModel.ErrorBubble;
 
             // The collection of messages the node receives
@@ -177,15 +187,14 @@ namespace DynamoCoreWpfTests
             nodeMessages.Add(infoBubbleDataPacket);
 
             Assert.AreEqual(1, infoBubbleViewModel.NodeInfoToDisplay.Count);
-            Assert.AreEqual(0, dummyNodeViewModel.NumberOfDismissedAlerts);
+            Assert.AreEqual(0, infoBubbleViewModel.DismissedMessages.Count);
             Assert.IsTrue(infoBubbleViewModel.NodeInfoVisible);
 
             infoBubbleViewModel.DismissMessageCommand.Execute(infoBubbleDataPacket);
 
             // Assert
             Assert.AreEqual(0, infoBubbleViewModel.NodeInfoToDisplay.Count);
-            Assert.AreEqual(1, dummyNodeViewModel.NumberOfDismissedAlerts);
-            Assert.IsFalse(infoBubbleViewModel.NodeInfoVisible);
+            Assert.AreEqual(1, infoBubbleViewModel.DismissedMessages.Count);
             Assert.AreEqual(info1, infoBubbleViewModel.DismissedMessages.First().Message);
         }
 
@@ -207,6 +216,11 @@ namespace DynamoCoreWpfTests
 
             NodeViewModel dummyNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
                 .FirstOrDefault(x => x.NodeModel.GUID == dummyNode.GUID);
+
+            if (dummyNodeViewModel.ErrorBubble == null)
+            {
+                dummyNodeViewModel.ErrorBubble = new InfoBubbleViewModel(ViewModel);
+            }
 
             NodeModel dummyNodeModel = dummyNodeViewModel.NodeModel;
 
