@@ -3047,7 +3047,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error: .
+        ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string InfoBubbleError {
             get {
@@ -3056,7 +3056,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning: .
+        ///   Looks up a localized string similar to Info.
+        /// </summary>
+        public static string InfoBubbleInfo {
+            get {
+                return ResourceManager.GetString("InfoBubbleInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
         /// </summary>
         public static string InfoBubbleWarning {
             get {
@@ -4058,6 +4067,78 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dismisses the info messages on this node. Utilize when you want to design in graph failures, or the info message will not be relevant during graph execution..
+        /// </summary>
+        public static string NodeInfoDismissButtonToolTip {
+            get {
+                return ResourceManager.GetString("NodeInfoDismissButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismiss.
+        /// </summary>
+        public static string NodeInformationalStateDismiss {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateDismiss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismiss all.
+        /// </summary>
+        public static string NodeInformationalStateDismissAll {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateDismissAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismissed Alerts.
+        /// </summary>
+        public static string NodeInformationalStateDismissedAlerts {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateDismissedAlerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all errors.
+        /// </summary>
+        public static string NodeInformationalStateShowAllErrors {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowAllErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all info.
+        /// </summary>
+        public static string NodeInformationalStateShowAllInfo {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowAllInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all warnings.
+        /// </summary>
+        public static string NodeInformationalStateShowAllWarnings {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowAllWarnings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show less.
+        /// </summary>
+        public static string NodeInformationalStateShowLess {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowLess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Renamed.
         /// </summary>
         public static string NodeRenamedLabel {
@@ -4099,6 +4180,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeViewCustomizationFindErrorMessage {
             get {
                 return ResourceManager.GetString("NodeViewCustomizationFindErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismisses the warning messages on this node. Utilize when you want to design in graph failures, or the warning message will not be relevant during graph execution..
+        /// </summary>
+        public static string NodeWarningDismissButtonToolTip {
+            get {
+                return ResourceManager.GetString("NodeWarningDismissButtonToolTip", resourceCulture);
             }
         }
         
