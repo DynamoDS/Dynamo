@@ -133,9 +133,7 @@ namespace DynamoUnits
         {
             get
             {
-                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
-                UriBuilder uri = new UriBuilder(codeBase);
-                string path = Uri.UnescapeDataString(uri.Path);
+                string path = Assembly.GetExecutingAssembly().Location;
                 return Path.GetDirectoryName(path);
             }
         }
@@ -143,14 +141,36 @@ namespace DynamoUnits
         internal const string BaseAutodeskId = "autodesk.unit.unit:";
 
         [IsVisibleInDynamoLibrary(false)]
-        public static string TypeIdShortName(string typeId)
+        public static List<Quantity> GetAllQuantities()
         {
-            var split = typeId.Split(':', '-');
-            return split[1];
+            return DynamoUnits.Utilities.CovertQuantityDictionaryToList(
+                DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities());
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public static List<Quantity> CovertQuantityDictionaryToList(
+        public static List<Unit> GetAllUnits()
+        {
+            return DynamoUnits.Utilities.ConvertUnitDictionaryToList(
+                DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static List<Symbol> GetAllSymbols()
+        {
+            return DynamoUnits.Utilities.ConvertSymbolDictionaryToList(
+                DynamoUnits.Utilities.ForgeUnitsEngine.getAllSymbols());
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        private static string TypeIdShortName(string typeId)
+        {
+            var split = typeId.Split(':', '-');
+            
+            return split.Length > 0 ? split[1] : typeId;
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        internal static List<Quantity> CovertQuantityDictionaryToList(
             Dictionary<string, ForgeUnitsCLR.Quantity> forgeDictionary)
         {
             var dynQuantities = new List<Quantity>();
@@ -175,7 +195,7 @@ namespace DynamoUnits
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public static List<Symbol> ConvertSymbolDictionaryToList(
+        internal static List<Symbol> ConvertSymbolDictionaryToList(
             Dictionary<string, ForgeUnitsCLR.Symbol> forgeDictionary)
         {
             var dynSymbols = new List<Symbol>();
@@ -200,7 +220,7 @@ namespace DynamoUnits
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public static List<Unit> ConvertUnitsDictionaryToList(
+        internal static List<Unit> ConvertUnitDictionaryToList(
             Dictionary<string, ForgeUnitsCLR.Unit> forgeDictionary)
         {
             var dynUnits = new List<Unit>();

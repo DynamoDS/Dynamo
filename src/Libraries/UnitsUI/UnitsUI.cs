@@ -239,9 +239,7 @@ namespace UnitsUI
         {
             try
             {
-                Items =
-                    DynamoUnits.Utilities.ConvertUnitsDictionaryToList(
-                        DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
+                Items = DynamoUnits.Utilities.GetAllUnits();
             }
             catch
             {
@@ -260,9 +258,7 @@ namespace UnitsUI
             RegisterAllPorts();
             try
             {
-                Items =
-                    DynamoUnits.Utilities.ConvertUnitsDictionaryToList(
-                        DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
+                Items = DynamoUnits.Utilities.GetAllUnits();
                 SelectedUnit = Items.Find(u => u.Name == defaultUnit);
             }
             catch
@@ -502,9 +498,7 @@ namespace UnitsUI
         {
             try
             {
-                QuantityConversionSource =
-                    DynamoUnits.Utilities.CovertQuantityDictionaryToList(
-                        DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities());
+                QuantityConversionSource = DynamoUnits.Utilities.GetAllQuantities();
             }
             catch
             {
@@ -523,9 +517,7 @@ namespace UnitsUI
         {
             try
             {
-                QuantityConversionSource =
-                    DynamoUnits.Utilities.CovertQuantityDictionaryToList(
-                        DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities());
+                QuantityConversionSource = DynamoUnits.Utilities.GetAllQuantities();
                 SelectedQuantityConversion = QuantityConversionSource.Find(q => q.Name == defaultSelectedQuantity);
             }
             catch
@@ -611,33 +603,26 @@ namespace UnitsUI
         {
             Items.Clear();
 
-            Dictionary<string, ForgeUnitsCLR.Unit> dictionary = null;
+            List<Unit> units = null;
             try
             {
-                dictionary = DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits();
+                units = DynamoUnits.Utilities.GetAllUnits();
             }
             catch
             {
                 Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
             }
 
-            if (dictionary == null)
+            if (units == null)
             {
                 return SelectionState.Restore;
             }
 
-            var units = dictionary.Values.ToArray();
-            for (int i = 0; i < units.Length - 1; i++)
+            foreach (var unit in units)
             {
-                if (DynamoUnits.Utilities.TypeIdShortName(units[i].getTypeId()).Equals(DynamoUnits.Utilities.TypeIdShortName(units[i + 1].getTypeId())))
-                    continue;
-
-                Items.Add(new DynamoDropDownItem(units[i].getName(), units[i].getTypeId()));
+                Items.Add(new DynamoDropDownItem(unit.Name, unit.TypeId));
             }
 
-            Items.Add(new DynamoDropDownItem(units.Last().getName(), units.Last().getTypeId()));
-
-            //Items = Items.OrderBy(x => x.Name).ToObservableCollection();
             return SelectionState.Restore;
         }
     }
@@ -681,31 +666,26 @@ namespace UnitsUI
         {
             Items.Clear();
 
-            Dictionary<string, ForgeUnitsCLR.Quantity> dictionary = null;
+            List<Quantity> quantities = null;
             try
             {
-                dictionary = DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities();
+                quantities = DynamoUnits.Utilities.GetAllQuantities();
             }
             catch
             {
                 Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
             }
 
-            if (dictionary == null)
+            if (quantities == null)
             {
                 return SelectionState.Restore;
             }
 
-            var quantities = dictionary.Values.ToArray();
-            for (int i = 0; i < quantities.Length - 1; i++)
+            foreach (var quantity in quantities)
             {
-                if (DynamoUnits.Utilities.TypeIdShortName(quantities[i].getTypeId()).Equals(DynamoUnits.Utilities.TypeIdShortName(quantities[i + 1].getTypeId())))
-                    continue;
-
-                Items.Add(new DynamoDropDownItem(quantities[i].getName(), quantities[i].getTypeId()));
+                
+                Items.Add(new DynamoDropDownItem(quantity.Name, quantity.TypeId));
             }
-
-            Items.Add(new DynamoDropDownItem(quantities.Last().getName(), quantities.Last().getTypeId()));
 
             return SelectionState.Restore;
         }
@@ -750,43 +730,33 @@ namespace UnitsUI
         {
             Items.Clear();
 
-            Dictionary<string, ForgeUnitsCLR.Symbol> dictionary = null;
+            List<Symbol> symbols = null;
             try
             {
-                dictionary = DynamoUnits.Utilities.ForgeUnitsEngine.getAllSymbols();
+                symbols = DynamoUnits.Utilities.GetAllSymbols();
             }
             catch
             {
                 Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
             }
 
-            if (dictionary == null)
+            if (symbols == null)
             {
                 return SelectionState.Restore;
             }
 
-            var symbols = dictionary.Values.ToArray();
-            for (int i = 0; i < symbols.Length - 1; i++)
+            foreach (var symbol in symbols)
             {
-                if (DynamoUnits.Utilities.TypeIdShortName(symbols[i].getTypeId()).Equals(DynamoUnits.Utilities.TypeIdShortName(symbols[i + 1].getTypeId())))
-                    continue;
 
-
-                Items.Add(new DynamoDropDownItem(SymbolDisplayText(symbols[i]), symbols[i].getTypeId()));
+                Items.Add(new DynamoDropDownItem(SymbolDisplayText(symbol), symbol.TypeId));
             }
 
-            Items.Add(new DynamoDropDownItem(SymbolDisplayText(symbols.Last()), symbols.Last().getTypeId()));
-
-            //Items = Items.OrderBy(x => x.Name).ToObservableCollection();
             return SelectionState.Restore;
         }
 
-        private string SymbolDisplayText(ForgeUnitsCLR.Symbol symbol)
+        private string SymbolDisplayText(Symbol symbol)
         {
-            var symbolStr = symbol.getUnit().getName() + ": ";
-            var symbolTxt = symbol.getPrefixOrSuffix() != null ? Encoding.UTF8.GetString(Encoding.Default.GetBytes(symbol.getPrefixOrSuffix().getText())) : "";
-
-            return symbolStr + symbolTxt;
+            return symbol.Unit.Name + ": " + symbol.Text; ;
         }
     }
 }

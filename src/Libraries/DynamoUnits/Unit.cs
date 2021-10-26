@@ -37,7 +37,7 @@ namespace DynamoUnits
             get
             {
                 Dictionary<string, ForgeUnitsCLR.Unit> units = Utilities.ForgeUnitsEngine.getConvertibleUnits(TypeId);
-                return Utilities.ConvertUnitsDictionaryToList(units);
+                return Utilities.ConvertUnitDictionaryToList(units);
             }
         }
 
