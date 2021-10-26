@@ -232,6 +232,7 @@
                 <!--Menu-->
                 <Menu IsMainMenu="True"
                       Name="menu1"
+                      Canvas.ZIndex="1000"
                       Style="{StaticResource MainMenu}">
                     <!--Accessor key = false. This is to include underscore in header(only for SubMenuItem-->
                     <Menu.Resources>
@@ -787,8 +788,9 @@
                 <TabControl ItemsSource="{Binding Path=Workspaces, NotifyOnTargetUpdated=True}"
                             Name="WorkspaceTabs"
                             SelectedIndex="{Binding CurrentWorkspaceIndex}"
-                            Background="#232323"
                             Padding="0"
+                            Margin="0,-32,0,0"
+                            Canvas.ZIndex="1"
                             TargetUpdated="WorkspaceTabs_TargetUpdated"
                             SelectionChanged="WorkspaceTabs_SelectionChanged"
                             SizeChanged="WorkspaceTabs_SizeChanged">
@@ -806,7 +808,7 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <Border Background="#3C3C3C" Grid.Row="0">
+                                            <Border Background="Transparent" Grid.Row="0">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*" />
@@ -1136,9 +1138,15 @@
                                     </MultiBinding>
                                 </Setter.Value>
                             </Setter>
+                            <Setter Property="Margin" Value="0,0,0,0"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type TabItem}">
+                                        <ControlTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding Converter={StaticResource TabIndexConverter}, RelativeSource={RelativeSource Self}}" Value="First">
+                                                <Setter Property="Margin" Value="210,0,-210,0" />
+                                            </DataTrigger>
+                                        </ControlTemplate.Triggers>
                                         <Border Name="Border"
                                                 BorderThickness="0,0,0,5"
                                                 CornerRadius="0,0,0,0">

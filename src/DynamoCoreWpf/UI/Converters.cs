@@ -2600,11 +2600,36 @@ namespace Dynamo.Controls
             }
         }
 
-        /// <summary>
-        /// Checks if the item is last. In that case, this converter controls 
-        /// the last tree view item's  horizontal and vertical line height
-        /// </summary>
-        public class TreeViewLineConverter : IValueConverter
+        public class TabIndexConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                TabItem tabItem = value as TabItem;
+                var fromContainer = ItemsControl.ItemsControlFromItemContainer(tabItem).ItemContainerGenerator;
+
+                List<WorkspaceViewModel> workspaceViewModels = fromContainer.Items
+                    .OfType<WorkspaceViewModel>()
+                    .ToList();
+
+                var count = workspaceViewModels.Count;
+                
+                var index = workspaceViewModels.IndexOf(tabItem.DataContext);
+                if (index == 0 || index == -1) return "First";
+                if (count - 1 == index) return "Last";
+                return "";
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return DependencyProperty.UnsetValue;
+            }
+        }
+
+    /// <summary>
+    /// Checks if the item is last. In that case, this converter controls 
+    /// the last tree view item's  horizontal and vertical line height
+    /// </summary>
+    public class TreeViewLineConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {
