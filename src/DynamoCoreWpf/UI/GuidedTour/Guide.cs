@@ -157,6 +157,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
+        internal void ContinueStep(int CurrentStepSequence)
+        {
+            if (CurrentStepSequence >= 0)
+            {
+                CalculateStep(GuideFlow.CURRENT, CurrentStepSequence);
+            }
+        }
+
         /// <summary>
         /// This method will be executed for moving to the next step, basically searches the next step in the list, shows it and hides the current one.
         /// </summary>
@@ -231,6 +239,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         GuideBackgroundElement.ClearCutOffSection();
                         GuideBackgroundElement.ClearHighlightSection();
                     }
+
+                    resultStep.Show();
                 }
             }
         }

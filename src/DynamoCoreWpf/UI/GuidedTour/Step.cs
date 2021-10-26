@@ -107,6 +107,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         [JsonProperty("ShowLibrary")]
         public bool ShowLibrary { get; set; }
 
+        [JsonProperty("ExitGuide")]
+        public ExitGuide ExitGuide { get; set; }
 
         public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT };
 
@@ -134,6 +136,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// Main Window (DynamoView) that will be used by the Step for finding Child items (MenuItems) and calculate UIElement coordinates
         /// </summary>
         internal UIElement MainWindow { get; set; }
+
+        internal string GuideName { get; set; }
 
         #endregion
 

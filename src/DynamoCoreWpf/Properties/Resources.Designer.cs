@@ -4997,11 +4997,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To continue the guide and install the sample package, you must accept the Terms of Service. \n\n **Click Continue.** Then in the terms, **click I Accept.** \n\n\n\n.
+        /// </summary>
+        public static string PackagesGuideExitAcceptTerms {
+            get {
+                return ResourceManager.GetString("PackagesGuideExitAcceptTerms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exit.
         /// </summary>
         public static string PackagesGuideExitButton {
             get {
                 return ResourceManager.GetString("PackagesGuideExitButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to continue the guide?.
+        /// </summary>
+        public static string PackagesGuideExitTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideExitTitle", resourceCulture);
             }
         }
         

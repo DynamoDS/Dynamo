@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.GuidedTour;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 using Res = Dynamo.Wpf.Properties.Resources;
@@ -31,6 +32,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private GuideBackground guideBackgroundElement;
 
         private DynamoViewModel dynamoViewModel;
+
+        private ExitGuideWindow exitGuideWindow;
 
         private RealTimeInfoWindow exitTourPopup;
 
@@ -176,6 +179,22 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private void TourFinished(GuidedTourStateEventArgs args)
         {
             currentGuide = (from guide in Guides where guide.Name.Equals(args.GuideName) select guide).FirstOrDefault();
+
+            if (args.GuideName == "Packages")
+            {
+                guideBackgroundElement.ClearHighlightSection();
+                guideBackgroundElement.ClearCutOffSection();
+                CreateExitModal(currentGuide.CurrentStep.ExitGuide);
+            }
+            else
+            {
+                ExitTour();
+            }
+        }
+
+        private void ExitTour()
+        {
+
             if (currentGuide != null)
             {
                 foreach (Step tmpStep in currentGuide.GuideSteps)
@@ -186,12 +205,41 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 GuideFlowEvents.GuidedTourStart -= TourStarted;
                 GuideFlowEvents.GuidedTourFinish -= TourFinished;
 
+                exitGuideWindow.ExitTourButton.Click -= ExitTourButton_Click;
+                exitGuideWindow.ContinueTourButton.Click -= ContinueTourButton_Click;
+
                 //Hide guide background overlay
                 guideBackgroundElement.Visibility = Visibility.Hidden;
 
                 tourStarted = false;
             }
 
+        }
+
+        private void CreateExitModal(ExitGuide exitGuide)
+        {
+            var viewModel = new ExitGuideWindowViewModel(exitGuide);
+            exitGuideWindow = new ExitGuideWindow((FrameworkElement)mainRootElement, viewModel);
+
+            exitGuideWindow.ExitTourButton.Click += ExitTourButton_Click;
+            exitGuideWindow.ContinueTourButton.Click += ContinueTourButton_Click;
+
+            exitGuideWindow.IsOpen = true;
+        }
+
+        private void ContinueTourButton_Click(object sender, RoutedEventArgs e)
+        {
+            exitGuideWindow.IsOpen = false;
+            if (currentGuide != null)
+            {
+                currentGuide.ContinueStep(currentGuide.CurrentStep.Sequence);
+            }
+        }
+
+        private void ExitTourButton_Click(object sender, RoutedEventArgs e)
+        {
+            exitGuideWindow.IsOpen = false;
+            ExitTour();
         }
 
         /// <summary>
@@ -234,6 +282,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 {
                     HostControlInfo hostControlInfo = CreateHostControl(step.HostPopupInfo);
                     Step newStep = CreateStep(step, hostControlInfo, totalTooltips);
+                    newStep.GuideName = guide.Name;
 
                     //If the UI Automation info was read from the json file then we create an StepUIAutomation instance containing all the info for each automation entry
                     if (step.UIAutomation != null)
@@ -258,6 +307,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                         newStep.StepGuideBackground = guideBackgroundElement;
                         newStep.MainWindow = mainRootElement;
+
+                        newStep.ExitGuide = step.ExitGuide;
 
                         //The step is added to the new Guide being created
                         newGuide.GuideSteps.Add(newStep);
