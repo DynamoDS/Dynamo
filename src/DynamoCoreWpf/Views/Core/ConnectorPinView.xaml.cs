@@ -20,6 +20,7 @@ namespace Dynamo.Nodes
         /// Old ZIndex of node. It's set, when mouse leaves node.
         /// </summary>
         private int oldZIndex;
+        private bool nodeWasClicked;
 
         public ConnectorPinView()
         {
@@ -39,6 +40,7 @@ namespace Dynamo.Nodes
 
         private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            nodeWasClicked = true;
             BringToFront();
         }
         private void OnPinViewMouseLeave(object sender, MouseEventArgs e)
@@ -57,7 +59,16 @@ namespace Dynamo.Nodes
                 PrepareZIndex();
             }
 
-            ViewModel.ZIndex = ++ConnectorPinViewModel.StaticZIndex;
+            var index = ConnectorPinViewModel.StaticZIndex+1;
+
+            //Set all pins to -1 the current index
+            foreach (var pin in ViewModel.WorkspaceViewModel.Pins)
+            {
+                pin.ZIndex = index-1;
+            }
+
+            oldZIndex = nodeWasClicked ? index : ViewModel.ZIndex;
+            ViewModel.ZIndex = index;
         }
 
         /// <summary>
