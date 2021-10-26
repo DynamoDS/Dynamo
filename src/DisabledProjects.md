@@ -4,7 +4,7 @@
 
 ### Projects
 1. DSIronPython
-2. IronPythonViewExtension
+2. IronPythonExtension
 3. IronPythonTests
 
 ### Reason
