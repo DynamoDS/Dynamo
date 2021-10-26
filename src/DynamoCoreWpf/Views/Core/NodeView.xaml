@@ -49,6 +49,7 @@
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu"
                          x:FieldModifier="public"
+                         Background="{StaticResource NodeContextMenuBackground}"
                          Closed="MainContextMenu_OnClosed"
                          Style="{StaticResource ContextMenuStyle}">
                 <ContextMenu.Resources>
@@ -536,7 +537,7 @@
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
                 Margin="-1"
-                BorderBrush="#F9F9F9"
+                BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
                 BorderThickness="1"
                 Canvas.ZIndex="5"
                 CornerRadius="8,8,0,0"

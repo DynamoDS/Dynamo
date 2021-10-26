@@ -175,10 +175,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
+    <Compile Include="UI\GuidedTour\CutOffArea.cs" />
     <Compile Include="UI\GuidedTour\Guide.cs" />
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
     <Compile Include="UI\GuidedTour\GuidesValidationMethods.cs" />
+    <Compile Include="UI\GuidedTour\HightlightArea.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
     <Compile Include="UI\GuidedTour\PreValidation.cs" />
     <Compile Include="UI\GuidedTour\Step.cs" />
@@ -360,6 +362,9 @@
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\GuidedTour\ExitGuideWindow.xaml.cs">
+      <DependentUpon>ExitGuideWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GuidedTour\WebBrowserWindow.xaml.cs">
       <DependentUpon>WebBrowserWindow.xaml</DependentUpon>
     </Compile>
@@ -501,6 +506,10 @@
     <Page Include="UI\Prompts\DynamoMessageBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GuidedTour\ExitGuideWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GuidedTour\WebBrowserWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1427,8 +1436,12 @@
     <Resource Include="UI\Images\caret_up_grey_48px.png" />
     <Resource Include="UI\Images\menu_grey_48px.png" />
     <Resource Include="UI\Images\NodeIcon_placeholder.png" />
+    <Resource Include="UI\Images\custom-node.png" />
+    <Resource Include="UI\Images\image-icon-default.png" />
+    <Resource Include="UI\Images\image-icon.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\DynamoPackages_1_1.png" />
     <Resource Include="UI\Images\default_info_16px.png" />
+    <Resource Include="UI\Images\clock-icon.png" />
     <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
     <Resource Include="UI\Images\info_2.png" />

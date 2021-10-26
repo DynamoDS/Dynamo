@@ -52,7 +52,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return string.Empty;
+            if (string.IsNullOrEmpty(value as string)) return string.Empty;
             string incomingString = value as string;
             return incomingString.Split(new[] { '\r', '\n' }, 2)[1].Trim();
         }
@@ -339,8 +339,8 @@ namespace Dynamo.Controls
             if (!(value is bool booleanValue)) return null;
             
             return booleanValue
-                ? Wpf.Properties.Resources.PackageManagerInstall
-                : Wpf.Properties.Resources.PackageDownloadStateInstalled;
+                ? Resources.PackageManagerInstall
+                : Resources.PackageDownloadStateInstalled;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,

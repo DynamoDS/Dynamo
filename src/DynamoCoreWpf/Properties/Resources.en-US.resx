@@ -2737,6 +2737,34 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>New</value>
     <comment>Displays next to the package name in the Package Search window if the package has been added in the last 30 days.</comment>
   </data>
+  <data name="PackageDetailsDescription" xml:space="preserve">
+    <value>DESCRIPTION</value>
+    <comment>Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsLicense" xml:space="preserve">
+    <value>LICENSE:</value>
+    <comment>Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsVersionsAndPackageRequirements" xml:space="preserve">
+    <value>VERSIONS AND PACKAGE REQUIREMENTS</value>
+    <comment>Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsVersions" xml:space="preserve">
+    <value>Versions</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsHost" xml:space="preserve">
+    <value>Host</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsPython" xml:space="preserve">
+    <value>Python</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsPackage" xml:space="preserve">
+    <value>Package</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>Sort Packages.</value>
   </data>
@@ -2780,7 +2808,34 @@ More information</value>
   <data name="GenericTaskDialogOptionCancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="WorkspaceTabSavingUnnecessary" xml:space="preserve">
+    <value>No need to save!</value>
+  </data>
+  <data name="WorkspaceTabSavingNecessary" xml:space="preserve">
+    <value>You need to save updates to this file.</value>
+  </data>
+  <data name="WorkspaceTabSavingBrandNewFile" xml:space="preserve">
+    <value>This is a brand new file.</value>
+  </data>
+  <data name="WorkspaceTabNotSavedYet" xml:space="preserve">
+    <value>You haven't saved this file yet.</value>
+  </data>
   <data name="ScriptTagsRemovalWarning" xml:space="preserve">
     <value>Script tags detected in the help document have been removed.</value>
+  </data>
+  <data name="PackagesGuideContinueButton" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="PackagesGuideExitButton" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="ShortcutExportAsImageMainMenu" xml:space="preserve">
+    <value>Export as Image</value>
+  </data>
+  <data name="ShortcutExportBackground3DPreview" xml:space="preserve">
+    <value>Background 3D Preview</value>
+  </data>
+  <data name="ShortcutExportWorkspace" xml:space="preserve">
+    <value>Workspace</value>
   </data>
 </root>
