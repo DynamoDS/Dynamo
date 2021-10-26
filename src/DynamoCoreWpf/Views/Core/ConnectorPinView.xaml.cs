@@ -54,37 +54,16 @@ namespace Dynamo.Nodes
         /// </summary>
         private void BringToFront()
         {
-            if (ConnectorPinViewModel.StaticZIndex == int.MaxValue)
-            {
-                PrepareZIndex();
-            }
-
-            var index = ConnectorPinViewModel.StaticZIndex+1;
+            var index = ConnectorPinViewModel.StaticZIndex + 1;
 
             //Set all pins to -1 the current index
             foreach (var pin in ViewModel.WorkspaceViewModel.Pins)
             {
-                pin.ZIndex = index-1;
+                pin.ZIndex = index - 1;
             }
 
             oldZIndex = nodeWasClicked ? index : ViewModel.ZIndex;
             ViewModel.ZIndex = index;
-        }
-
-        /// <summary>
-        /// If ZIndex is more then max value of int, it should be set back to 0 for all elements.
-        /// The ZIndex for ConnectorPins is set to match that of nodes.
-        /// </summary>
-        private void PrepareZIndex()
-        {
-            var parent = TemplatedParent as ContentPresenter;
-            if (parent == null) return;
-
-            // reset the ZIndex for all ConnectorPins
-            foreach (var child in parent.ChildrenOfType<ConnectorPinView>())
-            {
-                child.ViewModel.ZIndex = Configurations.NodeStartZIndex;
-            }
         }
 
         private void OnPinMouseDown(object sender, MouseButtonEventArgs e)
