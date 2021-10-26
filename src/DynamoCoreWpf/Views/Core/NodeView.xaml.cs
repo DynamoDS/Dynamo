@@ -718,16 +718,6 @@ namespace Dynamo.Controls
             }
         }
 
-        private void UnDismissMessage_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (!(sender is Grid grid)) return;
-
-            TextBlock textBlock = WpfUtilities.ChildOfType<TextBlock>(grid);
-            if (textBlock == null) return;
-
-            viewModel.ErrorBubble.UndismissMessageCommand.Execute(textBlock.Tag);
-        }
-        
         /// <summary>
         /// A common method to handle the node Options Button being clicked and
         /// the user right-clicking on the node body to open its ContextMenu.

@@ -2849,15 +2849,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add group to group.
-        /// </summary>
-        public static string GroupContextMenuAddGroupToGroup {
-            get {
-                return ResourceManager.GetString("GroupContextMenuAddGroupToGroup", resourceCulture);
-            }
-        }
-        
-        /// <summary>   
         ///   Looks up a localized string similar to The selected save location path is too long. Please change the save location and try again..
         /// </summary>
         public static string GraphIssuesOnSavePath_Description {
@@ -2881,6 +2872,15 @@ namespace Dynamo.Wpf.Properties {
         public static string GraphIssuesOnSavePath_Title {
             get {
                 return ResourceManager.GetString("GraphIssuesOnSavePath_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add group to group.
+        /// </summary>
+        public static string GroupContextMenuAddGroupToGroup {
+            get {
+                return ResourceManager.GetString("GroupContextMenuAddGroupToGroup", resourceCulture);
             }
         }
         
@@ -3047,7 +3047,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error: .
+        ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string InfoBubbleError {
             get {
@@ -3056,7 +3056,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning: .
+        ///   Looks up a localized string similar to Info.
+        /// </summary>
+        public static string InfoBubbleInfo {
+            get {
+                return ResourceManager.GetString("InfoBubbleInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
         /// </summary>
         public static string InfoBubbleWarning {
             get {
@@ -4090,14 +4099,6 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeInformationalStateDismissedAlerts {
             get {
                 return ResourceManager.GetString("NodeInformationalStateDismissedAlerts", resourceCulture);
-            }
-        }
-
-        ///   Looks up a localized string similar to Learn more.
-        /// </summary>
-        public static string NodeInformationalStateLearnMore {
-            get {
-                return ResourceManager.GetString("NodeInformationalStateLearnMore", resourceCulture);
             }
         }
         

@@ -2522,9 +2522,6 @@ Uninstall the following packages: {0}?</value>
   <data name="GroupNameDefaultText" xml:space="preserve">
     <value>&lt;Click here to edit the group title&gt;</value>
   </data>
-  <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
-    <value>Add group to group</value>
-  </data>
   <data name="NodeInformationalStateDismiss" xml:space="preserve">
     <value>Dismiss</value>
   </data>
@@ -2540,7 +2537,7 @@ Uninstall the following packages: {0}?</value>
   <data name="NodeInformationalStateShowLess" xml:space="preserve">
     <value>Show less</value>
   </data>
-  <data name="NodeInformationalStateLearnMore" xml:space="preserve">
+  <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
   </data>
   <data name="NodeInformationalStateDismissAll" xml:space="preserve">
@@ -2837,5 +2834,8 @@ More information</value>
   </data>
   <data name="ShortcutExportWorkspace" xml:space="preserve">
     <value>Workspace</value>
+  </data>
+  <data name="InfoBubbleInfo" xml:space="preserve">
+    <value>Info</value>
   </data>
 </root>

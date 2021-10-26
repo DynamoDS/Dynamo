@@ -594,17 +594,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Truncates a warning/error message to 30 characters or less with ellipses.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        internal string TruncateMessage(string value)
-        {
-            string ellipses = value.Length > 30 ? "..." : "";
-            return value.Substring(0, Math.Min(value.Length, 30)) + ellipses;
-        }
-
-        /// <summary>
         /// Accessed via the node's ContextMenu, used to make a user-facing message reappear above the node.
         /// </summary>
         /// <param name="parameter"></param>

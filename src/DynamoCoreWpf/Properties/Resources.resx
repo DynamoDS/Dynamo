@@ -1622,10 +1622,13 @@ Do you want to install the latest Dynamo update?</value>
     <value>STL Models|{0}</value>
   </data>
   <data name="InfoBubbleError" xml:space="preserve">
-    <value>Error: </value>
+    <value>Error</value>
   </data>
   <data name="InfoBubbleWarning" xml:space="preserve">
-    <value>Warning: </value>
+    <value>Warning</value>
+  </data>
+  <data name="InfoBubbleInfo" xml:space="preserve">
+    <value>Info</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Failed to apply NodeViewCustomization for {0}</value>
@@ -2579,7 +2582,7 @@ Uninstall the following packages: {0}?</value>
   <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
     <value>Dismissed Alerts</value>
   </data>
-  <data name="NodeInformationalStateLearnMore" xml:space="preserve">
+  <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
   </data>
   <data name="NodeInformationalStateShowAllInfo" xml:space="preserve">

@@ -725,7 +725,13 @@ namespace Dynamo.ViewModels
             {
                 ImageSource = imgSource;
             }
-            if(nodeLogic.State == ElementState.Error) BuildErrorBubble();
+            
+            if(nodeLogic.State == ElementState.Error)
+            {
+                BuildErrorBubble();
+                UpdateBubbleContent();
+            }
+
             logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
         }
 
@@ -979,6 +985,9 @@ namespace Dynamo.ViewModels
             ErrorBubble.BubbleWidth = NodeModel.Width;
         }
 
+        /// <summary>
+        /// Creates a new ErrorBubble and assigns it to the ErrorBubble property.
+        /// </summary>
         private void BuildErrorBubble()
         {
             if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
@@ -992,9 +1001,9 @@ namespace Dynamo.ViewModels
             }
             
             ErrorBubble.ZIndex = ZIndex + 1;
+
             // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
             ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeWarnings_CollectionChanged;
-            UpdateBubbleContent();
         }
 
         /// <summary>

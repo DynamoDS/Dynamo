@@ -124,7 +124,7 @@
                                            FontFamily="{StaticResource ArtifaktElementBold}"
                                            FontSize="15"
                                            Foreground="Black"
-                                           Text="Error"
+                                           Text="{x:Static p:Resources.InfoBubbleError}"
                                            Visibility="{Binding NodeErrorsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                             </Grid>
                             <!--  Error Info  -->
@@ -177,7 +177,7 @@
                                                                             BorderThickness="0"
                                                                             Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.OpenDocumentationLinkCommand}"
                                                                             CommandParameter="{Binding .}"
-                                                                            Content="{x:Static p:Resources.NodeInformationalStateLearnMore}"
+                                                                            Content="{x:Static p:Resources.LearnMore}"
                                                                             DockPanel.Dock="Left"
                                                                             Foreground="#0696D7">
                                                                         <Button.Style>
@@ -233,7 +233,7 @@
                                                                             BorderThickness="0"
                                                                             Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.OpenDocumentationLinkCommand}"
                                                                             CommandParameter="{Binding .}"
-                                                                            Content="{x:Static p:Resources.NodeInformationalStateLearnMore}"
+                                                                            Content="{x:Static p:Resources.LearnMore}"
                                                                             DockPanel.Dock="Left"
                                                                             Foreground="#0696D7">
                                                                         <Button.Style>
@@ -353,7 +353,7 @@
                                            FontFamily="{StaticResource ArtifaktElementBold}"
                                            FontSize="15"
                                            Foreground="Black"
-                                           Text="Warning"
+                                           Text="{x:Static p:Resources.InfoBubbleWarning}"
                                            Visibility="{Binding NodeWarningsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                             </Grid>
 
@@ -422,7 +422,7 @@
                                                                             BorderThickness="0"
                                                                             Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.OpenDocumentationLinkCommand}"
                                                                             CommandParameter="{Binding .}"
-                                                                            Content="{x:Static p:Resources.NodeInformationalStateLearnMore}"
+                                                                            Content="{x:Static p:Resources.LearnMore}"
                                                                             DockPanel.Dock="Left"
                                                                             Foreground="#0696D7">
                                                                         <Button.Style>
@@ -493,7 +493,7 @@
                                                                             BorderThickness="0"
                                                                             Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.OpenDocumentationLinkCommand}"
                                                                             CommandParameter="{Binding .}"
-                                                                            Content="{x:Static p:Resources.NodeInformationalStateLearnMore}"
+                                                                            Content="{x:Static p:Resources.LearnMore}"
                                                                             DockPanel.Dock="Left"
                                                                             Foreground="#0696D7">
                                                                         <Button.Style>
@@ -626,7 +626,7 @@
                                            FontFamily="{StaticResource ArtifaktElementBold}"
                                            FontSize="15"
                                            Foreground="Black"
-                                           Text="Info"
+                                           Text="{x:Static p:Resources.InfoBubbleInfo}"
                                            Visibility="{Binding NodeInfoSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                             </Grid>
                             <!--  Info Info  -->
@@ -689,7 +689,7 @@
                                                                             BorderThickness="0"
                                                                             Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.OpenDocumentationLinkCommand}"
                                                                             CommandParameter="{Binding .}"
-                                                                            Content="{x:Static p:Resources.NodeInformationalStateLearnMore}"
+                                                                            Content="{x:Static p:Resources.LearnMore}"
                                                                             DockPanel.Dock="Left"
                                                                             Foreground="#0696D7">
                                                                         <Button.Style>
@@ -756,7 +756,7 @@
                                                                             BorderThickness="0"
                                                                             Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.OpenDocumentationLinkCommand}"
                                                                             CommandParameter="{Binding .}"
-                                                                            Content="{x:Static p:Resources.NodeInformationalStateLearnMore}"
+                                                                            Content="{x:Static p:Resources.LearnMore}"
                                                                             DockPanel.Dock="Left"
                                                                             Foreground="#0696D7">
                                                                         <Button.Style>
