@@ -13,10 +13,9 @@
              Width="Auto"
              Name="MenuUserControl">
 
-    <Border Height="32"
-            Panel.ZIndex="2000"
+    <Border Panel.ZIndex="2000"
             BorderBrush="#FF3F4040"
-            BorderThickness="0,0,0,1">
+            BorderThickness="0,0,0,0">
 
         <Border.Resources>
             <ResourceDictionary>

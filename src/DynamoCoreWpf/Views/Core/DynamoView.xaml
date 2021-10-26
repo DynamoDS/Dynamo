@@ -26,7 +26,7 @@
         AllowsTransparency="False"
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
-        Background="#FF353535"
+        Background="#3C3C3C"
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
         UseLayoutRounding="True"
@@ -184,8 +184,8 @@
           PreviewMouseLeftButtonUp="Window_PreviewMouseLeftButtonUp">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="45px" />
+            <RowDefinition Height="40px" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Name="consoleRow"
@@ -214,16 +214,11 @@
         </Grid.ColumnDefinitions>
 
         <!--Titlebar-->
-        <Border BorderBrush="{StaticResource BorderBrushWhite}"
-                BorderThickness="0,0,0,1"
-                Grid.Row="0"
+        <Border Grid.Row="0"
                 Grid.Column="0"
                 Grid.ColumnSpan="5"
-                Height="26"
                 Name="titleBar">
-
-            <Grid Name="titleBarGrid">
-
+            <Grid Name="titleBarGrid" VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -723,6 +718,8 @@
         <!--Shortcuts Toolbar-->
         <Grid Grid.Row="1"
               Grid.Column="0"
+              VerticalAlignment="Top"
+              Margin="5,3,0,3"
               Grid.ColumnSpan="5"
               Name="shortcutsBarGrid">
             <Grid.ColumnDefinitions>
@@ -736,11 +733,9 @@
             </Grid>
 
             <Border Name="shortcutBarBorder"
+                    BorderThickness="0"
                 Grid.Row="0"
-                Grid.Column="0"
-                Height="32"
-                BorderBrush="{StaticResource BorderBrushWhite}"
-                BorderThickness="0,0,0,1">
+                Grid.Column="0">
                 <Grid Name="shortcutBarGrid">
                 </Grid>
             </Border>
