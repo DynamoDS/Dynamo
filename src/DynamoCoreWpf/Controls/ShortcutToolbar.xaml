@@ -139,8 +139,6 @@
                               Cursor="Hand"
                               Focusable="False"
                               Margin="-5,-7,0,0"
-                              SubmenuOpened="exportMenu_SubmenuOpened"
-                              SubmenuClosed="exportMenu_SubmenuClosed"
                               MouseEnter="exportMenu_MouseEnter"
                               MouseLeave="exportMenu_MouseLeave">
                         <MenuItem.Header>
