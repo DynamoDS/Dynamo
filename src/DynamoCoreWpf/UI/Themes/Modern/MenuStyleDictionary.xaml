@@ -13,6 +13,7 @@
     <Style x:Key="MenuItemSeperatorStyle" TargetType="Separator">
         <Setter Property="Height" Value="1" />
         <Setter Property="Margin" Value="0,8" />
+        <Setter Property="Opacity" Value="0.5" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Separator">
@@ -43,7 +44,8 @@
                                           RecognizesAccessKey="True"
                                           TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}"
                                           TextBlock.FontSize="16px" />
-                        <Path Grid.Column="1"
+                        <Path Name="DownArrow"
+                              Grid.Column="1"
                               Width="10px"
                               Height="10px"
                               HorizontalAlignment="Right"
@@ -82,6 +84,9 @@
                     </Trigger>
                     <Trigger Property="IsSubmenuOpen" Value="true">
                         <Setter TargetName="Border" Property="Background" Value="#424242" />
+                    </Trigger>
+                    <Trigger Property="Tag" Value="NoDownArrow">
+                        <Setter TargetName="DownArrow" Property="Visibility" Value="Collapsed" />
                     </Trigger>
                     <Trigger Property="IsEnabled" Value="True">
                         <Setter Property="Foreground" Value="{StaticResource NormalForegroundBrush}" />
@@ -279,6 +284,7 @@
                                 Background="Transparent"
                                 Visibility="Visible">
                             <Image Name="CheckMark"
+                                   Margin="0,0,8,0"
                                    Width="8"
                                    Height="8"
                                    SnapsToDevicePixels="False"
@@ -408,7 +414,7 @@
                                           ContentSource="Icon" />
                         <ContentPresenter Name="Content"
                                           Grid.Column="1"
-                                          Margin="0"
+                                          Margin="0,3,0,0"
                                           VerticalAlignment="Center"
                                           ContentSource="Header"
                                           RecognizesAccessKey="True" />

@@ -373,6 +373,7 @@
                         <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuExport}"
                                   Name="exportMenu"
+                                  Tag="NoDownArrow"
                                   Focusable="False">
                             <MenuItem Focusable="False"
                                       Header="{x:Static p:Resources.DynamoViewFileMenuExportAsImage}"

@@ -62,7 +62,7 @@ namespace Dynamo.UI.Controls
 
         private void exportMenu_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            this.HeaderText.FontFamily = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementBold"] as FontFamily;
+            this.HeaderText.FontFamily = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
             this.Icon.Source = new BitmapImage(new System.Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/image-icon.png"));
         }
 
