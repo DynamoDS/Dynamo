@@ -31,5 +31,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This will be the WPF UI Element in which the Action will be executed
         /// </summary>
         public UIElement UIElementAutomation { get; set; }
+
+        /// <summary>
+        /// This property will be used for indicating that after executing the UIAutomation action the Popup.PlacementTarget needs to be updated
+        /// </summary>
+        public bool UpdatePlacementTarget { get; set; }
+
+        public bool ExecuteCleanUpForward { get; set; }
+        public bool ExecuteCleanUpBackward { get; set; }
+
+        public string WindowName { get; set; }
+
     }
 }

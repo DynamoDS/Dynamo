@@ -3751,6 +3751,10 @@
                             <Setter TargetName="line2" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
                             <Setter Property="Cursor" Value="Hand" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="line1" Property="Stroke" Value="Gray" />
+                            <Setter TargetName="line2" Property="Stroke" Value="Gray" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

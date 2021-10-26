@@ -1241,7 +1241,7 @@ You will get a chance to save your work.</value>
     <value>New</value>
     <comment>Displays next to the package name in the Package Search window if the package has been added in the last 30 days.</comment>
   </data>
-	<data name="PackageDetailsDescription" xml:space="preserve">
+  <data name="PackageDetailsDescription" xml:space="preserve">
     <value>DESCRIPTION</value>
     <comment>Header in the PackageDetailsViewExtension.</comment>
   </data>
@@ -1269,7 +1269,7 @@ You will get a chance to save your work.</value>
     <value>Package</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
   </data>
-	<data name="PackageDownloadStateDownloaded" xml:space="preserve">
+  <data name="PackageDownloadStateDownloaded" xml:space="preserve">
     <value>Downloaded</value>
   </data>
   <data name="PackageDownloadStateDownloading" xml:space="preserve">
@@ -2766,20 +2766,19 @@ Delete the following packages: {2}?
     <value>Find a package</value>
   </data>
   <data name="PackagesGuideSearchFilterText" xml:space="preserve">
-    <value>You can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar.</value>
+    <value>\nYou can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar.</value>
   </data>
   <data name="PackagesGuideSearchFilterTitle" xml:space="preserve">
     <value>Search, filter, and sort</value>
   </data>
   <data name="PackagesGuideTermsOfServiceText" xml:space="preserve">
-    <value>Packages may come from third parties. Be aware that packages may pose security risks. More information \n\n**Click I Accept** in the Terms of Service to accept it and proceed with this guide.</value>
+    <value>\nPackages may come from third parties. Be aware that packages may pose security risks. #More information=https://dynamobim.org/issues/extend-dynamo-with-packages  \n\n**Click I Accept** in the Terms of Service to accept it and proceed with this guide.</value>
   </data>
   <data name="PackagesGuideTermsOfServiceTitle" xml:space="preserve">
     <value>Accept the Terms of Service</value>
   </data>
   <data name="PackagesGuideThirdPartyText" xml:space="preserve">
-    <value>Packages may come from third parties. Be aware that packages may pose security risks. 
-More information</value>
+    <value>\nPackages may come from third parties.\n\nBe aware that packages may pose security risks. #More information=https://dynamobim.org/issues/extend-dynamo-with-packages/</value>
   </data>
   <data name="PackagesGuideThirdPartyTitle" xml:space="preserve">
     <value>Third-party packages</value>

@@ -166,6 +166,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 currentGuide.LibraryView = Guide.FindChild(mainRootElement, libraryViewName);
                 currentGuide.Initialize();
                 currentGuide.Play();
+                GuidesValidationMethods.CurrentExecutingGuide = currentGuide;
             }
         }
 
@@ -188,7 +189,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 //Hide guide background overlay
                 guideBackgroundElement.Visibility = Visibility.Hidden;
-
+                GuidesValidationMethods.CurrentExecutingGuide = null;
                 tourStarted = false;
             }
 
@@ -240,8 +241,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     {
                         foreach (var automation in step.UIAutomation)
                         {
-                            var automationStepInfo = CreateStepUIAutomationInfo(automation);
-                            newStep.UIAutomation.Add(automationStepInfo);
+                            newStep.UIAutomation.Add(automation);
                         }
                     }
 
@@ -285,7 +285,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 HostUIElement = mainRootElement,
                 VerticalPopupOffSet = jsonHostControlInfo.VerticalPopupOffSet,
                 HorizontalPopupOffSet = jsonHostControlInfo.HorizontalPopupOffSet,
-                HtmlPage = jsonHostControlInfo.HtmlPage
+                HtmlPage = jsonHostControlInfo.HtmlPage,
+                WindowName = jsonHostControlInfo.WindowName,
+                DynamicHostWindow = jsonHostControlInfo.DynamicHostWindow
             };
 
             //If the CutOff area was defined in the json file then a section of the background overlay will be removed
@@ -317,29 +319,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 popupInfo.HostUIElement = hostUIElement;
 
             return popupInfo;
-        }
-
-        /// <summary>
-        /// This method will create an StepUIAutomation instance based on the information passed as parameter
-        /// </summary>
-        /// <param name="jsonUIAutomation">StepUIAutomation instance read from the json file</param>
-        /// <returns></returns>
-        private StepUIAutomation CreateStepUIAutomationInfo(StepUIAutomation jsonUIAutomation)
-        {
-            var uiAutomationInfo = new StepUIAutomation()
-            {
-                Sequence = jsonUIAutomation.Sequence,
-                ControlType = jsonUIAutomation.ControlType,
-                Name = jsonUIAutomation.Name,
-                Action = jsonUIAutomation.Action
-            };
-
-            //This section will search the UIElement in the Dynamo VisualTree in which an automation action will be executed
-            UIElement automationUIElement = Guide.FindChild(mainRootElement, jsonUIAutomation.Name);
-            if (automationUIElement != null)
-                uiAutomationInfo.UIElementAutomation = automationUIElement;
-
-            return uiAutomationInfo;
         }
 
         /// <summary>

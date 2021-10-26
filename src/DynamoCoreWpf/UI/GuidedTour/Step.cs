@@ -173,15 +173,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Show the tooltip in the DynamoUI
         /// </summary>
-        public void Show()
+        internal void Show(Guide.GuideFlow currentFlow)
         {
-            stepUIPopup.IsOpen = true;
-
             //In case the UIAutomation info is set for the Step we execute all the UI Automation actions when the Next button is pressed
             if (UIAutomation != null)
             {
                 foreach (var automation in UIAutomation)
-                    ExecuteUIAutomationStep(automation, true);
+                    ExecuteUIAutomationStep(automation, true, currentFlow);
             }
 
             //If the PreValidation info was read from the json file then is executed and it will decide which Step should be shown and which not
@@ -190,13 +188,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 ExecutePreValidation();
             }
 
+            stepUIPopup.IsOpen = true;
+
             CalculateTargetHost(true);
         }
 
         /// <summary>
         /// Hide the tooltip in the DynamoUI
         /// </summary>
-        public void Hide()
+        internal void Hide(Guide.GuideFlow currentFlow)
         {
             stepUIPopup.IsOpen = false;
 
@@ -204,10 +204,27 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (UIAutomation != null)
             {
                 foreach (var automation in UIAutomation)
-                    ExecuteUIAutomationStep(automation, false);
+                    ExecuteUIAutomationStep(automation, false, currentFlow);
             }
             CalculateTargetHost(false);
         }
+
+        internal void UpdatePlacementTarget()
+        {
+            if (stepUIPopup == null)
+            {
+                return;
+            }
+            if(!string.IsNullOrEmpty(HostPopupInfo.WindowName))
+            {
+                Window ownedWindow = Guide.FindWindowOwned(HostPopupInfo.WindowName, MainWindow as Window);
+                if (ownedWindow == null)  return;
+                HostPopupInfo.HostUIElement = ownedWindow;
+                stepUIPopup.PlacementTarget = ownedWindow;
+                UpdateLocation();
+            }
+        }
+
 
         /// <summary>
         /// This method will update the Popup location by calling the private method UpdatePosition using reflection (just when the PlacementTarget is moved or resized).
@@ -236,19 +253,54 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="uiAutomationData">UIAutomation info read from a json file</param>
         /// <param name="enableUIAutomation">Enable/Disable the automation action for a specific UIElement</param>
-        private void ExecuteUIAutomationStep(StepUIAutomation uiAutomationData, bool enableUIAutomation)
+        private void ExecuteUIAutomationStep(StepUIAutomation uiAutomationData, bool enableUIAutomation, Guide.GuideFlow currentFlow)
         {
+            //This section will search the UIElement dynamically in the Dynamo VisualTree in which an automation action will be executed
+            UIElement automationUIElement = Guide.FindChild(MainWindow, uiAutomationData.Name);
+            if (automationUIElement != null)
+                uiAutomationData.UIElementAutomation = automationUIElement;
+          
             switch (uiAutomationData.ControlType.ToUpper())
             {
                 case "MENUITEM":
-                    if (uiAutomationData.UIElementAutomation != null)
+                    if (uiAutomationData.UIElementAutomation == null)
                     {
-                        if (uiAutomationData.Action.ToUpper().Equals("OPEN"))
+                        return;
+                    }
+                    MenuItem menuEntry = uiAutomationData.UIElementAutomation as MenuItem;
+                    if (menuEntry == null) return;
+                    if (uiAutomationData.Action.ToUpper().Equals("OPEN"))
+                    {                     
+                        menuEntry.IsSubmenuOpen = enableUIAutomation;
+                        menuEntry.StaysOpenOnClick = enableUIAutomation;
+                    }
+                    break;
+                case "FUNCTION":
+                    MethodInfo builderMethod = typeof(GuidesValidationMethods).GetMethod(uiAutomationData.Name, BindingFlags.Static | BindingFlags.NonPublic);
+                    object[] parametersArray = new object[] { this, uiAutomationData, enableUIAutomation, currentFlow };
+                    builderMethod.Invoke(null, parametersArray);
+                    //Means that a new Window was opened after executing the funtion then we need to update the Popup.PlacementTarget
+                    if (uiAutomationData.UpdatePlacementTarget)
+                    {
+                        UpdatePlacementTarget();
+                    }
+                    break;
+                case "BUTTON":
+                    if (string.IsNullOrEmpty(uiAutomationData.WindowName)) return;
+                    if(uiAutomationData.WindowName.Equals("PopupWindow"))
+                    {
+                        var buttonFound = Guide.FindChild((stepUIPopup as PopupWindow).mainPopupGrid, uiAutomationData.Name) as Button;
+                        if (buttonFound == null) return;
+
+                        switch (uiAutomationData.Action.ToUpper())
                         {
-                            MenuItem menuEntry = uiAutomationData.UIElementAutomation as MenuItem;
-                            menuEntry.IsSubmenuOpen = enableUIAutomation;
-                            menuEntry.StaysOpenOnClick = enableUIAutomation;
-                        }
+                            case "DISABLE":
+                                if (enableUIAutomation)
+                                    buttonFound.IsEnabled = false;
+                                else
+                                    buttonFound.IsEnabled = true;
+                                break;
+                        }                      
                     }
                     break;
             }
@@ -287,6 +339,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="bVisible">When the Step is shown this variable will be false when is hidden(due to passing to the next Step) it will be false</param>
         internal void CalculateTargetHost(bool bVisible)
         {
+            if(HostPopupInfo.DynamicHostWindow == true)
+            {
+                UpdatePlacementTarget();
+            }
+
             //Check if the HighlightRectArea was provided in the json file and the HostUIElement was found in the DynamoView VisualTree
             if (HostPopupInfo.HighlightRectArea == null || HostPopupInfo.HostUIElement == null)
             {
@@ -346,7 +403,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     var brush = (Brush)converter.ConvertFromString(highlightColor);
                     StepGuideBackground.GuideHighlightRectangle.Stroke = brush;
                 }                            
-            }                              
+            }
         }
 
         /// <summary>

@@ -107,6 +107,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         [JsonProperty("HtmlPage")]
         public HtmlPage HtmlPage { get => htmlPage; set => htmlPage = value; }
+
+        /// <summary>
+        /// This property will contain the WPF Window Name for the cases when the Popup need to be located in a different Window than DynamoView
+        /// </summary>
+        [JsonProperty(nameof(WindowName))]
+        internal string WindowName { get; set; }
+
+        [JsonProperty(nameof(DynamicHostWindow))]
+        internal bool DynamicHostWindow { get; set; }
     }
 
     public class HtmlPage
