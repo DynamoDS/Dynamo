@@ -156,7 +156,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 step.CalculateTargetHost(false);
             }
         }
-
+        /// <summary>
+        /// This method will be executed for continuing to guide tour
+        /// </summary>
+        /// <param name="CurrentStepSequence">This parameter will contain the "sequence" of the current Step so we can continue the same step</param>
         internal void ContinueStep(int CurrentStepSequence)
         {
             if (CurrentStepSequence >= 0)

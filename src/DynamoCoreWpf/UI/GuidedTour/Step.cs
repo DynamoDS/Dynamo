@@ -107,6 +107,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         [JsonProperty("ShowLibrary")]
         public bool ShowLibrary { get; set; }
 
+        /// <summary>
+        /// This propertu will hold information about the exit guide modal 
+        /// </summary>
         [JsonProperty("ExitGuide")]
         public ExitGuide ExitGuide { get; set; }
 

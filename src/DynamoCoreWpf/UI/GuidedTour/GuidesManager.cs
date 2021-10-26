@@ -180,6 +180,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             currentGuide = (from guide in Guides where guide.Name.Equals(args.GuideName) select guide).FirstOrDefault();
 
+            //Check if it's packages guide to open the exit modal 
             if (args.GuideName == "Packages")
             {
                 guideBackgroundElement.ClearHighlightSection();
@@ -192,6 +193,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
+        /// <summary>
+        /// This method exits from tour 
+        /// </summary>
         private void ExitTour()
         {
 
@@ -216,6 +220,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         }
 
+        /// <summary>
+        /// Creates the exit modal when close button is pressed
+        /// </summary>
+        /// <param name="exitGuide">This parameter contains the properties to build exit guide modal</param>
         private void CreateExitModal(ExitGuide exitGuide)
         {
             var viewModel = new ExitGuideWindowViewModel(exitGuide);

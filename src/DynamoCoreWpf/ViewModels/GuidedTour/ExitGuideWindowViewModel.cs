@@ -12,10 +12,10 @@ namespace Dynamo.Wpf.ViewModels.GuidedTour
         private string title = "PackagesGuideExitTitle";
         private string formattedText;
 
-        public double Height { get => height; set => height = value; }
-        public double Width { get => width; set => width = value; }
-        public string Title { get => title; set => title = value; }
-        public string FormattedText
+        internal double Height { get => height; set => height = value; }
+        internal double Width { get => width; set => width = value; }
+        internal string Title { get => title; set => title = value; }
+        internal string FormattedText
         {
             get => formattedText;
             set
@@ -28,6 +28,7 @@ namespace Dynamo.Wpf.ViewModels.GuidedTour
 
         public ExitGuideWindowViewModel(ExitGuide exitGuide)
         {
+            //Checks if there is any property configured in the JSON file, otherwise it will get the default values
             if (exitGuide != null)
             {
                 Height = exitGuide.Height;
