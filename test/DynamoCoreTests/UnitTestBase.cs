@@ -9,6 +9,7 @@ namespace Dynamo
 {
     public class UnitTestBase
     {
+        private AssemblyHelper assemblyHelper;
         private static string alternativeSampleDirectory = string.Empty;
 
         private static string executingDirectory;
@@ -64,6 +65,18 @@ namespace Dynamo
         {
             SetupDirectories();
             DSOffice.ExcelInterop.ShowOnStartup = false;
+
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
+
+            var resolutionPaths = new[]
+            {
+                // These tests need "CoreNodeModels.dll" under "nodes" folder.
+                Path.Combine(moduleRootFolder, "nodes")
+            };
+
+            assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
+            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 
         [TearDown]
@@ -78,6 +91,8 @@ namespace Dynamo
             {
                 Console.WriteLine(ex.StackTrace);
             }
+
+            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
         }
 
         public string GetNewFileNameOnTempPath(string fileExtension = "dyn")
