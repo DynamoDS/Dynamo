@@ -1,23 +1,16 @@
 ﻿using Dynamo.Configuration;
 using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Nodes;
 using Dynamo.UI.Prompts;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
-using CoreNodeModels.Properties;
 using Dynamo.UI;
 using UnitsUI.Controls;
 using UnitsUI.Converters;
@@ -280,24 +273,24 @@ namespace UnitsUI
         }
     }
 
-    public class ConverterNodeViewCustomization : INodeViewCustomization<ForgeDynamoConvert>
+    public class ConverterNodeViewCustomization : INodeViewCustomization<DynamoUnitConvert>
     {
         private NodeModel nodeModel;
-        private ForgeDynamoConverterControl converterControl;
+        private DynamoUnitConverterControl converterControl;
         private NodeViewModel nodeViewModel;
-        private ForgeDynamoConvert convertModel;
-        private ForgeConverterViewModel converterViewModel;
+        private DynamoUnitConvert convertModel;
+        private UnitConverterViewModel converterViewModel;
 
-        public void CustomizeView(ForgeDynamoConvert model, NodeView nodeView)
+        public void CustomizeView(DynamoUnitConvert model, NodeView nodeView)
         {
             nodeModel = nodeView.ViewModel.NodeModel;
             nodeViewModel = nodeView.ViewModel;
             convertModel = model;
-            converterControl = new ForgeDynamoConverterControl(model, nodeView)
+            converterControl = new DynamoUnitConverterControl(model, nodeView)
             {
-                DataContext = new ForgeConverterViewModel(model, nodeView),
+                DataContext = new UnitConverterViewModel(model, nodeView),
             };
-            converterViewModel = converterControl.DataContext as ForgeConverterViewModel;
+            converterViewModel = converterControl.DataContext as UnitConverterViewModel;
             nodeView.inputGrid.Children.Add(converterControl);
             converterControl.SelectConversionQuantity.PreviewMouseUp += SelectConversionQuantity_PreviewMouseUp;
             converterControl.SelectConversionFrom.PreviewMouseUp += SelectConversionFrom_PreviewMouseUp;

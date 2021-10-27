@@ -56,8 +56,8 @@
     <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
-    <Compile Include="Controls\ForgeDynamoConverterControl.xaml.cs">
-      <DependentUpon>ForgeDynamoConverterControl.xaml</DependentUpon>
+    <Compile Include="Controls\DynamoUnitConverterControl.xaml.cs">
+      <DependentUpon>DynamoUnitConverterControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\Converters.cs" />
     <Compile Include="Converters\JSONConverters.cs" />
@@ -133,7 +133,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\ForgeDynamoConverterControl.xaml">
+    <Page Include="Controls\DynamoUnitConverterControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

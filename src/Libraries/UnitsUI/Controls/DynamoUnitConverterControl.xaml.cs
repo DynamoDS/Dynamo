@@ -12,9 +12,9 @@ namespace UnitsUI.Controls
     /// <summary>
     /// Interaction logic for ConverterControl.xaml
     /// </summary>
-    public partial class ForgeDynamoConverterControl : UserControl
+    public partial class DynamoUnitConverterControl : UserControl
     {
-        public ForgeDynamoConverterControl(ForgeDynamoConvert Model, NodeView nodeView)
+        public DynamoUnitConverterControl(DynamoUnitConvert Model, NodeView nodeView)
         {
             InitializeComponent();          
         }      

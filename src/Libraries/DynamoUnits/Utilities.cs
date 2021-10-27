@@ -93,7 +93,7 @@ namespace DynamoUnits
         /// </summary>
         /// <param name="targetUnit"></param>
         /// <param name="expression"></param>
-        /// <returns></returns>
+        /// <returns name="double">Converted value</returns>
         [IsVisibleInDynamoLibrary(false)]
         public static double ParseExpressionByUnitId(string targetUnit, string expression)
         {
@@ -140,6 +140,10 @@ namespace DynamoUnits
 
         internal const string BaseAutodeskId = "autodesk.unit.unit:";
 
+        /// <summary>
+        /// Get all the loaded Quanities within the Dynamo session.
+        /// </summary>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static List<Quantity> GetAllQuantities()
         {
@@ -147,6 +151,10 @@ namespace DynamoUnits
                 DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities());
         }
 
+        /// <summary>
+        /// Get all the loaded Units within the Dynamo session.
+        /// </summary>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static List<Unit> GetAllUnits()
         {
@@ -154,6 +162,10 @@ namespace DynamoUnits
                 DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
         }
 
+        /// <summary>
+        /// Get all the loaded Symbols within the Dynamo session.
+        /// </summary>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static List<Symbol> GetAllSymbols()
         {

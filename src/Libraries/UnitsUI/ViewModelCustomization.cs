@@ -13,9 +13,9 @@ using Utilities = DynamoUnits.Utilities;
 
 namespace UnitsUI
 {
-    public class ForgeConverterViewModel : NotificationObject
+    public class UnitConverterViewModel : NotificationObject
     {
-        private readonly ForgeDynamoConvert dynamoConvertModel;
+        private readonly DynamoUnitConvert dynamoConvertModel;
         
         private readonly NodeViewModel nodeViewModel;
         private readonly NodeModel nodeModel;
@@ -108,7 +108,7 @@ namespace UnitsUI
             }
         }
 
-        public ForgeConverterViewModel(ForgeDynamoConvert model, NodeView nodeView)
+        public UnitConverterViewModel(DynamoUnitConvert model, NodeView nodeView)
         {
             dynamoConvertModel = model;
             nodeViewModel = nodeView.ViewModel;

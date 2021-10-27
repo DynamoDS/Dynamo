@@ -18,6 +18,7 @@ using DoubleNode = ProtoCore.AST.AssociativeAST.DoubleNode;
 using Dynamo.Utilities;
 using UnitsUI.Converters;
 using Utilities = DynamoUnits.Utilities;
+using Dynamo.Controls;
 
 namespace UnitsUI
 {
@@ -434,7 +435,7 @@ namespace UnitsUI
     [NodeSearchTags("ConvertUnitsSearchTags", typeof(UnitsUI.Properties.Resources))]
     [OutPortTypes("number")]
     [IsDesignScriptCompatible]
-    public class ForgeDynamoConvert : NodeModel
+    public class DynamoUnitConvert : NodeModel
     {
         private DynamoUnits.Unit selectedFromConversion;
         private DynamoUnits.Unit selectedToConversion;
@@ -583,7 +584,7 @@ namespace UnitsUI
         }
 
         [JsonConstructor]
-        private ForgeDynamoConvert(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        private DynamoUnitConvert(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             try
             {
@@ -602,7 +603,7 @@ namespace UnitsUI
             IsSelectionFromBoxEnabled = true;
         }
 
-        public ForgeDynamoConvert()
+        public DynamoUnitConvert()
         {
             try
             {
