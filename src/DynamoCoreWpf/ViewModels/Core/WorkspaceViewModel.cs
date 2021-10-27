@@ -781,8 +781,7 @@ namespace Dynamo.ViewModels
                 Nodes.Add(nodeViewModel);
             }
             Errors.Add(nodeViewModel.ErrorBubble);
-            nodeViewModel.UpdateBubbleContent();
-
+            
             PostNodeChangeActions();
         }
 

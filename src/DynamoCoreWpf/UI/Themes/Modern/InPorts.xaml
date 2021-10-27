@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
                     xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                    xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
                     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
                     xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
                     xmlns:views="clr-namespace:Dynamo.UI.Views;assembly=DynamoCoreWpf">
@@ -11,105 +12,89 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
     <DataTemplate DataType="{x:Type viewModels:InPortViewModel}">
+
         <!--  Grid that contains the entire port  -->
-        <Grid Name="mainGrid"
-              Height="35px"
-              HorizontalAlignment="Stretch">
-            <!--
-                The main border shows rounded edges and changes color according to multiple conditions
-                This logic is defined in the ViewModel. None of the elements in this Border are interactive, so they
-                can live in the lowest level of Z-Order
-            -->
-            <Border x:Name="mainBorder"
+        <Grid Name="MainGrid"
+              Height="35px">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Name="PortSnappingColumn" Width="25px" />
+                <ColumnDefinition Name="ValueMarkerColumn" Width="5px" />
+                <ColumnDefinition Name="GapBetweenValueMarkerAndPortName" Width="6px" />
+                <ColumnDefinition Name="PortNameColumn" Width="*" />
+                <ColumnDefinition Name="GapBetweenPortNameAndUseLevelSpinner" Width="6px" />
+                <ColumnDefinition Name="UseLevelSpinnerColumn" Width="Auto" />
+                <ColumnDefinition Name="ChevronColumn" Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Rectangle x:Name="PortSnapping"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="7"
+                       Fill="Transparent"
+                       IsHitTestVisible="{Binding IsHitTestVisible}"
+                       Canvas.ZIndex="1"
+                       SnapsToDevicePixels="True">
+                <interactivity:Interaction.Triggers>
+                    <views:HandlingEventTrigger EventName="MouseEnter">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                    <views:HandlingEventTrigger EventName="MouseLeave">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                    <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                </interactivity:Interaction.Triggers>
+            </Rectangle>
+
+            <!--  Sets the port background color  -->
+            <Border x:Name="PortBackgroundBorder"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="6"
                     Height="29px"
                     Background="{Binding PortBackgroundColor, UpdateSourceTrigger=PropertyChanged}"
-                    BorderBrush="{Binding PortBorderBrushColor, UpdateSourceTrigger=PropertyChanged}"
-                    BorderThickness="0,1,1,1"
+                    BorderThickness="0"
                     CornerRadius="0,11,11,0"
-                    SnapsToDevicePixels="True">
-                <!--  DockPanel that positions the visible port name and the UseLevelArrow  -->
-                <DockPanel x:Name="mainDockPanel" FlowDirection="LeftToRight">
-                    <Grid Name="portNameGrid"
-                          Height="{Binding Path=Height}"
-                          DockPanel.Dock="Left"
-                          IsEnabled="{Binding Path=IsEnabled}"
-                          IsHitTestVisible="True"
-                          ToolTipService.ShowDuration="60000">
-                        <Rectangle Fill="Transparent"
-                                   IsHitTestVisible="{Binding IsHitTestVisible}"
-                                   SnapsToDevicePixels="True">
-                            <interactivity:Interaction.Triggers>
-                                <views:HandlingEventTrigger EventName="MouseEnter">
-                                    <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
-                                </views:HandlingEventTrigger>
-                                <views:HandlingEventTrigger EventName="MouseLeave">
-                                    <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
-                                </views:HandlingEventTrigger>
-                                <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
-                                    <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}" CommandParameter="{Binding}" />
-                                </views:HandlingEventTrigger>
-                            </interactivity:Interaction.Triggers>
-                            <Rectangle.Margin>
-                                <MultiBinding Converter="{StaticResource SnapRegionMarginConverter}">
-                                    <Binding ElementName="portNameTb" Path="ActualWidth" />
-                                    <Binding Path="PortModel" />
-                                </MultiBinding>
-                            </Rectangle.Margin>
-                        </Rectangle>
-                        <TextBlock Name="portNameTb"
-                                   Width="Auto"
-                                   Margin="13,0,10,5"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Center"
-                                   FontFamily="{StaticResource ArtifaktElementRegular}"
-                                   FontSize="12px"
-                                   FontWeight="Medium"
-                                   Foreground="#DCDCDC"
-                                   IsHitTestVisible="False"
-                                   Text="{Binding Path=PortName}" />
-                    </Grid>
-                    <Grid Width="50"
-                          DockPanel.Dock="Left"
-                          Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                    <Grid Name="useLevelArrowGrid"
-                          Height="{Binding Path=Height}"
-                          Margin="0,1,6,0"
-                          HorizontalAlignment="Right"
-                          Visibility="{Binding Path=UseLevelVisibility}">
-                        <Label x:Name="useLevelArrow"
-                               Height="{Binding Path=Height}"
-                               Margin="0,0,0,8"
-                               Padding="0"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Content="&gt;"
-                               FontSize="16px"
-                               FontWeight="Medium"
-                               Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                               IsHitTestVisible="False" />
-                    </Grid>
-                </DockPanel>
-            </Border>
-            <!--  Marker that appears to the left side of an input port  -->
-            <Rectangle x:Name="portValueMarker"
-                       Width="6px"
+                    SnapsToDevicePixels="True" />
+
+            <!--  A small marker on the left of the port, indicating whether it's been honored  -->
+            <Rectangle x:Name="PortValueMarker"
+                       Grid.Column="1"
                        Height="29px"
-                       HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        Fill="{Binding PortValueMarkerColor, UpdateSourceTrigger=PropertyChanged}"
                        SnapsToDevicePixels="True" />
-            <!--
-                Interactive overlay for the port, highlights the port on MouseOver and
-                contains MouseClick event handling and ToolTip logic. Since the overlay is interactive, it needs to
-                live higher up in the Z-Order than the non-interactive elements in the mainBorder for MouseOver and
-                MouseClick events to fire.
-            -->
-            <Border x:Name="mainBorderHighlightOverlay"
+
+            <!--  The name of this port  -->
+            <TextBlock x:Name="PortNameTextBox"
+                       Grid.Column="3"
+                       Width="Auto"
+                       Margin="0,1,5,0"
+                       VerticalAlignment="Center"
+                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                       FontSize="12px"
+                       Foreground="#DCDCDC"
+                       IsHitTestVisible="False"
+                       Text="{Binding Path=PortName}" />
+
+            <!--  The small '>' marker users click on to open the port context menu  -->
+            <TextBlock x:Name="Chevron"
+                       Grid.Column="6"
+                       Width="20px"
+                       Padding="0,1,1,0"
+                       VerticalAlignment="Center"
+                       FontSize="16px"
+                       Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                       IsHitTestVisible="False"
+                       Text="&gt;"
+                       TextAlignment="Center"
+                       Visibility="{Binding UseLevelVisibility}" />
+
+            <!--  A semi-transparent overlay which displays when users move their mouse over the port  -->
+            <Border x:Name="MainBorderHighlightOverlay"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="6"
                     Height="29px"
                     BorderBrush="Transparent"
-                    BorderThickness="0,1,1,1"
                     CornerRadius="0,11,11,0"
                     Opacity="0.2"
                     SnapsToDevicePixels="True">
@@ -126,12 +111,10 @@
                     </Style>
                 </Border.Style>
                 <interactivity:Interaction.Triggers>
-                    <!--  Bind Connect command to left click  -->
                     <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                         <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
                     </views:HandlingEventTrigger>
                 </interactivity:Interaction.Triggers>
-
                 <Border.ToolTip>
                     <dynui:DynamoToolTip AttachmentSide="Left" Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>
@@ -141,90 +124,60 @@
                         </Grid>
                     </dynui:DynamoToolTip>
                 </Border.ToolTip>
-
-                <!--  Bind NodeAutoComplete to double left click  -->
                 <Border.InputBindings>
                     <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
                 </Border.InputBindings>
-
-                <!--
-                    We could have changed the Grid opacity directly here but didn't
-                    The reason is that if the opacity of the Grid is modified, the
-                    internal text box will also appear semi-transparent. This is why an
-                    intermediary Border is required just for mouse-over highlighting.
-                -->
-
-                <!--
-                    Port is contained in another rectangle to ensure that hit area is extended outside the grid.
-                    Minimum Width is specified on the rectangle, rather than the grid. Otherwise, if the port's width is less than
-                    the grid's width, the outside rectangle is shrinked to fit the grid. Port snapping cannot occur in that case
-                    as no mouse events are generated.This happens only for codeblock node.
-                -->
             </Border>
-            <!--
-                Contains the interactive elements which need to have the highest-level of Z-Order so that they
-                may be interacted with *above* the mainBorderHighlightOverlay layer.
-                This is the UseLevelsSpinner and UseLevelsControl.
-            -->
-            <DockPanel Name="interactionControlsDockPanel"
-                       Height="29px"
-                       HorizontalAlignment="Stretch"
-                       VerticalAlignment="Center"
-                       FlowDirection="LeftToRight"
-                       IsHitTestVisible="True"
-                       Visibility="{Binding Path=UseLevelVisibility}">
-                <Rectangle x:Name="useLevelArrowHighlightOverlay"
-                           Width="15"
-                           Height="15px"
-                           Margin="3,0,5,0"
-                           HorizontalAlignment="Right"
-                           DockPanel.Dock="Right"
-                           IsHitTestVisible="True">
-                    <!--  Bind InPortContextMenu to left click  -->
-                    <Rectangle.InputBindings>
-                        <MouseBinding Command="{Binding Path=NodePortContextMenuCommand}" MouseAction="LeftClick" />
-                    </Rectangle.InputBindings>
-                    <Rectangle.Style>
-                        <Style TargetType="{x:Type Rectangle}">
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Fill" Value="#E5E2DE" />
-                                    <Setter Property="Opacity" Value="0.3" />
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="False">
-                                    <Setter Property="Fill" Value="#E5E2DE" />
-                                    <Setter Property="Opacity" Value="0.0" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Rectangle.Style>
-                </Rectangle>
-                <TextBlock Name="fakePortNameTb"
-                           Width="Auto"
-                           Margin="13,0,10,5"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           DockPanel.Dock="Left"
-                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                           FontSize="12px"
-                           FontWeight="Medium"
-                           Foreground="Transparent"
-                           IsHitTestVisible="False"
-                           Opacity="0.4"
-                           Style="{StaticResource SZoomFadeText}"
-                           Text="{Binding Path=PortName}" />
+
+            <!--  Contains the UseLevelSpinner, letting users select List Levels etc  -->
+            <Grid Grid.Column="5" Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <dynui:UseLevelSpinner x:Name="useLevelControl"
-                                       Width="50"
-                                       Height="25"
-                                       Margin="0,0,0,0"
-                                       HorizontalAlignment="Right"
+                                       Width="50px"
+                                       Height="25px"
                                        VerticalAlignment="Center"
                                        Background="{StaticResource DarkGreyBrush}"
                                        DockPanel.Dock="Right"
                                        KeepListStructure="{Binding Path=ShouldKeepListStructure}"
                                        Level="{Binding Path=Level, Mode=TwoWay}"
-                                       Visibility="{Binding UseLevelSpinnerVisible, UpdateSourceTrigger=PropertyChanged}" />
-            </DockPanel>
+                                       Visibility="{Binding UseLevelVisibility}" />
+            </Grid>
+
+            <!--  A semi-transparent overlay above the chevron, which displays when a user's mouse moves over it  -->
+            <Border x:Name="ChevronHighlightOverlay"
+                    Grid.Column="6"
+                    Width="20px"
+                    Height="27px"
+                    CornerRadius="0,11,11,0"
+                    IsHitTestVisible="True"
+                    Visibility="{Binding UseLevelVisibility}">
+                <Border.InputBindings>
+                        <MouseBinding Command="{Binding Path=NodePortContextMenuCommand}" MouseAction="LeftClick" />
+                </Border.InputBindings>
+                <Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#E5E2DE" />
+                                <Setter Property="Opacity" Value="0.3" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="Background" Value="#E5E2DE" />
+                                <Setter Property="Opacity" Value="0.0" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+
+            <!--  The outer border around this port  -->
+            <Border x:Name="PortBorderBrush"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="6"
+                    Height="29px"
+                    BorderBrush="{Binding PortBorderBrushColor, UpdateSourceTrigger=PropertyChanged}"
+                    BorderThickness="0,1,1,1"
+                    CornerRadius="0,11,11,0"
+                    SnapsToDevicePixels="True" />
         </Grid>
     </DataTemplate>
 </ResourceDictionary>
