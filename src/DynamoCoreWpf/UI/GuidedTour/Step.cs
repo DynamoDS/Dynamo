@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using Dynamo.Wpf.Views.GuidedTour;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
+using System.Windows.Shapes;
+using Dynamo.Controls;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.UI.GuidedTour
@@ -122,6 +127,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal bool PreValidationIsOpenFlag { get; set; } = false;
 
+        /// <summary>
+        /// Guide Background that will be used by the Step to show or hide the highlight rectangle
+        /// </summary>
+        internal GuideBackground StepGuideBackground { get; set; }
+
+        /// <summary>
+        /// Main Window (DynamoView) that will be used by the Step for finding Child items (MenuItems) and calculate UIElement coordinates
+        /// </summary>
+        internal UIElement MainWindow { get; set; }
+
         #endregion
 
         #region Protected Properties
@@ -176,6 +191,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 ExecutePreValidation();
             }
+
+            CalculateTargetHost(true);
         }
 
         /// <summary>
@@ -191,6 +208,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 foreach (var automation in UIAutomation)
                     ExecuteUIAutomationStep(automation, false);
             }
+            CalculateTargetHost(false);
         }
 
         /// <summary>
@@ -262,6 +280,140 @@ namespace Dynamo.Wpf.UI.GuidedTour
                             PreValidationIsOpenFlag = false;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Calculate the Popup.PlacementTarget dynamically if is the case and highlight the sub MenuItem if the information was provided
+        /// </summary>
+        /// <param name="bVisible">When the Step is shown this variable will be false when is hidden(due to passing to the next Step) it will be false</param>
+        internal void CalculateTargetHost(bool bVisible)
+        {
+            //Check if the HighlightRectArea was provided in the json file and the HostUIElement was found in the DynamoView VisualTree
+            if (HostPopupInfo.HighlightRectArea == null || HostPopupInfo.HostUIElement == null)
+            {
+                return;
+            }
+            //Check if the WindowElementNameString was provided in the json and is not empty
+            if (string.IsNullOrEmpty(HostPopupInfo.HighlightRectArea.WindowElementNameString))
+            {
+                return;
+            }
+
+            //If the HighlightRectArea.UIElementTypeString was provided in the json file and is MenuItem type means that the Popup.TargetPlacement will be calculated dinamically due that the element is not in the DynamoView VisualTree.
+            if (HostPopupInfo.HighlightRectArea.UIElementTypeString.Equals(typeof(MenuItem).Name))
+            {
+                //We try to find the WindowElementNameString in the DynamoView VisualTree
+                var foundUIElement = Guide.FindChild(HostPopupInfo.HostUIElement, HostPopupInfo.HighlightRectArea.WindowElementNameString);
+
+                if(foundUIElement != null)
+                {
+                    var subMenuItem = foundUIElement as MenuItem;
+
+                    //If the HighlightRectArea.WindowElementNameString described is a MenuItem (Dynamo menu) then we need to activate the Rectangle in the MenuStyleDictionary.xaml style
+                    HighlightMenuItem(subMenuItem, bVisible);
+                }
+            }
+            //The HighlightRectArea.UIElementTypeString was provided but the type is DynamoView then we will search the element in the DynamoView VisualTree
+            else if (HostPopupInfo.HighlightRectArea.UIElementTypeString.Equals(typeof(DynamoView).Name))
+            {
+                string highlightColor = HostPopupInfo.HighlightRectArea.HighlightColor;
+
+                //Find the in the DynamoView VisualTree the specified Element (WindowElementNameString)
+                var hostUIElement = Guide.FindChild(MainWindow, HostPopupInfo.HighlightRectArea.WindowElementNameString);
+
+                if (hostUIElement == null)
+                {
+                    return;
+                }
+
+                //If the Element was found we need to calculate the X,Y coordinates based in the UIElement Ancestor
+                Point relativePoint = hostUIElement.TransformToAncestor(MainWindow)
+                            .Transform(new Point(0, 0));
+
+                var holeWidth = hostUIElement.DesiredSize.Width + HostPopupInfo.HighlightRectArea.WidthBoxDelta;
+                var holeHeight = hostUIElement.DesiredSize.Height + HostPopupInfo.HighlightRectArea.HeightBoxDelta;
+
+                //Activate the Highlight rectangle from the GuideBackground
+                StepGuideBackground.HighlightBackgroundArea.SetHighlighRectSize(relativePoint.Y, relativePoint.X, holeWidth, holeHeight);
+
+                if (string.IsNullOrEmpty(highlightColor))
+                {
+                    StepGuideBackground.GuideHighlightRectangle.Stroke = Brushes.Transparent;
+                }
+                else
+                {
+                    //This section will put the desired color in the Highlight rectangle (read from the json file)
+                    var converter = new BrushConverter();
+                    var brush = (Brush)converter.ConvertFromString(highlightColor);
+                    StepGuideBackground.GuideHighlightRectangle.Stroke = brush;
+                }                            
+            }                              
+        }
+
+        /// <summary>
+        /// Shows the Highlight rectangle or hides it depending of the bVisible parameter
+        /// </summary>
+        /// <param name="highlighMenuItem"></param>
+        /// <param name="bVisible">True for showing the Highlight rectangle otherwise is false</param>
+        internal void HighlightMenuItem(MenuItem highlighMenuItem, bool bVisible)
+        {
+            if (highlighMenuItem == null)
+                return;
+
+            //Due that for this Step we are using the Rectangle located in the ItemMenu we need to hide the GuideBackground Rectangle
+            if (StepGuideBackground != null)
+                StepGuideBackground.GuideHighlightRectangle.Stroke = new SolidColorBrush(Colors.Transparent);
+
+            if (bVisible)
+            {
+                var menuItem = (HostPopupInfo.HostUIElement as MenuItem);
+                
+                //This is the effect that will be animated with the StoryBoard
+                var blur = new BlurEffect()
+                {
+                    Radius = 1.0,
+                    KernelType = KernelType.Box
+                };
+                var converter = new BrushConverter();
+                Rectangle menuItemHighlightRec = new Rectangle
+                {
+                    Name = "HighlightRectangle",
+                    StrokeThickness = 2,
+                    Effect = blur,
+                    Stroke = (Brush)converter.ConvertFromString(HostPopupInfo.HighlightRectArea.HighlightColor)
+                };
+
+                //This is the animation over the BlurEffect.Radius that will be applied
+                DoubleAnimation glowAnimation = new DoubleAnimation(0.0, 4.0, new Duration(TimeSpan.FromSeconds(1)));
+                glowAnimation.AutoReverse = true;
+                glowAnimation.RepeatBehavior = RepeatBehavior.Forever;
+                Storyboard.SetTargetName(glowAnimation, menuItemHighlightRec.Name);
+                Storyboard.SetTargetProperty(glowAnimation, new PropertyPath("(Effect).Radius"));
+
+                //Get the Grid in which the Rectangle was added so we can execute the animation with Storyboard.Begin
+                Grid subItemsGrid = highlighMenuItem.Template.FindName("SubmenuItemGrid", highlighMenuItem) as Grid;
+
+                //We need to create an Scope and Register the Rectangle so the WPF XAML Processor can find the Rectangle.Name
+                NameScope.SetNameScope(subItemsGrid, new NameScope());
+                subItemsGrid.RegisterName(menuItemHighlightRec.Name, menuItemHighlightRec);
+
+                Storyboard myStoryboard = new Storyboard();
+                myStoryboard.Children.Add(glowAnimation);
+                myStoryboard.Begin(subItemsGrid);
+
+                //The Rectangle will be added dynamically in a specific step and then when passing to next step we will remove it
+                subItemsGrid.Children.Add(menuItemHighlightRec);
+                Grid.SetColumn(menuItemHighlightRec, 0);
+                Grid.SetColumnSpan(menuItemHighlightRec, 2);
+            }
+            else
+            {
+                //The HighlightRectangle needs to be removed once we hide to move to the next Step
+                Grid subItemsGrid = highlighMenuItem.Template.FindName("SubmenuItemGrid", highlighMenuItem) as Grid;
+                var menuItemHighlightRect = subItemsGrid.Children.OfType<Rectangle>().Where(rect => rect.Name.Equals("HighlightRectangle")).FirstOrDefault();
+                if(menuItemHighlightRect != null)
+                    subItemsGrid.Children.Remove(menuItemHighlightRect);
             }
         }
 

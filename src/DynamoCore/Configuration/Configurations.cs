@@ -132,7 +132,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Default width of tab
         /// </summary>
-        public static readonly int TabDefaultWidth = 250;
+        public static readonly int TabDefaultWidth = 225;
 
         /// <summary>
         /// Minimum width of tab in the extensions side bar

@@ -86,10 +86,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             Guides = new List<Guide>();
 
-            CreateGuideSteps(GuidesJsonFilePath);
+            //Due that we are passing the GuideBackground for each Step we need to create first the background and then Create the Steps
             CreateBackground();
+            CreateGuideSteps(GuidesJsonFilePath);
+            
 
-            guideBackgroundElement.HoleRect = new Rect();
+            guideBackgroundElement.ClearCutOffSection();
+            guideBackgroundElement.ClearHighlightSection();
         }
 
         /// <summary>
@@ -229,7 +232,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 foreach (Step step in guide.GuideSteps)
                 {
-                    HostControlInfo hostControlInfo = CreateHostControl(step);
+                    HostControlInfo hostControlInfo = CreateHostControl(step.HostPopupInfo);
                     Step newStep = CreateStep(step, hostControlInfo, totalTooltips);
 
                     //If the UI Automation info was read from the json file then we create an StepUIAutomation instance containing all the info for each automation entry
@@ -253,6 +256,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         //Passing the DynamoViewModel to each step so we can execute the Pre Validation methods 
                         newStep.DynamoViewModelStep = dynamoViewModel;
 
+                        newStep.StepGuideBackground = guideBackgroundElement;
+                        newStep.MainWindow = mainRootElement;
+
                         //The step is added to the new Guide being created
                         newGuide.GuideSteps.Add(newStep);
 
@@ -270,20 +276,40 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="jsonStepInfo">Step that contains all the info deserialized from the Json file</param>
         /// <returns></returns>
-        private HostControlInfo CreateHostControl(Step jsonStepInfo)
+        private HostControlInfo CreateHostControl(HostControlInfo jsonHostControlInfo)
         {
             var popupInfo = new HostControlInfo()
             {
-                PopupPlacement = jsonStepInfo.HostPopupInfo.PopupPlacement,
-                HostUIElementString = jsonStepInfo.HostPopupInfo.HostUIElementString,
+                PopupPlacement = jsonHostControlInfo.PopupPlacement,
+                HostUIElementString = jsonHostControlInfo.HostUIElementString,
                 HostUIElement = mainRootElement,
-                VerticalPopupOffSet = jsonStepInfo.HostPopupInfo.VerticalPopupOffSet,
-                HorizontalPopupOffSet = jsonStepInfo.HostPopupInfo.HorizontalPopupOffSet,
-                HtmlPage = jsonStepInfo.HostPopupInfo.HtmlPage,
-                HighlightColor = jsonStepInfo.HostPopupInfo.HighlightColor,
-                WidthBoxDelta = jsonStepInfo.HostPopupInfo.WidthBoxDelta,
-                HeightBoxDelta = jsonStepInfo.HostPopupInfo.HeightBoxDelta
+                VerticalPopupOffSet = jsonHostControlInfo.VerticalPopupOffSet,
+                HorizontalPopupOffSet = jsonHostControlInfo.HorizontalPopupOffSet,
+                HtmlPage = jsonHostControlInfo.HtmlPage
             };
+
+            //If the CutOff area was defined in the json file then a section of the background overlay will be removed
+            if (jsonHostControlInfo.CutOffRectArea != null)
+            {
+                popupInfo.CutOffRectArea = new CutOffArea()
+                {
+                    WidthBoxDelta = jsonHostControlInfo.CutOffRectArea.WidthBoxDelta,
+                    HeightBoxDelta = jsonHostControlInfo.CutOffRectArea.HeightBoxDelta
+                };
+            }
+
+            //If the Highlight area was defined in the json file then a rectangle will be highlighted in the Overlay
+            if (jsonHostControlInfo.HighlightRectArea != null)
+            {
+                popupInfo.HighlightRectArea = new HighlightArea()
+                {
+                    HighlightColor = jsonHostControlInfo.HighlightRectArea.HighlightColor,
+                    WidthBoxDelta = jsonHostControlInfo.HighlightRectArea.WidthBoxDelta,
+                    HeightBoxDelta = jsonHostControlInfo.HighlightRectArea.HeightBoxDelta,
+                    WindowElementNameString = jsonHostControlInfo.HighlightRectArea.WindowElementNameString,
+                    UIElementTypeString = jsonHostControlInfo.HighlightRectArea.UIElementTypeString
+                };
+            }
 
             //The host_ui_element read from the json file need to exists otherwise the host will be null
             UIElement hostUIElement = Guide.FindChild(mainRootElement, popupInfo.HostUIElementString);

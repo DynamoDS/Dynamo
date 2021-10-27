@@ -250,7 +250,7 @@
                              TargetType="MenuItem">
                 <Border Name="Border"
                         Height="25" Background="Transparent">
-                    <Grid>
+                    <Grid Name="SubmenuItemGrid">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="15"/>
                             <ColumnDefinition Width="*"

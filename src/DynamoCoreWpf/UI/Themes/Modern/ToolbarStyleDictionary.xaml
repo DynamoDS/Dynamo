@@ -1,48 +1,54 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!--  Style for Window Button -->
+    <!--  Style for Window Button  -->
     <Style x:Key="WindowButton" TargetType="Button">
-        <Setter Property="SnapsToDevicePixels" Value="true"/>
-        <Setter Property="OverridesDefaultStyle" Value="true"/>
-        <Setter Property="Height" Value="25"/>
-        <Setter Property="Width" Value="25"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Width" Value="25" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="Border"
                             Background="Transparent"
-                            BorderThickness="0 0 0 0"
-                            BorderBrush="#3b3b3b">
-                        <ContentPresenter Margin="1 1 0 0"
-                                          RecognizesAccessKey="True"/>
+                            BorderBrush="#3b3b3b"
+                            BorderThickness="0,0,0,0">
+                        <ContentPresenter Margin="1,1,0,0" RecognizesAccessKey="True" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <!--  Style for ShortCut Button -->
-    <ImageBrush x:Key="ClickBox" ImageSource="pack://application:,,,/DynamoCoreWpf;component/UI/Images/click_background.png"/>
+    <!--  Style for ShortCut Button  -->
+    <ImageBrush x:Key="ClickBox" ImageSource="pack://application:,,,/DynamoCoreWpf;component/UI/Images/click_background.png" />
     <Style x:Key="ShortCutButton" TargetType="Button">
-        <Setter Property="SnapsToDevicePixels" Value="true"/>
-        <Setter Property="OverridesDefaultStyle" Value="true"/>
-        <Setter Property="Height" Value="25"/>
-        <Setter Property="Width" Value="25"/>
-        <Setter Property="Margin" Value="0,0,16,0"/>
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Width" Value="25" />
+        <Setter Property="Margin" Value="0,0,16,0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="Border"                            
-                                    Margin="0"                            
-                                    Width="25"                            
-                                    Height="25"                            
-                                    Background="Transparent">
-                        <ContentPresenter Margin="0" RecognizesAccessKey="True"/>
-                    </Border>
+                    <Grid>
+                        <Border x:Name="Border"
+                                Width="25"
+                                Height="25"
+                                Canvas.ZIndex="0"
+                                Margin="0"
+                                Background="Transparent"
+                                CornerRadius="2" />
+                        <ContentPresenter Margin="0"
+                                          Canvas.ZIndex="1"
+                                          RecognizesAccessKey="True" />
+                    </Grid>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="Border" Property="Background" Value="#4F4F4F" />
+                        </Trigger>
                         <Trigger Property="IsPressed" Value="true">
-                            <Setter TargetName="Border" Property="Background" Value="{StaticResource ClickBox}"/>
+                            <Setter TargetName="Border" Property="Background" Value="#5F5F5F" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

@@ -1241,7 +1241,35 @@ You will get a chance to save your work.</value>
     <value>New</value>
     <comment>Displays next to the package name in the Package Search window if the package has been added in the last 30 days.</comment>
   </data>
-  <data name="PackageDownloadStateDownloaded" xml:space="preserve">
+	<data name="PackageDetailsDescription" xml:space="preserve">
+    <value>DESCRIPTION</value>
+    <comment>Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsLicense" xml:space="preserve">
+    <value>LICENSE:</value>
+    <comment>Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsVersionsAndPackageRequirements" xml:space="preserve">
+    <value>VERSIONS AND PACKAGE REQUIREMENTS</value>
+    <comment>Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsVersions" xml:space="preserve">
+    <value>Versions</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsHost" xml:space="preserve">
+    <value>Host</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsPython" xml:space="preserve">
+    <value>Python</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsPackage" xml:space="preserve">
+    <value>Package</value>
+    <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+	<data name="PackageDownloadStateDownloaded" xml:space="preserve">
     <value>Downloaded</value>
   </data>
   <data name="PackageDownloadStateDownloading" xml:space="preserve">
@@ -1594,10 +1622,13 @@ Do you want to install the latest Dynamo update?</value>
     <value>STL Models|{0}</value>
   </data>
   <data name="InfoBubbleError" xml:space="preserve">
-    <value>Error: </value>
+    <value>Error</value>
   </data>
   <data name="InfoBubbleWarning" xml:space="preserve">
-    <value>Warning: </value>
+    <value>Warning</value>
+  </data>
+  <data name="InfoBubbleInfo" xml:space="preserve">
+    <value>Info</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Failed to apply NodeViewCustomization for {0}</value>
@@ -1629,6 +1660,18 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="MessageUnsavedChanges1" xml:space="preserve">
     <value>. Please save them and try again.</value>
+  </data>
+  <data name="WorkspaceTabSavingUnnecessary" xml:space="preserve">
+    <value>No need to save!</value>
+  </data>
+  <data name="WorkspaceTabSavingNecessary" xml:space="preserve">
+    <value>You need to save updates to this file.</value>
+  </data>
+  <data name="WorkspaceTabSavingBrandNewFile" xml:space="preserve">
+    <value>This is a brand new file.</value>
+  </data>
+  <data name="WorkspaceTabNotSavedYet" xml:space="preserve">
+    <value>You haven't saved this file yet.</value>
   </data>
   <data name="SearchViewTopResult" xml:space="preserve">
     <value>Top Result</value>
@@ -2524,6 +2567,36 @@ Uninstall the following packages: {0}?</value>
   <data name="NodeRenamedLabel" xml:space="preserve">
     <value>Renamed</value>
   </data>
+  <data name="NodeInformationalStateDismiss" xml:space="preserve">
+    <value>Dismiss</value>
+  </data>
+  <data name="NodeInfoDismissButtonToolTip" xml:space="preserve">
+    <value>Dismisses the info messages on this node. Utilize when you want to design in graph failures, or the info message will not be relevant during graph execution.</value>
+  </data>
+  <data name="NodeWarningDismissButtonToolTip" xml:space="preserve">
+    <value>Dismisses the warning messages on this node. Utilize when you want to design in graph failures, or the warning message will not be relevant during graph execution.</value>
+  </data>
+  <data name="NodeInformationalStateDismissAll" xml:space="preserve">
+    <value>Dismiss all</value>
+  </data>
+  <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
+    <value>Dismissed Alerts</value>
+  </data>
+  <data name="LearnMore" xml:space="preserve">
+    <value>Learn more</value>
+  </data>
+  <data name="NodeInformationalStateShowAllInfo" xml:space="preserve">
+    <value>Show all info</value>
+  </data>
+  <data name="NodeInformationalStateShowAllWarnings" xml:space="preserve">
+    <value>Show all warnings</value>
+  </data>
+  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
+    <value>Show all errors</value>
+  </data>
+  <data name="NodeInformationalStateShowLess" xml:space="preserve">
+    <value>Show less</value>
+  </data>
   <data name="PackagePathProtected" xml:space="preserve">
     <value>This path is built-in and cannot be modified.</value>
   </data>
@@ -2746,5 +2819,20 @@ More information</value>
   </data>
   <data name="ScriptTagsRemovalWarning" xml:space="preserve">
     <value>Script tags detected in the help document have been removed.</value>
+  </data>
+  <data name="PackagesGuideContinueButton" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="PackagesGuideExitButton" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="ShortcutExportAsImageMainMenu" xml:space="preserve">
+    <value>Export as Image</value>
+  </data>
+  <data name="ShortcutExportBackground3DPreview" xml:space="preserve">
+    <value>Background 3D Preview</value>
+  </data>
+  <data name="ShortcutExportWorkspace" xml:space="preserve">
+    <value>Workspace</value>
   </data>
 </root>
