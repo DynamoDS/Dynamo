@@ -38,7 +38,6 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate>
-
                             <Border x:Name="container"
                                     Background="Transparent"
                                     BorderBrush="#FF23A597"
@@ -46,9 +45,7 @@
                                     BorderThickness="1">
                                 <Grid x:Name="inner"
                                       Background="#FF23A597">
-
                                     <TextBlock x:Name="text"
-                                               Margin="10,10,10,10"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                FontSize="14px"
