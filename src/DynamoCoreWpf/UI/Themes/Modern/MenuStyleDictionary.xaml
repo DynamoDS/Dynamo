@@ -250,7 +250,7 @@
                              TargetType="MenuItem">
                 <Border Name="Border"
                         Height="25" Background="Transparent">
-                    <Grid>
+                    <Grid Name="SubmenuItemGrid">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="15"/>
                             <ColumnDefinition Width="*"
@@ -259,35 +259,6 @@
                                               SharedSizeGroup="Shortcut" />
                             <ColumnDefinition Width="10" />
                         </Grid.ColumnDefinitions>
-                        <!--This rectangle will be used by the Guided tours when we need to highlight a SubMenuItem (due that shown a Popup we cannot use the normal highlight rectangle-->
-                        <Rectangle x:Name="HighlightRectangle"
-                                   Grid.Column="0"
-                                   Grid.ColumnSpan="2"
-                                   Stroke="Transparent"
-                                   Visibility="Collapsed"
-                                   Width="Auto"
-                                   Fill="Transparent"
-                                   StrokeThickness="2">
-                            <Rectangle.Effect>
-                                <BlurEffect Radius="1.0"
-                                            KernelType="Box"/>
-                            </Rectangle.Effect>
-                            <!--When the Rectangle is Loaded we will be showing a glow increasing a decreasing using the BlurEffect--> 
-                            <Rectangle.Triggers>
-                                <EventTrigger RoutedEvent="Rectangle.Loaded">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="HighlightRectangle"
-                                                             Storyboard.TargetProperty="(Effect).Radius"
-                                                             From="0.0" To="4.0" 
-                                                             Duration="0:0:1" 
-                                                             AutoReverse="True" 
-                                                             RepeatBehavior="Forever" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </Rectangle.Triggers>
-                        </Rectangle>
                         <ContentPresenter Name="Icon"
                                           Grid.Column="0"
                                           Margin="6,0,6,0"

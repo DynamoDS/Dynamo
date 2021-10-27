@@ -254,8 +254,10 @@ namespace Dynamo.Views
             var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
             for (int index = 0; index < childrenCount; ++index)
             {
-                var child = VisualTreeHelper.GetChild(dragCanvas, index);
-                var firstChild = VisualTreeHelper.GetChild(child, 0);
+                ContentPresenter contentPresenter = VisualTreeHelper.GetChild(dragCanvas, index) as ContentPresenter;
+                if (contentPresenter.Children().Count() < 1) continue;
+                
+                var firstChild = VisualTreeHelper.GetChild(contentPresenter, 0);
 
                 switch (firstChild.GetType().Name)
                 {
@@ -288,11 +290,11 @@ namespace Dynamo.Views
                 // graph. This smallest top-left corner value will be useful in making 
                 // the offset later on.
                 // 
-                var childBounds = VisualTreeHelper.GetDescendantBounds(child as Visual);
+                var childBounds = VisualTreeHelper.GetDescendantBounds(contentPresenter as Visual);
                 minX = childBounds.X < minX ? childBounds.X : minX;
                 minY = childBounds.Y < minY ? childBounds.Y : minY;
-                childBounds.X = (double)(child as Visual).GetValue(Canvas.LeftProperty);
-                childBounds.Y = (double)(child as Visual).GetValue(Canvas.TopProperty);
+                childBounds.X = (double)(contentPresenter as Visual).GetValue(Canvas.LeftProperty);
+                childBounds.Y = (double)(contentPresenter as Visual).GetValue(Canvas.TopProperty);
 
                 if (initialized)
                 {
