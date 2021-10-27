@@ -378,7 +378,7 @@
         <ItemsControl Name="inputPortControl"
                       Grid.Row="2"
                       Grid.Column="0"
-                      Margin="0,3,0,0"
+                      Margin="-25,3,0,0"
                       VerticalAlignment="Top"
                       HorizontalContentAlignment="Stretch"
                       Canvas.ZIndex="4"
