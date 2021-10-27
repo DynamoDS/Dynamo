@@ -1422,6 +1422,10 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\filterIcon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\sortIcon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\SearchPackages.gif" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\searchPackages.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\DynamoPackages_1_1.png" />
     <Resource Include="UI\Images\default_info_16px.png" />
     <Resource Include="UI\Images\clock-icon.png" />
