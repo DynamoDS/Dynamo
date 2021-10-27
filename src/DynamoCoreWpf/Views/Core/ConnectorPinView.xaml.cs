@@ -6,7 +6,6 @@ using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace Dynamo.Nodes
 {
@@ -16,10 +15,6 @@ namespace Dynamo.Nodes
     public partial class ConnectorPinView : IViewModelView<ConnectorPinViewModel>
     {
         public ConnectorPinViewModel ViewModel { get; private set; }
-        /// <summary>
-        /// Old ZIndex of node. It's set, when mouse leaves node.
-        /// </summary>
-        private int oldZIndex;
 
         public ConnectorPinView()
         {
@@ -43,8 +38,8 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Sets ZIndex of the particular note to be the highest in the workspace
-        /// This brings the note to the forefront of the workspace when clicked
+        /// Sets ZIndex of the particular pin to be the highest in the workspace
+        /// This brings the pin to the forefront of the workspace when clicked
         /// </summary>
         private void BringToFront()
         {
@@ -58,7 +53,7 @@ namespace Dynamo.Nodes
             {
                 pin.ZIndex = ConnectorPinViewModel.StaticZIndex-1;
             }
-
+            //Sets active pin to an index higher
             ViewModel.ZIndex = ConnectorPinViewModel.StaticZIndex;
         }
 
