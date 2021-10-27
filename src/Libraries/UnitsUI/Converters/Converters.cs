@@ -13,7 +13,7 @@ namespace UnitsUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string stUnit = string.Empty;
+            var stUnit = string.Empty;
 
             if (value is Unit unit)
             {
@@ -32,7 +32,7 @@ namespace UnitsUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string stQauntity = string.Empty;
+            var stQauntity = string.Empty;
 
             if (value is Quantity quantity)
             {

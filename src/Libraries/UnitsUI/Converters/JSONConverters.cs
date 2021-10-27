@@ -18,7 +18,7 @@ namespace UnitsUI.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            string typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
+            var typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
             try
             {
                 return DynamoUnits.Quantity.ByTypeID(typedId);
@@ -45,7 +45,7 @@ namespace UnitsUI.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            string typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
+            var typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
 
             try
             {
@@ -73,7 +73,7 @@ namespace UnitsUI.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            string typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
+            var typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
             try
             {
                 return DynamoUnits.Symbol.ByTypeID(typedId);
