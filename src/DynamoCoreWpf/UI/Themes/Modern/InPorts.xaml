@@ -14,8 +14,7 @@
     <DataTemplate DataType="{x:Type viewModels:InPortViewModel}">
 
         <!--  Grid that contains the entire port  -->
-        <Grid Name="MainGrid"
-              Height="35px">
+        <Grid Name="MainGrid" Height="35px">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Name="PortSnappingColumn" Width="25px" />
                 <ColumnDefinition Name="ValueMarkerColumn" Width="5px" />
@@ -26,12 +25,13 @@
                 <ColumnDefinition Name="ChevronColumn" Width="Auto" />
             </Grid.ColumnDefinitions>
 
+            <!--  Enables Port Snapping  -->
             <Rectangle x:Name="PortSnapping"
                        Grid.Column="0"
                        Grid.ColumnSpan="7"
+                       Canvas.ZIndex="1"
                        Fill="Transparent"
                        IsHitTestVisible="{Binding IsHitTestVisible}"
-                       Canvas.ZIndex="1"
                        SnapsToDevicePixels="True">
                 <interactivity:Interaction.Triggers>
                     <views:HandlingEventTrigger EventName="MouseEnter">
@@ -151,7 +151,7 @@
                     IsHitTestVisible="True"
                     Visibility="{Binding UseLevelVisibility}">
                 <Border.InputBindings>
-                        <MouseBinding Command="{Binding Path=NodePortContextMenuCommand}" MouseAction="LeftClick" />
+                    <MouseBinding Command="{Binding Path=NodePortContextMenuCommand}" MouseAction="LeftClick" />
                 </Border.InputBindings>
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
