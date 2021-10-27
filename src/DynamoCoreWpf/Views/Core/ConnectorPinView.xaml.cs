@@ -1,7 +1,10 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.Configuration;
 using Dynamo.Selection;
 using Dynamo.UI;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
@@ -38,10 +41,6 @@ namespace Dynamo.Nodes
         {
             BringToFront();
         }
-        private void OnPinViewMouseLeave(object sender, MouseEventArgs e)
-        {
-            ViewModel.ZIndex = oldZIndex;
-        }
 
         /// <summary>
         /// Sets ZIndex of the particular note to be the highest in the workspace
@@ -49,16 +48,34 @@ namespace Dynamo.Nodes
         /// </summary>
         private void BringToFront()
         {
-            var index = ConnectorPinViewModel.StaticZIndex + 1;
+            if (ConnectorPinViewModel.StaticZIndex == int.MaxValue)
+            {
+                PrepareZIndex();
+            }
 
             //Set all pins to -1 the current index
             foreach (var pin in ViewModel.WorkspaceViewModel.Pins)
             {
-                pin.ZIndex = index - 1;
+                pin.ZIndex = ConnectorPinViewModel.StaticZIndex-1;
             }
 
-            oldZIndex = index;
-            ViewModel.ZIndex = index;
+            ViewModel.ZIndex = ConnectorPinViewModel.StaticZIndex;
+        }
+
+        /// <summary>
+        /// If ZIndex is more then max value of int, it should be set back to the initial ZIndex to all elements.
+        /// </summary>
+        private void PrepareZIndex()
+        {
+            ConnectorPinViewModel.StaticZIndex = Configurations.NodeStartZIndex;
+
+            var parent = TemplatedParent as ContentPresenter;
+            if (parent == null) return;
+
+            foreach (var child in parent.ChildrenOfType<ConnectorPinView>())
+            {
+                child.ViewModel.ZIndex = Configurations.NodeStartZIndex;
+            }
         }
 
         private void OnPinMouseDown(object sender, MouseButtonEventArgs e)
