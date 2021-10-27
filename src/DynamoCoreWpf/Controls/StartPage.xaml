@@ -31,12 +31,14 @@
         </Grid.RowDefinitions>
 
         <!-- Begin top part (i.e. the "Start" tab) -->
-
-        <Border Background="#3C3C3C"
-                BorderThickness="0,1,0,1"
-                BorderBrush="#404040" />
-        <Border HorizontalAlignment="Left" Background="#2A2A2A" BorderThickness="0,0,0,5" BorderBrush="#ADE4DE">
-            <Grid Margin="10" Width="208">
+        <Border HorizontalAlignment="Stretch" Background="#353535" Margin="220,-32,0,32"></Border>
+        <Border HorizontalAlignment="Stretch" Background="#353535" Margin="0,0,0,32"></Border>
+        <Border Margin="218,-32,0,32"
+            HorizontalAlignment="Left"
+            Background="#2A2A2A"
+            BorderThickness="0,0,0,5"
+            BorderBrush="#ADE4DE">
+            <Grid Margin="10" Width="212">
                 <TextBlock Margin="10,4,0,0"
                            FontSize="16px"
                            FontFamily="{StaticResource ArtifaktElementRegular}"

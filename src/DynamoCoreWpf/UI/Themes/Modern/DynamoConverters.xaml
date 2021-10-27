@@ -135,7 +135,6 @@
     <controls:GroupTitleVisibilityConverter x:Key="GroupTitleVisibilityConverter" />
     <controls:LibraryViewModeToBoolConverter x:Key="LibraryViewModeToBoolConverter" />
     <controls:WorkspaceContextMenuHeightConverter x:Key="WorkspaceContextMenuHeightConverter" />
-    <controls:TabIndexConverter x:Key="TabIndexConverter"/>
     <controls:TreeViewLineConverter x:Key="TreeViewLineConverter" />
     <controls:TreeViewLineMarginConverter x:Key="TreeViewLineMarginConverter" />
     <controls:TreeViewHLineMarginConverter x:Key="TreeViewHLineMarginConverter" />

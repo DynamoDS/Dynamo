@@ -232,7 +232,6 @@
                 <!--Menu-->
                 <Menu IsMainMenu="True"
                       Name="menu1"
-                      Canvas.ZIndex="1000"
                       Style="{StaticResource MainMenu}">
                     <!--Accessor key = false. This is to include underscore in header(only for SubMenuItem-->
                     <Menu.Resources>
