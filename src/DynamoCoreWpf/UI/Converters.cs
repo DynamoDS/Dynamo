@@ -2625,6 +2625,7 @@ namespace Dynamo.Controls
             }
         }
 
+        
     /// <summary>
     /// Checks if the item is last. In that case, this converter controls 
     /// the last tree view item's  horizontal and vertical line height

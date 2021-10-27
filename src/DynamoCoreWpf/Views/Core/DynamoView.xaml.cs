@@ -2281,6 +2281,12 @@ namespace Dynamo.Controls
         {
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
 
+            int fullLibraryWidth = dynamoViewModel.LibraryWidth + 15;
+            int difference = fullLibraryWidth - 230;
+
+            int leftMargin = fullLibraryWidth < 230 ? difference : 0;
+            WorkspaceTabs.Margin = new System.Windows.Thickness(-leftMargin, -32, 0, 0);
+
             // When workspace is resized apply appropriate library expand/collapse icon
             UpdateLibraryCollapseIcon();
         }
