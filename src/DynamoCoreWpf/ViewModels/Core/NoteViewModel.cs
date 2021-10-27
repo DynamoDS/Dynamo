@@ -422,7 +422,7 @@ namespace Dynamo.ViewModels
             Model.CenterX = Model.PinnedNode.CenterX;
             Model.CenterY = Model.PinnedNode.CenterY - (Model.PinnedNode.Height * 0.5) - (Model.Height * 0.5) - distanceToNode;
 
-            ZIndex = Convert.ToInt32(PinnedNode.ErrorBubble.ZIndex - 1);
+            ZIndex = Convert.ToInt32(PinnedNode.ZIndex);
         }
     }
 }
