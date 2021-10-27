@@ -15,12 +15,13 @@ using Dynamo.PythonMigration.Controls;
 using Dynamo.Utilities;
 using Dynamo.Views;
 using Dynamo.Wpf.Extensions;
+using DynamoCoreWpfTests;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using PythonNodeModels;
 using PythonNodeModelsWpf;
 
-namespace DynamoCoreWpfTests
+namespace IronPythonTests
 {
     class PythonMigrationViewExtensionTests : DynamoTestUIBase
     {

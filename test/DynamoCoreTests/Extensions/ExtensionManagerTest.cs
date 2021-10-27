@@ -46,7 +46,7 @@ namespace Dynamo.Tests.Extensions
             CurrentDynamoModel.ExtensionManager.Add(mockExtension.Object);
 
             //Assert
-            //Checking that now we have three extensions
+            //Checking that now we have 2 extensions
             //PackageManager (added by the base class) and the Mock extension
             Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 2);
 

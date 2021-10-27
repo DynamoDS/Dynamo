@@ -8,7 +8,7 @@
 3. IronPythonTests
 
 ### Reason
-IronPython is no longer maintained and has many security issues
+Python2 and by extension IronPython2 has reached end of life and has many security issues
 
 ### Resolution
 IronPython has been deactivated and replaced with Python.NET (pythonnet)
