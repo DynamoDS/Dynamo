@@ -52,7 +52,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return string.Empty;
+            if (string.IsNullOrEmpty(value as string)) return string.Empty;
             string incomingString = value as string;
             return incomingString.Split(new[] { '\r', '\n' }, 2)[1].Trim();
         }
@@ -1837,6 +1837,25 @@ namespace Dynamo.Controls
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Truncates a node's warning messages to 30 characters. Used on the node's context menu
+    /// when un-dismissing a node's warnings.
+    /// </summary>
+    public class NodeWarningConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is string stringValue)) return null;
+            string ellipses = stringValue.Length > 30 ? "..." : "";
+            return stringValue.Substring(0, Math.Min(stringValue.Length, 30)) + ellipses;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 

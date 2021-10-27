@@ -83,6 +83,7 @@
     <controls:AutoLacingToVisibilityConverter x:Key="AutoLacingToVisibilityConverter" />
     <controls:LacingToAbbreviationConverter x:Key="LacingToAbbreviationConverter" />
     <controls:LacingToTooltipConverter x:Key="LacingToTooltipConverter" />
+    <controls:NodeWarningConverter x:Key="NodeWarningConverter"/>
     <controls:NodeOriginalNameToMarginConverter x:Key="NodeOriginalNameToMarginConverter" />
     <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
