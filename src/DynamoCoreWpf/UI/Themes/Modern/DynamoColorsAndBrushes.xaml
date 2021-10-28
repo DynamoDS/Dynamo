@@ -91,7 +91,16 @@
     <Color x:Key="SelectionColor">#009EFF</Color>
     <Color x:Key="MaterialColor">#efede4</Color>
 
-    <!--  Extensions Sidebar  -->
+    <!--  Brushes for Menu  -->
+    <SolidColorBrush x:Key="NormalBorderBrush" Color="#444444" />
+    <SolidColorBrush x:Key="NormalBackgroundBrush" Color="#535353" />
+    <SolidColorBrush x:Key="NormalForegroundBrush" Color="#EEEEEE" />
+    <SolidColorBrush x:Key="ActiveForegroundBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="HighlightedHeaderBrush" Color="#424242" />
+    <SolidColorBrush x:Key="HighlightedBrush" Color="#424242" />
+    <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#949494" />
+
+<!--  Extensions Sidebar  -->
     <SolidColorBrush x:Key="BorderBrushWhite" Color="#FF3F4040" />
     <SolidColorBrush x:Key="FeedbackSectionBackground" Color="#4192D9" />
 
