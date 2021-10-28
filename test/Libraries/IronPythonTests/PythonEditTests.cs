@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
-using DSCPython;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Tests;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using PythonNodeModels;
 using DynCmd = Dynamo.Models.DynamoModel;
 
-namespace Dynamo.Tests
+namespace IronPythonTests
 {
     [RequiresSTA]
     public class PythonEditTests : DynamoViewModelUnitTest
@@ -34,7 +33,7 @@ namespace Dynamo.Tests
         /// </summary>
         private IEnumerable<PythonEngineVersion> GetPythonEnginesList()
         {
-            return new List<PythonEngineVersion>() { PythonEngineVersion.CPython3 };
+            return Enum.GetValues(typeof(PythonEngineVersion)).Cast<PythonEngineVersion>();
         }
 
         /// <summary>
@@ -256,6 +255,47 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void VerifyPythonLoadsFromCore()
+        {
+            // This test graphs verifies the following:
+            // 1 - IronPython version 2.7.9 is loaded
+            // 2 - IronPython StdLib 2.7.9 is loaded from Core location
+            // 3 - StdLib modules are loaded
+            // 4 - Legacy import statements are not influenced by 2.7.9 upgrade
+
+            // open test graph
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "IronPythonInfo_TestGraph.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            // reference to specific testing nodes in test graph
+            string[] testingNodeGUIDS = new string[]
+            {
+                "845d532f-df87-4d93-9f2e-d66509413ea6",
+                "cb037a9d-ebd5-4ce7-9a40-07b6ea11de25",
+                "a9bb1b12-fbbd-4aa1-9299-f0d30c9f99b2",
+                "b6bd3049-034f-488a-9bed-0373f05fd021"
+            };
+
+            // get test nodes
+            var allNodes = model.CurrentWorkspace.Nodes;
+
+            foreach (NodeModel node in allNodes)
+            {
+                var guid = node.GUID.ToString();
+
+                // if node is a test node, verify truth value
+                if (testingNodeGUIDS.Contains(guid))
+                {
+                    AssertPreviewValue(guid, true);
+                }
+            }
+
+            var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
+            Assert.NotNull(pynode);
+        }
+
+        [Test]
         public void ReturnPythonDictionary_AsDynamoDictionary()
         {
             // open test graph
@@ -359,11 +399,11 @@ namespace Dynamo.Tests
 
                 if (pythonEngine == PythonEngineVersion.IronPython2)
                 {
-                    Assert.AreEqual("2.7.9", nodeValue);
+                    Assert.AreEqual(nodeValue, "2.7.9");
                 }
                 else if (pythonEngine == PythonEngineVersion.CPython3)
                 {
-                    Assert.AreEqual("3.8.10", nodeValue);
+                    Assert.AreEqual(nodeValue, "3.8.10");
                 }
             }
         }
@@ -425,28 +465,30 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(TestDirectory, @"core\python", "WorkspaceWithMultiplePythonEngines.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
+            var pythonNode2GUID = "4050d23e529c43e9b6140506d8adb06b";
+
             var nodeModels = ViewModel.Model.CurrentWorkspace.Nodes.Where(n => n.NodeType == "PythonScriptNode");
             List<PythonNode> pythonNodes = nodeModels.Cast<PythonNode>().ToList();
 
             var pynode1 = pythonNodes.ElementAt(0);
             var pynode2 = pythonNodes.ElementAt(1);
 
-            Assert.AreEqual(new List<PythonEngineVersion>() { PythonEngineVersion.CPython3 }, PythonEngineSelector.Instance.AvailableEngines);
-            // Error when running IronPython2 script while IronPython2 engine is not installed
-            AssertPreviewValue(pynode1.GUID.ToString("N"), null);
-            AssertPreviewValue(pynode2.GUID.ToString("N"), null);
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9", "2.7.9" });
 
             UpdatePythonEngineAndRun(pynode1, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pynode1.GUID.ToString("N"), "3.8.10");
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.10", "2.7.9" });
 
             UpdatePythonEngineAndRun(pynode2, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pynode2.GUID.ToString("N"), new List<string> { "3.8.10", "3.8.10" });
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.10", "3.8.10" });
+
+            UpdateEngineAndRunForAllPythonNodes(pythonNodes, PythonEngineVersion.IronPython2);
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9", "2.7.9" });
         }
 
         [Test]
-        [Category("Failure")]
 
         public void Python_CanReferenceDynamoServicesExecutionSession()
         {
@@ -499,78 +541,6 @@ namespace Dynamo.Tests
 
             ViewModel.HomeSpace.Run();
             AssertPreviewValue(downstream2.GUID.ToString(), "joe");
-        }
-
-        [Test]
-        public void TwoCPythonHandlesReturnedFromSameNodeHaveSameHandleID()
-        {
-            // open test graph
-            var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_returnManyInstances.dyn");
-            ViewModel.OpenCommand.Execute(examplePath);
-
-            var classdef = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "classdef");
-
-            ViewModel.HomeSpace.Run();
-            var handles = classdef.CachedValue.GetElements().Select(x => x.Data).Cast<DynamoCPythonHandle>().ToList<DynamoCPythonHandle>();
-            var firstMemLoc = handles.First().PythonObjectID;
-            Assert.IsTrue(handles.All(x => x.PythonObjectID == firstMemLoc));
-        }
-
-        [Test]
-        public void TwoCPythonHandlesReturnedFromDifferentNodesHaveSameHandleID()
-        {
-            // open test graph
-            var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_returnManyInstancesFromManyNodes.dyn");
-            ViewModel.OpenCommand.Execute(examplePath);
-
-            var classdef = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "classdef");
-            var downstream1 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream1");
-
-            ViewModel.HomeSpace.Run();
-            var handles = classdef.CachedValue.GetElements().Select(x => x.Data);
-            handles = handles.Concat(downstream1.CachedValue.GetElements().Select(x => x.Data));
-            var dynamoHandles = handles.Cast<DynamoCPythonHandle>().ToList();
-
-            var firstMemLoc = dynamoHandles.First().PythonObjectID;
-            Assert.IsTrue(dynamoHandles.All(x => x.PythonObjectID == firstMemLoc));
-        }
-
-        [Test]
-        public void CPythonClassCanBeReturnedAndSafelyDisposedInDownStreamNode()
-        {
-            // open test graph
-            var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_modified.dyn");
-            ViewModel.OpenCommand.Execute(examplePath);
-
-            var classdef = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "classdef");
-            var downstream1 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream1");
-            var downstream2 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream2");
-
-            ViewModel.HomeSpace.Run();
-            AssertPreviewValue(downstream2.GUID.ToString(), "joe");
-            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
-
-
-            ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().First().UpdateValue(new UpdateValueParams("Code", "\"foo\";"));
-
-            ViewModel.HomeSpace.Run();
-            AssertPreviewValue(downstream2.GUID.ToString(), "foo");
-            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
-
-            ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().First().UpdateValue(new UpdateValueParams("Code", "\"bar\";"));
-
-            ViewModel.HomeSpace.Run();
-            AssertPreviewValue(downstream2.GUID.ToString(), "bar");
-
-            var deleteCmd = new DynamoModel.DeleteModelCommand(downstream1.GUID);
-            ViewModel.Model.ExecuteCommand(deleteCmd);
-
-            Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
-
-            var deleteCmd2 = new DynamoModel.DeleteModelCommand(classdef.GUID);
-            ViewModel.Model.ExecuteCommand(deleteCmd2);
-
-            Assert.IsEmpty(DynamoCPythonHandle.HandleCountMap.Where(x => x.ToString().Contains("myClass")));
         }
 
         [Test]
@@ -648,142 +618,6 @@ OUT = {modName}.value";
             finally
             {
                 File.Delete(tempPath);
-            }
-        }
-
-        /// <summary>
-        /// Currently unsupported use case - if a python module imported, and then moved on disk, reload will fail unless it is manually removed from
-        /// sys.modules as well. This should be rare.
-        /// </summary>
-        [Test]
-        [Category("Failure")]
-        [Category("TechDebt")]
-        public void CpythonRestart_ReloadModuleFromDifferentLocationFails()
-        {
-            var modName = "reload_test3";
-            (ViewModel.CurrentSpace as HomeWorkspaceModel).RunSettings.RunType = RunType.Manual;
-            var tempPath = Path.Combine(TempFolder, $"{modName}.py");
-
-            //clear file.
-            File.WriteAllText(tempPath, "value ='Hello World!'\n");
-            try
-            {
-                var script = $@"import sys
-sys.path.append(r'{Path.GetDirectoryName(tempPath)}')
-import {modName}
-OUT = {modName}.value";
-
-
-                var pythonNode = new PythonNode();
-                ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
-                pythonNode.Engine = PythonEngineVersion.CPython3;
-                UpdatePythonNodeContent(pythonNode, script);
-                RunCurrentModel();
-                AssertPreviewValue(pythonNode.GUID.ToString(), "Hello World!");
-
-                //delete the .py file, and create a new module with the same name, but a new location
-                File.Delete(tempPath);
-                var dynamoTemp = new DirectoryInfo(TempFolder).Parent.FullName;
-                tempPath = Path.Combine(dynamoTemp, Guid.NewGuid().ToString("N"), $"{modName}.py");
-                var modfile = new System.IO.FileInfo(tempPath);
-                modfile.Directory.Create(); 
-                File.WriteAllText(modfile.FullName, "value ='bye'\n");
-
-                //update script to point to new location
-                script = $@"import sys
-sys.path.append(r'{Path.GetDirectoryName(tempPath)}')
-import {modName}
-OUT = {modName}.value";
-                UpdatePythonNodeContent(pythonNode, script);
-
-                //user restarts manually, this will cause a dynamo and python reset
-                this.ViewModel.Model.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
-
-                RunCurrentModel();
-                //this failure is currently expected.
-                AssertPreviewValue(pythonNode.GUID.ToString(), "bye");
-
-            }
-            finally
-            {
-                File.Delete(tempPath);
-            }
-        }
-
-        //This test creates some instances with a class defined in a loaded module
-        //then calls a method on these instances - then reloads the module and runs the graph again.
-        [Test]
-        public void Cpython_reloaded_class_instances()
-        {
-           
-            RunModel(@"core\python\cpython_reloaded_class_instances.dyn");
-            var leafPythonNode = "27af4862d5e7446babea7ff42f5bc80c";
-            AssertPreviewValue(leafPythonNode, new string[] { "initial", "initial" });
-
-            var modulePath = Path.Combine(TestDirectory, "core", "python", "module_reload", "reloaded_class.py");
-
-            var originalContents = File.ReadAllText(modulePath);
-            try
-            {
-                //now we modify the module and force reload.
-                var newContent =
-@"class reloaded_class:
-    def __init__(self):
-        self.data = 'reloaded'
-
-    def get_data(self):
-        return self.data";
-                File.WriteAllText(modulePath, newContent);
-
-                this.ViewModel.Model.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
-                RunCurrentModel();
-                AssertPreviewValue(leafPythonNode, new string[] { "reloaded", "reloaded" });
-                //after a second run - the old instance shoud have been disposed
-                //only the new one should remain.
-                Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("reloaded_class")).Value);
-
-            }
-            finally
-            {
-                File.WriteAllText(modulePath, originalContents);
-            }
-        }
-
-        [Test]
-        public void Cpython_reloaded_class_instances_AUTO()
-        {
-            this.ViewModel.Model.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
-            RunModel(@"core\python\cpython_reloaded_class_instances.dyn");
-            var leafPythonNode = "27af4862d5e7446babea7ff42f5bc80c";
-            AssertPreviewValue(leafPythonNode, new string[] { "initial", "initial" });
-
-            var modulePath = Path.Combine(TestDirectory, "core", "python", "module_reload", "reloaded_class.py");
-
-            var originalContents = File.ReadAllText(modulePath);
-            try
-            {
-                //now we modify the module and force reload.
-                var newContent =
-@"class reloaded_class:
-    def __init__(self):
-        self.data = 'reloaded'
-
-    def get_data(self):
-        return self.data";
-                File.WriteAllText(modulePath, newContent);
-
-                (ViewModel.CurrentSpace as HomeWorkspaceModel).RunSettings.RunType = RunType.Automatic;
-                this.ViewModel.Model.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
-                
-                AssertPreviewValue(leafPythonNode, new string[] { "reloaded", "reloaded" });
-                //after a second run - the old instance shoud have been disposed
-                //only the new one should remain.
-                Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("reloaded_class")).Value);
-
-            }
-            finally
-            {
-                File.WriteAllText(modulePath, originalContents);
             }
         }
     }

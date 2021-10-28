@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Numerics;
 using Dynamo;
 using NUnit.Framework;
-using static DSPythonTests.PythonEvalTests;
 
-namespace DynamoPythonTests
+namespace IronPythonTests
 {
     public class PythonEvalTestsWithLibraries : DynamoModelTestBase
     {
+        public delegate object PythonEvaluatorDelegate(string code, IList bindingNames, IList bindingValues);
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("FFITarget.dll");
@@ -16,7 +16,7 @@ namespace DynamoPythonTests
         }
 
         public IEnumerable<PythonEvaluatorDelegate> Evaluators = new List<PythonEvaluatorDelegate> {
-            DSCPython.CPythonEvaluator.EvaluatePythonScript
+            DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript
         };
 
         [Test]
@@ -159,75 +159,6 @@ OUT = a, l
         }
 
         [Test]
-        public void TestRangeDecodingCPython()
-        {
-            string code = @"
-import sys
-import clr
-clr.AddReference('FFITarget')
-clr.AddReference('DSCoreNodes')
-from FFITarget import DummyCollection
-from DSCore import List
-
-r = range(0, 10, 2)
-# Python range => .NET array - Works in both
-a = DummyCollection.MakeArray(r)
-# Python range => .NET IList - Does not work in IronPython
-l = List.AddItemToEnd(10, range(0, 10, 2))
-
-OUT = a, l
-";
-            var empty = new ArrayList();
-            var expected = new ArrayList { new ArrayList { 0, 2, 4, 6, 8 }, new ArrayList { 0, 2, 4, 6, 8, 10 } };
-            var result = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
-            Assert.IsTrue(result is IEnumerable);
-            CollectionAssert.AreEqual(expected, result as IEnumerable);
-        }
-
-        [Test]
-        public void TestDictionaryDecodingCPython()
-        {
-            string code = @"
-import sys
-import clr
-clr.AddReference('FFITarget')
-clr.AddReference('DSCoreNodes')
-from DSCore import List
-from FFITarget import DummyCollection
-
-d = {'one': 1, 'two': 2, 'three': 3}
-
-# Python dict => .NET IDictionary
-untypedDictionary = DummyCollection.AcceptIDictionary(d)
-untypedDictionary['four'] = 4
-
-# Python dict => .NET IDictionary<> - Does not work in IronPython
-typedDictionary = DummyCollection.AcceptDictionary(d)
-typedDictionary['four'] = 4
-
-# Python dict => .NET IEnumerable - Returns keys in both engines
-sortedKeys = List.Sort(d)
-
-OUT = untypedDictionary, typedDictionary, sortedKeys
-";
-            var empty = new ArrayList();
-            var expectedDictionary = new Dictionary<string, int> {
-                { "one", 1 }, { "two", 2 }, { "three", 3 }, { "four", 4 }
-            };
-            var expectedKeys = new List<string> { "one", "three", "two" };
-            var result = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
-            Assert.IsTrue(result is IList);
-            var resultList = result as IList;
-            for (int i = 0; i < 2; i++)
-            {
-                Assert.IsTrue(resultList[i] is IDictionary);
-                DictionaryAssert(expectedDictionary, resultList[i] as IDictionary);
-            }
-            Assert.IsTrue(resultList[2] is IList);
-            CollectionAssert.AreEqual(expectedKeys, resultList[2] as IList);
-        }
-
-        [Test]
         public void TestDictionaryViewsDecoding()
         {
             var code = @"
@@ -260,32 +191,6 @@ OUT = dk, dv, di
                     CollectionAssert.AreEquivalent(expected[i], item as IEnumerable);
                     i++;
                 }
-            }
-        }
-
-        [Test]
-        public void TestSetDecodingCPython()
-        {
-            var code = @"
-import clr
-clr.AddReference('DSCoreNodes')
-from DSCore import List
-
-s = { 'hello' }
-fs = frozenset(s)
-# Python set => .NET IList - Does not work in IronPython
-s2 = List.AddItemToEnd('world', s)
-fs2 = List.AddItemToEnd('world', fs)
-OUT = s2, fs2
-";
-            var empty = new ArrayList();
-            var expected = new string[] { "hello", "world" };
-            var result = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
-            Assert.IsTrue(result is IEnumerable);
-            foreach (var item in result as IEnumerable)
-            {
-                Assert.IsTrue(item is IEnumerable);
-                CollectionAssert.AreEquivalent(expected, item as IEnumerable);
             }
         }
 
