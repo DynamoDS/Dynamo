@@ -113,7 +113,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This propertu will hold information about the exit guide modal 
         /// </summary>
         [JsonProperty("ExitGuide")]
-        public ExitGuide ExitGuide { get; set; }
+        internal ExitGuide ExitGuide { get; set; }
 
         public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT };
 

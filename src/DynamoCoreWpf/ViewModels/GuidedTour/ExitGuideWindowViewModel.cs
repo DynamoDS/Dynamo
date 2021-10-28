@@ -26,7 +26,7 @@ namespace Dynamo.Wpf.ViewModels.GuidedTour
             }
         }
 
-        public ExitGuideWindowViewModel(ExitGuide exitGuide)
+        internal ExitGuideWindowViewModel(ExitGuide exitGuide)
         {
             //Checks if there is any property configured in the JSON file, otherwise it will get the default values
             if (exitGuide != null)

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
-    public class ExitGuide
+    internal class ExitGuide
     {
         /// <summary>
         /// Represents the Height of Exit Guide modal

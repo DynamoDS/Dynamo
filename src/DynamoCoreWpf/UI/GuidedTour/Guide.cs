@@ -165,6 +165,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (CurrentStepSequence >= 0)
             {
                 CalculateStep(GuideFlow.CURRENT, CurrentStepSequence);
+                CurrentStep.Show();
             }
         }
 
@@ -242,8 +243,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         GuideBackgroundElement.ClearCutOffSection();
                         GuideBackgroundElement.ClearHighlightSection();
                     }
-
-                    resultStep.Show();
                 }
             }
         }
