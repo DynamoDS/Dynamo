@@ -2342,7 +2342,8 @@ namespace Dynamo.Controls
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
             {
-                dynamoViewModel.MainGuideManager.LaunchTour(Res.GetStartedGuide);
+                //The "Get Started" string needs to be hardcoded due that is hardcoded in the json file (no need localization)
+                dynamoViewModel.MainGuideManager.LaunchTour("Get Started");
             }
             catch (Exception ex)
             {
@@ -2360,7 +2361,8 @@ namespace Dynamo.Controls
         {
             try
             {
-                dynamoViewModel.MainGuideManager.LaunchTour(Res.PackagesGuide);
+                //The "Packages" string needs to be hardcoded due that is hardcoded in the json file (no need localization)
+                dynamoViewModel.MainGuideManager.LaunchTour("Packages");
             }
             catch (Exception)
             {
