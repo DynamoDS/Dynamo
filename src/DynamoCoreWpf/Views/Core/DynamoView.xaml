@@ -722,9 +722,9 @@
         <!--Shortcuts Toolbar-->
         <Grid Grid.Row="1"
               Grid.Column="0"
+              Canvas.ZIndex="1"
               VerticalAlignment="Top"
               Grid.ColumnSpan="5"
-              
               Name="shortcutsBarGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -739,7 +739,7 @@
             <Border Name="shortcutBarBorder"
                     BorderThickness="0"
                     HorizontalAlignment="Stretch"
-                    
+                    Margin="0,-1"
                     Grid.Row="0"
                 Grid.Column="0">
                 <Grid Name="shortcutBarGrid">
@@ -853,52 +853,8 @@
                                                                                     <ContentPresenter ContentSource="Header"
                                                                                                       HorizontalAlignment="Center"
                                                                                                       VerticalAlignment="Center" />
-                                                                                    <Image Name="TabMenuButtonImage"
-                                                                                           Width="16"
-                                                                                           Height="16">
-                                                                                        <Image.Style>
-                                                                                            <Style TargetType="{x:Type Image}">
-                                                                                                <Style.Triggers>
-                                                                                                    <Trigger Property="IsMouseOver"
-                                                                                                             Value="False">
-                                                                                                        <Setter Property="Source"
-                                                                                                                Value="/DynamoCoreWpf;component/UI/Images/tabs_button_normal.png" />
-                                                                                                    </Trigger>
-                                                                                                    <Trigger Property="IsMouseOver"
-                                                                                                             Value="True">
-                                                                                                        <Setter Property="Source"
-                                                                                                                Value="/DynamoCoreWpf;component/UI/Images/tabs_button_hover.png" />
-                                                                                                    </Trigger>
-                                                                                                </Style.Triggers>
-                                                                                            </Style>
-                                                                                        </Image.Style>
-                                                                                    </Image>
-                                                                                    <Popup Name="Popup"
-                                                                                           Placement="Custom"
-                                                                                           CustomPopupPlacementCallback="PlacePopup"
-                                                                                           IsOpen="{TemplateBinding IsSubmenuOpen}"
-                                                                                           AllowsTransparency="True"
-                                                                                           Focusable="False"
-                                                                                           PopupAnimation="Fade">
-                                                                                        <Border Name="SubmenuBorder"
-                                                                                                SnapsToDevicePixels="True"
-                                                                                                BorderBrush="{StaticResource NormalBorderBrush}"
-                                                                                                Background="{StaticResource NormalBackgroundBrush}"
-                                                                                                BorderThickness="1">
-                                                                                            <StackPanel IsItemsHost="True"
-                                                                                                        KeyboardNavigation.DirectionalNavigation="Cycle" />
-                                                                                        </Border>
-                                                                                    </Popup>
                                                                                 </Grid>
                                                                             </Border>
-                                                                            <ControlTemplate.Triggers>
-                                                                                <Trigger Property="IsHighlighted"
-                                                                                         Value="true">
-                                                                                    <Setter TargetName="TabMenuButtonImage"
-                                                                                            Property="Source"
-                                                                                            Value="/DynamoCoreWpf;component/UI/Images/tabs_button_hover.png" />
-                                                                                </Trigger>
-                                                                            </ControlTemplate.Triggers>
                                                                         </ControlTemplate>
                                                                     </Setter.Value>
                                                                 </Setter>
@@ -1242,8 +1198,10 @@
                                                 <Button Style="{StaticResource CloseButtonStyle}"
                                                         Command="{Binding HideCommand}"
                                                         Cursor="Hand"
+                                                        Margin="0"
                                                         Grid.Column="1">
                                                     <Image Width="16"
+                                                           Margin="0,0,10,0"
                                                            Height="16">
                                                         <Image.Style>
                                                             <Style TargetType="{x:Type Image}">

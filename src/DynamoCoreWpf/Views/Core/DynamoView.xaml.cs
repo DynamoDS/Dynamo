@@ -2274,13 +2274,22 @@ namespace Dynamo.Controls
         private void WorkspaceTabs_TargetUpdated(object sender, DataTransferEventArgs e)
         {
             if (WorkspaceTabs.SelectedIndex >= 0)
-                ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+            ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+            UpdateWorkspaceTabSizes();
         }
 
         private void WorkspaceTabs_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
 
+            UpdateWorkspaceTabSizes();
+
+            // When workspace is resized apply appropriate library expand/collapse icon
+            UpdateLibraryCollapseIcon();
+        }
+
+        private void UpdateWorkspaceTabSizes()
+        {
             int fullLibraryWidth = dynamoViewModel.LibraryWidth + 15;
             int difference = fullLibraryWidth - 230;
             int leftMargin = fullLibraryWidth < 230 ? difference : 0;
@@ -2292,9 +2301,6 @@ namespace Dynamo.Controls
             {
                 tabItem.Margin = new System.Windows.Thickness(-leftMargin, 0, leftMargin, 0);
             }
-
-            // When workspace is resized apply appropriate library expand/collapse icon
-            UpdateLibraryCollapseIcon();
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)
