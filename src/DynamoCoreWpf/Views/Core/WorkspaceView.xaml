@@ -315,6 +315,24 @@
 
         </StackPanel>
 
+        <Popup Name="PortContextMenu"
+               StaysOpen="True"
+               AllowsTransparency="True"
+               IsOpen="False"
+               Placement="Custom">
+            <Grid>
+                <Grid.Resources>
+                    <DataTemplate DataType="{x:Type viewmodels:InPortViewModel}">
+                        <ui:InPortContextMenu RequestShowPortContextMenu="ShowHidePortContextMenu" />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type viewmodels:OutPortViewModel}">
+                        <ui:OutPortContextMenu RequestShowPortContextMenu="ShowHidePortContextMenu" />
+                    </DataTemplate>
+                </Grid.Resources>
+                <ContentPresenter x:Name="PortContextMenuContent" Content="{Binding}" />
+            </Grid>
+        </Popup>
+
         <Popup Name="InCanvasSearchBar"
                StaysOpen="True"
                AllowsTransparency="True"
