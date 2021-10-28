@@ -276,35 +276,16 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "bottom_left",
 				"Width": 480,
-				"Height": 260,
+				"Height": 470,
 				"StepContent": {
 					"Title": "PackagesGuideSearchFilterTitle",
 					"FormattedText": "PackagesGuideSearchFilterText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "right",
-					"HostUIElementString": "PackageManagerMenu",
-					"VerticalPopupOffset": 50,
-					"HorizontalPopupOffset": 320
-				}
-			},
-			{
-				"Sequence": 4,
-				"Name": "packages",
-				"Type": "tooltip",
-				"TooltipPointerDirection": "top_left",
-				"PointerVerticalOffset": -50,
-				"Width": 480,
-				"Height": 508,
-				"StepContent": {
-					"Title": "PackagesGuideLearnAbout",
-					"FormattedText": "PackagesGuideLearnAboutText"
-				},
-				"HostPopupInfo": {
 					"PopupPlacement": "relative",
 					"HostUIElementString": "PackageManagerMenu",
-					"VerticalPopupOffset": -20,
-					"HorizontalPopupOffset": 85,
+					"VerticalPopupOffset": 50,
+					"HorizontalPopupOffset": 320,
 					"HtmlPage": {
 						"FileName": "searchPackages.html",
 						"Resources": {
@@ -312,8 +293,7 @@
 							"#filterIcon": "filterIcon.png",
 							"#sortIcon": "sortIcon.png"
 						}
-					},
-					"HeightBoxDelta": 3
+					}
 				}
 			}
 		]
