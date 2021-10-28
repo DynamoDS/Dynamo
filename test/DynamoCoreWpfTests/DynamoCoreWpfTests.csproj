@@ -200,7 +200,6 @@
     <Compile Include="ViewExtensions\NodeAutoCompleteViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\NodeManipulatorExtensionTests.cs" />
     <Compile Include="ViewExtensions\PackageDetailsViewExtensionTests.cs" />
-    <Compile Include="ViewExtensions\PythonMigrationViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\ViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\DocumentationBrowserViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\WorkspaceDependencyViewExtensionTests.cs" />
@@ -312,10 +311,6 @@
     <ProjectReference Include="..\..\src\PackageDetailsViewExtension\PackageDetailsViewExtension.csproj">
       <Project>{12FB4DA4-7E9C-4C2E-91CD-1D0B523A9535}</Project>
       <Name>PackageDetailsViewExtension</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\PythonMigrationViewExtension\PythonMigrationViewExtension.csproj">
-      <Project>{10af430d-0d3a-49ce-a63d-848912959745}</Project>
-      <Name>PythonMigrationViewExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>

@@ -14,8 +14,7 @@ namespace DSPythonTests
         public delegate object PythonEvaluatorDelegate(string code, IList bindingNames, IList bindingValues);
 
         public IEnumerable<PythonEvaluatorDelegate> Evaluators = new List<PythonEvaluatorDelegate> {
-            DSCPython.CPythonEvaluator.EvaluatePythonScript,
-            DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript
+            DSCPython.CPythonEvaluator.EvaluatePythonScript
         };
 
         [Test]
@@ -55,25 +54,13 @@ namespace DSPythonTests
         [Category("UnitTests")]
         public void DataMarshaling_Output()
         {
-            var marshaler = DSIronPython.IronPythonEvaluator.OutputMarshaler;
-            marshaler.RegisterMarshaler((string s) => s.Length);
-
             const string script = "OUT = ['', ' ', '  ']";
 
-            object output = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(
-                script,
-                new ArrayList(),
-                new ArrayList());
-
-            Assert.AreEqual(new[] { 0, 1, 2 }, output);
-
-            marshaler.UnregisterMarshalerOfType<string>();
-
             // Using the CPython Evaluator
-            marshaler = DSCPython.CPythonEvaluator.OutputMarshaler;
+            var marshaler = CPythonEvaluator.OutputMarshaler;
             marshaler.RegisterMarshaler((string s) => s.Length);
 
-            output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
+            var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
                 script,
                 new ArrayList(),
                 new ArrayList());
@@ -89,24 +76,12 @@ namespace DSPythonTests
         [Category("UnitTests")]
         public void DataMarshaling_Input()
         {
-            var marshaler = DSIronPython.IronPythonEvaluator.InputMarshaler;
-            marshaler.RegisterMarshaler((string s) => s.Length);
-
             const string script = "OUT = sum(IN)";
 
-            object output = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(
-                script,
-                new ArrayList { "IN" },
-                new ArrayList { new ArrayList { " ", "  " } });
-
-            Assert.AreEqual(3, output);
-
-            marshaler.UnregisterMarshalerOfType<string>();
-
-            marshaler = DSCPython.CPythonEvaluator.InputMarshaler;
+            var marshaler = DSCPython.CPythonEvaluator.InputMarshaler;
             marshaler.RegisterMarshaler((string s) => s.Length);
 
-            output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
+            var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
                 script,
                 new ArrayList { "IN" },
                 new ArrayList { new ArrayList { " ", "  " } });
@@ -215,26 +190,6 @@ print 'hello'
             {
                 DSCPython.CPythonEvaluator.EvaluationEnd -= CPythonEvaluator_EvaluationEnd;
                 Assert.AreEqual(2, count);
-            }
-        }
-
-        [Test]
-        public void IronPythonGivesCorrectErrorLineNumberAndLoadsStdLib()
-        {
-            var code = @"
-from xml.dom.minidom import parseString
-my_xml = parseString('invalid XML!')
-";
-            try
-            {
-                DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(code, new ArrayList(), new ArrayList());
-                Assert.Fail("An exception was expected");
-            }
-            catch (Exception exc)
-            {
-                StringAssert.StartsWith(@"Traceback (most recent call last):
-  File ""<string>"", line 3, in <module>", exc.Message);
-                StringAssert.EndsWith("Data at the root level is invalid. Line 1, position 1.", exc.Message);
             }
         }
 

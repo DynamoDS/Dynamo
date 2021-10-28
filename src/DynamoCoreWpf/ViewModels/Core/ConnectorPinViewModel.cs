@@ -47,8 +47,7 @@ namespace Dynamo.ViewModels
 
         #region Properties
 
-        [JsonIgnore]
-        private readonly WorkspaceViewModel WorkspaceViewModel;
+        internal readonly WorkspaceViewModel WorkspaceViewModel;
         /// initialize the start Z-Index of a pin to a default
         /// zIndex is mutable depending on mouse behaviour
         private int zIndex = Configurations.NodeStartZIndex; 

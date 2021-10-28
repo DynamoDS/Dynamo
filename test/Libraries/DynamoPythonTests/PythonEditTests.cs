@@ -34,7 +34,7 @@ namespace Dynamo.Tests
         /// </summary>
         private IEnumerable<PythonEngineVersion> GetPythonEnginesList()
         {
-            return Enum.GetValues(typeof(PythonEngineVersion)).Cast<PythonEngineVersion>();
+            return new List<PythonEngineVersion>() { PythonEngineVersion.CPython3 };
         }
 
         /// <summary>
@@ -256,47 +256,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void VerifyPythonLoadsFromCore()
-        {
-            // This test graphs verifies the following:
-            // 1 - IronPython version 2.7.9 is loaded
-            // 2 - IronPython StdLib 2.7.9 is loaded from Core location
-            // 3 - StdLib modules are loaded
-            // 4 - Legacy import statements are not influenced by 2.7.9 upgrade
-
-            // open test graph
-            var model = ViewModel.Model;
-            var examplePath = Path.Combine(TestDirectory, @"core\python", "IronPythonInfo_TestGraph.dyn");
-            ViewModel.OpenCommand.Execute(examplePath);
-
-            // reference to specific testing nodes in test graph
-            string[] testingNodeGUIDS = new string[]
-            {
-                "845d532f-df87-4d93-9f2e-d66509413ea6",
-                "cb037a9d-ebd5-4ce7-9a40-07b6ea11de25",
-                "a9bb1b12-fbbd-4aa1-9299-f0d30c9f99b2",
-                "b6bd3049-034f-488a-9bed-0373f05fd021"
-            };
-
-            // get test nodes
-            var allNodes = model.CurrentWorkspace.Nodes;
-
-            foreach (NodeModel node in allNodes)
-            {
-                var guid = node.GUID.ToString();
-
-                // if node is a test node, verify truth value
-                if (testingNodeGUIDS.Contains(guid))
-                {
-                    AssertPreviewValue(guid, true);
-                }
-            }
-
-            var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
-            Assert.NotNull(pynode);
-        }
-
-        [Test]
         public void ReturnPythonDictionary_AsDynamoDictionary()
         {
             // open test graph
@@ -466,30 +425,28 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(TestDirectory, @"core\python", "WorkspaceWithMultiplePythonEngines.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
-            var pythonNode2GUID = "4050d23e529c43e9b6140506d8adb06b";
-
             var nodeModels = ViewModel.Model.CurrentWorkspace.Nodes.Where(n => n.NodeType == "PythonScriptNode");
             List<PythonNode> pythonNodes = nodeModels.Cast<PythonNode>().ToList();
 
             var pynode1 = pythonNodes.ElementAt(0);
             var pynode2 = pythonNodes.ElementAt(1);
 
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9", "2.7.9" });
+            Assert.AreEqual(new List<PythonEngineVersion>() { PythonEngineVersion.CPython3 }, PythonEngineSelector.Instance.AvailableEngines);
+            // Error when running IronPython2 script while IronPython2 engine is not installed
+            AssertPreviewValue(pynode1.GUID.ToString("N"), null);
+            AssertPreviewValue(pynode2.GUID.ToString("N"), null);
 
             UpdatePythonEngineAndRun(pynode1, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.10", "2.7.9" });
+            AssertPreviewValue(pynode1.GUID.ToString("N"), "3.8.10");
 
             UpdatePythonEngineAndRun(pynode2, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.10", "3.8.10" });
-
-            UpdateEngineAndRunForAllPythonNodes(pythonNodes, PythonEngineVersion.IronPython2);
-            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9", "2.7.9" });
+            AssertPreviewValue(pynode2.GUID.ToString("N"), new List<string> { "3.8.10", "3.8.10" });
         }
 
         [Test]
+        [Category("Failure")]
 
         public void Python_CanReferenceDynamoServicesExecutionSession()
         {

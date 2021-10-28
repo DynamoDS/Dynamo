@@ -1003,7 +1003,6 @@ namespace DSIronPython
                     {
                         description = (string)value;
                     }
-
                 }
                 catch
                 {
