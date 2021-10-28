@@ -16,8 +16,15 @@ namespace Dynamo.Notifications
             this.model = model;
             DataContext = model;
             InitializeComponent();
+            this.Closed += OnNotificationsViewClosed;
             this.StateChanged += MainWindowStateChangeRaised;
             this.Owner = model.dynamoWindow;
+        }
+
+        private void OnNotificationsViewClosed(object sender, EventArgs e)
+        {
+            this.Closed -= OnNotificationsViewClosed;
+            this.StateChanged -= MainWindowStateChangeRaised;
         }
 
         private void ShowDetails_ButtonClick(object sender, RoutedEventArgs e)
