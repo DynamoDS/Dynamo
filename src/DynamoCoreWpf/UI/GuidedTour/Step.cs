@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using Dynamo.Controls;
 using Dynamo.ViewModels;
@@ -356,29 +358,62 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="bVisible">True for showing the Highlight rectangle otherwise is false</param>
         internal void HighlightMenuItem(MenuItem highlighMenuItem, bool bVisible)
         {
-            if (highlighMenuItem != null)
-            {
-                //The HighlightRectangle is a Rectangle already created in MenuStyleDictionary.xaml but is Collapsed
-                Rectangle highlightRectangle = highlighMenuItem.Template.FindName("HighlightRectangle", highlighMenuItem) as Rectangle;
-                if (highlightRectangle != null)
-                {
-                    if(bVisible)
-                    {
-                        var converter = new BrushConverter();
-                        highlightRectangle.Stroke = (Brush)converter.ConvertFromString(HostPopupInfo.HighlightRectArea.HighlightColor);
-                        highlightRectangle.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        highlightRectangle.Stroke = new SolidColorBrush(Colors.Transparent);
-                        highlightRectangle.Visibility = Visibility.Collapsed;
-                    }
-                    
+            if (highlighMenuItem == null)
+                return;
 
-                    //Due that we are using the Rectangle located in the ItemMenu we need to hide the GuidBackground Rectangle
-                    if (StepGuideBackground != null)
-                        StepGuideBackground.GuideHighlightRectangle.Stroke = new SolidColorBrush(Colors.Transparent);
-                }
+            //Due that for this Step we are using the Rectangle located in the ItemMenu we need to hide the GuideBackground Rectangle
+            if (StepGuideBackground != null)
+                StepGuideBackground.GuideHighlightRectangle.Stroke = new SolidColorBrush(Colors.Transparent);
+
+            if (bVisible)
+            {
+                var menuItem = (HostPopupInfo.HostUIElement as MenuItem);
+                
+                //This is the effect that will be animated with the StoryBoard
+                var blur = new BlurEffect()
+                {
+                    Radius = 1.0,
+                    KernelType = KernelType.Box
+                };
+                var converter = new BrushConverter();
+                Rectangle menuItemHighlightRec = new Rectangle
+                {
+                    Name = "HighlightRectangle",
+                    StrokeThickness = 2,
+                    Effect = blur,
+                    Stroke = (Brush)converter.ConvertFromString(HostPopupInfo.HighlightRectArea.HighlightColor)
+                };
+
+                //This is the animation over the BlurEffect.Radius that will be applied
+                DoubleAnimation glowAnimation = new DoubleAnimation(0.0, 4.0, new Duration(TimeSpan.FromSeconds(1)));
+                glowAnimation.AutoReverse = true;
+                glowAnimation.RepeatBehavior = RepeatBehavior.Forever;
+                Storyboard.SetTargetName(glowAnimation, menuItemHighlightRec.Name);
+                Storyboard.SetTargetProperty(glowAnimation, new PropertyPath("(Effect).Radius"));
+
+                //Get the Grid in which the Rectangle was added so we can execute the animation with Storyboard.Begin
+                Grid subItemsGrid = highlighMenuItem.Template.FindName("SubmenuItemGrid", highlighMenuItem) as Grid;
+
+                //We need to create an Scope and Register the Rectangle so the WPF XAML Processor can find the Rectangle.Name
+                NameScope.SetNameScope(subItemsGrid, new NameScope());
+                subItemsGrid.RegisterName(menuItemHighlightRec.Name, menuItemHighlightRec);
+
+                Storyboard myStoryboard = new Storyboard();
+                myStoryboard.Children.Add(glowAnimation);
+                myStoryboard.Begin(subItemsGrid);
+
+                //The Rectangle will be added dynamically in a specific step and then when passing to next step we will remove it
+                subItemsGrid.Children.Add(menuItemHighlightRec);
+                Grid.SetColumn(menuItemHighlightRec, 0);
+                Grid.SetColumnSpan(menuItemHighlightRec, 2);
+            }
+            else
+            {
+                //The HighlightRectangle needs to be removed once we hide to move to the next Step
+                Grid subItemsGrid = highlighMenuItem.Template.FindName("SubmenuItemGrid", highlighMenuItem) as Grid;
+                var menuItemHighlightRect = subItemsGrid.Children.OfType<Rectangle>().Where(rect => rect.Name.Equals("HighlightRectangle")).FirstOrDefault();
+                if(menuItemHighlightRect != null)
+                    subItemsGrid.Children.Remove(menuItemHighlightRect);
             }
         }
 
