@@ -219,10 +219,8 @@ namespace Dynamo.Views
 
                         else if (popup == PortContextMenu)
                         {
-                            //if (ViewModel.ContextMenuPortViewModel == null) return;
                             popup.Child.Visibility = Visibility.Hidden;
-                            PortViewModel portViewModel = PortContextMenu.DataContext as PortViewModel;
-                            if (portViewModel == null) return;
+                            if (!(PortContextMenu.DataContext is PortViewModel portViewModel)) return;
                             portViewModel.SetupPortContextMenuPlacement(popup);
                         }
                     }
