@@ -375,8 +375,7 @@
                StaysOpen="True"
                AllowsTransparency="True"
                IsOpen="False"
-               Placement="Custom"
-               DataContext="{Binding Path=ContextMenuPortViewModel}">
+               Placement="Custom">
             <Grid>
                 <Grid.Resources>
                     <DataTemplate DataType="{x:Type viewmodels:InPortViewModel}">

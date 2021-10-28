@@ -507,10 +507,9 @@ namespace Dynamo.ViewModels
         private void NodePortContextMenu(object obj)
         {
             var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel.ContextMenuPortViewModel = this;
             
             wsViewModel.CancelActiveState();
-            wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Show);
+            wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Show, this);
         }
 
         private bool CanAutoComplete(object parameter)

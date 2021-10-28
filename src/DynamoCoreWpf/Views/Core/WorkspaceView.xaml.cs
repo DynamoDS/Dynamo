@@ -176,10 +176,10 @@ namespace Dynamo.Views
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
         }
 
-        private void ShowHidePortContextMenu(ShowHideFlags flag)
+        private void ShowHidePortContextMenu(ShowHideFlags flag, PortViewModel portViewModel)
         {
+            PortContextMenu.DataContext = portViewModel;
             ShowHidePopup(flag, PortContextMenu);
-            
         }
 
         private void ShowHideInCanvasControl(ShowHideFlags flag)
@@ -219,9 +219,11 @@ namespace Dynamo.Views
 
                         else if (popup == PortContextMenu)
                         {
-                            if (ViewModel.ContextMenuPortViewModel == null) return;
+                            //if (ViewModel.ContextMenuPortViewModel == null) return;
                             popup.Child.Visibility = Visibility.Hidden;
-                            ViewModel.ContextMenuPortViewModel.SetupPortContextMenuPlacement(popup);
+                            PortViewModel portViewModel = PortContextMenu.DataContext as PortViewModel;
+                            if (portViewModel == null) return;
+                            portViewModel.SetupPortContextMenuPlacement(popup);
                         }
                     }
 

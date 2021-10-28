@@ -163,16 +163,16 @@ namespace Dynamo.ViewModels
         }
 
         internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
-        internal event Action<ShowHideFlags> RequestPortContextMenu;
+        internal event Action<ShowHideFlags, PortViewModel> RequestPortContextMenu;
 
         internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag)
         {
             RequestNodeAutoCompleteSearch?.Invoke(flag);
         }
 
-        internal void OnRequestPortContextMenu(ShowHideFlags flag)
+        internal void OnRequestPortContextMenu(ShowHideFlags flag, PortViewModel viewModel)
         {
-            RequestPortContextMenu?.Invoke(flag);
+            RequestPortContextMenu?.Invoke(flag, viewModel);
         }
 
         #endregion
@@ -246,23 +246,6 @@ namespace Dynamo.ViewModels
         /// </summary>
         [JsonIgnore]
         public NodeAutoCompleteSearchViewModel NodeAutoCompleteSearchViewModel { get; private set; }
-
-        private PortViewModel contextMenuPortViewModel;
-
-        /// <summary>
-        /// A reference to the PortViewModel the user clicked on to
-        /// show its context menu
-        /// </summary>
-        [JsonIgnore]
-        public PortViewModel ContextMenuPortViewModel
-        {
-            get => contextMenuPortViewModel;
-            set
-            {
-                contextMenuPortViewModel = value;
-                RaisePropertyChanged(nameof(ContextMenuPortViewModel));
-            } 
-        }
 
         /// <summary>
         /// Cursor Property Binding for WorkspaceView

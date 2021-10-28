@@ -43,6 +43,9 @@
                     <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                         <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}" CommandParameter="{Binding}" />
                     </views:HandlingEventTrigger>
+                    <views:HandlingEventTrigger EventName="MouseRightButtonDown">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=NodePortContextMenuCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
                 </interactivity:Interaction.Triggers>
             </Rectangle>
 
@@ -111,8 +114,12 @@
                     </Style>
                 </Border.Style>
                 <interactivity:Interaction.Triggers>
+                    <!--  Bind Connect command to left click  -->
                     <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                         <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
+                    </views:HandlingEventTrigger>
+                    <views:HandlingEventTrigger EventName="MouseRightButtonDown">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=NodePortContextMenuCommand}" CommandParameter="{Binding}" />
                     </views:HandlingEventTrigger>
                 </interactivity:Interaction.Triggers>
                 <Border.ToolTip>
