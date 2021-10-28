@@ -144,6 +144,9 @@
     <Compile Include="Controls\NotificationsControl.xaml.cs">
       <DependentUpon>NotificationsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OutPortContextMenu.xaml.cs">
+      <DependentUpon>OutPortContextMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ParentMenuItem.cs" />
     <Compile Include="Controls\RunSettingsControl.xaml.cs">
       <DependentUpon>RunSettingsControl.xaml</DependentUpon>
@@ -191,6 +194,9 @@
     <Compile Include="UI\MouseBehaviour.cs" />
     <Compile Include="UI\Prompts\DynamoMessageBox.xaml.cs">
       <DependentUpon>DynamoMessageBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InPortContextMenu.xaml.cs">
+      <DependentUpon>InPortContextMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
@@ -503,10 +509,18 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Include="Controls\OutPortContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Prompts\DynamoMessageBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\InPortContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      </Page>
     <Page Include="Views\GuidedTour\ExitGuideWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

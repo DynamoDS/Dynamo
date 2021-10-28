@@ -11,6 +11,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand portMouseLeftButtonCommand;
         private DelegateCommand portMouseLeftButtonOnLevelCommand;
         private DelegateCommand portMouseLeftUseLevelCommand;
+        private DelegateCommand nodePortContextMenuCommand;
 
         public DelegateCommand ConnectCommand
         {
@@ -34,6 +35,21 @@ namespace Dynamo.ViewModels
                     autoCompleteCommand = new DelegateCommand(AutoComplete, CanAutoComplete);
 
                 return autoCompleteCommand;
+            }
+        }
+
+        /// <summary>
+        /// Command to open an Port's Context Menu popup
+        /// </summary>
+        public DelegateCommand NodePortContextMenuCommand
+        {
+            get
+            {
+                if (nodePortContextMenuCommand == null)
+                {
+                    nodePortContextMenuCommand = new DelegateCommand(NodePortContextMenu);
+                }
+                return nodePortContextMenuCommand;
             }
         }
 

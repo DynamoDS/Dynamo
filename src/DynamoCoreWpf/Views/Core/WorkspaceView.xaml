@@ -6,7 +6,7 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI.Controls"
              xmlns:views="clr-namespace:Dynamo.Views"
-             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
+             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"
              d:DesignHeight="300"
@@ -33,8 +33,8 @@
                     <ControlTemplate TargetType="{x:Type ItemsControl}">
                         <Border>
                             <StackPanel Margin="8,4,8,8"
-                                    Name="ContextMenuPanel"
-                                    Height="{Binding ElementName=MenuItems, Path=ActualHeight, 
+                                        Name="ContextMenuPanel"
+                                        Height="{Binding ElementName=MenuItems, Path=ActualHeight, 
                                                      Converter={StaticResource WorkspaceContextMenuHeightConverter}}">
                                 <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}" RequestShowInCanvasSearch="ShowHideContextMenu"
                                                       Width="{Binding ElementName=ContextMenuPanel, Path=ActualWidth}" />
@@ -45,23 +45,22 @@
                                     Padding="0,3,0,3">
                                     <StackPanel IsItemsHost="True"
                                             KeyboardNavigation.DirectionalNavigation="Cycle" />
-
                                     <Border.Style>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="Visibility"
-                                                Value="Collapsed" />
+                                                    Value="Collapsed" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.SearchRootCategories.Count}"
-                                                         Value="0">
+                                                             Value="0">
                                                     <Setter Property="Visibility"
-                                                        Value="Visible" />
+                                                            Value="Visible" />
                                                 </DataTrigger>
 
                                                 <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.CurrentMode,
                                                                            Converter={StaticResource LibraryViewModeToBoolConverter}}"
-                                                         Value="True">
+                                                             Value="True">
                                                     <Setter Property="Visibility"
-                                                        Value="Visible" />
+                                                            Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -73,7 +72,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style TargetType="{x:Type Popup}" x:Key="WorkspaceContextMenuStylePopup">
+        <Style TargetType="{x:Type Popup}"
+               x:Key="WorkspaceContextMenuStylePopup">
             <EventSetter Event="PreviewKeyDown"
                          Handler="OnInCanvasSearchContextMenuKeyDown" />
             <EventSetter Event="PreviewMouseUp"
@@ -85,13 +85,15 @@
             <ItemsControl ItemsSource="{Binding}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas/>
+                        <Canvas />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemContainerStyle>
                     <Style TargetType="ContentPresenter">
-                        <Setter Property="Canvas.Left" Value="{Binding Left}"/>
-                        <Setter Property="Canvas.Top" Value="{Binding Top}"/>
+                        <Setter Property="Canvas.Left"
+                                Value="{Binding Left}" />
+                        <Setter Property="Canvas.Top"
+                                Value="{Binding Top}" />
                     </Style>
                 </ItemsControl.ItemContainerStyle>
             </ItemsControl>
@@ -111,16 +113,20 @@
                                    IsHitTestVisible="False">
             <controls:InfiniteGridView.Style>
                 <Style TargetType="controls:InfiniteGridView">
-                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Setter Property="Visibility"
+                            Value="Collapsed" />
                     <Style.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Value="True" Binding="{Binding Path=DataContext.PreferenceSettings.IsBackgroundGridVisible,
+                                <Condition Value="True"
+                                           Binding="{Binding Path=DataContext.PreferenceSettings.IsBackgroundGridVisible,
                                            RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
-                                <Condition Value="False" Binding="{Binding Path=DataContext.BackgroundPreviewViewModel.Active,
+                                <Condition Value="False"
+                                           Binding="{Binding Path=DataContext.BackgroundPreviewViewModel.Active,
                                            RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
                             </MultiDataTrigger.Conditions>
-                            <Setter Property="Visibility" Value="Visible"/>
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
                         </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -203,36 +209,36 @@
                     VerticalAlignment="Top">
 
             <StackPanel Name="statusBarPanel"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Height="Auto">
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Height="Auto">
                 <StackPanel.Visibility>
                     <Binding Path="DataContext.BackgroundPreviewViewModel.Active"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
-                             Converter="{StaticResource BooleanToVisibilityConverter}"/>
+                             Converter="{StaticResource BooleanToVisibilityConverter}" />
                 </StackPanel.Visibility>
                 <ui:ImageCheckBox Width="56"
-                              Height="30"
-                              Margin="4,4,0,4"
-                              StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-states.png"
-                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-check.png"
-                              ToolTip="{x:Static p:Resources.InCanvasGeomButtonToolTip}">
+                                  Height="30"
+                                  Margin="4,4,0,4"
+                                  StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-states.png"
+                                  CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-check.png"
+                                  ToolTip="{x:Static p:Resources.InCanvasGeomButtonToolTip}">
                     <ui:ImageCheckBox.IsChecked>
                         <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
-                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                     </ui:ImageCheckBox.IsChecked>
                 </ui:ImageCheckBox>
                 <ui:ImageCheckBox Width="55"
-                              Height="30"
-                              Margin="0,4,0,4"
-                              StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-states.png"
-                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-check.png"
-                              ToolTip="{x:Static p:Resources.InCanvasNodeButtonToolTip}">
+                                  Height="30"
+                                  Margin="0,4,0,4"
+                                  StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-states.png"
+                                  CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-check.png"
+                                  ToolTip="{x:Static p:Resources.InCanvasNodeButtonToolTip}">
                     <ui:ImageCheckBox.IsChecked>
                         <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
-                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
-                             Converter="{StaticResource InverseBooleanConverter}" />
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
+                                 Converter="{StaticResource InverseBooleanConverter}" />
                     </ui:ImageCheckBox.IsChecked>
                 </ui:ImageCheckBox>
             </StackPanel>
@@ -326,7 +332,7 @@
                DataContext="{Binding NodeAutoCompleteSearchViewModel}">
             <ui:NodeAutoCompleteSearchControl RequestShowNodeAutoCompleteSearch="ShowHideNodeAutoCompleteControl" />
         </Popup>
-        
+       
         <Popup Name="ContextMenuPopup"
                AllowsTransparency="True"
                Opened="OnContextMenuOpened"
@@ -652,6 +658,7 @@
 
                     <!--  Fit to Screen  -->
                     <MenuItem Command="{Binding DynamoViewModel.FitViewCommand}" Header="{x:Static p:Resources.ContextMenuFitToScreen}" />
+
                 </ItemsControl.Items>
             </ItemsControl>
         </Popup>
