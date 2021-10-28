@@ -283,6 +283,7 @@
 					"HighlightRectArea": {
 						"HighlightColor": "#EF9362",
 						"UIElementTypeString": "Button",
+						"WindowName": "TermsOfUseWindow",
 						"WindowElementNameString": "AcceptTermsOfUseButton",
 						"WidthBoxDelta": 0,
 						"HeightBoxDelta": 0

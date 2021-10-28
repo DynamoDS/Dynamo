@@ -2514,13 +2514,10 @@ Uninstall the following packages: {0}?</value>
     <value>&lt;Double click here to edit group description&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>&lt;Double click here to edit group title&gt;</value>
+    <value>&lt;Click here to edit the group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>Add group to group</value>
-  </data>
-  <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
   </data>
   <data name="NodeInformationalStateDismiss" xml:space="preserve">
     <value>Dismiss</value>
@@ -2536,9 +2533,6 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="NodeInformationalStateShowLess" xml:space="preserve">
     <value>Show less</value>
-  </data>
-  <data name="LearnMore" xml:space="preserve">
-    <value>Learn more</value>
   </data>
   <data name="NodeInformationalStateDismissAll" xml:space="preserve">
     <value>Dismiss all</value>
@@ -2836,5 +2830,8 @@ If the toggle is off custom packages that are not already loaded will load once 
   </data>
   <data name="InfoBubbleInfo" xml:space="preserve">
     <value>Info</value>
+  </data>
+  <data name="AutodeskSamplePackage" xml:space="preserve">
+    <value>Autodesk sample</value>
   </data>
 </root>

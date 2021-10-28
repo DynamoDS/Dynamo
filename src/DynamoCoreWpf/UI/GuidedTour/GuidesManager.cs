@@ -308,6 +308,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     HighlightColor = jsonHostControlInfo.HighlightRectArea.HighlightColor,
                     WidthBoxDelta = jsonHostControlInfo.HighlightRectArea.WidthBoxDelta,
                     HeightBoxDelta = jsonHostControlInfo.HighlightRectArea.HeightBoxDelta,
+                    WindowName = jsonHostControlInfo.HighlightRectArea.WindowName,
                     WindowElementNameString = jsonHostControlInfo.HighlightRectArea.WindowElementNameString,
                     UIElementTypeString = jsonHostControlInfo.HighlightRectArea.UIElementTypeString
                 };

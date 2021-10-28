@@ -268,6 +268,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             if (hostControlInfo.HighlightRectArea != null)
             {
+                //If is not empty means that the HighlightRectArea.WindowElementNameString doesn't belong to the DynamoView then another way for hightlighting the element will be applied
+                if (!string.IsNullOrEmpty(hostControlInfo.HighlightRectArea.WindowName)) return;
+
                 string highlightColor = hostControlInfo.HighlightRectArea.HighlightColor;
 
                 //This section will get the X,Y coordinates of the HostUIElement based in the Ancestor UI Element so we can put the highlight rectangle
@@ -441,6 +444,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
             return findWindow;
         }
 
+        /// <summary>
+        /// This method will close a specific Window owned by another Window
+        /// </summary>
+        /// <param name="windowName">The name of the Window to be closed</param>
+        /// <param name="mainWindow">MainWindow container of the owned Window</param>
         internal static void CloseWindowOwned(string windowName, Window mainWindow)
         {
             Window findWindow = null;

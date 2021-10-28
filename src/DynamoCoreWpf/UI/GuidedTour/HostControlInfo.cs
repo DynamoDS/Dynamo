@@ -114,6 +114,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         [JsonProperty(nameof(WindowName))]
         internal string WindowName { get; set; }
 
+        /// <summary>
+        /// This property will decide if the Popup.PlacementTarget needs to be calculated again or not (probably after UI Automation a new Window was opened)
+        /// </summary>
         [JsonProperty(nameof(DynamicHostWindow))]
         internal bool DynamicHostWindow { get; set; }
     }

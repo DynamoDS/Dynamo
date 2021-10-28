@@ -33,13 +33,23 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public UIElement UIElementAutomation { get; set; }
 
         /// <summary>
-        /// This property will be used for indicating that after executing the UIAutomation action the Popup.PlacementTarget needs to be updated
+        /// This property will if that after executing the UI Automation action the Popup.PlacementTarget needs to be updated
         /// </summary>
         public bool UpdatePlacementTarget { get; set; }
 
+        /// <summary>
+        /// This property will decide if we should undo the UI Automation Steps when moving Forward in the Guide Flow
+        /// </summary>
         public bool ExecuteCleanUpForward { get; set; }
+
+        /// <summary>
+        /// This property will decide if we should undo the UI Automation Steps when moving Backward in the Guide Flow
+        /// </summary>
         public bool ExecuteCleanUpBackward { get; set; }
 
+        /// <summary>
+        /// This property will be used when we need to do UI Automation over an element that is not in the DynamoView (For example the Accept button in the TermsOfUseView)
+        /// </summary>
         public string WindowName { get; set; }
 
     }

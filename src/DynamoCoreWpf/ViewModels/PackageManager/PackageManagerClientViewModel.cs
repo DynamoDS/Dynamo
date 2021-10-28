@@ -124,7 +124,7 @@ namespace Dynamo.ViewModels
                 termsOfUseView.ShowDialog();
             else
             {
-                //Mean that a Guide is being executed then the TermsOfUseView cannot be modal
+                //Means that a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
                 termsOfUseView.Owner = parent;
                 termsOfUseView.Show();
             }
@@ -146,7 +146,7 @@ namespace Dynamo.ViewModels
                 additionalTermsView.ShowDialog();
             else
             {
-                //Mean that a Guide is being executed then the TermsOfUseView cannot be modal
+                //Means that a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
                 additionalTermsView.Owner = parent;
                 additionalTermsView.Show();
             }

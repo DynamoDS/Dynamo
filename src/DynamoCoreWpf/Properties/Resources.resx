@@ -2582,9 +2582,6 @@ Uninstall the following packages: {0}?</value>
   <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
     <value>Dismissed Alerts</value>
   </data>
-  <data name="LearnMore" xml:space="preserve">
-    <value>Learn more</value>
-  </data>
   <data name="NodeInformationalStateShowAllInfo" xml:space="preserve">
     <value>Show all info</value>
   </data>
@@ -2833,5 +2830,8 @@ Delete the following packages: {2}?
   </data>
   <data name="ShortcutExportWorkspace" xml:space="preserve">
     <value>Workspace</value>
+  </data>
+  <data name="AutodeskSamplePackage" xml:space="preserve">
+    <value>Autodesk sample</value>
   </data>
 </root>
