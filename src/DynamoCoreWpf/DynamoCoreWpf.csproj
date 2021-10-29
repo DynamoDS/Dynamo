@@ -144,6 +144,9 @@
     <Compile Include="Controls\NotificationsControl.xaml.cs">
       <DependentUpon>NotificationsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OutPortContextMenu.xaml.cs">
+      <DependentUpon>OutPortContextMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ParentMenuItem.cs" />
     <Compile Include="Controls\RunSettingsControl.xaml.cs">
       <DependentUpon>RunSettingsControl.xaml</DependentUpon>
@@ -176,6 +179,7 @@
     </Compile>
     <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
     <Compile Include="UI\GuidedTour\CutOffArea.cs" />
+    <Compile Include="UI\GuidedTour\ExitGuide.cs" />
     <Compile Include="UI\GuidedTour\Guide.cs" />
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
@@ -191,6 +195,9 @@
     <Compile Include="UI\MouseBehaviour.cs" />
     <Compile Include="UI\Prompts\DynamoMessageBox.xaml.cs">
       <DependentUpon>DynamoMessageBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InPortContextMenu.xaml.cs">
+      <DependentUpon>InPortContextMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
@@ -311,6 +318,7 @@
     <Compile Include="ViewModels\Core\InPortViewModel.cs" />
     <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
+    <Compile Include="ViewModels\GuidedTour\ExitGuideWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
     <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
@@ -503,10 +511,18 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Include="Controls\OutPortContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Prompts\DynamoMessageBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\InPortContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      </Page>
     <Page Include="Views\GuidedTour\ExitGuideWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1082,12 +1098,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\StartPage\icon-dictionary.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\tabs_button_hover.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\tabs_button_normal.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\task_dialog_crash.png" />

@@ -214,7 +214,7 @@ namespace Dynamo.Wpf.ViewModels
 #if DEBUG
                 return Visibility.Visible;
 #else
-                return Visibility.Hidden;
+                return Visibility.Collapsed;
 #endif
             }
         }

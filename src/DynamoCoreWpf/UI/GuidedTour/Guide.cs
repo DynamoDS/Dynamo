@@ -156,6 +156,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 step.Hide(GuideFlow.CURRENT);
             }
         }
+        /// <summary>
+        /// This method will be executed for continuing to guide tour
+        /// </summary>
+        /// <param name="CurrentStepSequence">This parameter will contain the "sequence" of the current Step so we can continue the same step</param>
+        internal void ContinueStep(int CurrentStepSequence)
+        {
+            if (CurrentStepSequence >= 0)
+            {
+                CalculateStep(GuideFlow.CURRENT, CurrentStepSequence);
+                CurrentStep.Show();
+            }
+        }
 
         /// <summary>
         /// This method will be executed for moving to the next step, basically searches the next step in the list, shows it and hides the current one.

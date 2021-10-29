@@ -3905,7 +3905,6 @@
 
     <!--  Style for the exit button in the exit modal of Dynamo Guided Tours  -->
     <Style x:Key="PoupExitButtonStyle" TargetType="{x:Type Button}">
-        <Setter Property="MinWidth" Value="100" />
         <Setter Property="MaxHeight" Value="36" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="BorderThickness" Value="36" />

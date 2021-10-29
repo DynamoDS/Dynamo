@@ -60,6 +60,10 @@ namespace Dynamo.Controls
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
 
+        //The "Packages" and "Get Started" strings needs to be hardcoded due that are hardcoded in the json file (no need localization)
+        private static string GetStartedGuideName = "Get Started";
+        private static string PackagesGuideName = "Packages";
+
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
@@ -2278,15 +2282,55 @@ namespace Dynamo.Controls
         private void WorkspaceTabs_TargetUpdated(object sender, DataTransferEventArgs e)
         {
             if (WorkspaceTabs.SelectedIndex >= 0)
-                ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+            ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+            UpdateWorkspaceTabSizes();
         }
 
         private void WorkspaceTabs_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
 
+            UpdateWorkspaceTabSizes();
+
             // When workspace is resized apply appropriate library expand/collapse icon
             UpdateLibraryCollapseIcon();
+        }
+
+        /// <summary>
+        /// Updates the workspace TabItems to have the correct margins in response to events
+        /// such as the library being stretched or a Custom Node workspace being created.
+        /// </summary>
+        private void UpdateWorkspaceTabSizes()
+        {
+            // The Workspace TabItems must appear to the right of icon buttons (New File, Open, Save, Undo, Redo)
+            // but never overlap them. 230 is the minimum offset required to achieve this. 
+            // If the library panel is stretched greater than 230, they must align with its width instead.
+            const int FirstTabItemMinimumLeftMarginOffset = 230;
+            const int LibraryScrollBarWidth = 15;
+            
+            // We measure the full library width at runtime.
+            int fullLibraryWidth = dynamoViewModel.LibraryWidth + LibraryScrollBarWidth;
+            
+            // Difference between the full library width (at runtime) and the minimum offset required
+            // by the TabItems to not overlap the 5 icon buttons.
+            int difference = fullLibraryWidth - FirstTabItemMinimumLeftMarginOffset;
+
+            // If the library is narrower than the minimum width, we set the TabItems' left margin
+            // to be the minimum offset required to not overlap the 5 icon buttons. 
+            // If it's equal to or greater, we set the TabItems' left margin to be the difference
+            // i.e. to align with the library panel.
+            int leftMargin = fullLibraryWidth < FirstTabItemMinimumLeftMarginOffset ? difference : 0;
+
+            List<TabItem> tabItems = WpfUtilities.ChildrenOfType<TabItem>(WorkspaceTabs).ToList();
+            if (tabItems.Count < 1) return;
+
+            // We iterate through each TabItem in the WorkspaceTabs TabControl and set its left and 
+            // right margins, thereby offsetting the TabItem horizontally from the left edge
+            // of the TabControl (AKA the left edge of the workspace).
+            foreach (TabItem tabItem in tabItems)
+            {
+                tabItem.Margin = new System.Windows.Thickness(-leftMargin, 0, leftMargin, 0);
+            }
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)
@@ -2346,7 +2390,7 @@ namespace Dynamo.Controls
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
             {
-                dynamoViewModel.MainGuideManager.LaunchTour(Res.GetStartedGuide);
+                dynamoViewModel.MainGuideManager.LaunchTour(GetStartedGuideName);
             }
             catch (Exception ex)
             {
@@ -2364,7 +2408,7 @@ namespace Dynamo.Controls
         {
             try
             {
-                dynamoViewModel.MainGuideManager.LaunchTour(Res.PackagesGuide);
+                dynamoViewModel.MainGuideManager.LaunchTour(PackagesGuideName);
             }
             catch (Exception)
             {
