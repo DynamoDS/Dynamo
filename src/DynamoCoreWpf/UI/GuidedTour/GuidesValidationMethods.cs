@@ -48,7 +48,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 //When the Accept button is pressed in the TermsOfUseView then we need to move to the next Step
                 if (buttonElement != null)
-                    buttonElement.Click += ButtonElement_Click;
+                    buttonElement.Click += AcceptButton_Click;
             }
             //When enableFunction = false, means we are hiding (closing) the TermsOfUse Window due that we are moving to the next Step or we are exiting the Guide
             else
@@ -57,7 +57,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (ownedWindow == null) return;
                 Button buttonElement = Guide.FindChild(ownedWindow, stepInfo.HostPopupInfo.HostUIElementString) as Button;
                 if (buttonElement != null)
-                    buttonElement.Click -= ButtonElement_Click;
+                    buttonElement.Click -= AcceptButton_Click;
 
                 //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
                 Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
@@ -69,7 +69,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void ButtonElement_Click(object sender, RoutedEventArgs e)
+        private static void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
            CurrentExecutingGuide.HideCurrentStep(CurrentExecutingStep.Sequence, GuideFlow.FORWARD);
             if (CurrentExecutingStep.Sequence < CurrentExecutingGuide.TotalSteps)
