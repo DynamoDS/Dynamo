@@ -1100,12 +1100,6 @@
     <Resource Include="UI\Images\StartPage\icon-dictionary.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\tabs_button_hover.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\tabs_button_normal.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Images\task_dialog_crash.png" />
   </ItemGroup>
   <ItemGroup>

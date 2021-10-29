@@ -2619,11 +2619,11 @@ namespace Dynamo.Controls
             }
         }
 
-        /// <summary>
-        /// Checks if the item is last. In that case, this converter controls 
-        /// the last tree view item's  horizontal and vertical line height
-        /// </summary>
-        public class TreeViewLineConverter : IValueConverter
+    /// <summary>
+    /// Checks if the item is last. In that case, this converter controls 
+    /// the last tree view item's  horizontal and vertical line height
+    /// </summary>
+    public class TreeViewLineConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {
