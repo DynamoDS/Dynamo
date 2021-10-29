@@ -4,9 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d"
-             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:props="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              MouseLeave="OnMouseLeave">
 
@@ -70,7 +68,8 @@
                 Width="{Binding AnchorSize}"
                 ToolTipService.ShowDuration="{x:Static Member=System:Int32.MaxValue}">
             <Button.ToolTip>
-                <ToolTip Style="{StaticResource ConnectorTooltip}">
+                <ToolTip Style="{StaticResource ConnectorTooltip}"
+                         Visibility="{Binding DataToolTipText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource EmptyStringToCollapsedConverter}}">
                     <StackPanel Margin="5">
                         <TextBlock Text="{Binding DataToolTipText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ToolTipFirstLine}}"
                                    FontWeight="Bold"/>
@@ -85,10 +84,10 @@
                         <Style TargetType="{x:Type Image}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=IsHalftone, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/wire_anchor_12_12.png"/>
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/wire_anchor_48_48.png"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=IsHalftone, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
-                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/wire_anchor_12_12.png"/>
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/wire_anchor_48_48.png"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -122,7 +121,7 @@
                                     <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/watch_default_48_48.png"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=WatchIconPreviewOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/watch_selected_48_48.png"/>
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/watch_hover_48_48.png"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -130,7 +129,7 @@
                 </Image>
             </StackPanel>
             <Button.RenderTransform>
-                <TranslateTransform X="-30" Y="-37" />
+                <TranslateTransform X="0" Y="-37" />
             </Button.RenderTransform>
         </Button>
         <!--pin icon-->
@@ -155,7 +154,7 @@
                                     <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_default_48_48.png"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=PinIconPreviewOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_selected_48_48.png"/>
+                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_hover_48_48.png"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -163,7 +162,7 @@
                 </Image>
             </StackPanel>
             <Button.RenderTransform>
-                <TranslateTransform X="0" Y="-37" />
+                <TranslateTransform X="-30" Y="-37" />
             </Button.RenderTransform>
         </Button>
     </Canvas>

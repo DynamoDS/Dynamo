@@ -15,6 +15,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Models;
 using Moq;
 using NUnit.Framework;
+using Dynamo.Interfaces;
 
 namespace Dynamo.PackageManager.Tests
 {
@@ -147,9 +148,8 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(entries.Count(x => x.FullName == "Package.Package.Package.Hello") == 1);
 
             packagesLoaded = false;
-            loadPackageParams.NewPaths = new List<string>();
             // This function is called upon addition of new package paths in the UI.
-            loader.LoadCustomNodesAndPackages(loadPackageParams, CurrentDynamoModel.CustomNodeManager);
+            loader.LoadCustomNodesAndPackages(new List<string>(), loadPackageParams.Preferences, CurrentDynamoModel.CustomNodeManager);
             Assert.AreEqual(19, loader.LocalPackages.Count());
 
             // Assert packages are not reloaded if there are no new package paths.
@@ -195,9 +195,9 @@ namespace Dynamo.PackageManager.Tests
             packagesLoaded = false;
             pathManager.SetupGet(x => x.PackagesDirectories).Returns(
                 () => new List<string> { PackagesDirectory, BuiltInPackagesTestDir });
-            loadPackageParams.NewPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
+            var newPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
             // This function is called upon addition of new package paths in the UI.
-            loader.LoadCustomNodesAndPackages(loadPackageParams, CurrentDynamoModel.CustomNodeManager);
+            loader.LoadCustomNodesAndPackages(newPaths, loadPackageParams.Preferences, CurrentDynamoModel.CustomNodeManager);
             Assert.AreEqual(20, loader.LocalPackages.Count());
 
             // Assert packages are reloaded if there are new package paths.
@@ -237,9 +237,9 @@ namespace Dynamo.PackageManager.Tests
 
             pathManager.SetupGet(x => x.PackagesDirectories).Returns(
                 () => new List<string> { PackagesDirectory, BuiltInPackagesTestDir });
-            loadPackageParams.NewPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
+            var newPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
             // This function is called upon addition of new package paths in the UI.
-            loader.LoadCustomNodesAndPackages(loadPackageParams, CurrentDynamoModel.CustomNodeManager);
+            loader.LoadCustomNodesAndPackages(newPaths, loadPackageParams.Preferences, CurrentDynamoModel.CustomNodeManager);
             Assert.AreEqual(4, loader.LocalPackages.Count());
 
             Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 2);
@@ -254,6 +254,162 @@ namespace Dynamo.PackageManager.Tests
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
             Assert.AreEqual(entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"), 1);
+
+            loader.PackagesLoaded -= libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+        }
+
+        [Test]
+        public void DisableBuiltInPackagePath_DoesNotLoadBuiltInPackage()
+        {
+            PathManager.BuiltinPackagesDirectory = BuiltInPackagesTestDir;
+
+            var pathManager = new Mock<IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { BuiltInPackagesTestDir });
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            CurrentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>();
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+            };
+
+            // Disable built-in package location.
+            (loadPackageParams.Preferences as IDisablePackageLoadingPreferences).DisableBuiltinPackages = true;
+            loader.LoadAll(loadPackageParams);
+
+            Assert.AreEqual(0, loader.LocalPackages.Count());
+
+            loader.PackagesLoaded -= libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+        }
+
+        [Test]
+        public void DisableCustomPackagePath_DoesNotLoadCustomPackages()
+        {
+            PathManager.BuiltinPackagesDirectory = BuiltInPackagesTestDir;
+
+            var pathManager = new Mock<IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectorySigned, BuiltInPackagesTestDir });
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            CurrentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string> { PackagesDirectorySigned };
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+            };
+
+            // Disable custom package location.
+            (loadPackageParams.Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations = true;
+            loader.LoadAll(loadPackageParams);
+
+            // Only built-in package is expected to be loaded.
+            Assert.AreEqual(1, loader.LocalPackages.Count());
+            var buitlIn = loader.LocalPackages.FirstOrDefault(x => x.BuiltInPackage);
+            Assert.IsNotNull(buitlIn);
+
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+            Assert.AreEqual(entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"), 1);
+
+            loader.PackagesLoaded -= libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+        }
+
+        [Test]
+        public void DisableThenEnableCustomPackagePath_LoadsCustomPackages()
+        {
+            PathManager.BuiltinPackagesDirectory = BuiltInPackagesTestDir;
+
+            var pathManager = new Mock<IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectorySigned, BuiltInPackagesTestDir });
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            CurrentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string> { PackagesDirectorySigned };
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+            };
+
+            // Disable custom package location.
+            (loadPackageParams.Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations = true;
+            loader.LoadAll(loadPackageParams);
+
+            // Only built-in package is expected to be loaded.
+            Assert.AreEqual(1, loader.LocalPackages.Count());
+            var buitlIn = loader.LocalPackages.FirstOrDefault(x => x.BuiltInPackage);
+            Assert.IsNotNull(buitlIn);
+
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+            Assert.AreEqual(entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"), 1);
+
+            loader.PackagesLoaded -= libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            // Reset package loader for new round of loading packages.
+            loader = new PackageLoader(pathManager.Object);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            // Re-enable custom package location.
+            (loadPackageParams.Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations = false;
+            loader.LoadAll(loadPackageParams);
+
+            Assert.AreEqual(4, loader.LocalPackages.Count());
+
+            entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+            Assert.AreEqual(entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"), 1);
+
+            loader.PackagesLoaded -= libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+        }
+
+        [Test]
+        public void DisableBuiltInPackagePath_LoadsCustomPackages()
+        {
+            PathManager.BuiltinPackagesDirectory = BuiltInPackagesTestDir;
+
+            var pathManager = new Mock<IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectorySigned, BuiltInPackagesTestDir });
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            CurrentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string> { PackagesDirectorySigned };
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+            };
+
+            // Disable built-in package location.
+            (loadPackageParams.Preferences as IDisablePackageLoadingPreferences).DisableBuiltinPackages = true;
+            loader.LoadAll(loadPackageParams);
+
+            Assert.AreEqual(3, loader.LocalPackages.Count());
+            var buitlIn = loader.LocalPackages.FirstOrDefault(x => x.BuiltInPackage);
+            Assert.IsNull(buitlIn);
 
             loader.PackagesLoaded -= libraryLoader.LoadPackages;
             loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;

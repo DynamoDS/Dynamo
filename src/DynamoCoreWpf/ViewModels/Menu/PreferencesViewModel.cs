@@ -1,4 +1,5 @@
 ﻿using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Events;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -54,7 +55,6 @@ namespace Dynamo.ViewModels
         private bool enableTSpline;
         private bool showEdges;
         private bool isolateSelectedGeometry;
-        private bool showPreviewBubbles;
         private bool showCodeBlockLineNumber;
         private RunType runSettingsIsChecked;
         private Dictionary<string, TabSettings> preferencesTabs;
@@ -331,6 +331,45 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Flag specifying whether loading built-in packages
+        /// is disabled, if true, or enabled, if false.
+        /// </summary>
+        public bool DisableBuiltInPackages 
+        { 
+            get 
+            {
+                return preferenceSettings.DisableBuiltinPackages;
+            } 
+            set 
+            {
+                preferenceSettings.DisableBuiltinPackages = value;
+                PackagePathsViewModel.SetPackagesScheduledState(PathManager.BuiltinPackagesDirectory, value);
+                RaisePropertyChanged(nameof(DisableBuiltInPackages));
+            }
+        }
+
+        /// <summary>
+        /// Flag specifying whether loading custom packages
+        /// is disabled, if true, or enabled, if false.
+        /// </summary>
+        public bool DisableCustomPackages 
+        { 
+            get
+            {
+                return preferenceSettings.DisableCustomPackageLocations;
+            }
+            set
+            {
+                preferenceSettings.DisableCustomPackageLocations = value;
+                foreach(var path in preferenceSettings.CustomPackageFolders.Where(x => x != DynamoModel.BuiltInPackagesToken))
+                {
+                    PackagePathsViewModel.SetPackagesScheduledState(path, value);
+                }
+                RaisePropertyChanged(nameof(DisableCustomPackages));
+            } 
+        }
+
+        /// <summary>
         /// FontSizesList contains the list of sizes for fonts defined (the ones defined are Small, Medium, Large, Extra Large)
         /// </summary>
         public ObservableCollection<string> FontSizeList
@@ -499,7 +538,6 @@ namespace Dynamo.ViewModels
             set
             {
                 preferenceSettings.ShowPreviewBubbles = value;
-                showPreviewBubbles = value;
                 RaisePropertyChanged(nameof(ShowPreviewBubbles));
             }
         }
@@ -663,53 +701,14 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Gets the different Python Engine versions availables from PythonNodeModels.dll
-        /// </summary>
-        /// <returns>Strings array with the different names</returns>
-        private string[] GetPythonEngineOptions()
-        {
-            try
-            {
-                var enumType = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(s =>
-                    {
-                        try
-                        {
-                            return s.GetTypes();
-                        }
-                        catch (ReflectionTypeLoadException)
-                        {
-                            return new Type[0];
-                        }
-                    }).FirstOrDefault(t => t.FullName.Equals("PythonNodeModels.PythonEngineVersion"));
-
-                return Enum.GetNames(enumType);
-            }
-            catch
-            {
-                return Array.Empty<string>();
-            }
-        }
-
         private void AddPythonEnginesOptions()
         {
-            var pythonEngineOptions = GetPythonEngineOptions();
-            if (pythonEngineOptions.Length != 0)
+            var options = new ObservableCollection<string> { Res.DefaultPythonEngineNone };
+            foreach (var item in PythonNodeModels.PythonEngineSelector.Instance.AvailableEngines)
             {
-                foreach (var option in pythonEngineOptions)
-                {
-                    if (option != "Unspecified")
-                    {
-                        PythonEnginesList.Add(option);
-                    }
-                }
+                options.Add(item.ToString());
             }
-            else
-            {
-                PythonEnginesList.Add("IronPython2");
-                PythonEnginesList.Add("CPython3");
-            }
+            PythonEnginesList = options;
         }
         #endregion
 
@@ -731,15 +730,15 @@ namespace Dynamo.ViewModels
             this.installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
                 dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
 
-            PythonEnginesList = new ObservableCollection<string>();
-            PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
+            // Scan for engines
             AddPythonEnginesOptions();
+
+            PythonNodeModels.PythonEngineSelector.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
             //Sets SelectedPythonEngine.
             //If the setting is empty it corresponds to the default python engine
-            _ = preferenceSettings.DefaultPythonEngine == string.Empty ? 
-                SelectedPythonEngine = Res.DefaultPythonEngineNone : 
-                SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
+            var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
+            SelectedPythonEngine  = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
 
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
@@ -798,7 +797,7 @@ namespace Dynamo.ViewModels
             //create a packagePathsViewModel we'll use to interact with the package search paths list.
             var loadPackagesParams = new LoadPackageParams
             {
-                Preferences = preferenceSettings,
+                Preferences = preferenceSettings
             };
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
@@ -835,8 +834,8 @@ namespace Dynamo.ViewModels
         {
             PropertyChanged -= Model_PropertyChanged;
             WorkspaceEvents.WorkspaceSettingsChanged -= PreferencesViewModel_WorkspaceSettingsChanged;
+            PythonNodeModels.PythonEngineSelector.Instance.AvailableEngines.CollectionChanged -= PythonEnginesChanged;
         }
-
 
         /// <summary>
         /// Listen for changes to the custom package paths and update package paths for install accordingly
@@ -930,6 +929,12 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(SelectedPackagePathForInstall):
                     description = Res.PreferencesViewSelectedPackagePathForDownload;
+                    goto default;
+                case nameof(DisableBuiltInPackages):
+                    description = Res.PreferencesViewDisableBuiltInPackages;
+                    goto default;
+                case nameof(DisableCustomPackages):
+                    description = Res.PreferencesViewDisableCustomPackages;
                     goto default;
                 case nameof(RunSettingsIsChecked):
                     description = Res.PreferencesViewRunSettingsLabel;
@@ -1037,6 +1042,14 @@ namespace Dynamo.ViewModels
             Random r = new Random();
             Color color = Color.FromArgb(255, (byte)r.Next(), (byte)r.Next(), (byte)r.Next());
             return ColorTranslator.ToHtml(color).Replace("#", "");
+        }
+
+        private void PythonEnginesChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                AddPythonEnginesOptions();
+            }
         }
     }
 

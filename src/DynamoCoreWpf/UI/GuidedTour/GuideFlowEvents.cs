@@ -14,6 +14,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
     {
         //Event that will be raised when the Popup Next button is pressed, the value passed as parameter is the current Step Sequence
         public static event GuidedTourNextEventHandler GuidedTourNextStep;
+        private static bool isAnyGuideActive { get; set; } = false;
         internal static void OnGuidedTourNext(int sequence)
         {
             if (GuidedTourNextStep != null)
@@ -33,7 +34,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void OnGuidedTourStart(string name)
         {
             if (GuidedTourStart != null)
+            {
+                isAnyGuideActive = true;
                 GuidedTourStart(new GuidedTourStateEventArgs(name));
+            }              
         }
 
         //Event that will be raised when the Guide is finished (when the user press the close button in the Survey)
@@ -41,7 +45,19 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void OnGuidedTourFinish(string name)
         {
             if (GuidedTourFinish != null)
+            {
+                isAnyGuideActive = false;
                 GuidedTourFinish(new GuidedTourStateEventArgs(name));
+            }
+        }
+
+        /// <summary>
+        /// This property will returm if the a guide is being executed or not. 
+        /// </summary>
+        internal static bool IsAnyGuideActive
+        {
+            get { return isAnyGuideActive; }
+            private set { isAnyGuideActive = value; }
         }
     }
 

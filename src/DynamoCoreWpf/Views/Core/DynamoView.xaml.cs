@@ -45,11 +45,10 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.Gallery;
-using Dynamo.Wpf.Views.PackageManager;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
-using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Res = Dynamo.Wpf.Properties.Resources;
+using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using String = System.String;
 
 namespace Dynamo.Controls
@@ -91,8 +90,6 @@ namespace Dynamo.Controls
         internal Dictionary<string, ExtensionWindow> ExtensionWindows { get; set; } = new Dictionary<string, ExtensionWindow>();
         internal ViewExtensionManager viewExtensionManager;
         internal Watch3DView BackgroundPreview { get; private set; }
-
-        internal GuidesManager mainGuideManager;
 
         /// <summary>
         /// Constructor
@@ -739,8 +736,8 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
 
             //When the Dynamo window is moved to another place we need to update the Steps location
-            if(mainGuideManager != null)
-                mainGuideManager.UpdateGuideStepsLocation();
+            if(dynamoViewModel.MainGuideManager != null)
+                dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -749,8 +746,8 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.PreferenceSettings.WindowH = e.NewSize.Height;
 
             //When the Dynamo window size is changed then we need to update the Steps location
-            if (mainGuideManager != null)
-                mainGuideManager.UpdateGuideStepsLocation();
+            if (dynamoViewModel.MainGuideManager != null)
+                dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
         }
 
         private void InitializeLogin()
@@ -773,7 +770,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/new_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png"
             };
 
             var openScriptButton = new ShortcutBarItem
@@ -783,7 +780,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/open_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png"
             };
 
             var saveButton = new ShortcutBarItem
@@ -793,16 +790,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/save_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_hover.png"
-            };
-
-            var screenShotButton = new ImageExportShortcutBarItem(dynamoViewModel)
-            {
-                ShortcutCommand = dynamoViewModel.ShowSaveImageDialogAndSaveResultCommand,
-                ShortcutCommandParameter = Wpf.Properties.Resources.ScreenShotFrom3DShortcutParameter,
-                ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/screenshot_normal.png",
-                ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/screenshot_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/screenshot_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png"
             };
 
             var undoButton = new ShortcutBarItem
@@ -812,7 +800,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/undo_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png"
             };
 
             var redoButton = new ShortcutBarItem
@@ -822,7 +810,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/redo_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/redo_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png"
             };
 
             shortcutBar.ShortcutBarItems.Add(newScriptButton);
@@ -830,8 +818,6 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
-
-            shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
 
             shortcutBarGrid.Children.Add(shortcutBar);
         }
@@ -930,6 +916,10 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation += DynamoViewModelRequestViewOperation;
             dynamoViewModel.PostUiActivationCommand.Execute(null);
+
+            // Initialize Guide Manager as a member on Dynamo ViewModel so other than guided tour,
+            // other part of application can also leverage it.
+            dynamoViewModel.MainGuideManager = new GuidesManager(_this, dynamoViewModel);
 
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
@@ -1138,7 +1128,7 @@ namespace Dynamo.Controls
 
         private PackageManagerSearchView _searchPkgsView;
         private PackageManagerSearchViewModel _pkgSearchVM;
-
+        
         private void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
             if (!DisplayTermsOfUseForAcceptance())
@@ -2352,10 +2342,9 @@ namespace Dynamo.Controls
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
             {
-                mainGuideManager = new GuidesManager(_this, dynamoViewModel);
-                mainGuideManager.LaunchTour(Res.GetStartedGuide);
+                dynamoViewModel.MainGuideManager.LaunchTour(Res.GetStartedGuide);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 sidebarGrid.Visibility = Visibility.Visible;
             }
@@ -2365,6 +2354,18 @@ namespace Dynamo.Controls
         {
             //Setting the width of right extension after resize to
             extensionsColumnWidth = RightExtensionsViewColumn.Width;
+        }
+
+        private void PackagesMenuGuide_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                dynamoViewModel.MainGuideManager.LaunchTour(Res.PackagesGuide);
+            }
+            catch (Exception)
+            {
+                sidebarGrid.Visibility = Visibility.Visible;
+            }
         }
 
         public void Dispose()

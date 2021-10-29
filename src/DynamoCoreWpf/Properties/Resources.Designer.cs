@@ -430,11 +430,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pin Wire.
+        ///   Looks up a localized string similar to Hide Wire.
         /// </summary>
-        public static string ConnectorContextMenuHeaderPinConnector {
+        public static string ConnectorContextMenuHeaderHideConnector {
             get {
-                return ResourceManager.GetString("ConnectorContextMenuHeaderPinConnector", resourceCulture);
+                return ResourceManager.GetString("ConnectorContextMenuHeaderHideConnector", resourceCulture);
             }
         }
         
@@ -444,6 +444,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ConnectorContextMenuHeaderSelectConnected {
             get {
                 return ResourceManager.GetString("ConnectorContextMenuHeaderSelectConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Wire.
+        /// </summary>
+        public static string ConnectorContextMenuHeaderShowConnector {
+            get {
+                return ResourceManager.GetString("ConnectorContextMenuHeaderShowConnector", resourceCulture);
             }
         }
         
@@ -511,7 +520,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove.
+        ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string ContextMenuDelete {
             get {
@@ -565,20 +574,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide all geometry preview.
-        /// </summary>
-        public static string ContextMenuHideAllGeometry {
-            get {
-                return ResourceManager.GetString("ContextMenuHideAllGeometry", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Hide all text bubble.
         /// </summary>
         public static string ContextMenuHideAllTextBubble {
             get {
                 return ResourceManager.GetString("ContextMenuHideAllTextBubble", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide geometry preview.
+        /// </summary>
+        public static string ContextMenuHideGeometry {
+            get {
+                return ResourceManager.GetString("ContextMenuHideGeometry", resourceCulture);
             }
         }
         
@@ -700,20 +709,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show all geometry preview.
-        /// </summary>
-        public static string ContextMenuShowAllGeometry {
-            get {
-                return ResourceManager.GetString("ContextMenuShowAllGeometry", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show all text buble.
         /// </summary>
         public static string ContextMenuShowAllTextBubble {
             get {
                 return ResourceManager.GetString("ContextMenuShowAllTextBubble", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show geometry preview.
+        /// </summary>
+        public static string ContextMenuShowGeometry {
+            get {
+                return ResourceManager.GetString("ContextMenuShowGeometry", resourceCulture);
             }
         }
         
@@ -1031,6 +1040,35 @@ namespace Dynamo.Wpf.Properties {
         public static string DirectoryNotFound {
             get {
                 return ResourceManager.GetString("DirectoryNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If the toggle is on, built-in packages will not load on restart. Built-in packages that are currently loaded will be unloaded on restart. 
+        ///If the toggle is off built-in packages that are not already loaded will load once the preferences dialog is closed..
+        /// </summary>
+        public static string DisableBuiltInPackageToggleInfo {
+            get {
+                return ResourceManager.GetString("DisableBuiltInPackageToggleInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If the toggle is on, custom packages will not load on restart. Custom packages that are currently loaded will be unloaded on restart. 
+        ///If the toggle is off custom packages that are not already loaded will load once the preferences dialog is closed..
+        /// </summary>
+        public static string DisableCustomPackageToggleInfo {
+            get {
+                return ResourceManager.GetString("DisableCustomPackageToggleInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All custom package paths have been disabled in Preferences. Packages cannot be installed unless they are re-enabled..
+        /// </summary>
+        public static string DisablePackageInstallIconTooltip {
+            get {
+                return ResourceManager.GetString("DisablePackageInstallIconTooltip", resourceCulture);
             }
         }
         
@@ -2559,6 +2597,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string GenericTaskDialogOptionCancel {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string GenericTaskDialogOptionNo {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string GenericTaskDialogOptionOK {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string GenericTaskDialogOptionYes {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogOptionYes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sample Left Button.
         /// </summary>
         public static string GenericTaskDialogSampleLeftButton {
@@ -2973,7 +3047,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error: .
+        ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string InfoBubbleError {
             get {
@@ -2982,7 +3056,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning: .
+        ///   Looks up a localized string similar to Info.
+        /// </summary>
+        public static string InfoBubbleInfo {
+            get {
+                return ResourceManager.GetString("InfoBubbleInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
         /// </summary>
         public static string InfoBubbleWarning {
             get {
@@ -3867,6 +3950,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Node AutoComplete is not available on ports belonging to collapsed groups..
+        /// </summary>
+        public static string NodeAutoCompleteNotAvailableForCollapsedGroups {
+            get {
+                return ResourceManager.GetString("NodeAutoCompleteNotAvailableForCollapsedGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable Periodic Update.
         /// </summary>
         public static string NodeContextMenuEnablePeriodicUpdate {
@@ -3975,6 +4067,78 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dismisses the info messages on this node. Utilize when you want to design in graph failures, or the info message will not be relevant during graph execution..
+        /// </summary>
+        public static string NodeInfoDismissButtonToolTip {
+            get {
+                return ResourceManager.GetString("NodeInfoDismissButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismiss.
+        /// </summary>
+        public static string NodeInformationalStateDismiss {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateDismiss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismiss all.
+        /// </summary>
+        public static string NodeInformationalStateDismissAll {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateDismissAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismissed Alerts.
+        /// </summary>
+        public static string NodeInformationalStateDismissedAlerts {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateDismissedAlerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all errors.
+        /// </summary>
+        public static string NodeInformationalStateShowAllErrors {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowAllErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all info.
+        /// </summary>
+        public static string NodeInformationalStateShowAllInfo {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowAllInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all warnings.
+        /// </summary>
+        public static string NodeInformationalStateShowAllWarnings {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowAllWarnings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show less.
+        /// </summary>
+        public static string NodeInformationalStateShowLess {
+            get {
+                return ResourceManager.GetString("NodeInformationalStateShowLess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Renamed.
         /// </summary>
         public static string NodeRenamedLabel {
@@ -4016,6 +4180,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeViewCustomizationFindErrorMessage {
             get {
                 return ResourceManager.GetString("NodeViewCustomizationFindErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dismisses the warning messages on this node. Utilize when you want to design in graph failures, or the warning message will not be relevant during graph execution..
+        /// </summary>
+        public static string NodeWarningDismissButtonToolTip {
+            get {
+                return ResourceManager.GetString("NodeWarningDismissButtonToolTip", resourceCulture);
             }
         }
         
@@ -4166,6 +4339,69 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DESCRIPTION.
+        /// </summary>
+        public static string PackageDetailsDescription {
+            get {
+                return ResourceManager.GetString("PackageDetailsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Host.
+        /// </summary>
+        public static string PackageDetailsHost {
+            get {
+                return ResourceManager.GetString("PackageDetailsHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LICENSE:.
+        /// </summary>
+        public static string PackageDetailsLicense {
+            get {
+                return ResourceManager.GetString("PackageDetailsLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package.
+        /// </summary>
+        public static string PackageDetailsPackage {
+            get {
+                return ResourceManager.GetString("PackageDetailsPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Python.
+        /// </summary>
+        public static string PackageDetailsPython {
+            get {
+                return ResourceManager.GetString("PackageDetailsPython", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Versions.
+        /// </summary>
+        public static string PackageDetailsVersions {
+            get {
+                return ResourceManager.GetString("PackageDetailsVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VERSIONS AND PACKAGE REQUIREMENTS.
+        /// </summary>
+        public static string PackageDetailsVersionsAndPackageRequirements {
+            get {
+                return ResourceManager.GetString("PackageDetailsVersionsAndPackageRequirements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Download Confirmation.
         /// </summary>
         public static string PackageDownloadConfirmMessageBoxTitle {
@@ -4307,6 +4543,33 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageHostDependencyTooltip {
             get {
                 return ResourceManager.GetString("PackageHostDependencyTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install.
+        /// </summary>
+        public static string PackageManagerInstall {
+            get {
+                return ResourceManager.GetString("PackageManagerInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New.
+        /// </summary>
+        public static string PackageManagerPackageNew {
+            get {
+                return ResourceManager.GetString("PackageManagerPackageNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updated.
+        /// </summary>
+        public static string PackageManagerPackageUpdated {
+            get {
+                return ResourceManager.GetString("PackageManagerPackageUpdated", resourceCulture);
             }
         }
         
@@ -4487,6 +4750,51 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagePathViewToolTipUp {
             get {
                 return ResourceManager.GetString("PackagePathViewToolTipUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search for packages.
+        /// </summary>
+        public static string PackageSearchHeader {
+            get {
+                return ResourceManager.GetString("PackageSearchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ORDER.
+        /// </summary>
+        public static string PackageSearchOrder {
+            get {
+                return ResourceManager.GetString("PackageSearchOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requirements.
+        /// </summary>
+        public static string PackageSearchResultRequirements {
+            get {
+                return ResourceManager.GetString("PackageSearchResultRequirements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Details.
+        /// </summary>
+        public static string PackageSearchResultViewDetails {
+            get {
+                return ResourceManager.GetString("PackageSearchResultViewDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SORT BY.
+        /// </summary>
+        public static string PackageSearchSortBy {
+            get {
+                return ResourceManager.GetString("PackageSearchSortBy", resourceCulture);
             }
         }
         
@@ -4761,6 +5069,142 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Packages.
+        /// </summary>
+        public static string PackagesGuide {
+            get {
+                return ResourceManager.GetString("PackagesGuide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue.
+        /// </summary>
+        public static string PackagesGuideContinueButton {
+            get {
+                return ResourceManager.GetString("PackagesGuideContinueButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To continue the guide and install the sample package, you must accept the Terms of Service. \n\n **Click Continue.** Then in the terms, **click I Accept.** \n\n\n\n.
+        /// </summary>
+        public static string PackagesGuideExitAcceptTerms {
+            get {
+                return ResourceManager.GetString("PackagesGuideExitAcceptTerms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit.
+        /// </summary>
+        public static string PackagesGuideExitButton {
+            get {
+                return ResourceManager.GetString("PackagesGuideExitButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to continue the guide?.
+        /// </summary>
+        public static string PackagesGuideExitTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideExitTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**click Packages &gt; Search for Packages**..
+        /// </summary>
+        public static string PackagesGuideFindPackageText {
+            get {
+                return ResourceManager.GetString("PackagesGuideFindPackageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find a package.
+        /// </summary>
+        public static string PackagesGuideFindPackageTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideFindPackageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn about packages.
+        /// </summary>
+        public static string PackagesGuideLearnAbout {
+            get {
+                return ResourceManager.GetString("PackagesGuideLearnAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar..
+        /// </summary>
+        public static string PackagesGuideSearchFilterText {
+            get {
+                return ResourceManager.GetString("PackagesGuideSearchFilterText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search, filter, and sort.
+        /// </summary>
+        public static string PackagesGuideSearchFilterTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideSearchFilterTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packages may come from third parties. Be aware that packages may pose security risks. More information \n\n**Click I Accept** in the Terms of Service to accept it and proceed with this guide..
+        /// </summary>
+        public static string PackagesGuideTermsOfServiceText {
+            get {
+                return ResourceManager.GetString("PackagesGuideTermsOfServiceText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accept the Terms of Service.
+        /// </summary>
+        public static string PackagesGuideTermsOfServiceTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideTermsOfServiceTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packages may come from third parties. Be aware that packages may pose security risks. 
+        ///More information.
+        /// </summary>
+        public static string PackagesGuideThirdPartyText {
+            get {
+                return ResourceManager.GetString("PackagesGuideThirdPartyText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Third-party packages.
+        /// </summary>
+        public static string PackagesGuideThirdPartyTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideThirdPartyTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort Packages..
+        /// </summary>
+        public static string PackageSortToolTip {
+            get {
+                return ResourceManager.GetString("PackageSortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string PackageStateError {
@@ -5024,6 +5468,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewDefaultPythonEngine {
             get {
                 return ResourceManager.GetString("PreferencesViewDefaultPythonEngine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable Loading Built-In Packages.
+        /// </summary>
+        public static string PreferencesViewDisableBuiltInPackages {
+            get {
+                return ResourceManager.GetString("PreferencesViewDisableBuiltInPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable Loading Custom Packages.
+        /// </summary>
+        public static string PreferencesViewDisableCustomPackages {
+            get {
+                return ResourceManager.GetString("PreferencesViewDisableCustomPackages", resourceCulture);
             }
         }
         
@@ -6139,6 +6601,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Script tags detected in the help document have been removed..
+        /// </summary>
+        public static string ScriptTagsRemovalWarning {
+            get {
+                return ResourceManager.GetString("ScriptTagsRemovalWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Top Result.
         /// </summary>
         public static string SearchViewTopResult {
@@ -6184,6 +6655,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export as Image.
+        /// </summary>
+        public static string ShortcutExportAsImageMainMenu {
+            get {
+                return ResourceManager.GetString("ShortcutExportAsImageMainMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background 3D Preview.
+        /// </summary>
+        public static string ShortcutExportBackground3DPreview {
+            get {
+                return ResourceManager.GetString("ShortcutExportBackground3DPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workspace.
+        /// </summary>
+        public static string ShortcutExportWorkspace {
+            get {
+                return ResourceManager.GetString("ShortcutExportWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Classic Node Library.
         /// </summary>
         public static string ShowClassicNodeLibrary {
@@ -6216,6 +6714,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ShowRunPreviewEnableToolTip {
             get {
                 return ResourceManager.GetString("ShowRunPreviewEnableToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Wires.
+        /// </summary>
+        public static string ShowWiresPopupMenuItem {
+            get {
+                return ResourceManager.GetString("ShowWiresPopupMenuItem", resourceCulture);
             }
         }
         
@@ -6522,15 +7029,6 @@ namespace Dynamo.Wpf.Properties {
         public static string UndeprecatingPackageMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UndeprecatingPackageMessageBoxTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unhide Wires.
-        /// </summary>
-        public static string UnhideWiresPopupMenuItem {
-            get {
-                return ResourceManager.GetString("UnhideWiresPopupMenuItem", resourceCulture);
             }
         }
         
@@ -6895,6 +7393,42 @@ namespace Dynamo.Wpf.Properties {
         public static string WatchNodeRawDataMenu {
             get {
                 return ResourceManager.GetString("WatchNodeRawDataMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You haven&apos;t saved this file yet..
+        /// </summary>
+        public static string WorkspaceTabNotSavedYet {
+            get {
+                return ResourceManager.GetString("WorkspaceTabNotSavedYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is a brand new file..
+        /// </summary>
+        public static string WorkspaceTabSavingBrandNewFile {
+            get {
+                return ResourceManager.GetString("WorkspaceTabSavingBrandNewFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to save updates to this file..
+        /// </summary>
+        public static string WorkspaceTabSavingNecessary {
+            get {
+                return ResourceManager.GetString("WorkspaceTabSavingNecessary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No need to save!.
+        /// </summary>
+        public static string WorkspaceTabSavingUnnecessary {
+            get {
+                return ResourceManager.GetString("WorkspaceTabSavingUnnecessary", resourceCulture);
             }
         }
         
