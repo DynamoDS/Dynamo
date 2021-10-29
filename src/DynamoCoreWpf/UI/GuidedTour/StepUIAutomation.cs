@@ -8,6 +8,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
     public class StepUIAutomation
     {
         /// <summary>
+        /// Represent all the actions that can be done when executing UI Automation
+        /// </summary>
+        public enum UIAction { OPEN, DISABLE, EXECUTE };
+
+        /// <summary>
+        /// Represent all Control Types that can be used in UI Automation for executing actions like disable or open
+        /// </summary>
+        public enum UIControlType { MENUITEM, BUTTON, FUNCTION };
+
+        /// <summary>
         /// This Sequence will be unique for each automation step
         /// </summary>
         public double Sequence { get; set; }
@@ -15,7 +25,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// The Control type represent the WPF Control type that will be Automated, like MenuItem, Window, Dropdown
         /// </summary>
-        public string ControlType { get; set; }
+        public UIControlType ControlType { get; set; }
 
         /// <summary>
         /// This contain a string ID of the UI Automation 
@@ -25,7 +35,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This will represent the action that will be executed as part of the UI Automation
         /// </summary>
-        public string Action { get; set; }
+        public UIAction Action { get; set; }
+        
 
         /// <summary>
         /// This will be the WPF UI Element in which the Action will be executed

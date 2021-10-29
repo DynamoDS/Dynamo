@@ -165,7 +165,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (CurrentStepSequence >= 0)
             {
                 CalculateStep(GuideFlow.CURRENT, CurrentStepSequence);
-                CurrentStep.Show();
+                CurrentStep.Show(GuideFlow.FORWARD);
             }
         }
 

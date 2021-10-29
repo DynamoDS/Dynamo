@@ -210,8 +210,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 GuideFlowEvents.GuidedTourStart -= TourStarted;
                 GuideFlowEvents.GuidedTourFinish -= TourFinished;
 
-                exitGuideWindow.ExitTourButton.Click -= ExitTourButton_Click;
-                exitGuideWindow.ContinueTourButton.Click -= ContinueTourButton_Click;
+                if(exitGuideWindow != null)
+                {
+                    exitGuideWindow.ExitTourButton.Click -= ExitTourButton_Click;
+                    exitGuideWindow.ContinueTourButton.Click -= ContinueTourButton_Click;
+                }
 
                 //Hide guide background overlay
                 guideBackgroundElement.Visibility = Visibility.Hidden;

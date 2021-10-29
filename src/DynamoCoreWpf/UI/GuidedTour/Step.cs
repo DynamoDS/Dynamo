@@ -21,6 +21,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
     /// </summary>
     public class Step
     {
+        #region Private Fields
+        private static string WindowNamePopup = "PopupWindow";
+        #endregion
         #region Events
         //This event will be raised when a popup (Step) is closed by the user pressing the close button (PopupWindow.xaml).
         public delegate void StepClosedEventHandler(string name, StepTypes stepType);
@@ -280,23 +283,25 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (automationUIElement != null)
                 uiAutomationData.UIElementAutomation = automationUIElement;
           
-            switch (uiAutomationData.ControlType.ToUpper())
+            switch (uiAutomationData.ControlType)
             {
-                case "MENUITEM":
+                case StepUIAutomation.UIControlType.MENUITEM:
                     if (uiAutomationData.UIElementAutomation == null)
                     {
                         return;
                     }
                     MenuItem menuEntry = uiAutomationData.UIElementAutomation as MenuItem;
                     if (menuEntry == null) return;
-                    if (uiAutomationData.Action.ToUpper().Equals("OPEN"))
-                    {                     
-                        menuEntry.IsSubmenuOpen = enableUIAutomation;
-                        menuEntry.StaysOpenOnClick = enableUIAutomation;
+                    switch(uiAutomationData.Action)
+                    {
+                        case StepUIAutomation.UIAction.OPEN:
+                            menuEntry.IsSubmenuOpen = enableUIAutomation;
+                            menuEntry.StaysOpenOnClick = enableUIAutomation;
+                            break;                    
                     }
                     break;
                 //In this case the UI Automation will be done using a Function located in the static class GuidesValidationMethods
-                case "FUNCTION":
+                case StepUIAutomation.UIControlType.FUNCTION:
                     MethodInfo builderMethod = typeof(GuidesValidationMethods).GetMethod(uiAutomationData.Name, BindingFlags.Static | BindingFlags.NonPublic);
                     object[] parametersArray = new object[] { this, uiAutomationData, enableUIAutomation, currentFlow };
                     builderMethod.Invoke(null, parametersArray);
@@ -307,19 +312,19 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     }
                     break;
                 //In this case the UI Automation will be done over a WPF Button 
-                case "BUTTON":
+                case StepUIAutomation.UIControlType.BUTTON:
                     if (string.IsNullOrEmpty(uiAutomationData.WindowName)) return;
                     
                     //This means that the Button is in a PopupWindow (instead of the DynamoView) so we need to find the button and then apply the automation
-                    if(uiAutomationData.WindowName.Equals("PopupWindow"))
+                    if(uiAutomationData.WindowName.Equals(WindowNamePopup))
                     {
                         //Finds the Button inside the PopupWindow
                         var buttonFound = Guide.FindChild((stepUIPopup as PopupWindow).mainPopupGrid, uiAutomationData.Name) as Button;
                         if (buttonFound == null) return;
 
-                        switch (uiAutomationData.Action.ToUpper())
+                        switch (uiAutomationData.Action)
                         {
-                            case "DISABLE":
+                            case StepUIAutomation.UIAction.DISABLE:
                                 if (enableUIAutomation)
                                     buttonFound.IsEnabled = false;
                                 else
