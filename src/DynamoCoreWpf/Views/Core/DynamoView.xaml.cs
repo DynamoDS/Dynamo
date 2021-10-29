@@ -60,6 +60,10 @@ namespace Dynamo.Controls
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
 
+        //The "Packages" and "Get Started" strings needs to be hardcoded due that are hardcoded in the json file (no need localization)
+        private static string GetStartedGuideName = "Get Started";
+        private static string PackagesGuideName = "Packages";
+
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
@@ -2342,8 +2346,7 @@ namespace Dynamo.Controls
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
             {
-                //The "Get Started" string needs to be hardcoded due that is hardcoded in the json file (no need localization)
-                dynamoViewModel.MainGuideManager.LaunchTour("Get Started");
+                dynamoViewModel.MainGuideManager.LaunchTour(GetStartedGuideName);
             }
             catch (Exception ex)
             {
@@ -2361,8 +2364,7 @@ namespace Dynamo.Controls
         {
             try
             {
-                //The "Packages" string needs to be hardcoded due that is hardcoded in the json file (no need localization)
-                dynamoViewModel.MainGuideManager.LaunchTour("Packages");
+                dynamoViewModel.MainGuideManager.LaunchTour(PackagesGuideName);
             }
             catch (Exception)
             {
