@@ -42,6 +42,7 @@ namespace Dynamo.PackageManager
         private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)
         {
             this.Dispatcher.BeginInvoke((Action) (Close));
+            PublishPackageViewModel.PublishSuccess -= PackageViewModelOnPublishSuccess;
         }
 
         private void OnRequestShowFolderBrowserDialog(object sender, PackagePathEventArgs e)
@@ -101,6 +102,8 @@ namespace Dynamo.PackageManager
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Close,
                 Categories.PackageManagerOperations);
+
+            PublishPackageViewModel.RequestShowFolderBrowserDialog -= OnRequestShowFolderBrowserDialog;
 
             Close();
         }

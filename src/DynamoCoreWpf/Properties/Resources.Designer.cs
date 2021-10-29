@@ -5436,11 +5436,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More.
+        ///   Looks up a localized string similar to Publish Online.
         /// </summary>
-        public static string PublishPackageDetailsExpanderHeader {
+        public static string PublishPackage {
             get {
-                return ResourceManager.GetString("PublishPackageDetailsExpanderHeader", resourceCulture);
+                return ResourceManager.GetString("PublishPackage", resourceCulture);
             }
         }
         
@@ -5514,15 +5514,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageMoreInfoFile {
             get {
                 return ResourceManager.GetString("PublishPackageMoreInfoFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Publish Online.
-        /// </summary>
-        public static string PublishPackageOnline {
-            get {
-                return ResourceManager.GetString("PublishPackageOnline", resourceCulture);
             }
         }
         
@@ -5743,15 +5734,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Description.
-        /// </summary>
-        public static string PublishPackageViewPackageDescriptionWatermark {
-            get {
-                return ResourceManager.GetString("PublishPackageViewPackageDescriptionWatermark", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Group (optional).
         /// </summary>
         public static string PublishPackageViewPackageGroup {
@@ -5860,20 +5842,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to URL.
+        /// </summary>
+        public static string PublishPackageViewPublisherURLWatermark {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPublisherURLWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Website Url (optional).
         /// </summary>
         public static string PublishPackageViewPublisherWebSite {
             get {
                 return ResourceManager.GetString("PublishPackageViewPublisherWebSite", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to URL.
-        /// </summary>
-        public static string PublishPackageViewPublisherWebSiteWatermark {
-            get {
-                return ResourceManager.GetString("PublishPackageViewPublisherWebSiteWatermark", resourceCulture);
             }
         }
         
@@ -5892,15 +5874,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewRepositoryUrl {
             get {
                 return ResourceManager.GetString("PublishPackageViewRepositoryUrl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to URL.
-        /// </summary>
-        public static string PublishPackageViewRepositoryUrlWatermark {
-            get {
-                return ResourceManager.GetString("PublishPackageViewRepositoryUrlWatermark", resourceCulture);
             }
         }
         

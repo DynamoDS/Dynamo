@@ -2650,7 +2650,7 @@ Delete the following packages: {2}?
   <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="PublishPackageViewPackageDescriptionWatermark" xml:space="preserve">
+  <data name="PublishPackageViewPackageDescription" xml:space="preserve">
     <value>Description</value>
   </data>
   <data name="PublishPackageViewPackageNameWatermark" xml:space="preserve">
@@ -2665,9 +2665,6 @@ This package will be unloaded after the next Dynamo restart.</value>
   </data>
   <data name="PublishPackageKeywordsWatermark" xml:space="preserve">
     <value>Keywords</value>
-  </data>
-  <data name="PublishPackageDetailsExpanderHeader" xml:space="preserve">
-    <value>More</value>
   </data>
   <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
     <value>If blank, the package will be licensed under </value>
@@ -2711,7 +2708,7 @@ This package will be unloaded after the next Dynamo restart.</value>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
     <value>Markdown Files Directory (optional)</value>
   </data>
-  <data name="PublishPackageOnline" xml:space="preserve">
+  <data name="PublishPackage" xml:space="preserve">
     <value>Publish Online</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
@@ -2731,5 +2728,8 @@ This package will be unloaded after the next Dynamo restart.</value>
   </data>
   <data name="PreferencesViewMarkdownDirectoryTooltip" xml:space="preserve">
     <value>Markdown documentation can be added to your package that will leverage the Documentation Browser to display author generated information on a per-node basis.</value>
+  </data>
+  <data name="PublishPackageViewPublisherURLWatermark" xml:space="preserve">
+    <value>URL</value>
   </data>
 </root>

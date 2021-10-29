@@ -1447,24 +1447,18 @@ You will get a chance to save your work.</value>
   <data name="PublishPackageKeywordsWatermark" xml:space="preserve">
   <value>Keywords</value>
   </data>
-  <data name="PublishPackageDetailsExpanderHeader" xml:space="preserve">
-  <value>More</value>
-  </data>
   <data name="PublishPackageViewPublish" xml:space="preserve">
     <value>Publish a Package</value>
   </data>
   <data name="PublishPackageViewPublisherWebSite" xml:space="preserve">
     <value>Website Url (optional)</value>
   </data>
-  <data name="PublishPackageViewPublisherWebSiteWatermark" xml:space="preserve">
+  <data name="PublishPackageViewPublisherURLWatermark" xml:space="preserve">
     <value>URL</value>
   </data>
   <data name="PublishPackageViewRepositoryUrl" xml:space="preserve">
     <value>Repository Url (optional)</value>
     <comment>Github repository</comment>
-  </data>
-  <data name="PublishPackageViewRepositoryUrlWatermark" xml:space="preserve">
-    <value>URL</value>
   </data>
   <data name="PublishPackageViewTitle" xml:space="preserve">
     <value>Publish a {0} Package</value>
@@ -1842,7 +1836,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
     <value>A description that helps people understand what the package might be used for.</value>
   </data>
-  <data name="PublishPackageViewPackageDescriptionWatermark" xml:space="preserve">
+  <data name="PublishPackageViewPackageDescription" xml:space="preserve">
     <value>Description</value>
   </data>
   <data name="PublishPackageViewPackageNameTooltip" xml:space="preserve">
@@ -2010,7 +2004,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="Units" xml:space="preserve">
     <value>Units:</value>
   </data>
-  <data name="PublishPackageOnline" xml:space="preserve">
+  <data name="PublishPackage" xml:space="preserve">
     <value>Publish Online</value>
   </data>
   <data name="PublishPackageLocally" xml:space="preserve">

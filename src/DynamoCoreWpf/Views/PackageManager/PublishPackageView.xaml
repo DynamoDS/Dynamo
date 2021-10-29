@@ -568,7 +568,7 @@
                     <TextBox Name="descriptionInput"
                              MinHeight="81px"
                              Style="{StaticResource InputStyle}"
-                             Tag="{x:Static p:Resources.PublishPackageViewPackageDescriptionWatermark}" />
+                             Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}" />
 
                     <!--  Version  -->
                     <TextBlock Name="versionLabel"
@@ -682,7 +682,7 @@
                     <!--  More  -->
                     <Expander x:Name="detailsExpander"
                               Margin="-2,6"
-                              Header="{x:Static p:Resources.PublishPackageDetailsExpanderHeader}"
+                              Header="{x:Static p:Resources.MoreButton}"
                               Style="{StaticResource MenuExpanderStyle}">
                         <StackPanel Margin="-10,10,0,0">
 
@@ -692,7 +692,7 @@
                                        Text="{x:Static p:Resources.PublishPackageViewPublisherWebSite}" />
                             <TextBox Name="websiteUrlInput"
                                      Style="{StaticResource InputStyle}"
-                                     Tag="{x:Static p:Resources.PublishPackageViewPublisherWebSiteWatermark}" />
+                                     Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}" />
 
                             <!--  Repository URL  -->
                             <TextBlock Name="repositoryUrlLabel"
@@ -700,7 +700,7 @@
                                        Text="{x:Static p:Resources.PublishPackageViewRepositoryUrl}" />
                             <TextBox Name="repositoryUrlInput"
                                      Style="{StaticResource InputStyle}"
-                                     Tag="{x:Static p:Resources.PublishPackageViewRepositoryUrlWatermark}" />
+                                     Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}" />
 
                             <!--  License  -->
                             <TextBlock Name="licenseLabel"
@@ -934,7 +934,7 @@
 
             <!--  Publish Online  -->
             <Button Command="{Binding Path=SubmitCommand}"
-                    Content="{x:Static p:Resources.PublishPackageOnline}"
+                    Content="{x:Static p:Resources.PublishPackage}"
                     DockPanel.Dock="Right"
                     Style="{StaticResource CtaButtonStyle}" />
 
