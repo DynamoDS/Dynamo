@@ -179,6 +179,7 @@
     </Compile>
     <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
     <Compile Include="UI\GuidedTour\CutOffArea.cs" />
+    <Compile Include="UI\GuidedTour\ExitGuide.cs" />
     <Compile Include="UI\GuidedTour\Guide.cs" />
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
@@ -317,6 +318,7 @@
     <Compile Include="ViewModels\Core\InPortViewModel.cs" />
     <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
+    <Compile Include="ViewModels\GuidedTour\ExitGuideWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
     <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
