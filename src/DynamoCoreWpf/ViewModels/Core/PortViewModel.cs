@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -310,6 +309,16 @@ namespace Dynamo.ViewModels
             popup.CustomPopupPlacementCallback = PlaceAutocompletePopup;
         }
 
+        /// <summary>
+        /// Sets up the PortContextMenu window to be placed relative to the port.
+        /// </summary>
+        /// <param name="popup">Node context menu popup.</param>
+        internal void SetupPortContextMenuPlacement(Popup popup)
+        {
+            node.OnRequestPortContextMenuPlacementTarget(popup);
+            popup.CustomPopupPlacementCallback = PlacePortContextMenu;
+        }
+
         private CustomPopupPlacement[] PlaceAutocompletePopup(Size popupSize, Size targetSize, Point offset)
         {
             var zoom = node.WorkspaceViewModel.Zoom;
@@ -329,6 +338,34 @@ namespace Dynamo.ViewModels
             // Offset popup down from the upper edge of the node by the node header and corresponding to the respective port.
             // Scale the absolute heights by the target height (passed to the callback) and the actual height of the node.
             var scaledHeight = targetSize.Height / node.ActualHeight;
+            var absoluteHeight = NodeModel.HeaderHeight + (PortModel.Index * PortModel.Height);
+            var y = absoluteHeight * scaledHeight;
+
+            var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
+
+            return new[] { placement };
+        }
+
+        private CustomPopupPlacement[] PlacePortContextMenu(Size popupSize, Size targetSize, Point offset)
+        {
+            var zoom = node.WorkspaceViewModel.Zoom;
+
+            double x;
+            var scaledWidth = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
+            var scaledHeight = targetSize.Height / node.ActualHeight;
+
+            if (PortModel.PortType == PortType.Input)
+            {
+                // Offset popup to the left by its width from left edge of node and spacing.
+                x = -scaledWidth - popupSize.Width;
+            }
+            else
+            {
+                // Offset popup to the right by node width and spacing from left edge of node.
+                x = scaledWidth + targetSize.Width;
+            }
+            // Offset popup down from the upper edge of the node by the node header and corresponding to the respective port.
+            // Scale the absolute heights by the target height (passed to the callback) and the actual height of the node.
             var absoluteHeight = NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
             var y = absoluteHeight * scaledHeight;
 
@@ -465,6 +502,14 @@ namespace Dynamo.ViewModels
             // Bail out from connect state
             wsViewModel.CancelActiveState();
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+        }
+
+        private void NodePortContextMenu(object obj)
+        {
+            var wsViewModel = node.WorkspaceViewModel;
+            
+            wsViewModel.CancelActiveState();
+            wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Show, this);
         }
 
         private bool CanAutoComplete(object parameter)

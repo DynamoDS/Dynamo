@@ -6,6 +6,7 @@
              xmlns:l="clr-namespace:Dynamo.UI.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
              mc:Ignorable="d"
              d:DesignWidth="640"
              d:DesignHeight="480"
@@ -24,35 +25,29 @@
           Drop="StartPage_OnDrop">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="21"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
         <!-- Begin top part (i.e. the "Start" tab) -->
 
-        <Border Background="#232323"
+        <Border Background="#3C3C3C"
                 BorderThickness="0,1,0,1"
                 BorderBrush="#404040" />
-        <Border Background="#353535"
-                BorderThickness="1,0,1,1"
-                BorderBrush="#404040"
-                Width="200"
-                HorizontalAlignment="Left" />
-
-        <StackPanel Orientation="Horizontal">
-
-            <TextBlock Margin="8,0,0,0"
-                       FontSize="11"
-                       Width="172"
-                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                       Text="{x:Static p:Resources.StartPageStart}"
-                       Foreground="#888888"
-                       VerticalAlignment="Center" />
-
-            <Image Width="16"
-                   Height="16"
-                   MouseLeftButtonUp="OnCloseStartPageClicked">
+        <Border HorizontalAlignment="Left" Background="#2A2A2A" BorderThickness="0,0,0,5" BorderBrush="#ADE4DE">
+            <Grid Margin="10" Width="208">
+                <TextBlock Margin="10,4,0,0"
+                           FontSize="16px"
+                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                           Text="{x:Static p:Resources.StartPageStart}"
+                           Foreground="#EEEEEE"
+                           VerticalAlignment="Center" />
+                <Image Width="16px"
+                       Height="16px"
+                       Margin="0,1,0,0"
+                       HorizontalAlignment="Right"
+                       MouseLeftButtonUp="OnCloseStartPageClicked">
                 <Image.Style>
                     <Style TargetType="{x:Type Image}">
                         <Style.Triggers>
@@ -70,8 +65,8 @@
                     </Style>
                 </Image.Style>
             </Image>
-
-        </StackPanel>
+            </Grid>
+        </Border>
 
         <!-- Begin Dynamo logo -->
 

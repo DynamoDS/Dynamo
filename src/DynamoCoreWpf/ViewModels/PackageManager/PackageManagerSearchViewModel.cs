@@ -511,7 +511,11 @@ namespace Dynamo.PackageManager
         /// <param name="obj"></param>
         public void ViewPackageDetails(object obj)
         {
-            // to be implemented in future PR   
+            if (!(obj is PackageManagerSearchElement packageManagerSearchElement)) return;
+
+            PackageManagerClientViewModel
+                .DynamoViewModel
+                .OnViewExtensionOpenWithParameterRequest("Package Details", packageManagerSearchElement);
         }
 
         /// <summary>

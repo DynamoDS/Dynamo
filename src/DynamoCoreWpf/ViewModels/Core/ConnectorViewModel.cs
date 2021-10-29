@@ -815,8 +815,10 @@ namespace Dynamo.ViewModels
         /// <param name="point"></param>
         public void PinConnectorPlacementFromWatchNode(ConnectorModel[] connectors, int connectorWireIndex, Point point)
         {
-            var connectorPinModel = new ConnectorPinModel(point.X, point.Y, Guid.NewGuid(), model.GUID);
-            connectors[connectorWireIndex].AddPin(connectorPinModel);
+            var selectedConnector = connectors[connectorWireIndex];
+
+            var connectorPinModel = new ConnectorPinModel(point.X, point.Y, Guid.NewGuid(), selectedConnector.GUID);
+            selectedConnector.AddPin(connectorPinModel);
             workspaceViewModel.Model.RecordCreatedModel(connectorPinModel);
         }
 
@@ -1218,6 +1220,7 @@ namespace Dynamo.ViewModels
             foreach (var pin in ConnectorPinViewCollection)
             {
                 workspaceViewModel.Pins.Remove(pin);
+                ConnectorModel.RemovePin(pin.Model);
                 pin.Model.Dispose();
                 pin.Dispose();
             }
