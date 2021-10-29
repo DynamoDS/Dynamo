@@ -186,7 +186,6 @@ namespace Dynamo.PackageManager
             get { return RootDirectory.StartsWith(PathManager.BuiltinPackagesDirectory); }
         }
 
-        
         [Obsolete("This property will be removed in Dynamo 3.0. Use LoadState.ScheduledState instead")]
         public bool MarkedForUninstall
         {
