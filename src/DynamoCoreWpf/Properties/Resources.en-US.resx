@@ -1761,9 +1761,6 @@ Want to publish a different package?</value>
   <data name="PublishPackageViewPackageDependencies" xml:space="preserve">
     <value>Dependencies</value>
   </data>
-  <data name="PublishPackageViewPackageDescription" xml:space="preserve">
-    <value>Description</value>
-  </data>
   <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
     <value>A description that helps people understand what the package might be used for.</value>
   </data>
@@ -2779,9 +2776,6 @@ This package will be unloaded after the next Dynamo restart.</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
     <value>Markdown Files Directory (optional)</value>
-  </data>
-  <data name="PublishPackage" xml:space="preserve">
-    <value>Publish Online</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
     <value>An optional location for documenting your package in the markdown format.</value>

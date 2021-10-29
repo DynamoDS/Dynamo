@@ -1945,9 +1945,6 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
     <value>A description that helps people understand what the package might be used for.</value>
   </data>
-  <data name="PublishPackageViewPackageDescription" xml:space="preserve">
-    <value>Description</value>
-  </data>
   <data name="PublishPackageViewPackageNameTooltip" xml:space="preserve">
     <value>A unique name for the package.</value>
   </data>
