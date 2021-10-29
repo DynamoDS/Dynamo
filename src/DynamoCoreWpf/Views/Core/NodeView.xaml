@@ -5,7 +5,6 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
              Name="topControl"
              Width="Auto"
              Height="Auto"
