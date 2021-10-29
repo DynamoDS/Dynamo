@@ -225,7 +225,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 totalTooltips = (from step in guide.GuideSteps
                                  where step.StepType == Step.StepTypes.TOOLTIP ||
                                        step.StepType == Step.StepTypes.SURVEY
-                                 select step).Count();
+                                 select step).GroupBy(x=>x.Sequence).Count();
 
                 foreach (Step step in guide.GuideSteps)
                 {
