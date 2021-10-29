@@ -23,7 +23,6 @@ using Microsoft.Practices.Prism.Commands;
 using PythonNodeModels;
 using Double = System.Double;
 using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
-using QueryContinueDragEventArgs = System.Windows.QueryContinueDragEventArgs;
 using String = System.String;
 
 namespace Dynamo.PackageManager
@@ -71,7 +70,6 @@ namespace Dynamo.PackageManager
                 IsSelected = false;
             }
         }
-
         
         /// <summary>
         /// A event called when publishing was a success
@@ -1677,7 +1675,7 @@ namespace Dynamo.PackageManager
             if (dynamoViewModel == null || !dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
             {
                 ErrorString = string.Format(Resources.CannotSubmitPackage,dynamoViewModel.BrandingResourceProvider.ProductName);
-                return true;
+                return false;
             }
 
             return CheckPackageValidity();

@@ -2803,6 +2803,7 @@ This package will be unloaded after the next Dynamo restart.</value>
   </data>
   <data name="PublishPackageViewPublisherURLWatermark" xml:space="preserve">
     <value>URL</value>
+  </data>
   <data name="PackagesGuide" xml:space="preserve">
     <value>Packages</value>
   </data>
