@@ -701,14 +701,53 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets the different Python Engine versions availables from PythonNodeModels.dll
+        /// </summary>
+        /// <returns>Strings array with the different names</returns>
+        private string[] GetPythonEngineOptions()
+        {
+            try
+            {
+                var enumType = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(s =>
+                    {
+                        try
+                        {
+                            return s.GetTypes();
+                        }
+                        catch (ReflectionTypeLoadException)
+                        {
+                            return new Type[0];
+                        }
+                    }).FirstOrDefault(t => t.FullName.Equals("PythonNodeModels.PythonEngineVersion"));
+
+                return Enum.GetNames(enumType);
+            }
+            catch
+            {
+                return Array.Empty<string>();
+            }
+        }
+
         private void AddPythonEnginesOptions()
         {
-            var options = new ObservableCollection<string> { Res.DefaultPythonEngineNone };
-            foreach (var item in PythonNodeModels.PythonEngineSelector.Instance.AvailableEngines)
+            var pythonEngineOptions = GetPythonEngineOptions();
+            if (pythonEngineOptions.Length != 0)
             {
-                options.Add(item.ToString());
+                foreach (var option in pythonEngineOptions)
+                {
+                    if (option != "Unspecified")
+                    {
+                        PythonEnginesList.Add(option);
+                    }
+                }
             }
-            PythonEnginesList = options;
+            else
+            {
+                PythonEnginesList.Add("IronPython2");
+                PythonEnginesList.Add("CPython3");
+            }
         }
         #endregion
 
@@ -730,15 +769,15 @@ namespace Dynamo.ViewModels
             this.installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
                 dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
 
-            // Scan for engines
+            PythonEnginesList = new ObservableCollection<string>();
+            PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
             AddPythonEnginesOptions();
-
-            PythonNodeModels.PythonEngineSelector.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
             //Sets SelectedPythonEngine.
             //If the setting is empty it corresponds to the default python engine
-            var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
-            SelectedPythonEngine  = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
+            _ = preferenceSettings.DefaultPythonEngine == string.Empty ? 
+                SelectedPythonEngine = Res.DefaultPythonEngineNone : 
+                SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
 
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
@@ -834,8 +873,8 @@ namespace Dynamo.ViewModels
         {
             PropertyChanged -= Model_PropertyChanged;
             WorkspaceEvents.WorkspaceSettingsChanged -= PreferencesViewModel_WorkspaceSettingsChanged;
-            PythonNodeModels.PythonEngineSelector.Instance.AvailableEngines.CollectionChanged -= PythonEnginesChanged;
         }
+
 
         /// <summary>
         /// Listen for changes to the custom package paths and update package paths for install accordingly
@@ -1042,14 +1081,6 @@ namespace Dynamo.ViewModels
             Random r = new Random();
             Color color = Color.FromArgb(255, (byte)r.Next(), (byte)r.Next(), (byte)r.Next());
             return ColorTranslator.ToHtml(color).Replace("#", "");
-        }
-
-        private void PythonEnginesChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                AddPythonEnginesOptions();
-            }
         }
     }
 

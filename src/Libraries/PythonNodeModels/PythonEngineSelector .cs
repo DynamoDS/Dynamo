@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
 
 namespace PythonNodeModels
 {
@@ -37,67 +34,23 @@ namespace PythonNodeModels
         internal static PythonEngineSelector Instance { get { return lazy.Value; } }
 
         // TODO: The following fields might be removed after dynamic loading applied
+        internal bool IsIronPythonEnabled = false;
         internal string IronPythonEvaluatorClass = "IronPythonEvaluator";
         internal string IronPythonEvaluationMethod = "EvaluateIronPythonScript";
 
+        internal bool IsCPythonEnabled = false;
         internal string CPythonEvaluatorClass = "CPythonEvaluator";
         internal string CPythonEvaluationMethod = "EvaluatePythonScript";
 
-        internal const string DummyEvaluatorClass = "DummyPythonEvaluator";
-        internal const string DummyEvaluatorMethod = "Evaluate";
-
-        internal ObservableCollection<PythonEngineVersion> AvailableEngines;
+        const string DummyEvaluatorClass = "DummyPythonEvaluator";
+        const string DummyEvaluatorMethod = "Evaluate";
 
         /// <summary>
         /// Singleton class initialization logic which will be run in a lazy way the first time Dynamo try to evaluate a Python node
         /// </summary>
         private PythonEngineSelector()
         {
-            AvailableEngines = new ObservableCollection<PythonEngineVersion>();
-
             ScanPythonEngines();
-            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(AssemblyLoadEventHandler);
-        }
-
-        private void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args)
-        {
-            PythonEngineSelector.Instance.ScanPythonEngine(args.LoadedAssembly);
-        }
-
-        private void ScanPythonEngine(Assembly assembly)
-        {
-            if (assembly == null)
-            {
-                return;
-            }
-            // Currently we are using try-catch to validate loaded assembly and evaluation method exist
-            // but we can optimize by checking all loaded types against evaluators interface later
-            try
-            {
-                if (!AvailableEngines.Contains(PythonEngineVersion.IronPython2) &&
-                    assembly.GetName().Name.Equals("DSIronPython") &&
-                    assembly.GetType("DSIronPython.IronPythonEvaluator").GetMethod(IronPythonEvaluationMethod) != null)
-                {
-                    AvailableEngines.Add(PythonEngineVersion.IronPython2);
-                }
-            }
-            catch
-            {
-                //Do nothing for now
-            }
-            try
-            {
-                if (!AvailableEngines.Contains(PythonEngineVersion.CPython3) &&
-                    assembly.GetName().Name.Equals("DSCPython") &&
-                    assembly.GetType("DSCPython.CPythonEvaluator").GetMethod(CPythonEvaluationMethod) != null)
-                {
-                    AvailableEngines.Add(PythonEngineVersion.CPython3);
-                }
-            }
-            catch
-            {
-                //Do nothing for now
-            }
         }
 
         /// <summary>
@@ -106,9 +59,33 @@ namespace PythonNodeModels
         internal void ScanPythonEngines()
         {
             var assems = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assems)
+            // Currently we are using try-catch to validate loaded assembly and evaluation method exist
+            // but we can optimize by checking all loaded types against evaluators interface later
+            try
             {
-                ScanPythonEngine(assembly);
+                var IronPythonAssem = assems.FirstOrDefault(x => x.GetName().Name.Equals("DSIronPython"));
+                if (IronPythonAssem != null &&
+                    IronPythonAssem.GetType("DSIronPython.IronPythonEvaluator").GetMethod(IronPythonEvaluationMethod) != null)
+                {
+                    IsIronPythonEnabled = true;
+                }
+            }
+            catch
+            {
+                //Do nothing for now
+            }
+            try
+            {
+                var CPythonAssem = assems.FirstOrDefault(x => x.GetName().Name.Equals("DSCPython"));
+                if (CPythonAssem != null &&
+                    CPythonAssem.GetType("DSCPython.CPythonEvaluator").GetMethod(CPythonEvaluationMethod) != null)
+                {
+                    IsCPythonEnabled = true;
+                }
+            }
+            catch
+            {
+                //Do nothing for now
             }
         }
 
@@ -121,15 +98,13 @@ namespace PythonNodeModels
         internal void GetEvaluatorInfo(PythonEngineVersion engine, out string evaluatorClass, out string evaluationMethod)
         {
             // Provide evaluator info when the selected engine is loaded
-            if (engine == PythonEngineVersion.IronPython2 && 
-                AvailableEngines.Contains(PythonEngineVersion.IronPython2))
+            if (engine == PythonEngineVersion.IronPython2 && Instance.IsIronPythonEnabled)
             {
                 evaluatorClass = Instance.IronPythonEvaluatorClass;
                 evaluationMethod = Instance.IronPythonEvaluationMethod;
                 return;
             }
-            if (engine == PythonEngineVersion.CPython3 &&
-                AvailableEngines.Contains(PythonEngineVersion.CPython3))
+            if (engine == PythonEngineVersion.CPython3 && Instance.IsCPythonEnabled)
             {
                 evaluatorClass = Instance.CPythonEvaluatorClass;
                 evaluationMethod = Instance.CPythonEvaluationMethod;
