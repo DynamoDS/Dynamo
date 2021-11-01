@@ -275,9 +275,19 @@
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
-					"HostUIElementString": "PackageManagerMenu",
-					"VerticalPopupOffset": 50,
-					"HorizontalPopupOffset": 320
+					"WindowName": "TermsOfUseWindow",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "AcceptTermsOfUseButton",
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 0,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "Button",
+						"WindowName": "TermsOfUseWindow",
+						"WindowElementNameString": "AcceptTermsOfUseButton",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
 				},
 				"PreValidation": {
 					"ReturnType": "boolean",
@@ -289,8 +299,16 @@
 					{
 						"Sequence": 1,
 						"ControlType": "button",
+						"WindowName": "PopupWindow",
 						"Name": "NextButton",
 						"Action": "disable"
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"UpdatePlacementTarget": true
 					}
 				]
 			},
@@ -298,7 +316,7 @@
 				"Sequence": 2,
 				"Name": "third-party packages",
 				"Type": "tooltip",
-				"TooltipPointerDirection": "bottom_left",
+				"TooltipPointerDirection": "top_left",
 				"Width": 480,
 				"Height": 260,
 				"StepContent": {
@@ -307,22 +325,35 @@
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
-					"HostUIElementString": "PackageManagerMenu",
-					"VerticalPopupOffset": 50,
-					"HorizontalPopupOffset": 320
+					"WindowName": "PackageSearch",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageSearch",
+					"VerticalPopupOffset": 150,
+					"HorizontalPopupOffset": 0
 				},
 				"PreValidation": {
 					"ReturnType": "boolean",
 					"ControlType": "visibility",
 					"FuncName": "AcceptedTermsOfUse",
 					"ExpectedValue": true
-				}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "ExecutePackageSearch",
+						"ExecuteCleanUpForward": false,
+						"ExecuteCleanUpBackward": true,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					}
+				]
 			},
 			{
 				"Sequence": 3,
 				"Name": "search-filter-sort",
 				"Type": "tooltip",
-				"TooltipPointerDirection": "bottom_left",
+				"TooltipPointerDirection": "top_left",
 				"Width": 480,
 				"Height": 260,
 				"StepContent": {
@@ -331,10 +362,23 @@
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
-					"HostUIElementString": "PackageManagerMenu",
+					"WindowName": "PackageSearch",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageSearch",
 					"VerticalPopupOffset": 50,
-					"HorizontalPopupOffset": 320
-				}
+					"HorizontalPopupOffset": 0
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecutePackageSearch",
+						"ExecuteCleanUpForward": false,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					}
+				]
 			}
 		]
 	}

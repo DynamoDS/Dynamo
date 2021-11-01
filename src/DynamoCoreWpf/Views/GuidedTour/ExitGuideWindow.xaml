@@ -5,10 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dynamo.Wpf.Views.GuidedTour"
              xmlns:localui="clr-namespace:Dynamo.Wpf.UI.GuidedTour"
+             xmlns:ui="clr-namespace:Dynamo.UI"    
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-             xmlns:ui="clr-namespace:Dynamo.UI"
-             Height="273"
-             Width="480"
+             Height="128"
+             Width="400"
              mc:Ignorable="d" 
              AllowsTransparency="True">
     <Popup.Resources>
@@ -23,11 +23,12 @@
 
     <Border
         ClipToBounds="True" CornerRadius="3" Background="White" Name="brdEtikett">
-        <Canvas Background="Transparent"
-            Name="RootLayout" >
+        <Canvas Background="Transparent">
 
-            <Grid Width="480"
-                Height="{Binding Height}">
+            <Grid Name="RootLayout"                   
+                 Width="{Binding Width}"
+                 Height="{Binding Height}"
+                  >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="*"/>
@@ -36,10 +37,11 @@
 
                 <!--This is the header/title section of the Popup-->
                 <Border Grid.Row="0" 
-                        BorderThickness="0,0,0,1"
-                        >
-                    <Border.BorderBrush>
-                        <SolidColorBrush Color="{StaticResource PopupTitleBorderColor}" 
+                        BorderThickness="0,0,0,1">
+                    <Border.BorderBrush >
+                        <SolidColorBrush
+                            x:Name="TitleLine"
+                                        Color="{StaticResource PopupTitleBorderColor}" 
                                          Opacity="0.3"/>
                     </Border.BorderBrush>
                     <Grid>
@@ -51,26 +53,25 @@
                                Grid.Column="0"
                                FontSize="18"
                                Margin="20,14,0,5"
-                               Content="{Binding StepContent.Title}"
+                               Content="{Binding Title}"
                                Style="{StaticResource PoupTitleLabelStyle}"
                                />
                     </Grid>
                 </Border>
 
-                <!--This is the text section of the Popup-->
-                <localui:CustomRichTextBox x:Name="ContentRichTextBox" 
-                                           IsDocumentEnabled="True"            
-                                               
-                                           Grid.Row="1"
-                                           Margin="20,20,20,0"
-                                           CustomText="{Binding StepContent.FormattedText}"
+                <Grid Grid.Row="1">
+                    <!--This is the text section of the Popup-->
+                    <localui:CustomRichTextBox x:Name="ContentRichTextBox" 
+                                           IsDocumentEnabled="True"                   
+                                           Padding="20,20,100,5"
+                                           CustomText="{Binding FormattedText}"
                                            Style="{StaticResource CustomRichTextBoxStyle}">
 
-                </localui:CustomRichTextBox>
+                    </localui:CustomRichTextBox>
+                </Grid>
 
                 <!--Group of buttons Exit/Continue-->
-                <Grid Grid.Row="3" 
-                  Margin="0,10,0,0">
+                <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -83,14 +84,13 @@
                         Grid.Column="2"      
                         FontWeight="Medium"
                         Content="{x:Static p:Resources.PackagesGuideExitButton}"                            
-                        Margin="10,0,10,0">
-                        
+                        Margin="0,0,10,0">
                     </Button>
-                    <Button Name="ContinueTourNutton" 
+                    <Button Name="ContinueTourButton" 
                         Visibility="{Binding ShowPopupButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource PoupButtonStyle}"
                         Grid.Column="3"                      
-                        Margin="0,0,30,0"
+                        Margin="0,0,10,0"                    
                         Content="{x:Static p:Resources.PackagesGuideContinueButton}"
                         FontSize="14" >
                     </Button>

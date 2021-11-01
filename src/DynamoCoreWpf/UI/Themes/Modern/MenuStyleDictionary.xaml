@@ -28,7 +28,7 @@
                 <Border Name="Border"
                         Height="45px"
                         Padding="17,0"
-                        Background="Transparent">
+                        Background="#3C3C3C">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />

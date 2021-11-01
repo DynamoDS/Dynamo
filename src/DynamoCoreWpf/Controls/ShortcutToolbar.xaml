@@ -138,7 +138,7 @@
                     <MenuItem Name="exportMenu"
                               Cursor="Hand"
                               Focusable="False"
-                              Margin="-5,-7,0,0"
+                              Margin="0,-3,0,0"
                               MouseEnter="exportMenu_MouseEnter"
                               MouseLeave="exportMenu_MouseLeave">
                         <MenuItem.Header>
