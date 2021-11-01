@@ -2977,7 +2977,9 @@
                                           OverridesDefaultStyle="True"
                                           Template="{StaticResource ExpanderPlusToggleButton}">
                                 <ToggleButton.Content>
-                                    <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
+                                    <ContentPresenter ContentSource="Header"
+                                                      RecognizesAccessKey="True"
+                                                      TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}" />
                                 </ToggleButton.Content>
                             </ToggleButton>
                         </Border>
