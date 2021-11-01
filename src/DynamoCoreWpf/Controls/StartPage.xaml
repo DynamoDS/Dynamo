@@ -39,7 +39,7 @@
             BorderThickness="0,0,0,5"
             BorderBrush="#ADE4DE">
             <Grid Margin="10" Width="212">
-                <TextBlock Margin="10,3,0,-2"
+                <TextBlock Margin="3,2,0,-2"
                            FontSize="16px"
                            FontFamily="{StaticResource ArtifaktElementRegular}"
                            Text="{x:Static p:Resources.StartPageStart}"
