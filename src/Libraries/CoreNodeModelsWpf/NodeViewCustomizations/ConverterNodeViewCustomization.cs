@@ -27,7 +27,6 @@ namespace CoreNodeModelsWpf.NodeViewCustomizations
             };
             converterViewModel = converterControl.DataContext as ConverterViewModel;
             nodeView.inputGrid.Children.Add(converterControl);
-            converterControl.Loaded +=converterControl_Loaded;                                
             converterControl.SelectConversionMetric.PreviewMouseUp +=SelectConversionMetric_PreviewMouseUp;
             converterControl.SelectConversionFrom.PreviewMouseUp +=SelectConversionFrom_PreviewMouseUp;
             converterControl.SelectConversionTo.PreviewMouseUp += SelectConversionTo_MouseLeftButtonDown;
@@ -54,10 +53,6 @@ namespace CoreNodeModelsWpf.NodeViewCustomizations
             WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);            
         }
 
-        private void converterControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {           
-        }
-       
         public void Dispose()
         {           
             converterControl.SelectConversionMetric.PreviewMouseUp -= SelectConversionMetric_PreviewMouseUp;
