@@ -496,6 +496,7 @@ namespace Dynamo.ViewModels
             annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;
             model.PropertyChanged += model_PropertyChanged;
+            model.RemovedFromGroup += OnModelRemovedFromGroup;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
             //https://jira.autodesk.com/browse/QNTM-3770
@@ -888,6 +889,7 @@ namespace Dynamo.ViewModels
                 case nameof(AnnotationModel.ModelAreaHeight):
                     RaisePropertyChanged(nameof(ModelAreaHeight));
                     RaisePropertyChanged(nameof(ModelAreaRect));
+                    RaisePropertyChanged(nameof(Width));
                     break;
                 case nameof(AnnotationModel.Position):
                     RaisePropertyChanged(nameof(ModelAreaRect));
@@ -895,6 +897,11 @@ namespace Dynamo.ViewModels
                     break;
 
             }
+        }
+
+        private void OnModelRemovedFromGroup(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(ZIndex));
         }
 
         private void UpdateAllGroupedGroups()
@@ -1000,6 +1007,7 @@ namespace Dynamo.ViewModels
         public override void Dispose()
         {
             annotationModel.PropertyChanged -= model_PropertyChanged;
+            annotationModel.RemovedFromGroup -= OnModelRemovedFromGroup;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
         }
