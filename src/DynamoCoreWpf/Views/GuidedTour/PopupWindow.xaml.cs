@@ -19,6 +19,8 @@ namespace Dynamo.Wpf.Views.GuidedTour
         private HostControlInfo hostControlInfo;
         private bool isClosingTour;
 
+        private const string packagesTourName = "packages";
+
         internal WebBrowserWindow webBrowserWindow;
 
         public PopupWindow(PopupWindowViewModel viewModel, HostControlInfo hInfo)
@@ -90,8 +92,15 @@ namespace Dynamo.Wpf.Views.GuidedTour
         private void CloseButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             IsOpen = false;
-            isClosingTour = true;
-            popupViewModel.Step.OnStepClosed(popupViewModel.Step.Name, popupViewModel.Step.StepType);
+            if (popupViewModel.Step.GuideName.ToLower() == packagesTourName)
+            {
+                GuideFlowEvents.OnGuidedTourFinish(popupViewModel.Step.GuideName);
+            }
+            else
+            {
+                isClosingTour = true;
+                popupViewModel.Step.OnStepClosed(popupViewModel.Step.Name, popupViewModel.Step.StepType);
+            }
         }
 
         private void NextButton_Click(object sender, RoutedEventArgs e)

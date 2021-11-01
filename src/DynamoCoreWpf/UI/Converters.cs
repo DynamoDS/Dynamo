@@ -350,6 +350,24 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// If the given string is empty, false is returned, otherwise true is returned.
+    /// </summary>
+    public class EmptyStringToFalseConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return value is string && !string.IsNullOrEmpty(value.ToString());
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class EmptyStringToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -2619,11 +2637,11 @@ namespace Dynamo.Controls
             }
         }
 
-        /// <summary>
-        /// Checks if the item is last. In that case, this converter controls 
-        /// the last tree view item's  horizontal and vertical line height
-        /// </summary>
-        public class TreeViewLineConverter : IValueConverter
+    /// <summary>
+    /// Checks if the item is last. In that case, this converter controls 
+    /// the last tree view item's  horizontal and vertical line height
+    /// </summary>
+    public class TreeViewLineConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {

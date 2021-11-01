@@ -624,23 +624,24 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-
-                    <Border x:Name="container" Background="Transparent">
-                        <Border x:Name="inner"
-                                Margin="3"
-                                Background="#55000000"
-                                CornerRadius="2">
-                            <TextBlock x:Name="text"
-                                       Margin="3"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontSize="11"
-                                       FontWeight="Bold"
-                                       Foreground="#BBB"
-                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                    <Grid x:Name="bordersGrid">
+                        <Border x:Name="container" 
+                                Background="Transparent">
+                            <Border x:Name="inner"
+                                        Margin="3"
+                                        Background="#55000000"
+                                        CornerRadius="2">
+                                <TextBlock x:Name="text"
+                                               Margin="3"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontSize="11"
+                                               FontWeight="Bold"
+                                               Foreground="#BBB"
+                                               Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                            </Border>
                         </Border>
-                    </Border>
-
+                    </Grid>
                     <ControlTemplate.Triggers>
 
                         <Trigger Property="Button.IsMouseOver" Value="true">
@@ -2976,7 +2977,9 @@
                                           OverridesDefaultStyle="True"
                                           Template="{StaticResource ExpanderPlusToggleButton}">
                                 <ToggleButton.Content>
-                                    <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
+                                    <ContentPresenter ContentSource="Header"
+                                                      RecognizesAccessKey="True"
+                                                      TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}" />
                                 </ToggleButton.Content>
                             </ToggleButton>
                         </Border>
@@ -3774,13 +3777,13 @@
                             BorderBrush="Transparent"
                             BorderThickness="0">
                         <Canvas Width="5" Height="10">
-                            <Line x:Name="line1"
+                            <Line x:Name="caret_upper"
                                   Stroke="Black"
                                   X1="5"
                                   X2="0"
                                   Y1="0"
                                   Y2="5" />
-                            <Line x:Name="line2"
+                            <Line x:Name="caret_bottom"
                                   Stroke="Black"
                                   X1="0"
                                   X2="5"
@@ -3790,25 +3793,29 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Tag" Value="Invert">
-                            <Setter TargetName="line1" Property="RenderTransform">
+                            <Setter TargetName="caret_upper" Property="RenderTransform">
                                 <Setter.Value>
                                     <RotateTransform Angle="180" CenterX="2" CenterY="5" />
                                 </Setter.Value>
                             </Setter>
-                            <Setter TargetName="line2" Property="RenderTransform">
+                            <Setter TargetName="caret_bottom" Property="RenderTransform">
                                 <Setter.Value>
                                     <RotateTransform Angle="180" CenterX="2" CenterY="5" />
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="line1" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
-                            <Setter TargetName="line2" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="caret_upper" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="caret_bottom" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="line1" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
-                            <Setter TargetName="line2" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="caret_upper" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="caret_bottom" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
                             <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="caret_upper" Property="Stroke" Value="Gray" />
+                            <Setter TargetName="caret_bottom" Property="Stroke" Value="Gray" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -3900,7 +3907,6 @@
 
     <!--  Style for the exit button in the exit modal of Dynamo Guided Tours  -->
     <Style x:Key="PoupExitButtonStyle" TargetType="{x:Type Button}">
-        <Setter Property="MinWidth" Value="100" />
         <Setter Property="MaxHeight" Value="36" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="BorderThickness" Value="36" />
