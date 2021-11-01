@@ -15,11 +15,29 @@
     <DataTemplate DataType="{x:Type viewModels:OutPortViewModel}">
 
         <!--  Grid that contains the entire port  -->
-        <Grid Name="MainGrid">
+        <Grid Name="MainGrid"
+              Background="Transparent"
+              IsHitTestVisible="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Name="PortNameColumn" Width="*" />
                 <ColumnDefinition Name="PortSnappingColumn" Width="25px" />
             </Grid.ColumnDefinitions>
+
+            <interactivity:Interaction.Triggers>
+                <!--  Bind Connect command to left click  -->
+                <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                    <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
+                </views:HandlingEventTrigger>
+                <views:HandlingEventTrigger EventName="MouseRightButtonDown">
+                    <interactivity:InvokeCommandAction Command="{Binding Path=NodePortContextMenuCommand}" CommandParameter="{Binding}" />
+                </views:HandlingEventTrigger>
+            </interactivity:Interaction.Triggers>
+
+            <!--  Bind NodeAutoComplete to double left click  -->
+            <Grid.InputBindings>
+                <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
+            </Grid.InputBindings>
+
             <Grid.Style>
                 <Style>
                     <Setter Property="Grid.Height" Value="35px" />
@@ -34,8 +52,8 @@
             <!--  Transparent rectangle used for port snapping, overhangs the edge of the port  -->
             <Rectangle Grid.Column="0"
                        Grid.ColumnSpan="2"
-                       Canvas.ZIndex="1"
                        Margin="-25,0,0,0"
+                       Canvas.ZIndex="1"
                        Fill="Transparent"
                        IsHitTestVisible="{Binding IsHitTestVisible}"
                        SnapsToDevicePixels="True">
@@ -45,12 +63,6 @@
                     </views:HandlingEventTrigger>
                     <views:HandlingEventTrigger EventName="MouseLeave">
                         <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
-                    </views:HandlingEventTrigger>
-                    <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
-                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}" CommandParameter="{Binding}" />
-                    </views:HandlingEventTrigger>
-                    <views:HandlingEventTrigger EventName="MouseRightButtonDown">
-                        <interactivity:InvokeCommandAction Command="{Binding Path=NodePortContextMenuCommand}" CommandParameter="{Binding}" />
                     </views:HandlingEventTrigger>
                 </interactivity:Interaction.Triggers>
             </Rectangle>
@@ -84,8 +96,8 @@
             <!--  Grid containing the Port Name TextBox  -->
             <Grid Name="PortNameGrid"
                   Grid.Column="0"
-                  IsEnabled="{Binding Path=IsEnabled}"
                   VerticalAlignment="Center"
+                  IsEnabled="{Binding Path=IsEnabled}"
                   IsHitTestVisible="True"
                   ToolTipService.ShowDuration="60000">
                 <TextBlock Name="PortNameTextBox"
@@ -147,15 +159,7 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
-                <interactivity:Interaction.Triggers>
-                    <!--  Bind Connect command to left click  -->
-                    <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
-                        <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
-                    </views:HandlingEventTrigger>
-                    <views:HandlingEventTrigger EventName="MouseRightButtonDown">
-                        <interactivity:InvokeCommandAction Command="{Binding Path=NodePortContextMenuCommand}" CommandParameter="{Binding}" />
-                    </views:HandlingEventTrigger>
-                </interactivity:Interaction.Triggers>
+
                 <Border.ToolTip>
                     <dynui:DynamoToolTip AttachmentSide="Right" Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>
@@ -166,10 +170,6 @@
                     </dynui:DynamoToolTip>
                 </Border.ToolTip>
 
-                <!--  Bind NodeAutoComplete to double left click  -->
-                <Border.InputBindings>
-                    <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
-                </Border.InputBindings>
             </Border>
         </Grid>
     </DataTemplate>
