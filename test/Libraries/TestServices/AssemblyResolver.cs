@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+
 using Dynamo.Utilities;
 
 namespace TestServices
@@ -21,11 +21,11 @@ namespace TestServices
         /// Setup the assembly resolver, specifying a core path.
         /// </summary>
         /// <param name="corePath"></param>
-        public void Setup(string corePath, IEnumerable<string> additionalResolutionPaths = null)
+        public void Setup(string corePath)
         {
             if (assemblyHelper != null) return;
 
-            assemblyHelper = new AssemblyHelper(corePath, additionalResolutionPaths);
+            assemblyHelper = new AssemblyHelper(corePath, null);
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 

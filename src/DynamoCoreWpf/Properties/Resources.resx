@@ -1241,7 +1241,7 @@ You will get a chance to save your work.</value>
     <value>New</value>
     <comment>Displays next to the package name in the Package Search window if the package has been added in the last 30 days.</comment>
   </data>
-	<data name="PackageDetailsDescription" xml:space="preserve">
+  <data name="PackageDetailsDescription" xml:space="preserve">
     <value>DESCRIPTION</value>
     <comment>Header in the PackageDetailsViewExtension.</comment>
   </data>
@@ -1269,7 +1269,7 @@ You will get a chance to save your work.</value>
     <value>Package</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
   </data>
-	<data name="PackageDownloadStateDownloaded" xml:space="preserve">
+  <data name="PackageDownloadStateDownloaded" xml:space="preserve">
     <value>Downloaded</value>
   </data>
   <data name="PackageDownloadStateDownloading" xml:space="preserve">
@@ -2834,5 +2834,11 @@ More information</value>
   </data>
   <data name="ShortcutExportWorkspace" xml:space="preserve">
     <value>Workspace</value>
+  </data>
+  <data name="PackagesGuideExitAcceptTerms" xml:space="preserve">
+    <value>To continue the guide and install the sample package, you must accept the Terms of Service. \n\n **Click Continue.** Then in the terms, **click I Accept.** \n\n\n\n</value>
+  </data>
+  <data name="PackagesGuideExitTitle" xml:space="preserve">
+    <value>Do you want to continue the guide?</value>
   </data>
 </root>

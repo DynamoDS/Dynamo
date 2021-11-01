@@ -16,7 +16,8 @@ namespace DynamoPythonTests
         }
 
         public IEnumerable<PythonEvaluatorDelegate> Evaluators = new List<PythonEvaluatorDelegate> {
-            DSCPython.CPythonEvaluator.EvaluatePythonScript
+            DSCPython.CPythonEvaluator.EvaluatePythonScript,
+            DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript
         };
 
         [Test]
