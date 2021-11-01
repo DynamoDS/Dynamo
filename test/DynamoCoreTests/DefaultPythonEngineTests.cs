@@ -12,6 +12,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("DSCPython.dll");
+            libraries.Add("DSIronPython.dll");
         }
 
         protected override IStartConfiguration CreateStartConfiguration(IPreferences settings)

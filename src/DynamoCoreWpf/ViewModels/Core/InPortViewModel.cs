@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
-using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
