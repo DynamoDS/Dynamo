@@ -65,7 +65,7 @@
                         </Image>
                         <TextBlock Name="SearchTextBlock"
                                    Height="18"
-                                   Margin="9,1,0,0"
+                                   Margin="5,1,0,0"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
                                    DockPanel.Dock="Left"
@@ -78,7 +78,7 @@
                     </DockPanel>
                     <TextBox Name="SearchTextBox"
                              MinWidth="250"
-                             Margin="7,3,0,0"
+                             Margin="3,3,0,0"
                              VerticalAlignment="Center"
                              Background="Transparent"
                              BorderThickness="0"
@@ -96,7 +96,6 @@
         <Border Name="FoundMembers"
                 Grid.Row="1"
                 MaxHeight="250"
-                Margin="1,2,1,0"
                 Background="{StaticResource LibraryCommonBackground}"
                 Opacity=".9">
             <ListBox Name="MembersListBox"
