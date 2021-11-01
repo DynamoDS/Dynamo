@@ -2514,13 +2514,10 @@ Uninstall the following packages: {0}?</value>
     <value>&lt;Double click here to edit group description&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>&lt;Double click here to edit group title&gt;</value>
+    <value>&lt;Click here to edit the group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>Add group to group</value>
-  </data>
-  <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
   </data>
   <data name="NodeInformationalStateDismiss" xml:space="preserve">
     <value>Dismiss</value>
@@ -2536,9 +2533,6 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="NodeInformationalStateShowLess" xml:space="preserve">
     <value>Show less</value>
-  </data>
-  <data name="LearnMore" xml:space="preserve">
-    <value>Learn more</value>
   </data>
   <data name="NodeInformationalStateDismissAll" xml:space="preserve">
     <value>Dismiss all</value>
@@ -2775,20 +2769,19 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Find a package</value>
   </data>
   <data name="PackagesGuideSearchFilterText" xml:space="preserve">
-    <value>You can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar.</value>
+    <value>\nYou can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar.</value>
   </data>
   <data name="PackagesGuideSearchFilterTitle" xml:space="preserve">
     <value>Search, filter, and sort</value>
   </data>
   <data name="PackagesGuideTermsOfServiceText" xml:space="preserve">
-    <value>Packages may come from third parties. Be aware that packages may pose security risks. More information \n\n**Click I Accept** in the Terms of Service to accept it and proceed with this guide.</value>
+    <value>\nPackages may come from third parties. Be aware that packages may pose security risks. #More information=https://dynamobim.org/issues/extend-dynamo-with-packages  \n\n**Click I Accept** in the Terms of Service to accept it and proceed with this guide.</value>
   </data>
   <data name="PackagesGuideTermsOfServiceTitle" xml:space="preserve">
     <value>Accept the Terms of Service</value>
   </data>
   <data name="PackagesGuideThirdPartyText" xml:space="preserve">
-    <value>Packages may come from third parties. Be aware that packages may pose security risks. 
-More information</value>
+    <value>\nPackages may come from third parties.\n\nBe aware that packages may pose security risks. #More information=https://dynamobim.org/issues/extend-dynamo-with-packages/</value>
   </data>
   <data name="PackagesGuideThirdPartyTitle" xml:space="preserve">
     <value>Third-party packages</value>
@@ -2843,5 +2836,8 @@ More information</value>
   </data>
   <data name="InfoBubbleInfo" xml:space="preserve">
     <value>Info</value>
+  </data>
+  <data name="AutodeskSamplePackage" xml:space="preserve">
+    <value>Autodesk sample</value>
   </data>
 </root>

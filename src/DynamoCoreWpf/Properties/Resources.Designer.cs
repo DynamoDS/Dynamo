@@ -169,6 +169,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autodesk sample.
+        /// </summary>
+        public static string AutodeskSamplePackage {
+            get {
+                return ResourceManager.GetString("AutodeskSamplePackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autodesk Sign In.
         /// </summary>
         public static string AutodeskSignIn {
@@ -5141,7 +5150,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar..
+        ///   Looks up a localized string similar to \nYou can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar..
         /// </summary>
         public static string PackagesGuideSearchFilterText {
             get {
@@ -5159,7 +5168,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages may come from third parties. Be aware that packages may pose security risks. More information \n\n**Click I Accept** in the Terms of Service to accept it and proceed with this guide..
+        ///   Looks up a localized string similar to \nPackages may come from third parties. Be aware that packages may pose security risks. #More information=https://dynamobim.org/issues/extend-dynamo-with-packages  \n\n**Click I Accept** in the Terms of Service to accept it and proceed with this guide..
         /// </summary>
         public static string PackagesGuideTermsOfServiceText {
             get {
@@ -5177,8 +5186,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages may come from third parties. Be aware that packages may pose security risks. 
-        ///More information.
+        ///   Looks up a localized string similar to \nPackages may come from third parties.\n\nBe aware that packages may pose security risks. #More information=https://dynamobim.org/issues/extend-dynamo-with-packages/.
         /// </summary>
         public static string PackagesGuideThirdPartyText {
             get {
