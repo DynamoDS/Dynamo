@@ -125,6 +125,7 @@ namespace Dynamo.Views
         {
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
            
             ViewModel.ZoomChanged -= vm_ZoomChanged;
@@ -151,6 +152,7 @@ namespace Dynamo.Views
         {
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             ViewModel.ZoomChanged += vm_ZoomChanged;
@@ -174,6 +176,12 @@ namespace Dynamo.Views
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
         }
 
+        private void ShowHidePortContextMenu(ShowHideFlags flag, PortViewModel portViewModel)
+        {
+            PortContextMenu.DataContext = portViewModel;
+            ShowHidePopup(flag, PortContextMenu);
+        }
+
         private void ShowHideInCanvasControl(ShowHideFlags flag)
         {
             ShowHidePopup(flag, InCanvasSearchBar);
@@ -195,19 +203,42 @@ namespace Dynamo.Views
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
                     var displayPopup = DynamoModel.IsTestMode || IsMouseOver;
-                    if (displayPopup && popup == NodeAutoCompleteSearchBar)
+
+                    if (displayPopup)
                     {
-                        if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
-                        // Force the Child visibility to change here because
-                        // 1. Popup isOpen change does not necessarily update the child control before it take effect
-                        // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
-                        // 3. This should not be set to in canvas search control
-                        popup.Child.Visibility = Visibility.Collapsed;
-                        ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
+                        if (popup == NodeAutoCompleteSearchBar)
+                        {
+                            if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
+                            // Force the Child visibility to change here because
+                            // 1. Popup isOpen change does not necessarily update the child control before it take effect
+                            // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
+                            // 3. This should not be set to in canvas search control
+                            popup.Child.Visibility = Visibility.Collapsed;
+                            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
+                        }
+
+                        else if (popup == PortContextMenu)
+                        {
+                            popup.Child.Visibility = Visibility.Hidden;
+                            if (!(PortContextMenu.DataContext is PortViewModel portViewModel)) return;
+                            portViewModel.SetupPortContextMenuPlacement(popup);
+                        }
                     }
-                    popup.Child.Visibility = Visibility.Visible;
-                    popup.IsOpen = displayPopup;
-                    popup.CustomPopupPlacementCallback = null;
+
+                    // We need to use the dispatcher here to make sure that
+                    // the popup is fully updated before we show it.
+                    // This was mainly an issue with the PortContextMenu as
+                    // it uses a DataTemplate bound to the WorkspaceViewModel
+                    // to display the correct content.
+                    // If the dispatcher is not used in this scenario when switching
+                    // from inputPort context menu to Output port context menu,
+                    // the popup will display before the new content is fully rendered
+                    this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() =>{
+                        popup.Child.Visibility = Visibility.Visible;
+                        popup.Child.UpdateLayout();
+                        popup.IsOpen = displayPopup;
+                        popup.CustomPopupPlacementCallback = null;
+                    }));
 
                     ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
                     ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
@@ -514,6 +545,7 @@ namespace Dynamo.Views
         void vm_ZoomChanged(object sender, EventArgs e)
         {
             zoomBorder.SetZoom((e as ZoomEventArgs).Zoom);
+            if (PortContextMenu.IsOpen) DestroyPortContextMenu();
         }
 
         void vm_ZoomAtViewportCenter(object sender, EventArgs e)
@@ -662,8 +694,15 @@ namespace Dynamo.Views
         {
             ContextMenuPopup.IsOpen = false;
             InCanvasSearchBar.IsOpen = false;
+            
+            if(PortContextMenu.IsOpen) DestroyPortContextMenu();
         }
 
+        /// <summary>
+        /// Closes the port's context menu and sets its references to null.
+        /// </summary>
+        private void DestroyPortContextMenu() => PortContextMenu.IsOpen = false;
+        
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
             if (e == null) return; // in certain bizarre cases, e can be null

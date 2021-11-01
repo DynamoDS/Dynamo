@@ -1220,6 +1220,7 @@ namespace Dynamo.ViewModels
             foreach (var pin in ConnectorPinViewCollection)
             {
                 workspaceViewModel.Pins.Remove(pin);
+                ConnectorModel.RemovePin(pin.Model);
                 pin.Model.Dispose();
                 pin.Dispose();
             }

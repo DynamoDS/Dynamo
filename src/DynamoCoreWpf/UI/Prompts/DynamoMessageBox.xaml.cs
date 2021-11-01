@@ -233,9 +233,6 @@ namespace Dynamo.UI.Prompts
         {
             if (e.ChangedButton != MouseButton.Left) return;
             DragMove();
-            Analytics.TrackEvent(
-                Actions.Move,
-                Categories.PackageManagerOperations);
         }
 
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)

@@ -52,6 +52,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
+        /// This property will contain the Window name in case we need to highligh a control in a different Window than DynamoView
+        /// </summary>
+        [JsonProperty(nameof(WindowName))]
+        public string WindowName { get; set; }
+
+        /// <summary>
         /// This represent the UIElement as string of the VisualTree that will be highlighted (readed from the json file)
         /// </summary>
         [JsonProperty(nameof(WindowElementNameString))]
@@ -59,7 +65,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
 
         /// <summary>
-        /// This property represent the Window that containss the UIElement (WindowElementName) due that in some cases is not the DynamoView (like the sub MenuItems)
+        /// This property represent the UI Element Type that contains the UIElement (WindowElementName) due that in some cases is not the DynamoView (like the sub MenuItems)
         /// </summary>
         [JsonProperty(nameof(UIElementTypeString))]
         public string UIElementTypeString { get; set; }

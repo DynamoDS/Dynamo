@@ -145,15 +145,14 @@
             </Path>
             <ContentControl Content="{Binding ConnectorContextMenuViewModel}"
                             HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            Panel.ZIndex="1"/>
+                            VerticalAlignment="Stretch"/>
             <ContentControl Content="{Binding ConnectorAnchorViewModel}"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
-                            Panel.ZIndex="2"/>
+                            Panel.ZIndex="3"/>
             <ContentControl Content="{Binding ConnectorPinViewCollection}"
                             ContentTemplate="{StaticResource ShowPinCollection}"
-                            Panel.ZIndex="3"/>
+                            Panel.ZIndex="2"/>
         </Grid>
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Path=IsFrozen, Mode=OneWay}" Value="True">               
