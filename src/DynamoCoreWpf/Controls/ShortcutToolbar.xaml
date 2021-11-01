@@ -166,6 +166,7 @@
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.ShortcutExportBackground3DPreview}"
                                   Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                  CommandParameter="{x:Static p:Resources.ScreenShotFrom3DParameter}"
                                   ToolTip="{x:Static p:Resources.DynamoViewToolbarExport3DButtonTooltip}"
                                   Name="save3DImage">
                         </MenuItem>
