@@ -240,5 +240,13 @@ namespace Dynamo.PackageDetails
                 .Select(x => x.VersionName)
                 .Contains(packageVersion);
         }
+
+        /// <summary>
+        /// Called when the extension is disposed, unsubscribes from events.
+        /// </summary>
+        internal void Dispose()
+        {
+            PackageDetailsViewExtension.PackageManagerExtension.PackageLoader.PackageAdded -= PackageLoaderOnPackageAdded;
+        }
     }
 }
