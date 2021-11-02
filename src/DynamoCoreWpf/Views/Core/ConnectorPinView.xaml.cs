@@ -1,23 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Threading;
 using Dynamo.Configuration;
-using Dynamo.Controls;
-using Dynamo.Graph.Connectors;
 using Dynamo.Selection;
 using Dynamo.UI;
-using Dynamo.UI.Controls;
-using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynCmd = Dynamo.Models.DynamoModel;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace Dynamo.Nodes
 {
@@ -27,13 +15,13 @@ namespace Dynamo.Nodes
     public partial class ConnectorPinView : IViewModelView<ConnectorPinViewModel>
     {
         public ConnectorPinViewModel ViewModel { get; private set; }
-        /// <summary>
-        /// Old ZIndex of node. It's set, when mouse leaves node.
-        /// </summary>
-        private int oldZIndex;
 
         public ConnectorPinView()
         {
+            // Add DynamoConverters - currently using the InverseBoolToVisibilityCollapsedConverter
+            // to be able to collapse pins
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+
             InitializeComponent();
             ViewModel = null;
 
@@ -48,14 +36,10 @@ namespace Dynamo.Nodes
         {
             BringToFront();
         }
-        private void OnPinViewMouseLeave(object sender, MouseEventArgs e)
-        {
-            ViewModel.ZIndex = oldZIndex;
-        }
 
         /// <summary>
-        /// Sets ZIndex of the particular note to be the highest in the workspace
-        /// This brings the note to the forefront of the workspace when clicked
+        /// Sets ZIndex of the particular pin to be the highest in the workspace
+        /// This brings the pin to the forefront of the workspace when clicked
         /// </summary>
         private void BringToFront()
         {
@@ -64,19 +48,25 @@ namespace Dynamo.Nodes
                 PrepareZIndex();
             }
 
-            ViewModel.ZIndex = ++ConnectorPinViewModel.StaticZIndex;
+            //Set all pins to -1 the current index
+            foreach (var pin in ViewModel.WorkspaceViewModel.Pins)
+            {
+                pin.ZIndex = ConnectorPinViewModel.StaticZIndex-1;
+            }
+            //Sets active pin to an index higher
+            ViewModel.ZIndex = ConnectorPinViewModel.StaticZIndex;
         }
 
         /// <summary>
-        /// If ZIndex is more then max value of int, it should be set back to 0 for all elements.
-        /// The ZIndex for ConnectorPins is set to match that of nodes.
+        /// If ZIndex is more then max value of int, it should be set back to the initial ZIndex to all elements.
         /// </summary>
         private void PrepareZIndex()
         {
+            ConnectorPinViewModel.StaticZIndex = Configurations.NodeStartZIndex;
+
             var parent = TemplatedParent as ContentPresenter;
             if (parent == null) return;
 
-            // reset the ZIndex for all ConnectorPins
             foreach (var child in parent.ChildrenOfType<ConnectorPinView>())
             {
                 child.ViewModel.ZIndex = Configurations.NodeStartZIndex;
@@ -100,6 +90,15 @@ namespace Dynamo.Nodes
                     DynamoSelection.Instance.Selection.Remove(ViewModel.Model);
                 }
             }
+        }
+        private void OnPinRightMouseButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.IsHoveredOver = true;
+        }
+
+        private void OnPinRightMouseButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.IsHoveredOver = false;
         }
     }
 }

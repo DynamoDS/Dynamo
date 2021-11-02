@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -114,14 +113,21 @@ namespace Dynamo.ViewModels
                 }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        internal static bool ShowTermsOfUseDialog(bool forPublishing, string additionalTerms)
+        internal static bool ShowTermsOfUseDialog(bool forPublishing, string additionalTerms, Window parent = null)
         {
             var executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
             var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
             var touFilePath = Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
 
             var termsOfUseView = new TermsOfUseView(touFilePath);
-            termsOfUseView.ShowDialog();
+            if (parent == null)
+                termsOfUseView.ShowDialog();
+            else
+            {
+                //Means that a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
+                termsOfUseView.Owner = parent;
+                termsOfUseView.Show();
+            }
             if (!termsOfUseView.AcceptedTermsOfUse)
                 return false; // User rejected the terms, go no further.
 
@@ -136,7 +142,14 @@ namespace Dynamo.ViewModels
                 throw new FileNotFoundException(additionalTerms);
 
             var additionalTermsView = new TermsOfUseView(additionalTerms);
-            additionalTermsView.ShowDialog();
+            if (parent == null)
+                additionalTermsView.ShowDialog();
+            else
+            {
+                //Means that a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
+                additionalTermsView.Owner = parent;
+                additionalTermsView.Show();
+            }
             return additionalTermsView.AcceptedTermsOfUse;
         }
 
@@ -488,11 +501,11 @@ namespace Dynamo.ViewModels
             return String.Join(", ", pkgs.Select(x => x.Name + " " + x.VersionName));
         }
 
-        internal void ExecutePackageDownload(string name, PackageVersion package, string downloadPath)
+        internal async void ExecutePackageDownload(string name, PackageVersion package, string installPath)
         {
-            string msg = String.IsNullOrEmpty(downloadPath) ?
+            string msg = String.IsNullOrEmpty(installPath) ?
                 String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
-                String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, downloadPath);
+                String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, installPath);
 
             var result = MessageBoxService.Show(msg,
                 Resources.PackageDownloadConfirmMessageBoxTitle,
@@ -503,9 +516,12 @@ namespace Dynamo.ViewModels
             {
                 System.Diagnostics.Debug.Assert(package.full_dependency_ids.Count == package.full_dependency_versions.Count);
                 // get all of the dependency version headers
-                var dependencyVersionHeaders = package.full_dependency_ids.Select((dep, i) =>
+                // we reverse these arrays because the package manager returns dependencies in topological order starting at 
+                // the current package - and we want to install the dependencies first!.
+                var reversedVersions = package.full_dependency_versions.Select(x => x).Reverse().ToList();
+                var dependencyVersionHeaders = package.full_dependency_ids.Select(x=>x).Reverse().Select((dep, i) =>
                 {
-                    var depVersion = package.full_dependency_versions[i];
+                    var depVersion = reversedVersions[i];
                     try
                     {
                         return Model.GetPackageVersionHeader(dep._id, depVersion);
@@ -682,14 +698,14 @@ namespace Dynamo.ViewModels
                 }
 
                 // add custom path to custom package folder list
-                if (!String.IsNullOrEmpty(downloadPath))
+                if (!String.IsNullOrEmpty(installPath))
                 {
-                    if (!settings.CustomPackageFolders.Contains(downloadPath))
-                        settings.CustomPackageFolders.Add(downloadPath);
+                    if (!settings.CustomPackageFolders.Contains(installPath))
+                        settings.CustomPackageFolders.Add(installPath);
                 }
 
                 // form header version pairs and download and install all packages
-                dependencyVersionHeaders
+                var downloadTasks = dependencyVersionHeaders
                     .Select((dep) => {
                         return new PackageDownloadHandle()
                         {
@@ -698,8 +714,21 @@ namespace Dynamo.ViewModels
                             Name = dep.name
                         };
                     })
-                    .ToList()
-                    .ForEach(x => DownloadAndInstall(x, downloadPath));
+                    .Select(x => Download(x)).ToArray();
+                //wait for all downloads.
+                await Task.WhenAll(downloadTasks);
+
+                // When above downloads complete, start installing packages in dependency order.
+                // The downloads have completed in a random order, but the dependencyVersionHeaders list is in correct topological
+                // install order.
+                foreach(var dep in dependencyVersionHeaders)
+                {
+                    var matchingDownload = downloadTasks.Where(x => x.Result.handle.Id == dep.id).FirstOrDefault();
+                    if(matchingDownload != null)
+                    {
+                        InstallPackage(matchingDownload.Result.handle, matchingDownload.Result.downloadPath, installPath);
+                    }
+                }
             }
         }
 
@@ -714,19 +743,21 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// This method downloads the package represented by the PackageDownloadHandle,
-        /// uninstalls its current installation if necessary, and installs the package.
         /// 
-        /// Note that, if the package is already installed, it must be uninstallable
         /// </summary>
         /// <param name="packageDownloadHandle">package download handle</param>
-        /// <param name="downloadPath">package download path</param>
-        internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle, string downloadPath)
+        internal virtual Task<(PackageDownloadHandle handle, string downloadPath)> Download(PackageDownloadHandle packageDownloadHandle)
         {
+            // We only want to display the last 3 downloaded packages to the user
+            // in the form of toast notifications.
+
+            // We remove all but the last 2 packages and add the most recently-downloaded package
+            if (Downloads.Count > 2) Downloads.RemoveRange(index: 0, count: Downloads.Count - 2);
             Downloads.Add(packageDownloadHandle);
 
             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
-
-            Task.Factory.StartNew(() =>
+       
+            return Task.Factory.StartNew(() =>
             {
                 // Attempt to download package
                 string pathDl;
@@ -736,40 +767,49 @@ namespace Dynamo.ViewModels
                 if (!res.Success)
                 {
                     packageDownloadHandle.Error(res.Error);
-                    return;
+                    pathDl = string.Empty;
                 }
 
-                // if success, proceed to install the package
-                DynamoViewModel.UIDispatcher.BeginInvoke((Action)(() =>
-                {
-                    try
-                    {
-                        packageDownloadHandle.Done(pathDl);
-                        var firstOrDefault = PackageManagerExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
-                        if (firstOrDefault != null)
-                        {
-                            var dynModel = DynamoViewModel.Model;
-                            try
-                            {
-                                firstOrDefault.UninstallCore(dynModel.CustomNodeManager, PackageManagerExtension.PackageLoader, dynModel.PreferenceSettings);
-                            }
-                            catch
-                            {
-                                MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, 
-                                    DynamoViewModel.BrandingResourceProvider.ProductName,
-                                    packageDownloadHandle.Name),
-                                    Resources.DeleteFailureMessageBoxTitle, 
-                                    MessageBoxButton.OK, MessageBoxImage.Error);
-                            }
-                        }
-                        SetPackageState(packageDownloadHandle, downloadPath);
-                    }
-                    catch (Exception e)
-                    {
-                        packageDownloadHandle.Error(e.Message);
-                    }
-                }));
+                return (handle: packageDownloadHandle, downloadPath: pathDl);
             });
+        }
+
+        internal virtual void InstallPackage(PackageDownloadHandle packageDownloadHandle, string downloadPath, string installPath)
+        {
+            // if success, proceed to install the package
+            if (string.IsNullOrEmpty(downloadPath) || packageDownloadHandle.DownloadState == PackageDownloadHandle.State.Error)
+            {
+                return;
+            }
+            DynamoViewModel.UIDispatcher.BeginInvoke((Action)(() =>
+            {
+                try
+                {
+                    packageDownloadHandle.Done(downloadPath);
+                    var firstOrDefault = PackageManagerExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
+                    if (firstOrDefault != null)
+                    {
+                        var dynModel = DynamoViewModel.Model;
+                        try
+                        {
+                            firstOrDefault.UninstallCore(dynModel.CustomNodeManager, PackageManagerExtension.PackageLoader, dynModel.PreferenceSettings);
+                        }
+                        catch
+                        {
+                            MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage,
+                                DynamoViewModel.BrandingResourceProvider.ProductName,
+                                packageDownloadHandle.Name),
+                                Resources.DeleteFailureMessageBoxTitle,
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    SetPackageState(packageDownloadHandle, installPath);
+                }
+                catch (Exception e)
+                {
+                    packageDownloadHandle.Error(e.Message);
+                }
+            }));
         }
 
         /// <summary>
@@ -784,8 +824,6 @@ namespace Dynamo.ViewModels
             {
                 PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
-
-                dynPkg.LoadState.SetAsLoaded();
             }
             else
             {

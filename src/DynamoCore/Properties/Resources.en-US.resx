@@ -810,10 +810,4 @@ This package has not been loaded because another conflicting package was loaded 
   <data name="NodeUnhandledMsg" xml:space="preserve">
     <value>Unhandled 'DummyNode.NodeNature' value: {0}</value>
   </data>
-  <data name="HideWiresPopupMenuItem" xml:space="preserve">
-    <value>Hide Wires</value>
-  </data>
-  <data name="UnhideWiresPopupMenuItem" xml:space="preserve">
-    <value>Unhide Wires</value>
-  </data>
 </root>

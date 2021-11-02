@@ -141,21 +141,15 @@ namespace Dynamo.Graph.Workspaces
                     // Treat a group as a node, but do not process edges within a group
                     if (startGroup == null || endGroup == null || startGroup != endGroup)
                     {
-                        AddConnectorPinEdges(combinedGraph, edge);
+                        var startGuid = startGroup == null ? edge.Start.Owner.GUID : startGroup.GUID;
+                        var endGuid = endGroup == null ? edge.End.Owner.GUID : endGroup.GUID;
 
-                        combinedGraph.AddEdge(
-                            startGroup == null ? edge.Start.Owner.GUID : startGroup.GUID,
-                            endGroup == null ? edge.End.Owner.GUID : endGroup.GUID,
-                            edge.Start.Center.X, edge.Start.Center.Y, edge.End.Center.X, edge.End.Center.Y);
+                        AddConnectorEdgesIncludingPinEdges(combinedGraph, edge, startGuid, endGuid);
                     }
                 }
                 else
                 {
-                    AddConnectorPinEdges(combinedGraph, edge);
-
-                    // Edges within a group are also processed
-                    combinedGraph.AddEdge(edge.Start.Owner.GUID, edge.End.Owner.GUID,
-                        edge.Start.Center.X, edge.Start.Center.Y, edge.End.Center.X, edge.End.Center.Y);
+                    AddConnectorEdgesIncludingPinEdges(combinedGraph, edge);
                 }
             }
 
@@ -222,10 +216,18 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="combinedGraph"></param>
         /// <param name="connector"></param>
-        private static void AddConnectorPinEdges(GraphLayout.Graph combinedGraph, ConnectorModel connector)
+        private static void AddConnectorEdgesIncludingPinEdges(GraphLayout.Graph combinedGraph, ConnectorModel connector, Guid? start = null, Guid? end = null)
         {
             ///Bail if there are no connectorPins
-            if (connector.ConnectorPinModels.Count < 1) return;
+            if (connector.ConnectorPinModels.Count < 1)
+            {
+                Guid startGuid = start == null ? connector.Start.Owner.GUID : (Guid)start;
+                Guid endGuid = end == null ? connector.End.Owner.GUID : (Guid)end;
+
+                combinedGraph.AddEdge(startGuid, endGuid,
+                       connector.Start.Center.X, connector.Start.Center.Y, connector.End.Center.X, connector.End.Center.Y);
+                return;
+            }
 
             ///Add an edge between the left-most (start) node 
             ///(its corresponding port) to which this connector connects, and the first connectorPin.
@@ -519,10 +521,9 @@ namespace Dynamo.Graph.Workspaces
                     if (graph != null)
                     {
                         GraphLayout.Node n = graph.FindNode(pin.GUID);
-                        double offsetY = graph.OffsetY;
 
                         pin.CenterX = n.X;
-                        pin.CenterY = n.Y + offsetY - (pin.Width * 0.3);
+                        pin.CenterY = n.Y;
                         pin.ReportPosition();
                         workspace.HasUnsavedChanges = true;
                     }
@@ -546,11 +547,10 @@ namespace Dynamo.Graph.Workspaces
                     GraphLayout.Node n = graph.FindNode(node.GUID);
                     double offsetY = graph.OffsetY;
                     //skipping the original node to avoid jumping of node
-                    if (node.GUID != originalNodeGUID )
+                    if (node.GUID != originalNodeGUID)
                     {
-                            node.X = n.X;
-                            node.Y = n.Y + n.NotesHeight + offsetY;
-                        
+                        node.X = n.X;
+                        node.Y = n.Y + n.NotesHeight + offsetY;
                     }
                     node.ReportPosition();
                     workspace.HasUnsavedChanges = true;

@@ -45,11 +45,10 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.Gallery;
-using Dynamo.Wpf.Views.PackageManager;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
-using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Res = Dynamo.Wpf.Properties.Resources;
+using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using String = System.String;
 
 namespace Dynamo.Controls
@@ -60,6 +59,10 @@ namespace Dynamo.Controls
     public partial class DynamoView : Window, IDisposable
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
+
+        //The "Packages" and "Get Started" strings needs to be hardcoded due that are hardcoded in the json file (no need localization)
+        private static string GetStartedGuideName = "Get Started";
+        private static string PackagesGuideName = "Packages";
 
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
@@ -91,8 +94,6 @@ namespace Dynamo.Controls
         internal Dictionary<string, ExtensionWindow> ExtensionWindows { get; set; } = new Dictionary<string, ExtensionWindow>();
         internal ViewExtensionManager viewExtensionManager;
         internal Watch3DView BackgroundPreview { get; private set; }
-
-        internal GuidesManager mainGuideManager;
 
         /// <summary>
         /// Constructor
@@ -739,8 +740,8 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
 
             //When the Dynamo window is moved to another place we need to update the Steps location
-            if(mainGuideManager != null)
-                mainGuideManager.UpdateGuideStepsLocation();
+            if(dynamoViewModel.MainGuideManager != null)
+                dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -749,8 +750,8 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.PreferenceSettings.WindowH = e.NewSize.Height;
 
             //When the Dynamo window size is changed then we need to update the Steps location
-            if (mainGuideManager != null)
-                mainGuideManager.UpdateGuideStepsLocation();
+            if (dynamoViewModel.MainGuideManager != null)
+                dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
         }
 
         private void InitializeLogin()
@@ -773,7 +774,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/new_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png"
             };
 
             var openScriptButton = new ShortcutBarItem
@@ -783,7 +784,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/open_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png"
             };
 
             var saveButton = new ShortcutBarItem
@@ -793,16 +794,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/save_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_hover.png"
-            };
-
-            var screenShotButton = new ImageExportShortcutBarItem(dynamoViewModel)
-            {
-                ShortcutCommand = dynamoViewModel.ShowSaveImageDialogAndSaveResultCommand,
-                ShortcutCommandParameter = Wpf.Properties.Resources.ScreenShotFrom3DShortcutParameter,
-                ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/screenshot_normal.png",
-                ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/screenshot_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/screenshot_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png"
             };
 
             var undoButton = new ShortcutBarItem
@@ -812,7 +804,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/undo_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png"
             };
 
             var redoButton = new ShortcutBarItem
@@ -822,7 +814,7 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/redo_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/redo_hover.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png"
             };
 
             shortcutBar.ShortcutBarItems.Add(newScriptButton);
@@ -830,8 +822,6 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
-
-            shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
 
             shortcutBarGrid.Children.Add(shortcutBar);
         }
@@ -930,6 +920,10 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation += DynamoViewModelRequestViewOperation;
             dynamoViewModel.PostUiActivationCommand.Execute(null);
+
+            // Initialize Guide Manager as a member on Dynamo ViewModel so other than guided tour,
+            // other part of application can also leverage it.
+            dynamoViewModel.MainGuideManager = new GuidesManager(_this, dynamoViewModel);
 
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
@@ -1057,7 +1051,11 @@ namespace Dynamo.Controls
             if (prefSettings.PackageDownloadTouAccepted)
                 return true; // User accepts the terms of use.
 
-            var acceptedTermsOfUse = TermsOfUseHelper.ShowTermsOfUseDialog(false, null);
+            Window packageManParent = null;
+            //If any Guide is being executed then the ShowTermsOfUse Window WON'T be modal otherwise will be modal (as in the normal behavior)
+            if (dynamoViewModel.MainGuideManager != null && GuideFlowEvents.IsAnyGuideActive)
+                packageManParent = _this;
+            var acceptedTermsOfUse = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, packageManParent);
             prefSettings.PackageDownloadTouAccepted = acceptedTermsOfUse;
 
             // User may or may not accept the terms.
@@ -1138,7 +1136,7 @@ namespace Dynamo.Controls
 
         private PackageManagerSearchView _searchPkgsView;
         private PackageManagerSearchViewModel _pkgSearchVM;
-
+        
         private void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
             if (!DisplayTermsOfUseForAcceptance())
@@ -2284,15 +2282,55 @@ namespace Dynamo.Controls
         private void WorkspaceTabs_TargetUpdated(object sender, DataTransferEventArgs e)
         {
             if (WorkspaceTabs.SelectedIndex >= 0)
-                ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+            ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+            UpdateWorkspaceTabSizes();
         }
 
         private void WorkspaceTabs_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
 
+            UpdateWorkspaceTabSizes();
+
             // When workspace is resized apply appropriate library expand/collapse icon
             UpdateLibraryCollapseIcon();
+        }
+
+        /// <summary>
+        /// Updates the workspace TabItems to have the correct margins in response to events
+        /// such as the library being stretched or a Custom Node workspace being created.
+        /// </summary>
+        private void UpdateWorkspaceTabSizes()
+        {
+            // The Workspace TabItems must appear to the right of icon buttons (New File, Open, Save, Undo, Redo)
+            // but never overlap them. 230 is the minimum offset required to achieve this. 
+            // If the library panel is stretched greater than 230, they must align with its width instead.
+            const int FirstTabItemMinimumLeftMarginOffset = 230;
+            const int LibraryScrollBarWidth = 15;
+            
+            // We measure the full library width at runtime.
+            int fullLibraryWidth = dynamoViewModel.LibraryWidth + LibraryScrollBarWidth;
+            
+            // Difference between the full library width (at runtime) and the minimum offset required
+            // by the TabItems to not overlap the 5 icon buttons.
+            int difference = fullLibraryWidth - FirstTabItemMinimumLeftMarginOffset;
+
+            // If the library is narrower than the minimum width, we set the TabItems' left margin
+            // to be the minimum offset required to not overlap the 5 icon buttons. 
+            // If it's equal to or greater, we set the TabItems' left margin to be the difference
+            // i.e. to align with the library panel.
+            int leftMargin = fullLibraryWidth < FirstTabItemMinimumLeftMarginOffset ? difference : 0;
+
+            List<TabItem> tabItems = WpfUtilities.ChildrenOfType<TabItem>(WorkspaceTabs).ToList();
+            if (tabItems.Count < 1) return;
+
+            // We iterate through each TabItem in the WorkspaceTabs TabControl and set its left and 
+            // right margins, thereby offsetting the TabItem horizontally from the left edge
+            // of the TabControl (AKA the left edge of the workspace).
+            foreach (TabItem tabItem in tabItems)
+            {
+                tabItem.Margin = new System.Windows.Thickness(-leftMargin, 0, leftMargin, 0);
+            }
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)
@@ -2352,10 +2390,9 @@ namespace Dynamo.Controls
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
             {
-                mainGuideManager = new GuidesManager(_this, dynamoViewModel);
-                mainGuideManager.LaunchTour(Res.GetStartedGuide);
+                dynamoViewModel.MainGuideManager.LaunchTour(GetStartedGuideName);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 sidebarGrid.Visibility = Visibility.Visible;
             }
@@ -2365,6 +2402,18 @@ namespace Dynamo.Controls
         {
             //Setting the width of right extension after resize to
             extensionsColumnWidth = RightExtensionsViewColumn.Width;
+        }
+
+        private void PackagesMenuGuide_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                dynamoViewModel.MainGuideManager.LaunchTour(PackagesGuideName);
+            }
+            catch (Exception)
+            {
+                sidebarGrid.Visibility = Visibility.Visible;
+            }
         }
 
         public void Dispose()

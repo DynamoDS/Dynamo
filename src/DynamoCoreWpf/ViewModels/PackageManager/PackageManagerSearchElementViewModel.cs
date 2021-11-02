@@ -23,13 +23,26 @@ namespace Dynamo.PackageManager.ViewModels
 
         public new PackageManagerSearchElement Model { get; internal set; }
 
-        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : base(element)
+        /// <summary>
+        /// Alternative constructor to assist communication between the 
+        /// PackageManagerSearchViewModel and the PackageManagerSearchElementViewModel.
+        /// </summary>
+        /// <param name="element">A PackageManagerSearchElement</param>
+        /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
+        /// <param name="install">Whether a package can be installed.</param>
+        /// <param name="isEnabledForInstall">Whether the package is enabled for install in the UI.</param>
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool install, bool isEnabledForInstall = true) 
+            : base(element)
         {
             this.Model = element;
+            CanInstall = install;
+            IsEnabledForInstall = isEnabledForInstall;
 
-            this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded );
+            this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded);
 
-            this.DownloadLatestCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), false));
+            this.DownloadLatestCommand = new DelegateCommand(
+                () => OnRequestDownload(Model.Header.versions.Last(), false),
+                () => !Model.IsDeprecated && CanInstall);
             this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), true));
 
             this.UpvoteCommand = new DelegateCommand(Model.Upvote, () => canLogin);
@@ -42,6 +55,38 @@ namespace Dynamo.PackageManager.ViewModels
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
         }
+
+        /// <summary>
+        /// PackageManagerSearchElementViewModel Constructor (only used for testing in Dynamo).
+        /// </summary>
+        /// <param name="element">A PackageManagerSearchElement</param>
+        /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : this(element, canLogin, true)
+        {}
+
+        private bool canInstall;
+        /// <summary>
+        /// A Boolean flag reporting whether or not the user can install this SearchElement's package.
+        /// </summary>
+        public bool CanInstall
+        {
+            get
+            {
+                return canInstall;
+            }
+
+            internal set
+            {
+                canInstall = value;
+                RaisePropertyChanged(nameof(CanInstall));
+            }
+        }
+
+        /// <summary>
+        /// True if package is enabled for download if custom package paths are not disabled,
+        /// False if custom package paths are disabled.
+        /// </summary>
+        public bool IsEnabledForInstall { get; private set; }
 
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
@@ -87,11 +132,11 @@ namespace Dynamo.PackageManager.ViewModels
         }
 
         private List<String> CustomPackageFolders;
-
+        
         public delegate void PackageSearchElementDownloadHandler(
             PackageManagerSearchElement element, PackageVersion version, string downloadPath = null);
         public event PackageSearchElementDownloadHandler RequestDownload;
-
+        
         public void OnRequestDownload(PackageVersion version, bool downloadToCustomPath)
         {
             string downloadPath = String.Empty;

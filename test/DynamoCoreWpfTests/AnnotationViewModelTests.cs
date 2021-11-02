@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
@@ -879,7 +880,6 @@ namespace DynamoCoreWpfTests
             var group1ViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == groupName);
             var inPortsBefore = group1ViewModel.InPorts.ToList();
             var outPortsBefore = group1ViewModel.OutPorts.ToList();
-            var inbetweenNodesBefore = group1ViewModel.InbetweenNodesCount;
 
             var expectedInPortNames = new List<string>
             {
@@ -903,11 +903,9 @@ namespace DynamoCoreWpfTests
             // Assert
             Assert.That(inPortsBefore.Count != group1ViewModel.InPorts.Count);
             Assert.That(outPortsBefore.Count != group1ViewModel.OutPorts.Count);
-            Assert.That(inbetweenNodesBefore != group1ViewModel.InbetweenNodesCount);
             CollectionAssert.AreEquivalent(expectedInPortNames, group1ViewModel.InPorts.Select(x => x.PortModel.Name));
             CollectionAssert.AreEquivalent(expectedOutPortNames, group1ViewModel.OutPorts.Select(x => x.PortModel.Name));
-            Assert.That(group1ViewModel.InbetweenNodesCount == 1);
-
+            Assert.That(group1ViewModel.NodeContentCount == 5);
         }
 
 
@@ -931,6 +929,102 @@ namespace DynamoCoreWpfTests
             // Assert
             CollectionAssert.AreNotEquivalent(groupNodesCollapsedStatusAfter, groupNodesCollapsedStatusBefore);
             Assert.That(groupNodesCollapsedStatusAfter.All(x => x == true));
+        }
+
+
+        [Test]
+        public void ChangingIsExpandedMarksGraphAsModified()
+        {
+            // Arrange
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
+
+            //Select the node for group
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            //Create a Group around that node
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotationViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
+
+            // Act
+            // Set workspace changes to false
+            ViewModel.CurrentSpaceViewModel.HasUnsavedChanges = false;
+
+            // Change annotationViewModel IsExpandedState
+            annotationViewModel.IsExpanded = !annotationViewModel.IsExpanded;
+            var workspaceStateAfterChangingIsExpandedFirst = ViewModel.CurrentSpaceViewModel.HasUnsavedChanges;
+
+            // Set workspace changes to false
+            ViewModel.CurrentSpaceViewModel.HasUnsavedChanges = false;
+
+            // Change annotationViewModel IsExpandedState
+            annotationViewModel.IsExpanded = !annotationViewModel.IsExpanded;
+            var workspaceStateAfterChangingIsExpandedSecond = ViewModel.CurrentSpaceViewModel.HasUnsavedChanges;
+
+            // Assert
+            Assert.IsTrue(workspaceStateAfterChangingIsExpandedFirst);
+            Assert.IsTrue(workspaceStateAfterChangingIsExpandedSecond);
+            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
+        }
+
+        [Test]
+        public void AddingNodeToGroupWithNestedGroupsWillAddNodeToParentGroup()
+        {
+            // Arrange
+            var parentGroupName = "GroupWithGroupedGroup";
+            var nestedGroupName = "GroupInsideOtherGroup";
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var parentGroupViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == parentGroupName);
+            var parentGroupModel = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.GUID == parentGroupViewModel.AnnotationModel.GUID);
+
+            var nestedGroupModel = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.AnnotationText == nestedGroupName);
+
+            // Act
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+
+            //verify the node was created
+            Assert.That(ViewModel.Model.CurrentWorkspace.Nodes.Contains(addNode));
+
+            var addNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
+                .FirstOrDefault(x => x.Id == addNode.GUID);
+
+            DynamoSelection.Instance.Selection.Clear();
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(parentGroupModel);
+
+            addNodeViewModel.AddToGroupCommand.Execute(null);
+
+            // Assert
+            Assert.IsTrue(parentGroupModel.ContainsModel(addNode));
+            Assert.IsFalse(nestedGroupModel.ContainsModel(addNode));
+        }
+
+        [Test]
+        public void ConnectorPinsGetsAddedToTheGroup()
+        {
+            // Arrange
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var pinNode1Name = "PinNode1";
+            var pinNode2Name = "PinNode2";
+
+            var nodesToGroup = ViewModel.CurrentSpace.Nodes.Where(x => x.Name == pinNode1Name || x.Name == pinNode2Name);
+
+            // Act
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddRange(nodesToGroup);
+
+            Guid groupid = Guid.NewGuid();
+            var annotation = ViewModel.Model.CurrentWorkspace.AddAnnotation("This is a test group", "Group that contains connector pins", groupid);
+
+            // Assert
+            Assert.That(annotation.Nodes.OfType<ConnectorPinModel>().Any());
         }
 
         #endregion

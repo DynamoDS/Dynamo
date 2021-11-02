@@ -288,7 +288,7 @@ namespace Dynamo.Wpf.ViewModels
 
                 // Create a new node based on node creation name and connection ports
                 dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
-                    Model.CreationName, 0, Model.AutoCompletionNodeElementInfo.PortToConnect, adjustedX, adjustedY, createAsDownStreamNode, false, true));
+                    Model.CreationName, portModel.Index, Model.AutoCompletionNodeElementInfo.PortToConnect, adjustedX, adjustedY, createAsDownStreamNode, false, true));
 
                 //Select all output nodes as we need to perform Auto layout on only the output nodes
                 var outputNodes = initialNode.OutputNodes.Values.Where(x => x != null).SelectMany(y => y.Select(z => z.Item2));
@@ -360,8 +360,6 @@ namespace Dynamo.Wpf.ViewModels
             {
                 var nodeModel = Model.CreateNode();
                 Clicked(nodeModel, Position);
-
-                Analytics.LogPiiInfo("Search-NodeAdded", FullName);
             }
         }
 

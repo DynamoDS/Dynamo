@@ -2497,6 +2497,14 @@
       "keywords": "segments, joincurves"
     },
     {
+      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves.Small?path=ProtoGeometry.dll",
+      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves@Autodesk.DesignScript.Geometry.Curve[]",
+      "parameters": null,
+      "itemType": "create",
+      "keywords": "segments, joincurves, group curves"
+    },
+    {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints",
       "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.ByPoints.Small?path=ProtoGeometry.dll",
       "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool",

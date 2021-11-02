@@ -178,7 +178,7 @@
     <value>Save current code in Python node editor and run graph with it.</value>
   </data>
   <data name="PythonScriptEditorSaveChangesButtonTooltip" xml:space="preserve">
-    <value>Save the changes made to current Python node editor and close it.</value>
+    <value>Save the changes made to current Python node editor.</value>
   </data>
   <data name="PythonScriptFromStringDescription" xml:space="preserve">
     <value>Runs a Python script from a string.</value>

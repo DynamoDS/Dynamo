@@ -132,7 +132,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Default width of tab
         /// </summary>
-        public static readonly int TabDefaultWidth = 250;
+        public static readonly int TabDefaultWidth = 225;
 
         /// <summary>
         /// Minimum width of tab in the extensions side bar
@@ -249,7 +249,7 @@ namespace Dynamo.Configuration
         /// <summary>
         ///     Code Block outputs have a condensed port height
         /// </summary>
-        public static readonly double CodeBlockOutputPortHeightInPixels = 15.72;
+        public static readonly double CodeBlockOutputPortHeightInPixels = 16.345;
 
         /// <summary>
         ///     Maximal port name length of CodeBlock

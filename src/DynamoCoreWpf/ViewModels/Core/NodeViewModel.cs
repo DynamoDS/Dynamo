@@ -37,6 +37,7 @@ namespace Dynamo.ViewModels
         public delegate void PreviewPinStatusHandler(bool pinned);
 
         internal delegate void NodeAutoCompletePopupEventHandler(Popup popup);
+        internal delegate void PortContextMenuPopupEventHandler(Popup popup);
         #endregion
 
         #region events
@@ -203,12 +204,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Used to determine whether the node's context menu display an Output/Input menu
-        /// </summary>
-        [JsonIgnore]
-        public bool IsInputOrOutput => IsInput || IsOutput;
-
+        
         /// <summary>
         /// The Name of the nodemodel this view points to
         /// this is the name of the node as it is displayed in the UI.
@@ -259,17 +255,13 @@ namespace Dynamo.ViewModels
         }
         
         /// <summary>
-        /// This is a UI placeholder for future functionality relating to Alerts
+        /// The total number of info/warnings/errors dismissed by the user on this node.
+        /// This is displayed on the node by a little icon beside the Context Menu button.
         /// </summary>
         [JsonIgnore]
         public int NumberOfDismissedAlerts
         {
-            get => 0;
-            set
-            {
-                NumberOfDismissedAlerts = value;
-                RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
-            }
+            get => DismissedAlerts.Count;
         }
 
         [JsonIgnore]
@@ -283,7 +275,7 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.IsCustomFunction ? true : false; }
         }
-
+        
         /// <summary>
         /// Element's left position is two-way bound to this value
         /// </summary>
@@ -333,6 +325,8 @@ namespace Dynamo.ViewModels
             {
                 zIndex = value;
                 RaisePropertyChanged("ZIndex");
+                if (ErrorBubble == null) return;
+                ErrorBubble.ZIndex = zIndex + 1;
             }
         }
 
@@ -492,7 +486,7 @@ namespace Dynamo.ViewModels
 
         private bool isNodeNewlyAdded;
         private ImageSource imageSource;
-
+        
         [JsonIgnore]
         public bool IsNodeAddedRecently
         {
@@ -622,15 +616,27 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// A collection of error/warning/info messages, dismissed via a sub-menu in the node Context Menu.
+        /// </summary>
+        [JsonIgnore]
+        public ObservableCollection<string> DismissedAlerts => nodeLogic.DismissedAlerts;       
+
         #endregion
 
         #region events
 
         internal event NodeAutoCompletePopupEventHandler RequestAutoCompletePopupPlacementTarget;
+        internal event PortContextMenuPopupEventHandler RequestPortContextMenuPopupPlacementTarget;
 
         internal void OnRequestAutoCompletePopupPlacementTarget(Popup popup)
         {
             RequestAutoCompletePopupPlacementTarget?.Invoke(popup);
+        }
+
+        public void OnRequestPortContextMenuPlacementTarget(Popup popup)
+        {
+            RequestPortContextMenuPopupPlacementTarget?.Invoke(popup);
         }
 
         public event NodeDialogEventHandler RequestShowNodeHelp;
@@ -669,6 +675,15 @@ namespace Dynamo.ViewModels
             Selected?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Event to determine when Node is removed
+        /// </summary>
+        internal event EventHandler Removed;
+        internal void OnRemoved(object sender, EventArgs e)
+        {
+            Removed?.Invoke(this, e);
+        }
+
         #endregion
 
         #region constructors
@@ -696,9 +711,6 @@ namespace Dynamo.ViewModels
             DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
 
-            ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
-            UpdateBubbleContent();
-
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -720,8 +732,53 @@ namespace Dynamo.ViewModels
             {
                 ImageSource = imgSource;
             }
+            
+            if(nodeLogic.State == ElementState.Error)
+            {
+                BuildErrorBubble();
+                UpdateBubbleContent();
+            }
+
+            logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
         }
 
+        /// <summary>
+        /// Clears the existing messages on a node before it executes and re-evalutes its warnings/errors. 
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Logic_NodeMessagesClearing(NodeModel obj)
+        {
+            // Because errors are evaluated before the graph/node executes, we need to ensure 
+            // errors aren't being dismissed when the graph runs.
+            if (nodeLogic.State == ElementState.Error || ErrorBubble == null) return;
+
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    ErrorBubble.NodeMessages.Clear();
+                });
+            }
+            else
+            {
+                ErrorBubble.NodeMessages.Clear();
+            }
+        }
+
+        private void DismissedNodeWarnings_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!(sender is ObservableCollection<InfoBubbleDataPacket> observableCollection)) return;
+
+            DismissedAlerts.Clear();
+
+            foreach (InfoBubbleDataPacket infoBubbleDataPacket in observableCollection)
+            {
+                DismissedAlerts.Add(infoBubbleDataPacket.Message);
+            }
+            RaisePropertyChanged(nameof(DismissedAlerts));
+            RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
+        }
+        
         /// <summary>
         /// Dispose function
         /// </summary>
@@ -748,7 +805,10 @@ namespace Dynamo.ViewModels
                 p.Dispose();
             }
 
-            ErrorBubble.Dispose();
+            NodeModel.NodeMessagesClearing -= Logic_NodeMessagesClearing;
+            
+            if (ErrorBubble != null) DisposeErrorBubble();
+
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
         }
@@ -823,13 +883,13 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in nodeLogic.InPorts)
             {
-                PortViewModel inportViewModel = SubscribePortEvents(item);
+                PortViewModel inportViewModel = SubscribeInPortEvents(item);
                 InPorts.Add(inportViewModel);
             }
 
             foreach (var item in nodeLogic.OutPorts)
             {
-                PortViewModel outportViewModel = SubscribePortEvents(item);
+                PortViewModel outportViewModel = SubscribeOutPortEvents(item);
                 OutPorts.Add(outportViewModel);
             }
         }
@@ -892,6 +952,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "Width":
                     RaisePropertyChanged("Width");
+                    UpdateErrorBubbleWidth();
                     UpdateErrorBubblePosition();
                     break;
                 case "Height":
@@ -923,36 +984,91 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Updates the width of the node's Warning/Error bubbles, in case the width of the node changes.
+        /// </summary>
+        private void UpdateErrorBubbleWidth()
+        {
+            ErrorBubble.BubbleWidth = NodeModel.Width;
+        }
+
+        /// <summary>
+        /// Creates a new ErrorBubble and assigns it to the ErrorBubble property.
+        /// </summary>
+        private void BuildErrorBubble()
+        {
+            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
+            
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    WorkspaceViewModel.Errors.Add(ErrorBubble);
+                });
+            }
+            
+            // The Error bubble sits above the node in ZIndex. Since pinned notes sit above
+            // the node as well and the ErrorBubble needs to display on top of these, the
+            // ErrorBubble's ZIndex should be the node's ZIndex + 2.
+            ErrorBubble.ZIndex = ZIndex + 2;
+
+            // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
+            ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeWarnings_CollectionChanged;
+        }
+
+        /// <summary>
+        /// Disposes the ErrorBubble when it's no longer needed.
+        /// </summary>
+        private void DisposeErrorBubble()
+        {
+            if (ErrorBubble == null) return;
+            ErrorBubble.DismissedMessages.CollectionChanged -= DismissedNodeWarnings_CollectionChanged;
+
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    ErrorBubble.NodeMessages.Clear();
+                });
+            }
+            
+            ErrorBubble.Dispose();
+        }
+
         public void UpdateBubbleContent()
         {
-            if (ErrorBubble == null || DynamoViewModel == null)
-                return;
-            if (string.IsNullOrEmpty(NodeModel.ToolTipText))
+            if (ErrorBubble == null) BuildErrorBubble();
+            if (DynamoViewModel == null || !NodeModel.WasInvolvedInExecution && !NodeModel.IsInErrorState) return;
+            if (!WorkspaceViewModel.Errors.Contains(ErrorBubble)) return;
+
+            var topLeft = new Point(NodeModel.X, NodeModel.Y);
+            var botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+
+            InfoBubbleViewModel.Style style = NodeModel.State == ElementState.Error
+                ? InfoBubbleViewModel.Style.Error
+                : InfoBubbleViewModel.Style.Warning;
+
+            // NOTE!: If tooltip is not cached here, it will be cleared once the dispatcher is invoked below
+            string content = NodeModel.ToolTipText;
+            if (string.IsNullOrWhiteSpace(content)) return;
+            const InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
+            var data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+
+            ErrorBubble.UpdateContentCommand.Execute(data);
+
+            // If running Dynamo with UI, use dispatcher, otherwise not
+            if(DynamoViewModel.UIDispatcher != null)
             {
-                if (NodeModel.State != ElementState.Error && NodeModel.State != ElementState.Warning)
+                DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
-                    ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
-                }
+                    ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
+                });
             }
             else
             {
-                if (!WorkspaceViewModel.Errors.Contains(ErrorBubble))
-                    return;
-
-                var topLeft = new Point(NodeModel.X, NodeModel.Y);
-                var botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-                InfoBubbleViewModel.Style style = NodeModel.State == ElementState.Error
-                    ? InfoBubbleViewModel.Style.ErrorCondensed
-                    : InfoBubbleViewModel.Style.WarningCondensed;
-                // NOTE!: If tooltip is not cached here, it will be cleared once the dispatcher is invoked below
-                string content = NodeModel.ToolTipText;
-                const InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
-                var data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-
-                ErrorBubble.UpdateContentCommand.Execute(data);
-
-                ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
+                ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
             }
+            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
         }
 
         private void UpdateErrorBubblePosition()
@@ -999,6 +1115,7 @@ namespace Dynamo.ViewModels
         {
             var command = new DynamoModel.DeleteModelCommand(nodeLogic.GUID);
             DynamoViewModel.ExecuteCommand(command);
+            OnRemoved(this, EventArgs.Empty);
         }
 
         private void SetLacingType(object param)
@@ -1038,7 +1155,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    PortViewModel inportViewModel = SubscribePortEvents(item as PortModel);
+                    PortViewModel inportViewModel = SubscribeInPortEvents(item as PortModel);
                     InPorts.Add(inportViewModel);
                 }
             }
@@ -1074,7 +1191,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    PortViewModel outportViewModel = SubscribePortEvents(item as PortModel);
+                    PortViewModel outportViewModel = SubscribeOutPortEvents(item as PortModel);
                     OutPorts.Add(outportViewModel);
                 }
             }
@@ -1086,6 +1203,7 @@ namespace Dynamo.ViewModels
                 {
                     PortViewModel portToRemove = UnSubscribePortEvents(OutPorts.ToList().First(x => x.PortModel == item));
                     OutPorts.Remove(portToRemove);
+                    portToRemove.Dispose();
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Reset)
@@ -1093,6 +1211,7 @@ namespace Dynamo.ViewModels
                 foreach (var p in OutPorts)
                 {
                     UnSubscribePortEvents(p);
+                    p.Dispose();
                 }
                 OutPorts.Clear();
             }
@@ -1100,13 +1219,27 @@ namespace Dynamo.ViewModels
 
 
         /// <summary>
-        /// Registers the port events.
+        /// Registers the in port events.
         /// </summary>
         /// <param name="item">PortModel.</param>
         /// <returns></returns>
-        private PortViewModel SubscribePortEvents(PortModel item)
+        protected virtual PortViewModel SubscribeInPortEvents(PortModel item)
         {
-            PortViewModel portViewModel = new PortViewModel(this, item);
+            InPortViewModel portViewModel = new InPortViewModel(this, item);
+            portViewModel.MouseEnter += OnRectangleMouseEnter;
+            portViewModel.MouseLeave += OnRectangleMouseLeave;
+            portViewModel.MouseLeftButtonDown += OnMouseLeftButtonDown;
+            return portViewModel;
+        }
+
+        /// <summary>
+        /// Registers the out port events.
+        /// </summary>
+        /// <param name="item">PortModel.</param>
+        /// <returns></returns>
+        protected virtual PortViewModel SubscribeOutPortEvents(PortModel item)
+        {
+            OutPortViewModel portViewModel = new OutPortViewModel(this, item);
             portViewModel.MouseEnter += OnRectangleMouseEnter;
             portViewModel.MouseLeave += OnRectangleMouseLeave;
             portViewModel.MouseLeftButtonDown += OnMouseLeftButtonDown;
@@ -1443,6 +1576,7 @@ namespace Dynamo.ViewModels
             return new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
         }
         #endregion
+
     }
 
     public class NodeDialogEventArgs : EventArgs
