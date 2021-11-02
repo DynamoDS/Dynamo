@@ -583,8 +583,8 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// CustomNodeDefinitions property 
         /// </summary>
-        private List<CustomNodeDefinition> customNodeDefinitions;
-        public List<CustomNodeDefinition> CustomNodeDefinitions
+        private ObservableCollection<CustomNodeDefinition> customNodeDefinitions = new ObservableCollection<CustomNodeDefinition>();
+        public ObservableCollection<CustomNodeDefinition> CustomNodeDefinitions
         {
             get { return customNodeDefinitions; }
             set
@@ -667,7 +667,6 @@ namespace Dynamo.PackageManager
 
         internal PublishPackageViewModel()
         {
-            customNodeDefinitions = new List<CustomNodeDefinition>();
             SubmitCommand = new DelegateCommand(Submit, CanSubmit);
             PublishLocallyCommand = new DelegateCommand(PublishLocally, CanPublishLocally);
             ShowAddFileDialogAndAddCommand = new DelegateCommand(ShowAddFileDialogAndAdd, CanShowAddFileDialogAndAdd);
@@ -678,6 +677,8 @@ namespace Dynamo.PackageManager
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
             Dependencies.CollectionChanged += DependenciesOnCollectionChanged;
             PackageContents.CollectionChanged += PackageContentsOnCollectionChanged;
+            CustomNodeDefinitions.CollectionChanged += PackageContentsOnCollectionChanged;
+
             Assemblies = new List<PackageAssembly>();
             PropertyChanged += ThisPropertyChanged;
             RefreshPackageContents();
@@ -770,7 +771,7 @@ namespace Dynamo.PackageManager
             //  this method clears the package contents in the publish package dialog
 
             this.Package = null;
-            this.CustomNodeDefinitions = new List<CustomNodeDefinition>();
+            this.CustomNodeDefinitions = new ObservableCollection<CustomNodeDefinition>();
             RaisePropertyChanged("PackageContents");
         }
 
@@ -805,7 +806,7 @@ namespace Dynamo.PackageManager
                 Group = l.Group,
                 Description = l.Description,
                 Keywords = l.Keywords != null ? String.Join(" ", l.Keywords) : "",
-                CustomNodeDefinitions = defs,
+                CustomNodeDefinitions = defs.ToObservableCollection(),
                 Name = l.Name,
                 RepositoryUrl = l.RepositoryUrl ?? "",
                 SiteUrl = l.SiteUrl ?? "",
