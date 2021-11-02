@@ -200,7 +200,10 @@ namespace Dynamo.PackageDetails
             PackageDetailsViewExtension = packageDetailsViewExtension;
             License = packageManagerSearchElement.Header.license;
 
-            packageLoader.PackageAdded += PackageLoaderOnPackageAdded;
+            if(!Models.DynamoModel.IsTestMode)
+            {
+                packageLoader.PackageAdded += PackageLoaderOnPackageAdded;
+            }
 
             OpenDependencyDetailsCommand = new DelegateCommand(OpenDependencyDetails);
             TryInstallPackageVersionCommand = new DelegateCommand(TryInstallPackageVersion);
