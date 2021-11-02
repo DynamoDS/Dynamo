@@ -18,6 +18,7 @@ namespace Dynamo.ViewModels
         private bool showUseLevelMenu;
 
         private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
+        private bool portDefaultValueMarkerVisible;
         private static SolidColorBrush PortValueMarkerBlue = new SolidColorBrush(Color.FromRgb(106, 192, 231));
         private static SolidColorBrush PortValueMarkerRed = new SolidColorBrush(Color.FromRgb(235, 85, 85));
 
@@ -126,11 +127,26 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Determines whether the blue circular marker to the left of this port is visible.
+        /// This indicates whether the port has a default value which is in use.
+        /// </summary>
+        public bool PortDefaultValueMarkerVisible
+        {
+            get => portDefaultValueMarkerVisible;
+            set
+            {
+                portDefaultValueMarkerVisible = value;
+                RaisePropertyChanged(nameof(PortDefaultValueMarkerVisible));
+            }
+        }
+
         #endregion
 
         public InPortViewModel(NodeViewModel node, PortModel port) : base(node, port)
         {
             port.PropertyChanged += PortPropertyChanged;
+            RefreshPortDefaultValueMarkerVisible();
         }
 
         public override void Dispose()
@@ -153,7 +169,11 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(UsingDefaultValue):
                     RaisePropertyChanged(nameof(UsingDefaultValue));
+                    RefreshPortDefaultValueMarkerVisible();
                     RefreshPortColors();
+                    break;
+                case nameof(DefaultValueEnabled):
+                    RefreshPortDefaultValueMarkerVisible();
                     break;
                 case nameof(UseLevels):
                     RaisePropertyChanged(nameof(UseLevels));
@@ -163,6 +183,9 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(KeepListStructure):
                     RaisePropertyChanged(nameof(ShouldKeepListStructure));
+                    RefreshPortColors();
+                    break;
+                case nameof(IsConnected):
                     RefreshPortColors();
                     break;
             }
@@ -234,6 +257,11 @@ namespace Dynamo.ViewModels
         private void OnMouseLeftButtonDownOnLevel(object parameter)
         {
             ShowUseLevelMenu = true;
+        }
+
+        private void RefreshPortDefaultValueMarkerVisible()
+        {
+            PortDefaultValueMarkerVisible = UsingDefaultValue && DefaultValueEnabled;
         }
 
         /// <summary>
