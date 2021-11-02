@@ -279,6 +279,29 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void NodeSuggestions_MultipleOutputPortCBN_AreCorrect()
+        {
+            Open(@"UI\builtin_outputport_CBNsuggestion.dyn");
+
+            // Get the output port type for the node. 
+            var outPorts = ViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault().OutPorts;
+            Assert.AreEqual(3, outPorts.Count());
+
+            // Setup
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
+            searchViewModel.PortViewModel = outPorts[2];
+            searchViewModel.PopulateDefaultAutoCompleteCandidates();
+            Assert.AreEqual(3, searchViewModel.FilteredResults.Count());
+
+            // Trigger node autocomplete on the 3rd output port and verify the start port of final connector is expected
+            searchViewModel.FilteredResults.FirstOrDefault().CreateAndConnectCommand.Execute(outPorts[2].PortModel);
+
+            // The connector should be from the same index of the original port which triggered node autocomplete
+            var connector = ViewModel.CurrentSpaceViewModel.Connectors.FirstOrDefault();
+            Assert.AreEqual(outPorts[2].PortModel.Index, connector.ConnectorModel.Start.Index);
+        }
+
+        [Test]
         public void NodeSearchElementComparerSortsBasedOnTypeDistance()
         {
             var core = Model.LibraryServices.LibraryManagementCore;

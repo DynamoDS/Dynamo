@@ -212,6 +212,19 @@ namespace Dynamo.Graph.Workspaces
                     }
                     else if (model is AnnotationModel)
                     {
+                        // If the AnnotationModel is nested
+                        // we should record the modifications 
+                        // to the parent in this ActionGroup
+                        // to ensure that a single Undo will
+                        // revert everything.
+                        var parentGroup = this.Annotations
+                            .FirstOrDefault(x => x.ContainsModel(model));
+
+                        if (parentGroup != null)
+                        {
+                            undoRecorder.RecordModificationForUndo(parentGroup);
+                        }
+
                         undoRecorder.RecordDeletionForUndo(model);
                         RemoveAnnotation(model as AnnotationModel);
                     }

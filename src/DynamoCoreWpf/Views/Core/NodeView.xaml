@@ -5,7 +5,6 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -381,7 +380,7 @@
                       Margin="-25,3,0,0"
                       VerticalAlignment="Top"
                       HorizontalContentAlignment="Stretch"
-                      Canvas.ZIndex="4"
+                      Canvas.ZIndex="6"
                       ItemsSource="{Binding Path=InPorts}"
                       Style="{StaticResource InOutPortControlStyle}" />
 
