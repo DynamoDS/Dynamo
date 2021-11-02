@@ -649,7 +649,7 @@ namespace Dynamo.ViewModels
                 );
         }
 
-        private double GetPortVerticalOffset(PortModel portModel)
+        private double GetPortVerticalOffset(PortModel portModel, int proxyPortIndex)
         {
             // vertical offset accounts for the port margins
             double verticalOffset = 20;
@@ -662,14 +662,14 @@ namespace Dynamo.ViewModels
             // calculate the vertical offset for the port index.
             int portVerticalMidPoint = 17;
             double portHeight = portModel.Height;
-            return verticalOffset + (index * portHeight) + portVerticalMidPoint;
+            return verticalOffset + (proxyPortIndex * portHeight) + portVerticalMidPoint;
         }
 
-        private Point2D CalculatePortPosition(PortModel portModel)
+        private Point2D CalculatePortPosition(PortModel portModel, int proxyPortIndex)
         {
             double groupHeaderHeight = Height - ModelAreaRect.Height;
 
-            double offset = GetPortVerticalOffset(portModel);
+            double offset = GetPortVerticalOffset(portModel, proxyPortIndex);
             double y = Top + groupHeaderHeight + offset;
 
             switch (portModel.PortType)
@@ -695,8 +695,8 @@ namespace Dynamo.ViewModels
                 var model = groupPortModels.ElementAt(i);
                 newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(model));
 
-                // calculate new position for the proxy inports
-                model.Center = CalculatePortPosition(model);
+                // calculate new position for the proxy inports.
+                model.Center = CalculatePortPosition(model, i);
                 model.Owner.ReportPosition();
             } 
 
@@ -717,7 +717,7 @@ namespace Dynamo.ViewModels
                 newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(model));
 
                 // calculate new position for the proxy outports
-                model.Center = CalculatePortPosition(model);
+                model.Center = CalculatePortPosition(model, i);
                 model.Owner.ReportPosition();
             }
 
