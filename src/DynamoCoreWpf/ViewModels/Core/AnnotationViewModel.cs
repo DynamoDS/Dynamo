@@ -23,6 +23,9 @@ namespace Dynamo.ViewModels
         private IEnumerable<PortModel> originalInPorts;
         private IEnumerable<PortModel> originalOutPorts;
         private Dictionary<string, RectangleGeometry> GroupIdToCutGeometry = new Dictionary<string, RectangleGeometry>();
+        // vertical offset accounts for the port margins
+        private const int verticalOffset = 20;
+        private const int portVerticalMidPoint = 17;
 
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
@@ -651,16 +654,7 @@ namespace Dynamo.ViewModels
 
         private double GetPortVerticalOffset(PortModel portModel, int proxyPortIndex)
         {
-            // vertical offset accounts for the port margins
-            double verticalOffset = 20;
-            int index = portModel.LineIndex == -1 ? portModel.Index : portModel.LineIndex;
-
-            //If the port was not found, then it should have just been deleted. Return from function
-            if (index == -1)
-                return verticalOffset;
-
-            // calculate the vertical offset for the port index.
-            int portVerticalMidPoint = 17;
+            // calculate the vertical offset based on the port index.
             double portHeight = portModel.Height;
             return verticalOffset + (proxyPortIndex * portHeight) + portVerticalMidPoint;
         }
@@ -676,7 +670,7 @@ namespace Dynamo.ViewModels
             {
                 case PortType.Input:
                     return new Point2D(Left, y);
-                case PortType.Output:
+                case PortType.Output:         
                     return new Point2D(Left + Width, y);
             }
             return new Point2D();
@@ -722,6 +716,31 @@ namespace Dynamo.ViewModels
             }
 
             return newPortViewModels;
+        }
+
+        private void UpdateProxyPortsPosition()
+        {
+            var groupInports = GetGroupInPorts();
+
+            for (int i = 0; i < groupInports.Count(); i++)
+            {
+                var model = groupInports.ElementAt(i);
+
+                // calculate new position for the proxy inports.
+                model.Center = CalculatePortPosition(model, i);
+                model.Owner.ReportPosition();
+            }
+
+            var groupOutports = GetGroupOutPorts();
+
+            for (int i = 0; i < groupOutports.Count(); i++)
+            {
+                var model = groupOutports.ElementAt(i);
+
+                // calculate new position for the proxy outports.
+                model.Center = CalculatePortPosition(model, i);
+                model.Owner.ReportPosition();
+            }
         }
 
         internal void ClearSelection()
@@ -939,8 +958,8 @@ namespace Dynamo.ViewModels
                 case nameof(AnnotationModel.Position):
                     RaisePropertyChanged(nameof(ModelAreaRect));
                     RaisePropertyChanged(nameof(AnnotationModel.Position));
+                    UpdateProxyPortsPosition();
                     break;
-
             }
         }
 
