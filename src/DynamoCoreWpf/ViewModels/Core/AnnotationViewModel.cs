@@ -831,7 +831,7 @@ namespace Dynamo.ViewModels
 
                 connectorViewModels.ForEach(x => x.IsCollapsed = false);
 
-                // Set IsProxyPort back to false when the group is collapsed.
+                // Set IsProxyPort back to false when the group is expanded.
                 nodeModel.InPorts.ToList().ForEach(x => x.IsProxyPort = false);
                 nodeModel.OutPorts.ToList().ForEach(x => x.IsProxyPort = false);
 
