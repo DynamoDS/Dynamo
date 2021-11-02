@@ -434,7 +434,14 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            var newPkgVm = new PublishPackageViewModel(DynamoViewModel) { CustomNodeDefinitions = funcDefs.Select(pair => pair.Item2).ToList() };
+            var functionDefinitions = funcDefs.Select(pair => pair.Item2).ToList();
+
+            var newPkgVm = new PublishPackageViewModel(DynamoViewModel);
+
+            foreach (var functionDefinition in functionDefinitions)
+            {
+                newPkgVm.CustomNodeDefinitions.Add(functionDefinition);
+            }
 
             DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }

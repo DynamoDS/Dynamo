@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Dynamo;
@@ -139,7 +140,7 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(GetModel().CustomNodeManager.NodeInfos[cnworkspace.CustomNodeId].IsPackageMember);
 
             //now lets publish this node as a local package.
-            var newPkgVm = new PublishPackageViewModel(ViewModel) { CustomNodeDefinitions = new List<CustomNodeDefinition>(){ cnworkspace.CustomNodeDefinition } };
+            var newPkgVm = new PublishPackageViewModel(ViewModel) { CustomNodeDefinitions = new ObservableCollection<CustomNodeDefinition>{ cnworkspace.CustomNodeDefinition } };
             newPkgVm.Name = "PublishingACustomNodeSetsPackageInfoCorrectly";
             newPkgVm.MajorVersion = "0";
             newPkgVm.MinorVersion = "0";
