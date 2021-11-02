@@ -31,7 +31,8 @@ namespace Dynamo.Nodes
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.InPortsDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.OutPortsDictionary);
 
             InitializeComponent();
             Unloaded += AnnotationView_Unloaded;
@@ -162,6 +163,7 @@ namespace Dynamo.Nodes
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
+                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }
         }
 

@@ -17,6 +17,9 @@ namespace Dynamo.Wpf.Views.GuidedTour
         private const int popupBordersOffSet = 10;
         private PopupWindowViewModel popupViewModel;
         private HostControlInfo hostControlInfo;
+        private bool isClosingTour;
+
+        private const string packagesTourName = "packages";
 
         internal WebBrowserWindow webBrowserWindow;
 
@@ -50,49 +53,64 @@ namespace Dynamo.Wpf.Views.GuidedTour
             HorizontalOffset = hInfo.HorizontalPopupOffSet;
             VerticalOffset = hInfo.VerticalPopupOffSet;
 
-            if (!string.IsNullOrEmpty(hInfo.HtmlPage))
-            {
-                ContentRichTextBox.Visibility = Visibility.Hidden;
-                Opened += PopupWindow_Opened;
-            }
-
+            Opened += PopupWindow_Opened;
             Closed += PopupWindow_Closed;
+
+            isClosingTour = false;
         }
 
         private void PopupWindow_Closed(object sender, EventArgs e)
         {
-            if(webBrowserWindow != null)
+            if (webBrowserWindow != null)
                 webBrowserWindow.IsOpen = false;
 
-            Opened -= PopupWindow_Opened;
-            Closed -= PopupWindow_Closed;
+            if(isClosingTour)
+            {
+                Opened -= PopupWindow_Opened;
+                Closed -= PopupWindow_Closed;
+            }
         }
 
         private void PopupWindow_Opened(object sender, EventArgs e)
         {
-            webBrowserWindow = new WebBrowserWindow(popupViewModel, hostControlInfo);
-            webBrowserWindow.IsOpen = true;
+            if (hostControlInfo.HtmlPage != null && !string.IsNullOrEmpty(hostControlInfo.HtmlPage.FileName))
+            {
+                ContentRichTextBox.Visibility = Visibility.Hidden;
+
+                if(webBrowserWindow == null)
+                    webBrowserWindow = new WebBrowserWindow(popupViewModel, hostControlInfo);
+
+                webBrowserWindow.IsOpen = true;
+            }
         }
 
         private void StartTourButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            GuideFlowEvents.OnGuidedTourNext(popupViewModel.Step.Sequence);
+            GuideFlowEvents.OnGuidedTourNext(popupViewModel.Step.Sequence);            
         }
 
         private void CloseButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             IsOpen = false;
-            popupViewModel.Step.OnStepClosed(popupViewModel.Step.Name, popupViewModel.Step.StepType);
+            if (popupViewModel.Step.GuideName.ToLower() == packagesTourName)
+            {
+                GuideFlowEvents.OnGuidedTourFinish(popupViewModel.Step.GuideName);
+            }
+            else
+            {
+                isClosingTour = true;
+                popupViewModel.Step.OnStepClosed(popupViewModel.Step.Name, popupViewModel.Step.StepType);
+            }
         }
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
-            GuideFlowEvents.OnGuidedTourNext(popupViewModel.Step.Sequence);
+            GuideFlowEvents.OnGuidedTourNext(popupViewModel.Step.Sequence);            
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            GuideFlowEvents.OnGuidedTourPrev(popupViewModel.Step.Sequence);
+            GuideFlowEvents.OnGuidedTourPrev(popupViewModel.Step.Sequence);           
         }
     }
 }

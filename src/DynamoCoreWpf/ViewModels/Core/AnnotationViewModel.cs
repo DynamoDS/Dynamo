@@ -496,6 +496,7 @@ namespace Dynamo.ViewModels
             annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;
             model.PropertyChanged += model_PropertyChanged;
+            model.RemovedFromGroup += OnModelRemovedFromGroup;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
             //https://jira.autodesk.com/browse/QNTM-3770
@@ -538,7 +539,7 @@ namespace Dynamo.ViewModels
         internal void SetGroupInputPorts()
         {
             InPorts.Clear();
-            List<ProxyPortViewModel> newPortViewModels;
+            List<PortViewModel> newPortViewModels;
 
             // we need to store the original ports here
             // as we need those later for when we
@@ -561,7 +562,7 @@ namespace Dynamo.ViewModels
             // visually add them to the group but they
             // should still reference their NodeModel
             // owner
-            newPortViewModels = CreateProxyPorts(originalInPorts);
+            newPortViewModels = CreateProxyInPorts(originalInPorts);
 
             if (newPortViewModels == null) return;
             InPorts.AddRange(newPortViewModels);
@@ -575,7 +576,7 @@ namespace Dynamo.ViewModels
         internal void SetGroupOutPorts()
         {
             OutPorts.Clear();
-            List<ProxyPortViewModel> newPortViewModels;
+            List<PortViewModel> newPortViewModels;
 
             // we need to store the original ports here
             // as we need thoese later for when we
@@ -598,7 +599,7 @@ namespace Dynamo.ViewModels
             // visually add them to the group but they
             // should still reference their NodeModel
             // owner
-            newPortViewModels = CreateProxyPorts(originalOutPorts);
+            newPortViewModels = CreateProxyOutPorts(originalOutPorts);
 
             if (newPortViewModels == null) return;
             OutPorts.AddRange(newPortViewModels);
@@ -649,14 +650,31 @@ namespace Dynamo.ViewModels
                 );
         }
 
-        private List<ProxyPortViewModel> CreateProxyPorts(IEnumerable<PortModel> groupPortModels)
+        private List<PortViewModel> CreateProxyInPorts(IEnumerable<PortModel> groupPortModels)
         {
             var originalPortViewModels = WorkspaceViewModel.Nodes
-                .SelectMany(x => x.InPorts.Concat(x.OutPorts))
+                .SelectMany(x => x.InPorts)
                 .Where(x => groupPortModels.Contains(x.PortModel))
                 .ToList();
 
-            var newPortViewModels = new List<ProxyPortViewModel>();
+            var newPortViewModels = new List<PortViewModel>();
+            for (int i = 0; i < groupPortModels.Count(); i++)
+            {
+                var model = groupPortModels.ElementAt(i);
+                newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(model));
+            }
+
+            return newPortViewModels;
+        }
+
+        private List<PortViewModel> CreateProxyOutPorts(IEnumerable<PortModel> groupPortModels)
+        {
+            var originalPortViewModels = WorkspaceViewModel.Nodes
+                .SelectMany(x => x.OutPorts)
+                .Where(x => groupPortModels.Contains(x.PortModel))
+                .ToList();
+
+            var newPortViewModels = new List<PortViewModel>();
             for (int i = 0; i < groupPortModels.Count(); i++)
             {
                 var model = groupPortModels.ElementAt(i);
@@ -871,6 +889,7 @@ namespace Dynamo.ViewModels
                 case nameof(AnnotationModel.ModelAreaHeight):
                     RaisePropertyChanged(nameof(ModelAreaHeight));
                     RaisePropertyChanged(nameof(ModelAreaRect));
+                    RaisePropertyChanged(nameof(Width));
                     break;
                 case nameof(AnnotationModel.Position):
                     RaisePropertyChanged(nameof(ModelAreaRect));
@@ -878,6 +897,11 @@ namespace Dynamo.ViewModels
                     break;
 
             }
+        }
+
+        private void OnModelRemovedFromGroup(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(ZIndex));
         }
 
         private void UpdateAllGroupedGroups()
@@ -983,6 +1007,7 @@ namespace Dynamo.ViewModels
         public override void Dispose()
         {
             annotationModel.PropertyChanged -= model_PropertyChanged;
+            annotationModel.RemovedFromGroup -= OnModelRemovedFromGroup;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
         }

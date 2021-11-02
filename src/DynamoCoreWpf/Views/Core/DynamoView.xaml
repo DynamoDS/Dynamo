@@ -26,7 +26,7 @@
         AllowsTransparency="False"
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
-        Background="#FF353535"
+        Background="#3C3C3C"
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
         UseLayoutRounding="True"
@@ -184,8 +184,8 @@
           PreviewMouseLeftButtonUp="Window_PreviewMouseLeftButtonUp">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="45px" />
+            <RowDefinition Height="40px" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Name="consoleRow"
@@ -214,16 +214,11 @@
         </Grid.ColumnDefinitions>
 
         <!--Titlebar-->
-        <Border BorderBrush="{StaticResource BorderBrushWhite}"
-                BorderThickness="0,0,0,1"
-                Grid.Row="0"
+        <Border Grid.Row="0"
                 Grid.Column="0"
                 Grid.ColumnSpan="5"
-                Height="26"
                 Name="titleBar">
-
-            <Grid Name="titleBarGrid">
-
+            <Grid Name="titleBarGrid" VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -233,17 +228,17 @@
                 <Menu IsMainMenu="True"
                       Name="menu1"
                       Style="{StaticResource MainMenu}">
-                 <!--Accessor key = false. This is to include underscore in header(only for SubMenuItem-->
+                    <!--Accessor key = false. This is to include underscore in header(only for SubMenuItem-->
                     <Menu.Resources>
                         <Style x:Key="SubMenuItemOverride"
                             BasedOn="{StaticResource MenuItemStyle}"
                             TargetType="{x:Type MenuItem}">
 
-                            <Style.Resources>                              
+                            <Style.Resources>
                                 <!--  SubmenuItem  -->
                                 <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}"
                                                           TargetType="MenuItem">
-                                    
+
                                     <Border Name="Border"
                                             Height="25" Background="Transparent">
                                         <Grid MinWidth="200">
@@ -253,11 +248,14 @@
                                             </Grid.ColumnDefinitions>
                                             <ContentPresenter Name="HeaderHost"
                                                               Grid.Column="0"
+                                                              TextBlock.FontSize="16px"
+                                                              TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                              TextBlock.Foreground="{StaticResource NormalForegroundBrush}"
                                                               Margin="5,0,0,0"
                                                               HorizontalAlignment="Stretch"
                                                               VerticalAlignment="Center"
                                                               ContentSource="Header"
-                                                              RecognizesAccessKey="False" />                                         
+                                                              RecognizesAccessKey="False" />
                                         </Grid>
                                     </Border>
                                     <ControlTemplate.Triggers>
@@ -280,8 +278,8 @@
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
-                            </Style.Resources>                         
-                            <Style.Triggers>                                                              
+                            </Style.Resources>
+                            <Style.Triggers>
                                 <Trigger Property="Role"
                                     Value="SubmenuItem">
                                     <Setter Property="Template"
@@ -375,6 +373,7 @@
                         <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuExport}"
                                   Name="exportMenu"
+                                  Tag="NoDownArrow"
                                   Focusable="False">
                             <MenuItem Focusable="False"
                                       Header="{x:Static p:Resources.DynamoViewFileMenuExportAsImage}"
@@ -441,7 +440,7 @@
                                   Command="{Binding Path=NodeFromSelectionCommand}"
                                   Name="nodeFromSelection"
                                   InputGestureText="Ctrl + D" />
-                       
+
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuSelectAll}"
                                   Command="{Binding SelectAllCommand}"
@@ -580,7 +579,7 @@
                                       Command="{Binding Path=BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}" />
                         </MenuItem>
                     </MenuItem>
-                    
+
                     <MenuItem Header="{x:Static p:Resources.DynamoViewPackageMenu}"
                               Name="PackageManagerMenu"
                               Focusable="False"
@@ -662,7 +661,7 @@
                                    Height="14"/>
                         </MenuItem.Icon>
                     </MenuItem>
-					
+
                     <MenuItem Header="{x:Static p:Resources.DynamoViewDebugMenu}"
                               Focusable="False"
                               Visibility="{Binding IsDebugBuild, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
@@ -723,24 +722,26 @@
         <!--Shortcuts Toolbar-->
         <Grid Grid.Row="1"
               Grid.Column="0"
+              Canvas.ZIndex="1"
+              VerticalAlignment="Top"
               Grid.ColumnSpan="5"
               Name="shortcutsBarGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            
+
             <Grid Name="loginGrid" 
                   Grid.Row="0" 
                   Grid.Column="1">
             </Grid>
-            
+
             <Border Name="shortcutBarBorder"
-                Grid.Row="0"
-                Grid.Column="0"
-                Height="32"
-                BorderBrush="{StaticResource BorderBrushWhite}"
-                BorderThickness="0,0,0,1">
+                    BorderThickness="0"
+                    HorizontalAlignment="Stretch"
+                    Margin="0,-1"
+                    Grid.Row="0"
+                Grid.Column="0">
                 <Grid Name="shortcutBarGrid">
                 </Grid>
             </Border>
@@ -757,7 +758,7 @@
               Name="background_grid"
               IsHitTestVisible="{Binding BackgroundPreviewViewModel.CanNavigateBackground}">
             <Canvas Name="backgroundCanvas"
-                    Margin="0,20,0,0"
+                    Margin="0,0,0,0"
                     ClipToBounds="True">
                 <Canvas.Background>
                     <SolidColorBrush Color="{Binding ViewingHomespace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
@@ -765,7 +766,7 @@
             </Canvas>
 
             <!-- The BackgroundPreview is now created in the DynamoView_Loaded method.-->
-            
+
         </Grid>
 
         <!--
@@ -779,23 +780,20 @@
                 BorderBrush="Black"
                 BorderThickness="0"
                 Name="border"
-                Grid.Row="2"
+                Grid.Row="1"
+                Grid.RowSpan="2"
                 Grid.Column="2"
                 SizeChanged="Workspace_SizeChanged">
-
             <Grid AllowDrop="True"
-                  Drop="DynamoView_OnDrop">
+                  Drop="DynamoView_OnDrop" Margin="0,0,0,0">
                 <TabControl ItemsSource="{Binding Path=Workspaces, NotifyOnTargetUpdated=True}"
                             Name="WorkspaceTabs"
                             SelectedIndex="{Binding CurrentWorkspaceIndex}"
-                            Background="#232323"
                             Padding="0"
                             TargetUpdated="WorkspaceTabs_TargetUpdated"
                             SelectionChanged="WorkspaceTabs_SelectionChanged"
                             SizeChanged="WorkspaceTabs_SizeChanged">
-
                     <TabControl.Resources>
-
                         <Style TargetType="{x:Type TabControl}">
                             <Setter Property="OverridesDefaultStyle"
                                     Value="True" />
@@ -809,16 +807,14 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <Border BorderBrush="{StaticResource BorderBrushWhite}"
-                                                    BorderThickness="1,0,0,1"
-                                                    Grid.Row="0">
+                                            <Border Background="Transparent" Grid.Row="0">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*" />
                                                         <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
                                                     <ScrollViewer Grid.Column="0"
-                                                                  Margin="0,-1,0,0"
+                                                                  Margin="0,0,0,0"
                                                                   HorizontalScrollBarVisibility="Hidden"
                                                                   VerticalScrollBarVisibility="Disabled">
                                                         <TabPanel x:Name="HeaderPanel"
@@ -828,6 +824,8 @@
                                                     </ScrollViewer>
                                                     <Menu x:Name="TabControlMenu"
                                                           Grid.Column="1"
+                                                          VerticalAlignment="Center"
+                                                          Margin="10,0,0,0"
                                                           Background="Transparent"
                                                           SnapsToDevicePixels="True">
                                                         <Menu.Resources>
@@ -855,52 +853,8 @@
                                                                                     <ContentPresenter ContentSource="Header"
                                                                                                       HorizontalAlignment="Center"
                                                                                                       VerticalAlignment="Center" />
-                                                                                    <Image Name="TabMenuButtonImage"
-                                                                                           Width="16"
-                                                                                           Height="16">
-                                                                                        <Image.Style>
-                                                                                            <Style TargetType="{x:Type Image}">
-                                                                                                <Style.Triggers>
-                                                                                                    <Trigger Property="IsMouseOver"
-                                                                                                             Value="False">
-                                                                                                        <Setter Property="Source"
-                                                                                                                Value="/DynamoCoreWpf;component/UI/Images/tabs_button_normal.png" />
-                                                                                                    </Trigger>
-                                                                                                    <Trigger Property="IsMouseOver"
-                                                                                                             Value="True">
-                                                                                                        <Setter Property="Source"
-                                                                                                                Value="/DynamoCoreWpf;component/UI/Images/tabs_button_hover.png" />
-                                                                                                    </Trigger>
-                                                                                                </Style.Triggers>
-                                                                                            </Style>
-                                                                                        </Image.Style>
-                                                                                    </Image>
-                                                                                    <Popup Name="Popup"
-                                                                                           Placement="Custom"
-                                                                                           CustomPopupPlacementCallback="PlacePopup"
-                                                                                           IsOpen="{TemplateBinding IsSubmenuOpen}"
-                                                                                           AllowsTransparency="True"
-                                                                                           Focusable="False"
-                                                                                           PopupAnimation="Fade">
-                                                                                        <Border Name="SubmenuBorder"
-                                                                                                SnapsToDevicePixels="True"
-                                                                                                BorderBrush="{StaticResource NormalBorderBrush}"
-                                                                                                Background="{StaticResource NormalBackgroundBrush}"
-                                                                                                BorderThickness="1">
-                                                                                            <StackPanel IsItemsHost="True"
-                                                                                                        KeyboardNavigation.DirectionalNavigation="Cycle" />
-                                                                                        </Border>
-                                                                                    </Popup>
                                                                                 </Grid>
                                                                             </Border>
-                                                                            <ControlTemplate.Triggers>
-                                                                                <Trigger Property="IsHighlighted"
-                                                                                         Value="true">
-                                                                                    <Setter TargetName="TabMenuButtonImage"
-                                                                                            Property="Source"
-                                                                                            Value="/DynamoCoreWpf;component/UI/Images/tabs_button_hover.png" />
-                                                                                </Trigger>
-                                                                            </ControlTemplate.Triggers>
                                                                         </ControlTemplate>
                                                                     </Setter.Value>
                                                                 </Setter>
@@ -1072,7 +1026,7 @@
                                             <Border x:Name="Border"
                                                     Grid.Row="1"
                                                     BorderBrush="{Binding Path=ViewingHomespace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"
-                                                    BorderThickness="0,1,0,0">
+                                                    BorderThickness="0,0,0,0">
                                                 <ContentPresenter x:Name="PART_SelectedContentHost"
                                                                   ContentSource="SelectedContent" />
                                             </Border>
@@ -1081,7 +1035,6 @@
                                 </Setter.Value>
                             </Setter>
                         </Style>
-
                         <Style TargetType="{x:Type Button}"
                                x:Key="CloseButtonStyle">
                             <Setter Property="OverridesDefaultStyle"
@@ -1093,7 +1046,7 @@
                             <Setter Property="HorizontalAlignment"
                                     Value="Center" />
                             <Setter Property="Margin"
-                                    Value="0,0,0,0" />
+                                    Value="0,0,10,0" />
                             <Setter Property="Background"
                                     Value="Transparent" />
                             <Setter Property="BorderThickness"
@@ -1127,7 +1080,6 @@
                             -->
 
                         </Style>
-
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="MaxWidth"
                                     Value="{Binding Source={x:Static configuration:Configurations.TabDefaultWidth}}" />
@@ -1147,21 +1099,79 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type TabItem}">
                                         <Border Name="Border"
-                                                BorderBrush="{StaticResource BorderBrushWhite}"
+                                                BorderThickness="0,0,0,5"
                                                 CornerRadius="0,0,0,0">
+                                            <Border.ToolTip>
+                                                <uictrls:DynamoToolTip AttachmentSide="Bottom" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                                                    <StackPanel Margin="5" MaxWidth="250">
+                                                        <TextBlock x:Name="FileName" Margin="0,0,0,5"  Text="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" TextWrapping="Wrap"/>
+                                                        <TextBlock x:Name="topMessage"
+                                                                   FontFamily="{StaticResource ArtifaktElementBold}"
+                                                                   FontSize="11px"
+                                                                   Foreground="Black">
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Path=HasUnsavedChanges}" Value="True">
+                                                                            <Setter Property="Text" Value="{x:Static p:Resources.WorkspaceTabSavingNecessary}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=HasUnsavedChanges}" Value="False">
+                                                                            <Setter Property="Text" Value="{x:Static p:Resources.WorkspaceTabSavingUnnecessary}"/>
+                                                                        </DataTrigger>
+                                                                        <MultiDataTrigger>
+                                                                            <MultiDataTrigger.Conditions>
+                                                                                <Condition Binding="{Binding Path=FileName}" Value=""/>
+                                                                                <Condition Binding="{Binding Path=HasUnsavedChanges}" Value="True"/>
+                                                                            </MultiDataTrigger.Conditions>
+                                                                            <MultiDataTrigger.Setters>
+                                                                                <Setter Property="Text" Value="{x:Static p:Resources.WorkspaceTabNotSavedYet}"/>
+                                                                            </MultiDataTrigger.Setters>
+                                                                        </MultiDataTrigger>
+                                                                        <MultiDataTrigger>
+                                                                            <MultiDataTrigger.Conditions>
+                                                                                <Condition Binding="{Binding Path=FileName}" Value=""/>
+                                                                                <Condition Binding="{Binding Path=HasUnsavedChanges}" Value="False"/>
+                                                                            </MultiDataTrigger.Conditions>
+                                                                            <MultiDataTrigger.Setters>
+                                                                                <Setter Property="Text" Value="{x:Static p:Resources.WorkspaceTabSavingBrandNewFile}"/>
+                                                                            </MultiDataTrigger.Setters>
+                                                                        </MultiDataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                        <TextBlock x:Name="bottomMessage"
+                                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                                   FontSize="11px"
+                                                                   Foreground="Black">
+                                                            <Run Text="{x:Static p:Resources.PreferencesViewSavedChangesTooltip}"/>
+                                                            <Run Text="{Binding DynamoViewModel.HomeSpace.LastSaved}"/>
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}" Value="Unsaved">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}" Value="Saved">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </uictrls:DynamoToolTip>
+                                            </Border.ToolTip>
                                             <Border.Style>
                                                 <Style TargetType="Border">
+                                                    <Setter Property="BorderBrush" Value="{StaticResource BorderBrushWhite}"/>
                                                     <Style.Triggers>
-                                                        <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
-                                                            <Setter Property="Background" Value="{Binding ViewingHomespace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"/>
-                                                            <Setter Property="BorderThickness" Value="1,0,1,1"/>
-                                                        </DataTrigger>-->
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"
                                                                      Value="False">
                                                             <Setter Property="Background"
                                                                     Value="{StaticResource WorkspaceTabBorderSelectedFalse}" />
-                                                            <Setter Property="BorderThickness"
-                                                                    Value="0,1,1,0" />
+                                                            <Setter Property="BorderBrush"
+                                                                    Value="{StaticResource BorderBrushWhite}" />
                                                             <Setter Property="Margin"
                                                                     Value="0,0,0,-1" />
                                                         </DataTrigger>
@@ -1169,15 +1179,15 @@
                                                                      Value="True">
                                                             <Setter Property="Background"
                                                                     Value="{StaticResource WorkspaceTabBorderSelectedTrue}" />
-                                                            <Setter Property="BorderThickness"
-                                                                    Value="0,0,1,0" />
+                                                            <Setter Property="BorderBrush"
+                                                                    Value="#ADE4DE" />
                                                             <Setter Property="Margin"
                                                                     Value="0" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
-                                            <Grid Margin="0,0,0,0">
+                                            <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*" />
                                                     <ColumnDefinition Width="Auto" />
@@ -1188,8 +1198,11 @@
                                                                   ContentSource="Header" />
                                                 <Button Style="{StaticResource CloseButtonStyle}"
                                                         Command="{Binding HideCommand}"
+                                                        Cursor="Hand"
+                                                        Margin="0"
                                                         Grid.Column="1">
                                                     <Image Width="16"
+                                                           Margin="0,0,10,0"
                                                            Height="16">
                                                         <Image.Style>
                                                             <Style TargetType="{x:Type Image}">
@@ -1197,12 +1210,12 @@
                                                                     <Trigger Property="IsMouseOver"
                                                                              Value="False">
                                                                         <Setter Property="Source"
-                                                                                Value="/DynamoCoreWpf;component/UI/Images/closetab_normal.png" />
+                                                                            Value="/DynamoCoreWpf;component/UI/Images/closetab_normal.png" />
                                                                     </Trigger>
                                                                     <Trigger Property="IsMouseOver"
                                                                              Value="True">
                                                                         <Setter Property="Source"
-                                                                                Value="/DynamoCoreWpf;component/UI/Images/closetab_hover.png" />
+                                                                            Value="/DynamoCoreWpf;component/UI/Images/closetab_hover.png" />
                                                                     </Trigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -1211,7 +1224,6 @@
                                                 </Button>
                                             </Grid>
                                         </Border>
-
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
@@ -1220,148 +1232,109 @@
                     </TabControl.Resources>
 
                     <TabControl.ItemTemplate>
-
                         <DataTemplate>
-
-                            <!--<Button>
-
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <ContentPresenter Content="{TemplateBinding Content}"/>
-                                </ControlTemplate>
-                            </Button.Template>
-
-                            <Button.InputBindings>
-                                <MouseBinding Gesture="MiddleClick" Command="{Binding HideCommand}" />
-                            </Button.InputBindings>-->
-
-                            <Grid Height="20">
+                            <Grid Height="35" Margin="12,0,5,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="5" />
+                                </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
-                                <StackPanel Orientation="Horizontal"
-                                            VerticalAlignment="Center">
-
-                                    <TextBlock Name="WorkspaceName"
-                                               Margin="8,0,0,0"
-                                               Padding="0,0,0,0"
-                                               HorizontalAlignment="Stretch"
-                                               VerticalAlignment="Center"
-                                               TextTrimming="CharacterEllipsis">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Style.Triggers>
-
-                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"
+                                <Ellipse Name="UnsavedChangesIcon"
+                                         Grid.Column="0"
+                                         Margin="0,5,5,0"
+                                         Height="9"
+                                         Width="9"
+                                         Fill="#FAA21B"
+                                         VerticalAlignment="Center">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasUnsavedChanges}"
                                                                  Value="True">
-                                                        <Setter Property="Foreground"
-                                                                Value="{StaticResource WorkspaceTabHeaderActiveTextBrush}"></Setter>
-                                                        <Setter Property="FontWeight"
-                                                                Value="SemiBold" />
-                                                    </DataTrigger>
-
-                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"
+                                                    <Setter Property="Visibility"
+                                                                Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding HasUnsavedChanges}"
                                                                  Value="False">
-                                                        <Setter Property="Foreground"
-                                                                Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}"></Setter>
-                                                        <Setter Property="FontWeight"
-                                                                Value="Normal" />
-                                                    </DataTrigger>
-
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                                       Value="{x:Type workspaces:HomeWorkspaceModel}" />
-                                                            <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
-                                                                       Value="Unsaved" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Text"
-                                                                Value="Home" />
-                                                    </MultiDataTrigger>
-
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                                       Value="{x:Type workspaces:HomeWorkspaceModel}" />
-                                                            <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
-                                                                       Value="Saved" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Text"
-                                                                Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
-                                                    </MultiDataTrigger>
-
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                                       Value="{x:Type workspaces:CustomNodeWorkspaceModel}" />
-                                                            <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
-                                                                       Value="Unsaved" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Text"
-                                                                Value="{Binding Name}" />
-                                                    </MultiDataTrigger>
-
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                                       Value="{x:Type workspaces:CustomNodeWorkspaceModel}" />
-                                                            <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
-                                                                       Value="Saved" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Text"
-                                                                Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
-                                                    </MultiDataTrigger>
-
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-
-                                    <TextBlock Name="WorkspaceSaveState"
-                                               Margin="0,0,0,0"
-                                               VerticalAlignment="Center">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"
-                                                                 Value="True">
-                                                        <Setter Property="Foreground"
-                                                                Value="{StaticResource WorkspaceTabHeaderActiveTextBrush}"></Setter>
-                                                        <Setter Property="FontWeight"
-                                                                Value="SemiBold" />
-                                                    </DataTrigger>
-
-                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"
-                                                                 Value="False">
-                                                        <Setter Property="Foreground"
-                                                                Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}"></Setter>
-                                                        <Setter Property="FontWeight"
-                                                                Value="Normal" />
-                                                    </DataTrigger>
-
-                                                    <DataTrigger Binding="{Binding HasUnsavedChanges}"
-                                                                 Value="True">
-                                                        <Setter Property="Text"
-                                                                Value="*" />
-                                                    </DataTrigger>
-
-                                                    <DataTrigger Binding="{Binding HasUnsavedChanges}"
-                                                                 Value="False">
-                                                        <Setter Property="Text"
-                                                                Value="" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-
-                                </StackPanel>
-
+                                                    <Setter Property="Visibility"
+                                                                Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <Rectangle Grid.Column="1" Width="16" Height="16" Margin="0,5,7,0" VerticalAlignment="Center">
+                                    <Rectangle.Fill>
+                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/custom-node.png"/>
+                                    </Rectangle.Fill>
+                                    <Rectangle.Style>
+                                        <Style TargetType="Rectangle">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsHomeSpace}" Value="False">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsHomeSpace}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Rectangle.Style>
+                                </Rectangle>
+                                <TextBlock Name="WorkspaceName"
+                                           Grid.Column="2"
+                                           Margin="0,7,0,0"
+                                           HorizontalAlignment="Stretch"
+                                           VerticalAlignment="Center"
+                                           FontSize="16px"
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           TextTrimming="CharacterEllipsis">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderActiveTextBrush}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
+                                                    <Setter Property="Foreground" Value="{StaticResource WorkspaceTabHeaderInactiveTextBrush}" />
+                                                </DataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type workspaces:HomeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}" Value="Unsaved" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="Home" />
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type workspaces:HomeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}" Value="Saved" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type workspaces:CustomNodeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}" Value="Unsaved" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="{Binding Name}" />
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type workspaces:CustomNodeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}" Value="Saved" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text" Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </Grid>
-                            <!--</Button>-->
-
                         </DataTemplate>
 
                     </TabControl.ItemTemplate>
@@ -1443,7 +1416,7 @@
                 <RotateTransform Angle="-90" />
             </StackPanel.RenderTransform>
         </StackPanel>
-        
+
         <!--Collapsed Extension Sidebar-->
         <StackPanel Grid.Row="2"
                     Grid.Column="2"
@@ -1607,7 +1580,7 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                    
+
                     <!--Template for tab header in the extensions side bar-->
                     <DataTemplate x:Key="TabHeader" DataType="TabItem">
                         <DockPanel HorizontalAlignment="Stretch" Name ="TabPanel" MinWidth="{Binding Source={x:Static configuration:Configurations.ExtensionsSideBarTabMinWidth}}">
@@ -1654,7 +1627,7 @@
                             </Button>
                         </DockPanel>
                     </DataTemplate>
-                    
+
                     <!--Styling for the tab in the extensions side bar-->
                     <Style TargetType="{x:Type TabItem}">
                         <Setter Property="MinWidth" Value="{Binding Source={x:Static configuration:Configurations.ExtensionsSideBarTabMinWidth}}" />
@@ -1693,23 +1666,13 @@
         </Grid>
 
         <!--Bottom Panel including RunMode etc-->
-        <Grid 
-                Grid.Row="5"
-                Grid.Column="0"
-                Grid.RowSpan="1"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Grid.ColumnSpan="5">
-            <Grid.Background>
-                <LinearGradientBrush  StartPoint="0.5,0"
-                                      EndPoint="0.5,1">
-                    <GradientStop Color="#222"
-                                  Offset="0.0" />
-                    <GradientStop Color="#111"
-                                  Offset="1.0" />
-                </LinearGradientBrush>
-            </Grid.Background>
-
+        <Grid Grid.Row="5"
+              Grid.Column="0"
+              Grid.RowSpan="1"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              Grid.ColumnSpan="5"
+              Background="#3C3C3C">
             <Grid Name="bottomBarGrid"
                   Grid.Row="4"
                   Grid.Column="0"
@@ -1768,7 +1731,7 @@
                       Margin="0"
                       Background="Transparent"
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
-        
+
         <!--Split Between Extension and Canvas-->
         <GridSplitter ResizeDirection="Auto"
                       Grid.Column="3"
@@ -1820,6 +1783,6 @@
             </Grid.Background>
         </Grid>
 
-        <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>        
+        <Grid Name="FocusableGrid" Width="0" Height="0" Focusable="True"/>
     </Grid>
 </Window>

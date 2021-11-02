@@ -24,17 +24,19 @@ namespace Dynamo.PackageManager.ViewModels
         public new PackageManagerSearchElement Model { get; internal set; }
 
         /// <summary>
-        /// Alternative constructor which takes a Function object in order to
-        /// assist communication between the PackageManagerSearchViewModel
-        /// and the PackageManagerSearchElementViewModel.
+        /// Alternative constructor to assist communication between the 
+        /// PackageManagerSearchViewModel and the PackageManagerSearchElementViewModel.
         /// </summary>
         /// <param name="element">A PackageManagerSearchElement</param>
         /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
         /// <param name="install">Whether a package can be installed.</param>
-        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool install) : base(element)
+        /// <param name="isEnabledForInstall">Whether the package is enabled for install in the UI.</param>
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool install, bool isEnabledForInstall = true) 
+            : base(element)
         {
             this.Model = element;
             CanInstall = install;
+            IsEnabledForInstall = isEnabledForInstall;
 
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded);
 
@@ -55,7 +57,7 @@ namespace Dynamo.PackageManager.ViewModels
         }
 
         /// <summary>
-        /// PackageManagerSearchElementViewModel Constructor
+        /// PackageManagerSearchElementViewModel Constructor (only used for testing in Dynamo).
         /// </summary>
         /// <param name="element">A PackageManagerSearchElement</param>
         /// <param name="canLogin">A Boolean used for access control to certain internal packages.</param>
@@ -79,6 +81,12 @@ namespace Dynamo.PackageManager.ViewModels
                 RaisePropertyChanged(nameof(CanInstall));
             }
         }
+
+        /// <summary>
+        /// True if package is enabled for download if custom package paths are not disabled,
+        /// False if custom package paths are disabled.
+        /// </summary>
+        public bool IsEnabledForInstall { get; private set; }
 
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)

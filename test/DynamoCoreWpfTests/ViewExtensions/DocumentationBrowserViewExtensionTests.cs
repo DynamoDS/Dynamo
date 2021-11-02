@@ -431,7 +431,7 @@ namespace DynamoCoreWpfTests
         public void GetResourceNameWithCultureNameReturnsSameAsInputWhenCultureIsNull()
         {
             var name = "MyPage.html";
-            var result = DocumentationBrowserViewModel.GetResourceNameWithCultureName(name, null);
+            var result = ResourceUtilities.GetResourceNameWithCultureName(name, null);
             Assert.AreEqual(name, result);
         }
 
@@ -439,7 +439,7 @@ namespace DynamoCoreWpfTests
         public void GetResourceNameWithCultureNameReturnsSameAsInputWhenItDoesNotHaveAnExtension()
         {
             var name = "NotAPage";
-            var result = DocumentationBrowserViewModel.GetResourceNameWithCultureName(name, CultureInfo.GetCultureInfo("en-US"));
+            var result = ResourceUtilities.GetResourceNameWithCultureName(name, CultureInfo.GetCultureInfo("en-US"));
             Assert.AreEqual(name, result);
         }
 
@@ -447,7 +447,7 @@ namespace DynamoCoreWpfTests
         public void GetResourceNameWithCultureNameWorksWithValidCultureAndInputName()
         {
             var name = "MyPage.html";
-            var result = DocumentationBrowserViewModel.GetResourceNameWithCultureName(name, CultureInfo.GetCultureInfo("en-US"));
+            var result = ResourceUtilities.GetResourceNameWithCultureName(name, CultureInfo.GetCultureInfo("en-US"));
             Assert.AreEqual("MyPage.en-US.html", result);
         }
 

@@ -27,7 +27,6 @@
         <CornerRadius x:Key="ExpanderCornerRadius"
                       TopLeft="10"
                       TopRight="10" />
-
         <Style x:Key="ColorSelectorListBox"
                TargetType="ListBox">
             <Setter Property="SnapsToDevicePixels"
@@ -670,7 +669,6 @@
                 </Thumb>
             </Grid>
         </Expander>
-
         <!--
         The CollapsedAnnotationRectangle is visible whenever the expander is collapsed. In this state the
         expander header is still visible but will hide the group description text. This border has 3 children

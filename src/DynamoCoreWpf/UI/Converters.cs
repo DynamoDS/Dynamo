@@ -52,7 +52,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return string.Empty;
+            if (string.IsNullOrEmpty(value as string)) return string.Empty;
             string incomingString = value as string;
             return incomingString.Split(new[] { '\r', '\n' }, 2)[1].Trim();
         }
@@ -109,19 +109,19 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Converts the list of package dependencies to a string
+    /// Converts the list of package dependencies to a comma-separated string.
     /// </summary>
     public class DependencyListToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return Wpf.Properties.Resources.PackageManagerPackageHasNoDependencies;
+            if (value == null) return string.Empty;
 
             List<string> depList = (List<string>)value;
 
-            if(depList.Count < 1) return Wpf.Properties.Resources.PackageManagerPackageHasNoDependencies;
+            if(depList.Count < 1) return string.Empty;
 
-            return string.Join(Environment.NewLine, depList);
+            return string.Join(", ", depList);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -129,6 +129,28 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+    /// <summary>
+    /// Returns Visibility.Visible if the collection has more than n items, otherwise returns Visibility.Collapsed.
+    /// </summary>
+    public class ListHasMoreThanNItemsToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection collection)) return Visibility.Collapsed;
+
+            // If no parameter is specified, we return Visible when there are more than 0 (i.e. any) items.
+            var n = (int)(parameter ?? 0);
+
+            return collection.Count <= n ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     /// <summary>
     /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
     /// </summary>
@@ -317,8 +339,26 @@ namespace Dynamo.Controls
             if (!(value is bool booleanValue)) return null;
             
             return booleanValue
-                ? Wpf.Properties.Resources.PackageManagerInstall
-                : Wpf.Properties.Resources.PackageDownloadStateInstalled;
+                ? Resources.PackageManagerInstall
+                : Resources.PackageDownloadStateInstalled;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// If the given string is empty, false is returned, otherwise true is returned.
+    /// </summary>
+    public class EmptyStringToFalseConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return value is string && !string.IsNullOrEmpty(value.ToString());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -343,6 +383,26 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter,
           CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Converts any numbers below 0 to 0, otherwise returns the original number.
+    /// For example, used to display the number of votes each package has received in the package manager.
+    /// </summary>
+    public class NegativeIntToZeroConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (!(value is int intValue)) return 0;
+            return intValue > 0 ? intValue : 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
         {
             return null;
         }
@@ -1358,8 +1418,8 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             string originalName = value.ToString();
-            if (originalName == "Code Block") return new Thickness(0, 12, 0, 0);
-            return new Thickness(0, 3, 0, 5);
+            if (originalName == "Code Block") return new Thickness(0, 12, -24, 0);
+            return new Thickness(0, 3, -24, 5);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1798,6 +1858,25 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Truncates a node's warning messages to 30 characters. Used on the node's context menu
+    /// when un-dismissing a node's warnings.
+    /// </summary>
+    public class NodeWarningConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is string stringValue)) return null;
+            string ellipses = stringValue.Length > 30 ? "..." : "";
+            return stringValue.Substring(0, Math.Min(stringValue.Length, 30)) + ellipses;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class TabSizeConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -2213,10 +2292,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((int)value > 0)
-                return Visibility.Visible;
-
-            return Visibility.Collapsed;
+            return (int)value > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2561,11 +2637,11 @@ namespace Dynamo.Controls
             }
         }
 
-        /// <summary>
-        /// Checks if the item is last. In that case, this converter controls 
-        /// the last tree view item's  horizontal and vertical line height
-        /// </summary>
-        public class TreeViewLineConverter : IValueConverter
+    /// <summary>
+    /// Checks if the item is last. In that case, this converter controls 
+    /// the last tree view item's  horizontal and vertical line height
+    /// </summary>
+    public class TreeViewLineConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {

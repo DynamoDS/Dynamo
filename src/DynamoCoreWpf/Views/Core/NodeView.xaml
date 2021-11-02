@@ -5,7 +5,6 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -13,7 +12,7 @@
              MouseEnter="OnNodeViewMouseEnter"
              MouseLeave="OnNodeViewMouseLeave"
              MouseLeftButtonDown="topControl_MouseLeftButtonDown"
-             MouseRightButtonDown="topControl_MouseRightButtonDown"
+             MouseRightButtonDown="DisplayNodeContextMenu"
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              PreviewMouseMove="OnNodeViewMouseMove">
 
@@ -47,7 +46,11 @@
 
         <!--  CONTEXT MENU  -->
         <Grid.ContextMenu>
-            <ContextMenu Name="MainContextMenu" x:FieldModifier="public">
+            <ContextMenu Name="MainContextMenu"
+                         x:FieldModifier="public"
+                         Background="{StaticResource NodeContextMenuBackground}"
+                         Closed="MainContextMenu_OnClosed"
+                         Style="{StaticResource ContextMenuStyle}">
                 <ContextMenu.Resources>
                     <ResourceDictionary>
                         <ResourceDictionary.MergedDictionaries>
@@ -190,108 +193,6 @@
                         </Style>
                     </ResourceDictionary>
                 </ContextMenu.Resources>
-                <MenuItem Name="deleteElem_cm"
-                          Command="{Binding Path=DeleteCommand}"
-                          Header="{x:Static p:Resources.ContextMenuDelete}"
-                          IsCheckable="False" />
-                <MenuItem Header="{x:Static p:Resources.ContextMenuGroups}" IsCheckable="False">
-                    <MenuItem Name="createGroup_cm"
-                              Command="{Binding Path=CreateGroupCommand}"
-                              Header="{x:Static p:Resources.ContextCreateGroupFromSelection}" />
-                    <MenuItem Name="unGroup_cm"
-                              Command="{Binding Path=UngroupCommand}"
-                              Header="{x:Static p:Resources.ContextUnGroupFromSelection}" />
-                    <MenuItem Name="addtoGroup"
-                              Command="{Binding Path=AddToGroupCommand}"
-                              Header="{x:Static p:Resources.ContextAddGroupFromSelection}" />
-                </MenuItem>
-                <MenuItem Name="isVisible_cm"
-                          Command="{Binding Path=ToggleIsVisibleCommand}"
-                          Header="{x:Static p:Resources.NodeContextMenuPreview}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Path=IsVisible, Mode=OneWay}"
-                          Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <MenuItem Name="nodeIsFrozen"
-                          Command="{Binding Path=ToggleIsFrozenCommand}"
-                          Header="{x:Static p:Resources.NodesRunStatus}"
-                          IsCheckable="True"
-                          IsChecked="{Binding IsFrozenExplicitly, Mode=OneWay}"
-                          IsEnabled="{Binding CanToggleFrozen, Mode=OneWay}" />
-                <MenuItem Name="isDisplayLabelsEnabled_cm"
-                          Header="{x:Static p:Resources.NodeContextMenuShowLabels}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Path=IsDisplayingLabels, Mode=TwoWay}"
-                          IsEnabled="{Binding Path=CanDisplayLabels}" />
-                <MenuItem Name="rename_cm"
-                          Command="{Binding Path=RenameCommand}"
-                          Header="{x:Static p:Resources.NodeContextMenuRenameNode}"
-                          IsCheckable="False" />
-                <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
-                          IsCheckable="False"
-                          Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}, Mode=OneWay}">
-                    <MenuItem Command="{Binding Path=SetLacingTypeCommand}"
-                              CommandParameter="Auto"
-                              Header="{x:Static p:Resources.ContextMenuLacingAuto}"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Auto, Mode=OneWay}" />
-                    <MenuItem Command="{Binding Path=SetLacingTypeCommand}"
-                              CommandParameter="Shortest"
-                              Header="{x:Static p:Resources.ContextMenuLacingShortest}"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Shortest, Mode=OneWay}" />
-                    <MenuItem Command="{Binding Path=SetLacingTypeCommand}"
-                              CommandParameter="Longest"
-                              Header="{x:Static p:Resources.ContextMenuLacingLongest}"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Longest, Mode=OneWay}" />
-                    <MenuItem Command="{Binding Path=SetLacingTypeCommand}"
-                              CommandParameter="CrossProduct"
-                              Header="{x:Static p:Resources.ContextMenuLacingCrossProduct}"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CrossProduct, Mode=OneWay}" />
-                </MenuItem>
-                <MenuItem Name="dismissedAlerts" Header="Dismissed Alerts" />
-                <Separator Visibility="{Binding Path=IsInputOrOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
-                <MenuItem Name="isInput_cm"
-                          Header="{x:Static p:Resources.NodeContextMenuIsInput}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Path=IsSetAsInput, Mode=TwoWay}"
-                          Visibility="{Binding Path=IsInput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <MenuItem Name="isOutput_cm"
-                          Header="{x:Static p:Resources.NodeContextMenuIsOutput}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Path=IsSetAsOutput, Mode=TwoWay}"
-                          Visibility="{Binding Path=IsOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <Separator />
-                <MenuItem Name="help_cm"
-                          Command="{Binding Path=ShowHelpCommand}"
-                          Header="{x:Static p:Resources.NodeContextMenuHelp}"
-                          IsCheckable="False" />
-                <ContextMenu.Style>
-                    <Style TargetType="{x:Type ContextMenu}">
-                        <Setter Property="Placement" Value="MousePoint" />
-                        <Setter Property="Foreground" Value="{StaticResource NodeContextMenuForeground}" />
-                        <Setter Property="FontSize" Value="13px" />
-                        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-                        <Setter Property="FontWeight" Value="Medium" />
-                        <Setter Property="SnapsToDevicePixels" Value="True" />
-                        <Setter Property="OverridesDefaultStyle" Value="True" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ContextMenu}">
-                                    <Border x:Name="Border"
-                                            Background="{StaticResource NodeContextMenuBackground}"
-                                            BorderThickness="0px">
-                                        <StackPanel Margin="0,10"
-                                                    ClipToBounds="True"
-                                                    IsItemsHost="True"
-                                                    Orientation="Vertical" />
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ContextMenu.Style>
             </ContextMenu>
         </Grid.ContextMenu>
 
@@ -334,9 +235,19 @@
                 Grid.Row="1"
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
-                Background="{StaticResource DarkerGreyBrush}"
                 Canvas.ZIndex="1"
-                CornerRadius="8,8,0,0" />
+                CornerRadius="8,8,0,0">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="{StaticResource DarkerGreyBrush}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                            <Setter Property="Background" Value="{StaticResource NodeBodyPreviewOffBackground}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
 
         <!--  Node Header Background  -->
         <Border Name="nameBackground"
@@ -344,7 +255,6 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 Height="46px"
-                Background="{StaticResource DarkMidGreyBrush}"
                 Canvas.ZIndex="2"
                 CornerRadius="8,8,0,0">
             <Rectangle Fill="Transparent"
@@ -377,6 +287,16 @@
                     </dynui:DynamoToolTip>
                 </Rectangle.ToolTip>
             </Rectangle>
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="{StaticResource DarkMidGreyBrush}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                            <Setter Property="Background" Value="{StaticResource NodeHeaderPreviewOffBackground}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
         </Border>
 
         <!--  Displays the node's header content, such as its icon, name and whether it's been renamed  -->
@@ -428,7 +348,7 @@
             <!--  Ellipse sits within Grid to increase size of MouseOver/ToolTip area  -->
             <Grid HorizontalAlignment="Right"
                   VerticalAlignment="Center"
-                  Panel.ZIndex="100"
+                  Panel.ZIndex="5"
                   Background="Transparent"
                   DockPanel.Dock="Right">
                 <Ellipse Name="nodeRenamedBlueDot"
@@ -457,10 +377,10 @@
         <ItemsControl Name="inputPortControl"
                       Grid.Row="2"
                       Grid.Column="0"
-                      Margin="0,3,0,0"
+                      Margin="-25,3,0,0"
                       VerticalAlignment="Top"
                       HorizontalContentAlignment="Stretch"
-                      Canvas.ZIndex="4"
+                      Canvas.ZIndex="6"
                       ItemsSource="{Binding Path=InPorts}"
                       Style="{StaticResource InOutPortControlStyle}" />
 
@@ -489,7 +409,6 @@
             </Grid.RowDefinitions>
 
             <!--  INPUT GRID  -->
-
             <Grid Name="inputGrid"
                   MinHeight="{Binding Source={x:Static configuration:Configurations.PortHeightInPixels}}"
                   HorizontalAlignment="Stretch"
@@ -560,7 +479,7 @@
                 </Grid.Style>
             </Grid>
             <Button x:Name="OptionsButton"
-                    Click="OptionsButton_Click"
+                    Click="DisplayNodeContextMenu"
                     ToolTip="{x:Static p:Resources.ContextMenu}">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
@@ -617,7 +536,7 @@
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
                 Margin="-1"
-                BorderBrush="#F9F9F9"
+                BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
                 BorderThickness="1"
                 Canvas.ZIndex="5"
                 CornerRadius="8,8,0,0"
