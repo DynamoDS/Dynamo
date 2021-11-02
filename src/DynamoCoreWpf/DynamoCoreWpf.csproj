@@ -522,7 +522,7 @@
     <Page Include="Controls\InPortContextMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-     </Page>
+    </Page>
     <Page Include="Views\GuidedTour\ExitGuideWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1444,6 +1444,7 @@
   <ItemGroup>
     <Resource Include="UI\Images\add-thick-grey-16px.png" />
     <Resource Include="UI\Images\close-thick-grey-16px.png" />
+    <Resource Include="UI\Images\error-icon.png" />
     <Resource Include="UI\Images\searchmagnifier.png" />
     <Resource Include="UI\Images\info-grey.png" />
     <Resource Include="UI\Images\remove - default.png" />

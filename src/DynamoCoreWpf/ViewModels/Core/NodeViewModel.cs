@@ -1007,7 +1007,10 @@ namespace Dynamo.ViewModels
                 });
             }
             
-            ErrorBubble.ZIndex = ZIndex + 1;
+            // The Error bubble sits above the node in ZIndex. Since pinned notes sit above
+            // the node as well and the ErrorBubble needs to display on top of these, the
+            // ErrorBubble's ZIndex should be the node's ZIndex + 2.
+            ErrorBubble.ZIndex = ZIndex + 2;
 
             // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
             ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeWarnings_CollectionChanged;
