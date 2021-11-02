@@ -20,9 +20,9 @@ namespace Dynamo.PackageDetails
         #endregion
 
         #region Public Properties
-        
+
         /// <summary>
-        /// Stores a  collection of the PackageDetailItems.
+        /// Stores a collection of PackageDetailItems.
         /// </summary>
         public List<PackageDetailItem> PackageDetailItems
         {
@@ -121,7 +121,6 @@ namespace Dynamo.PackageDetails
             PackageInfo packageInfo = new PackageInfo(PackageName, Version.Parse(versionName));
             
             this.PackageDetailsViewExtension.PackageManagerClientViewModel.DownloadAndInstallPackage(packageInfo);
-            RefreshPackageDetailItemInstalledStatus(versionName);
         }
 
         /// <summary>
@@ -188,7 +187,7 @@ namespace Dynamo.PackageDetails
                 (
                     packageManagerSearchElement.Name,
                     x,
-                    DetectWhetherCanInstall(packageLoader, x.version)
+                    DetectWhetherCanInstall(packageLoader, x.version, PackageName)
                 )).ToList();
 
             PackageName = packageManagerSearchElement.Name;
@@ -210,11 +209,23 @@ namespace Dynamo.PackageDetails
             TryInstallPackageVersionCommand = new DelegateCommand(TryInstallPackageVersion);
         }
 
+        private void PackageLoaderOnPackageAdded(Package obj)
+        {
+            DetectWhetherCanInstall
+            (
+                PackageDetailsViewExtension.PackageManagerExtension.PackageLoader,
+                obj.Header.version,
+                obj.Header.name
+            );
+
+            RefreshPackageDetailItemInstalledStatus(obj.Header.version);
+        }
+
         /// <summary>
         /// Detects whether the user can install a particular package at a particular version.
         /// Checks whether this is already installed using the PackageLoader.
         /// </summary>
-        private bool DetectWhetherCanInstall(PackageLoader packageLoader, string packageVersion)
+        private bool DetectWhetherCanInstall(PackageLoader packageLoader, string packageVersion, string packageName)
         {
             // In order for CanInstall to be false, both the name and installed package version must match
             // what is found in the PackageLoader.LocalPackages which are designated as 'Loaded'.
@@ -223,7 +234,7 @@ namespace Dynamo.PackageDetails
 
             List<Package> sameNamePackages = packageLoader
                 .LocalPackages
-                .Where(x => x.Name == PackageName)
+                .Where(x => x.Name == packageName)
                 .Where(x => x.LoadState.State == PackageLoadState.StateTypes.Loaded)
                 .ToList();
 
@@ -232,6 +243,14 @@ namespace Dynamo.PackageDetails
             return !sameNamePackages
                 .Select(x => x.VersionName)
                 .Contains(packageVersion);
+        }
+
+        /// <summary>
+        /// Called when the extension is disposed, unsubscribes from events.
+        /// </summary>
+        internal void Dispose()
+        {
+            PackageDetailsViewExtension.PackageManagerExtension.PackageLoader.PackageAdded -= PackageLoaderOnPackageAdded;
         }
     }
 }
