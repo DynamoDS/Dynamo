@@ -113,14 +113,21 @@ namespace Dynamo.ViewModels
                 }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        internal static bool ShowTermsOfUseDialog(bool forPublishing, string additionalTerms)
+        internal static bool ShowTermsOfUseDialog(bool forPublishing, string additionalTerms, Window parent = null)
         {
             var executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
             var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
             var touFilePath = Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
 
             var termsOfUseView = new TermsOfUseView(touFilePath);
-            termsOfUseView.ShowDialog();
+            if (parent == null)
+                termsOfUseView.ShowDialog();
+            else
+            {
+                //Means that a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
+                termsOfUseView.Owner = parent;
+                termsOfUseView.Show();
+            }
             if (!termsOfUseView.AcceptedTermsOfUse)
                 return false; // User rejected the terms, go no further.
 
@@ -135,7 +142,14 @@ namespace Dynamo.ViewModels
                 throw new FileNotFoundException(additionalTerms);
 
             var additionalTermsView = new TermsOfUseView(additionalTerms);
-            additionalTermsView.ShowDialog();
+            if (parent == null)
+                additionalTermsView.ShowDialog();
+            else
+            {
+                //Means that a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
+                additionalTermsView.Owner = parent;
+                additionalTermsView.Show();
+            }
             return additionalTermsView.AcceptedTermsOfUse;
         }
 

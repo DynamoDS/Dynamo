@@ -31,13 +31,15 @@
         </Grid.RowDefinitions>
 
         <!-- Begin top part (i.e. the "Start" tab) -->
-
-        <Border Background="#3C3C3C"
-                BorderThickness="0,1,0,1"
-                BorderBrush="#404040" />
-        <Border HorizontalAlignment="Left" Background="#2A2A2A" BorderThickness="0,0,0,5" BorderBrush="#ADE4DE">
-            <Grid Margin="10" Width="208">
-                <TextBlock Margin="10,4,0,0"
+        <Border HorizontalAlignment="Stretch" Background="#3C3C3C" Margin="220,-40,0,49"></Border>
+        
+        <Border Margin="218,-39,0,49"
+            HorizontalAlignment="Left"
+            Background="#2A2A2A"
+            BorderThickness="0,0,0,5"
+            BorderBrush="#ADE4DE">
+            <Grid Margin="10" Width="212">
+                <TextBlock Margin="3,2,0,-2"
                            FontSize="16px"
                            FontFamily="{StaticResource ArtifaktElementRegular}"
                            Text="{x:Static p:Resources.StartPageStart}"

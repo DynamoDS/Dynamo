@@ -1,6 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Dynamo.UI.Commands;
 using Dynamo.Updates;
 using Dynamo.ViewModels;
@@ -43,6 +46,18 @@ namespace Dynamo.UI.Controls
 
             InitializeComponent();
             UpdateControl.DataContext = updateManager;
+        }
+
+        private void exportMenu_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            this.HeaderText.FontFamily = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+            this.Icon.Source = new BitmapImage(new System.Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/image-icon.png"));
+        }
+
+        private void exportMenu_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            this.HeaderText.FontFamily = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+            this.Icon.Source = new BitmapImage(new System.Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/image-icon-default.png"));
         }
     }
 

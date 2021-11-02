@@ -13,6 +13,7 @@ using TestServices;
 using Dynamo.ViewModels;
 using Dynamo.Controls;
 using Dynamo.Graph.Connectors;
+using System;
 
 namespace DynamoCoreWpfTests
 {
@@ -155,7 +156,7 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// Can place WatchNode in the center of a connector
+        /// Can place WatchNode where specified along a connector
         /// </summary>
         [Test]
         public void CanPlaceWatchNode()
@@ -173,6 +174,105 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(this.ViewModel.CurrentSpaceViewModel.Connectors.Count, initialConnectorCount + 1);
             ///Three nodes should be the total number of nodes after this operation.
             Assert.AreEqual(this.ViewModel.CurrentSpaceViewModel.Nodes.Count, initialNodeCount + 1);
+        }
+
+        /// <summary>
+        /// Assert that a watch node is placed on the correct connector,
+        /// and that it rewires new wires to the correct startind/ending ports.
+        /// </summary>
+        [Test]
+        public void PlaceWatchNodeAndRewireCorrectly()
+        {
+            Open(@"UI/WatchNodePlacement.dyn");
+            var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.FirstOrDefault(c=>c.ConnectorModel.GUID == Guid.Parse("f49e39e1-4eb0-47da-9dbe-bbf0badddc71"));
+
+            //initial connector port ids
+            int connectorStartPortIndex = connectorViewModel.ConnectorModel.Start.Index;
+            int connectorEndPortIndex = connectorViewModel.ConnectorModel.End.Index;
+
+            //start and end nodes sandwiching watch node
+            NodeViewModel startNode = this.ViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID == connectorViewModel.ConnectorModel.Start.Owner.GUID);
+            NodeViewModel endNode = this.ViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID == connectorViewModel.ConnectorModel.End.Owner.GUID);
+
+            //Record the target port GUIDs.
+            Guid startPortGuid = startNode.OutPorts[connectorStartPortIndex].PortModel.GUID;
+            Guid endPortGuid = endNode.InPorts[connectorEndPortIndex].PortModel.GUID;
+
+            //mimic correct mouse placement over this connector
+            connectorViewModel.PanelX = 435;
+            connectorViewModel.PanelY = 394;
+
+            ///Action triggered when hovering over a connector
+            connectorViewModel.FlipOnConnectorAnchor();
+            ///Place watch node
+            connectorViewModel.ConnectorAnchorViewModel.PlaceWatchNodeCommand.Execute(null);
+
+            //get new connectors if they are connected to correct nodes/ports
+            var firstConnector = this.ViewModel.CurrentSpaceViewModel.Connectors
+                .FirstOrDefault(c => c.ConnectorModel.Start.Owner.GUID == startNode.NodeModel.GUID
+                && c.ConnectorModel.Start.Index == connectorStartPortIndex
+                && c.ConnectorModel.GUID != connectorViewModel.ConnectorModel.GUID);
+            
+            var secondConnector = this.ViewModel.CurrentSpaceViewModel.Connectors
+                .FirstOrDefault(c => c.ConnectorModel.End.Owner.GUID == endNode.NodeModel.GUID
+                && c.ConnectorModel.End.Index == connectorEndPortIndex
+                && c.ConnectorModel.GUID != connectorViewModel.ConnectorModel.GUID);
+
+            //assert new connectors created wiring to correct nodes and ports.
+            Assert.IsNotNull(firstConnector);
+            Assert.IsNotNull(secondConnector);
+
+           //assert new connectors are targeting the correct ports
+            Assert.AreEqual(firstConnector.ConnectorModel.Start.GUID, startPortGuid);
+            Assert.AreEqual(secondConnector.ConnectorModel.End.GUID, endPortGuid);
+        }
+
+        /// <summary>
+        ///  Assert that a newly placed pin is placed on the correct (new) wire (before watch node) when rewired. 
+        /// This occurs when a watch node is placed. New connectors are created and the old pin 
+        /// locations are used to place new pins where the old ones were.
+        /// </summary>
+        [Test]
+        public void PinPlacedOnCorrectWireToWatchNode()
+        {
+            Open(@"UI/WatchNodePlacement.dyn");
+            var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.FirstOrDefault(c => c.ConnectorModel.GUID == Guid.Parse("f747aafa-c276-4b48-8054-a66ac16e08ba"));
+
+            //initial connector port ids
+            int connectorStartPortIndex = connectorViewModel.ConnectorModel.Start.Index;
+            int connectorEndPortIndex = connectorViewModel.ConnectorModel.End.Index;
+            int initialPinCount = this.ViewModel.CurrentSpaceViewModel.Pins.Count;
+
+            //start and end nodes sandwiching watch node
+            NodeViewModel startNode = this.ViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID == connectorViewModel.ConnectorModel.Start.Owner.GUID);
+            NodeViewModel endNode = this.ViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID == connectorViewModel.ConnectorModel.End.Owner.GUID);
+
+            //Record the target port GUIDs.
+            Guid startPortGuid = startNode.OutPorts[connectorStartPortIndex].PortModel.GUID;
+
+            //mimic correct mouse placement over this connector
+            connectorViewModel.PanelX = 600.6666;
+            connectorViewModel.PanelY = 265.3333;
+
+            ///Action triggered when hovering over a connector
+            connectorViewModel.FlipOnConnectorAnchor();
+            ///Place watch node
+            connectorViewModel.ConnectorAnchorViewModel.PlaceWatchNodeCommand.Execute(null);
+
+            int newPinCount = this.ViewModel.CurrentSpaceViewModel.Pins.Count;
+            //Assert that the amount of pins is the same as it was initially
+            //ie pin was replaced after re-wire action
+            Assert.AreEqual(initialPinCount, newPinCount);
+
+            //should only be one pin in the graph
+            var connectorPin = this.ViewModel.CurrentSpaceViewModel.Pins.FirstOrDefault();
+
+            //get the connector where the new pin was placed
+            var newConnectorWherePinWasPlaced = this.ViewModel.CurrentSpaceViewModel.Connectors
+                .FirstOrDefault(c => c.ConnectorModel.GUID == connectorPin.ConnectorGuid);
+
+            //assert new connector when pin was placed has the correct startPortGuid
+            Assert.AreEqual(newConnectorWherePinWasPlaced.ConnectorModel.Start.GUID, startPortGuid);
         }
 
         #endregion
