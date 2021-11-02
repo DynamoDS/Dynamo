@@ -235,7 +235,6 @@ namespace Dynamo.PackageDetails
             List<Package> sameNamePackages = packageLoader
                 .LocalPackages
                 .Where(x => x.Name == packageName)
-                .Where(x => x.LoadState.State == PackageLoadState.StateTypes.Loaded)
                 .ToList();
 
             if (sameNamePackages.Count < 1) return true;
