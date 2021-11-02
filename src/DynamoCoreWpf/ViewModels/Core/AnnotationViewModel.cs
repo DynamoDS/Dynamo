@@ -395,7 +395,9 @@ namespace Dynamo.ViewModels
 
         private bool CanAddToGroup(object obj)
         {
-            return DynamoSelection.Instance.Selection.Count >= 0;
+            return 
+                DynamoSelection.Instance.Selection.Count >= 0 && 
+                IsExpanded;
         }
 
         private void AddToGroup(object obj)
