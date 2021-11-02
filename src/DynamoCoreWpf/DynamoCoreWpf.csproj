@@ -1442,6 +1442,7 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\searchmagnifier.png" />
     <Resource Include="UI\Images\info-grey.png" />
     <Resource Include="UI\Images\remove - default.png" />
     <Resource Include="UI\Images\close_blue.png" />
