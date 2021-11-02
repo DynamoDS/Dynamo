@@ -187,7 +187,7 @@ namespace Dynamo.PackageDetails
                 (
                     packageManagerSearchElement.Name,
                     x,
-                    DetectWhetherCanInstall(packageLoader, x.version, PackageName)
+                    DetectWhetherCanInstall(packageLoader, x.version, packageManagerSearchElement.Name)
                 )).ToList();
 
             PackageName = packageManagerSearchElement.Name;
