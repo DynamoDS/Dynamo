@@ -649,6 +649,39 @@ namespace Dynamo.ViewModels
                 );
         }
 
+        private double GetPortVerticalOffset(PortModel portModel)
+        {
+            // vertical offset accounts for the port margins
+            double verticalOffset = 20;
+            int index = portModel.LineIndex == -1 ? portModel.Index : portModel.LineIndex;
+
+            //If the port was not found, then it should have just been deleted. Return from function
+            if (index == -1)
+                return verticalOffset;
+
+            // calculate the vertical offset for the port index.
+            int portVerticalMidPoint = 17;
+            double portHeight = portModel.Height;
+            return verticalOffset + (index * portHeight) + portVerticalMidPoint;
+        }
+
+        private Point2D CalculatePortPosition(PortModel portModel)
+        {
+            double groupHeaderHeight = Height - ModelAreaRect.Height;
+
+            double offset = GetPortVerticalOffset(portModel);
+            double y = Top + groupHeaderHeight + offset;
+
+            switch (portModel.PortType)
+            {
+                case PortType.Input:
+                    return new Point2D(Left, y);
+                case PortType.Output:
+                    return new Point2D(Left + Width, y);
+            }
+            return new Point2D();
+        }
+
         private List<PortViewModel> CreateProxyInPorts(IEnumerable<PortModel> groupPortModels)
         {
             var originalPortViewModels = WorkspaceViewModel.Nodes
@@ -661,7 +694,11 @@ namespace Dynamo.ViewModels
             {
                 var model = groupPortModels.ElementAt(i);
                 newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(model));
-            }
+
+                // calculate new position for the proxy inports
+                model.Center = CalculatePortPosition(model);
+                model.Owner.ReportPosition();
+            } 
 
             return newPortViewModels;
         }
@@ -678,6 +715,10 @@ namespace Dynamo.ViewModels
             {
                 var model = groupPortModels.ElementAt(i);
                 newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(model));
+
+                // calculate new position for the proxy outports
+                model.Center = CalculatePortPosition(model);
+                model.Owner.ReportPosition();
             }
 
             return newPortViewModels;
@@ -789,6 +830,12 @@ namespace Dynamo.ViewModels
                     .ToList();
 
                 connectorViewModels.ForEach(x => x.IsCollapsed = false);
+
+                // Set IsProxyPort back to false when the group is collapsed.
+                nodeModel.InPorts.ToList().ForEach(x => x.IsProxyPort = false);
+                nodeModel.OutPorts.ToList().ForEach(x => x.IsProxyPort = false);
+
+                connectorViewModels.ForEach(x => x.Redraw());
             }
         }
 

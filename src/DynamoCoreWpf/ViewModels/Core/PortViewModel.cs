@@ -265,8 +265,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal bool IsProxyPort { get; set; } = false;
-
         #endregion
 
         #region events
@@ -297,7 +295,8 @@ namespace Dynamo.ViewModels
 
         internal virtual PortViewModel CreateProxyPortViewModel(PortModel portModel)
         {
-            return new PortViewModel(node, portModel){IsProxyPort = true};
+            portModel.IsProxyPort = true;
+            return new PortViewModel(node, portModel);
         }
 
         /// <summary>
@@ -472,12 +471,12 @@ namespace Dynamo.ViewModels
             DynamoViewModel dynamoViewModel = node.DynamoViewModel;
             // If user trying to trigger Node AutoComplete from proxy ports, display notification
             // telling user it is not available that way
-            if (IsProxyPort)
+            if (port.IsProxyPort)
             {
                 dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups);
             }
             // If the feature is enabled from Dynamo experiment setting and if user interaction is not on proxy ports.
-            return dynamoViewModel.EnableNodeAutoComplete && !(IsProxyPort);
+            return dynamoViewModel.EnableNodeAutoComplete && !port.IsProxyPort;
         }
 
         /// <summary>
