@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 
@@ -25,7 +26,6 @@ namespace Dynamo.PythonServices
     /// </summary>
     public sealed class PythonEngineManager
     {
-        /*
         /// <summary>
         /// Use Lazy&lt;PythonEngineManager&gt; to make sure the Singleton class is only initialized once
         /// </summary>
@@ -38,7 +38,7 @@ namespace Dynamo.PythonServices
         /// The actual instance stored in the Singleton class
         /// </summary>
         public static PythonEngineManager Instance { get { return lazy.Value; } }
-        */
+
         // TODO: The following fields might be removed after dynamic loading applied
         internal static string IronPythonEvaluatorClass = "IronPythonEvaluator";
         internal static string IronPythonEvaluationMethod = "EvaluateIronPythonScript";
@@ -58,7 +58,6 @@ namespace Dynamo.PythonServices
         internal static string DummyEvaluatorClass = "DummyPythonEvaluator";
         internal static string DummyEvaluatorMethod = "Evaluate";
 
-        /*
         internal ObservableCollection<PythonEngineProxy> AvailableEngines;
 
         /// <summary>
@@ -154,9 +153,8 @@ namespace Dynamo.PythonServices
             // We handle this by providing a dummy Python evaluator that will evaluate to an error message.
             evaluatorClass = DummyEvaluatorClass;
             evaluationMethod = DummyEvaluatorMethod;
-        }*/
+        }
     }
-
 
     public class PythonEngineProxy : IDisposable
     {
