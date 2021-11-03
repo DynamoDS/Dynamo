@@ -72,7 +72,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Python.Runtime, Version=2.5.1.2374, Culture=neutral, PublicKeyToken=null">
-		<SpecificVersion>False</SpecificVersion>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -102,6 +102,10 @@
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
+      <Name>DynamoUtilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
@@ -122,14 +126,13 @@
       <Name>PythonNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\src\NodeServices\DynamoServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>DynamoServices</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
-      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
-      <Name>DynamoUtilities</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj">

@@ -5,6 +5,7 @@ using Dynamo;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.PythonServices;
 using NUnit.Framework;
 using PythonNodeModels;
 

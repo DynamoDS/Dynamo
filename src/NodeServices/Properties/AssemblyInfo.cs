@@ -27,3 +27,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoCoreWpf")]
 [assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
 [assembly: InternalsVisibleTo("IronPythonExtension")]
+[assembly: InternalsVisibleTo("DynamoPythonTests")]

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Dynamo;
-using Dynamo.Logging;
+﻿using Dynamo;
 using Dynamo.Python;
-using Dynamo.Utilities;
+using Dynamo.PythonServices;
 using NUnit.Framework;
 
 namespace DynamoPythonTests
@@ -17,7 +11,7 @@ namespace DynamoPythonTests
         [Test]
         public void SharedCoreCanFindFirstLoadedIfNotMatch()
         {
-            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.CPython3, "");
+            var provider = new SharedCompletionProvider(PythonEngineVersion.CPython3, "");
             Assert.IsNotNull(provider);
         }
     }
