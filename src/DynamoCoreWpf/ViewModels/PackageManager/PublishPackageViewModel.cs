@@ -583,7 +583,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// CustomNodeDefinitions property 
         /// </summary>
-        private List<CustomNodeDefinition> customNodeDefinitions = new List<CustomNodeDefinition>();
+        private List<CustomNodeDefinition> customNodeDefinitions;
         public List<CustomNodeDefinition> CustomNodeDefinitions
         {
             get { return customNodeDefinitions; }
@@ -668,6 +668,7 @@ namespace Dynamo.PackageManager
 
         internal PublishPackageViewModel()
         {
+            customNodeDefinitions = new List<CustomNodeDefinition>();
             SubmitCommand = new DelegateCommand(Submit, CanSubmit);
             PublishLocallyCommand = new DelegateCommand(PublishLocally, CanPublishLocally);
             ShowAddFileDialogAndAddCommand = new DelegateCommand(ShowAddFileDialogAndAdd, CanShowAddFileDialogAndAdd);
