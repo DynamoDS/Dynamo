@@ -3,8 +3,8 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Logging;
-using Dynamo.PythonServices;
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using PythonNodeModels;
 
 namespace Dynamo.Python
 {

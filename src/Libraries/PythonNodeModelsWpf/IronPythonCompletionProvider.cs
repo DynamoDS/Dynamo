@@ -4,11 +4,11 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Logging;
-using Dynamo.PythonServices;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using IronPython.Runtime;
 using Microsoft.Scripting.Actions;
 using Microsoft.Scripting.Hosting;
+using PythonNodeModels;
 
 namespace Dynamo.Python
 {

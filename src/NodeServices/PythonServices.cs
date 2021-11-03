@@ -1,4 +1,4 @@
-﻿using Dynamo.Utilities;
+﻿using PythonNodeModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,8 +7,10 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 
-namespace Dynamo.PythonServices
+namespace PythonNodeModels
 {
+    using PythonEngineSelector = Dynamo.PythonServices.PythonEngineManager;
+
     /// <summary>
     /// Enum of possible values of python engine versions.
     /// TODO: Remove when dynamic loading logic is there then we no longer need a hard copy of the options
@@ -19,7 +21,10 @@ namespace Dynamo.PythonServices
         IronPython2,
         CPython3
     }
+}
 
+namespace Dynamo.PythonServices
+{
     /// <summary>
     /// Singleton class that other class can access and use for query loaded Python Engine info.
     /// TODO: Make the Singleton class public when Dynamic loading is also ready.
@@ -245,11 +250,11 @@ namespace Dynamo.PythonServices
             AddEventHandler("EvaluationFinished", nameof(HandleEvaluationEnd));
         }
 
-        public DataMarshaler GetInputMarshaler()
+        public object GetInputMarshaler()
         {
             try
             {
-                return EngineType.GetProperty(PythonEngineManager.PythonInputMarshalerProperty).GetValue(null) as DataMarshaler;
+                return EngineType.GetProperty(PythonEngineManager.PythonInputMarshalerProperty).GetValue(null);
             }
             catch
             {
@@ -257,11 +262,11 @@ namespace Dynamo.PythonServices
             }
         }
 
-        public DataMarshaler GetOutputMarshaler()
+        public object GetOutputMarshaler()
         {
             try
             {
-                return EngineType.GetProperty(PythonEngineManager.PythonOutputMarshalerProperty).GetValue(null) as DataMarshaler;
+                return EngineType.GetProperty(PythonEngineManager.PythonOutputMarshalerProperty).GetValue(null);
             }
             catch
             {

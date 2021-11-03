@@ -21,5 +21,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
 [assembly: InternalsVisibleTo("DynamoCoreWpf")]
-[assembly: TypeForwardedTo(typeof(Dynamo.PythonServices.PythonEngineVersion))]
+[assembly: TypeForwardedTo(typeof(PythonNodeModels.PythonEngineVersion))]
 
