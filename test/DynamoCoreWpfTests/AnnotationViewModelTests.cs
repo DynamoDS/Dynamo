@@ -1027,6 +1027,35 @@ namespace DynamoCoreWpfTests
             Assert.That(annotation.Nodes.OfType<ConnectorPinModel>().Any());
         }
 
+        [Test]
+        public void NodesCantBeAddedToCollapsedGroups()
+        {
+            // Arrange
+            var groupName = "CollapsedGroup";
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var groupViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == groupName);
+            var groupModel = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.GUID == groupViewModel.AnnotationModel.GUID);
+
+            // Act
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+
+            //verify the node was created
+            Assert.That(ViewModel.Model.CurrentWorkspace.Nodes.Contains(addNode));
+
+            var addNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
+                .FirstOrDefault(x => x.Id == addNode.GUID);
+
+            DynamoSelection.Instance.Selection.Clear();
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(groupModel);
+
+            // Assert
+            Assert.IsFalse(addNodeViewModel.AddToGroupCommand.CanExecute(null));
+        }
+
         #endregion
     }
 }

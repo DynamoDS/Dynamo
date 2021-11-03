@@ -520,7 +520,6 @@
 
         <Grid Name="PresentationGrid"
               Grid.Row="2"
-              Grid.RowSpan="2"
               Grid.Column="1"
               Margin="6,6,6,3"
               HorizontalAlignment="Left"

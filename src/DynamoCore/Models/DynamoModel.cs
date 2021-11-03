@@ -2209,14 +2209,13 @@ namespace Dynamo.Models
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
             var selectedGroups = workspaceAnnotations
-                .Where(x => x.IsSelected);
+                .Where(x => x.IsSelected && x.IsExpanded);
 
             // If multiple groups are selected, chances are that we
             // have a group that contains a nested group.
             // If this is the case we want to make sure that we add the
             // node to the parent folder.
-            var selectedGroup = selectedGroups.Count() > 1 ?
-                selectedGroups.FirstOrDefault(x => x.HasNestedGroups) :
+            var selectedGroup = selectedGroups.FirstOrDefault(x => x.HasNestedGroups) ??
                 selectedGroups.FirstOrDefault();
 
             if (selectedGroup != null)
