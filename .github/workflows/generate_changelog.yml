@@ -1,9 +1,17 @@
 # This is a basic workflow to help you get started with Actions
 
 name: create-release
-  on:
-    workflow_dispatch:
-  
+on: 
+  workflow_dispatch:
+    inputs:
+      head-ref:
+        description: Head version
+        default: v1.0.0
+        required: true
+      base-ref:
+        description: Base Version
+        default: v1.0.0
+        required: true
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -17,8 +25,8 @@ jobs:
         uses: metcalfc/changelog-generator@v1.0.0
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
-          head-ref: 'v2.12.0'
-          base-ref: 'v2.11.1'
+          head-ref: ${{ github.event.inputs.head-ref }}
+          base-ref: ${{ github.event.inputs.base-ref }}
 
       - name: Get the changelog
         run: echo "${{ steps.changelog.outputs.changelog }}"
