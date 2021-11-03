@@ -593,31 +593,6 @@ namespace Dynamo.ViewModels
 
                     immediateUninstalls.Add(localPkg);
                 }
-                
-                var packageToDownload = $"{name} {package.version}";
-                if (builtinPackages.Any())
-                {
-                    // Conflicts with builtin packages
-                    string message = "";
-                    
-                    if (conflictingLocalPackages.Count() == 1 &&
-                        conflictingLocalPackages.First().Name == name)
-                    {
-                       
-                        message = string.Format(Resources.MessageSamePackageDiffVersInBuiltinPackages,
-                            JoinPackageNames(builtinPackages), packageToDownload);
-                    } 
-                    else 
-                    {
-                        message = string.Format(Resources.MessagePackageDepsInBuiltinPackages, packageToDownload,
-                            JoinPackageNames(builtinPackages));
-                    }
-                    var dialogResult = MessageBoxService.Show(message,
-                        Resources.BuiltInPackageConflictMessageBoxTitle,
-                        MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
-
-                    if(dialogResult == MessageBoxResult.No) return;
-                }
 
                 // determine if any of the packages contain binaries or python scripts.  
                 var containsBinariesOrPythonScripts = dependencyVersionHeaders.Any(x =>
@@ -641,6 +616,30 @@ namespace Dynamo.ViewModels
                         MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
                     if (res == MessageBoxResult.Cancel) return;
+                }
+
+                var packageToDownload = $"{name} {package.version}";
+                if (builtinPackages.Any())
+                {
+                    // Conflicts with builtin packages
+                    string message = "";
+                    
+                    if (conflictingLocalPackages.Count == 1 &&
+                        conflictingLocalPackages.First().Name == name)
+                    {
+                        message = string.Format(Resources.MessageSamePackageDiffVersInBuiltinPackages,
+                            JoinPackageNames(builtinPackages), packageToDownload);
+                    } 
+                    else 
+                    {
+                        message = string.Format(Resources.MessagePackageDepsInBuiltinPackages, packageToDownload,
+                            JoinPackageNames(builtinPackages));
+                    }
+                    var dialogResult = MessageBoxService.Show(message,
+                        Resources.BuiltInPackageConflictMessageBoxTitle,
+                        MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+
+                    if(dialogResult == MessageBoxResult.No) return;
                 }
 
                 // Determine if there are any dependencies that are made with a newer version

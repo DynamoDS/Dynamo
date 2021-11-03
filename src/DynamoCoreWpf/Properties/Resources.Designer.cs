@@ -3398,7 +3398,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package has conflicts with one ore more loaded packages..
+        ///   Looks up a localized string similar to Package has conflicts with one or more loaded packages..
         /// </summary>
         public static string LoadedPackagesConflictMessageBoxTitle {
             get {
@@ -3792,7 +3792,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;{0} has dependencies that conflict with the following built-in packages: {1}. Do you wish to continue trying to install {0}?&quot;.
+        ///   Looks up a localized string similar to {0} has dependencies that conflict with the following built-in packages: {1}. 
+        ///    
+        ///Do you wish to continue trying to install {0}?.
         /// </summary>
         public static string MessagePackageDepsInBuiltinPackages {
             get {
@@ -3828,7 +3830,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;A different version of the package {0} is already installed as a Built-In package. Do you wish to continue trying to install {1}?&quot;.
+        ///   Looks up a localized string similar to A different version of the package {0} is already installed as a Built-In package. 
+        ///    
+        ///Do you wish to continue trying to install {1}?.
         /// </summary>
         public static string MessageSamePackageDiffVersInBuiltinPackages {
             get {
