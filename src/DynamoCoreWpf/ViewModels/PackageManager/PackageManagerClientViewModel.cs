@@ -436,12 +436,10 @@ namespace Dynamo.ViewModels
 
             var functionDefinitions = funcDefs.Select(pair => pair.Item2).ToList();
 
-            var newPkgVm = new PublishPackageViewModel(DynamoViewModel);
-
-            foreach (var functionDefinition in functionDefinitions)
+            var newPkgVm = new PublishPackageViewModel(DynamoViewModel)
             {
-                newPkgVm.CustomNodeDefinitions.Add(functionDefinition);
-            }
+                CustomNodeDefinitions = funcDefs.Select(pair => pair.Item2).ToList()
+            };
 
             DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }
