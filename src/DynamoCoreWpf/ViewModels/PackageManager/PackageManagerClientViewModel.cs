@@ -594,7 +594,7 @@ namespace Dynamo.ViewModels
                     immediateUninstalls.Add(localPkg);
                 }
                 
-                var packageToDownload = $"name {package.version}";
+                var packageToDownload = $"{name} {package.version}";
                 if (builtinPackages.Any())
                 {
                     // Conflicts with builtin packages
