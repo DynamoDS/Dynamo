@@ -304,6 +304,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot Download Package.
+        /// </summary>
+        public static string CannotDownloadPackageMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("CannotDownloadPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot Load Package.
         /// </summary>
         public static string CannotLoadPackageMessageBoxTitle {

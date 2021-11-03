@@ -856,6 +856,9 @@
   <data name="CancelButton" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="CannotDownloadPackageMessageBoxTitle" xml:space="preserve">
+    <value>Cannot Download Package</value>
+  </data>
   <data name="BuiltInPackageConflictMessageBoxTitle" xml:space="preserve">
     <value>Package has conflicts with one or more Built-In packages.</value>
   </data>
