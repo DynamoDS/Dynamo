@@ -248,6 +248,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(NodeContentCount));
                 }
                 WorkspaceViewModel.HasUnsavedChanges = true;
+                AddGroupToGroupCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(nameof(IsExpanded));
             }
         }
@@ -395,7 +396,9 @@ namespace Dynamo.ViewModels
 
         private bool CanAddToGroup(object obj)
         {
-            return DynamoSelection.Instance.Selection.Count >= 0;
+            return 
+                DynamoSelection.Instance.Selection.Count >= 0 && 
+                IsExpanded;
         }
 
         private void AddToGroup(object obj)
@@ -419,6 +422,7 @@ namespace Dynamo.ViewModels
             // and that it does not already belong to
             // another group
             if (!this.AnnotationModel.IsSelected ||
+                !this.IsExpanded ||
                 BelongsToGroup()) 
             {
                 return false;
