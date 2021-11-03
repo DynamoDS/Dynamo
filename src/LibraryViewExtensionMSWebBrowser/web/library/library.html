@@ -38,10 +38,18 @@
             display: none;
         }
 
+        /* 
+            The below style aligns texts in IE
+            as it adds some offset to text when using Artifakt Element font
+        */
         .LibraryItemHeader .LibraryItemGroupText, 
         .LibrarySectionHeader .LibraryItemGroupText,
         .LibraryItemContainerCategory .LibraryItemText {
             padding-top: 0.5rem;
+        }
+
+        .SearchFilterPanel label.Category > *{
+            margin-top: 0.15rem;
         }
     </style>
 
