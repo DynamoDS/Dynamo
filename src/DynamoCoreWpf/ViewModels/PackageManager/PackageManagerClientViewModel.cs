@@ -546,26 +546,27 @@ namespace Dynamo.ViewModels
                 var immediateUninstalls = new List<Package>();
                 var builtinPackages = new List<Package>();
 
-                // if a package is already installed we need to uninstall it, allowing
-                // the user to cancel if they do not want to uninstall the package.
-                var conflictingLocalPackages = new List<Package>();
-                //var conflictingLocalPackages = dependencyVersionHeaders.Select(dep => 
-                //localPkgs.FirstOrDefault(v => v.Name == dep.name && v.VersionName != dep.version));
+                // if a package is already installed we need to either uninstall it, or allow
+                // the user to forcibly install the new package, or cancel the installation
+                // if they do not want either of the first two options.
 
+                var conflictingLocalPackages = new List<Package>();
                 var newPackageHeaders = new List<PackageVersion>();
                 foreach(var header in dependencyVersionHeaders)
                 {
+                    bool isHeaderDuplicate = false;
                     foreach(var pkg in localPkgs)
                     {
                         if (pkg.Name == header.name)
                         {
+                            isHeaderDuplicate = true;
                             if (pkg.VersionName != header.version)
                             {
                                 conflictingLocalPackages.Add(pkg);
                             }
                         }
-                        else newPackageHeaders.Add(header);
                     }
+                    if(!isHeaderDuplicate) newPackageHeaders.Add(header);
                 }
 
                 foreach (var localPkg in conflictingLocalPackages)
@@ -592,47 +593,30 @@ namespace Dynamo.ViewModels
 
                     immediateUninstalls.Add(localPkg);
                 }
-
+                
+                var packageToDownload = $"name {package.version}";
                 if (builtinPackages.Any())
-                {// Conflicts with builtin packages
+                {
+                    // Conflicts with builtin packages
                     string message = "";
+                    
                     if (conflictingLocalPackages.Count() == 1 &&
                         conflictingLocalPackages.First().Name == name)
                     {
                        
-                        message = $"A different version of the package {JoinPackageNames(builtinPackages)} is already installed " +
-                            $"as a Built-In package. " + $"Do you wish to try installing {name + " " + package.version} " +
-                            $"using the Built-In package version?";
-                        //message = conflictingLocalPackages.First().VersionName == package.version ?
-                        //            String.Format(Resources.MessageSamePackageInBuiltinPackages,
-                        //            DynamoViewModel.BrandingResourceProvider.ProductName,
-                        //            JoinPackageNames(builtinPackages))
-                        //            :
-                        //            String.Format(Resources.MessageSamePackageDiffVersInBuiltinPackages,
-                        //            DynamoViewModel.BrandingResourceProvider.ProductName,
-                        //            JoinPackageNames(builtinPackages));
+                        message = string.Format(Resources.MessageSamePackageDiffVersInBuiltinPackages,
+                            JoinPackageNames(builtinPackages), packageToDownload);
                     } 
                     else 
                     {
-                        message = $"{name + " " + package.version} has dependencies that conflict with the following" +
-                            $"built-in packages: {JoinPackageNames(builtinPackages)}. Do you wish to continue installing " +
-                            $"{name + " " + package.version} using the Built-In package versions?";
-                        //message = String.Format(Resources.MessagePackageDepsInBuiltinPackages,
-                        //                        DynamoViewModel.BrandingResourceProvider.ProductName,
-                        //                        name + " " + package.version,
-                        //                        JoinPackageNames(builtinPackages));
+                        message = string.Format(Resources.MessagePackageDepsInBuiltinPackages, packageToDownload,
+                            JoinPackageNames(builtinPackages));
                     }
-
-                    //MessageBoxService.Show(message,
-                    //    Resources.CannotDownloadPackageMessageBoxTitle,
-                    //    MessageBoxButton.OK, MessageBoxImage.Error);
                     var dialogResult = MessageBoxService.Show(message,
-                        "Package has conflicts with Built-In packages.",
+                        Resources.BuiltInPackageConflictMessageBoxTitle,
                         MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
 
                     if(dialogResult == MessageBoxResult.No) return;
-
-                    // DO SOMETHING HERE?
                 }
 
                 // determine if any of the packages contain binaries or python scripts.  
@@ -679,72 +663,36 @@ namespace Dynamo.ViewModels
 
                 if (uninstallRequiringUserModifications.Any())
                 {
-                    //var message = String.Format(Resources.MessageUninstallToContinue,
-                    //    DynamoViewModel.BrandingResourceProvider.ProductName,
-                    //    JoinPackageNames(uninstallRequiringUserModifications));
-                    //MessageBoxService.Show(message,
-                    //    Resources.CannotDownloadPackageMessageBoxTitle,
-                    //    MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    var message = $"Package {name + " " + package.version} has conflicts with the following packages " +
-                        $"that are in use in the workspace: {JoinPackageNames(uninstallRequiringUserModifications)}. " +
-                        $"Do you wish to continue installing it using the package versions already installed? " +
-                        $"If not, {DynamoViewModel.BrandingResourceProvider.ProductName} needs to uninstall " +
-                        $"{JoinPackageNames(uninstallRequiringUserModifications)} to continue but cannot as they are in use. " +
-                        $"Try restarting {DynamoViewModel.BrandingResourceProvider.ProductName} and download " +
-                        $"{name + " " + package.version} again.";
+                    var conflictingPkgs = JoinPackageNames(uninstallRequiringUserModifications);
+                    var message = string.Format(Resources.MessageForceInstallOrUninstallToContinue, packageToDownload, conflictingPkgs,
+                        DynamoViewModel.BrandingResourceProvider.ProductName);
                     
                     var dialogResult = MessageBoxService.Show(message,
-                        "Package has conflicts with one or more packages in use.",
+                        Resources.PackagesInUseConflictMessageBoxTitle,
                         MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
 
                     if(dialogResult == MessageBoxResult.No) return;
-
-                    // DO SOMETHING HERE?
                 }
 
                 var settings = DynamoViewModel.Model.PreferenceSettings;
 
                 if (uninstallsRequiringRestart.Any())
                 {
-                    //var message = string.Format(Resources.MessageUninstallToContinue2,
-                    //    DynamoViewModel.BrandingResourceProvider.ProductName,
-                    //    JoinPackageNames(uninstallsRequiringRestart),
-                    //    name + " " + package.version);
-
-                    var message = $"Package {name + " " + package.version} has conflicts with the following packages:" +
-                        $" {JoinPackageNames(uninstallsRequiringRestart)}.\n" +
-                        $"Do you wish to continue installing it using the package version(s) already installed?\n\n" +
-                        $"If not, {DynamoViewModel.BrandingResourceProvider.ProductName} needs to uninstall " +
-                        $"{JoinPackageNames(uninstallsRequiringRestart)} to continue. Restart " +
-                        $"{DynamoViewModel.BrandingResourceProvider.ProductName}, then download " +
-                        $"{name + " " + package.version} again.";
-
-                    // different message for the case that the user is
-                    // trying to install the same package/version they already have installed.
-                    //if (uninstallsRequiringRestart.Count == 1 &&
-                    //    uninstallsRequiringRestart.First().Name == name &&
-                    //    uninstallsRequiringRestart.First().VersionName == package.version)
-                    //{
-                    //    message = String.Format(Resources.MessageUninstallSamePackage, name + " " + package.version);
-                    //}
-
-                    //var dialogResult = MessageBoxService.Show(message,
-                    //    Resources.CannotDownloadPackageMessageBoxTitle,
-                    //    MessageBoxButton.YesNo, MessageBoxImage.Error);
+                    var conflictingPkgs = JoinPackageNames(uninstallsRequiringRestart);
+                    var message = string.Format(Resources.MessageForceInstallOrUninstallUponRestart, packageToDownload,
+                        conflictingPkgs, DynamoViewModel.BrandingResourceProvider.ProductName);
 
                     var dialogResult = MessageBoxService.Show(message,
-                        "Package has conflicts with one ore more loaded packages.",
+                        Resources.LoadedPackagesConflictMessageBoxTitle,
                         MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation);
 
                     if (dialogResult == MessageBoxResult.No)
                     {
                         // mark for uninstallation
                         uninstallsRequiringRestart.ForEach(x => x.MarkForUninstall(settings));
+                        return;
                     }
                     else if(dialogResult == MessageBoxResult.Cancel) return;
-
-                    // DO SOMETHING HERE?
                 }
 
                 if (immediateUninstalls.Any())
