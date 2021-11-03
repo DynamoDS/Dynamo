@@ -131,6 +131,7 @@ namespace Dynamo.ViewModels
 
         internal override PortViewModel CreateProxyPortViewModel(PortModel portModel)
         {
+            portModel.IsProxyPort = true;
             return new OutPortViewModel(node, portModel);
         }
 

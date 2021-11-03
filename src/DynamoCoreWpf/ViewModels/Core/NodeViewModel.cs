@@ -37,6 +37,7 @@ namespace Dynamo.ViewModels
         public delegate void PreviewPinStatusHandler(bool pinned);
 
         internal delegate void NodeAutoCompletePopupEventHandler(Popup popup);
+        internal delegate void PortContextMenuPopupEventHandler(Popup popup);
         #endregion
 
         #region events
@@ -626,10 +627,16 @@ namespace Dynamo.ViewModels
         #region events
 
         internal event NodeAutoCompletePopupEventHandler RequestAutoCompletePopupPlacementTarget;
+        internal event PortContextMenuPopupEventHandler RequestPortContextMenuPopupPlacementTarget;
 
         internal void OnRequestAutoCompletePopupPlacementTarget(Popup popup)
         {
             RequestAutoCompletePopupPlacementTarget?.Invoke(popup);
+        }
+
+        public void OnRequestPortContextMenuPlacementTarget(Popup popup)
+        {
+            RequestPortContextMenuPopupPlacementTarget?.Invoke(popup);
         }
 
         public event NodeDialogEventHandler RequestShowNodeHelp;
@@ -1000,7 +1007,10 @@ namespace Dynamo.ViewModels
                 });
             }
             
-            ErrorBubble.ZIndex = ZIndex + 1;
+            // The Error bubble sits above the node in ZIndex. Since pinned notes sit above
+            // the node as well and the ErrorBubble needs to display on top of these, the
+            // ErrorBubble's ZIndex should be the node's ZIndex + 2.
+            ErrorBubble.ZIndex = ZIndex + 2;
 
             // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
             ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeWarnings_CollectionChanged;
@@ -1487,10 +1497,13 @@ namespace Dynamo.ViewModels
 
         private bool CanAddToGroup(object parameters)
         {
-            var groups = WorkspaceViewModel.Model.Annotations;
-            if (groups.Any(x => x.IsSelected))
+            var selectedGroups = WorkspaceViewModel.Model.Annotations
+                .Where(x => x.IsSelected);
+
+            if (selectedGroups.Any() && 
+                !selectedGroups.All(x => !x.IsExpanded)) 
             {
-                return !(groups.ContainsModel(NodeLogic.GUID));
+                return !(WorkspaceViewModel.Model.Annotations.ContainsModel(NodeLogic.GUID));
             }
             return false;
         }
@@ -1566,6 +1579,7 @@ namespace Dynamo.ViewModels
             return new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
         }
         #endregion
+
     }
 
     public class NodeDialogEventArgs : EventArgs

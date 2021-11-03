@@ -48,21 +48,9 @@ namespace Dynamo.UI.Controls
             UpdateControl.DataContext = updateManager;
         }
 
-        private void exportMenu_SubmenuOpened(object sender, RoutedEventArgs e)
-        {
-            var path = PathGeometry.Parse("M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z");
-            Arrow.Data = path;
-        }
-
-        private void exportMenu_SubmenuClosed(object sender, RoutedEventArgs e)
-        {
-            var path = PathGeometry.Parse("M0,6 L0,4 L4,0 L8,4 L8,6 L4,2 z");
-            Arrow.Data = path;
-        }
-
         private void exportMenu_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            this.HeaderText.FontFamily = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementBold"] as FontFamily;
+            this.HeaderText.FontFamily = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
             this.Icon.Source = new BitmapImage(new System.Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/image-icon.png"));
         }
 
