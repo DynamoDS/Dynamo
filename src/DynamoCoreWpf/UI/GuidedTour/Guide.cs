@@ -104,7 +104,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 }
 
 
-                firstStep.Show();
+                firstStep.Show(GuideFlow.FORWARD);
             }
         }
 
@@ -146,14 +146,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This method will Calculate the UIElement host when the DynamoView is not the main Window and also apply/remove the orange rectangle from a SubMenuItem
+        /// This method will remove/undo all the UI Automations previously done when showing each Step
         /// </summary>
         internal void ClearSteps()
         {
             foreach( var step in GuideSteps)
             {
-                //Passing false to the method means will remove the subscribed events and removing the orange rectangle 
-                step.CalculateTargetHost(false);
+                //In this case we don't need to know the Current Guides Flow when we pass CURRENT
+                step.Hide(GuideFlow.CURRENT);
             }
         }
         /// <summary>
@@ -165,7 +165,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (CurrentStepSequence >= 0)
             {
                 CalculateStep(GuideFlow.CURRENT, CurrentStepSequence);
-                CurrentStep.Show();
+                CurrentStep.Show(GuideFlow.FORWARD);
             }
         }
 
@@ -175,11 +175,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="CurrentStepSequence">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
         internal void NextStep(int CurrentStepSequence)
         {
-            HideCurrentStep(CurrentStepSequence);
+            HideCurrentStep(CurrentStepSequence, GuideFlow.FORWARD);
             if (CurrentStepSequence < TotalSteps)
             {
                 CalculateStep(GuideFlow.FORWARD, CurrentStepSequence);
-                CurrentStep.Show();
+                CurrentStep.Show(GuideFlow.FORWARD);
             }
         }
 
@@ -189,11 +189,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="CurrentStepSequence">This parameter is the "sequence" of the current Step so we can get the previous Step from the list</param>
         internal void PreviousStep(int CurrentStepSequence)
         {
-            HideCurrentStep(CurrentStepSequence);
+            HideCurrentStep(CurrentStepSequence, GuideFlow.BACKWARD);
             if (CurrentStepSequence > 0)
             {
                 CalculateStep(GuideFlow.BACKWARD, CurrentStepSequence);
-                CurrentStep.Show();
+                CurrentStep.Show(GuideFlow.BACKWARD);
             }     
         }
 
@@ -203,7 +203,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="stepFlow">The direction flow of the Guide, can be BACKWARD, FORWARD or CURRENT</param>
         /// <param name="CurrentStepSequence">This parameter is the current Step sequence</param>
-        private void CalculateStep(GuideFlow stepFlow, int CurrentStepSequence)
+        internal void CalculateStep(GuideFlow stepFlow, int CurrentStepSequence)
         {
             Step resultStep = null;
             int stepFlowOffSet = Convert.ToInt32(stepFlow);
@@ -247,10 +247,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
-        private void HideCurrentStep(int CurrentStepSequence)
+        internal void HideCurrentStep(int CurrentStepSequence, GuideFlow currentFlow)
         {
             CalculateStep(GuideFlow.CURRENT, CurrentStepSequence);
-            CurrentStep.Hide();
+            CurrentStep.Hide(currentFlow);
             GuideBackgroundElement.ClearHighlightSection();
         }
 
@@ -280,6 +280,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             if (hostControlInfo.HighlightRectArea != null)
             {
+                //If is not empty means that the HighlightRectArea.WindowElementNameString doesn't belong to the DynamoView then another way for hightlighting the element will be applied
+                if (!string.IsNullOrEmpty(hostControlInfo.HighlightRectArea.WindowName)) return;
+
                 string highlightColor = hostControlInfo.HighlightRectArea.HighlightColor;
 
                 //This section will get the X,Y coordinates of the HostUIElement based in the Ancestor UI Element so we can put the highlight rectangle
@@ -431,6 +434,46 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
 
             return foundChild;
+        }
+
+        /// <summary>
+        /// Due that some Windows are opened dynamically, they are in the Owned Windows but not in the DynamoView VisualTree
+        /// </summary>
+        /// <param name="windowName">String name that represent the Window that will be search</param>
+        /// <param name="mainWindow">The main Window, usually will be the DynamoView</param>
+        /// <returns></returns>
+        internal static Window FindWindowOwned(string windowName, Window mainWindow)
+        {
+            Window findWindow = null;
+            foreach(Window window in mainWindow.OwnedWindows)
+            {
+                if(window.Name.Equals(windowName))
+                {
+                    findWindow = window;
+                    break;
+                }
+            }
+            return findWindow;
+        }
+
+        /// <summary>
+        /// This method will close a specific Window owned by another Window
+        /// </summary>
+        /// <param name="windowName">The name of the Window to be closed</param>
+        /// <param name="mainWindow">MainWindow container of the owned Window</param>
+        internal static void CloseWindowOwned(string windowName, Window mainWindow)
+        {
+            Window findWindow = null;
+            foreach (Window window in mainWindow.OwnedWindows)
+            {
+                if (window.Name.Equals(windowName))
+                {
+                    findWindow = window;
+                    break;
+                }
+            }
+            if (findWindow != null)
+                findWindow.Close();
         }
     }
 }

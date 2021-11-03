@@ -146,7 +146,6 @@ namespace DynamoCoreWpfTests
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("FFITarget.dll");
-            libraries.Add("DSCPython.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -1454,6 +1453,7 @@ namespace DynamoCoreWpfTests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSIronPython.dll");
             libraries.Add("FunctionObject.ds");
             base.GetLibrariesToPreload(libraries);
         }

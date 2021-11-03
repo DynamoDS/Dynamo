@@ -138,7 +138,7 @@
                     <MenuItem Name="exportMenu"
                               Cursor="Hand"
                               Focusable="False"
-                              Margin="-5,-7,0,0"
+                              Margin="0,-3,0,0"
                               MouseEnter="exportMenu_MouseEnter"
                               MouseLeave="exportMenu_MouseLeave">
                         <MenuItem.Header>
@@ -166,6 +166,7 @@
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.ShortcutExportBackground3DPreview}"
                                   Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                  CommandParameter="{x:Static p:Resources.ScreenShotFrom3DParameter}"
                                   ToolTip="{x:Static p:Resources.DynamoViewToolbarExport3DButtonTooltip}"
                                   Name="save3DImage">
                         </MenuItem>

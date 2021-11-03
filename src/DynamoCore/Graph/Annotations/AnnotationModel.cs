@@ -473,6 +473,16 @@ namespace Dynamo.Graph.Annotations
         }
 
         /// <summary>
+        /// Fired when this group is removed from its parent group
+        /// </summary>
+        internal event EventHandler RemovedFromGroup;
+
+        private void OnRemovedFromGroup()
+        {
+            RemovedFromGroup?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
         /// Group the Models based on Height and Width
         /// </summary>
         /// <returns> the width and height of the last model </returns>
@@ -551,6 +561,7 @@ namespace Dynamo.Graph.Annotations
             //Deserialize Selected models
             if (element.HasChildNodes)
             {
+                var removedModels = new List<ModelBase>();
                 var listOfModels = new List<ModelBase>();
                 if (Nodes != null)
                 {
@@ -569,7 +580,13 @@ namespace Dynamo.Graph.Annotations
                     }
                 }
 
+                removedModels = Nodes.Except(listOfModels).ToList();
                 Nodes = listOfModels;
+
+                foreach (var model in removedModels)
+                {
+                    UnsubscribeRemovedModel(model);
+                }
             }
 
             //On any Undo Operation, current values are restored to previous values.
@@ -598,6 +615,16 @@ namespace Dynamo.Graph.Annotations
             list.Add(model);
             this.Nodes = list;
             this.UpdateBoundaryFromSelection();
+        }
+
+        private void UnsubscribeRemovedModel(ModelBase model)
+        {
+            model.PropertyChanged -= model_PropertyChanged;
+            model.Disposed -= model_Disposed;
+            if (model is AnnotationModel annotationModel)
+            {
+                annotationModel.OnRemovedFromGroup();
+            }
         }
 
         private bool CheckModelIsInsideGroup(ModelBase model, bool checkOverlap)

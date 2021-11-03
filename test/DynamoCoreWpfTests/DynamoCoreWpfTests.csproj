@@ -47,8 +47,8 @@
       <Private>True</Private>
       <HintPath>..\..\src\packages\Cyotek.Drawing.BitmapFont.2.0.0\lib\net48\Cyotek.Drawing.BitmapFont.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=2.1.7962.24801, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.2.1.7962.24801\lib\net48\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=2.1.7972.24350, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\src\packages\Greg.2.1.7972.24350\lib\net48\Greg.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit, Version=2.17.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\HelixToolkit.2.17.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>
@@ -194,6 +194,7 @@
     <Compile Include="ViewExtensions\NodeAutoCompleteViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\NodeManipulatorExtensionTests.cs" />
     <Compile Include="ViewExtensions\PackageDetailsViewExtensionTests.cs" />
+    <Compile Include="ViewExtensions\PythonMigrationViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\ViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\DocumentationBrowserViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\WorkspaceDependencyViewExtensionTests.cs" />
@@ -305,6 +306,10 @@
     <ProjectReference Include="..\..\src\PackageDetailsViewExtension\PackageDetailsViewExtension.csproj">
       <Project>{12FB4DA4-7E9C-4C2E-91CD-1D0B523A9535}</Project>
       <Name>PackageDetailsViewExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\PythonMigrationViewExtension\PythonMigrationViewExtension.csproj">
+      <Project>{10af430d-0d3a-49ce-a63d-848912959745}</Project>
+      <Name>PythonMigrationViewExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>

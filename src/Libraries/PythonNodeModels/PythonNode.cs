@@ -61,16 +61,21 @@ namespace PythonNodeModels
             }
         }
 
+        private static ObservableCollection<PythonEngineVersion> availableEngines;
         /// <summary>
         /// Available Python engines.
         /// </summary>
-        [Obsolete(@"This method will be removed in future versions of Dynamo.
-        Please use PythonEngineSelector.Instance.AvailableEngines instead")]
         public static ObservableCollection<PythonEngineVersion> AvailableEngines
         {
             get
             {
-                return PythonEngineSelector.Instance.AvailableEngines;
+                if (availableEngines == null)
+                {
+                    availableEngines = new ObservableCollection<PythonEngineVersion>();
+                    availableEngines.Add(PythonEngineVersion.IronPython2);
+                    availableEngines.Add(PythonEngineVersion.CPython3);
+                }
+                return availableEngines;
             }
         }
 
@@ -92,8 +97,8 @@ namespace PythonNodeModels
             }
             else
             {
-                // Use CPython as default
-                engine = PythonEngineVersion.CPython3;
+                // In the absence of both a setting and system default, default to deserialization default.
+                engine = PythonEngineVersion.IronPython2;
             }
         }
 
