@@ -5,7 +5,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-        xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:ui="clr-namespace:Dynamo.UI" 
+        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
+        d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
         Name="PublishInfoControl"
         Width="900"
         Height="710"
@@ -504,7 +506,7 @@
                 Grid.Column="0"
                 Background="{StaticResource DarkMidGreyBrush}"
                 CornerRadius="4"
-                MouseDown="PreferencesPanel_MouseDown">
+                MouseDown="PublishPackageView_MouseDown">
             <DockPanel HorizontalAlignment="Stretch">
 
                 <!--  Close Button  -->
@@ -558,7 +560,9 @@
                                ToolTip="{x:Static p:Resources.PublishPackageViewPackageNameTooltip}" />
                     <TextBox Name="packageNameInput"
                              Style="{StaticResource InputStyle}"
-                             Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}" />
+                             Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}"
+                             IsEnabled ="{Binding Path=CanEditName}"
+                             Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--  Description  -->
                     <TextBlock Name="descriptionLabel"
@@ -568,7 +572,8 @@
                     <TextBox Name="descriptionInput"
                              MinHeight="81px"
                              Style="{StaticResource InputStyle}"
-                             Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}" />
+                             Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}"
+                             Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--  Version  -->
                     <TextBlock Name="versionLabel"
@@ -580,17 +585,20 @@
                                  Margin="0,0,6,0"
                                  MaxLength="4"
                                  Style="{StaticResource InputStyle}"
-                                 Tag="{x:Static p:Resources.PublishPackageVersionMajorWatermark}" />
+                                 Tag="{x:Static p:Resources.PublishPackageVersionMajorWatermark}"
+                                 Text="{Binding Path=MajorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBox Name="versionMinorInput"
                                  Margin="0,0,6,0"
                                  MaxLength="4"
                                  Style="{StaticResource InputStyle}"
-                                 Tag="{x:Static p:Resources.PublishPackageVersionMinorWatermark}" />
+                                 Tag="{x:Static p:Resources.PublishPackageVersionMinorWatermark}"
+                                 Text="{Binding Path=MinorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBox Name="versionBuildInput"
                                  Margin="0,0,6,0"
                                  MaxLength="4"
                                  Style="{StaticResource InputStyle}"
-                                 Tag="{x:Static p:Resources.PublishPackageVersionBuildWatermark}" />
+                                 Tag="{x:Static p:Resources.PublishPackageVersionBuildWatermark}"
+                                 Text="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
 
                     <!--  External Dependency  -->
@@ -803,7 +811,7 @@
                                                 IsReadOnly="False"
                                                 IsThreeState="False" />
                         <DataGridTextColumn MinWidth="50"
-                                            Binding="{Binding Path=Name}"
+                                            Binding="{Binding Path=FileInfo.Name}"
                                             Header="Name"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
