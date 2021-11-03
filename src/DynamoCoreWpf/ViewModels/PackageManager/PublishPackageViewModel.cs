@@ -678,7 +678,6 @@ namespace Dynamo.PackageManager
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
             Dependencies.CollectionChanged += DependenciesOnCollectionChanged;
             PackageContents.CollectionChanged += PackageContentsOnCollectionChanged;
-            
             Assemblies = new List<PackageAssembly>();
             PropertyChanged += ThisPropertyChanged;
             RefreshPackageContents();
