@@ -806,7 +806,7 @@ namespace Dynamo.PackageManager
                 Group = l.Group,
                 Description = l.Description,
                 Keywords = l.Keywords != null ? String.Join(" ", l.Keywords) : "",
-                CustomNodeDefinitions = defs.ToList(),
+                CustomNodeDefinitions = defs,
                 Name = l.Name,
                 RepositoryUrl = l.RepositoryUrl ?? "",
                 SiteUrl = l.SiteUrl ?? "",
