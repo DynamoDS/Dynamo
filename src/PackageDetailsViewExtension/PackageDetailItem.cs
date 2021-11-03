@@ -3,7 +3,7 @@ using System.Linq;
 using Dynamo.Core;
 using Dynamo.PackageManager;
 using Greg.Responses;
-using PythonNodeModels;
+using Dynamo.PythonServices;
 
 namespace Dynamo.PackageDetails
 {

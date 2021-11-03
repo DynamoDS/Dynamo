@@ -593,12 +593,25 @@ sys.stdout = DynamoStdOut({0})
         [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
         public static event EvaluationEventHandler EvaluationBegin;
 
+
+        /// <summary>
+        ///     Emitted immediately before execution begins
+        /// </summary>
+        [SupressImportIntoVM]
+        public static event Action<string, IList, Action<string, object>> EvaluationStarted;
+
         /// <summary>
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
         [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
         public static event EvaluationEventHandler EvaluationEnd;
+
+        /// <summary>
+        ///     Emitted immediately after execution ends or fails
+        /// </summary>
+        [SupressImportIntoVM]
+        public static event Action<string, IList> EvaluationFinished;
 
         /// <summary>
         /// Called immediately before evaluation starts
@@ -610,9 +623,9 @@ sys.stdout = DynamoStdOut({0})
                                               string code,
                                               IList bindingValues)
         {
-            if (EvaluationBegin != null)
+            if (EvaluationStarted != null)
             {
-                EvaluationBegin(EvaluationState.Begin, scope, code, bindingValues);
+                EvaluationStarted(code, bindingValues, (n, v) => { scope.Set(n, v); });
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Start,
                     Dynamo.Logging.Categories.PythonOperations,
@@ -632,10 +645,9 @@ sys.stdout = DynamoStdOut({0})
                                             string code,
                                             IList bindingValues)
         {
-            if (EvaluationEnd != null)
+            if (EvaluationFinished != null)
             {
-                EvaluationEnd(isSuccessful ? EvaluationState.Success : EvaluationState.Failed,
-                    scope, code, bindingValues);
+                EvaluationFinished(code, bindingValues);
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.End,
                     Dynamo.Logging.Categories.PythonOperations,

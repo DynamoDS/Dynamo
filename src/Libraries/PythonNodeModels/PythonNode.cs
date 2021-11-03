@@ -10,6 +10,7 @@ using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.PythonServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using ProtoCore.AST.AssociativeAST;
@@ -70,7 +71,7 @@ namespace PythonNodeModels
         {
             get
             {
-                return PythonEngineSelector.Instance.AvailableEngines;
+                return new ObservableCollection<PythonEngineVersion>(PythonEngineSelector.Instance.AvailableEngines.Select(x=> x.Version));
             }
         }
 

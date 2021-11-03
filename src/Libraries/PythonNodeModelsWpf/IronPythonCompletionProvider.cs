@@ -4,16 +4,14 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Logging;
+using Dynamo.PythonServices;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using IronPython.Runtime;
 using Microsoft.Scripting.Actions;
 using Microsoft.Scripting.Hosting;
-using PythonNodeModels;
 
 namespace Dynamo.Python
 {
-
-
     //This class needs to stay here with a reference to IronPython for now, its use will be
     //completely removed from Dynamo though - so the dependencey on Ironpython will ONLY be at compile time.
     [Obsolete("Do Not Use! This class will be removed in a future version of Dynamo," +

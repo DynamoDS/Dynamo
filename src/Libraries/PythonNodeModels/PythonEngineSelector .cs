@@ -1,22 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Dynamo.PythonServices;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 
 namespace PythonNodeModels
 {
-    /// <summary>
-    /// Enum of possible values of python engine versions.
-    /// TODO: Remove when dynamic loading logic is there then we no longer need a hard copy of the options
-    /// </summary>
-    public enum PythonEngineVersion
-    {
-        Unspecified,
-        IronPython2,
-        CPython3
-    }
-
     /// <summary>
     /// Singleton class that other class can access and use for query loaded Python Engine info.
     /// TODO: Make the Singleton class public when Dynamic loading is also ready.
@@ -36,24 +25,14 @@ namespace PythonNodeModels
         /// </summary>
         internal static PythonEngineSelector Instance { get { return lazy.Value; } }
 
-        // TODO: The following fields might be removed after dynamic loading applied
-        internal string IronPythonEvaluatorClass = "IronPythonEvaluator";
-        internal string IronPythonEvaluationMethod = "EvaluateIronPythonScript";
-
-        internal string CPythonEvaluatorClass = "CPythonEvaluator";
-        internal string CPythonEvaluationMethod = "EvaluatePythonScript";
-
-        internal const string DummyEvaluatorClass = "DummyPythonEvaluator";
-        internal const string DummyEvaluatorMethod = "Evaluate";
-
-        internal ObservableCollection<PythonEngineVersion> AvailableEngines;
+        internal ObservableCollection<PythonEngineProxy> AvailableEngines;
 
         /// <summary>
         /// Singleton class initialization logic which will be run in a lazy way the first time Dynamo try to evaluate a Python node
         /// </summary>
         private PythonEngineSelector()
         {
-            AvailableEngines = new ObservableCollection<PythonEngineVersion>();
+            AvailableEngines = new ObservableCollection<PythonEngineProxy>();
 
             ScanPythonEngines();
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(AssemblyLoadEventHandler);
@@ -74,11 +53,11 @@ namespace PythonNodeModels
             // but we can optimize by checking all loaded types against evaluators interface later
             try
             {
-                if (!AvailableEngines.Contains(PythonEngineVersion.IronPython2) &&
-                    assembly.GetName().Name.Equals("DSIronPython") &&
-                    assembly.GetType("DSIronPython.IronPythonEvaluator").GetMethod(IronPythonEvaluationMethod) != null)
+                if (!AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2) &&
+                    assembly.GetName().Name.Equals(PythonEngineManager.IronPythonAssemblyName) &&
+                    assembly.GetType(PythonEngineManager.IronPythonTypeName).GetMethod(PythonEngineManager.IronPythonEvaluationMethod) != null)
                 {
-                    AvailableEngines.Add(PythonEngineVersion.IronPython2);
+                    AvailableEngines.Add(new PythonEngineProxy(assembly, PythonEngineVersion.IronPython2));
                 }
             }
             catch
@@ -87,11 +66,11 @@ namespace PythonNodeModels
             }
             try
             {
-                if (!AvailableEngines.Contains(PythonEngineVersion.CPython3) &&
-                    assembly.GetName().Name.Equals("DSCPython") &&
-                    assembly.GetType("DSCPython.CPythonEvaluator").GetMethod(CPythonEvaluationMethod) != null)
+                if (!AvailableEngines.Any(x => x.Version == PythonEngineVersion.CPython3) &&
+                    assembly.GetName().Name.Equals(PythonEngineManager.CPythonAssemblyName) &&
+                    assembly.GetType(PythonEngineManager.CPythonTypeName).GetMethod(PythonEngineManager.CPythonEvaluationMethod) != null)
                 {
-                    AvailableEngines.Add(PythonEngineVersion.CPython3);
+                    AvailableEngines.Add(new PythonEngineProxy(assembly, PythonEngineVersion.CPython3));
                 }
             }
             catch
@@ -121,26 +100,26 @@ namespace PythonNodeModels
         internal void GetEvaluatorInfo(PythonEngineVersion engine, out string evaluatorClass, out string evaluationMethod)
         {
             // Provide evaluator info when the selected engine is loaded
-            if (engine == PythonEngineVersion.IronPython2 && 
-                AvailableEngines.Contains(PythonEngineVersion.IronPython2))
+            if (engine == PythonEngineVersion.IronPython2 &&
+                AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2))
             {
-                evaluatorClass = Instance.IronPythonEvaluatorClass;
-                evaluationMethod = Instance.IronPythonEvaluationMethod;
+                evaluatorClass = PythonEngineManager.IronPythonEvaluatorClass;
+                evaluationMethod = PythonEngineManager.IronPythonEvaluationMethod;
                 return;
             }
             if (engine == PythonEngineVersion.CPython3 &&
-                AvailableEngines.Contains(PythonEngineVersion.CPython3))
+                AvailableEngines.Any(x => x.Version == PythonEngineVersion.CPython3))
             {
-                evaluatorClass = Instance.CPythonEvaluatorClass;
-                evaluationMethod = Instance.CPythonEvaluationMethod;
+                evaluatorClass = PythonEngineManager.CPythonEvaluatorClass;
+                evaluationMethod = PythonEngineManager.CPythonEvaluationMethod;
                 return;
             }
 
             // Throwing at the compilation stage is handled as a non-retryable error by the Dynamo engine.
             // Instead, we want to produce an error at the evaluation stage, so we can eventually recover.
             // We handle this by providing a dummy Python evaluator that will evaluate to an error message.
-            evaluatorClass = DummyEvaluatorClass;
-            evaluationMethod = DummyEvaluatorMethod;
+            evaluatorClass = PythonEngineManager.DummyEvaluatorClass;
+            evaluationMethod = PythonEngineManager.DummyEvaluatorMethod;
         }
     }
 }
