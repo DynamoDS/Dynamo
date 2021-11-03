@@ -859,7 +859,8 @@ namespace Dynamo.ViewModels
                     // If we are dragging groups over a group that is already nested
                     // we return as we cant have more than one nested layer
                     else if (draggedGroups.Any() && 
-                        owningWorkspace.Model.Annotations.ContainsModel(dropGroup.AnnotationModel))
+                        owningWorkspace.Model.Annotations.ContainsModel(dropGroup.AnnotationModel) ||
+                        draggedGroups.Any(x=>x.HasNestedGroups))
                     {
                         return false; // Mouse event not handled.
                     }
