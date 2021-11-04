@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
-using Dynamo.PythonServices.EventHandlers;
 using PythonNodeModels;
 
 namespace PythonNodeModels
@@ -19,18 +18,6 @@ namespace PythonNodeModels
         IronPython2,
         CPython3
     }
-}
-
-namespace Dynamo.PythonServices.EventHandlers
-{
-    /// <summary>
-    ///  Represents the method that handles the Dynamo.PythonServices.PythonEngineProxy.OnEvaluationBegin event.
-    /// </summary>
-    public delegate void EvaluationBeginEventHandler(string code, IList bindingValues, Action<string, object> scopeSetFn);
-    /// <summary>
-    /// Represents the method that handles the Dynamo.PythonServices.PythonEngineProxy.OnEvaluationEnd event.
-    /// </summary>
-    public delegate void EvaluationEndEventHandler(string code, IList bindingValues);
 }
 
 namespace Dynamo.PythonServices
@@ -216,8 +203,8 @@ namespace Dynamo.PythonServices
         public readonly PythonEngineVersion Version;
         private readonly Type EngineType;
 
-        private EvaluationBeginEventHandler OnBeginEvaluation;
-        private EvaluationEndEventHandler OnEndEvaluation;
+        private Action<string, IList, Action<string, object>> OnBeginEvaluation;
+        private Action<string, IList> OnEndEvaluation;
 
         internal PythonEngineProxy(Type eType, PythonEngineVersion version)
         {
@@ -259,7 +246,7 @@ namespace Dynamo.PythonServices
         /// Add an event handler before the Python evaluation begins
         /// </summary>
         /// <param name="callback"></param>
-        public void OnEvaluationBegin(EvaluationBeginEventHandler callback)
+        public void OnEvaluationBegin(Action<string, IList, Action<string, object>> callback)
         {
 
             OnBeginEvaluation = callback;
@@ -270,7 +257,7 @@ namespace Dynamo.PythonServices
         /// Add an event handler after the Python evaluation ends
         /// </summary>
         /// <param name="callback"></param>
-        public void OnEvaluationEnd(EvaluationEndEventHandler callback)
+        public void OnEvaluationEnd(Action<string, IList> callback)
         {
             OnEndEvaluation = callback;
             AddEventHandler("EvaluationFinished", nameof(HandleEvaluationEnd));
