@@ -1211,17 +1211,23 @@ namespace Dynamo.ViewModels
 
 
         /// <summary>
-        /// Removes all connectorPinViewModels/ connectorPinModels. This occurs during 'dispose'
+        ///  Removes all connectorPinViewModels/ connectorPinModels. This occurs during 'dispose'
         /// operation as well as during the 'PlaceWatchNode', where all previous pins corresponding 
         /// to a connector are cleareed.
         /// </summary>
+        /// <param name="allDeletedModels"> This argument is used when placing a WatchNode from ConnectorAnchorViewModel. A reference
+        /// to all previous pins is required for undo/redo recorder.</param>
         internal void DiscardAllConnectorPinModels(List<ModelBase> allDeletedModels = null)
         {
             foreach (var pin in ConnectorPinViewCollection)
             {
                 workspaceViewModel.Pins.Remove(pin);
                 ConnectorModel.RemovePin(pin.Model);
-                allDeletedModels.Add(pin.Model);
+
+                if(allDeletedModels != null)
+                {
+                    allDeletedModels.Add(pin.Model);
+                }
                 pin.Model.Dispose();
                 pin.Dispose();
             }
