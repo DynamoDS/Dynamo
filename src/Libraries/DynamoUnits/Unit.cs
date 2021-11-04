@@ -83,7 +83,7 @@ namespace DynamoUnits
         {
             unchecked
             {
-                return (Name ?? String.Empty).GetHashCode() +
+                return (Name ?? String.Empty).GetHashCode() ^
                        (TypeId ?? String.Empty).GetHashCode();
             }
         }
