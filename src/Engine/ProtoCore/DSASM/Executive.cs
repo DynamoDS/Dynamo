@@ -822,7 +822,7 @@ namespace ProtoCore.DSASM
         private string previousProcedureName;
         private CallSite callsite;
 
-        public StackValue CallDispose(ProcedureNode fNode,
+        internal StackValue CallDispose(ProcedureNode fNode,
                                 StackValue svThisPtr,
                                 int classIndex)
         {
