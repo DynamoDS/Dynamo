@@ -511,7 +511,7 @@
 
                 <!--  Close Button  -->
                 <Button x:Name="closeButton"
-                        Margin="8"
+                        Margin="0,20,25,20"
                         VerticalAlignment="Top"
                         Click="CloseButton_Click"
                         DockPanel.Dock="Right"
