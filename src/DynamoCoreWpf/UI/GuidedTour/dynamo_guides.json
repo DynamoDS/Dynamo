@@ -308,6 +308,18 @@
 						"ControlType": "function",
 						"Name": "ExecuteTermsOfServiceFlow",
 						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "AcceptTermsOfUseButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "AcceptButton_Click"
+							},
+							{
+								"HandlerElement": "DeclineTermsOfUseButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "DeclineButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					}
 				]

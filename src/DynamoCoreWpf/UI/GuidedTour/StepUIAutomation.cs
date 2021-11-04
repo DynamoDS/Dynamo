@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -63,5 +64,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         public string WindowName { get; set; }
 
+        public List<AutomaticHandlers> AutomaticHandlers { get; set; }
+    }
+
+    public class AutomaticHandlers
+    {
+        public string HandlerElement { get; set; }
+
+        public string HandlerElementEvent { get; set; }
+
+        public string ExecuteMethod { get; set; }
     }
 }
