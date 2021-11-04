@@ -79,6 +79,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
+        /// <summary>
+        /// This methos subscribes and unsubscribes an event by setting the method and the event dynamically
+        /// </summary>
+        /// <param name="element">The element to subscribe the method I.E: Button</param>
+        /// <param name="eventname">The event name that will be subscribed I.E: Click</param>
+        /// <param name="methodname">The method that will listen the event I.E: AcceptButton_Click</param>
+        /// <param name="addEvent">A flag that will check if it's to subscribe or unsubscribe</param>
         internal static void ManageEventHandler(object element, string eventname, string methodname, bool addEvent = true)
         {
             EventInfo eventInfo = element.GetType().GetEvent(eventname);
@@ -115,7 +122,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This method will be executed when the Decline button is pressed in the TermsOfUseView Window
+        /// This method will be executed when the Decline button is pressed in the TermsOfUseView Window and creates the exit tour modal
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
