@@ -13,6 +13,7 @@
         Height="710"
         MinWidth="630"
         MinHeight="500"
+        DataContext="{Binding PublishPackageViewModel, RelativeSource={RelativeSource Self}}"
         ResizeMode="CanResizeWithGrip"
         Visibility="Visible"
         WindowStartupLocation="CenterOwner"
@@ -90,7 +91,6 @@
                 <Setter Property="Margin" Value="0,0,0,5" />
             </Style>
             <Style x:Key="InputStyle" TargetType="TextBox">
-                <Setter Property="OverridesDefaultStyle" Value="True" />
                 <Setter Property="Margin" Value="0,0,0,12" />
                 <Setter Property="MinWidth" Value="62px" />
                 <Setter Property="Cursor" Value="IBeam" />
@@ -107,8 +107,8 @@
                                          FontSize="12px"
                                          Foreground="#DFDFDF"
                                          MaxLength="{TemplateBinding MaxLength}"
+                                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
                                          Tag="{TemplateBinding Tag}"
-                                         Text="{TemplateBinding Text}"
                                          TextWrapping="Wrap" />
                                 <TextBlock x:Name="WatermarkLabel"
                                            Padding="13,13,10,8"
@@ -868,9 +868,9 @@
                         <TextBlock Style="{StaticResource LabelStyle}" Text="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectory}" />
                         <Image Width="16px"
                                Height="16px"
-                               DockPanel.Dock="Left"
-                               VerticalAlignment="Top"
                                Margin="5,0,0,0"
+                               VerticalAlignment="Top"
+                               DockPanel.Dock="Left"
                                Source="/DynamoCoreWpf;component/UI/Images/info-grey.png" />
                         <Button Command="{Binding Path=ClearMarkdownDirectoryCommand}"
                                 Content="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButton}"

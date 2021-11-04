@@ -18,7 +18,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Internal reference of PublishPackageViewModel
         /// </summary>
-        private PublishPackageViewModel PublishPackageViewModel { get; }
+        public PublishPackageViewModel PublishPackageViewModel { get; }
 
         public PublishPackageView(PublishPackageViewModel publishPackageViewModel)
         {
