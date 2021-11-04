@@ -6,7 +6,6 @@ using System.Linq;
 using DSCPython;
 using System.IO;
 using Dynamo;
-using Dynamo.PythonServices;
 
 namespace DSPythonTests
 {
@@ -335,7 +334,7 @@ OUT = {modName}.value";
                 File.AppendAllLines(tempPath, new string[] { "value ='bye'" });
 
                 //mock raise event
-                DSCPython.CPythonEvaluator.RequestPythonResetHandler(nameof(PythonEngineVersion.CPython3));
+                DSCPython.CPythonEvaluator.RequestPythonResetHandler(nameof(PythonNodeModels.PythonEngineVersion.CPython3));
 
                 output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
                  script,

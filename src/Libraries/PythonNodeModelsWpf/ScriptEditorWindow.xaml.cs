@@ -91,14 +91,14 @@ namespace PythonNodeModelsWpf
             editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
 
-            AvailableEngines = new ObservableCollection<PythonEngineVersion>(PythonEngineSelector.Instance.AvailableEngines.Select(x => x.Version));
+            AvailableEngines = new ObservableCollection<PythonEngineVersion>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Version));
             // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
             if (!AvailableEngines.Contains(nodeModel.Engine))
             {
                 AvailableEngines.Add(nodeModel.Engine);
             }
 
-            PythonEngineSelector.Instance.AvailableEngines.CollectionChanged += UpdateAvailableEngines;
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged += UpdateAvailableEngines;
 
             editText.Text = propValue;
             originalScript = propValue;
@@ -269,7 +269,7 @@ namespace PythonNodeModelsWpf
         {
             nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
             this.Closed -= OnScriptEditorWindowClosed;
-            PythonEngineSelector.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
 
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Close,

@@ -1,16 +1,12 @@
-﻿using PythonNodeModels;
-using System;
+﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
+using PythonNodeModels;
 
 namespace PythonNodeModels
 {
-    using PythonEngineSelector = Dynamo.PythonServices.PythonEngineManager;
-
     /// <summary>
     /// Enum of possible values of python engine versions.
     /// TODO: Remove when dynamic loading logic is there then we no longer need a hard copy of the options

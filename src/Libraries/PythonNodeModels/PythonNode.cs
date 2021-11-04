@@ -66,12 +66,12 @@ namespace PythonNodeModels
         /// Available Python engines.
         /// </summary>
         [Obsolete(@"This method will be removed in future versions of Dynamo.
-        Please use PythonEngineSelector.Instance.AvailableEngines instead")]
+        Please use PythonEngineManager.Instance.AvailableEngines instead")]
         public static ObservableCollection<PythonEngineVersion> AvailableEngines
         {
             get
             {
-                return new ObservableCollection<PythonEngineVersion>(PythonEngineSelector.Instance.AvailableEngines.Select(x=> x.Version));
+                return new ObservableCollection<PythonEngineVersion>(PythonEngineManager.Instance.AvailableEngines.Select(x=> x.Version));
             }
         }
 
@@ -137,8 +137,8 @@ namespace PythonNodeModels
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
             // Here we switched to use the AstFactory.BuildFunctionCall version that accept
-            // class name and function name. They will be set by PythonEngineSelector by the engine value. 
-            PythonEngineSelector.Instance.GetEvaluatorInfo(Engine, out string evaluatorClass, out string evaluationMethod);
+            // class name and function name. They will be set by PythonEngineManager by the engine value. 
+            PythonEngineManager.Instance.GetEvaluatorInfo(Engine, out string evaluatorClass, out string evaluationMethod);
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),

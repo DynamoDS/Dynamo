@@ -2,7 +2,6 @@
 using System.Linq;
 using Dynamo.PackageDetails;
 using Dynamo.PackageManager;
-using Dynamo.PythonServices;
 using Greg.Responses;
 using NUnit.Framework;
 using PythonNodeModels;

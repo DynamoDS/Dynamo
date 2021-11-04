@@ -1,7 +1,7 @@
 ﻿using Dynamo;
 using Dynamo.Python;
-using Dynamo.PythonServices;
 using NUnit.Framework;
+using PythonNodeModels;
 
 namespace DynamoPythonTests
 {

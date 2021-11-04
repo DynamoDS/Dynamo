@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.PythonServices;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using PythonNodeModels;

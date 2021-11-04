@@ -45,7 +45,7 @@ namespace Dynamo.PythonMigration
 
         private static bool IsIronPythonPackageLoaded()
         {
-            return PythonEngineSelector.Instance.AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2);
+            return PythonEngineManager.Instance.AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2);
         }
 
         /// <summary>

@@ -5,6 +5,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.PythonServices;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using System;
@@ -15,7 +16,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -704,7 +704,7 @@ namespace Dynamo.ViewModels
         private void AddPythonEnginesOptions()
         {
             var options = new ObservableCollection<string> { Res.DefaultPythonEngineNone };
-            foreach (var item in PythonNodeModels.PythonEngineSelector.Instance.AvailableEngines)
+            foreach (var item in PythonEngineManager.Instance.AvailableEngines)
             {
                 options.Add(item.Version.ToString());
             }
@@ -733,7 +733,7 @@ namespace Dynamo.ViewModels
             // Scan for engines
             AddPythonEnginesOptions();
 
-            PythonNodeModels.PythonEngineSelector.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
             //Sets SelectedPythonEngine.
             //If the setting is empty it corresponds to the default python engine
@@ -834,7 +834,7 @@ namespace Dynamo.ViewModels
         {
             PropertyChanged -= Model_PropertyChanged;
             WorkspaceEvents.WorkspaceSettingsChanged -= PreferencesViewModel_WorkspaceSettingsChanged;
-            PythonNodeModels.PythonEngineSelector.Instance.AvailableEngines.CollectionChanged -= PythonEnginesChanged;
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= PythonEnginesChanged;
         }
 
         /// <summary>

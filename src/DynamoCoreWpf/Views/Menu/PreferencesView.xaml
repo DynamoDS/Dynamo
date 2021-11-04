@@ -392,7 +392,7 @@
                                             Padding="0,5,5,5"
                                             FontSize="13"
                                             Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                    <ComboBox Name="PythonEngineSelector" 
+                                    <ComboBox Name="PythonEngineManager" 
                                                 Width="213"
                                                 HorizontalAlignment="Left"
                                                 ItemsSource="{Binding Path=PythonEnginesList}"

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo;
+using Dynamo.PythonServices;
 using NUnit.Framework;
 using PythonNodeModels;
 using static Dynamo.Models.DynamoModel;
@@ -25,17 +26,17 @@ namespace IronPythonTests
         [Test]
         public void TestEngineSelectorInitialization()
         {
-            PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2, out string evaluatorClass, out string evaluationMethod);
-            Assert.AreEqual(true, PythonEngineSelector.lazy.IsValueCreated);
-            Assert.AreEqual(evaluatorClass, PythonEngineSelector.Instance.IronPythonEvaluatorClass);
-            Assert.AreEqual(evaluationMethod, PythonEngineSelector.Instance.IronPythonEvaluationMethod);
+            PythonEngineManager.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2, out string evaluatorClass, out string evaluationMethod);
+            Assert.AreEqual(true, PythonEngineManager.lazy.IsValueCreated);
+            Assert.AreEqual(evaluatorClass, PythonEngineManager.IronPythonEvaluatorClass);
+            Assert.AreEqual(evaluationMethod, PythonEngineManager.IronPythonEvaluationMethod);
 
-            PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.CPython3, out evaluatorClass, out evaluationMethod);
-            Assert.AreEqual(evaluatorClass, PythonEngineSelector.Instance.CPythonEvaluatorClass);
-            Assert.AreEqual(evaluationMethod, PythonEngineSelector.Instance.CPythonEvaluationMethod);
+            PythonEngineManager.Instance.GetEvaluatorInfo(PythonEngineVersion.CPython3, out evaluatorClass, out evaluationMethod);
+            Assert.AreEqual(evaluatorClass, PythonEngineManager.CPythonEvaluatorClass);
+            Assert.AreEqual(evaluationMethod, PythonEngineManager.CPythonEvaluationMethod);
 
-            Assert.AreEqual(true, PythonEngineSelector.Instance.AvailableEngines.Contains(PythonEngineVersion.CPython3));
-            Assert.AreEqual(true, PythonEngineSelector.Instance.AvailableEngines.Contains(PythonEngineVersion.IronPython2));
+            Assert.AreEqual(true, PythonEngineManager.Instance.AvailableEngines.Any(x => x.Version == PythonEngineVersion.CPython3));
+            Assert.AreEqual(true, PythonEngineManager.Instance.AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2));
         }
 
         [Test]

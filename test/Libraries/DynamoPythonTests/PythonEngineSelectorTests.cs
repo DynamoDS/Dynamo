@@ -25,17 +25,17 @@ namespace DynamoPythonTests
         [Test]
         public void TestEngineSelectorInitialization()
         {
-            PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2, out string evaluatorClass, out string evaluationMethod);
-            Assert.AreEqual(true, PythonEngineSelector.lazy.IsValueCreated);
+            PythonEngineManager.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2, out string evaluatorClass, out string evaluationMethod);
+            Assert.AreEqual(true, PythonEngineManager.lazy.IsValueCreated);
             Assert.AreEqual(PythonEngineManager.DummyEvaluatorClass, evaluatorClass);
             Assert.AreEqual(PythonEngineManager.DummyEvaluatorMethod, evaluationMethod);
 
-            PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.CPython3, out evaluatorClass, out evaluationMethod);
+            PythonEngineManager.Instance.GetEvaluatorInfo(PythonEngineVersion.CPython3, out evaluatorClass, out evaluationMethod);
             Assert.AreEqual(evaluatorClass, PythonEngineManager.CPythonEvaluatorClass);
             Assert.AreEqual(evaluationMethod, PythonEngineManager.CPythonEvaluationMethod);
 
-            Assert.AreEqual(true, PythonEngineSelector.Instance.AvailableEngines.Any(x => x.Version == PythonEngineVersion.CPython3));
-            Assert.AreEqual(false, PythonEngineSelector.Instance.AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2));
+            Assert.AreEqual(true, PythonEngineManager.Instance.AvailableEngines.Any(x => x.Version == PythonEngineVersion.CPython3));
+            Assert.AreEqual(false, PythonEngineManager.Instance.AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2));
         }
 
         [Test]
