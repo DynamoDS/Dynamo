@@ -822,10 +822,9 @@ namespace ProtoCore.DSASM
         private string previousProcedureName;
         private CallSite callsite;
 
-        public StackValue CallDipose(ProcedureNode fNode,
+        public StackValue CallDispose(ProcedureNode fNode,
                                 StackValue svThisPtr,
-                                int classIndex,
-                                ref bool explicitCall)
+                                int classIndex)
         {
             if (null != Properties.executingGraphNode)
             {
@@ -841,10 +840,7 @@ namespace ProtoCore.DSASM
 
             Validity.Assert(null != callsite);
 
-            StackValue sv = StackValue.Null;
-            sv = callsite.DispatchDispose(svThisPtr, runtimeCore);
-            
-            return sv;
+            return callsite.DispatchDispose(svThisPtr, runtimeCore);
         }
 
         private StackValue CallrForMemberFunction(int blockIndex,

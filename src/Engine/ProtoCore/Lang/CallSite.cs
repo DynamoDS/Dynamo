@@ -1536,6 +1536,7 @@ namespace ProtoCore
         public StackValue DispatchDispose(
             StackValue stackValue, RuntimeCore runtimeCore)
         {
+            //Cache finalFep for CallSite.  Note there is always only one dispose endpoint returned.
             if (finalFep == null)
             {
                 var funcGroup = FirstFunctionGroupInInheritanceChain(runtimeCore, classScope);
@@ -1543,11 +1544,9 @@ namespace ProtoCore
             }
             
             disposeArguments[0] = stackValue;
-            
-            //EXECUTE
-            StackValue ret = finalFep.Execute(null, disposeArguments, null, runtimeCore);
 
-            return ret;
+            //EXECUTE
+            return finalFep.Execute(null, disposeArguments, null, runtimeCore);
         }
 
         private StackValue Execute(
