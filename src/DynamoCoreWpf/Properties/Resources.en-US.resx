@@ -2925,4 +2925,16 @@ This package will be unloaded after the next Dynamo restart.</value>
   <data name="AutodeskSamplePackage" xml:space="preserve">
     <value>Autodesk sample</value>
   </data>
+  <data name="PackagesGuideDependenciesText" xml:space="preserve">
+    <value>If you need other software or tools in order to use this package, they are listed under Dependencies. The interactive guide for Package Dependencies will tell you more.</value>
+  </data>
+  <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
+    <value>Package dependencies</value>
+  </data>
+  <data name="PackagesGuideSearchResultsText" xml:space="preserve">
+    <value>\nSearch results display summary information for each package: -author- -likes and downloads- -date of the most recent version- \n**Click View Details** to see more information about a package.</value>
+  </data>
+  <data name="PackagesGuideSearchResultsTitle" xml:space="preserve">
+    <value>Search results</value>
+  </data>
 </root>

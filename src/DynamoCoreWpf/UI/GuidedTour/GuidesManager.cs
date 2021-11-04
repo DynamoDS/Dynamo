@@ -340,17 +340,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <returns></returns>
         private HostControlInfo CreateHostControl(HostControlInfo jsonHostControlInfo)
         {
-            var popupInfo = new HostControlInfo()
-            {
-                PopupPlacement = jsonHostControlInfo.PopupPlacement,
-                HostUIElementString = jsonHostControlInfo.HostUIElementString,
-                HostUIElement = mainRootElement,
-                VerticalPopupOffSet = jsonHostControlInfo.VerticalPopupOffSet,
-                HorizontalPopupOffSet = jsonHostControlInfo.HorizontalPopupOffSet,
-                HtmlPage = jsonHostControlInfo.HtmlPage,
-                WindowName = jsonHostControlInfo.WindowName,
-                DynamicHostWindow = jsonHostControlInfo.DynamicHostWindow
-            };
+            //We use the HostControlInfo copy contrutor
+            var popupInfo = new HostControlInfo(jsonHostControlInfo, mainRootElement);
 
             //If the CutOff area was defined in the json file then a section of the background overlay will be removed
             if (jsonHostControlInfo.CutOffRectArea != null)
@@ -365,15 +356,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //If the Highlight area was defined in the json file then a rectangle will be highlighted in the Overlay
             if (jsonHostControlInfo.HighlightRectArea != null)
             {
-                popupInfo.HighlightRectArea = new HighlightArea()
-                {
-                    HighlightColor = jsonHostControlInfo.HighlightRectArea.HighlightColor,
-                    WidthBoxDelta = jsonHostControlInfo.HighlightRectArea.WidthBoxDelta,
-                    HeightBoxDelta = jsonHostControlInfo.HighlightRectArea.HeightBoxDelta,
-                    WindowName = jsonHostControlInfo.HighlightRectArea.WindowName,
-                    WindowElementNameString = jsonHostControlInfo.HighlightRectArea.WindowElementNameString,
-                    UIElementTypeString = jsonHostControlInfo.HighlightRectArea.UIElementTypeString
-                };
+                //We use the HighlightArea copy contrutor
+                popupInfo.HighlightRectArea = new HighlightArea(jsonHostControlInfo.HighlightRectArea);
             }
 
             //The host_ui_element read from the json file need to exists otherwise the host will be null

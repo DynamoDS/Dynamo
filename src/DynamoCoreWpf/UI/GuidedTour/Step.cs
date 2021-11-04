@@ -454,7 +454,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         var buttonElement = foundElement as Button;
                         if (buttonElement == null) return;
 
-                        var bordersGrid = buttonElement.Template.FindName("bordersGrid", buttonElement) as Grid;
+                        //We will be searching for the Grid name provided in the json file and then add the Highlight Rectangle
+                        var bordersGrid = buttonElement.Template.FindName(HostPopupInfo.HighlightRectArea.UIElementGridContainer, buttonElement) as Grid;
                         if (bordersGrid == null) return;
 
                         if (bVisible)
