@@ -131,7 +131,7 @@ namespace Dynamo.PackageManager.UI
             }
         }
 
-        private void PreferencesPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        private void PackageManagerSearchView_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //Drag functionality when the TitleBar is clicked with the left button and dragged to another place
             if (e.ChangedButton == MouseButton.Left)
