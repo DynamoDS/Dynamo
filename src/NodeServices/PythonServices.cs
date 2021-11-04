@@ -77,39 +77,67 @@ namespace Dynamo.PythonServices
             PythonEngineManager.Instance.ScanPythonEngine(args.LoadedAssembly);
         }
 
+        internal PythonEngineProxy CreateEngineProxy(Assembly assembly, PythonEngineVersion version)
+        {
+            // Currently we are using try-catch to validate loaded assembly and evaluation method exist
+            // but we can optimize by checking all loaded types against evaluators interface later
+            try
+            {
+                if (version == PythonEngineVersion.IronPython2 && assembly.GetName().Name.Equals(IronPythonAssemblyName))
+                {
+                    var eType = assembly.GetType(IronPythonTypeName);
+                    if (eType != null && eType.GetMethod(IronPythonEvaluationMethod) != null)
+                    {
+                        return new PythonEngineProxy(eType, PythonEngineVersion.IronPython2);
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+            }
+
+            try
+            {
+                if (version == PythonEngineVersion.CPython3 && assembly.GetName().Name.Equals(CPythonAssemblyName))
+                {
+                    var eType = assembly.GetType(CPythonTypeName);
+                    if (eType != null && eType.GetMethod(CPythonEvaluationMethod) != null)
+                    {
+                        return new PythonEngineProxy(eType, PythonEngineVersion.CPython3);
+                    }
+                }
+            }
+            catch
+            {
+                //Do nothing for now
+            }
+            return null;
+        }
+
         private void ScanPythonEngine(Assembly assembly)
         {
             if (assembly == null)
             {
                 return;
             }
-            // Currently we are using try-catch to validate loaded assembly and evaluation method exist
-            // but we can optimize by checking all loaded types against evaluators interface later
-            try
+
+            if (!AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2))
             {
-                if (!AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2) &&
-                    assembly.GetName().Name.Equals(IronPythonAssemblyName) &&
-                    assembly.GetType(IronPythonTypeName).GetMethod(IronPythonEvaluationMethod) != null)
+                var engine = CreateEngineProxy(assembly, PythonEngineVersion.IronPython2);
+                if (engine != null)
                 {
-                    AvailableEngines.Add(new PythonEngineProxy(assembly, PythonEngineVersion.IronPython2));
+                    AvailableEngines.Add(engine);
                 }
             }
-            catch
+
+            if (!AvailableEngines.Any(x => x.Version == PythonEngineVersion.CPython3))
             {
-                //Do nothing for now
-            }
-            try
-            {
-                if (!AvailableEngines.Any(x => x.Version == PythonEngineVersion.CPython3) &&
-                    assembly.GetName().Name.Equals(CPythonAssemblyName) &&
-                    assembly.GetType(CPythonTypeName).GetMethod(CPythonEvaluationMethod) != null)
+                var engine = CreateEngineProxy(assembly, PythonEngineVersion.CPython3);
+                if (engine != null)
                 {
-                    AvailableEngines.Add(new PythonEngineProxy(assembly, PythonEngineVersion.CPython3));
+                    AvailableEngines.Add(engine);
                 }
-            }
-            catch
-            {
-                //Do nothing for now
             }
         }
 
@@ -160,19 +188,15 @@ namespace Dynamo.PythonServices
     public class PythonEngineProxy : IDisposable
     {
         public readonly PythonEngineVersion Version;
-        private readonly Assembly Assembly;
         private readonly Type EngineType;
 
         private Action<string, IList, Action<string, object>> OnBeginEvaluation;
         private Action<string, IList> OnEndEvaluation;
 
-        internal PythonEngineProxy(Assembly a, PythonEngineVersion vers)
+        internal PythonEngineProxy(Type eType, PythonEngineVersion version)
         {
-            Version = vers;
-            Assembly = a;
-            EngineType = Version == PythonEngineVersion.IronPython2 ?
-                Assembly.GetType(PythonEngineManager.IronPythonTypeName) :
-                Assembly.GetType(PythonEngineManager.CPythonTypeName);
+            EngineType = eType;
+            Version = version;
         }
 
         public void Dispose()

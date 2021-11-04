@@ -75,9 +75,9 @@ namespace DynamoPythonTests
         }
 
         [Test]
-        public void PytonEngineManagerAPITest()
+        public void CPytonEngineManagerAPITest()
         {
-            var cPython3Eng = new PythonEngineProxy(
+            var cPython3Eng = PythonEngineManager.Instance.CreateEngineProxy(
                 Assembly.GetAssembly(typeof(DSCPython.CPythonEvaluator)), 
                 PythonEngineVersion.CPython3);
 

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Dynamo;
 using Dynamo.PythonServices;
+using Dynamo.Utilities;
 using NUnit.Framework;
 using PythonNodeModels;
 using static Dynamo.Models.DynamoModel;
@@ -70,6 +73,46 @@ namespace IronPythonTests
             CurrentDynamoModel.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
 
             Assert.AreEqual(pyNode.Engine, PythonEngineVersion.IronPython2);
+        }
+
+        [Test]
+        public void IronPytonEngineManagerAPITest()
+        {
+            var ironPythonEng = PythonEngineManager.Instance.CreateEngineProxy(
+                Assembly.GetAssembly(typeof(DSIronPython.IronPythonEvaluator)), 
+                PythonEngineVersion.IronPython2);
+
+            Assert.IsNotNull(ironPythonEng);
+
+            ironPythonEng.OnEvaluationBegin((code, bindings, scopeSet) => { scopeSet("IN", new ArrayList { " ", "  " }); });
+
+            int counter = 0;
+            ironPythonEng.OnEvaluationEnd((code, bindings) => { counter++; });
+
+            var inputM = ironPythonEng.GetInputMarshaler() as DataMarshaler;
+            inputM.RegisterMarshaler((string s) => s.Length);
+
+            var output = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(
+                "OUT = sum(IN)", new ArrayList(), new ArrayList());
+
+            inputM.UnregisterMarshalerOfType<string>();
+
+            Assert.AreEqual(3, output);
+
+            var outputM = ironPythonEng.GetOutputMarshaler() as DataMarshaler;
+            outputM.RegisterMarshaler((string s) => s.Length);
+
+            ironPythonEng.OnEvaluationBegin((code, bindings, scopeSet) => { scopeSet("TEST", new ArrayList { "", " ", "  " }); });
+
+            output = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(
+                "OUT = TEST",
+                new ArrayList(),
+                new ArrayList());
+
+            outputM.UnregisterMarshalerOfType<string>();
+
+            Assert.AreEqual(new[] { 0, 1, 2 }, output);
+            Assert.AreEqual(2, counter);
         }
     }
 }
