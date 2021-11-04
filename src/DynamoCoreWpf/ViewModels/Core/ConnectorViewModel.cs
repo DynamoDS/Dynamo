@@ -813,13 +813,13 @@ namespace Dynamo.ViewModels
         /// pins when a WatchNode is placed in the center of a connector.
         /// </summary>
         /// <param name="point"></param>
-        public void PinConnectorPlacementFromWatchNode(ConnectorModel[] connectors, int connectorWireIndex, Point point)
+        public void PinConnectorPlacementFromWatchNode(ConnectorModel[] connectors, int connectorWireIndex, Point point, List<ModelBase> createdModels)
         {
             var selectedConnector = connectors[connectorWireIndex];
 
             var connectorPinModel = new ConnectorPinModel(point.X, point.Y, Guid.NewGuid(), selectedConnector.GUID);
             selectedConnector.AddPin(connectorPinModel);
-            workspaceViewModel.Model.RecordCreatedModel(connectorPinModel);
+            createdModels.Add(connectorPinModel);
         }
 
         private void HandlerRedrawRequest(object sender, EventArgs e)
@@ -1215,12 +1215,13 @@ namespace Dynamo.ViewModels
         /// operation as well as during the 'PlaceWatchNode', where all previous pins corresponding 
         /// to a connector are cleareed.
         /// </summary>
-        internal void DiscardAllConnectorPinModels()
+        internal void DiscardAllConnectorPinModels(List<ModelBase> allDeletedModels = null)
         {
             foreach (var pin in ConnectorPinViewCollection)
             {
                 workspaceViewModel.Pins.Remove(pin);
                 ConnectorModel.RemovePin(pin.Model);
+                allDeletedModels.Add(pin.Model);
                 pin.Model.Dispose();
                 pin.Dispose();
             }
