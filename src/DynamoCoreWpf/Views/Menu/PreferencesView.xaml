@@ -132,10 +132,10 @@
                        HorizontalAlignment="Left" 
                        Width="459" />
             <StackPanel Grid.Column="1" 
-                        VerticalAlignment="Top" 
+                        VerticalAlignment="Top"  
                         Orientation="Horizontal" 
                         HorizontalAlignment="Right">
-                <Button x:Name="CloseButton" 
+                <Button x:Name="CloseButton"  
                         Style="{DynamicResource CloseButtonStyle}" 
                         Click="CloseButton_Click" 
                         VerticalAlignment="Center"
