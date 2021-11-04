@@ -23,6 +23,9 @@ namespace Dynamo.ViewModels
         private IEnumerable<PortModel> originalInPorts;
         private IEnumerable<PortModel> originalOutPorts;
         private Dictionary<string, RectangleGeometry> GroupIdToCutGeometry = new Dictionary<string, RectangleGeometry>();
+        // vertical offset accounts for the port margins
+        private const int verticalOffset = 20;
+        private const int portVerticalMidPoint = 17;
 
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
@@ -654,6 +657,30 @@ namespace Dynamo.ViewModels
                 );
         }
 
+        private double GetPortVerticalOffset(PortModel portModel, int proxyPortIndex)
+        {
+            // calculate the vertical offset based on the port index.
+            double portHeight = portModel.Height;
+            return verticalOffset + (proxyPortIndex * portHeight) + portVerticalMidPoint;
+        }
+
+        private Point2D CalculatePortPosition(PortModel portModel, int proxyPortIndex)
+        {
+            double groupHeaderHeight = Height - ModelAreaRect.Height;
+
+            double offset = GetPortVerticalOffset(portModel, proxyPortIndex);
+            double y = Top + groupHeaderHeight + offset;
+
+            switch (portModel.PortType)
+            {
+                case PortType.Input:
+                    return new Point2D(Left, y);
+                case PortType.Output:         
+                    return new Point2D(Left + Width, y);
+            }
+            return new Point2D();
+        }
+
         private List<PortViewModel> CreateProxyInPorts(IEnumerable<PortModel> groupPortModels)
         {
             var originalPortViewModels = WorkspaceViewModel.Nodes
@@ -666,7 +693,11 @@ namespace Dynamo.ViewModels
             {
                 var model = groupPortModels.ElementAt(i);
                 newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(model));
-            }
+
+                // calculate new position for the proxy inports.
+                model.Center = CalculatePortPosition(model, i);
+                model.Owner.ReportPosition();
+            } 
 
             return newPortViewModels;
         }
@@ -683,9 +714,38 @@ namespace Dynamo.ViewModels
             {
                 var model = groupPortModels.ElementAt(i);
                 newPortViewModels.Add(originalPortViewModels[i].CreateProxyPortViewModel(model));
+
+                // calculate new position for the proxy outports
+                model.Center = CalculatePortPosition(model, i);
+                model.Owner.ReportPosition();
             }
 
             return newPortViewModels;
+        }
+
+        private void UpdateProxyPortsPosition()
+        {
+            var groupInports = GetGroupInPorts();
+
+            for (int i = 0; i < groupInports.Count(); i++)
+            {
+                var model = groupInports.ElementAt(i);
+
+                // calculate new position for the proxy inports.
+                model.Center = CalculatePortPosition(model, i);
+                model.Owner.ReportPosition();
+            }
+
+            var groupOutports = GetGroupOutPorts();
+
+            for (int i = 0; i < groupOutports.Count(); i++)
+            {
+                var model = groupOutports.ElementAt(i);
+
+                // calculate new position for the proxy outports.
+                model.Center = CalculatePortPosition(model, i);
+                model.Owner.ReportPosition();
+            }
         }
 
         internal void ClearSelection()
@@ -794,6 +854,12 @@ namespace Dynamo.ViewModels
                     .ToList();
 
                 connectorViewModels.ForEach(x => x.IsCollapsed = false);
+
+                // Set IsProxyPort back to false when the group is expanded.
+                nodeModel.InPorts.ToList().ForEach(x => x.IsProxyPort = false);
+                nodeModel.OutPorts.ToList().ForEach(x => x.IsProxyPort = false);
+
+                connectorViewModels.ForEach(x => x.Redraw());
             }
         }
 
@@ -898,8 +964,8 @@ namespace Dynamo.ViewModels
                 case nameof(AnnotationModel.Position):
                     RaisePropertyChanged(nameof(ModelAreaRect));
                     RaisePropertyChanged(nameof(AnnotationModel.Position));
+                    UpdateProxyPortsPosition();
                     break;
-
             }
         }
 

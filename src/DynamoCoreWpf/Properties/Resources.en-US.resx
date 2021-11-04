@@ -2917,7 +2917,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>To continue the guide and install the sample package, you must accept the Terms of Service. \n\n **Click Continue.** Then in the terms, **click I Accept.** \n\n\n\n</value>
   </data>
   <data name="PackagesGuideExitTitle" xml:space="preserve">
-    <value>Do you want to continue the guide?</value>
+    <value>Do you want to exit the guide?</value>
   </data>
   <data name="InfoBubbleInfo" xml:space="preserve">
     <value>Info</value>

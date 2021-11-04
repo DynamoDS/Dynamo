@@ -705,7 +705,7 @@
                               HorizontalContentAlignment="Left"
                               Style="{StaticResource InOutPortControlStyle}"
                               ItemsSource="{Binding Path=InPorts}"
-                              Margin="0,10">
+                              Margin="-25,10">
                 </ItemsControl>
 
                 <!--OUTPUT PORTS-->
