@@ -191,7 +191,7 @@
 		"Name": "Packages",
 		"GuideSteps": [
 			{
-				"Sequence": 0,
+				"Sequence": 1,
 				"Name": "packages",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
@@ -225,7 +225,7 @@
 				}
 			},
 			{
-				"Sequence": 1,
+				"Sequence": 2,
 				"Name": "find package",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
@@ -263,7 +263,7 @@
 				]
 			},
 			{
-				"Sequence": 2,
+				"Sequence": 3,
 				"Name": "terms of service",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
@@ -325,7 +325,7 @@
 				]
 			},
 			{
-				"Sequence": 2,
+				"Sequence": 3,
 				"Name": "third-party packages",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
@@ -362,23 +362,31 @@
 				]
 			},
 			{
-				"Sequence": 3,
+				"Sequence": 4,
 				"Name": "search-filter-sort",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 260,
+				"Height": 470,
 				"StepContent": {
 					"Title": "PackagesGuideSearchFilterTitle",
 					"FormattedText": "PackagesGuideSearchFilterText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "right",
+					"PopupPlacement": "relative",
 					"WindowName": "PackageSearch",
 					"DynamicHostWindow": true,
 					"HostUIElementString": "PackageSearch",
-					"VerticalPopupOffset": 50,
-					"HorizontalPopupOffset": 0
+					"VerticalPopupOffset": 40,
+					"HorizontalPopupOffset": 470,
+					"HtmlPage": {
+						"FileName": "searchPackages.html",
+						"Resources": {
+							"#SearchPackages": "SearchPackages.gif",
+							"#filterIcon": "filterIcon.png",
+							"#sortIcon": "sortIcon.png"
+						}
+					}
 				},
 				"UIAutomation": [
 					{

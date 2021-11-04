@@ -92,7 +92,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             if (GuideSteps.Any())
             {
-                Step firstStep = (from step in GuideSteps where step.Sequence == 0 select step).FirstOrDefault();
+                Step firstStep = GuideSteps.FirstOrDefault();
                 CurrentStep = firstStep;
 
                 //When the first step of the guide is a tooltip, then it need to have a background and a hole to highlight the element
