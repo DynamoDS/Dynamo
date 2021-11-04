@@ -24,7 +24,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Thumb">
-                            <Grid Name="ThumbGrid" IsHitTestVisible="True" Background="Transparent" Margin="-4,-8" Height="26" Width="12">
+                            <Grid>
                                 <Border
                                     Name="Thumb"
                                     Width="4"
