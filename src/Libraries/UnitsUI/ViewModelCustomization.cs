@@ -26,6 +26,9 @@ namespace UnitsUI
         /// </summary>
         public DelegateCommand ToggleButtonClick { get; set; }
 
+        /// <summary>
+        /// Selected Quantity type for conversion
+        /// </summary>
         public DynamoUnits.Quantity SelectedQuantityConversion
         {
             get { return dynamoConvertModel.SelectedQuantityConversion; }
@@ -36,6 +39,9 @@ namespace UnitsUI
             }
         }
 
+        /// <summary>
+        /// Selected Unit type to convert from.
+        /// </summary>
         public DynamoUnits.Unit SelectedFromConversion
         {
             get { return dynamoConvertModel.SelectedFromConversion; }
@@ -49,6 +55,9 @@ namespace UnitsUI
             }
         }
 
+        /// <summary>
+        /// Selected Unit type to convert to.
+        /// </summary>
         public DynamoUnits.Unit SelectedToConversion
         {
             get { return dynamoConvertModel.SelectedToConversion; }
@@ -62,11 +71,17 @@ namespace UnitsUI
             }
         }
 
+        /// <summary>
+        /// List of Quantity types that can be selected
+        /// </summary>
         public List<DynamoUnits.Quantity> QuantityConversionSource
         {
             get { return dynamoConvertModel.QuantityConversionSource; }
         }
 
+        /// <summary>
+        /// List of Unit types that can be selected for conversion.  Will be updated when SelectedQuantityConversion is changed 
+        /// </summary>
         public List<DynamoUnits.Unit> SelectedFromConversionSource
         {
             get { return dynamoConvertModel.SelectedFromConversionSource; }
@@ -77,6 +92,9 @@ namespace UnitsUI
             }
         }
 
+        /// <summary>
+        /// List of Unit types that can be selected for conversion.  Will be updated when SelectedQuantityConversion is changed 
+        /// </summary>
         public List<DynamoUnits.Unit> SelectedToConversionSource
         {
             get { return dynamoConvertModel.SelectedToConversionSource; }
@@ -88,6 +106,9 @@ namespace UnitsUI
             }
         }
 
+        /// <summary>
+        /// Property alerting the UI whether a selection from the dropdowns is enabled.
+        /// </summary>
         public bool IsSelectionFromBoxEnabled
         {
             get { return dynamoConvertModel.IsSelectionFromBoxEnabled; }
@@ -98,6 +119,9 @@ namespace UnitsUI
             }
         }
 
+        /// <summary>
+        /// Provides the SelectionFromBox with a tooltip describing the conversion.
+        /// </summary>
         public string SelectionFromBoxToolTip
         {
             get { return dynamoConvertModel.SelectionFromBoxToolTip; }
