@@ -14,6 +14,7 @@
         xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
         xmlns:ui1="clr-namespace:Dynamo.PackageManager.UI"
         mc:Ignorable="d"
+        x:Name="TermsOfUseWindow"
         Title="{x:Static p:Resources.TermsOfUseViewTitle}">
 
     <Window.Resources>
@@ -47,6 +48,7 @@
 
         <StackPanel Orientation="Horizontal"
                     FlowDirection="RightToLeft"
+                    Name="ButtonsStackPanel"
                     Grid.Row="1"
                     Background="#333">
             <Button Name="DeclineTermsOfUseButton"

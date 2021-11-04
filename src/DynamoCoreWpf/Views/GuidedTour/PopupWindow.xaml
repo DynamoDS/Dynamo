@@ -73,7 +73,8 @@
             </Polygon.BitmapEffect>
         </Polygon>
 
-        <Grid Width="{Binding Width}"
+        <Grid   x:Name="mainPopupGrid"
+                Width="{Binding Width}"
                 Height="{Binding Height}"
                 MinWidth="480">
             <Grid.RowDefinitions>

@@ -24,6 +24,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")] // Dynamic assembly created by Moq
 [assembly: InternalsVisibleTo("WpfVisualizationTests")]
 [assembly: InternalsVisibleTo("LibraryViewExtension")]
+[assembly: InternalsVisibleTo("PackageDetailsViewExtension")]
 [assembly: InternalsVisibleTo("ViewExtensionLibraryTests")]
 [assembly: InternalsVisibleTo("DynamoPerformanceTests")]
 [assembly: InternalsVisibleTo("PackageManagerTests")]
@@ -38,6 +39,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]
 [assembly: InternalsVisibleTo("LintingViewExtension")]
 [assembly: InternalsVisibleTo("GenerativeDesign.Dynamo.ViewExtension")]
+[assembly: InternalsVisibleTo("DynamoPlayerExtension")]
 [assembly: InternalsVisibleTo("DSCPython")]
 [assembly: InternalsVisibleTo("DynamoPythonTests")]
 [assembly: InternalsVisibleTo("GraphMetadataViewExtension")]

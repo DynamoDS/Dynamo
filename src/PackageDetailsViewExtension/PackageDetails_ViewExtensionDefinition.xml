@@ -1,0 +1,4 @@
+<ViewExtensionDefinition>
+  <AssemblyPath>..\PackageDetailsViewExtension.dll</AssemblyPath>
+  <TypeName>Dynamo.PackageDetails.PackageDetailsViewExtension</TypeName>
+</ViewExtensionDefinition>

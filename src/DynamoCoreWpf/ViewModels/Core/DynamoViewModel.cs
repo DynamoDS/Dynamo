@@ -409,7 +409,6 @@ namespace Dynamo.ViewModels
             set
             {
                 model.ConnectorType = value;
-
                 RaisePropertyChanged("ConnectorType");
             }
         }
@@ -725,6 +724,11 @@ namespace Dynamo.ViewModels
             model.ComputeModelDeserialized += model_ComputeModelDeserialized;
 
             preferencesViewModel = new PreferencesViewModel(this);
+
+            if (!DynamoModel.IsTestMode && !DynamoModel.IsHeadless)
+            {
+                model.State = DynamoModel.DynamoModelState.StartedUI;
+            }
         }
 
         /// <summary>
@@ -1287,7 +1291,8 @@ namespace Dynamo.ViewModels
             //Check for multiple groups - Delete the group and not the nodes.
             foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>())
             {
-                if (!(modelb is AnnotationModel))
+                if (!(modelb is AnnotationModel) && 
+                    !CurrentSpace.Annotations.ContainsModel(modelb)) 
                 {
                     var command = new DynamoModel.AddModelToGroupCommand(modelb.GUID);
                     this.ExecuteCommand(command);
@@ -2410,14 +2415,7 @@ namespace Dynamo.ViewModels
 
         public void SetConnectorType(object parameters)
         {
-            if (parameters.ToString() == "BEZIER")
-            {
-                ConnectorType = ConnectorType.BEZIER;
-            }
-            else
-            {
-                ConnectorType = ConnectorType.POLYLINE;
-            }
+            ConnectorType = ConnectorType.BEZIER;
         }
 
         internal bool CanSetConnectorType(object parameters)

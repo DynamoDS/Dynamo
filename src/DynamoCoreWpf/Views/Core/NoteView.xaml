@@ -132,7 +132,7 @@
             Visibility="{Binding Path=PinnedNode, Converter={StaticResource nullToVisibiltyConverter }, UpdateSourceTrigger=PropertyChanged}"
             >
             <Image
-                Source="/DynamoCoreWpf;component/UI/Images/Pin_NoBackground_16_16.png"
+                Source="/DynamoCoreWpf;component/UI/Images/Pin_NoBackground_16px.png"
                 Width="10"
                 />
         </Button>

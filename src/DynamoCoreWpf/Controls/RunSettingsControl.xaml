@@ -10,7 +10,8 @@
     xmlns:ui="clr-namespace:Dynamo.UI"
     xmlns:viewModels="clr-namespace:Dynamo.Wpf.ViewModels"
     d:DesignHeight="40"
-    d:DesignWidth="300"
+    d:DesignWidth="600"
+    d:DataContext="{d:DesignInstance Type=viewModels:RunSettingsViewModel}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -32,43 +33,109 @@
             </ObjectDataProvider>
 
             <viewModels:RunPeriodConverter x:Key="RunPeriodConverter" />
+            <Style x:Key="RunButtonStyle"
+                   TargetType="{x:Type Button}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Border x:Name="container"
+                                    Background="Transparent"
+                                    BorderBrush="#FF23A597"
+                                    CornerRadius="2"
+                                    BorderThickness="1">
+                                <Grid x:Name="inner"
+                                      Background="#FF23A597">
+                                    <TextBlock x:Name="text"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontSize="14px"
+                                               Foreground="#FFFFFF"
+                                               Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                                </Grid>
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+
+                                <Trigger Property="Button.IsMouseOver"
+                                         Value="true">
+                                    <Setter TargetName="container"
+                                            Property="BorderBrush"
+                                            Value="#26808080" />
+                                    <Setter TargetName="container"
+                                            Property="BorderThickness"
+                                            Value="2" />
+                                </Trigger>
+
+                                <Trigger Property="Button.IsPressed"
+                                         Value="true">
+                                    <Setter TargetName="container"
+                                            Property="BorderBrush"
+                                            Value="#40808080" />
+                                    <Setter TargetName="container"
+                                            Property="BorderThickness"
+                                            Value="4" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
         <StackPanel Orientation="Horizontal">
-
-            <ComboBox
-                Name="RunTypesComboBox"
-                Width="Auto"
-                Margin="2.5,0,2.5,0"
-                HorizontalContentAlignment="Left"
-                VerticalContentAlignment="Center"
-                FontSize="14px"
-                ItemsSource="{Binding RunTypeItems}"
-                SelectedItem="{Binding SelectedRunTypeItem}"
-                Style="{StaticResource ResourceKey=SComboBox}">
+            <ComboBox Name="RunTypesComboBox"
+                      Width="200"
+                      Margin="2.5,0,10,0"
+                      HorizontalContentAlignment="Left"
+                      VerticalContentAlignment="Center"
+                      FontSize="14px"
+                      ItemsSource="{Binding RunTypeItems}"
+                      SelectedItem="{Binding SelectedRunTypeItem}"
+                      Style="{StaticResource RefreshRunSettingsComboBox}">
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ComboBoxItem}">
-                        <Setter Property="IsEnabled" Value="{Binding Enabled}" />
+                        <Setter Property="IsEnabled"
+                                Value="{Binding Enabled}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                                    <ContentPresenter />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
                 </ComboBox.ItemContainerStyle>
                 <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <Label
-                            Content="{Binding Name}"
-                            IsEnabled="{Binding Enabled}"
-                            ToolTip="{Binding ToolTipText}"
-                            ToolTipService.ShowOnDisabled="True">
+                    <DataTemplate DataType="{x:Type viewModels:RunTypeItem}">
+                        <Label Content="{Binding Name}"
+                               IsEnabled="{Binding Enabled}"
+                               ToolTip="{Binding ToolTipText}"
+                               ToolTipService.ShowOnDisabled="True"
+                               FontStyle="Italic">
                             <Label.Style>
                                 <Style TargetType="Label">
                                     <Style.Triggers>
+                                        <Trigger Property="IsMouseOver"
+                                                 Value="True">
+                                            <Setter Property="Background"
+                                                    Value="#33000000" />
+                                        </Trigger>
                                         <DataTrigger Binding="{Binding Enabled}" Value="True">
                                             <Setter Property="Foreground" Value="{StaticResource DynamoStandardLabelTextBrush}" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Enabled}" Value="False">
-                                            <Setter Property="Foreground" Value="#444444" />
+                                        <DataTrigger Binding="{Binding Enabled}"
+                                                     Value="False">
+                                            <Setter Property="Foreground"
+                                                    Value="#33F5F5F5" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsSelected}"
+                                                     Value="True">
+                                            <Setter Property="FontFamily"
+                                                    Value="{StaticResource ArtifaktElementBold}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -78,20 +145,20 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
-            <Button
-                Name="RunButton"
-                Width="100"
-                Margin="0,0,2.5,0"
-                Click="RunButton_OnClick"
-                Command="{Binding RunExpressionCommand}"
-                CommandParameter="{Binding Path=RunInDebug}"
-                Content="{x:Static p:Resources.DynamoViewRunButton}"
-                Focusable="False"
-                IsEnabled="{Binding Path=RunButtonEnabled}"
-                Style="{StaticResource ResourceKey=STextButton}"
-                ToolTip="{Binding RunButtonToolTip}"
-                ToolTipService.ShowOnDisabled="True"
-                Visibility="{Binding RunButtonVisibility}" />
+            <Button Name="RunButton"
+                    Width="100"
+                    Margin="0,0,2.5,0"
+                    Click="RunButton_OnClick"
+                    Command="{Binding RunExpressionCommand}"
+                    CommandParameter="{Binding Path=RunInDebug}"
+                    Content="{x:Static p:Resources.DynamoViewRunButton}"
+                    Focusable="False"
+                    IsEnabled="{Binding Path=RunButtonEnabled}"
+                    ToolTip="{Binding RunButtonToolTip}"
+                    ToolTipService.ShowOnDisabled="True"
+                    Visibility="{Binding RunButtonVisibility}"
+                    Style="{StaticResource RunButtonStyle}">
+            </Button>
 
             <TextBox
                 Name="RunPeriodTextBox"
@@ -116,6 +183,11 @@
                 FontSize="11"
                 IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}"
                 Visibility="{Binding DebugCheckBoxVisibility}" />
+
+            <Image 
+                Source="/DynamoCoreWpf;component/UI/Images/clock-icon.png"
+                Width="14"
+                Visibility="Collapsed"/>
 
         </StackPanel>
 

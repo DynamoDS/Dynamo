@@ -41,12 +41,12 @@
         x:Key="ConnectionStateToColorConverter"
         ExecutionPreview="#F2930C"
         None="#444"
-        Selection="#0C92DF"
+        Selection="#6AC0E7"
         Hover="#808080"/>
 
     <controls:ConnectionStateToBrushConverter x:Key="ConnectionStateToBrushConverter"
                                               ExecutionPreviewBrush="#F2930C"
-                                              SelectionBrush="#0C92DF"
+                                              SelectionBrush="#6AC0E7"
                                               HoverBrush="#808080"
                                               NoneBrush="#444">
     </controls:ConnectionStateToBrushConverter>
@@ -64,6 +64,7 @@
     <controls:ShowHideFullscreenWatchMenuItemConverter x:Key="ShowHideFullscreenWatchMenuConverter" />
     <controls:PackageSearchStateToStringConverter x:Key="PackageSearchStateToStringConverter" />
     <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
+    <controls:EmptyStringToFalseConverter x:Key="EmptyStringToFalseConverter" />
     <controls:NegativeIntToZeroConverter x:Key="NegativeIntToZeroConverter" />
     <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter" />
     <controls:InstalledButtonTextConverter x:Key="InstalledButtonTextConverter" />
@@ -83,6 +84,7 @@
     <controls:AutoLacingToVisibilityConverter x:Key="AutoLacingToVisibilityConverter" />
     <controls:LacingToAbbreviationConverter x:Key="LacingToAbbreviationConverter" />
     <controls:LacingToTooltipConverter x:Key="LacingToTooltipConverter" />
+    <controls:NodeWarningConverter x:Key="NodeWarningConverter"/>
     <controls:NodeOriginalNameToMarginConverter x:Key="NodeOriginalNameToMarginConverter" />
     <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />

@@ -47,9 +47,9 @@
     <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=2.0.7843.19074, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Greg, Version=2.1.7972.24350, Culture=neutral, processorArchitecture=MSIL">
       <Private>True</Private>
-      <HintPath>..\packages\Greg.2.0.7843.19074\lib\net48\Greg.dll</HintPath>
+      <HintPath>..\packages\Greg.2.1.7972.24350\lib\net48\Greg.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit, Version=2.17.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.2.17.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>
@@ -69,16 +69,15 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoGeometry, Version=2.12.0.6315, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="ProtoGeometry, Version=2.13.0.6656, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.6315\lib\net48\ProtoGeometry.dll</HintPath>
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_228_0_0.2.13.0.6656\lib\net48\ProtoGeometry.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=106.12.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.12.0\lib\net452\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
@@ -111,6 +110,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -144,6 +144,9 @@
     <Compile Include="Controls\NotificationsControl.xaml.cs">
       <DependentUpon>NotificationsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OutPortContextMenu.xaml.cs">
+      <DependentUpon>OutPortContextMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ParentMenuItem.cs" />
     <Compile Include="Controls\RunSettingsControl.xaml.cs">
       <DependentUpon>RunSettingsControl.xaml</DependentUpon>
@@ -175,11 +178,15 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
+    <Compile Include="UI\GuidedTour\CutOffArea.cs" />
+    <Compile Include="UI\GuidedTour\ExitGuide.cs" />
     <Compile Include="UI\GuidedTour\Guide.cs" />
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
-    <Compile Include="UI\GuidedTour\GuidedTourResources.cs" />
+    <Compile Include="UI\GuidedTour\GuidesValidationMethods.cs" />
+    <Compile Include="UI\GuidedTour\HightlightArea.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
+    <Compile Include="UI\GuidedTour\PreValidation.cs" />
     <Compile Include="UI\GuidedTour\Step.cs" />
     <Compile Include="UI\GuidedTour\StepUIAutomation.cs" />
     <Compile Include="UI\GuidedTour\Survey.cs" />
@@ -188,6 +195,9 @@
     <Compile Include="UI\MouseBehaviour.cs" />
     <Compile Include="UI\Prompts\DynamoMessageBox.xaml.cs">
       <DependentUpon>DynamoMessageBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InPortContextMenu.xaml.cs">
+      <DependentUpon>InPortContextMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
@@ -223,6 +233,7 @@
     <Compile Include="Utilities\CrashUtilities.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\MessageBoxUtilities.cs" />
+    <Compile Include="Utilities\NodeContextMenuBuilder.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
@@ -304,7 +315,10 @@
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\Core\InPortViewModel.cs" />
+    <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
+    <Compile Include="ViewModels\GuidedTour\ExitGuideWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
     <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
@@ -355,6 +369,9 @@
     </Compile>
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\ExitGuideWindow.xaml.cs">
+      <DependentUpon>ExitGuideWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GuidedTour\WebBrowserWindow.xaml.cs">
       <DependentUpon>WebBrowserWindow.xaml</DependentUpon>
@@ -486,9 +503,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <None Include="UI\Themes\Modern\InPorts.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Themes\Modern\OutPorts.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Page Include="Controls\OutPortContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Prompts\DynamoMessageBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\InPortContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GuidedTour\ExitGuideWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GuidedTour\WebBrowserWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -637,6 +674,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
+    <Resource Include="UI\Images\caret_up.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
@@ -1061,12 +1100,6 @@
     <Resource Include="UI\Images\StartPage\icon-dictionary.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\tabs_button_hover.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\tabs_button_normal.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Images\task_dialog_crash.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1409,11 +1442,31 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\filterIcon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\sortIcon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\SearchPackages.gif" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\searchPackages.html" />
+    <Resource Include="UI\Images\error-icon.png" />
+    <Resource Include="UI\Images\searchmagnifier.png" />
+    <Resource Include="UI\Images\info-grey.png" />
+    <Resource Include="UI\Images\remove - default.png" />
+    <Resource Include="UI\Images\close_blue.png" />
+    <Resource Include="UI\Images\close_grey.png" />
+    <Resource Include="UI\Images\Folder.png" />
+    <Resource Include="UI\Images\caret_down_grey_48px.png" />
+    <Resource Include="UI\Images\caret_up_grey_48px.png" />
+    <Resource Include="UI\Images\menu_grey_48px.png" />
+    <Resource Include="UI\Images\NodeIcon_placeholder.png" />
+    <Resource Include="UI\Images\custom-node.png" />
+    <Resource Include="UI\Images\image-icon-default.png" />
+    <Resource Include="UI\Images\image-icon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\DynamoPackages_1_1.png" />
+    <Resource Include="UI\Images\default_info_16px.png" />
+    <Resource Include="UI\Images\clock-icon.png" />
+    <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
     <Resource Include="UI\Images\info_2.png" />
     <Resource Include="UI\Images\alert_2.png" />
-    <Resource Include="UI\Images\close_blue.png" />
-    <Resource Include="UI\Images\close_grey.png" />
     <Resource Include="UI\Images\pin_hidden_48_48.png" />
     <Resource Include="UI\Images\pin_hover_48_48.png" />
     <Resource Include="UI\Images\wire_anchor_48_48.png" />
@@ -1445,12 +1498,8 @@
     <Resource Include="UI\Images\pin_selected_48_48.png" />
     <Resource Include="UI\Images\watch_default_48_48.png" />
     <Resource Include="UI\Images\error.png" />
-    <Resource Include="UI\Images\info.png" />
     <Resource Include="UI\Images\warning.png" />
-    <Resource Include="UI\Images\menu_grey_48px.png" />
-    <Resource Include="UI\Images\caret_down_grey_48px.png" />
-    <Resource Include="UI\Images\caret_up_grey_48px.png" />
-    <Resource Include="UI\Images\NodeIcon_placeholder.png" />
+    <Resource Include="UI\Images\info.png" />
     <Resource Include="UI\Images\hidden.png" />
     <Resource Include="UI\Images\default-node-icon.png" />
     <Resource Include="UI\Images\more-vertical.png" />
@@ -1458,7 +1507,6 @@
     <Resource Include="UI\Images\alert.png" />
     <Resource Include="UI\Images\menu_16_16.png" />
     <Resource Include="UI\Images\caret_down.png" />
-    <Resource Include="UI\Images\caret_up.png" />
     <Resource Include="UI\Images\PackageManager\close_16_16.png" />
     <Resource Include="UI\Images\PackageManager\down_16_16.png" />
     <Resource Include="UI\Images\PackageManager\folder_16_16.png" />

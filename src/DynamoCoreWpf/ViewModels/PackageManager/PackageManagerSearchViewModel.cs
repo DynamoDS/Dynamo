@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Interfaces;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.ViewModels;
@@ -390,6 +391,11 @@ namespace Dynamo.PackageManager
             get { return PackageManagerClientViewModel.Downloads; }
         }
 
+        public IPreferences Preferences
+        {
+            get { return PackageManagerClientViewModel.DynamoViewModel.PreferenceSettings; }
+        }
+
         #endregion Properties & Fields
 
         internal PackageManagerSearchViewModel()
@@ -505,7 +511,11 @@ namespace Dynamo.PackageManager
         /// <param name="obj"></param>
         public void ViewPackageDetails(object obj)
         {
-            // to be implemented in future PR   
+            if (!(obj is PackageManagerSearchElement packageManagerSearchElement)) return;
+
+            PackageManagerClientViewModel
+                .DynamoViewModel
+                .OnViewExtensionOpenWithParameterRequest("Package Details", packageManagerSearchElement);
         }
 
         /// <summary>
@@ -867,12 +877,13 @@ namespace Dynamo.PackageManager
 
             List<PackageManagerSearchElementViewModel> list = null;
 
+            var isEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
             if (!String.IsNullOrEmpty(query))
             {
                 list = Filter(SearchDictionary.Search(query)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, 
-                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider, 
-                        CanInstallPackage(x.Name)))
+                    .Select(x => new PackageManagerSearchElementViewModel(x,
+                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
+                        CanInstallPackage(x.Name), isEnabledForInstall))
                     .Take(MaxNumSearchResults))
                     .ToList();
             }
@@ -880,9 +891,9 @@ namespace Dynamo.PackageManager
             {
                 // with null query, don't show deprecated packages
                 list = Filter(LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, 
-                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider, 
-                        CanInstallPackage(x.Name))))
+                    .Select(x => new PackageManagerSearchElementViewModel(x,
+                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
+                        CanInstallPackage(x.Name), isEnabledForInstall)))
                     .ToList();
                 Sort(list, this.SortingKey);
             }
@@ -905,13 +916,13 @@ namespace Dynamo.PackageManager
                     results.Sort((e1, e2) => e1.Model.Name.ToLower().CompareTo(e2.Model.Name.ToLower()));
                     break;
                 case PackageSortingKey.Downloads:
-                    results.Sort((e1, e2) => e2.Model.Downloads.CompareTo(e1.Model.Downloads));
+                    results.Sort((e1, e2) => e1.Model.Downloads.CompareTo(e2.Model.Downloads));
                     break;
                 case PackageSortingKey.LastUpdate:
-                    results.Sort((e1, e2) => e2.Versions.Last().Item1.created.CompareTo(e1.Versions.Last().Item1.created));
+                    results.Sort((e1, e2) => e1.Versions.Last().Item1.created.CompareTo(e2.Versions.Last().Item1.created));
                     break;
                 case PackageSortingKey.Votes:
-                    results.Sort((e1, e2) => e2.Model.Votes.CompareTo(e1.Model.Votes));
+                    results.Sort((e1, e2) => e1.Model.Votes.CompareTo(e2.Model.Votes));
                     break;
                 case PackageSortingKey.Maintainers:
                     results.Sort((e1, e2) => e1.Model.Maintainers.ToLower().CompareTo(e2.Model.Maintainers.ToLower()));
