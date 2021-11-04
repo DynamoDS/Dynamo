@@ -11,8 +11,6 @@ using System;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Graph;
-using Dynamo.Selection;
-using Dynamo.Graph.Annotations;
 
 namespace Dynamo.ViewModels
 {
