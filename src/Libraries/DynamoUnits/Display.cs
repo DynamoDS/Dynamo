@@ -46,6 +46,7 @@ namespace DynamoUnits
         /// <summary>
         /// Remove trailing zeros for unitized decimal values within the Dynamo UI
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public static bool RemoveTrailingZeros { get; set; } = true;
     }
 }
