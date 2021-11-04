@@ -16,8 +16,6 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -115,11 +113,5 @@
       <UnitSchemas Include="..\..\packages\ForgeUnits.Schemas.1.0.0\Content\unit\**\*.*" />
     </ItemGroup>
     <Copy SourceFiles="@(UnitSchemas)" DestinationFolder="$(OutDir)unit\%(RecursiveDir)" />
-  </Target>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\ForgeUnits.NET.3.2.2\build\ForgeUnits.NET.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\ForgeUnits.NET.3.2.2\build\ForgeUnits.NET.targets'))" />
   </Target>
 </Project>
