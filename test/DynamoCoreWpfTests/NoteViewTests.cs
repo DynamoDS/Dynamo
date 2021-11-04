@@ -203,7 +203,7 @@ namespace DynamoCoreWpfTests
             noteView.ViewModel.PinToNodeCommand.Execute(null);
 
             //Assert that distance to node adjusts to error state
-            var distanceToNode = 36;
+            var distanceToNode = 64;
             Assert.AreEqual(noteModel.CenterX, nodeModel.CenterX);
             Assert.AreEqual(noteModel.CenterY, nodeModel.CenterY - (nodeModel.Height * 0.5) - (noteModel.Height * 0.5) - distanceToNode);
         }
