@@ -625,7 +625,7 @@ sys.stdout = DynamoStdOut({0})
         {
             if (EvaluationStarted != null)
             {
-                EvaluationStarted(code, bindingValues, (n, v) => { scope.Set(n, v); });
+                EvaluationStarted(code, bindingValues, (n, v) => { scope.Set(n, InputMarshaler.Marshal(v).ToPython()); });
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Start,
                     Dynamo.Logging.Categories.PythonOperations,

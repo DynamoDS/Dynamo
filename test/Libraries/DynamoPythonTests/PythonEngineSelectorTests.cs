@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Dynamo;
 using Dynamo.PythonServices;
+using Dynamo.Utilities;
 using NUnit.Framework;
 using PythonNodeModels;
 using static Dynamo.Models.DynamoModel;
@@ -69,6 +72,46 @@ namespace DynamoPythonTests
             CurrentDynamoModel.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
 
             Assert.AreEqual(pyNode.Engine, PythonEngineVersion.IronPython2);
+        }
+
+        [Test]
+        public void PytonEngineManagerAPITest()
+        {
+            var cPython3Eng = new PythonEngineProxy(
+                Assembly.GetAssembly(typeof(DSCPython.CPythonEvaluator)), 
+                PythonEngineVersion.CPython3);
+
+            Assert.IsNotNull(cPython3Eng);
+
+            cPython3Eng.OnEvaluationBegin((code, bindings, scopeSet) => { scopeSet("IN", new ArrayList { " ", "  " }); });
+
+            int counter = 0;
+            cPython3Eng.OnEvaluationEnd((code, bindings) => { counter++; });
+
+            var inputM = cPython3Eng.GetInputMarshaler() as DataMarshaler;
+            inputM.RegisterMarshaler((string s) => s.Length);
+
+            var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
+                "OUT = sum(IN)", new ArrayList(), new ArrayList());
+
+            inputM.UnregisterMarshalerOfType<string>();
+
+            Assert.AreEqual(3, output);
+
+            var outputM = cPython3Eng.GetOutputMarshaler() as DataMarshaler;
+            outputM.RegisterMarshaler((string s) => s.Length);
+
+            cPython3Eng.OnEvaluationBegin((code, bindings, scopeSet) => { scopeSet("TEST", new ArrayList { "", " ", "  " }); });
+
+            output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
+                "OUT = TEST",
+                new ArrayList(),
+                new ArrayList());
+
+            outputM.UnregisterMarshalerOfType<string>();
+
+            Assert.AreEqual(new[] { 0, 1, 2 }, output);
+            Assert.AreEqual(2, counter);
         }
     }
 }
