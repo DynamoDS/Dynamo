@@ -1533,8 +1533,7 @@ namespace ProtoCore
         //Cache final function endpoint for repeated calls;
         private FunctionEndPoint finalFep;
 
-        internal StackValue DispatchDispose(
-            StackValue stackValue, RuntimeCore runtimeCore)
+        internal StackValue DispatchDispose(StackValue stackValue, RuntimeCore runtimeCore)
         {
             //Cache finalFep for CallSite.  Note there is always only one dispose endpoint returned.
             if (finalFep == null)
