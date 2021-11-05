@@ -89,12 +89,14 @@
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
-      <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
+      <Project>{8872CA17-C10D-43B9-8393-5C5A57065EB0}</Project>
       <Name>PythonNodeModels</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
