@@ -716,7 +716,7 @@
                               HorizontalContentAlignment="Right"
                               Style="{StaticResource InOutPortControlStyle}"
                               ItemsSource="{Binding Path=OutPorts}"
-                              Margin="0,10">
+                              Margin="-25,10">
                 </ItemsControl>
 
                 <Grid x:Name="GroupContent"
