@@ -22,7 +22,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static Guide CurrentExecutingGuide;
         internal static GuidesManager CurrentExecutingGuidesManager;
 
-        private static List<Delegate> buttonDelegates;
+        private const int heightExitModal = 273;
+        private const int widthExitModal = 480;
+        private const string titleStringExitModal = "PackagesGuideExitTitle";
+        private const string textStringExitModal = "PackagesGuideExitAcceptTerms";
 
         //This method will return a bool that describes if the Terms Of Service was accepted or not.
         internal static bool AcceptedTermsOfUse(DynamoViewModel dynViewModel)
@@ -129,10 +132,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal void DeclineButton_Click(object sender, RoutedEventArgs e)
         {
             var exitGuide = new ExitGuide();
-            exitGuide.Height = 273;
-            exitGuide.Width = 480;
-            exitGuide.Title = "PackagesGuideExitTitle";
-            exitGuide.FormattedText = "PackagesGuideExitAcceptTerms";
+            exitGuide.Height = heightExitModal;
+            exitGuide.Width = widthExitModal;
+            exitGuide.Title = titleStringExitModal;
+            exitGuide.FormattedText = textStringExitModal;
 
             CurrentExecutingGuide.HideCurrentStep(CurrentExecutingStep.Sequence, GuideFlow.FORWARD);
             CurrentExecutingGuidesManager.CreateExitModal(exitGuide);
