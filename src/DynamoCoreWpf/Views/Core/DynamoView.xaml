@@ -722,7 +722,7 @@
         <!--Shortcuts Toolbar-->
         <Grid Grid.Row="1"
               Grid.Column="0"
-              Canvas.ZIndex="1"
+              Canvas.ZIndex="0"
               VerticalAlignment="Top"
               Grid.ColumnSpan="5"
               Name="shortcutsBarGrid">

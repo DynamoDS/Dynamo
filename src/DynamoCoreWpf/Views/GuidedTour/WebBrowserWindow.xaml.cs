@@ -20,7 +20,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
     public partial class WebBrowserWindow : Popup
     {
         //This variable represents a sum of the header and footer of the main popup to compensate the hight of this popup
-        private const int headerAndFooterCompensation = 150;
+        private const int headerAndFooterCompensation = 100;
         //This variable represents the width size of the tooltip to relocate this popup
         private const int tooltipOffset = 10;
         //The headers size of the main popup to add an offset and adjust this popup
