@@ -4276,6 +4276,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This package contains custom nodes that are in use. These custom nodes needs to be deleted or the graph needs to be closed before the package can be deleted..
+        /// </summary>
+        public static string PackageContextMenuDeletePackageCustomNodesInUseTooltip {
+            get {
+                return ResourceManager.GetString("PackageContextMenuDeletePackageCustomNodesInUseTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string PackageContextMenuDeletePackageText {

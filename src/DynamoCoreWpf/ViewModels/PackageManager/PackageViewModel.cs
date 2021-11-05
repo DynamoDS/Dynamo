@@ -99,7 +99,25 @@ namespace Dynamo.ViewModels
 
         public string PackageViewContextMenuUninstallTooltip
         {
-            get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnloadPackageTooltip : Resources.PackageContextMenuDeletePackageTooltip; }
+            get
+            {
+                // Built in package
+                if (Model.BuiltInPackage)
+                {
+                    return Resources.PackageContextMenuUnloadPackageTooltip;
+                }
+
+                // Package with custom nodes that are in use
+                if (Model.LoadState.State != PackageLoadState.StateTypes.Unloaded
+                    && Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForDeletion
+                    && !CanUninstall())
+                {
+                    return Resources.PackageContextMenuDeletePackageCustomNodesInUseTooltip;
+                }
+
+                // Package that can be uninstalled
+                return Resources.PackageContextMenuDeletePackageTooltip;
+            }
         }
 
         public string PackageViewContextMenuUnmarkUninstallText

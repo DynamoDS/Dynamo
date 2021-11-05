@@ -2912,4 +2912,7 @@ Delete the following packages: {2}?
   <data name="PackagesGuideExitTitle" xml:space="preserve">
     <value>Do you want to continue the guide?</value>
   </data>
+  <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
+    <value>This package contains custom nodes that are in use. These custom nodes needs to be deleted or the graph needs to be closed before the package can be deleted.</value>
+  </data>
 </root>
