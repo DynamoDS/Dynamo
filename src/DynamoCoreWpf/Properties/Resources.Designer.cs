@@ -5133,7 +5133,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to continue the guide?.
+        ///   Looks up a localized string similar to Do you want to exit the guide?.
         /// </summary>
         public static string PackagesGuideExitTitle {
             get {

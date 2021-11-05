@@ -278,7 +278,7 @@
                                                                 Command="{Binding ElementName=PackageDetailsWindow, Path=DataContext.TryInstallPackageVersionCommand}"
                                                                 CommandParameter="{Binding PackageVersionNumber}"
                                                                 Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
-                                                                IsEnabled="{Binding IsInstalled, Converter={StaticResource InverseBooleanConverter}}">
+                                                                IsEnabled="{Binding CanInstall}">
                                                             <Button.Template>
                                                                 <ControlTemplate TargetType="{x:Type Button}">
                                                                     <Border Name="ButtonBorder"

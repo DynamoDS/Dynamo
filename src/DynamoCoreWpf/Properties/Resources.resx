@@ -1545,16 +1545,16 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>0</value>
   </data>
   <data name="PublishPackageVersionMinorWatermark" xml:space="preserve">
-  <value>0</value>
+    <value>0</value>
   </data>
   <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
-  <value>1</value>
+    <value>1</value>
   </data>
   <data name="PublishPackageGroupWatermark" xml:space="preserve">
-  <value>Group</value>
+    <value>Group</value>
   </data>
   <data name="PublishPackageKeywordsWatermark" xml:space="preserve">
-  <value>Keywords</value>
+    <value>Keywords</value>
   </data>
   <data name="PublishPackageViewPublish" xml:space="preserve">
     <value>Publish a Package</value>
@@ -2926,6 +2926,6 @@ Delete the following packages: {2}?
     <value>To continue the guide and install the sample package, you must accept the Terms of Service. \n\n **Click Continue.** Then in the terms, **click I Accept.** \n\n\n\n</value>
   </data>
   <data name="PackagesGuideExitTitle" xml:space="preserve">
-    <value>Do you want to continue the guide?</value>
+    <value>Do you want to exit the guide?</value>
   </data>
 </root>
