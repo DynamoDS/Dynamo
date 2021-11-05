@@ -638,7 +638,7 @@ namespace ProtoCore.DSASM
                 previousClassIndex = classIndex;
                 ClassNode cn = exe.exe.classTable.ClassNodes[classIndex];
 
-                isDSObject = cn.ExternLib.Contains(".ds");
+                isDSObject = !string.IsNullOrEmpty(cn.ExternLib) && cn.ExternLib.Contains(".ds");
 
                 disposeProcedureNode = cn.GetDisposeMethod();
                 while (disposeProcedureNode == null)
