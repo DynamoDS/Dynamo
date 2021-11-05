@@ -131,11 +131,11 @@ namespace DSCPython
     }
 
     [SupressImportIntoVM]
-    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+    [Obsolete("Deprecated. Please use Dynamo.PythonServices.EvaluationState instead.")]
     public enum EvaluationState { Begin, Success, Failed }
 
     [SupressImportIntoVM]
-    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+    [Obsolete("Deprecated. Please use evaluation handlers from Dynamo.PythonServices instead.")]
     public delegate void EvaluationEventHandler(EvaluationState state, PyScope scope, string code, IList bindingValues);
 
     /// <summary>
@@ -590,7 +590,7 @@ sys.stdout = DynamoStdOut({0})
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+        [Obsolete("Deprecated. This event will no longer be raised.")]
         public static event EvaluationEventHandler EvaluationBegin;
 
 
@@ -598,20 +598,20 @@ sys.stdout = DynamoStdOut({0})
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        public static event Action<string, IList, Action<string, object>> EvaluationStarted;
+        public static event Dynamo.PythonServices.EvaluationStartedEventHandler EvaluationStarted;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
-        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+        [Obsolete("Deprecated. This event will no longer be raised.")]
         public static event EvaluationEventHandler EvaluationEnd;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
-        public static event Action<string, IList> EvaluationFinished;
+        public static event Dynamo.PythonServices.EvaluationFinishedEventHandler EvaluationFinished;
 
         /// <summary>
         /// Called immediately before evaluation starts
@@ -647,7 +647,10 @@ sys.stdout = DynamoStdOut({0})
         {
             if (EvaluationFinished != null)
             {
-                EvaluationFinished(code, bindingValues);
+                EvaluationFinished(isSuccessful ? Dynamo.PythonServices.EvaluationState.Success : Dynamo.PythonServices.EvaluationState.Failed, 
+                    code, bindingValues, (n) => {
+                        return OutputMarshaler.Marshal(scope.Get(n));
+                    });
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.End,
                     Dynamo.Logging.Categories.PythonOperations,

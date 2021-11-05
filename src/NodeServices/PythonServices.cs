@@ -22,6 +22,22 @@ namespace PythonNodeModels
 
 namespace Dynamo.PythonServices
 {
+    [SupressImportIntoVM]
+    public enum EvaluationState { Success, Failed }
+
+    public delegate void ScopeSetAction(string name, object value);
+    public delegate object ScopeGetAction(string name);
+
+    [SupressImportIntoVM]
+    public delegate void EvaluationStartedEventHandler(string code,
+                                                       IList bindingValues,
+                                                       ScopeSetAction scopeSet);
+    [SupressImportIntoVM]
+    public delegate void EvaluationFinishedEventHandler(EvaluationState state,
+                                                        string code,
+                                                        IList bindingValues,
+                                                        ScopeGetAction scopeGet);
+
     /// <summary>
     /// Singleton class that other class can access and use for query loaded Python Engine info.
     /// </summary>
@@ -191,8 +207,7 @@ namespace Dynamo.PythonServices
     }
 
     /// <summary>
-    /// Proxy class for any Python Engine that can be loaded by Dynamo
-    /// Provides basic APIs to interact with the Python Engine
+    /// This class is intended to wrap or act as a proxy for many different python engine versions
     /// </summary>
     [SupressImportIntoVM]
     public class PythonEngineProxy : IDisposable
@@ -201,10 +216,30 @@ namespace Dynamo.PythonServices
         /// The version of the Python Engine connected to this proxy instance
         /// </summary>
         public readonly PythonEngineVersion Version;
-        private readonly Type EngineType;
 
-        private Action<string, IList, Action<string, object>> OnBeginEvaluation;
-        private Action<string, IList> OnEndEvaluation;
+        private readonly Type EngineType;
+        private EvaluationStartedEventHandler EvaluationStartedCallback;
+        private EvaluationFinishedEventHandler EvaluationFinishedCallback;
+
+        /// <summary>
+        /// Add an event handler before the Python evaluation begins
+        /// </summary>
+        /// <param name="callback"></param>
+        public void OnEvaluationBegin(EvaluationStartedEventHandler callback)
+        {
+            EvaluationStartedCallback += callback;
+            AddEventHandler(EvaluationStartedCallback.GetType(), nameof(HandleEvaluationStarted));
+        }
+
+        /// <summary>
+        /// Add an event handler after the Python evaluation ends
+        /// </summary>
+        /// <param name="callback"></param>
+        public void OnEvaluationEnd(EvaluationFinishedEventHandler callback)
+        {
+            EvaluationFinishedCallback += callback;
+            AddEventHandler(EvaluationFinishedCallback.GetType(), nameof(HandleEvaluationFinished));
+        }
 
         internal PythonEngineProxy(Type eType, PythonEngineVersion version)
         {
@@ -216,51 +251,24 @@ namespace Dynamo.PythonServices
         {
             try
             {
-                var events = typeof(PythonEngineProxy).GetEvents();
-                foreach(var eventInfo in events)
+                if (EvaluationStartedCallback != null)
                 {
-                    var eventHandlerName = String.Empty;
-                    if (eventInfo.Name.Equals("EvaluationBegin"))
-                    {
-                        eventHandlerName = nameof(HandleEvaluationBegin);
-                    }
-                    else if (eventInfo.Name.Equals("EvaluationEnd"))
-                    {
-                        eventHandlerName = nameof(HandleEvaluationEnd);
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                    MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(nameof(HandleEvaluationStarted), BindingFlags.NonPublic | BindingFlags.Instance);
+                    var handler = Delegate.CreateDelegate(typeof(EvaluationStartedEventHandler), this, handlerInfo);
+                    var eventInfo = EngineType.GetEvents().FirstOrDefault(x => x.EventHandlerType == typeof(EvaluationStartedEventHandler));
+                    eventInfo?.RemoveEventHandler(this, handler);
+                }
 
-                    MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(eventHandlerName, BindingFlags.NonPublic | BindingFlags.Instance);
-                    var handler = Delegate.CreateDelegate(eventInfo.EventHandlerType, this, handlerInfo);
-                    eventInfo.RemoveEventHandler(this, handler);
+                if (EvaluationFinishedCallback != null)
+                {
+                    MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(nameof(HandleEvaluationFinished), BindingFlags.NonPublic | BindingFlags.Instance);
+                    var handler = Delegate.CreateDelegate(typeof(EvaluationFinishedEventHandler), this, handlerInfo);
+                    var eventInfo = EngineType.GetEvents().FirstOrDefault(x => x.EventHandlerType == typeof(EvaluationFinishedEventHandler));
+                    eventInfo?.RemoveEventHandler(this, handler);
                 }
             }
             catch
             { }
-        }
-
-        /// <summary>
-        /// Add an event handler before the Python evaluation begins
-        /// </summary>
-        /// <param name="callback"></param>
-        public void OnEvaluationBegin(Action<string, IList, Action<string, object>> callback)
-        {
-
-            OnBeginEvaluation = callback;
-            AddEventHandler("EvaluationStarted", nameof(HandleEvaluationBegin));
-        }
-
-        /// <summary>
-        /// Add an event handler after the Python evaluation ends
-        /// </summary>
-        /// <param name="callback"></param>
-        public void OnEvaluationEnd(Action<string, IList> callback)
-        {
-            OnEndEvaluation = callback;
-            AddEventHandler("EvaluationFinished", nameof(HandleEvaluationEnd));
         }
 
         /// <summary>
@@ -295,32 +303,36 @@ namespace Dynamo.PythonServices
             }
         }
 
-        private void HandleEvaluationBegin(string code, IList bindingValues, Action<string, object> scopeFn)
-        {
-            OnBeginEvaluation?.Invoke(code, bindingValues, scopeFn);
-        }
-
-        private void HandleEvaluationEnd(string code, IList bindingValues)
-        {
-            OnEndEvaluation?.Invoke(code, bindingValues);
-        }
-
-
-        private void AddEventHandler(string targetEventName, string handlerName)
+        private void AddEventHandler(Type handlerType, string handlerName)
         {
             try
             {
-                MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod
-                (handlerName, BindingFlags.NonPublic | BindingFlags.Instance);
-
-                var eventInfo = EngineType.GetEvent(targetEventName);
-                var handler = Delegate.CreateDelegate(eventInfo.EventHandlerType,
-                                     this,
-                                     handlerInfo);
-
-                eventInfo.AddEventHandler(this, handler);
+                var eventInfo = EngineType.GetEvents().FirstOrDefault(x => x.EventHandlerType == handlerType);
+                if (eventInfo != null)
+                {
+                    MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(handlerName, BindingFlags.NonPublic | BindingFlags.Instance);
+                    var handler = Delegate.CreateDelegate(eventInfo.EventHandlerType,
+                                         this,
+                                         handlerInfo);
+                    eventInfo.AddEventHandler(this, handler);
+                }
             }
             catch (Exception e) { Console.WriteLine(e.Message); }
+        }
+
+        private void HandleEvaluationStarted(string code,
+                                             IList bindingValues,
+                                             ScopeSetAction scopeSet)
+        {
+            EvaluationStartedCallback?.Invoke(code, bindingValues, scopeSet);
+        }
+
+        private void HandleEvaluationFinished(EvaluationState state,
+                                              string code,
+                                              IList bindingValues,
+                                              ScopeGetAction scopeGet)
+        {
+            EvaluationFinishedCallback?.Invoke(state, code, bindingValues, scopeGet);
         }
     }
 }

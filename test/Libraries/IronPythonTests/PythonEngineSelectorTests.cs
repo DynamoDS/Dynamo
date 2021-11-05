@@ -84,10 +84,10 @@ namespace IronPythonTests
 
             Assert.IsNotNull(ironPythonEng);
 
-            ironPythonEng.OnEvaluationBegin((code, bindings, scopeSet) => { scopeSet("IN", new ArrayList { " ", "  " }); });
+            ironPythonEng.OnEvaluationBegin((state, code, bindings, scopeSet) => { scopeSet("IN", new ArrayList { " ", "  " }); });
 
             int counter = 0;
-            ironPythonEng.OnEvaluationEnd((code, bindings) => { counter++; });
+            ironPythonEng.OnEvaluationEnd((state, code, bindings, scopeGet) => { counter++; });
 
             var inputM = ironPythonEng.GetInputMarshaler() as DataMarshaler;
             inputM.RegisterMarshaler((string s) => s.Length);
@@ -102,7 +102,7 @@ namespace IronPythonTests
             var outputM = ironPythonEng.GetOutputMarshaler() as DataMarshaler;
             outputM.RegisterMarshaler((string s) => s.Length);
 
-            ironPythonEng.OnEvaluationBegin((code, bindings, scopeSet) => { scopeSet("TEST", new ArrayList { "", " ", "  " }); });
+            ironPythonEng.OnEvaluationBegin((state, code, bindings, scopeSet) => { scopeSet("TEST", new ArrayList { "", " ", "  " }); });
 
             output = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(
                 "OUT = TEST",

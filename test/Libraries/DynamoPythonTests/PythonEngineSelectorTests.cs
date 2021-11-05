@@ -86,7 +86,7 @@ namespace DynamoPythonTests
             cPython3Eng.OnEvaluationBegin((code, bindings, scopeSet) => { scopeSet("IN", new ArrayList { " ", "  " }); });
 
             int counter = 0;
-            cPython3Eng.OnEvaluationEnd((code, bindings) => { counter++; });
+            cPython3Eng.OnEvaluationEnd((state, code, bindings, scopeGet) => { counter++; });
 
             var inputM = cPython3Eng.GetInputMarshaler() as DataMarshaler;
             inputM.RegisterMarshaler((string s) => s.Length);

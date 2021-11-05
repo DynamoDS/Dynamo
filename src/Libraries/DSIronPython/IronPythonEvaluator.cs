@@ -17,11 +17,11 @@ using Microsoft.Scripting.Utils;
 namespace DSIronPython
 {
     [SupressImportIntoVM]
-    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+    [Obsolete("Deprecated. Please use Dynamo.PythonServices.EvaluationState instead.")]
     public enum EvaluationState { Begin, Success, Failed }
 
     [SupressImportIntoVM]
-    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+    [Obsolete("Deprecated. Please use evaluation handlers from Dynamo.PythonServices instead.")]
     public delegate void EvaluationEventHandler(EvaluationState state,
                                                 ScriptEngine engine,
                                                 ScriptScope scope,
@@ -139,18 +139,18 @@ namespace DSIronPython
 
             try
             {
-                OnEvaluationBegin(engine, scope, code, bindingValues);
+                OnEvaluationBegin(scope, code, bindingValues);
                 prev_script.Execute(scope);
             }
             catch (Exception e)
             {
-                OnEvaluationEnd(false, engine, scope, code, bindingValues);
+                OnEvaluationEnd(false, scope, code, bindingValues);
                 var eo = engine.GetService<ExceptionOperations>();
                 string error = eo.FormatException(e);
                 throw new Exception(error);
             }
 
-            OnEvaluationEnd(true, engine, scope, code, bindingValues);
+            OnEvaluationEnd(true, scope, code, bindingValues);
 
             var result = scope.ContainsVariable("OUT") ? scope.GetVariable("OUT") : null;
 
@@ -269,27 +269,27 @@ sys.stdout = DynamoStdOut({0})
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+        [Obsolete("Deprecated. This event will no longer be raised.")]
         public static event EvaluationEventHandler EvaluationBegin;
 
         /// <summary>
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        public static event Action<string, IList, Action<string, object>> EvaluationStarted;
+        public static event Dynamo.PythonServices.EvaluationStartedEventHandler EvaluationStarted;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
-        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+        [Obsolete("Deprecated. This event will no longer be raised.")]
         public static event EvaluationEventHandler EvaluationEnd;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
-        public static event Action<string, IList> EvaluationFinished;
+        public static event Dynamo.PythonServices.EvaluationFinishedEventHandler EvaluationFinished;
 
         /// <summary>
         /// Called immediately before evaluation starts
@@ -298,8 +298,7 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationBegin(  ScriptEngine engine, 
-                                                ScriptScope scope, 
+        private static void OnEvaluationBegin(  ScriptScope scope, 
                                                 string code, 
                                                 IList bindingValues )
         {
@@ -322,15 +321,15 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="code">The code to that was evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
         private static void OnEvaluationEnd( bool isSuccessful,
-                                            ScriptEngine engine,
-                                            ScriptScope scope,
-                                            string code,
-                                            IList bindingValues)
+                                             ScriptScope scope,
+                                             string code,
+                                             IList bindingValues)
         {
-            if (EvaluationEnd != null)
+            if (EvaluationFinished != null)
             {
-                EvaluationEnd( isSuccessful ? EvaluationState.Success : EvaluationState.Failed, 
-                    engine, scope, code, bindingValues);
+                EvaluationFinished( isSuccessful ? Dynamo.PythonServices.EvaluationState.Success : Dynamo.PythonServices.EvaluationState.Failed, 
+                    code, bindingValues, (n) => { return OutputMarshaler.Marshal(scope.GetVariable(n)); });
+
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.End,
                     Dynamo.Logging.Categories.PythonOperations,
