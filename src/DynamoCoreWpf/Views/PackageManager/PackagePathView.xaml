@@ -128,7 +128,7 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 Height="25"
-                MinWidth="67"
+                MinWidth="55"
                 Margin="5,5,5,5"
                 Content="{x:Static p:Resources.PackagePathAddPathButtonName}"
                 Command="{Binding Path=AddPathCommand}" 
