@@ -84,7 +84,7 @@ namespace Watch3DNodeModelsWpf
                 return;
             }
 
-            if(e.PropertyName == "CachedValue")
+            if(e.PropertyName == nameof(node.CachedValue))
             {
                 var connected = watchModel.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner));
                 if (!connected.Contains(node))
@@ -105,7 +105,7 @@ namespace Watch3DNodeModelsWpf
                     return;
                 }
 
-                HashSet<NodeModel> gathered = new HashSet<NodeModel>();
+                var gathered = new HashSet<NodeModel>();
                 node.GetDownstreamNodes(node, gathered);
                 SetGeometryFrozen(gathered);
             }
