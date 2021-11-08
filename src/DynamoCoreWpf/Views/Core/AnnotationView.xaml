@@ -347,6 +347,7 @@
                 CornerRadius="{StaticResource ExpanderCornerRadius}"
                 IsHitTestVisible="False"
                 Canvas.ZIndex="41"
+                Visibility="{Binding Nodes, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"
                 Margin="-1">
             <Border.BorderBrush>
                 <SolidColorBrush Color="{Binding Background}" />
