@@ -22,31 +22,33 @@
             <Style x:Key="HintingInputStyle" TargetType="TextBox">
                 <Setter Property="Margin" Value="0,0,0,12" />
                 <Setter Property="MinWidth" Value="62px" />
+                <Setter Property="OverridesDefaultStyle" Value="True" />
                 <Setter Property="Cursor" Value="IBeam" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="TextBox">
-                            <Grid Background="Transparent">
+                            <Grid>
                                 <TextBox x:Name="InputTextBox"
-                                         Padding="8,10"
-                                         Background="#353535"
-                                         BorderThickness="0"
-                                         CaretBrush="{StaticResource Blue300Brush}"
-                                         FontFamily="{StaticResource ArtifaktElementRegular}"
-                                         FontSize="12px"
-                                         Foreground="#DFDFDF"
-                                         MaxLength="{TemplateBinding MaxLength}"
-                                         Tag="{TemplateBinding Tag}"
-                                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
-                                         TextWrapping="Wrap" />
+                                     Padding="8,10"
+                                     Background="#353535"
+                                     BorderThickness="0"
+                                     CaretBrush="{StaticResource Blue300Brush}"
+                                     Focusable="True"
+                                     FontFamily="{StaticResource ArtifaktElementRegular}"
+                                     FontSize="12px"
+                                     Foreground="#DFDFDF"
+                                     MaxLength="{TemplateBinding MaxLength}"
+                                     Tag="{TemplateBinding Tag}"
+                                     Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
+                                     TextWrapping="Wrap" />
                                 <TextBlock x:Name="WatermarkLabel"
-                                           Padding="10"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontSize="12px"
-                                           Foreground="#DFDFDF"
-                                           IsHitTestVisible="False"
-                                           Opacity="0.5"
-                                           Text="{TemplateBinding Tag}">
+                                       Padding="10"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="12px"
+                                       Foreground="#DFDFDF"
+                                       IsHitTestVisible="False"
+                                       Opacity="0.5"
+                                       Text="{TemplateBinding Tag}">
                                     <TextBlock.Style>
                                         <Style TargetType="{x:Type TextBlock}">
                                             <Setter Property="Visibility" Value="Collapsed" />
@@ -60,21 +62,21 @@
                                 </TextBlock>
                                 <StackPanel Height="4px" VerticalAlignment="Bottom">
                                     <Rectangle Name="Underline"
-                                               Height="1px"
-                                               Fill="Transparent" />
+                                           Height="1px"
+                                           Fill="Transparent" />
                                     <Rectangle Name="UnderlineShadow"
-                                               Height="3px"
-                                               Fill="Transparent" />
+                                           Height="3px"
+                                           Fill="Transparent" />
                                 </StackPanel>
                             </Grid>
                             <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Underline" Property="Rectangle.Fill" Value="#9B9B9B" />
-                                    <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#6E6E6E" />
-                                </Trigger>
                                 <Trigger Property="IsFocused" Value="True">
                                     <Setter TargetName="Underline" Property="Rectangle.Fill" Value="{StaticResource Blue300Brush}" />
                                     <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#497386" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Underline" Property="Rectangle.Fill" Value="#9B9B9B" />
+                                    <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#6E6E6E" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -291,6 +293,7 @@
                                  MinHeight="37"
                                  Margin="0"
                                  VerticalAlignment="Center"
+                                 IsHitTestVisible="True"
                                  Style="{StaticResource HintingInputStyle}"
                                  Tag="{x:Static p:Resources.CustomNodePropertyWindowNameHint}"
                                  TextChanged="NameBox_OnTextChanged" />
