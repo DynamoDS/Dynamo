@@ -265,7 +265,7 @@
             <ScrollViewer Margin="0,5" VerticalScrollBarVisibility="Visible">
                 <StackPanel Margin="25,25,10,25">
 
-                    <!--  Add-Ons section node  -->
+                    <!--  Add-Ons section note  -->
                     <TextBlock Name="LocationNote"
                                FontSize="14"
                                Style="{StaticResource SubLabelStyle}"
@@ -317,7 +317,6 @@
                                        Opacity="0.5" />
                         </StackPanel>
                     </Grid>
-
 
                     <!--  Description  -->
                     <TextBlock Name="DescriptionLabel"
