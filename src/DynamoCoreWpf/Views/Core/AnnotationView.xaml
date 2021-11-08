@@ -46,7 +46,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBox">
-                        <Grid Margin="4,8,4,8">
+                        <Grid Margin="0,9,4,8">
                             <ScrollViewer Margin="0"
                                           Focusable="false">
                                 <WrapPanel IsItemsHost="True" />
@@ -70,7 +70,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
-                        <Grid Margin="3,4,3,4"
+                        <Grid Margin="0,0,4,5"
                               SnapsToDevicePixels="true">
                             <Grid.Background>
                                 <SolidColorBrush Color="Transparent" />
@@ -257,7 +257,7 @@
                             <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
                             <!--<Setter Property="Height" Value="30" />-->
                             <Setter Property="Width" Value="240" />
-                            <Setter Property="Padding" Value="15,0,15,0" />
+                            <Setter Property="Padding" Value="20,0,20,0" />
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type MenuItem}">
