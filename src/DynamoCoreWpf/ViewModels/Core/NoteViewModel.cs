@@ -6,6 +6,7 @@ using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -18,7 +19,7 @@ namespace Dynamo.ViewModels
     public partial class NoteViewModel: ViewModelBase
     {
         private int DISTANCE_TO_PINNED_NODE = 16;
-        private int DISTANCE_TO_PINNED_NODE_WITH_WARNING = 36;
+        private int DISTANCE_TO_PINNED_NODE_WITH_WARNING = 64;
 
         #region Events
 
@@ -273,7 +274,8 @@ namespace Dynamo.ViewModels
         private bool CanAddToGroup(object parameters)
         {
             var groups = WorkspaceViewModel.Model.Annotations;
-            if (groups.Any(x => x.IsSelected))
+            if (groups.Any(x => x.IsSelected) &&
+                !groups.All(x => !x.IsExpanded))
             {
                 return !(groups.ContainsModel(Model.GUID));
             }
@@ -292,12 +294,20 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            var nodeGroup = WorkspaceViewModel.Annotations
+                .FirstOrDefault(x => x.AnnotationModel.ContainsModel(nodeToPin));
+
+            if (nodeGroup != null)
+            {
+                nodeGroup.AnnotationModel.AddToSelectedModels(this.Model);
+            }
+
             Model.PinnedNode = nodeToPin;
 
             MoveNoteAbovePinnedNode();
-
             SubscribeToPinnedNode();
 
+            WorkspaceModel.RecordModelsForModification(new List<ModelBase> { this.Model }, WorkspaceViewModel.Model.UndoRecorder);
             WorkspaceViewModel.HasUnsavedChanges = true;
 
         }
@@ -421,6 +431,7 @@ namespace Dynamo.ViewModels
             }
             Model.CenterX = Model.PinnedNode.CenterX;
             Model.CenterY = Model.PinnedNode.CenterY - (Model.PinnedNode.Height * 0.5) - (Model.Height * 0.5) - distanceToNode;
+            Model.ReportPosition();
 
             ZIndex = Convert.ToInt32(PinnedNode.ZIndex);
         }
