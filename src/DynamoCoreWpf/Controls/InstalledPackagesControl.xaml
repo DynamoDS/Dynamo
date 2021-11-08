@@ -149,7 +149,8 @@
                                                                       Command="{Binding Path=UninstallCommand}"
                                                                       Header="{Binding Path=PackageViewContextMenuUninstallText}"
                                                                       ToolTip="{Binding Path=PackageViewContextMenuUninstallTooltip}"
-                                                                      ToolTipService.ShowOnDisabled="true">
+                                                                      ToolTipService.ShowOnDisabled="true"
+                                                                      Visibility="{Binding Path=LoadedWithNoScheduledOperation, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                                             </MenuItem>
                                                             <MenuItem Name="UnmarkUninstallButton"
                                                                               Style="{StaticResource MenuItemCollapseStyle}"
