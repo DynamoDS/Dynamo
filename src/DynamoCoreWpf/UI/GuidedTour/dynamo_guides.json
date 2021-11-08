@@ -387,6 +387,78 @@
 						"UpdatePlacementTarget": true
 					}
 				]
+			},
+			{
+				"Sequence": 5,
+				"Name": "search-filter-sort",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 263,
+				"StepContent": {
+					"Title": "PackagesGuideInstallAPackageTitle",
+					"FormattedText": "PackagesGuideInstallAPackageText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"WindowName": "PackageSearch",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageSearch",
+					"VerticalPopupOffset": 40,
+					"HorizontalPopupOffset": 470
+				},
+				"PreValidation": {
+					"ReturnType": "boolean",
+					"ControlType": "visibility",
+					"FuncName": "IsPackageInstalled",
+					"ExpectedValue": true
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "ExecutePackageSearch",
+						"ExecuteCleanUpForward": false,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					}
+				]
+			},
+			{
+				"Sequence": 5,
+				"Name": "search-filter-sort",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 470,
+				"StepContent": {
+					"Title": "PackagesGuideInstallAPackageTitle",
+					"FormattedText": "PackagesGuideInstalledPackageText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "relative",
+					"WindowName": "PackageSearch",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageSearch",
+					"VerticalPopupOffset": 40,
+					"HorizontalPopupOffset": 470,
+					"PreValidation": {
+						"ReturnType": "boolean",
+						"ControlType": "visibility",
+						"FuncName": "IsPackageInstalled",
+						"ExpectedValue": false
+					},
+					"UIAutomation": [
+						{
+							"Sequence": 1,
+							"ControlType": "function",
+							"Name": "ExecutePackageSearch",
+							"Action": "execute",
+							"UpdatePlacementTarget": true
+						}
+					]
+				}
 			}
 		]
 	}

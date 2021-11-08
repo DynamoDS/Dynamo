@@ -26,6 +26,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
             return termsOfServiceAccepted;
         }
 
+        internal static bool IsPackageInstalled(DynamoViewModel dynViewModel)
+        {
+            return false;
+        }
+
         /// <summary>
         /// This method will be executed when passing from Step 2 to Step 3 in the Packages guide, so it will show the TermsOfUse Window in case it was not accepted yet
         /// </summary>
