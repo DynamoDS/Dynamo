@@ -1307,7 +1307,7 @@ namespace Dynamo.Controls
             {
                 categoryBox = { Text = e.Category },
                 DescriptionInput = { Text = e.Description },
-                nameView = { Text = e.Name },
+                //nameView = { Text = e.Name },
                 nameBox = { Text = e.Name },
                 // center the prompt
                 Owner = this,
@@ -1317,11 +1317,11 @@ namespace Dynamo.Controls
             if (e.CanEditName)
             {
                 dialog.nameBox.Visibility = Visibility.Visible;
-                dialog.nameView.Visibility = Visibility.Collapsed;
+                //dialog.nameView.Visibility = Visibility.Collapsed;
             }
             else
             {
-                dialog.nameView.Visibility = Visibility.Visible;
+                //dialog.nameView.Visibility = Visibility.Visible;
                 dialog.nameBox.Visibility = Visibility.Collapsed;
             }
 
