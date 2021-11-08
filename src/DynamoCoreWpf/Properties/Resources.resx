@@ -2732,7 +2732,7 @@ Uninstall the following packages: {0}?</value>
     <value>&lt;Double click here to edit group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
-    <value>Add group to group</value>
+    <value>Add Group to Group</value>
   </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this guide later from the Help menu.</value>

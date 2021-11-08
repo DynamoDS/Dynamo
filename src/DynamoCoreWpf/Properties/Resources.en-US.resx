@@ -2514,7 +2514,7 @@ Uninstall the following packages: {0}?</value>
     <value>&lt;Click here to edit the group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
-    <value>Add group to group</value>
+    <value>Add Group to Group</value>
   </data>
   <data name="NodeInformationalStateDismiss" xml:space="preserve">
     <value>Dismiss</value>
