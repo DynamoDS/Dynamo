@@ -65,6 +65,10 @@
                                         <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/alert_2.png" />
                                         <Setter Property="Visibility" Value="Visible" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=MessageBoxImage}" Value="{x:Static MessageBoxImage.Error}">
+                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/error-icon.png" />
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Image.Style>
