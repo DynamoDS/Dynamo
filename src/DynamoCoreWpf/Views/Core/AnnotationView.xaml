@@ -347,6 +347,7 @@
                 CornerRadius="{StaticResource ExpanderCornerRadius}"
                 IsHitTestVisible="False"
                 Canvas.ZIndex="41"
+                Visibility="{Binding Nodes, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"
                 Margin="-1">
             <Border.BorderBrush>
                 <SolidColorBrush Color="{Binding Background}" />
@@ -716,7 +717,7 @@
                               HorizontalContentAlignment="Right"
                               Style="{StaticResource InOutPortControlStyle}"
                               ItemsSource="{Binding Path=OutPorts}"
-                              Margin="0,10">
+                              Margin="-25,10">
                 </ItemsControl>
 
                 <Grid x:Name="GroupContent"

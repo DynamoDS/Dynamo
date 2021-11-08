@@ -595,7 +595,8 @@ namespace Dynamo.PackageManager
                 {
                     Name = CustomNodeDefinitions[0].DisplayName;
                 }
-                
+
+                RefreshPackageContents();
                 UpdateDependencies();
             }
         }
