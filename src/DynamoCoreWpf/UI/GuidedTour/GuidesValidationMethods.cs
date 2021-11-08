@@ -27,8 +27,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         internal static bool IsPackageInstalled(DynamoViewModel dynViewModel)
-        {
-            return false;
+        {            
+            return true;
         }
 
         /// <summary>
