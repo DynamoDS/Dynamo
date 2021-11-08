@@ -1,314 +1,37 @@
-{
-  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
-  "IsCustomNode": false,
-  "Description": "",
-  "Name": "NodeStates",
-  "ElementResolver": {
-    "ResolutionMap": {}
-  },
-  "Inputs": [],
-  "Outputs": [],
-  "Nodes": [
-    {
-      "ConcreteType": "CoreNodeModels.ColorRange, CoreNodeModels",
-      "NodeType": "ExtensionNode",
-      "Id": "1237a1487a90489db67711038072c288",
-      "Inputs": [
-        {
-          "Id": "b0822afeb9dd40e2bf7b5fa3676a73ba",
-          "Name": "colors",
-          "Description": "List of colors to include in the range",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "79c8d262333a4d30b09c17ccec9b20e2",
-          "Name": "indices",
-          "Description": "List of values between 0.0 and 1.0 which position the input colors along the range",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "ff73579bba054cb1aa25d55e42438dd6",
-          "Name": "value",
-          "Description": "List of values between 0.0 and 1.0. These values define the colors that are picked along the color range to create the color list.",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "88fe48f2eb514708a082d642f3a844d5",
-          "Name": "color",
-          "Description": "Selected colors",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Get a color given a color range."
-    },
-    {
-      "ConcreteType": "CoreNodeModels.ColorRange, CoreNodeModels",
-      "NodeType": "ExtensionNode",
-      "Id": "50219c24e5834b85887c409fb062da6e",
-      "Inputs": [
-        {
-          "Id": "e1ebe46ac2624355bdb114e7d0c1afaa",
-          "Name": "colors",
-          "Description": "List of colors to include in the range",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "03f8199a07b94f20b587fc1db241eceb",
-          "Name": "indices",
-          "Description": "List of values between 0.0 and 1.0 which position the input colors along the range",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "75c70b59144a45c692275b0b54fa42aa",
-          "Name": "value",
-          "Description": "List of values between 0.0 and 1.0. These values define the colors that are picked along the color range to create the color list.",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "72db9ac10cb549ee89047c85d8f3cf08",
-          "Name": "color",
-          "Description": "Selected colors",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Get a color given a color range."
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
-      "Code": "1;",
-      "Id": "0db97f86fbd84195b2a0aa0e78ca1d72",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "386f41c85cde4dfc915819a21e4adb8d",
-          "Name": "",
-          "Description": "Value of expression at line 1",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
-    },
-    {
-      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
-      "InputValue": {
-        "R": 0,
-        "G": 0,
-        "B": 0,
-        "A": 255
-      },
-      "NodeType": "ColorInputNode",
-      "Id": "cf5adc57a3484fdda05e3d072ab7c987",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "fc71c917eb8141cab0b8b7879d088ebf",
-          "Name": "Color",
-          "Description": "Selected Color.",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Select a Color from the palette"
-    }
-  ],
-  "Connectors": [
-    {
-      "Start": "386f41c85cde4dfc915819a21e4adb8d",
-      "End": "03f8199a07b94f20b587fc1db241eceb",
-      "Id": "49cc4ae6691b449ca8c016eb1eeb66f9",
-      "IsHidden": "True"
-    }
-  ],
-  "Dependencies": [],
-  "NodeLibraryDependencies": [],
-  "Thumbnail": null,
-  "GraphDocumentationURL": null,
-  "ExtensionWorkspaceData": [
-    {
-      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
-      "Version": "2.13",
-      "Data": {}
-    }
-  ],
-  "Author": "None provided",
-  "Linting": {
-    "activeLinter": "None",
-    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
-    "warningCount": 0,
-    "errorCount": 0
-  },
-  "Bindings": [],
-  "View": {
-    "Dynamo": {
-      "ScaleFactor": 1.0,
-      "HasRunWithoutCrash": true,
-      "IsVisibleInDynamoLibrary": true,
-      "Version": "2.13.0.3084",
-      "RunType": "Automatic",
-      "RunPeriod": "1000"
-    },
-    "Camera": {
-      "Name": "Background Preview",
-      "EyeX": -17.0,
-      "EyeY": 24.0,
-      "EyeZ": 50.0,
-      "LookX": 12.0,
-      "LookY": -13.0,
-      "LookZ": -58.0,
-      "UpX": 0.0,
-      "UpY": 1.0,
-      "UpZ": 0.0
-    },
-    "ConnectorPins": [],
-    "NodeViews": [
-      {
-        "ShowGeometry": true,
-        "Name": "Color Range",
-        "Id": "1237a1487a90489db67711038072c288",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 330.86215292163348,
-        "Y": -225.1697408280636
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Color Range",
-        "Id": "50219c24e5834b85887c409fb062da6e",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 361.862804616395,
-        "Y": 112.341989875386
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Code Block",
-        "Id": "0db97f86fbd84195b2a0aa0e78ca1d72",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 112.24740801768604,
-        "Y": 147.52618978345919
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Color Palette",
-        "Id": "cf5adc57a3484fdda05e3d072ab7c987",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 928.2610236111816,
-        "Y": 151.50298563776943
-      }
-    ],
-    "Annotations": [
-      {
-        "Id": "8c1f73b21f3a4a5990822a686739aea3",
-        "Title": "dead",
-        "DescriptionText": "<Double click here to edit group description>",
-        "IsExpanded": true,
-        "WidthAdjustment": 0.0,
-        "HeightAdjustment": 0.0,
-        "Nodes": [
-          "1237a1487a90489db67711038072c288"
-        ],
-        "HasNestedGroups": false,
-        "Left": 320.86215292163348,
-        "Top": -291.1697408280636,
-        "Width": 369.99999999999994,
-        "Height": 270.0,
-        "FontSize": 30.0,
-        "InitialTop": -225.1697408280636,
-        "InitialHeight": 175.4,
-        "TextblockHeight": 56.0,
-        "Background": "#FFC1D676"
-      },
-      {
-        "Id": "96ee33486330450f83c84dd3311ad2f4",
-        "Title": "warning",
-        "DescriptionText": "<Double click here to edit group description>",
-        "IsExpanded": true,
-        "WidthAdjustment": 0.0,
-        "HeightAdjustment": 0.0,
-        "Nodes": [
-          "50219c24e5834b85887c409fb062da6e",
-          "0db97f86fbd84195b2a0aa0e78ca1d72"
-        ],
-        "HasNestedGroups": false,
-        "Left": 102.24740801768604,
-        "Top": 46.341989875386005,
-        "Width": 619.61539659870891,
-        "Height": 270.0,
-        "FontSize": 30.0,
-        "InitialTop": 112.341989875386,
-        "InitialHeight": 175.4,
-        "TextblockHeight": 56.0,
-        "Background": "#FFC1D676"
-      },
-      {
-        "Id": "5d5382f5f46e49e8b5a692b99cb9c863",
-        "Title": "active",
-        "DescriptionText": "<Double click here to edit group description>",
-        "IsExpanded": true,
-        "WidthAdjustment": 0.0,
-        "HeightAdjustment": 0.0,
-        "Nodes": [
-          "cf5adc57a3484fdda05e3d072ab7c987"
-        ],
-        "HasNestedGroups": false,
-        "Left": 918.2610236111816,
-        "Top": 76.502985637769427,
-        "Width": 189.0,
-        "Height": 211.0,
-        "FontSize": 30.0,
-        "InitialTop": 151.50298563776943,
-        "InitialHeight": 122.6,
-        "TextblockHeight": 65.0,
-        "Background": "#FFC1D676"
-      }
-    ],
-    "X": 320.6035238968816,
-    "Y": 286.02579460963676,
-    "Zoom": 0.71698295155822822
-  }
-}
+<Workspace Version="1.3.0.875" X="-102.873997022117" Y="169.409664893912" zoom="0.943084670293635" ScaleFactor="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <CoreNodeModels.ColorRange guid="1237a148-7a90-489d-b677-11038072c288" type="CoreNodeModels.ColorRange" nickname="Color Range" x="321.099019802796" y="-95.459543677794" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="False" />
+      <PortInfo index="2" default="False" />
+    </CoreNodeModels.ColorRange>
+    <CoreNodeModels.ColorRange guid="50219c24-e583-4b85-887c-409fb062da6e" type="CoreNodeModels.ColorRange" nickname="Color Range" x="361.862804616395" y="112.341989875386" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="False" />
+      <PortInfo index="2" default="False" />
+    </CoreNodeModels.ColorRange>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="0db97f86-fbd8-4195-b2a0-aa0e78ca1d72" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="267.062804616395" y="143.341989875386" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="1;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="b51b283a-f6ce-4717-9525-4cf8c8e92934" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="DateTime.Today" x="383.807880344035" y="336.856320866391" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.DateTime.Today" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="0db97f86-fbd8-4195-b2a0-aa0e78ca1d72" start_index="0" end="50219c24-e583-4b85-887c-409fb062da6e" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations>
+    <Dynamo.Graph.Annotations.AnnotationModel guid="8c1f73b2-1f3a-4a59-9082-2a686739aea3" annotationText="dead" left="311.099019802796" top="-141.459543677794" width="316.8" height="191.4" fontSize="30" InitialTop="-95.459543677794" InitialHeight="175.4" TextblockHeight="36" backgrouund="#FFC1D676">
+      <Models ModelGuid="1237a148-7a90-489d-b677-11038072c288" />
+    </Dynamo.Graph.Annotations.AnnotationModel>
+    <Dynamo.Graph.Annotations.AnnotationModel guid="96ee3348-6330-450f-83c8-4dd3311ad2f4" annotationText="warning" left="257.062804616395" top="66.341989875386" width="411.6" height="191.4" fontSize="30" InitialTop="112.341989875386" InitialHeight="175.4" TextblockHeight="36" backgrouund="#FFC1D676">
+      <Models ModelGuid="50219c24-e583-4b85-887c-409fb062da6e" />
+      <Models ModelGuid="0db97f86-fbd8-4195-b2a0-aa0e78ca1d72" />
+    </Dynamo.Graph.Annotations.AnnotationModel>
+    <Dynamo.Graph.Annotations.AnnotationModel guid="5d5382f5-f46e-49e8-b5a6-92b99cb9c863" annotationText="active" left="373.807880344035" top="290.856320866391" width="132" height="138.6" fontSize="30" InitialTop="336.856320866391" InitialHeight="122.6" TextblockHeight="36" backgrouund="#FFC1D676">
+      <Models ModelGuid="b51b283a-f6ce-4717-9525-4cf8c8e92934" />
+    </Dynamo.Graph.Annotations.AnnotationModel>
+  </Annotations>
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

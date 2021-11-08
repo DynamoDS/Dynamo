@@ -69,19 +69,40 @@ namespace Dynamo.Tests
         [Test]
         public void verifyNodeStates()
         {
-            // Open/Run test graph
+            // Open/Run XML test graph
             string openPath = Path.Combine(TestDirectory, @"core\NodeStates.dyn");
             RunModel(openPath);
 
-            // Check dead node JSON
+            // Check dead node XML
             var deadNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("1237a148-7a90-489d-b677-11038072c288");
             Assert.AreEqual(ElementState.Dead, deadNode.State);
-            // Check warning node JSON
+            // Check warning node XML
             var warningNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("50219c24-e583-4b85-887c-409fb062da6e");
             Assert.AreEqual(ElementState.Warning, warningNode.State);
-            // Check active node JSON
-            var activeNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("cf5adc57-a348-4fdd-a05e-3d072ab7c987");
+            // Check active node XML
+            var activeNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("b51b283a-f6ce-4717-9525-4cf8c8e92934");
             Assert.AreEqual(ElementState.Active, activeNode.State);
+
+            // Save/Open/Run JSON graph
+            string tempPath = Path.Combine(Path.GetTempPath(), "NodeStates.dyn");
+            CurrentDynamoModel.CurrentWorkspace.Save(tempPath);
+            CurrentDynamoModel.OpenFileFromPath(tempPath);
+            CurrentDynamoModel.CurrentWorkspace.RequestRun();
+
+
+            // Check dead node JSON
+            deadNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("1237a148-7a90-489d-b677-11038072c288");
+            Assert.AreEqual(ElementState.Dead, deadNode.State);
+            // Check warning node JSON
+            warningNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("50219c24-e583-4b85-887c-409fb062da6e");
+            Assert.AreEqual(ElementState.Warning, warningNode.State);
+            // Check active node JSON
+            activeNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("b51b283a-f6ce-4717-9525-4cf8c8e92934");
+            Assert.AreEqual(ElementState.Active, activeNode.State);
+
+
+            // Delete temp graph file
+            File.Delete(tempPath);
         }
 
 
