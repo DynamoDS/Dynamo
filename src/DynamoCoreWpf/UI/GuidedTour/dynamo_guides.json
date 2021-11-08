@@ -269,6 +269,12 @@
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
 				"Height": 260,
+				"ExitGuide": {
+					"Height": 273,
+					"Width": 480,
+					"Title": "PackagesGuideExitTitle",
+					"FormattedText": "PackagesGuideExitAcceptTerms"
+				},
 				"StepContent": {
 					"Title": "PackagesGuideTermsOfServiceTitle",
 					"FormattedText": "PackagesGuideTermsOfServiceText"

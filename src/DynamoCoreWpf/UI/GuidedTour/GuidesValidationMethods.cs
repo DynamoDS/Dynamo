@@ -21,11 +21,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static Step CurrentExecutingStep;
         internal static Guide CurrentExecutingGuide;
         internal static GuidesManager CurrentExecutingGuidesManager;
-
-        private const int heightExitModal = 273;
-        private const int widthExitModal = 480;
-        private const string titleStringExitModal = "PackagesGuideExitTitle";
-        private const string textStringExitModal = "PackagesGuideExitAcceptTerms";
+        
+        private static ExitGuide exitGuide;
 
         //This method will return a bool that describes if the Terms Of Service was accepted or not.
         internal static bool AcceptedTermsOfUse(DynamoViewModel dynViewModel)
@@ -46,6 +43,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void ExecuteTermsOfServiceFlow(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
+
+            if (stepInfo.ExitGuide != null)
+                exitGuide = stepInfo.ExitGuide;
 
             //When enableFunction = true, means we want to show the TermsOfUse Window (this is executed in the UIAutomation step in the Show() method)
             if (enableFunction)
@@ -131,12 +131,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="e"></param>
         internal void DeclineButton_Click(object sender, RoutedEventArgs e)
         {
-            var exitGuide = new ExitGuide();
-            exitGuide.Height = heightExitModal;
-            exitGuide.Width = widthExitModal;
-            exitGuide.Title = titleStringExitModal;
-            exitGuide.FormattedText = textStringExitModal;
-
             CurrentExecutingGuide.HideCurrentStep(CurrentExecutingStep.Sequence, GuideFlow.FORWARD);
             CurrentExecutingGuidesManager.CreateExitModal(exitGuide);
         }
