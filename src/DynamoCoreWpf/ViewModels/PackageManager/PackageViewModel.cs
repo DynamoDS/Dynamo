@@ -50,7 +50,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Specifies whether or not this Package's LoadState is set Unloaded
+        /// Specifies whether or not this Package's LoadState is set to Unloaded
         /// </summary>
         public bool Unloaded
         {
