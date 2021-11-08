@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Web.UI.WebControls;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Utilities;
@@ -102,6 +104,20 @@ namespace Dynamo.Nodes
             if (e.ChangedButton == MouseButton.Left)
             {
                 DragMove();
+            }
+        }
+
+        private void NameBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (PathHelper.IsFileNameInValid(nameBox.Text))
+            {
+                ErrorIcon.Visibility = Visibility.Visible;
+                ErrorUnderline.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                ErrorIcon.Visibility = Visibility.Collapsed;
+                ErrorUnderline.Visibility = Visibility.Collapsed;
             }
         }
     }

@@ -26,12 +26,12 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="TextBox">
-                            <Grid>
+                            <Grid Background="Transparent">
                                 <TextBox x:Name="InputTextBox"
-                                         Padding="10,12,10,8"
+                                         Padding="8,10"
                                          Background="#353535"
-                                         BorderBrush="Transparent"
-                                         BorderThickness="1"
+                                         BorderThickness="0"
+                                         CaretBrush="{StaticResource Blue300Brush}"
                                          FontFamily="{StaticResource ArtifaktElementRegular}"
                                          FontSize="12px"
                                          Foreground="#DFDFDF"
@@ -40,7 +40,7 @@
                                          Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
                                          TextWrapping="Wrap" />
                                 <TextBlock x:Name="WatermarkLabel"
-                                           Padding="13,13,10,8"
+                                           Padding="10"
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
                                            FontSize="12px"
                                            Foreground="#DFDFDF"
@@ -58,7 +58,7 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                                <StackPanel VerticalAlignment="Bottom">
+                                <StackPanel Height="4px" VerticalAlignment="Bottom">
                                     <Rectangle Name="Underline"
                                                Height="1px"
                                                Fill="Transparent" />
@@ -66,10 +66,13 @@
                                                Height="3px"
                                                Fill="Transparent" />
                                 </StackPanel>
-
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Underline" Property="Rectangle.Fill" Value="#9B9B9B" />
+                                    <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#6E6E6E" />
+                                </Trigger>
+                                <Trigger Property="IsFocused" Value="True">
                                     <Setter TargetName="Underline" Property="Rectangle.Fill" Value="{StaticResource Blue300Brush}" />
                                     <Setter TargetName="UnderlineShadow" Property="Rectangle.Fill" Value="#497386" />
                                 </Trigger>
@@ -83,14 +86,143 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <ControlTemplate x:Key="RefreshComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+                <Grid Height="29px"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="20" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Background="#353535" />
+                    <Border x:Name="Border" Grid.Column="1" />
+                    <Border Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            BorderBrush="#353535"
+                            BorderThickness="0,1,1,1" />
+                    <Rectangle x:Name="BlueUnderline"
+                               Grid.Column="0"
+                               Grid.ColumnSpan="2"
+                               Height="1px"
+                               VerticalAlignment="Bottom" />
+                    <Path x:Name="Arrow"
+                          Grid.Column="1"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
+                          Fill="White" />
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                        <Setter TargetName="Border" Property="Background" Value="#666666" />
+                    </Trigger>
+                    <Trigger Property="ToggleButton.IsChecked" Value="true">
+                        <Setter TargetName="Arrow" Property="Fill" Value="#6AC0E7" />
+                        <Setter TargetName="Arrow" Property="Data" Value="M0,6 L0,4 L4,0 L8,4 L8,6 L4,2 z" />
+                        <Setter TargetName="BlueUnderline" Property="Fill" Value="#6AC0E7" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter TargetName="Border" Property="Background" Value="#666666" />
+                        <Setter TargetName="Border" Property="BorderBrush" Value="#AAAAAA" />
+                        <Setter Property="Foreground" Value="#888888" />
+                        <Setter TargetName="Arrow" Property="Fill" Value="#888888" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+            <Style x:Key="RefreshComboBox" TargetType="{x:Type ComboBox}">
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+                <Setter Property="MinWidth" Value="300px" />
+                <Setter Property="Height" Value="29px" />
+                <Setter Property="Foreground" Value="#DCDCDC" />
+                <Setter Property="FontSize" Value="12px" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ComboBox}">
+                            <Grid>
+                                <ToggleButton Name="ToggleButton"
+                                              Grid.Column="2"
+                                              ClickMode="Press"
+                                              Focusable="false"
+                                              IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                              Template="{StaticResource RefreshComboBoxToggleButton}" />
+                                <ContentPresenter Name="ContentSite"
+                                                  Margin="15,0,0,1"
+                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center"
+                                                  Content="{TemplateBinding SelectionBoxItem}"
+                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                  IsHitTestVisible="False" />
+                                <TextBox x:Name="PART_EditableTextBox"
+                                         Margin="8,5,25,4"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Center"
+                                         Background="#353535"
+                                         BorderThickness="0"
+                                         Focusable="True"
+                                         FontFamily="{StaticResource ArtifaktElementRegular}"
+                                         FontSize="12px"
+                                         Foreground="#F5F5F5"
+                                         IsReadOnly="{TemplateBinding IsReadOnly}"
+                                         Visibility="Hidden" />
+                                <Popup Name="Popup"
+                                       AllowsTransparency="True"
+                                       Focusable="False"
+                                       IsOpen="{TemplateBinding IsDropDownOpen}"
+                                       Placement="Bottom"
+                                       PopupAnimation="Slide"
+                                       VerticalOffset="0">
+                                    <Grid Name="DropDown"
+                                          MinWidth="{TemplateBinding ActualWidth}"
+                                          MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                          SnapsToDevicePixels="True">
+                                        <Border x:Name="DropDownBorder" Background="#353535" />
+                                        <ScrollViewer Margin="0,0,-20,1"
+                                                      SnapsToDevicePixels="True"
+                                                      VerticalScrollBarVisibility="Visible">
+                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Popup>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="HasItems" Value="false">
+                                    <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Foreground" Value="#888888" />
+                                </Trigger>
+                                <Trigger Property="IsGrouping" Value="true">
+                                    <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
+                                </Trigger>
+                                <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
+                                    <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="0" />
+                                    <Setter TargetName="DropDownBorder" Property="Margin" Value="0,0,0,0" />
+                                </Trigger>
+                                <Trigger Property="IsEditable" Value="true">
+                                    <Setter Property="IsTabStop" Value="false" />
+                                    <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible" />
+                                    <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
     <Grid Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="58px" />
+            <RowDefinition Height="400" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="66px" />
         </Grid.RowDefinitions>
 
         <!--  Top Section: Title + Close Button  -->
@@ -130,62 +262,98 @@
                 Background="{StaticResource DarkMidGreyBrush}"
                 BorderBrush="#7E7E7E"
                 BorderThickness="0,1,0,0">
-            <StackPanel Margin="25">
+            <ScrollViewer Margin="0,5" VerticalScrollBarVisibility="Visible">
+                <StackPanel Margin="25,25,10,25">
 
-                <!--  Add-Ons section node  -->
-                <TextBlock Name="LocationNote"
-                           FontSize="14"
-                           Style="{StaticResource SubLabelStyle}"
-                           Text="{x:Static p:Resources.CustomNodePropertyWindowLocationNote}"
-                           TextWrapping="Wrap" />
+                    <!--  Add-Ons section node  -->
+                    <TextBlock Name="LocationNote"
+                               FontSize="14"
+                               Style="{StaticResource SubLabelStyle}"
+                               Text="{x:Static p:Resources.CustomNodePropertyWindowLocationNote}"
+                               TextWrapping="Wrap" />
 
-                <!--  Name  -->
-                <TextBlock Name="TitleLabel"
-                           Margin="0,10,0,5"
-                           Style="{StaticResource LabelStyle}"
-                           Text="{x:Static p:Resources.CustomNodePropertyWindowName}">
-                    <TextBlock.ToolTip>
-                        <TextBlock Text="{x:Static p:Resources.CustomNodePromptNameTooltip}" />
-                    </TextBlock.ToolTip>
-                </TextBlock>
-                <TextBox Name="nameBox"
-                         Padding="5"
-                         Style="{StaticResource HintingInputStyle}"
-                         Tag="{x:Static p:Resources.CustomNodePropertyWindowNameHint}" />
+                    <!--  Name  -->
+                    <TextBlock Name="TitleLabel"
+                               Margin="0,10,0,5"
+                               Style="{StaticResource LabelStyle}"
+                               Text="{x:Static p:Resources.CustomNodePropertyWindowName}">
+                        <TextBlock.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.CustomNodePromptNameTooltip}" Style="{StaticResource GenericToolTipLight}" />
+                        </TextBlock.ToolTip>
+                    </TextBlock>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Name="nameBox"
+                                 Grid.Column="0"
+                                 MinHeight="37"
+                                 Margin="0"
+                                 VerticalAlignment="Center"
+                                 Style="{StaticResource HintingInputStyle}"
+                                 Tag="{x:Static p:Resources.CustomNodePropertyWindowNameHint}"
+                                 TextChanged="NameBox_OnTextChanged" />
+                        <Image x:Name="ErrorIcon"
+                               Grid.Column="1"
+                               Width="16"
+                               Height="16"
+                               Margin="5,0,0,0"
+                               VerticalAlignment="Center"
+                               DockPanel.Dock="Right"
+                               Source="/DynamoCoreWpf;component/UI/Images/error.png"
+                               Visibility="Collapsed" />
+                        <StackPanel x:Name="ErrorUnderline"
+                                    Grid.Column="0"
+                                    VerticalAlignment="Bottom"
+                                    Visibility="Collapsed">
+                            <Rectangle Name="Underline"
+                                       Height="1px"
+                                       VerticalAlignment="Bottom"
+                                       Fill="#EA5555" />
+                            <Rectangle Name="UnderlineShadow"
+                                       Height="3px"
+                                       Fill="#EA5555"
+                                       Opacity="0.5" />
+                        </StackPanel>
+                    </Grid>
 
-                <!--  Description  -->
-                <TextBlock Name="DescriptionLabel"
-                           Margin="0,10,0,5"
-                           Style="{StaticResource LabelStyle}"
-                           Text="{x:Static p:Resources.CustomNodePropertyWindowDescription}">
-                    <TextBlock.ToolTip>
-                        <TextBlock Text="{x:Static p:Resources.CustomNodePromptDescriptionTooltip}" />
-                    </TextBlock.ToolTip>
-                </TextBlock>
-                <TextBox Name="DescriptionInput"
-                         MinHeight="80"
-                         AcceptsReturn="True"
-                         MinLines="3"
-                         Style="{DynamicResource HintingInputStyle}"
-                         Tag="{x:Static p:Resources.CustomNodePropertyWindowDescriptionHint}"
-                         TextWrapping="Wrap"
-                         VerticalScrollBarVisibility="Auto" />
 
-                <!--  Add-Ons Category  -->
-                <TextBlock Name="label2"
-                           Height="28"
-                           Style="{StaticResource LabelStyle}"
-                           Text="{x:Static p:Resources.CustomNodePropertyWindowCategory}" />
-                <ComboBox Name="categoryBox"
-                          Margin="0,0,0,0"
-                          Background="#353535"
-                          Style="{DynamicResource ResourceKey=RefreshComboBox}"
-                          TabIndex="1" />
-            </StackPanel>
+                    <!--  Description  -->
+                    <TextBlock Name="DescriptionLabel"
+                               Margin="0,10,0,5"
+                               Style="{StaticResource LabelStyle}"
+                               Text="{x:Static p:Resources.CustomNodePropertyWindowDescription}">
+                        <TextBlock.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.CustomNodePromptDescriptionTooltip}" Style="{StaticResource GenericToolTipLight}" />
+                        </TextBlock.ToolTip>
+                    </TextBlock>
+                    <TextBox Name="DescriptionInput"
+                             MinHeight="75"
+                             AcceptsReturn="True"
+                             MinLines="3"
+                             Style="{DynamicResource HintingInputStyle}"
+                             Tag="{x:Static p:Resources.CustomNodePropertyWindowDescriptionHint}"
+                             TextWrapping="Wrap"
+                             VerticalScrollBarVisibility="Auto" />
+
+                    <!--  Add-Ons Category  -->
+                    <TextBlock Name="label2"
+                               Height="28"
+                               Style="{StaticResource LabelStyle}"
+                               Text="{x:Static p:Resources.CustomNodePropertyWindowCategory}" />
+                    <ComboBox Name="categoryBox"
+                              Margin="0,0,0,0"
+                              Background="#353535"
+                              IsEditable="True"
+                              Style="{DynamicResource ResourceKey=RefreshComboBox}"
+                              TabIndex="1" />
+                </StackPanel>
+            </ScrollViewer>
         </Border>
 
         <!--  Lower Section: Buttons  -->
-        <DockPanel Grid.Row="2" Margin="0,0,25,25">
+        <DockPanel Grid.Row="2" Margin="0,10,25,25">
             <Button Name="cancelButton"
                     MinWidth="85"
                     Margin="0"

@@ -1345,7 +1345,6 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-
     <Style x:Key="RefreshComboBox" TargetType="{x:Type ComboBox}">
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
@@ -2652,6 +2651,7 @@
                                 CornerRadius="2">
                             <TextBlock x:Name="textBlock"
                                        HorizontalAlignment="Center"
+                                       Margin="0,1,0,0"
                                        VerticalAlignment="Center"
                                        FontFamily="{StaticResource ArtifaktElementRegular}"
                                        FontSize="14px"
