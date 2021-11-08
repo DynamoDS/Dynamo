@@ -196,12 +196,17 @@ namespace PythonNodeModelsWpf
 
         private void PythonEnginesChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            // Handle IronPython2 for now
-            if (e.Action == NotifyCollectionChangedAction.Add &&
-                PythonEngineManager.Instance.AvailableEngines.
-                    Any(x => x.Version == PythonEngineVersion.IronPython2))
+            if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                AddIronPython2MenuItem();
+                foreach (var item in e.NewItems)
+                {
+                    PythonEngineProxy engine = item as PythonEngineProxy;
+                    if (engine != null && engine.Version.Equals(PythonEngineVersion.IronPython2))
+                    {// Handle only IronPython2 for now
+                        AddIronPython2MenuItem();
+                        break;
+                    }
+                }      
             }
         }
 
