@@ -590,7 +590,7 @@ sys.stdout = DynamoStdOut({0})
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        [Obsolete("Deprecated. This event will no longer be raised.")]
+        [Obsolete("Deprecated. Please use EvaluationStarted instead")]
         public static event EvaluationEventHandler EvaluationBegin;
 
 
@@ -604,7 +604,7 @@ sys.stdout = DynamoStdOut({0})
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
-        [Obsolete("Deprecated. This event will no longer be raised.")]
+        [Obsolete("Deprecated. Please use EvaluationFinished instead.")]
         public static event EvaluationEventHandler EvaluationEnd;
 
         /// <summary>
@@ -623,6 +623,9 @@ sys.stdout = DynamoStdOut({0})
                                               string code,
                                               IList bindingValues)
         {
+            // Call deprecated events until they are completely removed.
+            EvaluationBegin?.Invoke(EvaluationState.Begin, scope, code, bindingValues);
+
             if (EvaluationStarted != null)
             {
                 EvaluationStarted(code, bindingValues, (n, v) => { scope.Set(n, InputMarshaler.Marshal(v).ToPython()); });
@@ -645,6 +648,11 @@ sys.stdout = DynamoStdOut({0})
                                             string code,
                                             IList bindingValues)
         {
+            // Call deprecated events until they are completely removed.
+            EvaluationEnd?.Invoke(isSuccessful ? 
+                EvaluationState.Success : 
+                EvaluationState.Failed, scope, code, bindingValues);
+
             if (EvaluationFinished != null)
             {
                 EvaluationFinished(isSuccessful ? Dynamo.PythonServices.EvaluationState.Success : Dynamo.PythonServices.EvaluationState.Failed, 

@@ -50,12 +50,14 @@ namespace PythonNodeModelsWpf
             learnMoreItem.Click += OpenPythonLearningMaterial;
 
             var availableEngines = PythonEngineManager.Instance.AvailableEngines;
-            if (availableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2)) 
+            if (availableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2) ||
+                nodeModel.Engine.Equals(PythonEngineVersion.IronPython2)) 
             {
                 AddIronPython2MenuItem();
             }
 
-            if (availableEngines.Any(x => x.Version == PythonEngineVersion.CPython3))
+            if (availableEngines.Any(x => x.Version == PythonEngineVersion.CPython3) ||
+                nodeModel.Engine.Equals(PythonEngineVersion.CPython3))
             {
                 pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = false };
                 pythonEngine3Item.Click += UpdateToPython3Engine;
