@@ -408,7 +408,7 @@
 				]
 			},
 			{
-				"Sequence": 4,
+				"Sequence": 5,
 				"Name": "search-results",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
@@ -457,7 +457,7 @@
 				]
 			},
 			{
-				"Sequence": 5,
+				"Sequence": 6,
 				"Name": "package-dependencies",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_right",
