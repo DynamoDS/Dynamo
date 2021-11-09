@@ -3425,9 +3425,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} has already installed {1}.
+        ///   Looks up a localized string similar to Package {1} is already installed.
         ///
-        ///{0} will attempt to uninstall this package before installing..
+        ///{0} will attempt to uninstall this package before installing {2}..
         /// </summary>
         public static string MessageAlreadyInstallDynamo {
             get {
@@ -3652,9 +3652,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package {0} has conflicts with the following packages that are in use in the workspace: {1}.
+        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}.
         ///    
-        ///Do you wish to continue installing it using the package versions already installed?
+        ///Do you wish to continue installing it while keeping the packages that are already installed?
         ///
         ///If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again..
         /// </summary>
@@ -3665,9 +3665,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package {0} has conflicts with the following packages: {1}.
+        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following packages: {1}.
         ///    
-        ///Do you wish to continue installing it using the package version(s) already installed?
+        ///Do you wish to continue installing it while keeping the packages that are already installed?
         ///
         ///If not, {2} needs to uninstall {1} to continue. Restart {2}, then download {0} again..
         /// </summary>
@@ -3792,7 +3792,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} has dependencies that conflict with the following built-in packages: {1}. 
+        ///   Looks up a localized string similar to {0} has dependencies that conflict with the following built-in package(s): {1}. 
         ///    
         ///Do you wish to continue trying to install {0}?.
         /// </summary>
@@ -3830,13 +3830,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A different version of the package {0} is already installed as a Built-In package. 
+        ///   Looks up a localized string similar to {0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
         ///    
-        ///Do you wish to continue trying to install {1}?.
+        ///You can try disabling loading packages from built-in package paths, restart {2} and download {0} again..
         /// </summary>
         public static string MessageSamePackageDiffVersInBuiltinPackages {
             get {
                 return ResourceManager.GetString("MessageSamePackageDiffVersInBuiltinPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+        ///        
+        ///Do you wish to restart {2} to first uninstall {1}, then download {0} again?.
+        /// </summary>
+        public static string MessageSamePackageDiffVersInLocalPackages {
+            get {
+                return ResourceManager.GetString("MessageSamePackageDiffVersInLocalPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The same version of {0} is already installed as a built-in package and need not be installed again..
+        /// </summary>
+        public static string MessageSamePackageSameVersInBuiltinPackages {
+            get {
+                return ResourceManager.GetString("MessageSamePackageSameVersInBuiltinPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The same version of package {0} is already installed and need not be installed again..
+        /// </summary>
+        public static string MessageSamePackageSameVersInLocalPackages {
+            get {
+                return ResourceManager.GetString("MessageSamePackageSameVersInLocalPackages", resourceCulture);
             }
         }
         
