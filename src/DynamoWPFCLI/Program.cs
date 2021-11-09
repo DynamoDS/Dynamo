@@ -28,31 +28,14 @@ namespace DynamoWPFCLI
                     thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
 
+                    Console.WriteLine("Starting DynamoWPFCLI in keepalive mode");
                     Console.ReadLine();
 
                     ShutDown();
                 }
                 else
                 {
-                    DynamoModel model;
-                    if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
-                    {
-                        model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath);
-                    }
-                    else
-                    {
-                        model = Dynamo.Applications.StartupUtils.MakeModel(true);
-                    }
-                    var viewModel = DynamoViewModel.Start(
-                        new DynamoViewModel.StartConfiguration()
-                        {
-                            DynamoModel = model,
-                            Watch3DViewModel = new DefaultWatch3DViewModel(null, new Watch3DViewModelStartupParams(model))
-                            {
-                                Active = false,
-                                CanBeActivated = false
-                            }
-                        });
+                    var viewModel = StartupDaynamo(cmdLineArgs);
 
                     var runner = new CommandLineRunnerWPF(viewModel);
                     runner.Run(cmdLineArgs);
@@ -74,55 +57,44 @@ namespace DynamoWPFCLI
             }
         }
 
+        private static DynamoViewModel StartupDaynamo(StartupUtils.CommandLineArguments cmdLineArgs)
+        {
+            DynamoModel model;
+            if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
+            {
+                model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath);
+            }
+            else
+            {
+                model = Dynamo.Applications.StartupUtils.MakeModel(true);
+            }
+
+            model.ShutdownCompleted += (m) => { ShutDown(); };
+
+            var viewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = model,
+                    Watch3DViewModel = new DefaultWatch3DViewModel(null, new Watch3DViewModelStartupParams(model))
+                    {
+                        Active = false,
+                        CanBeActivated = false
+                    }
+                });
+            return viewModel;
+        }
+
         private static void RunKeepAlive(StartupUtils.CommandLineArguments cmdLineArgs)
         {
             try
             {
-                DynamoModel model;
-                if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
-                {
-                    model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath);
-                }
-                else
-                {
-                    model = Dynamo.Applications.StartupUtils.MakeModel(true);
-                }
+                StartupDaynamo(cmdLineArgs);
 
-                model.ShutdownCompleted += (m) =>
-                {
-                    ShutDown();
-                };
+                Console.WriteLine("-----------------------------------------");
+                Console.WriteLine("DynamoWPFCLI is running in keepalive mode");
+                Console.WriteLine("Press Enter to shutdown...");
 
-                DefaultWatch3DViewModel defaultWatch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(null, new Watch3DViewModelStartupParams(model), model.Logger);
-                defaultWatch3DViewModel.Active = false;
-                defaultWatch3DViewModel.CanBeActivated = false;
-
-                var viewModel = DynamoViewModel.Start(
-                    new DynamoViewModel.StartConfiguration()
-                    {
-                        DynamoModel = model,
-                        Watch3DViewModel = defaultWatch3DViewModel
-                    });
-
-                var dynView = new DynamoView(viewModel);
-
-                var sharedViewExtensionLoadedParams = new ViewLoadedParams(dynView, viewModel);
-
-                foreach (var ext in dynView.viewExtensionManager.ViewExtensions)
-                {
-                    try
-                    {
-                        ext.Loaded(sharedViewExtensionLoadedParams);
-                        Console.WriteLine("loaded " + ext.Name);
-                    }
-                    catch (Exception exc)
-                    {
-                        Console.WriteLine(ext.Name + ": " + exc.Message);
-                    }
-                }
-           
                 Run();
-
             }
             catch
             {
