@@ -303,7 +303,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 //In this case the UI Automation will be done using a Function located in the static class GuidesValidationMethods
                 case StepUIAutomation.UIControlType.FUNCTION:
                     MethodInfo builderMethod = typeof(GuidesValidationMethods).GetMethod(uiAutomationData.Name, BindingFlags.Static | BindingFlags.NonPublic);
-                    object[] parametersArray = new object[] { this, uiAutomationData, enableUIAutomation, currentFlow };
+                    object[] parametersArray = new object[] { this, uiAutomationData, enableUIAutomation, currentFlow};
                     builderMethod.Invoke(null, parametersArray);
                     //If UpdatePlacementTarget = true then means that a new Window was opened after executing the funtion then we need to update the Popup.PlacementTarget
                     if (uiAutomationData.UpdatePlacementTarget)

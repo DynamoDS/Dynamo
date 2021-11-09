@@ -92,7 +92,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Due that we are passing the GuideBackground for each Step we need to create first the background and then Create the Steps
             CreateBackground();
             CreateGuideSteps(GuidesJsonFilePath);
-            
+
+            GuidesValidationMethods.CurrentExecutingGuidesManager = this;
 
             guideBackgroundElement.ClearCutOffSection();
             guideBackgroundElement.ClearHighlightSection();
@@ -228,7 +229,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// Creates the exit modal when close button is pressed
         /// </summary>
         /// <param name="exitGuide">This parameter contains the properties to build exit guide modal</param>
-        private void CreateExitModal(ExitGuide exitGuide)
+        internal void CreateExitModal(ExitGuide exitGuide)
         {
             var viewModel = new ExitGuideWindowViewModel(exitGuide);
             exitGuideWindow = new ExitGuideWindow((FrameworkElement)mainRootElement, viewModel);
@@ -288,7 +289,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 totalTooltips = (from step in guide.GuideSteps
                                  where step.StepType == Step.StepTypes.TOOLTIP ||
                                        step.StepType == Step.StepTypes.SURVEY
-                                 select step).Count();
+                                 select step).GroupBy(x=>x.Sequence).Count();
 
                 foreach (Step step in guide.GuideSteps)
                 {

@@ -113,7 +113,7 @@
     <SolidColorBrush x:Key="FeedbackSectionBackground" Color="#4192D9" />
 
     <!--  Library background  -->
-    <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#F1F2F2" />
+    <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#444444" />
     <SolidColorBrush x:Key="LibraryCommonBackground" Color="#333333" />
     <SolidColorBrush x:Key="LibraryMemberOnHover" Color="#404040" />
     <SolidColorBrush x:Key="LibraryItemHostBackground" Color="#353535" />
@@ -123,7 +123,7 @@
 
     <!--  Library text colors  -->
     <SolidColorBrush x:Key="MemberButtonText" Color="#aaaaaa" />
-    <SolidColorBrush x:Key="DeafultSearchTextBlockText" Color="#6D6E71" />
+    <SolidColorBrush x:Key="DeafultSearchTextBlockText" Color="#C0C0C0" />
     <SolidColorBrush x:Key="CommonSidebarTextColor" Color="#CCCCCC" />
     <SolidColorBrush x:Key="SearchBoxBackgroundColor" Color="#231F20" />
     <SolidColorBrush x:Key="NestedMemberTextColor" Color="#989898" />

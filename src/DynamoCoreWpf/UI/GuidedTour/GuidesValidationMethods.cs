@@ -1,4 +1,7 @@
 ﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
@@ -14,11 +17,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
     /// <summary>
     /// This static class will be used for adding static methods that will be executed for the Json PreValidation section (or other validations).
     /// </summary>
-    internal static class GuidesValidationMethods
+    internal class GuidesValidationMethods
     {
         //We need the Step and the Guide due that some functions need to access information about it
         internal static Step CurrentExecutingStep;
         internal static Guide CurrentExecutingGuide;
+        internal static GuidesManager CurrentExecutingGuidesManager;
+        
+        private static ExitGuide exitGuide;
 
         //This method will return a bool that describes if the Terms Of Service was accepted or not.
         internal static bool AcceptedTermsOfUse(DynamoViewModel dynViewModel)
@@ -40,29 +46,65 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             CurrentExecutingStep = stepInfo;
 
+            if (stepInfo.ExitGuide != null)
+                exitGuide = stepInfo.ExitGuide;
+
             //When enableFunction = true, means we want to show the TermsOfUse Window (this is executed in the UIAutomation step in the Show() method)
             if (enableFunction)
             {
                 //If the TermsOfService is not accepted yet it will show the TermsOfUseView otherwise it will show the PackageManagerSearchView
                 stepInfo.DynamoViewModelStep.ShowPackageManagerSearch(null);
                 Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
-                if (ownedWindow == null) return;
-                Button buttonElement = Guide.FindChild(ownedWindow, stepInfo.HostPopupInfo.HostUIElementString) as Button;
-                //When the Accept button is pressed in the TermsOfUseView then we need to move to the next Step
-                if (buttonElement != null)
-                    buttonElement.Click += AcceptButton_Click;
+
+                foreach (var handler in uiAutomationData.AutomaticHandlers)
+                {
+                    if (ownedWindow == null) return;
+                    UIElement element = Guide.FindChild(ownedWindow, handler.HandlerElement);
+
+                    //When the Accept button is pressed in the TermsOfUseView then we need to move to the next Step
+                    if (element != null)
+                        ManageEventHandler(element, handler.HandlerElementEvent, handler.ExecuteMethod);
+                }
             }
             //When enableFunction = false, means we are hiding (closing) the TermsOfUse Window due that we are moving to the next Step or we are exiting the Guide
             else
             {
                 Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
                 if (ownedWindow == null) return;
-                Button buttonElement = Guide.FindChild(ownedWindow, stepInfo.HostPopupInfo.HostUIElementString) as Button;
-                if (buttonElement != null)
-                    buttonElement.Click -= AcceptButton_Click;
+
+                foreach (var handler in uiAutomationData.AutomaticHandlers)
+                {
+                    UIElement element = Guide.FindChild(ownedWindow, handler.HandlerElement) as Button;
+                    if (element != null)
+                        ManageEventHandler(element, handler.HandlerElementEvent, handler.ExecuteMethod, false);
+                }                
+
                 //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
                 Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
             }
+        }
+
+        /// <summary>
+        /// This methos subscribes and unsubscribes an event by setting the method and the event dynamically
+        /// </summary>
+        /// <param name="element">The element to subscribe the method I.E: Button</param>
+        /// <param name="eventname">The event name that will be subscribed I.E: Click</param>
+        /// <param name="methodname">The method that will listen the event I.E: AcceptButton_Click</param>
+        /// <param name="addEvent">A flag that will check if it's to subscribe or unsubscribe</param>
+        internal static void ManageEventHandler(object element, string eventname, string methodname, bool addEvent = true)
+        {
+            EventInfo eventInfo = element.GetType().GetEvent(eventname);
+
+            var validationMethods = new GuidesValidationMethods();
+
+            var eventHandlerMethod = validationMethods.GetType().GetMethod(methodname, BindingFlags.NonPublic | BindingFlags.Instance);           
+
+            Delegate del = Delegate.CreateDelegate(eventInfo.EventHandlerType, validationMethods, eventHandlerMethod);
+
+            if(addEvent)
+                eventInfo.AddEventHandler(element, del);
+            else
+                eventInfo.RemoveEventHandler(element, del);
         }
 
         /// <summary>
@@ -70,7 +112,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void AcceptButton_Click(object sender, RoutedEventArgs e)
+        internal void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
            CurrentExecutingGuide.HideCurrentStep(CurrentExecutingStep.Sequence, GuideFlow.FORWARD);
             if (CurrentExecutingStep.Sequence < CurrentExecutingGuide.TotalSteps)
@@ -82,6 +124,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 CurrentExecutingGuide.CalculateStep(GuideFlow.FORWARD, CurrentExecutingStep.Sequence);
                 CurrentExecutingGuide.CurrentStep.Show(GuideFlow.FORWARD);
             }
+        }
+
+        /// <summary>
+        /// This method will be executed when the Decline button is pressed in the TermsOfUseView Window and creates the exit tour modal
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        internal void DeclineButton_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentExecutingGuide.HideCurrentStep(CurrentExecutingStep.Sequence, GuideFlow.FORWARD);
+            CurrentExecutingGuidesManager.CreateExitModal(exitGuide);
         }
 
         /// <summary>

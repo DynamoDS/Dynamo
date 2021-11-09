@@ -47,9 +47,9 @@
     <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=2.1.7962.24801, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Greg, Version=2.1.7972.24350, Culture=neutral, processorArchitecture=MSIL">
       <Private>True</Private>
-      <HintPath>..\packages\Greg.2.1.7962.24801\lib\net48\Greg.dll</HintPath>
+      <HintPath>..\packages\Greg.2.1.7972.24350\lib\net48\Greg.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit, Version=2.17.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.2.17.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>
@@ -69,7 +69,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -77,7 +76,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\DynamoVisualProgramming.LibG_228_0_0.2.13.0.6656\lib\net48\ProtoGeometry.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp, Version=106.12.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="RestSharp, Version=106.12.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.106.12.0\lib\net452\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
@@ -111,6 +110,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -522,7 +522,7 @@
     <Page Include="Controls\InPortContextMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-     </Page>
+    </Page>
     <Page Include="Views\GuidedTour\ExitGuideWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1442,6 +1442,12 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\filterIcon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\sortIcon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\SearchPackages.gif" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\searchPackages.html" />
+    <Resource Include="UI\Images\error-icon.png" />
+    <Resource Include="UI\Images\searchmagnifier.png" />
     <Resource Include="UI\Images\info-grey.png" />
     <Resource Include="UI\Images\remove - default.png" />
     <Resource Include="UI\Images\close_blue.png" />
