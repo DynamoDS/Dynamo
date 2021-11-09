@@ -1,0 +1,52 @@
+## This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+   pull_request:
+    branches: [master]
+    types: [closed]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      
+      # Getting Pr information from the commit SHA
+      - name: Getting PR information
+        run: |
+          echo "Installing requirements"
+          sudo apt update
+          sudo apt install jq -y
+          sudo apt install curl -y
+          bash
+          echo "Getting PR number from merge"
+          git show ${{ github.sha }} > pr_info1.out
+          sed -n -e 's/^.*Merge pull request #//p' pr_info1.out > pr_info2.out
+          sed -n -e 's/from.*$//p' pr_info2.out > pr_info3.out
+          pr_number=$(sed 's/ //g' pr_info3.out)
+          echo "PR number is $pr_number"
+          echo "Getting PR URL"
+          curl "https://api.github.com/repos/DynamoDS/Dynamo/$pr_number" | jq '._links.html.href' | sed -e 's/"/ /g' | sed 's/ //g' > pr_url_convert.out
+          cat pr_url_convert.out | sed -e 's/\//\\\//g' > pr_url.out
+          prurl=$(cat pr_url.out)
+          echo "Getting Release Notes Section from PR body"
+          curl "https://api.github.com/repos/DynamoDS/Dynamo/pulls/$pr_number" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
+          releasenotes=$(cat releasenotes.out)
+          echo "Building JSON message"
+          cat << EOF > ./slack_message.json
+          {
+          "text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes"
+          }
+          EOF
+      
+      - name: Notify to Slack
+        uses: opspresso/action-slack@master
+        env:
+          SLACK_TOKEN: ${{ secrets.SLACK_WEBHOOK_RELEASE_NOTES }}
+          JSON_PATH: ./slack_message.json
