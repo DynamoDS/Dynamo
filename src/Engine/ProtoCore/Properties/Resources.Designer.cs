@@ -1160,11 +1160,11 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Internal error, please report: Dereferencing a non-pointer. href=DeferencingNonPointer.html.
+        ///   Looks up a localized string similar to Internal error, please report: Dereferencing a non-pointer. href=DereferencingNonPointer.html.
         /// </summary>
-        public static string kDeferencingNonPointer {
+        public static string kDereferencingNonPointer {
             get {
-                return ResourceManager.GetString("kDeferencingNonPointer", resourceCulture);
+                return ResourceManager.GetString("kDereferencingNonPointer", resourceCulture);
             }
         }
         

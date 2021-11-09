@@ -112,7 +112,7 @@ namespace ProtoCore.Lang
                 if (formalParameters[thisPtrIndex].IsNull)
                 {
                     runtimeCore.RuntimeStatus.LogWarning(
-                        Runtime.WarningID.DereferencingNonPointer, Resources.kDeferencingNonPointer);
+                        Runtime.WarningID.DereferencingNonPointer, Resources.kDereferencingNonPointer);
                     return StackValue.Null;
                 }
 
