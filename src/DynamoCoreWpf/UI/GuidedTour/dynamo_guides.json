@@ -269,6 +269,12 @@
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
 				"Height": 260,
+				"ExitGuide": {
+					"Height": 273,
+					"Width": 480,
+					"Title": "PackagesGuideExitTitle",
+					"FormattedText": "PackagesGuideExitAcceptTerms"
+				},
 				"StepContent": {
 					"Title": "PackagesGuideTermsOfServiceTitle",
 					"FormattedText": "PackagesGuideTermsOfServiceText"
@@ -308,6 +314,18 @@
 						"ControlType": "function",
 						"Name": "ExecuteTermsOfServiceFlow",
 						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "AcceptTermsOfUseButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "AcceptButton_Click"
+							},
+							{
+								"HandlerElement": "DeclineTermsOfUseButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "DeclineButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					}
 				]
