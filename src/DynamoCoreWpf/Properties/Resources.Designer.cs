@@ -3832,7 +3832,7 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
         ///    
-        ///You can try disabling loading packages from built-in package paths, restart {2} and download {0} again..
+        ///You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again..
         /// </summary>
         public static string MessageSamePackageDiffVersInBuiltinPackages {
             get {

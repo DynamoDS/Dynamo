@@ -498,6 +498,63 @@ namespace Dynamo.ViewModels
             return String.Join(", ", pkgs.Select(x => x.Name + " " + x.VersionName));
         }
 
+        /// <summary>
+        /// Warn about duplicate package conflicts depending on whether the package is 
+        /// a built-in package and whether versions match.
+        /// </summary>
+        /// <param name="name">name of package being downloaded</param>
+        /// <param name="package">package version being downloaded</param>
+        /// <param name="duplicatePackage">local package found to be duplicate of one being downloaded</param>
+        private void WarnAboutDuplicatePackageConflicts(string name, PackageVersion package, Package duplicatePackage)
+        {
+            if (duplicatePackage == null) return;
+
+            var packageToDownload = $"{name} {package.version}";
+            if (duplicatePackage.BuiltInPackage)
+            {
+                if (package.version == duplicatePackage.VersionName)
+                {
+                    var message = string.Format(Resources.MessageSamePackageSameVersInBuiltinPackages, packageToDownload);
+
+                    MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    var message = string.Format(Resources.MessageSamePackageDiffVersInBuiltinPackages,
+                        packageToDownload, JoinPackageNames(new[] { duplicatePackage }),
+                        DynamoViewModel.BrandingResourceProvider.ProductName);
+
+                    MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+                return;
+            }
+
+            if (package.version == duplicatePackage.VersionName)
+            {
+                var message = string.Format(Resources.MessageSamePackageSameVersInLocalPackages, packageToDownload);
+                MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
+                MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                var dupPkg = JoinPackageNames(new[] { duplicatePackage });
+                var message = string.Format(Resources.MessageSamePackageDiffVersInLocalPackages, packageToDownload,
+                    dupPkg, DynamoViewModel.BrandingResourceProvider.ProductName);
+
+                var dialogResult = MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
+                    MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+
+                if (dialogResult == MessageBoxResult.OK)
+                {
+                    // mark for uninstallation
+                    duplicatePackage.MarkForUninstall(DynamoViewModel.Model.PreferenceSettings);
+                }
+            }
+            return;
+        }
+
         internal async void ExecutePackageDownload(string name, PackageVersion package, string installPath)
         {
             string msg = String.IsNullOrEmpty(installPath) ?
@@ -557,78 +614,30 @@ namespace Dynamo.ViewModels
                 var localPkgsConflictingWithPkgDeps = new List<Package>();
                 var newPackageHeaders = new List<PackageVersion>();
 
-                foreach(var header in dependencyVersionHeaders)
+                foreach(var dependencyHeader in dependencyVersionHeaders)
                 {
                     bool isHeaderDuplicate = false;
-                    foreach(var pkg in localPkgs)
+                    foreach(var localPkg in localPkgs)
                     {
-                        if (pkg.Name == header.name)
+                        if (localPkg.Name == dependencyHeader.name)
                         {
-                            if(pkg.Name == name)
+                            if(localPkg.Name == name)
                             {
-                                duplicatePackage = pkg;
+                                duplicatePackage = localPkg;
                                 break;
                             }
                             isHeaderDuplicate = true;
-                            if (pkg.VersionName != header.version)
+                            if (localPkg.VersionName != dependencyHeader.version)
                             {
-                                localPkgsConflictingWithPkgDeps.Add(pkg);
+                                localPkgsConflictingWithPkgDeps.Add(localPkg);
                             }
                         }
                     }
                     if (duplicatePackage != null) break;
-                    if(!isHeaderDuplicate) newPackageHeaders.Add(header);
+                    if(!isHeaderDuplicate) newPackageHeaders.Add(dependencyHeader);
                 }
 
-                var settings = DynamoViewModel.Model.PreferenceSettings;
-
-                var packageToDownload = $"{name} {package.version}";
-                if (duplicatePackage != null)
-                {
-                    if(duplicatePackage.BuiltInPackage)
-                    {
-                        if (package.version == duplicatePackage.VersionName)
-                        {
-                            var message = string.Format(Resources.MessageSamePackageSameVersInBuiltinPackages, packageToDownload);
-
-                            MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
-                                MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                        else
-                        {
-                            var message = string.Format(Resources.MessageSamePackageDiffVersInBuiltinPackages,
-                                packageToDownload, JoinPackageNames(new[] { duplicatePackage }), 
-                                DynamoViewModel.BrandingResourceProvider.ProductName);
-
-                            MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
-                                MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                        }
-                        return;
-                    }
-
-                    if (package.version == duplicatePackage.VersionName)
-                    {
-                        var message = string.Format(Resources.MessageSamePackageSameVersInLocalPackages, packageToDownload);
-                        MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
-                        MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    else
-                    {
-                        var dupPkg = JoinPackageNames(new[] { duplicatePackage });
-                        var message = string.Format(Resources.MessageSamePackageDiffVersInLocalPackages, packageToDownload,
-                            dupPkg, DynamoViewModel.BrandingResourceProvider.ProductName);
-
-                        var dialogResult = MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
-                            MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
-
-                        if (dialogResult == MessageBoxResult.OK)
-                        {
-                            // mark for uninstallation
-                            duplicatePackage.MarkForUninstall(settings);
-                        }
-                    }
-                    return;
-                }
+                WarnAboutDuplicatePackageConflicts(name, package, duplicatePackage);
 
                 foreach (var pkg in localPkgsConflictingWithPkgDeps)
                 {
@@ -679,6 +688,7 @@ namespace Dynamo.ViewModels
                     if (res == MessageBoxResult.Cancel) return;
                 }
 
+                var packageToDownload = $"{name} {package.version}";
                 if (builtinPackages.Any())
                 {
                     // Conflicts with builtin packages
@@ -723,6 +733,7 @@ namespace Dynamo.ViewModels
                     if(dialogResult == MessageBoxResult.No) return;
                 }
 
+                var settings = DynamoViewModel.Model.PreferenceSettings;
                 if (uninstallsRequiringRestart.Any())
                 {
                     var conflictingPkgs = JoinPackageNames(uninstallsRequiringRestart);

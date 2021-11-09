@@ -2551,7 +2551,7 @@ Do you wish to continue trying to install {0}?</value>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
     <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
     
-You can try disabling loading packages from built-in package paths, restart {2} and download {0} again.</value>
+You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
     <value>The same version of {0} is already installed as a built-in package and need not be installed again.</value>
