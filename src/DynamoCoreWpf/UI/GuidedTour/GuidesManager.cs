@@ -340,7 +340,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <returns></returns>
         private HostControlInfo CreateHostControl(HostControlInfo jsonHostControlInfo)
         {
-            //We use the HostControlInfo copy contrutor
+            //We use the HostControlInfo copy construtor
             var popupInfo = new HostControlInfo(jsonHostControlInfo, mainRootElement);
 
             //If the CutOff area was defined in the json file then a section of the background overlay will be removed
@@ -356,7 +356,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //If the Highlight area was defined in the json file then a rectangle will be highlighted in the Overlay
             if (jsonHostControlInfo.HighlightRectArea != null)
             {
-                //We use the HighlightArea copy contrutor
+                //We use the HighlightArea copy construtor
                 popupInfo.HighlightRectArea = new HighlightArea(jsonHostControlInfo.HighlightRectArea);
             }
 

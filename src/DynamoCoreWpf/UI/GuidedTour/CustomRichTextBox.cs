@@ -97,7 +97,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         bImageActive = true;
                     }
 
-                    //A format for inserting bullet points was found (consider that for now we are just supporting bullet points ONLY at the end of the text)
+                    //A format for inserting bullet points was found (it can be added between paragraphs but at the end of each paragraph).
                     if (word.StartsWith("-"))
                     {
                         if (bulletedItemsList == null && bBulletListActive == false)
@@ -135,7 +135,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     else if (bBoldActive)
                     {
                         string boldText = word;
-                        boldText = boldText.Replace("**", "");
+                        boldText = boldText.Replace("**", string.Empty);
                         para.Inlines.Add(new Bold(new Run(boldText)));
                     }
                     else if (bImageActive)
@@ -145,6 +145,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     }
                     else if (bBulletListActive == true)
                     {
+                        //Due that we are using the method Split(' ') for getting each word, then we need to add it back otherwise the words will be all together
                         bulletEntryText += (word + " ");
                     }
                     else
@@ -177,10 +178,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         bulletedItemsList.ListItems.Add(new ListItem(new Paragraph(new Run(bulletEntryText.Replace("-", "")))));
                         bulletEntryText = string.Empty;
                     }
-
+                    //Due that we are using the method Split(' ') for getting each word, then we need to add it back otherwise the words will be all together
                     para.Inlines.Add(" ");
                 }
-                var Text1 = String.Join(String.Empty, para.Inlines.Select(line => line.ContentStart.GetTextInRun(LogicalDirection.Forward)));
                 document.Blocks.Add(para);
 
                 //Not all the tooltips contain bullet point when we insert the bullet points only if it was set
