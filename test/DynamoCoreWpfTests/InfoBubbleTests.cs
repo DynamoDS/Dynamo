@@ -73,6 +73,38 @@ namespace DynamoCoreWpfTests
             AssertParsedLinkIsEqualTo(content + badIdentifierIncomplete + goodLink, null);
             AssertParsedLinkIsEqualTo(content + badIdentifierTypo + goodLink, null);
         }
+        [Test]
+        public void DataPacketConstructorCanParseLinksCorrectly_ContainingMultipleHREFs()
+        {
+            // Arrange
+            const string i = "href=";
+            var goodLink = "ExcelNotInstalled.html";
+            var badWhitespaceLink = " ";
+            var partialDotLink = " . ";
+            var goodRemoteLink = "https://dictionary.dynamobim.org/#/";
+            var partialRemoteLink = ".com";
+            var badIdentifierIncomplete = "href";
+            var badIdentifierTypo = "hre=";
+
+            string content = "This is the base bubble message.";
+
+            // Assert
+            AssertParsedLinkIsEqualTo(content + i + goodLink, goodLink);
+            AssertParsedLinkIsEqualTo(content + goodLink, null);
+            AssertParsedLinkIsEqualTo(content + i + badWhitespaceLink, null);
+            AssertParsedLinkIsEqualTo(content + i + partialDotLink, NullIfSystemUriCannotParseValue(partialDotLink));
+            AssertParsedLinkIsEqualTo(content + i + goodRemoteLink, goodRemoteLink);
+            AssertParsedLinkIsEqualTo(content + goodRemoteLink, null);
+            AssertParsedLinkIsEqualTo(content + i + partialRemoteLink, NullIfSystemUriCannotParseValue(partialRemoteLink));
+            AssertParsedLinkIsEqualTo(content + badIdentifierIncomplete + goodLink, null);
+            AssertParsedLinkIsEqualTo(content + badIdentifierTypo + goodLink, null);
+            AssertParsedLinkIsEqualTo(content + i + goodLink + Environment.NewLine +
+                content + i + goodLink + Environment.NewLine +
+                content + i + goodLink + Environment.NewLine, goodLink);
+            AssertParsedLinkIsEqualTo(content + i + goodLink + Environment.NewLine +
+              content + i + goodLink + Environment.NewLine +
+              content + i + goodLink, goodLink);
+        }
 
         /// <summary>
         /// Used to check whether a node can have info messages, warnings and errors added to it which are then displayed to the user.
