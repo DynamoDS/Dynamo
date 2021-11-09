@@ -79,25 +79,10 @@ namespace DynamoCoreWpfTests
             // Arrange
             const string i = "href=";
             var goodLink = "ExcelNotInstalled.html";
-            var badWhitespaceLink = " ";
-            var partialDotLink = " . ";
-            var goodRemoteLink = "https://dictionary.dynamobim.org/#/";
-            var partialRemoteLink = ".com";
-            var badIdentifierIncomplete = "href";
-            var badIdentifierTypo = "hre=";
 
             string content = "This is the base bubble message.";
 
             // Assert
-            AssertParsedLinkIsEqualTo(content + i + goodLink, goodLink);
-            AssertParsedLinkIsEqualTo(content + goodLink, null);
-            AssertParsedLinkIsEqualTo(content + i + badWhitespaceLink, null);
-            AssertParsedLinkIsEqualTo(content + i + partialDotLink, NullIfSystemUriCannotParseValue(partialDotLink));
-            AssertParsedLinkIsEqualTo(content + i + goodRemoteLink, goodRemoteLink);
-            AssertParsedLinkIsEqualTo(content + goodRemoteLink, null);
-            AssertParsedLinkIsEqualTo(content + i + partialRemoteLink, NullIfSystemUriCannotParseValue(partialRemoteLink));
-            AssertParsedLinkIsEqualTo(content + badIdentifierIncomplete + goodLink, null);
-            AssertParsedLinkIsEqualTo(content + badIdentifierTypo + goodLink, null);
             AssertParsedLinkIsEqualTo(content + i + goodLink + Environment.NewLine +
                 content + i + goodLink + Environment.NewLine +
                 content + i + goodLink + Environment.NewLine, goodLink);
