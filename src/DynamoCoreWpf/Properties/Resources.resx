@@ -1246,7 +1246,7 @@ You will get a chance to save your work.</value>
     <comment>Header in the PackageDetailsViewExtension.</comment>
   </data>
   <data name="PackageDetailsLicense" xml:space="preserve">
-    <value>LICENSE:</value>
+    <value>LICENSE OF LATEST PACKAGE</value>
     <comment>Header in the PackageDetailsViewExtension.</comment>
   </data>
   <data name="PackageDetailsVersionsAndPackageRequirements" xml:space="preserve">
@@ -1474,7 +1474,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>License (optional)</value>
   </data>
   <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
-    <value>If blank, the package will be licensed under </value>
+    <value>Applies to the latest package version. If blank, the package will be licensed under</value>
   </data>
   <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
     <value>License</value>
@@ -2613,7 +2613,7 @@ Uninstall the following packages: {0}?</value>
     <value>Package Manager</value>
   </data>
   <data name="PackagePathAddPathButtonName" xml:space="preserve">
-    <value>Add Paths</value>
+    <value>Add Path</value>
   </data>
   <data name="PackagePathPreferencesTitle" xml:space="preserve">
     <value>Package/Library Search Paths</value>

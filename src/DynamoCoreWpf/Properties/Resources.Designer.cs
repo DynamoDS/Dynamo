@@ -4366,7 +4366,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to LICENSE:.
+        ///   Looks up a localized string similar to LICENSE OF LATEST PACKAGE.
         /// </summary>
         public static string PackageDetailsLicense {
             get {
@@ -4610,7 +4610,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Paths.
+        ///   Looks up a localized string similar to Add Path.
         /// </summary>
         public static string PackagePathAddPathButtonName {
             get {
@@ -6141,7 +6141,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If blank, the package will be licensed under .
+        ///   Looks up a localized string similar to Applies to the latest package version. If blank, the package will be licensed under.
         /// </summary>
         public static string PublishPackageViewLicenseSubLabel {
             get {
