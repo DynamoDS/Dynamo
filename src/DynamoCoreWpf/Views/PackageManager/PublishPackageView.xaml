@@ -5,12 +5,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-        xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:ui="clr-namespace:Dynamo.UI" 
+        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
+        d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
         Name="PublishInfoControl"
         Width="900"
         Height="710"
         MinWidth="630"
         MinHeight="500"
+        DataContext="{Binding PublishPackageViewModel, RelativeSource={RelativeSource Self}}"
         ResizeMode="CanResizeWithGrip"
         Visibility="Visible"
         WindowStartupLocation="CenterOwner"
@@ -88,7 +91,6 @@
                 <Setter Property="Margin" Value="0,0,0,5" />
             </Style>
             <Style x:Key="InputStyle" TargetType="TextBox">
-                <Setter Property="OverridesDefaultStyle" Value="True" />
                 <Setter Property="Margin" Value="0,0,0,12" />
                 <Setter Property="MinWidth" Value="62px" />
                 <Setter Property="Cursor" Value="IBeam" />
@@ -105,8 +107,8 @@
                                          FontSize="12px"
                                          Foreground="#DFDFDF"
                                          MaxLength="{TemplateBinding MaxLength}"
+                                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
                                          Tag="{TemplateBinding Tag}"
-                                         Text="{TemplateBinding Text}"
                                          TextWrapping="Wrap" />
                                 <TextBlock x:Name="WatermarkLabel"
                                            Padding="13,13,10,8"
@@ -504,12 +506,12 @@
                 Grid.Column="0"
                 Background="{StaticResource DarkMidGreyBrush}"
                 CornerRadius="4"
-                MouseDown="PreferencesPanel_MouseDown">
+                MouseDown="PublishPackageView_MouseDown">
             <DockPanel HorizontalAlignment="Stretch">
 
                 <!--  Close Button  -->
                 <Button x:Name="closeButton"
-                        Margin="8"
+                        Margin="0,20,25,20"
                         VerticalAlignment="Top"
                         Click="CloseButton_Click"
                         DockPanel.Dock="Right"
@@ -558,7 +560,9 @@
                                ToolTip="{x:Static p:Resources.PublishPackageViewPackageNameTooltip}" />
                     <TextBox Name="packageNameInput"
                              Style="{StaticResource InputStyle}"
-                             Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}" />
+                             Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}"
+                             IsEnabled ="{Binding Path=CanEditName}"
+                             Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--  Description  -->
                     <TextBlock Name="descriptionLabel"
@@ -568,7 +572,8 @@
                     <TextBox Name="descriptionInput"
                              MinHeight="81px"
                              Style="{StaticResource InputStyle}"
-                             Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}" />
+                             Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}"
+                             Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--  Version  -->
                     <TextBlock Name="versionLabel"
@@ -580,17 +585,20 @@
                                  Margin="0,0,6,0"
                                  MaxLength="4"
                                  Style="{StaticResource InputStyle}"
-                                 Tag="{x:Static p:Resources.PublishPackageVersionMajorWatermark}" />
+                                 Tag="{x:Static p:Resources.PublishPackageVersionMajorWatermark}"
+                                 Text="{Binding Path=MajorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBox Name="versionMinorInput"
                                  Margin="0,0,6,0"
                                  MaxLength="4"
                                  Style="{StaticResource InputStyle}"
-                                 Tag="{x:Static p:Resources.PublishPackageVersionMinorWatermark}" />
+                                 Tag="{x:Static p:Resources.PublishPackageVersionMinorWatermark}"
+                                 Text="{Binding Path=MinorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBox Name="versionBuildInput"
                                  Margin="0,0,6,0"
                                  MaxLength="4"
                                  Style="{StaticResource InputStyle}"
-                                 Tag="{x:Static p:Resources.PublishPackageVersionBuildWatermark}" />
+                                 Tag="{x:Static p:Resources.PublishPackageVersionBuildWatermark}"
+                                 Text="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
 
                     <!--  External Dependency  -->
@@ -706,7 +714,8 @@
                             <TextBlock Name="licenseLabel"
                                        Style="{StaticResource LabelStyle}"
                                        Text="{x:Static p:Resources.PublishPackageViewLicense}" />
-                            <TextBlock Name="licenseSubLabel" Style="{StaticResource SubLabelStyle}">
+                            <TextBlock Name="licenseSubLabel" Style="{StaticResource SubLabelStyle}"
+                                       TextWrapping="Wrap">
                                 <Run Text="{x:Static p:Resources.PublishPackageViewLicenseSubLabel}" />
                                 <Hyperlink Cursor="Hand"
                                            NavigateUri="https://opensource.org/licenses/MIT"
@@ -803,7 +812,7 @@
                                                 IsReadOnly="False"
                                                 IsThreeState="False" />
                         <DataGridTextColumn MinWidth="50"
-                                            Binding="{Binding Path=Name}"
+                                            Binding="{Binding Path=FileInfo.Name}"
                                             Header="Name"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
@@ -860,9 +869,9 @@
                         <TextBlock Style="{StaticResource LabelStyle}" Text="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectory}" />
                         <Image Width="16px"
                                Height="16px"
-                               DockPanel.Dock="Left"
-                               VerticalAlignment="Top"
                                Margin="5,0,0,0"
+                               VerticalAlignment="Top"
+                               DockPanel.Dock="Left"
                                Source="/DynamoCoreWpf;component/UI/Images/info-grey.png" />
                         <Button Command="{Binding Path=ClearMarkdownDirectoryCommand}"
                                 Content="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButton}"

@@ -858,9 +858,9 @@ namespace Dynamo.ViewModels
                 // Set IsProxyPort back to false when the group is expanded.
                 nodeModel.InPorts.ToList().ForEach(x => x.IsProxyPort = false);
                 nodeModel.OutPorts.ToList().ForEach(x => x.IsProxyPort = false);
-
-                connectorViewModels.ForEach(x => x.Redraw());
             }
+
+            UpdateProxyPortsPosition();
         }
 
         private void UpdateFontSize(object parameter)

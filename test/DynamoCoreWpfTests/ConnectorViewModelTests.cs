@@ -3,16 +3,7 @@ using Dynamo.Selection;
 using NUnit.Framework;
 using static Dynamo.Models.DynamoModel;
 using Dynamo.Utilities;
-using System.IO;
-using System.Collections.Generic;
-using Dynamo.Configuration;
-using Dynamo.Models;
-using System.Reflection;
-using DynamoShapeManager;
-using TestServices;
 using Dynamo.ViewModels;
-using Dynamo.Controls;
-using Dynamo.Graph.Connectors;
 using System;
 
 namespace DynamoCoreWpfTests
@@ -31,7 +22,7 @@ namespace DynamoCoreWpfTests
 
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
-            // Default collapse state should be false when opening legacy graph
+            //Default collapse state should be false when opening legacy graph
             Assert.AreEqual(connectorViewModel.IsHidden, false);
         }
 
@@ -47,17 +38,17 @@ namespace DynamoCoreWpfTests
 
             int initialConnectorCount = connectorViewModel.ConnectorPinViewCollection.Count;
 
-            ///hard-coded position (1) on wire
+            //hard-coded position (1) on wire
             connectorViewModel.PanelX = 292.66666;
             connectorViewModel.PanelY = 278;
 
-            ///Action triggered when hovering over a connector
+            //Action triggered when hovering over a connector
             connectorViewModel.FlipOnConnectorAnchor();
-            ///Pin command
+            //Pin command
             connectorViewModel.PinConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, initialConnectorCount + 1);
 
-            ///hard-coded position (2) on wire
+            //hard-coded position (2) on wire
             connectorViewModel.PanelX = 419.33333;
             connectorViewModel.PanelY = 347.33333;
 
@@ -75,17 +66,17 @@ namespace DynamoCoreWpfTests
 
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
-            ///hard-coded position (1) on wire
+            //hard-coded position (1) on wire
             connectorViewModel.PanelX = 292.66666;
             connectorViewModel.PanelY = 278;
 
-            ///Action triggered when hovering over a connector
+            //Action triggered when hovering over a connector
             connectorViewModel.FlipOnConnectorAnchor();
-            ///Pin command
+            //Pin command
             connectorViewModel.PinConnectorCommand.Execute(null);
             int connectorCountAfterAddingOne = connectorViewModel.ConnectorPinViewCollection.Count;
 
-            ///Request remove pin
+            //Request remove pin
             var firstPin = connectorViewModel.ConnectorPinViewCollection.First();
             firstPin.OnRequestRemove(firstPin, System.EventArgs.Empty);
 
@@ -103,7 +94,7 @@ namespace DynamoCoreWpfTests
 
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
             connectorViewModel.SelectConnectedCommand.Execute(null);
-            ///Should result in 2 selected nodes.
+            //Should result in 2 selected nodes.
             Assert.AreEqual(DynamoSelection.Instance.Selection.Count, initialSelectedCount + 2);
         }
 
@@ -117,7 +108,7 @@ namespace DynamoCoreWpfTests
             int initialConnectorCount = this.ViewModel.CurrentSpaceViewModel.Connectors.Count;
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
             connectorViewModel.BreakConnectionCommand.Execute(null);
-            ///This should result in no connectors existing anymore.
+            //This should result in no connectors existing anymore.
             Assert.AreEqual(this.ViewModel.CurrentSpaceViewModel.Connectors.Count, initialConnectorCount - 1);
         }
 
@@ -132,7 +123,7 @@ namespace DynamoCoreWpfTests
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
             bool initialVisibility = connectorViewModel.IsHidden;
-            ///Toggles hide (visibility == off)
+            //Toggles hide (visibility == off)
             connectorViewModel.HideConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.IsHidden, !initialVisibility);
         }
@@ -147,10 +138,10 @@ namespace DynamoCoreWpfTests
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
             bool initialVisibility = connectorViewModel.IsHidden;
-            ///Toggles hide (visibility == off)
+            //Toggles hide (visibility == off)
             connectorViewModel.HideConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.IsHidden, !initialVisibility);
-            ///Toggles hide on/off (visibility == on)
+            //Toggles hide on/off (visibility == on)
             connectorViewModel.HideConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.IsHidden, initialVisibility);
         }
@@ -166,13 +157,13 @@ namespace DynamoCoreWpfTests
             int initialNodeCount = this.ViewModel.CurrentSpaceViewModel.Nodes.Count;
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
-            ///Action triggered when hovering over a connector
+            //Action triggered when hovering over a connector
             connectorViewModel.FlipOnConnectorAnchor();
-            ///Place watch node
+            //Place watch node
             connectorViewModel.ConnectorAnchorViewModel.PlaceWatchNodeCommand.Execute(null);
-            ///Two connectors should result when you place a new (watch) node in between.
+            //Two connectors should result when you place a new (watch) node in between.
             Assert.AreEqual(this.ViewModel.CurrentSpaceViewModel.Connectors.Count, initialConnectorCount + 1);
-            ///Three nodes should be the total number of nodes after this operation.
+            //Three nodes should be the total number of nodes after this operation.
             Assert.AreEqual(this.ViewModel.CurrentSpaceViewModel.Nodes.Count, initialNodeCount + 1);
         }
 
@@ -202,9 +193,9 @@ namespace DynamoCoreWpfTests
             connectorViewModel.PanelX = 435;
             connectorViewModel.PanelY = 394;
 
-            ///Action triggered when hovering over a connector
+            //Action triggered when hovering over a connector
             connectorViewModel.FlipOnConnectorAnchor();
-            ///Place watch node
+            //Place watch node
             connectorViewModel.ConnectorAnchorViewModel.PlaceWatchNodeCommand.Execute(null);
 
             //get new connectors if they are connected to correct nodes/ports
@@ -254,9 +245,9 @@ namespace DynamoCoreWpfTests
             connectorViewModel.PanelX = 600.6666;
             connectorViewModel.PanelY = 265.3333;
 
-            ///Action triggered when hovering over a connector
+            //Action triggered when hovering over a connector
             connectorViewModel.FlipOnConnectorAnchor();
-            ///Place watch node
+            //Place watch node
             connectorViewModel.ConnectorAnchorViewModel.PlaceWatchNodeCommand.Execute(null);
 
             int newPinCount = this.ViewModel.CurrentSpaceViewModel.Pins.Count;
@@ -287,20 +278,20 @@ namespace DynamoCoreWpfTests
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
-            ///hard-coded position (1) on wire
+            //hard-coded position (1) on wire
             connectorViewModel.PanelX = 292.66666;
             connectorViewModel.PanelY = 278;
 
             int initialPinCount = connectorViewModel.ConnectorPinViewCollection.Count;
 
-            ///Action triggered when hovering over a connector
+            //Action triggered when hovering over a connector
             connectorViewModel.FlipOnConnectorAnchor();
-            ///Pin command
+            //Pin command
             connectorViewModel.PinConnectorCommand.Execute(null);
-            ///Should be 1 more than the original count
+            //Should be 1 more than the original count
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, initialPinCount + 1);
             Model.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
-            ///Should be the original count
+            //Should be the original count
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, initialPinCount);
         }
         /// <summary>
@@ -312,24 +303,24 @@ namespace DynamoCoreWpfTests
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
-            ///hard-coded position (1) on wire
+            //hard-coded position (1) on wire
             connectorViewModel.PanelX = 292.66666;
             connectorViewModel.PanelY = 278;
 
-            ///Action triggered when hovering over a connector
+            //Action triggered when hovering over a connector
             connectorViewModel.FlipOnConnectorAnchor();
-            ///Pin command
+            //Pin command
             connectorViewModel.PinConnectorCommand.Execute(null);
             int initialPinsAfterOneAdded = connectorViewModel.ConnectorPinViewCollection.Count;
 
-            ///Request remove pin
+            //Request remove pin
             var firstPin = connectorViewModel.ConnectorPinViewCollection.First();
             firstPin.OnRequestRemove(firstPin, System.EventArgs.Empty);
-            ///Pin count should be zero
+            //Pin count should be zero
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, initialPinsAfterOneAdded - 1);
-            ///Undo 'unpin' pin
+            //Undo 'unpin' pin
             Model.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
-            ///Pin count should be one
+            //Pin count should be one
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, initialPinsAfterOneAdded);
         }
         /// <summary>
@@ -341,24 +332,24 @@ namespace DynamoCoreWpfTests
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
-            ///hard-coded position (1) on wire
+            //hard-coded position (1) on wire
             connectorViewModel.PanelX = 292.66666;
             connectorViewModel.PanelY = 278;
 
-            ///Action triggered when hovering over a connector
+            //Action triggered when hovering over a connector
             connectorViewModel.FlipOnConnectorAnchor();
-            ///Pin command
+            //Pin command
             connectorViewModel.PinConnectorCommand.Execute(null);
             int initialPinsAfterOneAdded = connectorViewModel.ConnectorPinViewCollection.Count;
 
-            ///Request delete pin
+            //Request delete pin
             var firstPin = connectorViewModel.ConnectorPinViewCollection.First();
             Model.ExecuteCommand(new DeleteModelCommand(firstPin.Model.GUID));
-            ///Pin count should be zero
+            //Pin count should be zero
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, initialPinsAfterOneAdded - 1);
-            ///Undo delete pin
+            //Undo delete pin
             Model.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
-            ///Pin count should be one
+            //Pin count should be one
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, initialPinsAfterOneAdded);
         }
         /// <summary>
@@ -370,53 +361,78 @@ namespace DynamoCoreWpfTests
             Open(@"UI/ConnectorPinTests.dyn");
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
-            ///hard-coded position on wire
+            //hard-coded position on wire
             connectorViewModel.PanelX = 292.66666;
             connectorViewModel.PanelY = 278;
 
-            ///deltas to move by
+            //deltas to move by
             double xMove = 250;
             double yMove = 150;
 
-            ///Action triggered when hovering over a connector
+            //Action triggered when hovering over a connector
             connectorViewModel.FlipOnConnectorAnchor();
-            ///Pin command
+            //Pin command
             connectorViewModel.PinConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.ConnectorPinViewCollection.Count, 1);
 
-            /// add connectorpin to selection
+            // add connectorpin to selection
             var connectorPin = connectorViewModel.ConnectorModel.ConnectorPinModels.First();
             DynamoSelection.Instance.Selection.Add(connectorPin);
 
-            ///initial x, y position of pin
+            //initial x, y position of pin
             double initialX = connectorPin.CenterX;
             double initialY = connectorPin.CenterY;
 
             var point = new Point2D(initialX, initialY);
             var operation = DragSelectionCommand.Operation.BeginDrag;
-            ///'begin drag' command defined
+            //'begin drag' command defined
             var command = new DragSelectionCommand(point, operation);
-            ///execute 'begin drag'
+            //execute 'begin drag'
             Model.ExecuteCommand(command);
 
             operation = DragSelectionCommand.Operation.EndDrag;
             point.X += xMove;
             point.Y += yMove;
-            ///'end drag' command defined
+            //'end drag' command defined
             command = new DragSelectionCommand(point, operation);
-            ///execute 'end drag'
+            //execute 'end drag'
             Model.ExecuteCommand(command);
 
-            ///assert initial position and end position is NOT the same
+            //assert initial position and end position is NOT the same
             Assert.AreNotEqual(initialX, connectorPin.CenterX);
             Assert.AreNotEqual(initialY, connectorPin.CenterY);
 
-            ///undo drag
+            //undo drag
             Model.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
 
-            ///assert that after undo initial position and end position IS the same
+            //assert that after undo initial position and end position IS the same
             Assert.AreEqual(initialX, connectorPin.CenterX);
             Assert.AreEqual(initialY, connectorPin.CenterY);
+        }
+
+        [Test]
+        public void CanUndoPlaceWatchNode()
+        {
+            Open(@"UI/WatchNodePlacement.dyn");
+            int initialConnectorCount = this.ViewModel.CurrentSpaceViewModel.Connectors.Count;
+
+            var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.FirstOrDefault(c => c.ConnectorModel.GUID == Guid.Parse("f49e39e1-4eb0-47da-9dbe-bbf0badddc71"));
+            //mimic correct mouse placement over this connector
+            connectorViewModel.PanelX = 435;
+            connectorViewModel.PanelY = 394;
+
+            //Action triggered when hovering over a connector
+            connectorViewModel.FlipOnConnectorAnchor();
+            //Place watch node
+            connectorViewModel.ConnectorAnchorViewModel.PlaceWatchNodeCommand.Execute(null);
+            //asserts an additional connector exists
+            int partialConnectorCount = this.ViewModel.CurrentSpaceViewModel.Connectors.Count;
+            Assert.AreEqual(initialConnectorCount+1, partialConnectorCount);
+            //Undo watch node placement
+            Model.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
+            //assert after one undo action we are back at the original connector count
+            int finalConnectorCount = this.ViewModel.CurrentSpaceViewModel.Connectors.Count;
+            Assert.AreEqual(initialConnectorCount, finalConnectorCount);
         }
         #endregion
     }
