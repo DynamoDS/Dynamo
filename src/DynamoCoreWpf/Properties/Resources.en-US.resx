@@ -2730,7 +2730,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Keywords</value>
   </data>
   <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
-    <value>If blank, the package will be licensed under </value>
+    <value>Applies to the latest package version. If blank, the package will be licensed under </value>
   </data>
   <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
     <value>License</value>
@@ -2818,7 +2818,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <comment>Header in the PackageDetailsViewExtension.</comment>
   </data>
   <data name="PackageDetailsLicense" xml:space="preserve">
-    <value>LICENSE:</value>
+    <value>LICENSE OF LATEST PACKAGE</value>
     <comment>Header in the PackageDetailsViewExtension.</comment>
   </data>
   <data name="PackageDetailsVersionsAndPackageRequirements" xml:space="preserve">
