@@ -1371,14 +1371,14 @@ You can always undeprecate the package.</value>
 You can always re-deprecate the package.</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}.
+    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
     
 Do you wish to continue installing it while keeping the packages that are already installed?
 
 If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
-    <value>Package {0} has one or more dependencies that conflict with the following packages: {1}.
+    <value>Package {0} has one or more dependencies that conflict with the following packages: {1}. Dependency conflicts could cause unintended behavior to occur.
     
 Do you wish to continue installing it while keeping the packages that are already installed?
 
@@ -2349,7 +2349,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Preferences | Features | Python | Requires relaunch of Dynamo</comment>
   </data>
     <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. 
+    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
     
 Do you wish to continue trying to install {0}?</value>
   </data>

@@ -3652,7 +3652,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}.
+        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
         ///    
         ///Do you wish to continue installing it while keeping the packages that are already installed?
         ///
@@ -3665,7 +3665,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following packages: {1}.
+        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following packages: {1}. Dependency conflicts could cause unintended behavior to occur.
         ///    
         ///Do you wish to continue installing it while keeping the packages that are already installed?
         ///
@@ -3792,7 +3792,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} has dependencies that conflict with the following built-in package(s): {1}. 
+        ///   Looks up a localized string similar to {0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
         ///    
         ///Do you wish to continue trying to install {0}?.
         /// </summary>
