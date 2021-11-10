@@ -4375,7 +4375,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to LICENSE:.
+        ///   Looks up a localized string similar to LICENSE OF LATEST PACKAGE.
         /// </summary>
         public static string PackageDetailsLicense {
             get {
@@ -4619,7 +4619,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Paths.
+        ///   Looks up a localized string similar to Add Path.
         /// </summary>
         public static string PackagePathAddPathButtonName {
             get {
@@ -5105,6 +5105,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If you need other software or tools in order to use this package, they are listed under Dependencies. The interactive guide for Package Dependencies will tell you more..
+        /// </summary>
+        public static string PackagesGuideDependenciesText {
+            get {
+                return ResourceManager.GetString("PackagesGuideDependenciesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package dependencies.
+        /// </summary>
+        public static string PackagesGuideDependenciesTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideDependenciesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To continue the guide and install the sample package, you must accept the Terms of Service. \n\n **Click Continue.** Then in the terms, **click I Accept.** \n\n\n\n.
         /// </summary>
         public static string PackagesGuideExitAcceptTerms {
@@ -5123,7 +5141,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to continue the guide?.
+        ///   Looks up a localized string similar to Do you want to exit the guide?.
         /// </summary>
         public static string PackagesGuideExitTitle {
             get {
@@ -5173,6 +5191,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagesGuideSearchFilterTitle {
             get {
                 return ResourceManager.GetString("PackagesGuideSearchFilterTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to \nSearch results display summary information for each package: -author- -likes and downloads- -date of the most recent version- \n**Click View Details** to see more information about a package..
+        /// </summary>
+        public static string PackagesGuideSearchResultsText {
+            get {
+                return ResourceManager.GetString("PackagesGuideSearchResultsText", resourceCulture);
             }
         }
         
@@ -6150,7 +6177,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If blank, the package will be licensed under .
+        ///   Looks up a localized string similar to Applies to the latest package version. If blank, the package will be licensed under.
         /// </summary>
         public static string PublishPackageViewLicenseSubLabel {
             get {

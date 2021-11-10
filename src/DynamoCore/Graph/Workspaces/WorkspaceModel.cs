@@ -1691,9 +1691,14 @@ namespace Dynamo.Graph.Workspaces
         {
             ModelBase model = null;
             model = this.Nodes.FirstOrDefault(x => x.GUID == modelGuid);
+
             if (model == null) //Check if GUID is a Note instead.
             {
                 model = this.Notes.FirstOrDefault(x => x.GUID == modelGuid);
+            }
+            if (model == null)
+            {
+                model = this.Annotations.FirstOrDefault(x => x.GUID == modelGuid);
             }
 
             return model;
