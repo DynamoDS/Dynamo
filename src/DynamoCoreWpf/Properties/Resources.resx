@@ -2912,4 +2912,13 @@ Delete the following packages: {2}?
   <data name="PackagesGuideExitTitle" xml:space="preserve">
     <value>Do you want to exit the guide?</value>
   </data>
+  <data name="PackagesGuideSearchResultsText" xml:space="preserve">
+    <value>\nSearch results display summary information for each package: -author- -likes and downloads- -date of the most recent version- \n**Click View Details** to see more information about a package.</value>
+  </data>
+  <data name="PackagesGuideDependenciesText" xml:space="preserve">
+    <value>If you need other software or tools in order to use this package, they are listed under Dependencies. The interactive guide for Package Dependencies will tell you more.</value>
+  </data>
+  <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
+    <value>Package dependencies</value>
+  </data>
 </root>
