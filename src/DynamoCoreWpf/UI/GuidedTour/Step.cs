@@ -303,7 +303,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 //In this case the UI Automation will be done using a Function located in the static class GuidesValidationMethods
                 case StepUIAutomation.UIControlType.FUNCTION:
                     MethodInfo builderMethod = typeof(GuidesValidationMethods).GetMethod(uiAutomationData.Name, BindingFlags.Static | BindingFlags.NonPublic);
-                    object[] parametersArray = new object[] { this, uiAutomationData, enableUIAutomation, currentFlow };
+                    object[] parametersArray = new object[] { this, uiAutomationData, enableUIAutomation, currentFlow};
                     builderMethod.Invoke(null, parametersArray);
                     //If UpdatePlacementTarget = true then means that a new Window was opened after executing the funtion then we need to update the Popup.PlacementTarget
                     if (uiAutomationData.UpdatePlacementTarget)
@@ -472,7 +472,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         var buttonElement = foundElement as Button;
                         if (buttonElement == null) return;
 
-                        var bordersGrid = buttonElement.Template.FindName("bordersGrid", buttonElement) as Grid;
+                        //We will be searching for the Grid name provided in the json file and then add the Highlight Rectangle
+                        var bordersGrid = buttonElement.Template.FindName(HostPopupInfo.HighlightRectArea.UIElementGridContainer, buttonElement) as Grid;
                         if (bordersGrid == null) return;
 
                         if (bVisible)

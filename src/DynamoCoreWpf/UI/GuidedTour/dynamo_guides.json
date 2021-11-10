@@ -105,9 +105,9 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
 					"HostUIElementString": "dynamoMenu",
-					"VerticalPopupOffset": 50,
+					"VerticalPopupOffset": 100,
 					"HighlightColor": "#EF9362",
-					"HorizontalPopupOffset": 230,
+					"HorizontalPopupOffset": 250,
 					"HighlightRectArea": {
 						"HighlightColor": "#EF9362",
 						"WidthBoxDelta": 0,
@@ -206,7 +206,7 @@
 					"PopupPlacement": "relative",
 					"HostUIElementString": "PackageManagerMenu",
 					"VerticalPopupOffset": -20,
-					"HorizontalPopupOffset": 85,
+					"HorizontalPopupOffset": 150,
 					"HtmlPage": {
 						"FileName": "learnPackages.html",
 						"Resources": {
@@ -269,6 +269,12 @@
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
 				"Height": 260,
+				"ExitGuide": {
+					"Height": 273,
+					"Width": 480,
+					"Title": "PackagesGuideExitTitle",
+					"FormattedText": "PackagesGuideExitAcceptTerms"
+				},
 				"StepContent": {
 					"Title": "PackagesGuideTermsOfServiceTitle",
 					"FormattedText": "PackagesGuideTermsOfServiceText"
@@ -283,6 +289,7 @@
 					"HighlightRectArea": {
 						"HighlightColor": "#EF9362",
 						"UIElementTypeString": "Button",
+						"UIElementGridContainer": "bordersGrid",
 						"WindowName": "TermsOfUseWindow",
 						"WindowElementNameString": "AcceptTermsOfUseButton",
 						"WidthBoxDelta": 0,
@@ -308,6 +315,18 @@
 						"ControlType": "function",
 						"Name": "ExecuteTermsOfServiceFlow",
 						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "AcceptTermsOfUseButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "AcceptButton_Click"
+							},
+							{
+								"HandlerElement": "DeclineTermsOfUseButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "DeclineButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					}
 				]
@@ -390,72 +409,31 @@
 			},
 			{
 				"Sequence": 5,
-				"Name": "install a package",
+				"Name": "search-results",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 263,
+				"Height": 260,
 				"StepContent": {
-					"Title": "PackagesGuideInstallAPackageTitle",
-					"FormattedText": "PackagesGuideInstallAPackageText"
+					"Title": "PackagesGuideSearchResultsTitle",
+					"FormattedText": "PackagesGuideSearchResultsText"
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
 					"WindowName": "PackageSearch",
 					"DynamicHostWindow": true,
 					"HostUIElementString": "PackageSearch",
-					"VerticalPopupOffset": 120,
-					"HorizontalPopupOffset": 0
-				},
-				"PreValidation": {
-					"ReturnType": "boolean",
-					"ControlType": "visibility",
-					"FuncName": "IsPackageInstalled",
-					"ExpectedValue": false
-				},
-				"UIAutomation": [
-					{
-						"Sequence": 1,
-						"ControlType": "button",
-						"WindowName": "PopupWindow",
-						"Name": "NextButton",
-						"Action": "disable"
-					},
-					{
-						"Sequence": 2,
-						"ControlType": "function",
-						"Name": "ExecuteInstallPackagesFlow",
-						"ExecuteCleanUpForward": false,
-						"ExecuteCleanUpBackward": false,
-						"Action": "execute",
-						"UpdatePlacementTarget": true
+					"VerticalPopupOffset": 150,
+					"HorizontalPopupOffset": 0,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "Button",
+						"WindowName": "PackageSearch",
+						"UIElementGridContainer": "viewDetailsGrid",
+						"WindowElementNameString": "viewDetailsButton",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
 					}
-				]
-			},
-			{
-				"Sequence": 5,
-				"Name": "package installed",
-				"Type": "tooltip",
-				"TooltipPointerDirection": "top_left",
-				"Width": 480,
-				"Height": 470,
-				"StepContent": {
-					"Title": "PackagesGuideInstallAPackageTitle",
-					"FormattedText": "PackagesGuideInstalledPackageText"
-				},
-				"HostPopupInfo": {
-					"PopupPlacement": "right",
-					"WindowName": "PackageSearch",
-					"DynamicHostWindow": true,
-					"HostUIElementString": "PackageSearch",
-					"VerticalPopupOffset": 120,
-					"HorizontalPopupOffset": 0
-				},
-				"PreValidation": {
-					"ReturnType": "boolean",
-					"ControlType": "visibility",
-					"FuncName": "IsPackageInstalled",
-					"ExpectedValue": true
 				},
 				"UIAutomation": [
 					{
@@ -466,28 +444,57 @@
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "SubscribeViewDetailsEvent",
+						"ExecuteCleanUpForward": false,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
 					}
 				]
 			},
 			{
 				"Sequence": 6,
-				"Name": "package installed",
+				"Name": "package-dependencies",
 				"Type": "tooltip",
-				"TooltipPointerDirection": "top_left",
+				"TooltipPointerDirection": "top_right",
 				"Width": 480,
-				"Height": 470,
+				"Height": 260,
 				"StepContent": {
-					"Title": "PackagesGuideInstallAPackageTitle",
-					"FormattedText": "PackagesGuideInstalledPackageText"
+					"Title": "PackagesGuideDependenciesTitle",
+					"FormattedText": "PackagesGuideDependenciesText"
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
-					"WindowName": "PackageSearch",
 					"DynamicHostWindow": true,
-					"HostUIElementString": "PackageSearch",
-					"VerticalPopupOffset": 120,
+					"WindowName": "PackageSearch",
+					"HostUIElementString": "PackageDetailsWindow",
+					"VerticalPopupOffset": 50,
 					"HorizontalPopupOffset": 0
-				}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "ExecutePackageSearch",
+						"ExecuteCleanUpForward": false,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteViewDetailsSideBar",
+						"ExecuteCleanUpForward": false,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					}
+				]
 			}
 		]
 	}
