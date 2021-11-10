@@ -2923,7 +2923,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Info</value>
   </data>
   <data name="AutodeskSamplePackage" xml:space="preserve">
-    <value>Autodesk sample</value>
+    <value>Sample View Extension</value>
   </data>
   <data name="PackagesGuideInstallAPackageText" xml:space="preserve">
     <value>Package installations are typically quick, depending on their size and other factors. \n\n **Click Install** to install the latest version of the sample Autodesk package and proceed with this guide.</value>

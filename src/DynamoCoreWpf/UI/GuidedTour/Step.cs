@@ -267,7 +267,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if(popUp != null && popUp.IsOpen)
             {
                 var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                positionMethod.Invoke(popUp, null);             
+                positionMethod.Invoke(popUp, null);
             }
         }
 
@@ -345,12 +345,25 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 if (PreValidationInfo.ControlType.Equals("visibility"))
                 {
+                    object[] parametersArray = null;
+
                     if (!string.IsNullOrEmpty(PreValidationInfo.FuncName))
                     {
-                        //Due that the function name was read from a json file then we need to use Reflection for executing the Static method in the GuidesValidationMethods class 
+                        Window ownedWindow = Guide.FindWindowOwned(HostPopupInfo.WindowName, MainWindow as Window);
                         MethodInfo builderMethod = typeof(GuidesValidationMethods).GetMethod(PreValidationInfo.FuncName, BindingFlags.Static | BindingFlags.NonPublic);
-                        object[] parametersArray = new object[] { DynamoViewModelStep };
+
+                        if (PreValidationInfo.FuncName.Equals("IsPackageInstalled"))
+                        {
+                            var viewModel = ownedWindow.DataContext as PackageManager.PackageManagerSearchViewModel;
+                            parametersArray = new object[] { viewModel };
+                        }
+                        else
+                        {
+                            parametersArray = new object[] { DynamoViewModelStep };
+                        }
+
                         var validationResult = (bool)builderMethod.Invoke(null, parametersArray);
+
                         bool expectedValue = bool.Parse(PreValidationInfo.ExpectedValue);
 
                         //Once the execution of the PreValidation method was done we compare the result against the expected (also described in the json) so we set a flag
@@ -361,6 +374,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     }
                 }
             }
+        }
+
+        private object[] BuildParameters(params object [] objectParams)
+        {
+            return objectParams;
         }
 
         /// <summary>

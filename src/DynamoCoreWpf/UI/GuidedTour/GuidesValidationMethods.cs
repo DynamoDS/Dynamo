@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
@@ -17,6 +18,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static Step CurrentExecutingStep;
         internal static Guide CurrentExecutingGuide;
 
+        internal static PackageManagerSearchViewModel packagesViewModel;
+
         //This method will return a bool that describes if the Terms Of Service was accepted or not.
         internal static bool AcceptedTermsOfUse(DynamoViewModel dynViewModel)
         {
@@ -26,9 +29,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
             return termsOfServiceAccepted;
         }
 
-        internal static bool IsPackageInstalled(DynamoViewModel dynViewModel)
-        {            
-            return true;
+        internal static bool IsPackageInstalled(PackageManagerSearchViewModel viewModel)
+        {
+            var canInstall = viewModel.CanInstallPackage(Res.AutodeskSamplePackage);
+            return !canInstall;
         }
 
         /// <summary>
@@ -66,6 +70,51 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
                 Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+            }
+        }
+
+        static PackageManagerSearchViewModel viewModel;
+        static PackageDownloadHandle packageDownloadHandle;
+
+        internal static void ExecuteInstallPackagesFlow(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+
+            if (enableFunction)
+            {
+                Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+                viewModel = ownedWindow.DataContext as PackageManagerSearchViewModel;
+                Button buttonElement = Guide.FindChild(ownedWindow, "installButton") as Button;
+                viewModel.PackageManagerClientViewModel.Downloads.CollectionChanged += Downloads_CollectionChanged;
+            }
+            else
+            {
+                //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
+                Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+            }
+        }
+
+        private static void Downloads_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            var downloads = (System.Collections.ObjectModel.ObservableCollection<PackageDownloadHandle>) sender;
+            packageDownloadHandle = downloads[0];
+            packageDownloadHandle.PropertyChanged += GuidesValidationMethods_PropertyChanged1;
+        }
+
+        private static void GuidesValidationMethods_PropertyChanged1(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(packageDownloadHandle.DownloadState == PackageDownloadHandle.State.Installed)
+            {
+                CurrentExecutingGuide.HideCurrentStep(CurrentExecutingStep.Sequence, GuideFlow.FORWARD);
+                if (CurrentExecutingStep.Sequence < CurrentExecutingGuide.TotalSteps)
+                {
+                    //Move to the next Step in the Guide
+                    CurrentExecutingGuide.CalculateStep(GuideFlow.FORWARD, CurrentExecutingStep.Sequence);
+                    CurrentExecutingGuide.CurrentStep.Show(GuideFlow.FORWARD);
+                }
+
+                viewModel.PackageManagerClientViewModel.Downloads.CollectionChanged -= Downloads_CollectionChanged;
+                packageDownloadHandle.PropertyChanged -= GuidesValidationMethods_PropertyChanged1;
             }
         }
 

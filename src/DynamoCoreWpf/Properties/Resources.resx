@@ -2904,7 +2904,7 @@ Delete the following packages: {2}?
     <value>Workspace</value>
   </data>
   <data name="AutodeskSamplePackage" xml:space="preserve">
-    <value>Autodesk sample</value>
+    <value>Sample View Extension</value>
   </data>
   <data name="PackagesGuideExitAcceptTerms" xml:space="preserve">
     <value>To continue the guide and install the sample package, you must accept the Terms of Service. \n\n **Click Continue.** Then in the terms, **click I Accept.** \n\n\n\n</value>
