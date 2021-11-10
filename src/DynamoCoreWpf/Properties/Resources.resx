@@ -2557,7 +2557,7 @@ You can try disabling loading packages from built-in package paths, or unload th
     <value>The same version of {0} is already installed as a built-in package and need not be installed again.</value>
   </data>
   <data name="MessageSamePackageSameVersInLocalPackages" xml:space="preserve">
-    <value>The same version of package {0} is already installed and need not be installed again.</value>
+    <value>The same version of {0} is already installed and does not need to be installed again.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
         <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 

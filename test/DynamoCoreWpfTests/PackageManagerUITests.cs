@@ -559,7 +559,7 @@ namespace DynamoCoreWpfTests
             // Users should get 1 warning only:
             // 1. To confirm that they want to download the specified package.
 
-            // Since the depedency is of the same version as the built-in package installed,
+            // Since the depedency is of the same version as the local package installed,
             // there is no further warning message, and the package will download without further user input.
             dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
@@ -649,7 +649,7 @@ namespace DynamoCoreWpfTests
 
             // Users should get 2 warnings:
             // 1. To confirm that they want to download the specified package.
-            // 2. To warn of the built-in package conflict (same name, diff version)
+            // 2. To warn of the package conflict (same name, diff version)
             dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(2));
             dlgMock.ResetCalls();

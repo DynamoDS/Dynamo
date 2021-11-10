@@ -3861,7 +3861,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The same version of package {0} is already installed and need not be installed again..
+        ///   Looks up a localized string similar to The same version of {0} is already installed and does not need to be installed again..
         /// </summary>
         public static string MessageSamePackageSameVersInLocalPackages {
             get {
