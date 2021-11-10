@@ -876,7 +876,7 @@ namespace ProtoCore.DSASM
             if (!isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray))
             {
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.DereferencingNonPointer,
-                                              Resources.kDeferencingNonPointer);
+                                              Resources.kDereferencingNonPointer);
                 return StackValue.Null;
             }
 
