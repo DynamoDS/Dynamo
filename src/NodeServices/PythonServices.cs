@@ -216,9 +216,17 @@ namespace Dynamo.PythonServices
     public class PythonEngineProxy
     {
         /// <summary>
+        /// The name of the Python Engine connected to this proxy instance (ex. IronPython2, CPython3)
+        /// </summary>
+        public string Name 
+        {
+            get { return Version.ToString(); }
+        }
+
+        /// <summary>
         /// The version of the Python Engine connected to this proxy instance
         /// </summary>
-        public readonly PythonEngineVersion Version;
+        internal readonly PythonEngineVersion Version;
 
         private readonly Type EngineType;
         private EvaluationStartedEventHandler EvaluationStartedCallback;
