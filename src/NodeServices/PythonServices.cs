@@ -218,7 +218,7 @@ namespace Dynamo.PythonServices
         /// <summary>
         /// The name of the Python Engine connected to this proxy instance (ex. IronPython2, CPython3)
         /// </summary>
-        public string Name 
+        public string Name
         {
             get { return Version.ToString(); }
         }
