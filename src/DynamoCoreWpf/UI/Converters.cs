@@ -97,7 +97,7 @@ namespace Dynamo.Controls
                 if (alert != null && alert.Length > MaxChars)
                 {
                     var trimIndex = alert.LastIndexOf('\n', MaxChars - 5);
-                    result.Add(alert.Remove(trimIndex > 0 ? trimIndex : MaxChars - 5) + " ...");
+                    result.Add(alert.Remove(trimIndex > 0 ? trimIndex : MaxChars - 5) + "...");
                 }
             }
             return result;
