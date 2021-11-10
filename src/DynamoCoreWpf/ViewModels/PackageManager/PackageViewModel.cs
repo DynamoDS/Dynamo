@@ -122,9 +122,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // Package with custom nodes that are in use
-                if (Model.LoadState.State != PackageLoadState.StateTypes.Unloaded
-                    && Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForDeletion
-                    && !CanUninstall())
+                if (!CanUninstall())
                 {
                     return Resources.PackageContextMenuDeletePackageCustomNodesInUseTooltip;
                 }
