@@ -37,9 +37,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
             return termsOfServiceAccepted;
         }
 
-        internal static bool IsPackageInstalled(PackageManagerSearchViewModel viewModel)
+        internal static bool IsPackageInstalled(PackageManagerSearchViewModel viewModel = null)
         {
-            var canInstall = viewModel.CanInstallPackage(Res.AutodeskSamplePackage);
+            if (viewModel == null)
+                return true;
+
+            bool canInstall = viewModel.CanInstallPackage(Res.AutodeskSamplePackage);
             return !canInstall;
         }
 
@@ -91,24 +94,29 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void ExecuteInstallPackagesFlow(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
+            Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+
 
             if (enableFunction)
             {
-                Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
-                viewModel = ownedWindow.DataContext as PackageManagerSearchViewModel;
+                if(ownedWindow != null)
+                    viewModel = ownedWindow.DataContext as PackageManagerSearchViewModel;
+             
                 Button buttonElement = Guide.FindChild(ownedWindow, "installButton") as Button;
                 viewModel.PackageManagerClientViewModel.Downloads.CollectionChanged += Downloads_CollectionChanged;
             }
             else
             {
-                Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
 
-                foreach (var handler in uiAutomationData.AutomaticHandlers)
+                if(uiAutomationData.AutomaticHandlers  != null)
                 {
-                    UIElement element = Guide.FindChild(ownedWindow, handler.HandlerElement) as Button;
-                    if (element != null)
-                        ManageEventHandler(element, handler.HandlerElementEvent, handler.ExecuteMethod, false);
-                }                
+                    foreach (var handler in uiAutomationData.AutomaticHandlers)
+                    {
+                        UIElement element = Guide.FindChild(ownedWindow, handler.HandlerElement) as Button;
+                        if (element != null)
+                            ManageEventHandler(element, handler.HandlerElementEvent, handler.ExecuteMethod, false);
+                    }
+                }
 
                 //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
                 Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);

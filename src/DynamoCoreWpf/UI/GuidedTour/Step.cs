@@ -345,7 +345,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 if (PreValidationInfo.ControlType.Equals("visibility"))
                 {
-                    object[] parametersArray = null;
+                    object[] parametersArray = new object[] { };
 
                     if (!string.IsNullOrEmpty(PreValidationInfo.FuncName))
                     {
@@ -354,7 +354,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                         if (PreValidationInfo.FuncName.Equals("IsPackageInstalled"))
                         {
-                            var viewModel = ownedWindow.DataContext as PackageManager.PackageManagerSearchViewModel;
+                            PackageManager.PackageManagerSearchViewModel viewModel = null;
+
+                            if (ownedWindow != null)
+                            {
+                                viewModel = ownedWindow.DataContext as PackageManager.PackageManagerSearchViewModel;
+                            }
+
                             parametersArray = new object[] { viewModel };
                         }
                         else
@@ -374,11 +380,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     }
                 }
             }
-        }
-
-        private object[] BuildParameters(params object [] objectParams)
-        {
-            return objectParams;
         }
 
         /// <summary>

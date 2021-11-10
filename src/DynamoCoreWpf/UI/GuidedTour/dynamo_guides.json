@@ -498,6 +498,43 @@
 			},
 			{
 				"Sequence": 7,
+				"Name": "package installed",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 220,
+				"StepContent": {
+					"Title": "PackagesGuideInstallAPackageTitle",
+					"FormattedText": "PackagesGuideInstalledPackageText"
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "ExecutePackageSearch",
+						"ExecuteCleanUpForward": true,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					}
+				],
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"WindowName": "PackageSearch",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageSearch",
+					"VerticalPopupOffset": 120,
+					"HorizontalPopupOffset": 0
+				},
+				"PreValidation": {
+					"ReturnType": "boolean",
+					"ControlType": "visibility",
+					"FuncName": "IsPackageInstalled",
+					"ExpectedValue": true
+				}
+			},
+			{
+				"Sequence": 7,
 				"Name": "install a package",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
@@ -533,44 +570,7 @@
 						"Sequence": 2,
 						"ControlType": "function",
 						"Name": "ExecuteInstallPackagesFlow",
-						"ExecuteCleanUpForward": false,
-						"ExecuteCleanUpBackward": false,
-						"Action": "execute",
-						"UpdatePlacementTarget": true
-					}
-				]
-			},
-			{
-				"Sequence": 7,
-				"Name": "package installed",
-				"Type": "tooltip",
-				"TooltipPointerDirection": "top_left",
-				"Width": 480,
-				"Height": 470,
-				"StepContent": {
-					"Title": "PackagesGuideInstallAPackageTitle",
-					"FormattedText": "PackagesGuideInstalledPackageText"
-				},
-				"HostPopupInfo": {
-					"PopupPlacement": "right",
-					"WindowName": "PackageSearch",
-					"DynamicHostWindow": true,
-					"HostUIElementString": "PackageSearch",
-					"VerticalPopupOffset": 120,
-					"HorizontalPopupOffset": 0
-				},
-				"PreValidation": {
-					"ReturnType": "boolean",
-					"ControlType": "visibility",
-					"FuncName": "IsPackageInstalled",
-					"ExpectedValue": true
-				},
-				"UIAutomation": [
-					{
-						"Sequence": 1,
-						"ControlType": "function",
-						"Name": "ExecutePackageSearch",
-						"ExecuteCleanUpForward": false,
+						"ExecuteCleanUpForward": true,
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
@@ -579,21 +579,20 @@
 			},
 			{
 				"Sequence": 8,
-				"Name": "package installed",
+				"Name": "library show",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 470,
+				"Height": 220,
 				"StepContent": {
 					"Title": "PackagesGuideInstallAPackageTitle",
 					"FormattedText": "PackagesGuideInstalledPackageText"
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
-					"WindowName": "PackageSearch",
 					"DynamicHostWindow": true,
-					"HostUIElementString": "PackageSearch",
-					"VerticalPopupOffset": 120,
+					"HostUIElementString": "sidebarGrid",
+					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 0
 				}
 			}
