@@ -23,7 +23,7 @@ namespace Dynamo.Python
     public class IronPythonCompletionProvider : LogSourceBase
     {
         private readonly IExternalCodeCompletionProviderCore providerImplementation;
-        private const string providerTypeName = "DSIronPython.IronPythonCodeCompletionProviderCore, DSIronPython";
+        private const string providerTypeName = "Dynamo.PythonServices.PythonCodeCompletionUtils, DynamoServices";
 
         #region Properties and fields
 

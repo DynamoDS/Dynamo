@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using PythonNodeModels;
 
@@ -210,7 +213,7 @@ namespace Dynamo.PythonServices
     /// This class is intended to wrap or act as a proxy for many different python engine versions
     /// </summary>
     [SupressImportIntoVM]
-    public class PythonEngineProxy : IDisposable
+    public class PythonEngineProxy
     {
         /// <summary>
         /// The version of the Python Engine connected to this proxy instance
@@ -227,7 +230,12 @@ namespace Dynamo.PythonServices
         /// <param name="callback"></param>
         public void OnEvaluationBegin(EvaluationStartedEventHandler callback)
         {
-            EvaluationStartedCallback += callback;
+            if (EvaluationStartedCallback != null)
+            {
+                RemoveEventHandler(EvaluationStartedCallback.GetType(), nameof(HandleEvaluationStarted));
+            }
+
+            EvaluationStartedCallback = callback;
             AddEventHandler(EvaluationStartedCallback.GetType(), nameof(HandleEvaluationStarted));
         }
 
@@ -237,7 +245,12 @@ namespace Dynamo.PythonServices
         /// <param name="callback"></param>
         public void OnEvaluationEnd(EvaluationFinishedEventHandler callback)
         {
-            EvaluationFinishedCallback += callback;
+            if (EvaluationFinishedCallback != null)
+            {
+                RemoveEventHandler(EvaluationFinishedCallback.GetType(), nameof(HandleEvaluationFinished));
+            }
+
+            EvaluationFinishedCallback = callback;
             AddEventHandler(EvaluationFinishedCallback.GetType(), nameof(HandleEvaluationFinished));
         }
 
@@ -245,30 +258,6 @@ namespace Dynamo.PythonServices
         {
             EngineType = eType;
             Version = version;
-        }
-
-        public void Dispose()
-        {
-            try
-            {
-                if (EvaluationStartedCallback != null)
-                {
-                    MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(nameof(HandleEvaluationStarted), BindingFlags.NonPublic | BindingFlags.Instance);
-                    var handler = Delegate.CreateDelegate(typeof(EvaluationStartedEventHandler), this, handlerInfo);
-                    var eventInfo = EngineType.GetEvents().FirstOrDefault(x => x.EventHandlerType == typeof(EvaluationStartedEventHandler));
-                    eventInfo?.RemoveEventHandler(this, handler);
-                }
-
-                if (EvaluationFinishedCallback != null)
-                {
-                    MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(nameof(HandleEvaluationFinished), BindingFlags.NonPublic | BindingFlags.Instance);
-                    var handler = Delegate.CreateDelegate(typeof(EvaluationFinishedEventHandler), this, handlerInfo);
-                    var eventInfo = EngineType.GetEvents().FirstOrDefault(x => x.EventHandlerType == typeof(EvaluationFinishedEventHandler));
-                    eventInfo?.RemoveEventHandler(this, handler);
-                }
-            }
-            catch
-            { }
         }
 
         /// <summary>
@@ -320,6 +309,18 @@ namespace Dynamo.PythonServices
             catch (Exception e) { Console.WriteLine(e.Message); }
         }
 
+        private void RemoveEventHandler(Type handlerType, string handlerName)
+        {
+            try
+            {
+                MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(handlerName, BindingFlags.NonPublic | BindingFlags.Instance);
+                var handler = Delegate.CreateDelegate(handlerType, this, handlerInfo);
+                var eventInfo = EngineType.GetEvents().FirstOrDefault(x => x.EventHandlerType == typeof(EvaluationStartedEventHandler));
+                eventInfo?.RemoveEventHandler(this, handler);
+            }
+            catch { }
+        }
+
         private void HandleEvaluationStarted(string code,
                                              IList bindingValues,
                                              ScopeSetAction scopeSet)
@@ -334,5 +335,382 @@ namespace Dynamo.PythonServices
         {
             EvaluationFinishedCallback?.Invoke(state, code, bindingValues, scopeGet);
         }
+    }
+
+    /// <summary>
+    /// Concrete type that gets returned and converted to an Avalonedit type implementing
+    /// ICompletionData when used from WPF ScriptEditorContorl.
+    /// </summary>
+    internal class PythonCodeCompletionDataCore : IExternalCodeCompletionData
+    {
+        private readonly IExternalCodeCompletionProviderCore provider;
+        private string description;
+
+        public PythonCodeCompletionDataCore(string text, string stub, bool isInstance,
+            ExternalCodeCompletionType completionType, IExternalCodeCompletionProviderCore providerCore)
+        {
+            Text = text;
+            Stub = stub;
+            IsInstance = isInstance;
+            provider = providerCore;
+            CompletionType = completionType;
+        }
+
+        public string Text { get; private set; }
+
+        public string Stub { get; private set; }
+
+        public bool IsInstance { get; private set; }
+
+        // Use this property if you want to show a fancy UIElement in the drop down list.
+        public object Content
+        {
+            get { return this.Text; }
+        }
+
+        public string Description
+        {
+            get
+            {
+                // lazily get the description
+                if (description == null)
+                {
+                    description = provider.GetDescription(this.Stub, this.Text, this.IsInstance).TrimEnd('\r', '\n');
+                }
+
+                return description;
+            }
+        }
+        public double Priority { get { return 0; } }
+
+        public ExternalCodeCompletionType CompletionType { get; private set; }
+    }
+
+    internal static class PythonCodeCompletionUtils
+    {
+        #region internal constants
+        internal static readonly string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s?)+)";
+        internal static readonly string variableName = @"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";
+        internal static readonly string spacesOrNone = @"(\s*)";
+        internal static readonly string atLeastOneSpaceRegex = @"(\s+)";
+        internal static readonly string dictRegex = "({.*})";
+        internal static readonly string basicImportRegex = @"(import)";
+        internal static readonly string fromImportRegex = @"^(from)";
+
+        internal const string quotesStringRegex = "[\"']([^\"']*)[\"']";
+        internal const string equalsRegex = @"(=)";
+
+        internal static readonly Regex MATCH_LAST_NAMESPACE = new Regex(@"[\w.]+$", RegexOptions.Compiled);
+        internal static readonly Regex MATCH_LAST_WORD = new Regex(@"\w+$", RegexOptions.Compiled);
+        internal static readonly Regex MATCH_FIRST_QUOTED_NAME = new Regex(quotesStringRegex, RegexOptions.Compiled);
+        internal static readonly Regex MATCH_VALID_TYPE_NAME_CHARACTERS_ONLY = new Regex(@"^\w+", RegexOptions.Compiled);
+        internal static readonly Regex TRIPLE_QUOTE_STRINGS = new Regex(".*?\\\"{{3}}[\\s\\S]+?\\\"{{3}}", RegexOptions.Compiled);
+
+        internal static readonly Regex MATCH_IMPORT_STATEMENTS = new Regex(@"^import\s+?(.+)", RegexOptions.Compiled | RegexOptions.Multiline);
+        internal static readonly Regex MATCH_FROM_IMPORT_STATEMENTS = new Regex(@"from\s+?([\w.]+)\s+?import\s+?([\w, *]+)", RegexOptions.Compiled | RegexOptions.Multiline);
+        internal static readonly Regex MATCH_VARIABLE_ASSIGNMENTS = new Regex(@"^[ \t]*?(\w+(\s*?,\s*?\w+)*)\s*?=\s*(.+)", RegexOptions.Compiled | RegexOptions.Multiline);
+
+        internal static readonly Regex STRING_VARIABLE = new Regex("[\"']([^\"']*)[\"']", RegexOptions.Compiled);
+        internal static readonly Regex DOUBLE_VARIABLE = new Regex("^-?\\d+\\.\\d+", RegexOptions.Compiled);
+        internal static readonly Regex INT_VARIABLE = new Regex("^-?\\d+", RegexOptions.Compiled);
+        internal static readonly Regex LIST_VARIABLE = new Regex("\\[.*\\]", RegexOptions.Compiled);
+        internal static readonly Regex DICT_VARIABLE = new Regex("{.*}", RegexOptions.Compiled);
+
+        internal static readonly string BAD_ASSIGNEMNT_ENDS = ",([{";
+
+        internal static readonly string inBuiltMethod = "built-in";
+        internal static readonly string method = "method";
+        internal static readonly string internalType = "Autodesk";
+
+
+        /// <summary>
+        /// A list of short assembly names used with the TryGetTypeFromFullName method
+        /// </summary>
+        private static string[] knownAssemblies = {
+            "mscorlib",
+            "RevitAPI",
+            "RevitAPIUI",
+            "ProtoGeometry"
+        };
+        #endregion
+
+        /// <summary>
+        /// Returns the last name from the input line. The regex ignores tabs, spaces, the first new line, etc.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        internal static string GetLastName(string text)
+        {
+            return MATCH_LAST_WORD.Match(text.Trim('.').Trim()).Value;
+        }
+
+        /// <summary>
+        /// Returns the entire namespace from the end of the input line. The regex ignores tabs, spaces, the first new line, etc.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        internal static string GetLastNameSpace(string text)
+        {
+            return MATCH_LAST_NAMESPACE.Match(text.Trim('.').Trim()).Value;
+        }
+
+        /// <summary>
+        /// Returns the first possible type name from the type's declaration line.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        internal static string GetFirstPossibleTypeName(string line)
+        {
+            var match = MATCH_VALID_TYPE_NAME_CHARACTERS_ONLY.Match(line);
+            string possibleTypeName = match.Success ? match.Value : "";
+            return possibleTypeName;
+        }
+
+        /// <summary>
+        /// Removes any docstring characters from the source code
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        internal static string StripDocStrings(string code)
+        {
+            var matches = TRIPLE_QUOTE_STRINGS.Split(code);
+            return String.Join("", matches);
+        }
+
+        /// <summary>
+        /// Detect all library references given the provided code
+        /// </summary>
+        /// <param name="code">Script code to search for CLR references</param>
+        /// <returns></returns>
+        internal static List<string> FindClrReferences(string code)
+        {
+            var statements = new List<string>();
+            foreach (var line in code.Split(new[] { '\n', ';' }))
+            {
+                if (line.Contains("clr.AddReference"))
+                {
+                    statements.Add(line.Trim());
+                }
+            }
+
+            return statements;
+        }
+
+        /// <summary>
+        /// Check if a full type name is found in one of the known pre-loaded assemblies and return the type
+        /// </summary>
+        /// <param name="name">a full type name</param>
+        /// <returns></returns>
+        internal static Type TryGetTypeFromFullName(string name)
+        {
+            foreach (var asName in knownAssemblies)
+            {
+                Type foundType = Type.GetType(String.Format("{0},{1}", name, asName));
+                if (foundType != null)
+                {
+                    return foundType;
+                }
+            }
+
+            return null;
+        }
+
+        //!!!- do not modify these signatures until that class is removed.
+        //We do not know if anyone was using that class, but we needed to remove the compile
+        //time references between PythonNodeModels and DSCPython to support dynamically loading
+        //python versions.
+
+        //note that the public members below are not really public (this is an internal class)
+        //but must be marked that way to satisfy the legacy interface
+        #region BACKING LEGACY CLASS DO NOT MODIFY UNTIL 3
+
+        internal static Dictionary<string, string> FindAllTypeImportStatements(string code)
+        {
+            // matches the following types:
+            //     from lib import *
+
+            var pattern = fromImportRegex +
+                          atLeastOneSpaceRegex +
+                          variableName +
+                          atLeastOneSpaceRegex +
+                          basicImportRegex +
+                          atLeastOneSpaceRegex +
+                          @"\*$";
+
+            var matches = Regex.Matches(code, pattern, RegexOptions.Multiline);
+
+            var importMatches = new Dictionary<string, string>();
+
+            for (var i = 0; i < matches.Count; i++)
+            {
+                var wholeLine = matches[i].Groups[0].Value;
+                var libName = matches[i].Groups[3].Value.Trim();
+
+                if (importMatches.ContainsKey(libName))
+                    continue;
+
+                importMatches.Add(libName, wholeLine);
+            }
+
+            return importMatches;
+        }
+
+        internal static Dictionary<string, string> FindTypeSpecificImportStatements(string code)
+        {
+
+            var pattern = fromImportRegex +
+                          atLeastOneSpaceRegex +
+                          variableName +
+                          atLeastOneSpaceRegex +
+                          basicImportRegex +
+                          atLeastOneSpaceRegex +
+                          commaDelimitedVariableNamesRegex +
+                          "$";
+
+            var matches = Regex.Matches(code, pattern, RegexOptions.Multiline);
+
+            var importMatches = new Dictionary<string, string>();
+
+            for (var i = 0; i < matches.Count; i++)
+            {
+                var wholeLine = matches[i].Groups[0].Value.TrimEnd('\r', '\n');
+                var joinedTypeNames = matches[i].Groups[8].Value.Trim();
+
+                var allTypes = joinedTypeNames.Replace(" ", "").Split(',');
+
+                foreach (var typeName in allTypes)
+                {
+                    if (importMatches.ContainsKey(typeName))
+                    {
+                        continue;
+                    }
+
+                    importMatches.Add(typeName, wholeLine.Replace(joinedTypeNames, typeName));
+                }
+            }
+
+            return importMatches;
+        }
+
+        internal static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
+        {
+            var pattern = variableName + spacesOrNone + equalsRegex + spacesOrNone + valueRegex;
+
+            var matches = Regex.Matches(code, pattern);
+
+            var paramMatches = new Dictionary<string, string>();
+
+            for (var i = 0; i < matches.Count; i++)
+            {
+                var name = matches[i].Groups[1].Value.Trim();
+                var val = matches[i].Groups[6].Value.Trim();
+                paramMatches.Add(name, val);
+            }
+
+            return paramMatches;
+        }
+
+        internal static List<Tuple<string, string, string>> FindAllImportStatements(string code)
+        {
+            var statements = new List<Tuple<string, string, string>>();
+
+            // i.e. import math
+            // or import math, cmath as cm
+            var importMatches = MATCH_IMPORT_STATEMENTS.Matches(code);
+            foreach (Match m in importMatches)
+            {
+                var names = new List<string>();
+
+                // If the match ends with '.'
+                if (m.Value.EndsWith("."))
+                {
+                    // For each group in mathces
+                    foreach (Group item in m.Groups)
+                    {
+                        // Clone
+                        var text = m.Value;
+
+                        // Reformat statment
+                        text = text.Replace("\t", "   ")
+                                   .Replace("\n", " ")
+                                   .Replace("\r", " ");
+                        var spaceIndex = text.LastIndexOf(' ');
+                        var equalsIndex = text.LastIndexOf('=');
+                        var clean = text.Substring(Math.Max(spaceIndex, equalsIndex) + 1).Trim('.').Trim('(');
+
+                        // Check for multi-line statement
+                        var allStatements = clean.Trim().Split(new char[] { ',' }).Select(x => x.Trim()).ToList();
+
+                        // Build names output
+                        foreach (string statement in allStatements)
+                        {
+                            names.Add(statement);
+                        }
+                    }
+                }
+                else
+                {
+                    // Check for multi-line statement
+                    names = m.Groups[1].Value.Trim().Split(new char[] { ',' }).Select(x => x.Trim()).ToList();
+                }
+
+                foreach (string n in names)
+                {
+                    var parts = n.Split(new string[] { " as " }, 2, StringSplitOptions.RemoveEmptyEntries);
+                    var name = parts[0];
+                    string asname = parts.Length > 1 ? parts[1] : null;
+                    statements.Add(new Tuple<string, string, string>(null, name, asname));
+                }
+            }
+
+            // i.e. from Autodesk.Revit.DB import *
+            // or from Autodesk.Revit.DB import XYZ, Line, Point as rvtPoint
+            var fromMatches = MATCH_FROM_IMPORT_STATEMENTS.Matches(code);
+            foreach (Match m in fromMatches)
+            {
+                var module = m.Groups[1].Value;
+                var names = m.Groups[2].Value.Trim().Split(new char[] { ',' }).Select(x => x.Trim());
+                foreach (string n in names)
+                {
+                    var parts = n.Split(new string[] { " as " }, 2, StringSplitOptions.RemoveEmptyEntries);
+                    var name = parts[0];
+                    string asname = parts.Length > 1 ? parts[1] : null;
+                    statements.Add(new Tuple<string, string, string>(module, name, asname));
+                }
+            }
+            return statements;
+        }
+
+        [Obsolete("Only used to support legacy IronPythonCodeCompletionProvider - remove in 3.0")]
+        /// <summary>
+        /// Attempts to find import statements that look like
+        ///     import lib
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
+        internal static Dictionary<string, string> FindBasicImportStatements(string code)
+        {
+            var pattern = "^" + basicImportRegex + spacesOrNone + variableName;
+
+            var matches = Regex.Matches(code, pattern, RegexOptions.Multiline);
+
+            var importMatches = new Dictionary<string, string>();
+
+            for (var i = 0; i < matches.Count; i++)
+            {
+                var wholeLine = matches[i].Groups[0].Value;
+                var libName = matches[i].Groups[3].Value.Trim();
+
+                if (importMatches.ContainsKey(libName))
+                {
+                    continue;
+                }
+
+                importMatches.Add(libName, wholeLine);
+            }
+
+            return importMatches;
+        }
+        #endregion
     }
 }

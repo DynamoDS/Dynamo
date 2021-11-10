@@ -14,7 +14,6 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
-using DynamoServices;
 using System.Linq;
 using Dynamo.PythonServices;
 
