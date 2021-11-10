@@ -210,12 +210,20 @@ namespace Dynamo.PythonServices
     /// This class is intended to wrap or act as a proxy for many different python engine versions
     /// </summary>
     [SupressImportIntoVM]
-    public class PythonEngineProxy : IDisposable
+    public class PythonEngineProxy
     {
+        /// <summary>
+        /// The name of the Python Engine connected to this proxy instance (ex. IronPython2, CPython3)
+        /// </summary>
+        public string Name 
+        {
+            get { return Version.ToString(); }
+        }
+
         /// <summary>
         /// The version of the Python Engine connected to this proxy instance
         /// </summary>
-        public readonly PythonEngineVersion Version;
+        internal readonly PythonEngineVersion Version;
 
         private readonly Type EngineType;
         private EvaluationStartedEventHandler EvaluationStartedCallback;
@@ -227,8 +235,12 @@ namespace Dynamo.PythonServices
         /// <param name="callback"></param>
         public void OnEvaluationBegin(EvaluationStartedEventHandler callback)
         {
-            EvaluationStartedCallback += callback;
-            AddEventHandler(EvaluationStartedCallback.GetType(), nameof(HandleEvaluationStarted));
+            if (EvaluationStartedCallback != null)
+            {
+                RemoveEventHandler(EvaluationStartedCallback.GetType(), nameof(HandleEvaluationStarted));
+            }
+
+            EvaluationStartedCallback = callback;
         }
 
         /// <summary>
@@ -237,8 +249,12 @@ namespace Dynamo.PythonServices
         /// <param name="callback"></param>
         public void OnEvaluationEnd(EvaluationFinishedEventHandler callback)
         {
-            EvaluationFinishedCallback += callback;
-            AddEventHandler(EvaluationFinishedCallback.GetType(), nameof(HandleEvaluationFinished));
+            if (EvaluationFinishedCallback != null)
+            {
+                RemoveEventHandler(EvaluationFinishedCallback.GetType(), nameof(HandleEvaluationFinished));
+            }
+
+            EvaluationFinishedCallback = callback;
         }
 
         internal PythonEngineProxy(Type eType, PythonEngineVersion version)
@@ -246,29 +262,16 @@ namespace Dynamo.PythonServices
             EngineType = eType;
             Version = version;
         }
-
-        public void Dispose()
+        private void RemoveEventHandler(Type handlerType, string handlerName)
         {
             try
             {
-                if (EvaluationStartedCallback != null)
-                {
-                    MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(nameof(HandleEvaluationStarted), BindingFlags.NonPublic | BindingFlags.Instance);
-                    var handler = Delegate.CreateDelegate(typeof(EvaluationStartedEventHandler), this, handlerInfo);
-                    var eventInfo = EngineType.GetEvents().FirstOrDefault(x => x.EventHandlerType == typeof(EvaluationStartedEventHandler));
-                    eventInfo?.RemoveEventHandler(this, handler);
-                }
-
-                if (EvaluationFinishedCallback != null)
-                {
-                    MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(nameof(HandleEvaluationFinished), BindingFlags.NonPublic | BindingFlags.Instance);
-                    var handler = Delegate.CreateDelegate(typeof(EvaluationFinishedEventHandler), this, handlerInfo);
-                    var eventInfo = EngineType.GetEvents().FirstOrDefault(x => x.EventHandlerType == typeof(EvaluationFinishedEventHandler));
-                    eventInfo?.RemoveEventHandler(this, handler);
-                }
+                MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(handlerName, BindingFlags.NonPublic | BindingFlags.Instance);
+                var handler = Delegate.CreateDelegate(handlerType, this, handlerInfo);
+                var eventInfo = EngineType.GetEvents().FirstOrDefault(x => x.EventHandlerType == typeof(EvaluationStartedEventHandler));
+                eventInfo?.RemoveEventHandler(this, handler);
             }
-            catch
-            { }
+            catch { }
         }
 
         /// <summary>
