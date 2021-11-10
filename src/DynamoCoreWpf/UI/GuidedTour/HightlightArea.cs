@@ -17,6 +17,26 @@ namespace Dynamo.Wpf.UI.GuidedTour
         #endregion
 
         /// <summary>
+        /// Default constructor
+        /// </summary>
+        internal HighlightArea() { }
+
+        /// <summary>
+        /// Copy Constructor
+        /// </summary>
+        /// <param name="copyInstance">Instance with the HighlightArea info</param>
+        internal HighlightArea(HighlightArea copyInstance) 
+        {
+            HighlightColor = copyInstance.HighlightColor;
+            WidthBoxDelta = copyInstance.WidthBoxDelta;
+            HeightBoxDelta = copyInstance.HeightBoxDelta;
+            WindowName = copyInstance.WindowName;
+            WindowElementNameString = copyInstance.WindowElementNameString;
+            UIElementTypeString = copyInstance.UIElementTypeString;
+            UIElementGridContainer = copyInstance.UIElementGridContainer;
+        }
+
+        /// <summary>
         /// Since the box that highlights the elements has its size fixed, this variable applies a value to fix its Width
         /// </summary>
         [JsonProperty(nameof(WidthBoxDelta))]
@@ -69,6 +89,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         [JsonProperty(nameof(UIElementTypeString))]
         public string UIElementTypeString { get; set; }
+
+        /// <summary>
+        /// In case the UIElement to be highlighted is in a Grid, then this property will have the Grid name
+        /// </summary>
+        [JsonProperty(nameof(UIElementGridContainer))]
+        public string UIElementGridContainer { get; set; }
 
 
         /// <summary>

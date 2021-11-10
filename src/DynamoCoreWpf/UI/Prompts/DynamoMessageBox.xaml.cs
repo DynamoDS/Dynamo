@@ -182,7 +182,7 @@ namespace Dynamo.UI.Prompts
                 case MessageBoxButton.YesNoCancel:
                     YesButton.Visibility = Visibility.Visible;
                     NoButton.Visibility = Visibility.Visible;
-                    CancelButton.Visibility = Visibility.Collapsed;
+                    CancelButton.Visibility = Visibility.Visible;
                     break;
                 case MessageBoxButton.YesNo:
                     YesButton.Visibility = Visibility.Visible;
@@ -208,7 +208,7 @@ namespace Dynamo.UI.Prompts
                     return value == true ? MessageBoxResult.OK : MessageBoxResult.Cancel;
                 case MessageBoxButton.YesNoCancel:
                     if (value == null) return MessageBoxResult.None;
-                    return value == true ? MessageBoxResult.Yes : MessageBoxResult.Cancel;
+                    return value == true ? MessageBoxResult.Yes : MessageBoxResult.No;
                 case MessageBoxButton.YesNo:
                     if (value == null) return MessageBoxResult.None;
                     return value == true ? MessageBoxResult.Yes : MessageBoxResult.No;
