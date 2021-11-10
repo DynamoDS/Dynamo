@@ -215,7 +215,7 @@ namespace Dynamo.PythonServices
         /// <summary>
         /// The name of the Python Engine connected to this proxy instance (ex. IronPython2, CPython3)
         /// </summary>
-        public string Name 
+        public string Name
         {
             get { return Version.ToString(); }
         }
@@ -241,6 +241,7 @@ namespace Dynamo.PythonServices
             }
 
             EvaluationStartedCallback = callback;
+            AddEventHandler(EvaluationStartedCallback.GetType(), nameof(HandleEvaluationStarted));
         }
 
         /// <summary>
@@ -255,23 +256,13 @@ namespace Dynamo.PythonServices
             }
 
             EvaluationFinishedCallback = callback;
+            AddEventHandler(EvaluationFinishedCallback.GetType(), nameof(HandleEvaluationFinished));
         }
 
         internal PythonEngineProxy(Type eType, PythonEngineVersion version)
         {
             EngineType = eType;
             Version = version;
-        }
-        private void RemoveEventHandler(Type handlerType, string handlerName)
-        {
-            try
-            {
-                MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(handlerName, BindingFlags.NonPublic | BindingFlags.Instance);
-                var handler = Delegate.CreateDelegate(handlerType, this, handlerInfo);
-                var eventInfo = EngineType.GetEvents().FirstOrDefault(x => x.EventHandlerType == typeof(EvaluationStartedEventHandler));
-                eventInfo?.RemoveEventHandler(this, handler);
-            }
-            catch { }
         }
 
         /// <summary>
@@ -321,6 +312,18 @@ namespace Dynamo.PythonServices
                 }
             }
             catch (Exception e) { Console.WriteLine(e.Message); }
+        }
+
+        private void RemoveEventHandler(Type handlerType, string handlerName)
+        {
+            try
+            {
+                MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(handlerName, BindingFlags.NonPublic | BindingFlags.Instance);
+                var handler = Delegate.CreateDelegate(handlerType, this, handlerInfo);
+                var eventInfo = EngineType.GetEvents().FirstOrDefault(x => x.EventHandlerType == typeof(EvaluationStartedEventHandler));
+                eventInfo?.RemoveEventHandler(this, handler);
+            }
+            catch { }
         }
 
         private void HandleEvaluationStarted(string code,
