@@ -169,15 +169,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autodesk sample.
-        /// </summary>
-        public static string AutodeskSamplePackage {
-            get {
-                return ResourceManager.GetString("AutodeskSamplePackage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Autodesk Sign In.
         /// </summary>
         public static string AutodeskSignIn {
@@ -5096,7 +5087,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you need other software or tools in order to use this package, they are listed under Dependencies. The interactive guide for Package Dependencies will tell you more..
+        ///   Looks up a localized string similar to \nIf you need other software or tools in order to use this package, they are listed under Dependencies..
         /// </summary>
         public static string PackagesGuideDependenciesText {
             get {
