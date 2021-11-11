@@ -17,6 +17,7 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
 using Point = System.Windows.Point;
@@ -349,6 +350,56 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private const double WarningsBarVisibilityThreshold = 0.4;
+
+        /// <summary>
+        /// Determines whether or not the opaque warning bar is visible under nodes with
+        /// undismissed warning/error messages.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsWarningBarVisible => WorkspaceViewModel.Zoom >= WarningsBarVisibilityThreshold &&
+                                           ErrorBubble?.NodeErrorsToDisplay.Count > 0 ||
+                                           WorkspaceViewModel.Zoom >= WarningsBarVisibilityThreshold &&
+                                           ErrorBubble?.NodeWarningsToDisplay.Count > 0;
+
+        /// <summary>
+        /// Determines whether or not the semi-transparent overlay is displaying on the node.
+        /// This reflects whether the node is in a warning/error/frozen state
+        /// </summary>
+        [JsonIgnore]
+        public bool NodeOverlayVisible => IsFrozen ||
+                                          ErrorBubble?.NodeErrorsToDisplay.Count > 0 && WorkspaceViewModel.Zoom < WarningsBarVisibilityThreshold ||
+                                          ErrorBubble?.NodeWarningsToDisplay.Count > 0 && WorkspaceViewModel.Zoom < WarningsBarVisibilityThreshold;
+
+        /// <summary>
+        /// The color of the warning bar: orange for warnings, red for errors.
+        /// </summary>
+        public SolidColorBrush WarningBarColor
+        {
+            get => warningBarColor;
+            set
+            {
+                warningBarColor = value;
+                RaisePropertyChanged(nameof(WarningBarColor));
+            }
+        }
+
+
+        /// <summary>
+        /// Determines the color of the node's visual overlay, which displays
+        /// if the node is in a Frozen, Error or Warning state.
+        /// </summary>
+        public SolidColorBrush NodeOverlayColor
+        {
+            get
+            {
+                if (IsFrozen) return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeFrozenOverlayColor"];
+
+                return NodeModel.State == ElementState.Error ?
+                    (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeErrorColor"] :
+                    (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeWarningColor"];
+            }
+        }
 
         [JsonIgnore]
         public Visibility PeriodicUpdateVisibility
@@ -486,6 +537,7 @@ namespace Dynamo.ViewModels
 
         private bool isNodeNewlyAdded;
         private ImageSource imageSource;
+        private SolidColorBrush warningBarColor;
         
         [JsonIgnore]
         public bool IsNodeAddedRecently
@@ -711,6 +763,8 @@ namespace Dynamo.ViewModels
             DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
 
+            WorkspaceViewModel.ZoomChanged += UpdateWarningsAndOverlays;
+            
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -738,9 +792,24 @@ namespace Dynamo.ViewModels
                 BuildErrorBubble();
                 UpdateBubbleContent();
             }
-
+            
             logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
         }
+
+
+        /// <summary>
+        /// Updates whether the Warning Bar is visible or not and whether the node's
+        /// Frozen/Warning/Error overlay is displaying.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateWarningsAndOverlays(object sender, EventArgs e)
+        {
+            UpdateWarningBarVisibility();
+            UpdateNodeOverlay();
+        }
+        
+        private void UpdateWarningBarVisibility() => RaisePropertyChanged(nameof(IsWarningBarVisible));
 
         /// <summary>
         /// Clears the existing messages on a node before it executes and re-evalutes its warnings/errors. 
@@ -765,7 +834,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void DismissedNodeWarnings_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void DismissedNodeMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (!(sender is ObservableCollection<InfoBubbleDataPacket> observableCollection)) return;
 
@@ -775,6 +844,7 @@ namespace Dynamo.ViewModels
             {
                 DismissedAlerts.Add(infoBubbleDataPacket.Message);
             }
+            
             RaisePropertyChanged(nameof(DismissedAlerts));
             RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
         }
@@ -806,7 +876,8 @@ namespace Dynamo.ViewModels
             }
 
             NodeModel.NodeMessagesClearing -= Logic_NodeMessagesClearing;
-            
+            WorkspaceViewModel.ZoomChanged -= UpdateWarningsAndOverlays;
+
             if (ErrorBubble != null) DisposeErrorBubble();
 
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
@@ -980,10 +1051,13 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsFrozen":
                     RaiseFrozenPropertyChanged();
+                    UpdateNodeOverlay();
                     break;
             }
         }
 
+        private void UpdateNodeOverlay() => RaisePropertyChanged(nameof(NodeOverlayVisible));
+        
         /// <summary>
         /// Updates the width of the node's Warning/Error bubbles, in case the width of the node changes.
         /// </summary>
@@ -998,7 +1072,8 @@ namespace Dynamo.ViewModels
         private void BuildErrorBubble()
         {
             if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
-            
+            ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateWarningsAndOverlays;
+            ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateWarningsAndOverlays;
             if (DynamoViewModel.UIDispatcher != null)
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
@@ -1013,16 +1088,36 @@ namespace Dynamo.ViewModels
             ErrorBubble.ZIndex = ZIndex + 2;
 
             // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
-            ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeWarnings_CollectionChanged;
+            
+            ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeMessages_CollectionChanged;
         }
 
+        /// <summary>
+        /// Sets the color of the warning bar, which informs the user that the node is in
+        /// either an error or a warning state.
+        /// </summary>
+        /// <param name="elementState"></param>
+        private void SetWarningBarColor(ElementState elementState)
+        {
+            switch (elementState)
+            {
+                case ElementState.Warning:
+                    WarningBarColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeWarningColor"];
+                    break;
+                case ElementState.Error:
+                    WarningBarColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeErrorColor"];
+                    break;
+            }
+        }
+
+        
         /// <summary>
         /// Disposes the ErrorBubble when it's no longer needed.
         /// </summary>
         private void DisposeErrorBubble()
         {
             if (ErrorBubble == null) return;
-            ErrorBubble.DismissedMessages.CollectionChanged -= DismissedNodeWarnings_CollectionChanged;
+            ErrorBubble.DismissedMessages.CollectionChanged -= DismissedNodeMessages_CollectionChanged;
 
             if (DynamoViewModel.UIDispatcher != null)
             {
@@ -1031,7 +1126,10 @@ namespace Dynamo.ViewModels
                     ErrorBubble.NodeMessages.Clear();
                 });
             }
-            
+
+            ErrorBubble.NodeWarningsToDisplay.CollectionChanged -= UpdateWarningsAndOverlays;
+            ErrorBubble.NodeErrorsToDisplay.CollectionChanged -= UpdateWarningsAndOverlays;
+
             ErrorBubble.Dispose();
         }
 
@@ -1057,17 +1155,20 @@ namespace Dynamo.ViewModels
             ErrorBubble.UpdateContentCommand.Execute(data);
 
             // If running Dynamo with UI, use dispatcher, otherwise not
-            if(DynamoViewModel.UIDispatcher != null)
+            if (DynamoViewModel.UIDispatcher != null)
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
                     ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
+                    SetWarningBarColor(NodeModel.State);
                 });
             }
             else
             {
                 ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
+                SetWarningBarColor(NodeModel.State);
             }
+            
             ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
         }
 
