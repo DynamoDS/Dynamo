@@ -2921,4 +2921,15 @@ Delete the following packages: {2}?
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Package dependencies</value>
   </data>
+  <data name="PackagesGuideInstalledPackageText" xml:space="preserve">
+    <value>Package installations are typically quick, depending on their size and other factors. \n
+To install the latest version of a package, click Install. \n
+%./UI/Images/alert.png% The sample Autodesk package is already installed on your computer.</value>
+  </data>
+  <data name="String" xml:space="preserve">
+    <value />
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
 </root>

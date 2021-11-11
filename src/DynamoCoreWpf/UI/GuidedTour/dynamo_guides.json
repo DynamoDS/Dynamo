@@ -502,7 +502,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 220,
+				"Height": 320,
 				"StepContent": {
 					"Title": "PackagesGuideInstallAPackageTitle",
 					"FormattedText": "PackagesGuideInstalledPackageText"
@@ -519,12 +519,18 @@
 					}
 				],
 				"HostPopupInfo": {
-					"PopupPlacement": "right",
+					"PopupPlacement": "relative",
 					"WindowName": "PackageSearch",
 					"DynamicHostWindow": true,
 					"HostUIElementString": "PackageSearch",
-					"VerticalPopupOffset": 120,
-					"HorizontalPopupOffset": 0
+					"VerticalPopupOffset": 100,
+					"HorizontalPopupOffset": 480,
+					"HtmlPage": {
+						"FileName": "installedPackage.html",
+						"Resources": {
+							"#successIcon": "successIcon.png"
+						}
+					}
 				},
 				"PreValidation": {
 					"ReturnType": "boolean",
@@ -550,7 +556,16 @@
 					"DynamicHostWindow": true,
 					"HostUIElementString": "PackageSearch",
 					"VerticalPopupOffset": 120,
-					"HorizontalPopupOffset": 0
+					"HorizontalPopupOffset": 0,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "Button",
+						"WindowName": "PackageSearch",
+						"UIElementGridContainer": "installPackageGrid",
+						"WindowElementNameString": "installButton",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
 				},
 				"PreValidation": {
 					"ReturnType": "boolean",

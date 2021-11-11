@@ -2932,10 +2932,9 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Install a package</value>
   </data>
   <data name="PackagesGuideInstalledPackageText" xml:space="preserve">
-    <value>Package installations are typically quick, depending on their size and other factors.
-
-To install the latest version of a package, click Install.
-The sample Autodesk package is already installed on your computer.</value>
+    <value>Package installations are typically quick, depending on their size and other factors. \n
+To install the latest version of a package, click Install. \n
+%./UI/Images/alert.png% The sample Autodesk package is already installed on your computer.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
     <value>If you need other software or tools in order to use this package, they are listed under Dependencies. The interactive guide for Package Dependencies will tell you more.</value>

@@ -5159,28 +5159,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package installations are typically quick, depending on their size and other factors. \n\n **Click Install** to install the latest version of the sample Autodesk package and proceed with this guide..
-        /// </summary>
-        public static string PackagesGuideInstallAPackageText {
-            get {
-                return ResourceManager.GetString("PackagesGuideInstallAPackageText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Install a package.
-        /// </summary>
-        public static string PackagesGuideInstallAPackageTitle {
-            get {
-                return ResourceManager.GetString("PackagesGuideInstallAPackageTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Package installations are typically quick, depending on their size and other factors.
-        ///
-        ///To install the latest version of a package, click Install.
-        ///The sample Autodesk package is already installed on your computer..
+        ///   Looks up a localized string similar to Package installations are typically quick, depending on their size and other factors. \n
+        ///To install the latest version of a package, click Install. \n
+        ///%./UI/Images/alert.png% The sample Autodesk package is already installed on your computer..
         /// </summary>
         public static string PackagesGuideInstalledPackageText {
             get {
@@ -7022,6 +7003,24 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageWhatsNew {
             get {
                 return ResourceManager.GetString("StartPageWhatsNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String {
+            get {
+                return ResourceManager.GetString("String", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
         

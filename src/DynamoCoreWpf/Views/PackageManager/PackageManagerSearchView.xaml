@@ -617,7 +617,9 @@
                                                                 Padding="5,0"
                                                                 BorderThickness="2"
                                                                 CornerRadius="2">
-                                                            <DockPanel LastChildFill="False">
+                                                            <Grid x:Name="installPackageGrid">
+
+                                                                <DockPanel LastChildFill="False">
                                                                 <TextBlock Name="textBlock"
                                                                            Padding="4,4,4,3"
                                                                            VerticalAlignment="Center"
@@ -671,6 +673,8 @@
                                                                     </Rectangle.Style>
                                                                 </Rectangle>
                                                             </DockPanel>
+
+                                                            </Grid>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
