@@ -27,15 +27,15 @@ jobs:
           bash
           echo "PR number is ${{ github.event.pull_request.number }}"
           echo "Getting PR URL"
-          curl "https://api.github.com/repos/carlosgzze/cicd/pulls/${{ github.event.pull_request.number }}" | jq '._links.html.href' | sed -e 's/"/ /g' | sed 's/ //g' > pr_url_convert.out
+          curl "https://api.github.com/repos/DynamoDS/Dynamo/pulls/${{ github.event.pull_request.number }}" | jq '._links.html.href' | sed -e 's/"/ /g' | sed 's/ //g' > pr_url_convert.out
           cat pr_url_convert.out | sed -e 's/\//\\\//g' > pr_url.out
           prurl=$(cat pr_url.out)
           echo "Getting Release Notes Section from PR body"
-          curl "https://api.github.com/repos/carlosgzze/cicd/pulls/${{ github.event.pull_request.number }}" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
+          curl "https://api.github.com/repos/DynamoDS/Dynamo/pulls/${{ github.event.pull_request.number }}" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
           releasenotes=$(cat releasenotes.out)
           echo "Building JSON message"
           cat << EOF > ./slack_message.json
-          curl ${{ secrets.SLACK_TOKEN }} \
+          curl ${{ secrets.SLACK_WEBHOOK_RELEASE_NOTES }} \
           --request POST \
           --header 'Content-type: application/json' \
           --data '{"text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes"}'
