@@ -394,7 +394,7 @@ namespace Dynamo.PythonServices
         public ExternalCodeCompletionType CompletionType { get; private set; }
     }
 
-    internal static class PythonCodeCompletionUtils
+    internal abstract class PythonCodeCompletionProviderCommon : IExternalCodeCompletionProviderCore
     {
         #region internal constants
         internal static readonly string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s?)+)";
@@ -442,12 +442,159 @@ namespace Dynamo.PythonServices
         };
         #endregion
 
+        #region Common members
+        protected enum PythonScriptType
+        {
+            SingleStatement,
+            Statements,
+            Expression
+        }
+
+        /// <summary>
+        /// Maps a basic variable regex to a basic python type.
+        /// </summary>
+        protected List<Tuple<Regex, Type>> BasicVariableTypes;
+
+        /// <summary>
+        /// Tracks already referenced CLR modules
+        /// </summary>
+        protected HashSet<string> ClrModules { get; set; }
+
+        protected abstract object GetDescriptionObject(string docCommand);
+        #endregion
+
+        #region IExternalCodeCompletionProviderCore implementation
+        /// <summary>
+        /// Keeps track of failed statements to avoid poluting the log
+        /// </summary>
+        protected Dictionary<string, int> BadStatements { get; set; }
+
+        public Dictionary<string, Type> VariableTypes { get; set; }
+
+        public Dictionary<string, Type> ImportedTypes { get; set; }
+
+        public abstract IExternalCodeCompletionData[] GetCompletionData(string code, bool expand = false);
+
+        /// <summary>
+        /// Try to generate a description from a typename.
+        /// </summary>
+        /// <param name="stub">Everything before the last namespace or type name e.g. System.Collections in System.Collections.ArrayList</param>
+        /// <param name="item">Everything after the stub</param>
+        /// <param name="isInstance">Whether it's an instance or not</param>
+        public string GetDescription(string stub, string item, bool isInstance)
+        {
+            string description = "No description available"; // the default
+            if (!String.IsNullOrEmpty(item))
+            {
+                try
+                {
+                    string docCommand = "";
+
+                    if (isInstance)
+                    {
+                        docCommand = "type(" + stub + ")" + "." + item + ".__doc__";
+                    }
+                    else
+                    {
+                        docCommand = stub + "." + item + ".__doc__";
+                    }
+
+                    object value = GetDescriptionObject(docCommand);
+
+                    if (!String.IsNullOrEmpty((string)value))
+                    {
+                        description = (string)value;
+                    }
+                }
+                catch
+                {
+                    //This empty catch block is intentional- 
+                    //because we are using a python engine to evaluate the completions
+                    //but this engine has not actually loaded the types, it will throw lots of exceptions
+                    //we wish to suppress.
+                }
+            }
+
+            return description;
+        }
+
+        public abstract bool IsSupportedEngine(string engineName);
+
+        public abstract void Initialize(string dynamoCorePath);
+        #endregion
+
+        #region Utility Methods
+
+        /// <summary>
+        /// List all of the members in a CLR type
+        /// </summary>
+        /// <param name="type">The type</param>
+        /// <param name="name">The name for the type</param>
+        /// <returns>A list of completion data for the type</returns>
+        protected IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembers(Type type, string name)
+        {
+            var items = new List<Tuple<string, string, bool, ExternalCodeCompletionType>>();
+            var completionsList = new SortedList<string, ExternalCodeCompletionType>();
+
+            var methodInfo = type.GetMethods();
+            var propertyInfo = type.GetProperties();
+            var fieldInfo = type.GetFields();
+
+            foreach (MethodInfo methodInfoItem in methodInfo)
+            {
+                if (methodInfoItem.IsPublic
+                    && (methodInfoItem.Name.IndexOf("get_") != 0) && (methodInfoItem.Name.IndexOf("set_") != 0)
+                    && (methodInfoItem.Name.IndexOf("add_") != 0) && (methodInfoItem.Name.IndexOf("remove_") != 0)
+                    && (methodInfoItem.Name.IndexOf("__") != 0))
+                {
+                    if (!completionsList.ContainsKey(methodInfoItem.Name))
+                    {
+                        completionsList.Add(methodInfoItem.Name, ExternalCodeCompletionType.Method);
+                    }
+                }
+            }
+
+            foreach (PropertyInfo propertyInfoItem in propertyInfo)
+            {
+                if (!completionsList.ContainsKey(propertyInfoItem.Name))
+                {
+                    completionsList.Add(propertyInfoItem.Name, ExternalCodeCompletionType.Property);
+                }
+            }
+
+            foreach (FieldInfo fieldInfoItem in fieldInfo)
+            {
+                if (!completionsList.ContainsKey(fieldInfoItem.Name))
+                {
+                    completionsList.Add(fieldInfoItem.Name, ExternalCodeCompletionType.Field);
+                }
+            }
+
+            if (type.IsEnum)
+            {
+                foreach (string en in type.GetEnumNames())
+                {
+                    if (!completionsList.ContainsKey(en))
+                    {
+                        completionsList.Add(en, ExternalCodeCompletionType.Field);
+                    }
+                }
+            }
+
+            foreach (var completionPair in completionsList)
+            {
+                items.Add(Tuple.Create(completionPair.Key, name, true, completionPair.Value));
+            }
+
+            return items;
+        }
+
         /// <summary>
         /// Returns the last name from the input line. The regex ignores tabs, spaces, the first new line, etc.
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        internal static string GetLastName(string text)
+        protected static string GetLastName(string text)
         {
             return MATCH_LAST_WORD.Match(text.Trim('.').Trim()).Value;
         }
@@ -457,7 +604,7 @@ namespace Dynamo.PythonServices
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        internal static string GetLastNameSpace(string text)
+        protected static string GetLastNameSpace(string text)
         {
             return MATCH_LAST_NAMESPACE.Match(text.Trim('.').Trim()).Value;
         }
@@ -467,7 +614,7 @@ namespace Dynamo.PythonServices
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        internal static string GetFirstPossibleTypeName(string line)
+        protected static string GetFirstPossibleTypeName(string line)
         {
             var match = MATCH_VALID_TYPE_NAME_CHARACTERS_ONLY.Match(line);
             string possibleTypeName = match.Success ? match.Value : "";
@@ -479,7 +626,7 @@ namespace Dynamo.PythonServices
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        internal static string StripDocStrings(string code)
+        protected static string StripDocStrings(string code)
         {
             var matches = TRIPLE_QUOTE_STRINGS.Split(code);
             return String.Join("", matches);
@@ -490,7 +637,7 @@ namespace Dynamo.PythonServices
         /// </summary>
         /// <param name="code">Script code to search for CLR references</param>
         /// <returns></returns>
-        internal static List<string> FindClrReferences(string code)
+        protected static List<string> FindClrReferences(string code)
         {
             var statements = new List<string>();
             foreach (var line in code.Split(new[] { '\n', ';' }))
@@ -509,7 +656,7 @@ namespace Dynamo.PythonServices
         /// </summary>
         /// <param name="name">a full type name</param>
         /// <returns></returns>
-        internal static Type TryGetTypeFromFullName(string name)
+        protected static Type TryGetTypeFromFullName(string name)
         {
             foreach (var asName in knownAssemblies)
             {
@@ -523,16 +670,248 @@ namespace Dynamo.PythonServices
             return null;
         }
 
-        //!!!- do not modify these signatures until that class is removed.
-        //We do not know if anyone was using that class, but we needed to remove the compile
-        //time references between PythonNodeModels and DSCPython to support dynamically loading
-        //python versions.
+        protected abstract object EvaluateScript(string script, PythonScriptType type);
 
-        //note that the public members below are not really public (this is an internal class)
-        //but must be marked that way to satisfy the legacy interface
-        #region BACKING LEGACY CLASS DO NOT MODIFY UNTIL 3
+        protected abstract void LogError(string msg);
 
-        internal static Dictionary<string, string> FindAllTypeImportStatements(string code)
+        protected abstract bool ScopeHasVariable(string name);
+
+        /// <summary>
+        /// Find all import statements and import into scope.  If the type is already in the scope, this will be skipped.
+        /// </summary>
+        /// <param name="code">The code to discover the import statements.</param>
+        protected void UpdateImportedTypes(string code)
+        {
+            // Detect all lib references prior to attempting to import anything
+            var refs = FindClrReferences(code);
+            foreach (var statement in refs)
+            {
+                var previousTries = 0;
+                BadStatements.TryGetValue(statement, out previousTries);
+                // TODO - Why is this 3?  Should this be a constant? Is it related to knownAssembies.Length?
+                if (previousTries > 3)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    string libName = MATCH_FIRST_QUOTED_NAME.Match(statement).Groups[1].Value;
+
+                    //  If the library name cannot be found in the loaded clr modules
+                    if (!ClrModules.Contains(libName))
+                    {
+                        if (statement.Contains("AddReferenceToFileAndPath"))
+                        {
+                            EvaluateScript(statement, PythonScriptType.SingleStatement);
+                            ClrModules.Add(libName);
+                            continue;
+                        }
+
+                        if (AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == libName))
+                        {
+                            EvaluateScript(statement, PythonScriptType.SingleStatement);
+                            ClrModules.Add(libName);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    LogError(String.Format("Failed to reference library: {0}", statement));
+                    LogError(e.ToString());
+                    BadStatements[statement] = previousTries + 1;
+                }
+            }
+
+            var importStatements = FindAllImportStatements(code);
+
+            // Format import statements based on available data
+            foreach (var i in importStatements)
+            {
+                string module = i.Item1;
+                string memberName = i.Item2;
+                string asname = i.Item3;
+                string name = asname ?? memberName;
+                string statement = "";
+                var previousTries = 0;
+
+                if (name != "*" && (ScopeHasVariable(name) || ImportedTypes.ContainsKey(name)))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    if (module == null)
+                    {
+                        if (asname == null)
+                        {
+                            statement = String.Format("import {0}", memberName);
+                        }
+                        else
+                        {
+                            statement = String.Format("import {0} as {1}", memberName, asname);
+                        }
+                    }
+                    else
+                    {
+                        if (memberName != "*" && asname != null)
+                        {
+                            statement = String.Format("from {0} import {1} as {2}", module, memberName, asname);
+                        }
+                        else
+                        {
+                            statement = String.Format("from {0} import *", module);
+                        }
+                    }
+
+                    BadStatements.TryGetValue(statement, out previousTries);
+
+                    if (previousTries > 3)
+                    {
+                        continue;
+                    }
+
+                    EvaluateScript(statement, PythonScriptType.SingleStatement);
+
+                    if (memberName == "*")
+                    {
+                        continue;
+                    }
+
+                    string typeName = module == null ? memberName : String.Format("{0}.{1}", module, memberName);
+                    var type = Type.GetType(typeName);
+                    ImportedTypes.Add(name, type);
+                }
+                catch (Exception e)
+                {
+                    LogError(String.Format("Failed to load module: {0}, with statement: {1}", memberName, statement));
+                    // Log(e.ToString());
+                    BadStatements[statement] = previousTries + 1;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Traverse the given source code and define variable types based on
+        /// the current scope
+        /// </summary>
+        /// <param name="code">The source code to look through</param>
+        protected void UpdateVariableTypes(string code)
+        {
+            VariableTypes.Clear();
+            VariableTypes = FindAllVariableAssignments(code);
+        }
+
+        /// <summary>
+        /// Attempts to find all variable assignments in the code. Has basic variable unpacking support.
+        /// We don't need to check the line indices because regex matches are ordered as per the code.
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <returns>A dictionary of variable name and type pairs</returns>
+        protected Dictionary<string, Type> FindAllVariableAssignments(string code)
+        {
+            var assignments = new Dictionary<string, Type>();
+
+            var varMatches = MATCH_VARIABLE_ASSIGNMENTS.Matches(code);
+            foreach (Match m in varMatches)
+            {
+                string _left = m.Groups[1].Value.Trim(), _right = m.Groups[3].Value.Trim();
+                if (BAD_ASSIGNEMNT_ENDS.Contains(_right.Last()))
+                {
+                    continue; // Incomplete statement
+                }
+
+                string[] left = _left.Split(new char[] { ',' }).Select(x => x.Trim()).ToArray();
+                string[] right = _right.Split(new char[] { ',' }).Select(x => x.Trim()).ToArray();
+
+                if (right.Length < left.Length)
+                {
+                    continue; // Unable to resolve iterable unpacking
+                }
+
+                if (left.Length == 1 && right.Length > 1)
+                {
+                    // Likely an iterable assignment has been broken up
+                    right = new string[] { _right };
+                }
+
+                // Attempt to resolve each variable, assignment pair
+                if (left.Length == right.Length)
+                {
+                    for (int i = 0; i < left.Length; i++)
+                    {
+                        // Check the basics first
+                        bool foundBasicMatch = false;
+                        foreach (Tuple<Regex, Type> rx in BasicVariableTypes)
+                        {
+                            if (rx.Item1.IsMatch(right[i]))
+                            {
+                                assignments[left[i]] = rx.Item2;
+                                foundBasicMatch = true;
+                                break;
+                            }
+                        }
+
+                        // Check the scope for a possible match
+                        if (!foundBasicMatch)
+                        {
+                            var possibleTypeName = GetFirstPossibleTypeName(right[i]);
+                            if (!String.IsNullOrEmpty(possibleTypeName))
+                            {
+                                Type t1;
+                                // Check if this is pointing to a predefined variable
+                                if (!assignments.TryGetValue(possibleTypeName, out t1))
+                                {
+                                    // Proceed with a regular scope type check
+                                    t1 = TryGetType(possibleTypeName);
+                                }
+
+                                if (t1 != null)
+                                {
+                                    assignments[left[i]] = t1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return assignments;
+        }
+
+        protected Type TryGetType(string name)
+        {
+            if (ImportedTypes.ContainsKey(name))
+            {
+                return ImportedTypes[name];
+            }
+
+            // If the type name does not exist in the local or built-in variables, then it is out of scope
+            string lookupScr = String.Format("clr.GetClrType({0}) if (\"{0}\" in locals() or \"{0}\" in __builtins__) and isinstance({0}, type) else None", name);
+
+            dynamic type = null;
+            try
+            {
+                type = EvaluateScript(lookupScr, PythonScriptType.Expression);
+            }
+            catch (Exception e)
+            {
+                LogError(String.Format("Failed to look up type: {0}", name));
+                LogError(e.ToString());
+            }
+
+            var foundType = type as Type;
+            if (foundType != null)
+            {
+                ImportedTypes[name] = foundType;
+            }
+
+            return foundType;
+        }
+        
+
+        protected static Dictionary<string, string> FindAllTypeImportStatements(string code)
         {
             // matches the following types:
             //     from lib import *
@@ -563,7 +942,7 @@ namespace Dynamo.PythonServices
             return importMatches;
         }
 
-        internal static Dictionary<string, string> FindTypeSpecificImportStatements(string code)
+        protected static Dictionary<string, string> FindTypeSpecificImportStatements(string code)
         {
 
             var pattern = fromImportRegex +
@@ -600,7 +979,7 @@ namespace Dynamo.PythonServices
             return importMatches;
         }
 
-        internal static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
+        protected static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
         {
             var pattern = variableName + spacesOrNone + equalsRegex + spacesOrNone + valueRegex;
 
@@ -618,7 +997,7 @@ namespace Dynamo.PythonServices
             return paramMatches;
         }
 
-        internal static List<Tuple<string, string, string>> FindAllImportStatements(string code)
+        protected static List<Tuple<string, string, string>> FindAllImportStatements(string code)
         {
             var statements = new List<Tuple<string, string, string>>();
 
@@ -689,14 +1068,81 @@ namespace Dynamo.PythonServices
             return statements;
         }
 
-        [Obsolete("Only used to support legacy IronPythonCodeCompletionProvider - remove in 3.0")]
+        /// <summary>
+        /// Find all variable assignments in the source code and attempt to discover their type
+        /// </summary>
+        /// <param name="code">The code from which to get the assignments</param>
+        /// <returns>A dictionary matching the name of the variable to a tuple of typeName, character at which the assignment was found, and the CLR type</returns>
+        protected Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code)
+        {
+            var variables = new Dictionary<string, Tuple<string, int, Type>>();
+            var pattern = variableName + spacesOrNone +
+                equalsRegex + spacesOrNone + @"(.*)";
+            var variableStatements = Regex.Matches(code, pattern, RegexOptions.Multiline);
+
+            for (var i = 0; i < variableStatements.Count; i++)
+            {
+                var name = variableStatements[i].Groups[1].Value.Trim();
+                var typeString = variableStatements[i].Groups[6].Value.Trim(); // type
+                var currentIndex = variableStatements[i].Index;
+
+                var possibleTypeName = GetFirstPossibleTypeName(typeString);
+                if (!String.IsNullOrEmpty(possibleTypeName))
+                {
+                    var variableType = TryGetType(possibleTypeName);
+                    if (variableType != null)
+                    {
+                        // If variable has already been encountered
+                        if (variables.ContainsKey(name))
+                        {
+                            if (currentIndex > variables[name].Item2)
+                            {
+                                variables[name] = new Tuple<string, int, Type>(typeString, currentIndex, variableType);
+                            }
+                        }
+                        else // New type, add it
+                        {
+                            variables.Add(name, new Tuple<string, int, Type>(typeString, currentIndex, variableType));
+                        }
+
+                        continue;
+                    }
+                }
+
+                // Match default types (numbers, dicts, arrays, strings)
+                foreach (var pair in BasicVariableTypes)
+                {
+                    var matches = Regex.Matches(typeString, "^" + pair.Item1 + "$", RegexOptions.Singleline);
+                    if (matches.Count > 0)
+                    {
+                        // If variable has already been encountered
+                        if (variables.ContainsKey(name))
+                        {
+                            if (currentIndex > variables[name].Item2)
+                            {
+                                variables[name] = new Tuple<string, int, Type>(typeString, currentIndex, pair.Item2);
+                            }
+                        }
+                        else // New type, add it
+                        {
+                            variables.Add(name, new Tuple<string, int, Type>(typeString, currentIndex, pair.Item2));
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            return variables;
+        }
+
         /// <summary>
         /// Attempts to find import statements that look like
         ///     import lib
         /// </summary>
         /// <param name="code">The code to search</param>
         /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
-        internal static Dictionary<string, string> FindBasicImportStatements(string code)
+        protected static Dictionary<string, string> FindBasicImportStatements(string code)
         {
             var pattern = "^" + basicImportRegex + spacesOrNone + variableName;
 

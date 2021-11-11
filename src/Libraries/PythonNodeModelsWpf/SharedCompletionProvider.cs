@@ -47,7 +47,7 @@ namespace Dynamo.Python
                         {
                             return new Type[0];
                         }
-                    }).Where(p => completionType.IsAssignableFrom(p) && !p.IsInterface).ToList();
+                    }).Where(p => completionType.IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract).ToList();
                 //instantiate them - so we can check which is a match using their match method
                 foreach (var type in loadedCodeCompletionTypes)
                 {

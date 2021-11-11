@@ -15,27 +15,20 @@ using System.Text.RegularExpressions;
 
 namespace DSIronPython
 {
-
-    internal class IronPythonCodeCompletionProviderCore : IExternalCodeCompletionProviderCore, ILegacyPythonCompletionCore, ILogSource
+    internal class IronPythonCodeCompletionProviderCore : PythonCodeCompletionProviderCommon, ILegacyPythonCompletionCore, ILogSource
     {
+        #region Private Members
+        private ScriptEngine engine;
         /// <summary>
-        /// Maps a basic variable regex to a basic python type.
+        /// The engine used for autocompletion.  This essentially keeps
+        /// track of the state of the editor, allowing access to variable types and
+        /// imported symbols.
         /// </summary>
-        internal List<Tuple<Regex, Type>> BasicVariableTypes;
+        private ScriptScope scope;
+        #endregion
 
-
-        /// <summary>
-        /// Tracks already referenced CLR modules
-        /// </summary>
-        internal HashSet<string> clrModules { get; set; }
-
-        /// <summary>
-        /// Keeps track of failed statements to avoid poluting the log
-        /// </summary>
-        internal Dictionary<string, int> badStatements { get; set; }
-
-        //Even though the following region is full of private implementation details, these
-        // back the old IronPythonCompletionProvider class
+        #region BACKING LEGACY CLASS DO NOT MODIFY UNTIL 3
+        //ILegacyPythonCompletionCore implementations
         //!!!- do not modify these signatures until that class is removed.
         //We do not know if anyone was using that class, but we needed to remove the compile
         //time references between PythonNodeModels and DSIronPython to support dynamically loading
@@ -43,343 +36,26 @@ namespace DSIronPython
 
         //note that the public members below are not really public (this is an internal class)
         //but must be marked that way to satisfy the legacy interface
-        #region BACKING LEGACY CLASS DO NOT MODIFY UNTIL 3
-        /// <summary>
-        /// Find all import statements and import into scope.  If the type is already in the scope, this will be skipped.
-        /// </summary>
-        /// <param name="code">The code to discover the import statements.</param>
-        public void UpdateImportedTypes(string code)
-        {
-            // Detect all lib references prior to attempting to import anything
-            var refs = PythonCodeCompletionUtils.FindClrReferences(code);
-            foreach (var statement in refs)
-            {
-                var previousTries = 0;
-                badStatements.TryGetValue(statement, out previousTries);
-                // TODO - Why is this 3?  Should this be a constant? Is it related to knownAssembies.Length?
-                if (previousTries > 3)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    string libName = PythonCodeCompletionUtils.MATCH_FIRST_QUOTED_NAME.Match(statement).Groups[1].Value;
-
-                    //  If the library name cannot be found in the loaded clr modules
-                    if (!clrModules.Contains(libName))
-                    {
-                        if (statement.Contains("AddReferenceToFileAndPath"))
-                        {
-                            engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
-                            clrModules.Add(libName);
-                            continue;
-                        }
-
-                        if (AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == libName))
-                        {
-                            engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
-                            clrModules.Add(libName);
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Log(String.Format("Failed to reference library: {0}", statement));
-                    Log(e.ToString());
-                    badStatements[statement] = previousTries + 1;
-                }
-            }
-
-            var importStatements = PythonCodeCompletionUtils.FindAllImportStatements(code);
-
-            // Format import statements based on available data
-            foreach (var i in importStatements)
-            {
-                string module = i.Item1;
-                string memberName = i.Item2;
-                string asname = i.Item3;
-                string name = asname ?? memberName;
-                string statement = "";
-                var previousTries = 0;
-
-                if (name != "*" && (scope.ContainsVariable(name) || ImportedTypes.ContainsKey(name)))
-                {
-                    continue;
-                }
-
-                try
-                {
-                    if (module == null)
-                    {
-                        if (asname == null)
-                        {
-                            statement = String.Format("import {0}", memberName);
-                        }
-                        else
-                        {
-                            statement = String.Format("import {0} as {1}", memberName, asname);
-                        }
-                    }
-                    else
-                    {
-                        if (memberName != "*" && asname != null)
-                        {
-                            statement = String.Format("from {0} import {1} as {2}", module, memberName, asname);
-                        }
-                        else
-                        {
-                            statement = String.Format("from {0} import *", module);
-                        }
-                    }
-
-                    badStatements.TryGetValue(statement, out previousTries);
-
-                    if (previousTries > 3)
-                    {
-                        continue;
-                    }
-
-                    engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
-
-                    if (memberName == "*")
-                    {
-                        continue;
-                    }
-
-                    string typeName = module == null ? memberName : String.Format("{0}.{1}", module, memberName);
-                    var type = Type.GetType(typeName);
-                    ImportedTypes.Add(name, type);
-                }
-                catch (Exception)
-                {
-                    Log(String.Format("Failed to load module: {0}, with statement: {1}", memberName, statement));
-                    // Log(e.ToString());
-                    badStatements[statement] = previousTries + 1;
-                }
-            }
-        }
 
         /// <summary>
-        /// Traverse the given source code and define variable types based on
-        /// the current scope
+        /// The engine used for autocompletion.  This essentially keeps
+        /// track of the state of the editor, allowing access to variable types and
+        /// imported symbols.
         /// </summary>
-        /// <param name="code">The source code to look through</param>
-        public void UpdateVariableTypes(string code)
+        public object Engine
         {
-            VariableTypes.Clear();
-            VariableTypes = FindAllVariableAssignments(code);
+            get { return engine; }
+            set { engine = (ScriptEngine)value; }
         }
-
         /// <summary>
-        /// Attempts to find all variable assignments in the code. Has basic variable unpacking support.
-        /// We don't need to check the line indices because regex matches are ordered as per the code.
+        /// The scope used by the engine.  This is where all the loaded symbols
+        /// are stored.  It's essentially an environment dictionary.
         /// </summary>
-        /// <param name="code">The code to search</param>
-        /// <returns>A dictionary of variable name and type pairs</returns>
-        public Dictionary<string, Type> FindAllVariableAssignments(string code)
+        public object Scope
         {
-
-            var assignments = new Dictionary<string, Type>();
-
-            var varMatches = PythonCodeCompletionUtils.MATCH_VARIABLE_ASSIGNMENTS.Matches(code);
-            foreach (Match m in varMatches)
-            {
-                string _left = m.Groups[1].Value.Trim(), _right = m.Groups[3].Value.Trim();
-                if (PythonCodeCompletionUtils.BAD_ASSIGNEMNT_ENDS.Contains(_right.Last()))
-                {
-                    continue; // Incomplete statement
-                }
-
-                string[] left = _left.Split(new char[] { ',' }).Select(x => x.Trim()).ToArray();
-                string[] right = _right.Split(new char[] { ',' }).Select(x => x.Trim()).ToArray();
-
-                if (right.Length < left.Length)
-                {
-                    continue; // Unable to resolve iterable unpacking
-                }
-
-                if (left.Length == 1 && right.Length > 1)
-                {
-                    // Likely an iterable assignment has been broken up
-                    right = new string[] { _right };
-                }
-
-                // Attempt to resolve each variable, assignment pair
-                if (left.Length == right.Length)
-                {
-                    for (int i = 0; i < left.Length; i++)
-                    {
-                        // Check the basics first
-                        bool foundBasicMatch = false;
-                        foreach (Tuple<Regex, Type> rx in BasicVariableTypes)
-                        {
-                            if (rx.Item1.IsMatch(right[i]))
-                            {
-                                assignments[left[i]] = rx.Item2;
-                                foundBasicMatch = true;
-                                break;
-                            }
-                        }
-
-                        // Check the scope for a possible match
-                        if (!foundBasicMatch)
-                        {
-                            var possibleTypeName = PythonCodeCompletionUtils.GetFirstPossibleTypeName(right[i]);
-                            if (!String.IsNullOrEmpty(possibleTypeName))
-                            {
-                                Type t1;
-                                // Check if this is pointing to a predefined variable
-                                if (!assignments.TryGetValue(possibleTypeName, out t1))
-                                {
-                                    // Proceed with a regular scope type check
-                                    t1 = TryGetType(possibleTypeName);
-                                }
-
-                                if (t1 != null)
-                                {
-                                    assignments[left[i]] = t1;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return assignments;
+            get { return scope; }
+            set { scope = (ScriptScope)value; }
         }
-
-        [Obsolete("Only used to support legacy IronPythonCodeCompletionProvider - remove in 3.0")]
-        /// <summary>
-        /// Find all variable assignments in the source code and attempt to discover their type
-        /// </summary>
-        /// <param name="code">The code from which to get the assignments</param>
-        /// <returns>A dictionary matching the name of the variable to a tuple of typeName, character at which the assignment was found, and the CLR type</returns>
-        public Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code)
-        {
-            var variables = new Dictionary<string, Tuple<string, int, Type>>();
-            var pattern = PythonCodeCompletionUtils.variableName + PythonCodeCompletionUtils.spacesOrNone +
-                PythonCodeCompletionUtils.equalsRegex + PythonCodeCompletionUtils.spacesOrNone + @"(.*)";
-            var variableStatements = Regex.Matches(code, pattern, RegexOptions.Multiline);
-
-            for (var i = 0; i < variableStatements.Count; i++)
-            {
-                var name = variableStatements[i].Groups[1].Value.Trim();
-                var typeString = variableStatements[i].Groups[6].Value.Trim(); // type
-                var currentIndex = variableStatements[i].Index;
-
-                var possibleTypeName = PythonCodeCompletionUtils.GetFirstPossibleTypeName(typeString);
-                if (!String.IsNullOrEmpty(possibleTypeName))
-                {
-                    var variableType = TryGetType(possibleTypeName);
-                    if (variableType != null)
-                    {
-                        // If variable has already been encountered
-                        if (variables.ContainsKey(name))
-                        {
-                            if (currentIndex > variables[name].Item2)
-                            {
-                                variables[name] = new Tuple<string, int, Type>(typeString, currentIndex, variableType);
-                            }
-                        }
-                        else // New type, add it
-                        {
-                            variables.Add(name, new Tuple<string, int, Type>(typeString, currentIndex, variableType));
-                        }
-
-                        continue;
-                    }
-                }
-
-                // Match default types (numbers, dicts, arrays, strings)
-                foreach (var pair in BasicVariableTypes)
-                {
-                    var matches = Regex.Matches(typeString, "^" + pair.Item1 + "$", RegexOptions.Singleline);
-                    if (matches.Count > 0)
-                    {
-                        // If variable has already been encountered
-                        if (variables.ContainsKey(name))
-                        {
-                            if (currentIndex > variables[name].Item2)
-                            {
-                                variables[name] = new Tuple<string, int, Type>(typeString, currentIndex, pair.Item2);
-                            }
-                        }
-                        else // New type, add it
-                        {
-                            variables.Add(name, new Tuple<string, int, Type>(typeString, currentIndex, pair.Item2));
-                        }
-
-                        break;
-                    }
-                }
-            }
-
-            return variables;
-        }
-
-        [Obsolete("Only used to support legacy IronPythonCodeCompletionProvider - remove in 3.0")]
-        /// <summary>
-        /// Attempts to find import statements that look like
-        ///     import lib
-        /// </summary>
-        /// <param name="code">The code to search</param>
-        /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
-        private static Dictionary<string, string> FindBasicImportStatements(string code)
-        {
-            var pattern = "^" + PythonCodeCompletionUtils.basicImportRegex +
-                PythonCodeCompletionUtils.spacesOrNone + PythonCodeCompletionUtils.variableName;
-
-            var matches = Regex.Matches(code, pattern, RegexOptions.Multiline);
-
-            var importMatches = new Dictionary<string, string>();
-
-            for (var i = 0; i < matches.Count; i++)
-            {
-                var wholeLine = matches[i].Groups[0].Value;
-                var libName = matches[i].Groups[3].Value.Trim();
-
-                if (importMatches.ContainsKey(libName))
-                {
-                    continue;
-                }
-
-                importMatches.Add(libName, wholeLine);
-            }
-
-            return importMatches;
-        }
-
-        public Type TryGetType(string name)
-        {
-            if (ImportedTypes.ContainsKey(name))
-            {
-                return ImportedTypes[name];
-            }
-
-            // If the type name does not exist in the local or built-in variables, then it is out of scope
-            string lookupScr = String.Format("clr.GetClrType({0}) if (\"{0}\" in locals() or \"{0}\" in __builtins__) and isinstance({0}, type) else None", name);
-
-            dynamic type = null;
-            try
-            {
-                type = engine.CreateScriptSourceFromString(lookupScr, SourceCodeKind.Expression).Execute(scope);
-            }
-            catch (Exception e)
-            {
-                Log(String.Format("Failed to look up type: {0}", name));
-                Log(e.ToString());
-            }
-
-            var foundType = type as Type;
-            if (foundType != null)
-            {
-                ImportedTypes[name] = foundType;
-            }
-
-            return foundType;
-        }
-
         /// <summary>
         /// List all of the members in a CLR Namespace
         /// </summary>
@@ -412,16 +88,19 @@ namespace DSIronPython
 
             return items;
         }
-
+        public new IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembers(Type type, string name)
+        {
+            return base.EnumerateMembers(type, name);
+        }
         /// <summary>
         /// List all of the members in a PythonModule
         /// </summary>
         /// <param name="module">A reference to the module</param>
         /// <param name="name">The name of the module</param>
         /// <returns>A list of completion data for the module</returns>
-        public IEnumerable<Tuple<string, string,bool, ExternalCodeCompletionType>> EnumerateMembers(object module, string name)
+        public IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembers(object module, string name)
         {
-            var items = new List<Tuple<string, string,bool, ExternalCodeCompletionType>>();
+            var items = new List<Tuple<string, string, bool, ExternalCodeCompletionType>>();
             var d = (module as PythonModule).Get__dict__();
 
             foreach (var member in d)
@@ -432,73 +111,6 @@ namespace DSIronPython
 
             return items;
         }
-
-       
-
-        /// <summary>
-        /// List all of the members in a CLR type
-        /// </summary>
-        /// <param name="type">The type</param>
-        /// <param name="name">The name for the type</param>
-        /// <returns>A list of completion data for the type</returns>
-        public IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembers(Type type, string name)
-        {
-            var items = new List<Tuple<string, string, bool, ExternalCodeCompletionType>>();
-            var completionsList = new SortedList<string, ExternalCodeCompletionType>();
-
-            var methodInfo = type.GetMethods();
-            var propertyInfo = type.GetProperties();
-            var fieldInfo = type.GetFields();
-
-            foreach (MethodInfo methodInfoItem in methodInfo)
-            {
-                if (methodInfoItem.IsPublic
-                    && (methodInfoItem.Name.IndexOf("get_") != 0) && (methodInfoItem.Name.IndexOf("set_") != 0)
-                    && (methodInfoItem.Name.IndexOf("add_") != 0) && (methodInfoItem.Name.IndexOf("remove_") != 0)
-                    && (methodInfoItem.Name.IndexOf("__") != 0))
-                {
-                    if (!completionsList.ContainsKey(methodInfoItem.Name))
-                    {
-                        completionsList.Add(methodInfoItem.Name, ExternalCodeCompletionType.Method);
-                    }
-                }
-            }
-
-            foreach (PropertyInfo propertyInfoItem in propertyInfo)
-            {
-                if (!completionsList.ContainsKey(propertyInfoItem.Name))
-                {
-                    completionsList.Add(propertyInfoItem.Name, ExternalCodeCompletionType.Property);
-                }
-            }
-
-            foreach (FieldInfo fieldInfoItem in fieldInfo)
-            {
-                if (!completionsList.ContainsKey(fieldInfoItem.Name))
-                {
-                    completionsList.Add(fieldInfoItem.Name, ExternalCodeCompletionType.Field);
-                }
-            }
-
-            if (type.IsEnum)
-            {
-                foreach (string en in type.GetEnumNames())
-                {
-                    if (!completionsList.ContainsKey(en))
-                    {
-                        completionsList.Add(en, ExternalCodeCompletionType.Field);
-                    }
-                }
-            }
-
-            foreach (var completionPair in completionsList)
-            {
-                items.Add(Tuple.Create(completionPair.Key, name, true, completionPair.Value));
-            }
-
-            return items;
-        }
-
         /// <summary>
         /// Recursively lookup a member in a given namespace.
         /// </summary>
@@ -507,7 +119,7 @@ namespace DSIronPython
         /// <returns>The type as an object</returns>
         public object LookupMember(string name, object nameSpaceTracker)
         {
-            if(!(nameSpaceTracker is NamespaceTracker))
+            if (!(nameSpaceTracker is NamespaceTracker))
             {
                 throw new ArgumentException("parameter n must be of type NameSpaceTracker");
             }
@@ -536,7 +148,6 @@ namespace DSIronPython
             }
             return null;
         }
-
         /// <summary>
         /// Recursively lookup a variable in the _scope
         /// </summary>
@@ -568,45 +179,29 @@ namespace DSIronPython
             return null;
 
         }
-
-        private ScriptEngine engine;
-        /// <summary>
-        /// The engine used for autocompletion.  This essentially keeps
-        /// track of the state of the editor, allowing access to variable types and
-        /// imported symbols.
-        /// </summary>
-        public object Engine
+        public new void UpdateImportedTypes(string code)
         {
-            get { return engine; }
-            set { engine = (ScriptEngine)value; }
+            base.UpdateImportedTypes(code);
         }
-        private ScriptScope scope;
-
-
-        /// <summary>
-        /// The scope used by the engine.  This is where all the loaded symbols
-        /// are stored.  It's essentially an environment dictionary.
-        /// </summary>
-        public object Scope
+        public new void UpdateVariableTypes(string code)
         {
-            get { return scope; }
-            set { scope = (ScriptScope)value; }
+            base.UpdateVariableTypes(code);
         }
-
+        public new Dictionary<string, Type> FindAllVariableAssignments(string code)
+        {
+            return base.FindAllVariableAssignments(code);
+        }
+        public new Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code)
+        {
+            return base.FindAllVariables(code);
+        }
+        public new Type TryGetType(string name)
+        {
+            return base.TryGetType(name);
+        }
         #endregion
 
-        /// <summary>
-        /// Already discovered variable types.
-        /// </summary>
-        public Dictionary<string, Type> VariableTypes { get; set; }
-
-        #region IExternalCodeCompletionProviderCore implementation
-
-        /// <summary>
-        /// Types that have already been imported into the scope.
-        /// </summary>
-        public Dictionary<string, Type> ImportedTypes { get; set; }
-
+        #region PythonCodeCompletionProviderCommon implementations
         /// <summary>
         /// Generate completion data for the specified text, while import the given types into the
         /// scope and discovering variable assignments.
@@ -614,13 +209,13 @@ namespace DSIronPython
         /// <param name="code">The code to parse</param>
         /// <param name="expand">Determines if the entire namespace should be used</param>
         /// <returns>Return a list of IExternalCodeCompletionData </returns>
-        public IExternalCodeCompletionData[] GetCompletionData(string code, bool expand = false)
+        public override IExternalCodeCompletionData[] GetCompletionData(string code, bool expand = false)
         {
             IEnumerable<IronPythonCodeCompletionDataCore> items = new List<IronPythonCodeCompletionDataCore>();
 
             if (code.Contains("\"\"\""))
             {
-                code = PythonCodeCompletionUtils.StripDocStrings(code);
+                code = StripDocStrings(code);
             }
 
             UpdateImportedTypes(code);
@@ -628,14 +223,14 @@ namespace DSIronPython
 
             // If expand param is true use the entire namespace from the line of code
             // Else just return the last name of the namespace
-            string name = expand ? PythonCodeCompletionUtils.GetLastNameSpace(code) :
-                PythonCodeCompletionUtils.GetLastName(code);
+            string name = expand ? GetLastNameSpace(code) :
+                GetLastName(code);
             if (!String.IsNullOrEmpty(name))
             {
                 try
                 {
                     // Attempt to get type using naming
-                    Type type = expand ? PythonCodeCompletionUtils.TryGetTypeFromFullName(name) : TryGetType(name);
+                    Type type = expand ? TryGetTypeFromFullName(name) : TryGetType(name);
 
                     // CLR type
                     if (type != null)
@@ -697,54 +292,11 @@ namespace DSIronPython
         }
 
         /// <summary>
-        /// Try to generate a description from a typename.
-        /// </summary>
-        /// <param name="stub">Everything before the last namespace or type name e.g. System.Collections in System.Collections.ArrayList</param>
-        /// <param name="item">Everything after the stub</param>
-        /// <param name="isInstance">Whether it's an instance or not</param>
-        public string GetDescription(string stub, string item, bool isInstance)
-        {
-            string description = "No description available"; // the default
-            if (!String.IsNullOrEmpty(item))
-            {
-                try
-                {
-                    string docCommand = "";
-
-                    if (isInstance)
-                    {
-                        docCommand = "type(" + stub + ")" + "." + item + ".__doc__";
-                    }
-                    else
-                    {
-                        docCommand = stub + "." + item + ".__doc__";
-                    }
-
-                    object value = engine.CreateScriptSourceFromString(docCommand, SourceCodeKind.Expression).Execute(scope);
-
-                    if (!String.IsNullOrEmpty((string)value))
-                    {
-                        description = (string)value;
-                    }
-                }
-                catch
-                {
-                    //This empty catch block is intentional- 
-                    //because we are using a python engine to evaluate the completions
-                    //but this engine has not actually loaded the types, it will throw lots of exceptions
-                    //we wish to suppress.
-                }
-            }
-
-            return description;
-        }
-
-        /// <summary>
         /// Used to determine if this IExternalCodeCompletionProviderCore can provide completions for the given engine.
         /// </summary>
         /// <param name="engineName"></param>
         /// <returns></returns>
-        public bool IsSupportedEngine(string engineName)
+        public override bool IsSupportedEngine(string engineName)
         {
            if (engineName == "IronPython2")
             {
@@ -757,7 +309,7 @@ namespace DSIronPython
         /// Used to load initialize libraries and types that should be available by default.
         /// </summary>
         /// <param name="dynamoCorePath"></param>
-        public void Initialize(string dynamoCorePath)
+        public override void Initialize(string dynamoCorePath)
         {
             var pythonLibDir = string.Empty;
             var executionPath = Assembly.GetExecutingAssembly().Location;
@@ -794,10 +346,47 @@ namespace DSIronPython
             }
         }
 
-      
+        protected override object GetDescriptionObject(string docCommand)
+        {
+            try
+            {
 
+                return engine.CreateScriptSourceFromString(docCommand, SourceCodeKind.Expression).Execute(scope);
+            }
+            catch
+            {
+                //This empty catch block is intentional- 
+                //because we are using a python engine to evaluate the completions
+                //but this engine has not actually loaded the types, it will throw lots of exceptions
+                //we wish to suppress.
+            }
+
+            return null;
+        }
+        protected override object EvaluateScript(string script, PythonScriptType evalType)
+        {
+            switch (evalType)
+            {
+                case PythonScriptType.Expression:
+                    return engine.CreateScriptSourceFromString(script, SourceCodeKind.Expression).Execute(scope);
+                case PythonScriptType.SingleStatement:
+                    return engine.CreateScriptSourceFromString(script, SourceCodeKind.SingleStatement).Execute(scope);
+                case PythonScriptType.Statements:
+                    return engine.CreateScriptSourceFromString(script, SourceCodeKind.Statements).Execute(scope);
+            }
+            return null;
+        }
+
+        protected override void LogError(string msg)
+        {
+            Log(msg);
+        }
+
+        protected override bool ScopeHasVariable(string name)
+        {
+            return scope.ContainsVariable(name);
+        }
         #endregion
-
 
         #region constructor
 
@@ -808,19 +397,19 @@ namespace DSIronPython
 
             VariableTypes = new Dictionary<string, Type>();
             ImportedTypes = new Dictionary<string, Type>();
-            clrModules = new HashSet<string>();
-            badStatements = new Dictionary<string, int>();
+            ClrModules = new HashSet<string>();
+            BadStatements = new Dictionary<string, int>();
 
             // Special case for python variables defined as null
             ImportedTypes["None"] = null;
 
             BasicVariableTypes = new List<Tuple<Regex, Type>>();
 
-            BasicVariableTypes.Add(Tuple.Create(PythonCodeCompletionUtils.STRING_VARIABLE, typeof(string)));
-            BasicVariableTypes.Add(Tuple.Create(PythonCodeCompletionUtils.DOUBLE_VARIABLE, typeof(double)));
-            BasicVariableTypes.Add(Tuple.Create(PythonCodeCompletionUtils.INT_VARIABLE, typeof(int)));
-            BasicVariableTypes.Add(Tuple.Create(PythonCodeCompletionUtils.LIST_VARIABLE, typeof(IronPython.Runtime.List)));
-            BasicVariableTypes.Add(Tuple.Create(PythonCodeCompletionUtils.DICT_VARIABLE, typeof(PythonDictionary)));
+            BasicVariableTypes.Add(Tuple.Create(STRING_VARIABLE, typeof(string)));
+            BasicVariableTypes.Add(Tuple.Create(DOUBLE_VARIABLE, typeof(double)));
+            BasicVariableTypes.Add(Tuple.Create(INT_VARIABLE, typeof(int)));
+            BasicVariableTypes.Add(Tuple.Create(LIST_VARIABLE, typeof(IronPython.Runtime.List)));
+            BasicVariableTypes.Add(Tuple.Create(DICT_VARIABLE, typeof(PythonDictionary)));
 
             // Main CLR module
             engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.SingleStatement).Execute(scope);
@@ -837,8 +426,8 @@ namespace DSIronPython
                         "clr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
 
                     engine.CreateScriptSourceFromString(revitImports, SourceCodeKind.Statements).Execute(scope);
-                    clrModules.Add("RevitAPI");
-                    clrModules.Add("RevitAPIUI");
+                    ClrModules.Add("RevitAPI");
+                    ClrModules.Add("RevitAPIUI");
                 }
                 catch
                 {
@@ -856,7 +445,7 @@ namespace DSIronPython
                         "clr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n";
 
                     engine.CreateScriptSourceFromString(libGImports, SourceCodeKind.Statements).Execute(scope);
-                    clrModules.Add("ProtoGeometry");
+                    ClrModules.Add("ProtoGeometry");
                 }
                 catch (Exception e)
                 {
@@ -883,5 +472,4 @@ namespace DSIronPython
         #endregion
 
     }
-
 }
