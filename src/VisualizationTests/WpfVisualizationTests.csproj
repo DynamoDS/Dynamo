@@ -106,6 +106,7 @@
     <Compile Include="HelixWatch3dViewModelPrimitiveTests.cs" />
     <Compile Include="HelixWatch3DViewModelTests.cs" />
     <Compile Include="HelixWatch3DViewModelUnitTests.cs" />
+    <Compile Include="InstanceableItemTests.cs" />
     <Compile Include="PerformanceVisualizationTests.cs" />
     <Compile Include="Preview3DMemoryOutageTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

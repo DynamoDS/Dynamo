@@ -64,6 +64,7 @@
     <Compile Include="GlobalClass.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="InstanceableClass.cs" />
     <Compile Include="NamespaceConflictResolution.cs" />
     <Compile Include="ReferenceThisTest.cs" />
     <Compile Include="ReplicationTest.cs" />

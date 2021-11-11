@@ -58,6 +58,7 @@ namespace WpfVisualizationTests
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("GeometryColor.dll");
             libraries.Add("VMDataBridge.dll");
+            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -1272,6 +1273,19 @@ namespace WpfVisualizationTests
             Assert.IsTrue(AttachedProperties.GetShowSelected(otherNode));
         }
 
+        [Test]
+        public void InstancesAreAddedToBackGroundPreviewForEachMatrix()
+        {
+            OpenVisualizationTest("instancing_pyramids.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            //this graph displays a plane and the instances
+            Assert.AreEqual(2, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
+            //6x6x6 instances
+            Assert.AreEqual(6 * 6 * 6, BackgroundPreviewGeometry.TotalInstancesToRender());
+
+        }
+
     }
 
     internal static class GeometryDictionaryExtensions
@@ -1455,6 +1469,12 @@ namespace WpfVisualizationTests
             var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
 
             return geoms.Any()? geoms.SelectMany(g=>g.Geometry.Positions).Count() : 0;
+        }
+        public static int TotalInstancesToRender(this IEnumerable<Element3D> dictionary)
+        {
+            var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
+
+            return geoms.Any() ? geoms.Where(g => g.Instances!=null &&g.Instances.Any()).SelectMany(g=>g.Instances).Count() : 0;
         }
 
         public static bool HasAnyMeshVerticesOfColor(this IEnumerable<Element3D> dictionary, Color4 color)
