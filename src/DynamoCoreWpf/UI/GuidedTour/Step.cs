@@ -341,17 +341,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal void ExecutePreValidation()
         {
+            object[] parametersArray;
+            Window ownedWindow = Guide.FindWindowOwned(HostPopupInfo.WindowName, MainWindow as Window);
+
             if (PreValidationInfo != null)
             {
                 if (PreValidationInfo.ControlType.Equals("visibility"))
                 {
-                    object[] parametersArray = new object[] { };
-
                     if (!string.IsNullOrEmpty(PreValidationInfo.FuncName))
                     {
-                        Window ownedWindow = Guide.FindWindowOwned(HostPopupInfo.WindowName, MainWindow as Window);
                         MethodInfo builderMethod = typeof(GuidesValidationMethods).GetMethod(PreValidationInfo.FuncName, BindingFlags.Static | BindingFlags.NonPublic);
 
+                        //Checks if needs to execute 'IsPackageInstalled' method to include the right parameters
                         if (PreValidationInfo.FuncName.Equals("IsPackageInstalled"))
                         {
                             PackageManager.PackageManagerSearchViewModel viewModel = null;

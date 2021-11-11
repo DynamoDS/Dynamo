@@ -554,7 +554,7 @@
 					"PopupPlacement": "right",
 					"WindowName": "PackageSearch",
 					"DynamicHostWindow": true,
-					"HostUIElementString": "PackageSearch",
+					"HostUIElementString": "installButton",
 					"VerticalPopupOffset": 120,
 					"HorizontalPopupOffset": 0,
 					"HighlightRectArea": {

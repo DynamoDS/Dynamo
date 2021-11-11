@@ -24,7 +24,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static GuidesManager CurrentExecutingGuidesManager;
         
         private static ExitGuide exitGuide;
-
+        private static PackageManagerSearchViewModel viewModel;
+        private static PackageDownloadHandle packageDownloadHandle;
 
         internal static PackageManagerSearchViewModel packagesViewModel;
 
@@ -88,9 +89,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
-        static PackageManagerSearchViewModel viewModel;
-        static PackageDownloadHandle packageDownloadHandle;
-
+        /// <summary>
+        /// This method will be executed when passing from Step 6 to Step 7 in the Packages guide, so it will subscribe the install button event
+        /// </summary>
+        /// <param name="stepInfo"></param>
+        /// <param name="uiAutomationData"></param>
+        /// <param name="enableFunction"></param>
+        /// <param name="currentFlow"></param>
         internal static void ExecuteInstallPackagesFlow(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
@@ -102,34 +107,31 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if(ownedWindow != null)
                     viewModel = ownedWindow.DataContext as PackageManagerSearchViewModel;
              
-                Button buttonElement = Guide.FindChild(ownedWindow, "installButton") as Button;
+                Button buttonElement = Guide.FindChild(ownedWindow, stepInfo.HostPopupInfo.HostUIElementString) as Button; 
                 viewModel.PackageManagerClientViewModel.Downloads.CollectionChanged += Downloads_CollectionChanged;
             }
             else
             {
-
-                if(uiAutomationData.AutomaticHandlers  != null)
-                {
-                    foreach (var handler in uiAutomationData.AutomaticHandlers)
-                    {
-                        UIElement element = Guide.FindChild(ownedWindow, handler.HandlerElement) as Button;
-                        if (element != null)
-                            ManageEventHandler(element, handler.HandlerElementEvent, handler.ExecuteMethod, false);
-                    }
-                }
-
                 //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
                 Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
             }
         }
 
+        //This methos is called when a download is added in the list 
         private static void Downloads_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             var downloads = (System.Collections.ObjectModel.ObservableCollection<PackageDownloadHandle>) sender;
-            packageDownloadHandle = downloads[0];
-            packageDownloadHandle.PropertyChanged += GuidesValidationMethods_PropertyChanged1;
+
+            if(downloads.Any())
+            {
+                //Gets the first package of the list
+                packageDownloadHandle = downloads.First();
+                packageDownloadHandle.PropertyChanged += GuidesValidationMethods_PropertyChanged1;
+            }
+
         }
 
+        //This method is called when the package download state is changed
         private static void GuidesValidationMethods_PropertyChanged1(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if(packageDownloadHandle.DownloadState == PackageDownloadHandle.State.Installed)
