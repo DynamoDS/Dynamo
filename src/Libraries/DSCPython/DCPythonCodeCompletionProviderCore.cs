@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace DSCPython
 {
-    internal class DSCPythonCodeCompletionProviderCore : PythonCodeCompletionProviderCommon, ILogSource, IDisposable
+    internal class DSCPythonCodeCompletionProviderCore : PythonCodeCompletionProviderCommon, ILogSource
     {
         #region Private members
 
@@ -61,18 +61,10 @@ clr.setPreload(True)
                 PythonEngine.BeginAllowThreads();
             }
 
-            IntPtr gs = PythonEngine.AcquireLock();
-            try
+            using (Py.GIL())
             {
-                using (Py.GIL())
-                {
-                    var result = Scope.Eval(code);
-                    return CPythonEvaluator.OutputMarshaler.Marshal(result);
-                }
-            }
-            finally
-            {
-                PythonEngine.ReleaseLock(gs);
+                var result = Scope.Eval(code);
+                return CPythonEvaluator.OutputMarshaler.Marshal(result);
             }
         }
 
@@ -118,25 +110,16 @@ clr.setPreload(True)
         private object LookupMember(string name)
         {
             var periodIndex = name.IndexOf('.');
-
-            IntPtr gs = PythonEngine.AcquireLock();
-            try
+            using (Py.GIL())
             {
-                using (Py.GIL())
+                if (periodIndex == -1)
                 {
-                    if (periodIndex == -1)
+                    if (Scope.TryGet(name, out object varOutput))
                     {
-                        if (Scope.TryGet(name, out object varOutput))
-                        {
-                            return varOutput;
-                        }
+                        return varOutput;
                     }
-                    return null;
                 }
-            }
-            finally
-            {
-                PythonEngine.ReleaseLock(gs);
+                return null;
             }
         }
         #endregion
@@ -160,7 +143,6 @@ clr.setPreload(True)
                 PythonEngine.BeginAllowThreads();
             }
 
-            IntPtr gs = PythonEngine.AcquireLock();
             try
             {
                 using (Py.GIL())
@@ -216,10 +198,8 @@ clr.setPreload(True)
                     }
                 }
             }
-            finally
-            {
-                PythonEngine.ReleaseLock(gs);
-            }
+            catch {}
+
             // If unable to find matching results and expand was set to false,
             // try again using the full namespace (set expand to true)
             if (!items.Any() && !expand)
@@ -353,7 +333,6 @@ clr.setPreload(True)
                 PythonEngine.BeginAllowThreads();
             }
 
-            IntPtr gs = PythonEngine.AcquireLock();
             try
             {
                 using (Py.GIL())
@@ -405,10 +384,7 @@ clr.setPreload(True)
                     }
                 }
             }
-            finally
-            {
-                PythonEngine.ReleaseLock(gs);
-            }
+            catch {}
         }
         #endregion
 
@@ -423,7 +399,7 @@ clr.setPreload(True)
             MessageLogged?.Invoke(LogMessage.Info(message));
         }
 
-        public void Dispose()
+        ~DSCPythonCodeCompletionProviderCore()
         {
             if (Scope != null)
             {
@@ -432,8 +408,6 @@ clr.setPreload(True)
                     PythonEngine.Initialize();
                     PythonEngine.BeginAllowThreads();
                 }
-
-                IntPtr gs = PythonEngine.AcquireLock();
                 try
                 {
                     using (Py.GIL())
@@ -441,10 +415,7 @@ clr.setPreload(True)
                         Scope.Dispose();
                     }
                 }
-                finally
-                {
-                    PythonEngine.ReleaseLock(gs);
-                }
+                catch {}
             }
         }
         #endregion
