@@ -2894,7 +2894,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add group to group.
+        ///   Looks up a localized string similar to Add Group to Group.
         /// </summary>
         public static string GroupContextMenuAddGroupToGroup {
             get {
