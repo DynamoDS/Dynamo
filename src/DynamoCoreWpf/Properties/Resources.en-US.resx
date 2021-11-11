@@ -2964,4 +2964,7 @@ This package will be unloaded after the next Dynamo restart.</value>
   <data name="PackagesGuideSearchResultsTitle" xml:space="preserve">
     <value>Search results</value>
   </data>
+  <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
+    <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
+  </data>
 </root>
