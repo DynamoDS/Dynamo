@@ -148,7 +148,7 @@ namespace Dynamo.Python
         /// <param name="module">A reference to the module</param>
         /// <param name="name">The name of the module</param>
         /// <returns>A list of completion data for the module</returns>
-        protected List<IronPythonCompletionData> EnumerateMembers(PythonModule module, string name)
+        public List<IronPythonCompletionData> EnumerateMembers(PythonModule module, string name)
         {
             var items = new List<IronPythonCompletionData>();
             foreach (var completion in (providerImplementation as ILegacyPythonCompletionCore).EnumerateMembers(module, name))
@@ -185,7 +185,7 @@ namespace Dynamo.Python
         /// <param name="type">The type</param>
         /// <param name="name">The name for the type</param>
         /// <returns>A list of completion data for the type</returns>
-        public List<IronPythonCompletionData> EnumerateMembers(Type type, string name)
+        protected List<IronPythonCompletionData> EnumerateMembers(Type type, string name)
         {
             var items = new List<IronPythonCompletionData>();
             foreach (var completion in (providerImplementation as ILegacyPythonCompletionCore).EnumerateMembers(type, name))
