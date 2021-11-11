@@ -8,7 +8,7 @@ using PythonNodeModels;
 
 namespace Dynamo.Python
 {
-    internal class SharedCompletionProvider : LogSourceBase
+    internal class SharedCompletionProvider : LogSourceBase, IDisposable
     {
 
         #region Properties and Fields
@@ -87,5 +87,10 @@ namespace Dynamo.Python
                 Select(x => new IronPythonCompletionData(x)).ToArray();
         }
         #endregion
+
+        public void Dispose()
+        {
+            (providerImplementation as IDisposable)?.Dispose();
+        }
     }
 }

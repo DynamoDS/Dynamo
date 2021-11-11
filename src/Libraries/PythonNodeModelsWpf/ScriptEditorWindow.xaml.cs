@@ -266,6 +266,7 @@ namespace PythonNodeModelsWpf
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
         {
+            completionProvider?.Dispose();
             nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
             this.Closed -= OnScriptEditorWindowClosed;
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;

@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace DSCPython
 {
-    internal class DSCPythonCodeCompletionProviderCore : PythonCodeCompletionProviderCommon, ILogSource
+    internal class DSCPythonCodeCompletionProviderCore : PythonCodeCompletionProviderCommon, ILogSource, IDisposable
     {
         #region Private members
 
@@ -74,10 +74,14 @@ clr.setPreload(True)
         /// <param name="module">A reference to the module</param>
         /// <param name="name">The name of the module</param>
         /// <returns>A list of completion data for the module</returns>
-        private IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembersForModule(object module, string name)
+        private IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembersForPyObj(object module, string name)
         {
             var items = new List<Tuple<string, string, bool, ExternalCodeCompletionType>>();
             var d = module as PyObject;
+            if (d == null)
+            {
+                return items;
+            }
 
             foreach (var member in d.Dir())
             {
@@ -178,16 +182,16 @@ clr.setPreload(True)
                             // Variable type
                             else if (VariableTypes.TryGetValue(name, out type))
                             {
-                                items = EnumerateMembers(type, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                                items = EnumerateMembersForPyObj(PyObject.FromManagedObject(type), name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                             }
                             else
                             {
                                 var mem = LookupMember(name);
-                                var pythonModule = mem as PyObject;
+                                var pythonObject = mem as PyObject;
                                 // Python Module type
-                                if (pythonModule != null)
+                                if (pythonObject != null)
                                 {
-                                    items = EnumerateMembersForModule(pythonModule, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                                    items = EnumerateMembersForPyObj(pythonObject, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                                 }
                             }
                         }
@@ -321,9 +325,9 @@ clr.setPreload(True)
 
             BasicVariableTypes = new List<Tuple<Regex, Type>>();
 
-            BasicVariableTypes.Add(Tuple.Create(STRING_VARIABLE, typeof(string)));
-            BasicVariableTypes.Add(Tuple.Create(DOUBLE_VARIABLE, typeof(double)));
-            BasicVariableTypes.Add(Tuple.Create(INT_VARIABLE, typeof(int)));
+            BasicVariableTypes.Add(Tuple.Create(STRING_VARIABLE, typeof(PyString)));
+            BasicVariableTypes.Add(Tuple.Create(DOUBLE_VARIABLE, typeof(PyFloat)));
+            BasicVariableTypes.Add(Tuple.Create(INT_VARIABLE, typeof(PyInt)));
             BasicVariableTypes.Add(Tuple.Create(LIST_VARIABLE, typeof(PyList)));
             BasicVariableTypes.Add(Tuple.Create(DICT_VARIABLE, typeof(PyDict)));
 
@@ -399,7 +403,7 @@ clr.setPreload(True)
             MessageLogged?.Invoke(LogMessage.Info(message));
         }
 
-        ~DSCPythonCodeCompletionProviderCore()
+        public void Dispose()
         {
             if (Scope != null)
             {

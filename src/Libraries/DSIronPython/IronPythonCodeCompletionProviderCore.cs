@@ -15,7 +15,7 @@ using System.Text.RegularExpressions;
 
 namespace DSIronPython
 {
-    internal class IronPythonCodeCompletionProviderCore : PythonCodeCompletionProviderCommon, ILegacyPythonCompletionCore, ILogSource
+    internal class IronPythonCodeCompletionProviderCore : PythonCodeCompletionProviderCommon, ILegacyPythonCompletionCore, ILogSource, IDisposable
     {
         #region Private Members
         private ScriptEngine engine;
@@ -471,5 +471,7 @@ namespace DSIronPython
         }
         #endregion
 
+        public void Dispose()
+        {}
     }
 }
