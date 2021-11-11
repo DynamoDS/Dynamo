@@ -105,6 +105,14 @@ namespace FFITarget
     /// </summary>
     public class InstanceableClass_NoInstanceData : IInstanceableItem, IGraphicItem
     {
+        public static InstanceableClass_NoInstanceData ByPositionAndAxes(double[] position)
+        {
+            var inst = new InstanceableClass_NoInstanceData();
+            inst.position = position;
+            return inst;
+        }
+        internal double[] position { get; set; }
+
         public Guid BaseTessellationGuid => Guid.Parse("fb8fa9ea-5837-4b4e-a7d2-7854d24e138a");
 
         public bool InstanceInfoAvailable => false;
@@ -121,9 +129,18 @@ namespace FFITarget
 
         public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
-            package.AddTriangleVertex(0, 0, 0);
-            package.AddTriangleVertex(-.5, .5, 1);
-            package.AddTriangleVertex(0, 1, 0);
+            var x = position[0];
+            var y = position[1];
+            var z = position[2];
+
+            package.AddTriangleVertex(0+x, 0+y, 0+z);
+            package.AddTriangleVertex(-.5+x, .5+y, 1+z);
+            package.AddTriangleVertex(0+x, 1+y, 0+z);
+            
+            package.AddTriangleVertexNormal(-1, 0, -.5);
+            package.AddTriangleVertexNormal(-1, 0, -.5);
+            package.AddTriangleVertexNormal(-1, 0, -.5);
+
             package.AddTriangleVertexColor(255, 0, 0, 255);
             package.AddTriangleVertexColor(255, 0, 0, 255);
             package.AddTriangleVertexColor(255, 0, 0, 255);

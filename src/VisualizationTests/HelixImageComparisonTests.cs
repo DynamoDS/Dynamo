@@ -1,6 +1,6 @@
 ﻿
 //UNCOMMENT THIS DEFINE TO UPDATE THE REFERENCE IMAGES.
-#define UPDATEIMAGEDATA
+//#define UPDATEIMAGEDATA
 //UNCOMMENT TO SAVE DEBUG IMAGES.
 //#define SAVEDEBUGIMAGES
 using System;
@@ -293,6 +293,14 @@ namespace WpfVisualizationTests
         {
             //This DYN renders a class in FFITarget that implements instancing.
             OpenVisualizationTest("instancing_pyramids.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void RenderMeshInstances_noInstanceData()
+        {
+            //This DYN renders a class in FFITarget that implements instancing.
+            OpenVisualizationTest("instancing_no_instance_data.dyn");
             RunCurrentModel();
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
