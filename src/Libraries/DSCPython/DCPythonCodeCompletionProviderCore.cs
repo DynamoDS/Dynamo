@@ -69,15 +69,15 @@ clr.setPreload(True)
         }
 
         /// <summary>
-        /// List all of the members in a PythonModule
+        /// List all of the members in a PythonObject
         /// </summary>
-        /// <param name="module">A reference to the module</param>
+        /// <param name="pyObject">A reference to the module</param>
         /// <param name="name">The name of the module</param>
         /// <returns>A list of completion data for the module</returns>
-        private IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembersForPyObj(object module, string name)
+        private IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembersForPyObj(object pyObject, string name)
         {
             var items = new List<Tuple<string, string, bool, ExternalCodeCompletionType>>();
-            var d = module as PyObject;
+            var d = pyObject as PyObject;
             if (d == null)
             {
                 return items;
@@ -250,40 +250,7 @@ clr.setPreload(True)
         /// </summary>
         /// <param name="dynamoCorePath"></param>
         public override void Initialize(string dynamoCorePath)
-        {
-            var pythonLibDir = string.Empty;
-            var executionPath = Assembly.GetExecutingAssembly().Location;
-            // Determine if the Python Standard Library is available in the DynamoCore path
-            if (!String.IsNullOrEmpty(dynamoCorePath))
-            {
-                // set pythonLibDir path.
-            }
-
-            // TODO: check if any python libraries for CPython engine has to be imported. 
-            if (!Directory.Exists(pythonLibDir))
-            {
-                // import them here if needed. 
-            }
-
-            if (!String.IsNullOrEmpty(pythonLibDir))
-            {
-                // Try to load Python Standard Library Type for autocomplete
-                try
-                {
-                    var pyLibImports = String.Format("import sys\nsys.path.append(r'{0}')\n", pythonLibDir);
-                    // engine.CreateScriptSourceFromString(pyLibImports, SourceCodeKind.Statements).Execute(scope);
-                }
-                catch (Exception e)
-                {
-                    Log(e.ToString());
-                    Log("Failed to register IronPython's native library. Python autocomplete will not see standard modules.");
-                }
-            }
-            else
-            {
-                Log("Valid IronPython Standard Library not found. Python autocomplete will not see native modules.");
-            }
-        }
+        {}
         #endregion
 
         #region PythonCodeCompletionProviderCommon protected methods implementations
