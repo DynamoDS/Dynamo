@@ -255,7 +255,6 @@
                     <ResourceDictionary>
                         <Style TargetType="{x:Type MenuItem}">
                             <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
-                            <!--<Setter Property="Height" Value="30" />-->
                             <Setter Property="Width" Value="240" />
                             <Setter Property="Padding" Value="20,0,20,0" />
                             <Setter Property="Template">
