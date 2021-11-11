@@ -1,6 +1,6 @@
 ﻿
 //UNCOMMENT THIS DEFINE TO UPDATE THE REFERENCE IMAGES.
-//#define UPDATEIMAGEDATA
+#define UPDATEIMAGEDATA
 //UNCOMMENT TO SAVE DEBUG IMAGES.
 //#define SAVEDEBUGIMAGES
 using System;
@@ -284,6 +284,15 @@ namespace WpfVisualizationTests
         {
             // This DYN has the Geometry Scaling set to the "Extra Large" setting.
             OpenVisualizationTest(@"imageComparison\CoordinateSystems.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+
+        [Test]
+        public void RenderMeshInstances()
+        {
+            //This DYN renders a class in FFITarget that implements instancing.
+            OpenVisualizationTest("instancing_pyramids.dyn");
             RunCurrentModel();
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
