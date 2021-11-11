@@ -805,12 +805,10 @@ namespace Dynamo.ViewModels
         /// <param name="e"></param>
         private void UpdateWarningsAndOverlays(object sender, EventArgs e)
         {
-            UpdateWarningBarVisibility();
-            UpdateNodeOverlay();
+            RaisePropertyChanged(nameof(IsWarningBarVisible));
+            RaisePropertyChanged(nameof(NodeOverlayVisible));
         }
         
-        private void UpdateWarningBarVisibility() => RaisePropertyChanged(nameof(IsWarningBarVisible));
-
         /// <summary>
         /// Clears the existing messages on a node before it executes and re-evalutes its warnings/errors. 
         /// </summary>
@@ -1051,13 +1049,11 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsFrozen":
                     RaiseFrozenPropertyChanged();
-                    UpdateNodeOverlay();
+                    RaisePropertyChanged(nameof(NodeOverlayVisible));
                     break;
             }
         }
 
-        private void UpdateNodeOverlay() => RaisePropertyChanged(nameof(NodeOverlayVisible));
-        
         /// <summary>
         /// Updates the width of the node's Warning/Error bubbles, in case the width of the node changes.
         /// </summary>
