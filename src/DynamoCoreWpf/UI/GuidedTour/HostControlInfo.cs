@@ -17,6 +17,28 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private HtmlPage htmlPage;
 
         /// <summary>
+        /// Default constructor
+        /// </summary>
+        internal HostControlInfo() { }
+
+        /// <summary>
+        /// Copy Constructor
+        /// </summary>
+        /// <param name="copyInstance"></param>
+        /// <param name="MainWindow"></param>
+        internal HostControlInfo(HostControlInfo copyInstance, UIElement MainWindow)
+        {
+            PopupPlacement = copyInstance.PopupPlacement;
+            HostUIElementString = copyInstance.HostUIElementString;
+            HostUIElement = MainWindow;
+            VerticalPopupOffSet = copyInstance.VerticalPopupOffSet;
+            HorizontalPopupOffSet = copyInstance.HorizontalPopupOffSet;
+            HtmlPage = copyInstance.HtmlPage;
+            WindowName = copyInstance.WindowName;
+            DynamicHostWindow = copyInstance.DynamicHostWindow;
+        }
+
+        /// <summary>
         /// Host Name, this property will contain the name of the host control located in the TreeView
         /// </summary>
         public string Name

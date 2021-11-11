@@ -595,7 +595,8 @@
                             <TextBlock Name="licenseLabel"
                                        Style="{StaticResource LabelStyle}"
                                        Text="{x:Static p:Resources.PublishPackageViewLicense}" />
-                            <TextBlock Name="licenseSubLabel" Style="{StaticResource SubLabelStyle}">
+                            <TextBlock Name="licenseSubLabel" Style="{StaticResource SubLabelStyle}"
+                                       TextWrapping="Wrap">
                                 <Run Text="{x:Static p:Resources.PublishPackageViewLicenseSubLabel}" />
                                 <Hyperlink Cursor="Hand"
                                            NavigateUri="https://opensource.org/licenses/MIT"

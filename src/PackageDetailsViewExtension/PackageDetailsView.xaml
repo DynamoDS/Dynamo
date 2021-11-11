@@ -23,7 +23,7 @@
             <controls:InverseBooleanConverter x:Key="InverseBooleanConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <Style x:Key="LabelStyle" TargetType="TextBlock">
-                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementBold}" />
                 <Setter Property="FontWeight" Value="Bold" />
                 <Setter Property="FontSize" Value="14px" />
                 <Setter Property="MinWidth" Value="200px" />
@@ -227,13 +227,13 @@
                            Text="{Binding PackageDescription}" />
 
                 <!--  License  -->
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation ="Vertical">
                     <TextBlock Name="LicenseTitle"
                                MinWidth="0"
                                Style="{StaticResource LabelStyle}"
                                Text="{x:Static p:Resources.PackageDetailsLicense}" />
                     <TextBlock Name="LicenseBody"
-                               Margin="5,0,0,20"
+                               Margin="0,0,0,20"
                                FontSize="14px"
                                Style="{StaticResource BodyTextStyle}"
                                Text="{Binding License}" />

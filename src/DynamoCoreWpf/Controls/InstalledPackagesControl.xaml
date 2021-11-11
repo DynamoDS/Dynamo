@@ -68,7 +68,7 @@
         <ScrollViewer Grid.Row="1"  
             VerticalScrollBarVisibility="Auto" 
             Background="{StaticResource PreferencesWindowBackgroundColor}" 
-            MaxHeight="290">
+            MaxHeight="246">
             <ItemsControl Name="SearchResultsListBox"
                               ItemsSource="{Binding Path=LocalPackages}"
                               HorizontalContentAlignment="Stretch"
