@@ -5,15 +5,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-        xmlns:ui="clr-namespace:Dynamo.UI" 
-        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
-        d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
+        xmlns:ui="clr-namespace:Dynamo.UI"
         Name="PublishInfoControl"
         Width="900"
         Height="710"
         MinWidth="630"
         MinHeight="500"
-        DataContext="{Binding PublishPackageViewModel, RelativeSource={RelativeSource Self}}"
         ResizeMode="CanResizeWithGrip"
         Visibility="Visible"
         WindowStartupLocation="CenterOwner"
@@ -91,6 +88,7 @@
                 <Setter Property="Margin" Value="0,0,0,5" />
             </Style>
             <Style x:Key="InputStyle" TargetType="TextBox">
+                <Setter Property="OverridesDefaultStyle" Value="True" />
                 <Setter Property="Margin" Value="0,0,0,12" />
                 <Setter Property="MinWidth" Value="62px" />
                 <Setter Property="Cursor" Value="IBeam" />
@@ -107,8 +105,8 @@
                                          FontSize="12px"
                                          Foreground="#DFDFDF"
                                          MaxLength="{TemplateBinding MaxLength}"
-                                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
                                          Tag="{TemplateBinding Tag}"
+                                         Text="{TemplateBinding Text}"
                                          TextWrapping="Wrap" />
                                 <TextBlock x:Name="WatermarkLabel"
                                            Padding="13,13,10,8"
@@ -506,7 +504,7 @@
                 Grid.Column="0"
                 Background="{StaticResource DarkMidGreyBrush}"
                 CornerRadius="4"
-                MouseDown="PublishPackageView_MouseDown">
+                MouseDown="PreferencesPanel_MouseDown">
             <DockPanel HorizontalAlignment="Stretch">
 
                 <!--  Close Button  -->
@@ -560,9 +558,7 @@
                                ToolTip="{x:Static p:Resources.PublishPackageViewPackageNameTooltip}" />
                     <TextBox Name="packageNameInput"
                              Style="{StaticResource InputStyle}"
-                             Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}"
-                             IsEnabled ="{Binding Path=CanEditName}"
-                             Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                             Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}" />
 
                     <!--  Description  -->
                     <TextBlock Name="descriptionLabel"
@@ -572,8 +568,7 @@
                     <TextBox Name="descriptionInput"
                              MinHeight="81px"
                              Style="{StaticResource InputStyle}"
-                             Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}"
-                             Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                             Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}" />
 
                     <!--  Version  -->
                     <TextBlock Name="versionLabel"
@@ -585,20 +580,17 @@
                                  Margin="0,0,6,0"
                                  MaxLength="4"
                                  Style="{StaticResource InputStyle}"
-                                 Tag="{x:Static p:Resources.PublishPackageVersionMajorWatermark}"
-                                 Text="{Binding Path=MajorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Tag="{x:Static p:Resources.PublishPackageVersionMajorWatermark}" />
                         <TextBox Name="versionMinorInput"
                                  Margin="0,0,6,0"
                                  MaxLength="4"
                                  Style="{StaticResource InputStyle}"
-                                 Tag="{x:Static p:Resources.PublishPackageVersionMinorWatermark}"
-                                 Text="{Binding Path=MinorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Tag="{x:Static p:Resources.PublishPackageVersionMinorWatermark}" />
                         <TextBox Name="versionBuildInput"
                                  Margin="0,0,6,0"
                                  MaxLength="4"
                                  Style="{StaticResource InputStyle}"
-                                 Tag="{x:Static p:Resources.PublishPackageVersionBuildWatermark}"
-                                 Text="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Tag="{x:Static p:Resources.PublishPackageVersionBuildWatermark}" />
                     </StackPanel>
 
                     <!--  External Dependency  -->
@@ -812,7 +804,7 @@
                                                 IsReadOnly="False"
                                                 IsThreeState="False" />
                         <DataGridTextColumn MinWidth="50"
-                                            Binding="{Binding Path=FileInfo.Name}"
+                                            Binding="{Binding Path=Name}"
                                             Header="Name"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
@@ -869,9 +861,9 @@
                         <TextBlock Style="{StaticResource LabelStyle}" Text="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectory}" />
                         <Image Width="16px"
                                Height="16px"
-                               Margin="5,0,0,0"
-                               VerticalAlignment="Top"
                                DockPanel.Dock="Left"
+                               VerticalAlignment="Top"
+                               Margin="5,0,0,0"
                                Source="/DynamoCoreWpf;component/UI/Images/info-grey.png" />
                         <Button Command="{Binding Path=ClearMarkdownDirectoryCommand}"
                                 Content="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButton}"
