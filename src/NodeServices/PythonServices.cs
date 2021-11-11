@@ -394,6 +394,11 @@ namespace Dynamo.PythonServices
         public ExternalCodeCompletionType CompletionType { get; private set; }
     }
 
+    /// <summary>
+    /// This class represents a base class for Python code completion providers
+    /// It partially implements the IExternalCodeCompletionProviderCore interface and
+    /// contains a collection of utility functions/properties that are common among existing code completion provider classes
+    /// </summary>
     internal abstract class PythonCodeCompletionProviderCommon : IExternalCodeCompletionProviderCore
     {
         #region internal constants
@@ -880,6 +885,11 @@ namespace Dynamo.PythonServices
             return assignments;
         }
 
+        /// <summary>
+        /// Retrieves the clr Type corresponding to the input paramater name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         protected Type TryGetType(string name)
         {
             if (ImportedTypes.ContainsKey(name))
@@ -909,8 +919,13 @@ namespace Dynamo.PythonServices
 
             return foundType;
         }
-        
 
+        /// <summary>
+        /// Attempts to find import statements that look like
+        ///     from lib import *
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
         protected static Dictionary<string, string> FindAllTypeImportStatements(string code)
         {
             // matches the following types:
@@ -942,6 +957,13 @@ namespace Dynamo.PythonServices
             return importMatches;
         }
 
+        /// <summary>
+        /// Attempts to find import statements that look like
+        ///     from lib import type1, type2
+        /// Doesn't currently match types with namespace qualifiers like Collections.ArrayList
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
         protected static Dictionary<string, string> FindTypeSpecificImportStatements(string code)
         {
 
@@ -979,6 +1001,13 @@ namespace Dynamo.PythonServices
             return importMatches;
         }
 
+        /// <summary>
+        /// Find a variable assignment of the form "varName = bla" where bla is matched by
+        /// the given regex
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <param name="valueRegex">Your regex to match the type</param>
+        /// <returns>A dictionary of name to assignment line pairs</returns>
         protected static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
         {
             var pattern = variableName + spacesOrNone + equalsRegex + spacesOrNone + valueRegex;
@@ -997,6 +1026,11 @@ namespace Dynamo.PythonServices
             return paramMatches;
         }
 
+        /// <summary>
+        /// Attempts to find all import statements in the code
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <returns>A list of tuples that contain the namespace, the module, and the custom name</returns>
         protected static List<Tuple<string, string, string>> FindAllImportStatements(string code)
         {
             var statements = new List<Tuple<string, string, string>>();
@@ -1069,10 +1103,12 @@ namespace Dynamo.PythonServices
         }
 
         /// <summary>
-        /// Find all variable assignments in the source code and attempt to discover their type
+        /// Find a variable assignment of the form "varName = bla" where bla is matched by
+        /// the given regex
         /// </summary>
-        /// <param name="code">The code from which to get the assignments</param>
-        /// <returns>A dictionary matching the name of the variable to a tuple of typeName, character at which the assignment was found, and the CLR type</returns>
+        /// <param name="code">The code to search</param>
+        /// <param name="valueRegex">Your regex to match the type</param>
+        /// <returns>A dictionary of name to assignment line pairs</returns>
         protected Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code)
         {
             var variables = new Dictionary<string, Tuple<string, int, Type>>();
