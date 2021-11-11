@@ -268,6 +268,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package has conflicts with one or more Built-In packages..
+        /// </summary>
+        public static string BuiltInPackageConflictMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("BuiltInPackageConflictMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Camera position information could not be loaded from the file..
         /// </summary>
         public static string CameraDataLoadError {
@@ -3389,6 +3398,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package has conflicts with one or more loaded packages..
+        /// </summary>
+        public static string LoadedPackagesConflictMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("LoadedPackagesConflictMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must provide a Major version as a non-negative integer..
         /// </summary>
         public static string MajorVersionNonNegative {
@@ -3407,9 +3425,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} has already installed {1}.
+        ///   Looks up a localized string similar to Package {1} is already installed.
         ///
-        ///{0} will attempt to uninstall this package before installing..
+        ///{0} will attempt to uninstall this package before installing {2}..
         /// </summary>
         public static string MessageAlreadyInstallDynamo {
             get {
@@ -3634,6 +3652,32 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
+        ///    
+        ///Do you wish to continue installing it while keeping the packages that are already installed?
+        ///
+        ///If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again..
+        /// </summary>
+        public static string MessageForceInstallOrUninstallToContinue {
+            get {
+                return ResourceManager.GetString("MessageForceInstallOrUninstallToContinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following packages: {1}. Dependency conflicts could cause unintended behavior to occur.
+        ///    
+        ///Do you wish to continue installing it while keeping the packages that are already installed?
+        ///
+        ///If not, {2} needs to uninstall {1} to continue. Restart {2}, then download {0} again..
+        /// </summary>
+        public static string MessageForceInstallOrUninstallUponRestart {
+            get {
+                return ResourceManager.GetString("MessageForceInstallOrUninstallUponRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was a problem getting the node from the workspace..
         /// </summary>
         public static string MessageGettingNodeError {
@@ -3748,7 +3792,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {1} has dependencies that conflict with the following Built-In packages : {2}. {0} cannot override packages in the Built-In Packages location..
+        ///   Looks up a localized string similar to {0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
+        ///    
+        ///Do you wish to continue trying to install {0}?.
         /// </summary>
         public static string MessagePackageDepsInBuiltinPackages {
             get {
@@ -3784,7 +3830,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A different version of the package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location..
+        ///   Looks up a localized string similar to {0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
+        ///    
+        ///You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again..
         /// </summary>
         public static string MessageSamePackageDiffVersInBuiltinPackages {
             get {
@@ -3793,11 +3841,31 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location..
+        ///   Looks up a localized string similar to Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+        ///        
+        ///Do you wish to restart {2} to first uninstall {1}, then download {0} again?.
         /// </summary>
-        public static string MessageSamePackageInBuiltinPackages {
+        public static string MessageSamePackageDiffVersInLocalPackages {
             get {
-                return ResourceManager.GetString("MessageSamePackageInBuiltinPackages", resourceCulture);
+                return ResourceManager.GetString("MessageSamePackageDiffVersInLocalPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The same version of {0} is already installed as a built-in package and need not be installed again..
+        /// </summary>
+        public static string MessageSamePackageSameVersInBuiltinPackages {
+            get {
+                return ResourceManager.GetString("MessageSamePackageSameVersInBuiltinPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The same version of {0} is already installed and does not need to be installed again..
+        /// </summary>
+        public static string MessageSamePackageSameVersInLocalPackages {
+            get {
+                return ResourceManager.GetString("MessageSamePackageSameVersInLocalPackages", resourceCulture);
             }
         }
         
@@ -3872,26 +3940,6 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageUninstallSamePackage {
             get {
                 return ResourceManager.GetString("MessageUninstallSamePackage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} needs to uninstall {1} to continue, but cannot as one of its types appears to be in use.  Try restarting {0}..
-        /// </summary>
-        public static string MessageUninstallToContinue {
-            get {
-                return ResourceManager.GetString("MessageUninstallToContinue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {2} has dependencies. To install {2}, {0} needs to first uninstall the following dependent packages: {1}. Restart {0} to complete the uninstall, then try and download {2} again.
-        ///
-        ///Uninstall the following dependent packages: {1}?.
-        /// </summary>
-        public static string MessageUninstallToContinue2 {
-            get {
-                return ResourceManager.GetString("MessageUninstallToContinue2", resourceCulture);
             }
         }
         
@@ -4272,6 +4320,15 @@ namespace Dynamo.Wpf.Properties {
         public static string OpenDynamoDefinitionDialogTitle {
             get {
                 return ResourceManager.GetString("OpenDynamoDefinitionDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted..
+        /// </summary>
+        public static string PackageContextMenuDeletePackageCustomNodesInUseTooltip {
+            get {
+                return ResourceManager.GetString("PackageContextMenuDeletePackageCustomNodesInUseTooltip", resourceCulture);
             }
         }
         
@@ -5238,6 +5295,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagesGuideThirdPartyTitle {
             get {
                 return ResourceManager.GetString("PackagesGuideThirdPartyTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package has conflicts with one or more packages in use..
+        /// </summary>
+        public static string PackagesInUseConflictMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("PackagesInUseConflictMessageBoxTitle", resourceCulture);
             }
         }
         
