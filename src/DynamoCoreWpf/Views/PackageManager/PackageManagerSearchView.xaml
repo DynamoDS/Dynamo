@@ -222,7 +222,7 @@
                 Grid.RowSpan="4"
                 Background="{StaticResource DarkMidGreyBrush}"
                 CornerRadius="4"
-                MouseDown="PreferencesPanel_MouseDown">
+                MouseDown="PackageManagerSearchView_MouseDown">
             <DockPanel HorizontalAlignment="Stretch">
                 <Button x:Name="closeButton"
                         Margin="25,20"
