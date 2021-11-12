@@ -7,6 +7,7 @@ using Autodesk.DesignScript.Runtime;
 using DSCPython.Encoders;
 using Dynamo.Events;
 using Dynamo.Logging;
+using Dynamo.PythonServices.EventHandlers;
 using Dynamo.Session;
 using Dynamo.Utilities;
 using Python.Runtime;
@@ -142,13 +143,14 @@ namespace DSCPython
     ///     Evaluates a Python script in the Dynamo context.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public static class CPythonEvaluator
+    public class CPythonEvaluator : Dynamo.PythonServices.PythonEngine
     {
         private const string DynamoSkipAttributeName = "__dynamoskipconversion__";
         private const string DynamoPrintFuncName = "__dynamoprint__";
         private const string NodeName = "__dynamonodename__";
-        static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
+
+        private static PyScope globalScope;
         private static DynamoLogger dynamoLogger;
         internal static DynamoLogger DynamoLogger {
             get
@@ -162,12 +164,26 @@ namespace DSCPython
             }
         }
 
+        /// <summary>
+        /// Use Lazy&lt;PythonEngineManager&gt; to make sure the Singleton class is only initialized once
+        /// </summary>
+        private static readonly Lazy<CPythonEvaluator>
+            lazy =
+            new Lazy<CPythonEvaluator>
+            (() => new CPythonEvaluator());
+
+        /// <summary>
+        /// The actual instance stored in the Singleton class
+        /// </summary>
+        internal static CPythonEvaluator Instance { get { return lazy.Value; } }
+
         static CPythonEvaluator()
         {
             InitializeEncoders();
             Dynamo.Models.DynamoModel.RequestPythonReset += RequestPythonResetHandler;
-           
         }
+
+        public override string Name => PythonNodeModels.PythonEngineVersion.CPython3.ToString();
 
         internal static void RequestPythonResetHandler(string pythonEngine)
         {
@@ -236,7 +252,7 @@ for modname,mod in sys.modules.copy().items():
         /// <param name="code">Python script as a string.</param>
         /// <param name="bindingNames">Names of values referenced in Python script.</param>
         /// <param name="bindingValues">Values referenced in Python script.</param>
-        public static object EvaluatePythonScript(
+        public override object Evaluate(
             string code,
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
@@ -304,6 +320,14 @@ for modname,mod in sys.modules.copy().items():
                         }
                     }
                 }
+        }
+
+        public static object EvaluatePythonScript(
+            string code,
+            IList bindingNames,
+            [ArbitraryDimensionArrayImport] IList bindingValues)
+        {
+            return Instance.Evaluate(code, bindingNames, bindingValues);
         }
 
         private static bool isPythonInstalled = false;
@@ -432,7 +456,7 @@ sys.stdout = DynamoStdOut({0})
         ///     Data Marshaler for all data coming into a Python node.
         /// </summary>
         [SupressImportIntoVM]
-        public static DataMarshaler InputMarshaler
+        public override object InputDataMarshaler
         {
             get
             {
@@ -472,10 +496,16 @@ sys.stdout = DynamoStdOut({0})
         }
 
         /// <summary>
+        ///     Data Marshaler for all data coming into a Python node.
+        /// </summary>
+        [SupressImportIntoVM]
+        public static DataMarshaler InputMarshaler => Instance.InputDataMarshaler as DataMarshaler;
+
+        /// <summary>
         ///     Data Marshaler for all data coming out of a Python node.
         /// </summary>
         [SupressImportIntoVM]
-        public static DataMarshaler OutputMarshaler
+        public override object OutputDataMarshaler
         {
             get
             {
@@ -567,6 +597,12 @@ sys.stdout = DynamoStdOut({0})
             }
         }
 
+        /// <summary>
+        ///     Data Marshaler for all data coming out of a Python node.
+        /// </summary>
+        [SupressImportIntoVM]
+        public static DataMarshaler OutputMarshaler => Instance.OutputDataMarshaler as DataMarshaler;
+
         private static DynamoCPythonHandle GetDynamoCPythonHandle(PyObject pyObj)
         {
             var globalScope = PyScopeManager.Global.Get(globalScopeName);
@@ -579,8 +615,8 @@ sys.stdout = DynamoStdOut({0})
             return pyObj.HasAttr(DynamoSkipAttributeName);
         }
 
-        private static DataMarshaler inputMarshaler;
-        private static DataMarshaler outputMarshaler;
+        private DataMarshaler inputMarshaler;
+        private DataMarshaler outputMarshaler;
 
         #endregion
 
@@ -598,7 +634,7 @@ sys.stdout = DynamoStdOut({0})
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        public static event Dynamo.PythonServices.EvaluationStartedEventHandler EvaluationStarted;
+        public override event EvaluationStartedEventHandler EvaluationStarted;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
@@ -611,7 +647,7 @@ sys.stdout = DynamoStdOut({0})
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
-        public static event Dynamo.PythonServices.EvaluationFinishedEventHandler EvaluationFinished;
+        public override event EvaluationFinishedEventHandler EvaluationFinished;
 
         /// <summary>
         /// Called immediately before evaluation starts
@@ -619,7 +655,7 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationBegin(PyScope scope,
+        private void OnEvaluationBegin(PyScope scope,
                                               string code,
                                               IList bindingValues)
         {
@@ -643,7 +679,7 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to that was evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationEnd(bool isSuccessful,
+        private void OnEvaluationEnd(bool isSuccessful,
                                             PyScope scope,
                                             string code,
                                             IList bindingValues)

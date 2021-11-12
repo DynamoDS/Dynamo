@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
+using Dynamo.PythonServices.EventHandlers;
 using PythonNodeModels;
 
 namespace PythonNodeModels
@@ -20,12 +21,11 @@ namespace PythonNodeModels
     }
 }
 
-namespace Dynamo.PythonServices
+namespace Dynamo.PythonServices.EventHandlers
 {
     [SupressImportIntoVM]
-    public enum EvaluationState { Success, Failed }
-
     public delegate void ScopeSetAction(string name, object value);
+    [SupressImportIntoVM]
     public delegate object ScopeGetAction(string name);
 
     [SupressImportIntoVM]
@@ -37,11 +37,73 @@ namespace Dynamo.PythonServices
                                                         string code,
                                                         IList bindingValues,
                                                         ScopeGetAction scopeGet);
+}
+
+namespace Dynamo.PythonServices
+{
+    [SupressImportIntoVM]
+    public enum EvaluationState { Success, Failed }
+
+    /// <summary>
+    /// This abstract class is intended to act as a base class for different python engines
+    /// </summary>
+    public abstract class PythonEngine
+    {
+        /// <summary>
+        /// Data Marshaler for all data coming into a Python node.
+        /// </summary>
+        public abstract object InputDataMarshaler
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Data Marshaler for all data coming out of a Python node.
+        /// </summary>
+        public abstract object OutputDataMarshaler
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Name of the Python engine
+        /// </summary>
+        public abstract string Name
+        {
+            get;
+        }
+
+        internal PythonEngineVersion Version => Enum.TryParse(Name, out PythonEngineVersion version) ? version : PythonEngineVersion.Unspecified;
+
+        /// <summary>
+        /// Add an event handler before the Python evaluation begins
+        /// </summary>
+        /// <param name="callback"></param>
+        public abstract event EvaluationStartedEventHandler EvaluationStarted;
+
+        /// <summary>
+        /// Add an event handler after the Python evaluation has finished
+        /// </summary>
+        /// <param name="callback"></param>
+        public abstract event EvaluationFinishedEventHandler EvaluationFinished;
+
+        /// <summary>
+        ///     Executes a Python script with custom variable names. Script may be a string
+        ///     read from a file, for example. Pass a list of names (matching the variable
+        ///     names in the script) to bindingNames and pass a corresponding list of values
+        ///     to bindingValues.
+        /// </summary>
+        /// <param name="code">Python script as a string.</param>
+        /// <param name="bindingNames">Names of values referenced in Python script.</param>
+        /// <param name="bindingValues">Values referenced in Python script.</param>
+        public abstract object Evaluate(string code,
+                        IList bindingNames,
+                        [ArbitraryDimensionArrayImport] IList bindingValues);
+    }
 
     /// <summary>
     /// Singleton class that other class can access and use for query loaded Python Engine info.
     /// </summary>
-    [SupressImportIntoVM]
     public sealed class PythonEngineManager
     {
         /// <summary>
@@ -59,10 +121,19 @@ namespace Dynamo.PythonServices
         public static PythonEngineManager Instance { get { return lazy.Value; } }
         #endregion
 
-        internal ObservableCollection<PythonEngineProxy> AvailableEngines;
+        internal ObservableCollection<PythonEngine> AvailableEngines;
+
+        public static object Evaluate(string engine, string code,
+                                        IList bindingNames,
+                                        [ArbitraryDimensionArrayImport] IList bindingValues) 
+        {
+            return Instance.GetEngine(engine).Evaluate(code, bindingNames, bindingValues);
+        }
 
         #region Constant strings
         // TODO: The following fields might be removed after dynamic loading applied
+        internal static string PythonEvaluatorSingletonInstance = "Instance";
+
         internal static string IronPythonEvaluatorClass = "IronPythonEvaluator";
         internal static string IronPythonEvaluationMethod = "EvaluateIronPythonScript";
 
@@ -87,48 +158,15 @@ namespace Dynamo.PythonServices
         /// </summary>
         private PythonEngineManager()
         {
-            AvailableEngines = new ObservableCollection<PythonEngineProxy>();
+            AvailableEngines = new ObservableCollection<PythonEngine>();
 
             ScanPythonEngines();
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(AssemblyLoadEventHandler);
         }
 
-        internal PythonEngineProxy CreateEngineProxy(Assembly assembly, PythonEngineVersion version)
+        internal PythonEngine GetEngine(string version)
         {
-            // Currently we are using try-catch to validate loaded assembly and evaluation method exist
-            // but we can optimize by checking all loaded types against evaluators interface later
-            try
-            {
-                if (version == PythonEngineVersion.IronPython2 && assembly.GetName().Name.Equals(IronPythonAssemblyName))
-                {
-                    var eType = assembly.GetType(IronPythonTypeName);
-                    if (eType != null && eType.GetMethod(IronPythonEvaluationMethod) != null)
-                    {
-                        return new PythonEngineProxy(eType, PythonEngineVersion.IronPython2);
-                    }
-                }
-            }
-            catch
-            {
-                return null;
-            }
-
-            try
-            {
-                if (version == PythonEngineVersion.CPython3 && assembly.GetName().Name.Equals(CPythonAssemblyName))
-                {
-                    var eType = assembly.GetType(CPythonTypeName);
-                    if (eType != null && eType.GetMethod(CPythonEvaluationMethod) != null)
-                    {
-                        return new PythonEngineProxy(eType, PythonEngineVersion.CPython3);
-                    }
-                }
-            }
-            catch
-            {
-                //Do nothing for now
-            }
-            return null;
+            return AvailableEngines.FirstOrDefault(x => x.Name == version);
         }
 
         /// <summary>
@@ -151,9 +189,9 @@ namespace Dynamo.PythonServices
         /// <param name="evaluationMethod"></param>
         internal void GetEvaluatorInfo(PythonEngineVersion engine, out string evaluatorClass, out string evaluationMethod)
         {
+            var IP2Engine = GetEngine(PythonEngineVersion.IronPython2.ToString());
             // Provide evaluator info when the selected engine is loaded
-            if (engine == PythonEngineVersion.IronPython2 &&
-                AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2))
+            if (IP2Engine != null)
             {
                 evaluatorClass = IronPythonEvaluatorClass;
                 evaluationMethod = IronPythonEvaluationMethod;
@@ -186,159 +224,22 @@ namespace Dynamo.PythonServices
                 return;
             }
 
-            if (!AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2))
-            {
-                var engine = CreateEngineProxy(assembly, PythonEngineVersion.IronPython2);
-                if (engine != null)
-                {
-                    AvailableEngines.Add(engine);
-                }
-            }
-
-            if (!AvailableEngines.Any(x => x.Version == PythonEngineVersion.CPython3))
-            {
-                var engine = CreateEngineProxy(assembly, PythonEngineVersion.CPython3);
-                if (engine != null)
-                {
-                    AvailableEngines.Add(engine);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// This class is intended to wrap or act as a proxy for many different python engine versions
-    /// </summary>
-    [SupressImportIntoVM]
-    public class PythonEngineProxy
-    {
-        /// <summary>
-        /// The name of the Python Engine connected to this proxy instance (ex. IronPython2, CPython3)
-        /// </summary>
-        public string Name
-        {
-            get { return Version.ToString(); }
-        }
-
-        /// <summary>
-        /// The version of the Python Engine connected to this proxy instance
-        /// </summary>
-        internal readonly PythonEngineVersion Version;
-
-        private readonly Type EngineType;
-        private EvaluationStartedEventHandler EvaluationStartedCallback;
-        private EvaluationFinishedEventHandler EvaluationFinishedCallback;
-
-        /// <summary>
-        /// Add an event handler before the Python evaluation begins
-        /// </summary>
-        /// <param name="callback"></param>
-        public void OnEvaluationBegin(EvaluationStartedEventHandler callback)
-        {
-            if (EvaluationStartedCallback != null)
-            {
-                RemoveEventHandler(EvaluationStartedCallback.GetType(), nameof(HandleEvaluationStarted));
-            }
-
-            EvaluationStartedCallback = callback;
-            AddEventHandler(EvaluationStartedCallback.GetType(), nameof(HandleEvaluationStarted));
-        }
-
-        /// <summary>
-        /// Add an event handler after the Python evaluation ends
-        /// </summary>
-        /// <param name="callback"></param>
-        public void OnEvaluationEnd(EvaluationFinishedEventHandler callback)
-        {
-            if (EvaluationFinishedCallback != null)
-            {
-                RemoveEventHandler(EvaluationFinishedCallback.GetType(), nameof(HandleEvaluationFinished));
-            }
-
-            EvaluationFinishedCallback = callback;
-            AddEventHandler(EvaluationFinishedCallback.GetType(), nameof(HandleEvaluationFinished));
-        }
-
-        internal PythonEngineProxy(Type eType, PythonEngineVersion version)
-        {
-            EngineType = eType;
-            Version = version;
-        }
-
-        /// <summary>
-        /// Gets the input Marshaler from the target Python Engine
-        /// </summary>
-        /// <returns>DataMarshaler as object</returns>
-        public object GetInputMarshaler()
-        {
+            PythonEngine engine = null;
+            // Currently we are using try-catch to validate loaded assembly and evaluation method exist
+            // but we can optimize by checking all loaded types against evaluators interface later
             try
             {
-                return EngineType.GetProperty(PythonEngineManager.PythonInputMarshalerProperty).GetValue(null);
+                var eType = assembly.GetTypes().FirstOrDefault(x => typeof(PythonEngine).IsAssignableFrom(x));
+                engine = (PythonEngine)eType?.GetProperty(PythonEvaluatorSingletonInstance, BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
             }
             catch
             {
-                return null;
+                //Do nothing for now
             }
-        }
-
-        /// <summary>
-        /// Gets the output Marshaler from the target Python Engine
-        /// </summary>
-        /// <returns>DataMarshaler as object</returns>
-        public object GetOutputMarshaler()
-        {
-            try
+            if (engine != null && !AvailableEngines.Any(x => x.Name == engine.Name))
             {
-                return EngineType.GetProperty(PythonEngineManager.PythonOutputMarshalerProperty).GetValue(null);
+                AvailableEngines.Add(engine);
             }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private void AddEventHandler(Type handlerType, string handlerName)
-        {
-            try
-            {
-                var eventInfo = EngineType.GetEvents().FirstOrDefault(x => x.EventHandlerType == handlerType);
-                if (eventInfo != null)
-                {
-                    MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(handlerName, BindingFlags.NonPublic | BindingFlags.Instance);
-                    var handler = Delegate.CreateDelegate(eventInfo.EventHandlerType,
-                                         this,
-                                         handlerInfo);
-                    eventInfo.AddEventHandler(this, handler);
-                }
-            }
-            catch (Exception e) { Console.WriteLine(e.Message); }
-        }
-
-        private void RemoveEventHandler(Type handlerType, string handlerName)
-        {
-            try
-            {
-                MethodInfo handlerInfo = typeof(PythonEngineProxy).GetMethod(handlerName, BindingFlags.NonPublic | BindingFlags.Instance);
-                var handler = Delegate.CreateDelegate(handlerType, this, handlerInfo);
-                var eventInfo = EngineType.GetEvents().FirstOrDefault(x => x.EventHandlerType == typeof(EvaluationStartedEventHandler));
-                eventInfo?.RemoveEventHandler(this, handler);
-            }
-            catch { }
-        }
-
-        private void HandleEvaluationStarted(string code,
-                                             IList bindingValues,
-                                             ScopeSetAction scopeSet)
-        {
-            EvaluationStartedCallback?.Invoke(code, bindingValues, scopeSet);
-        }
-
-        private void HandleEvaluationFinished(EvaluationState state,
-                                              string code,
-                                              IList bindingValues,
-                                              ScopeGetAction scopeGet)
-        {
-            EvaluationFinishedCallback?.Invoke(state, code, bindingValues, scopeGet);
         }
     }
 }
