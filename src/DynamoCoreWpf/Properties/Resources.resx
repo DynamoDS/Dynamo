@@ -219,7 +219,7 @@
     <comment>Cancel button tooltip</comment>
   </data>
   <data name="DynamoViewDebugMenu" xml:space="preserve">
-    <value>Debug</value>
+    <value>De_bug</value>
     <comment>Debug menu</comment>
   </data>
   <data name="DynamoViewDebugMenuCheckDailyBuild" xml:space="preserve">
@@ -383,7 +383,7 @@
     <comment>File menu | Save as</comment>
   </data>
   <data name="DynamoViewHelpMenu" xml:space="preserve">
-    <value>Help</value>
+    <value>_Help</value>
     <comment>Help menu</comment>
   </data>
   <data name="DynamoViewDynamoMenuAbout" xml:space="preserve">

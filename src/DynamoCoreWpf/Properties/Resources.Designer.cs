@@ -1127,7 +1127,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Debug.
+        ///   Looks up a localized string similar to De_bug.
         /// </summary>
         public static string DynamoViewDebugMenu {
             get {
@@ -1604,7 +1604,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Help.
+        ///   Looks up a localized string similar to _Help.
         /// </summary>
         public static string DynamoViewHelpMenu {
             get {

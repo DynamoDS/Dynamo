@@ -462,7 +462,7 @@ You will get a chance to save your work.</value>
     <comment>Clear log</comment>
   </data>
   <data name="DynamoViewDebugMenu" xml:space="preserve">
-    <value>Debug</value>
+    <value>De_bug</value>
     <comment>Debug menu</comment>
   </data>
   <data name="DynamoViewDebugMenuCheckDailyBuild" xml:space="preserve">
@@ -649,7 +649,7 @@ You will get a chance to save your work.</value>
     <comment>Help menu | Go to Dynamo Dictionary</comment>
   </data>
   <data name="DynamoViewHelpMenu" xml:space="preserve">
-    <value>Help</value>
+    <value>_Help</value>
     <comment>Help menu</comment>
   </data>
   <data name="DynamoViewHelpMenuDisplayStartPage" xml:space="preserve">
