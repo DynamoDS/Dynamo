@@ -126,13 +126,6 @@ namespace Dynamo.PythonServices
 
         internal ObservableCollection<PythonEngine> AvailableEngines;
 
-        public static object Evaluate(string engine, string code,
-                                        IList bindingNames,
-                                        [ArbitraryDimensionArrayImport] IList bindingValues) 
-        {
-            return Instance.GetEngine(engine).Evaluate(code, bindingNames, bindingValues);
-        }
-
         #region Constant strings
         // TODO: The following fields might be removed after dynamic loading applied
         internal static string PythonEvaluatorSingletonInstance = "Instance";
@@ -192,9 +185,9 @@ namespace Dynamo.PythonServices
         /// <param name="evaluationMethod"></param>
         internal void GetEvaluatorInfo(PythonEngineVersion engine, out string evaluatorClass, out string evaluationMethod)
         {
-            var IP2Engine = GetEngine(PythonEngineVersion.IronPython2.ToString());
             // Provide evaluator info when the selected engine is loaded
-            if (IP2Engine != null)
+            if (engine == PythonEngineVersion.IronPython2 &&
+                AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2))
             {
                 evaluatorClass = IronPythonEvaluatorClass;
                 evaluationMethod = IronPythonEvaluationMethod;
