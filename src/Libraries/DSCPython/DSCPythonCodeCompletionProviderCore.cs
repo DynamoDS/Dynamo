@@ -23,7 +23,7 @@ namespace DSCPython
         private PyScope scope;
 
         private string uniquePythonScopeName = "uniqueScope";
-
+        private static string globalScopeName = "cPythonCompletionGlobal";
         /// <summary>
         /// The scope used by the engine.  This is where all the loaded symbols
         /// are stored.  It's essentially an environment dictionary.
@@ -33,6 +33,8 @@ namespace DSCPython
             get { return scope; }
             set { scope = (PyScope)value; }
         }
+
+        private static PyScope GlobalScope;
 
         private PyScope CreateUniquePythonScope()
         {
@@ -44,11 +46,22 @@ namespace DSCPython
                 Scope.Exec(@"
 import clr
 import sys
-clr.setPreload(True)
 ");
             }
 
             return Scope;
+        }
+
+        private static PyScope CreateGlobalScope()
+        {
+            var scope = Py.CreateScope(globalScopeName);
+            // Allows discoverability of modules by inspecting their attributes
+            scope.Exec(@"
+import clr
+clr.setPreload(True)
+");
+
+            return scope;
         }
 
         private object ExecutePythonScriptCode(string code)
@@ -156,11 +169,6 @@ clr.setPreload(True)
                         code = StripDocStrings(code);
                     }
 
-                    if (Scope == null)
-                    {
-                        Scope = CreateUniquePythonScope();
-                    }
-
                     UpdateImportedTypes(code);
                     UpdateVariableTypes(code);  // Possibly use hindley-milner in the future
 
@@ -179,13 +187,13 @@ clr.setPreload(True)
                             {
                                 items = EnumerateMembers(type, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                             }
-                            // Variable type
+                            // Variable assignment types
                             else if (VariableTypes.TryGetValue(name, out type))
                             {
                                 items = EnumerateMembersForPyObj(PyObject.FromManagedObject(type), name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                             }
                             else
-                            {
+                            {// Python objects from the Scope
                                 var mem = LookupMember(name);
                                 var pythonObject = mem as PyObject;
                                 // Python Module type
@@ -308,6 +316,11 @@ clr.setPreload(True)
             {
                 using (Py.GIL())
                 {
+                    if (GlobalScope == null)
+                    {
+                        GlobalScope = CreateGlobalScope();
+                    }
+
                     if (Scope == null)
                     {
                         Scope = CreateUniquePythonScope();

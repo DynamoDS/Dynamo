@@ -435,6 +435,7 @@ namespace Dynamo.PythonServices
         internal static readonly string method = "method";
         internal static readonly string internalType = "Autodesk";
 
+        internal static readonly string clrReference = "clr.AddReference";
 
         /// <summary>
         /// A list of short assembly names used with the TryGetTypeFromFullName method
@@ -647,7 +648,7 @@ namespace Dynamo.PythonServices
             var statements = new List<string>();
             foreach (var line in code.Split(new[] { '\n', ';' }))
             {
-                if (line.Contains("clr.AddReference"))
+                if (line.Contains(clrReference))
                 {
                     statements.Add(line.Trim());
                 }
