@@ -379,7 +379,7 @@
     <comment>File menu | Save</comment>
   </data>
   <data name="DynamoViewFileMenuSaveAs" xml:space="preserve">
-    <value>_Save As...</value>
+    <value>Save _As...</value>
     <comment>File menu | Save as</comment>
   </data>
   <data name="DynamoViewHelpMenu" xml:space="preserve">

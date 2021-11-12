@@ -1586,7 +1586,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Save As....
+        ///   Looks up a localized string similar to Save _As....
         /// </summary>
         public static string DynamoViewFileMenuSaveAs {
             get {
