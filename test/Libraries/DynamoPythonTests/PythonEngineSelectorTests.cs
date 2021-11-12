@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Dynamo;
 using Dynamo.PythonServices;
+using Dynamo.PythonServices.EventHandlers;
 using Dynamo.Utilities;
 using NUnit.Framework;
 using PythonNodeModels;
@@ -77,18 +78,18 @@ namespace DynamoPythonTests
         [Test]
         public void CPytonEngineManagerAPITest()
         {
-            var cPython3Eng = PythonEngineManager.Instance.CreateEngineProxy(
-                Assembly.GetAssembly(typeof(DSCPython.CPythonEvaluator)), 
-                PythonEngineVersion.CPython3);
+            var cPython3Eng = PythonEngineManager.Instance.AvailableEngines.FirstOrDefault(x => x.Version == PythonEngineVersion.CPython3);
 
             Assert.IsNotNull(cPython3Eng);
 
-            cPython3Eng.OnEvaluationBegin((code, bindings, scopeSet) => { scopeSet("IN", new ArrayList { " ", "  " }); });
+            EvaluationStartedEventHandler start1 = ((code, bindings, scopeSet) => { scopeSet("IN", new ArrayList { " ", "  " }); });
+            cPython3Eng.EvaluationStarted += start1;
 
             int counter = 0;
-            cPython3Eng.OnEvaluationEnd((state, code, bindings, scopeGet) => { counter++; });
+            EvaluationFinishedEventHandler end = ((state, code, bindings, scopeGet) => { counter++; });
+            cPython3Eng.EvaluationFinished += end;
 
-            var inputM = cPython3Eng.GetInputMarshaler() as DataMarshaler;
+            var inputM = cPython3Eng.InputDataMarshaler as DataMarshaler;
             inputM.RegisterMarshaler((string s) => s.Length);
 
             var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
@@ -98,10 +99,11 @@ namespace DynamoPythonTests
 
             Assert.AreEqual(3, output);
 
-            var outputM = cPython3Eng.GetOutputMarshaler() as DataMarshaler;
+            var outputM = cPython3Eng.OutputDataMarshaler as DataMarshaler;
             outputM.RegisterMarshaler((string s) => s.Length);
 
-            cPython3Eng.OnEvaluationBegin((code, bindings, scopeSet) => { scopeSet("TEST", new ArrayList { "", " ", "  " }); });
+            EvaluationStartedEventHandler start2 = ((code, bindings, scopeSet) => { scopeSet("TEST", new ArrayList { "", " ", "  " }); });
+            cPython3Eng.EvaluationStarted += start2;
 
             output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
                 "OUT = TEST",
@@ -112,6 +114,10 @@ namespace DynamoPythonTests
 
             Assert.AreEqual(new[] { 0, 1, 2 }, output);
             Assert.AreEqual(2, counter);
+
+            cPython3Eng.EvaluationStarted -= start1;
+            cPython3Eng.EvaluationStarted -= start2;
+            cPython3Eng.EvaluationFinished -= end;
         }
     }
 }

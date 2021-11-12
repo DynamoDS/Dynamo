@@ -200,7 +200,7 @@ namespace PythonNodeModelsWpf
             {
                 foreach (var item in e.NewItems)
                 {
-                    PythonEngineProxy engine = item as PythonEngineProxy;
+                    PythonEngine engine = item as PythonEngine;
                     if (engine != null && engine.Version.Equals(PythonEngineVersion.IronPython2))
                     {// Handle only IronPython2 for now
                         AddIronPython2MenuItem();
