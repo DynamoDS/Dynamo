@@ -70,7 +70,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 230,
+				"Height": 245,
 				"StepContent": {
 					"Title": "GetStartedGuideToolbarTitle",
 					"FormattedText": "GetStartedGuideToolbarText"
