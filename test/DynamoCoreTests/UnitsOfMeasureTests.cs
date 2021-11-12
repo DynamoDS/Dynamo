@@ -726,32 +726,122 @@ namespace Dynamo.Tests
             var volume = Volume.FromDouble(1.0, VolumeUnit.CubicFoot);
             Assert.AreEqual(volume.UnitValue, Volume.ToCubicFoot);
         }
+
+
+
+        internal class ViewModelUnitsOfMeasureDynTests : DynamoModelTestBase
+        {
+            protected override void GetLibrariesToPreload(List<string> libraries)
+            {
+                libraries.Add("FunctionObject.ds");
+                libraries.Add("DynamoUnits.dll");
+                base.GetLibrariesToPreload(libraries);
+            }
+
+            [Test, Category("Failure")]
+            public void CanMapOverUnits()
+            {
+                var length = Enumerable.Range(1, 5).Select(x => Length.FromDouble(x)).ToList();
+                var area = Enumerable.Range(1, 5).Select(x => Area.FromDouble(x)).ToList();
+                var volume = Enumerable.Range(1, 5).Select(x => Volume.FromDouble(x)).ToList();
+
+                RunModel(@"core\units\map-numbers-to-units.dyn");
+
+                AssertPreviewValue("97fdd4df-e9dd-4f7f-9494-b2adabfdbdeb", length);
+                AssertPreviewValue("4e830faa-d358-4086-ba4c-9b7e70f96681", area);
+                AssertPreviewValue("e6ae471f-9cd8-4cbb-bb83-ecdf1785c35f", volume);
+                AssertPreviewValue("178b5d28-fbbd-459c-9340-0739fa4946b6", length);
+                AssertPreviewValue("6c321ba2-754d-4165-bc9d-59fc27d34014", area);
+                AssertPreviewValue("4aa8240b-29cd-420d-8e3f-9d699e6bedd0", volume);
+            }
+        }
     }
 
-    internal class ViewModelUnitsOfMeasureDynTests : DynamoModelTestBase
+    internal class ForgeUnitsTests : UnitTestBase
     {
-        protected override void GetLibrariesToPreload(List<string> libraries)
+        [SetUp]
+        public void Setup()
         {
-            libraries.Add("FunctionObject.ds");
-            libraries.Add("DynamoUnits.dll");
-            base.GetLibrariesToPreload(libraries);
+
         }
 
-        [Test, Category("Failure")]
-        public void CanMapOverUnits()
+        const string milimeters = "autodesk.unit.unit:millimeters";
+        const string meters = "autodesk.unit.unit:meters";
+
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeUnitType_FromLoadedTypeString()
         {
-            var length = Enumerable.Range(1, 5).Select(x => Length.FromDouble(x)).ToList();
-            var area = Enumerable.Range(1, 5).Select(x => Area.FromDouble(x)).ToList();
-            var volume = Enumerable.Range(1, 5).Select(x => Volume.FromDouble(x)).ToList();
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            Assert.NotNull(unitType);
+            Assert.AreEqual("Millimeters", unitType.Name);
+            Assert.AreEqual($"{milimeters}-1.0.1", unitType.TypeId);
+        }
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeUnitType_FromFutureTypeString()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.2");
+            Assert.NotNull(unitType);
+            Assert.AreEqual("Millimeters", unitType.Name);
+            Assert.AreEqual($"{milimeters}-1.0.1", unitType.TypeId);
+        }
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeUnitType_FromPastTypeString()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.0");
+            Assert.NotNull(unitType);
+            Assert.AreEqual("Millimeters", unitType.Name);
+            Assert.AreEqual($"{milimeters}-1.0.1", unitType.TypeId);
+        }
+        [Test, Category("UnitTests")]
+        public void ForgeUnitEquality()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var unitType2 = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var unitType3 = Unit.ByTypeID($"{meters}-1.0.0");
+            Assert.NotNull(unitType);
+            Assert.NotNull(unitType2);
+            Assert.NotNull(unitType3);
 
-            RunModel(@"core\units\map-numbers-to-units.dyn");
+            Assert.True(unitType.Equals(unitType2));
+            Assert.True(unitType2.Equals(unitType));
+            Assert.False(unitType.Equals(unitType3));
+            Assert.False(unitType3.Equals(unitType));
 
-            AssertPreviewValue("97fdd4df-e9dd-4f7f-9494-b2adabfdbdeb", length);
-            AssertPreviewValue("4e830faa-d358-4086-ba4c-9b7e70f96681", area);
-            AssertPreviewValue("e6ae471f-9cd8-4cbb-bb83-ecdf1785c35f", volume);
-            AssertPreviewValue("178b5d28-fbbd-459c-9340-0739fa4946b6", length);
-            AssertPreviewValue("6c321ba2-754d-4165-bc9d-59fc27d34014", area);
-            AssertPreviewValue("4aa8240b-29cd-420d-8e3f-9d699e6bedd0", volume);
+            Assert.True(unitType == unitType2);
+            Assert.True(unitType2 == unitType);
+            Assert.False(unitType == unitType3);
+            Assert.False(unitType3 == unitType);
+
+            Assert.False(unitType != unitType2);
+            Assert.False(unitType2 != unitType);
+            Assert.True(unitType != unitType3);
+            Assert.True(unitType3 != unitType);
+        }
+
+        [Test, Category("UnitTests")]
+        public void ForgeUnitReturnsSomeConvertibleUnits()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var convertibleUnits = unitType.ConvertibleUnits;
+            Assert.IsTrue(convertibleUnits.Any());
+            Assert.IsTrue(convertibleUnits.Distinct().Count() == convertibleUnits.Count());
+        }
+
+        [Test, Category("UnitTests")]
+        public void ForgeUnitReturnsSomeQuantitiesContaingUnit()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var quantities = unitType.QuantitiesContainingUnit;
+            Assert.IsTrue(quantities.Any());
+            Assert.IsTrue(quantities.Distinct().Count() == quantities.Count());
+        }
+
+        [Test, Category("UnitTests")]
+        public void ToString_IncludesName()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            Assert.IsTrue(unitType.ToString().Contains(unitType.Name));
         }
     }
 }
+
