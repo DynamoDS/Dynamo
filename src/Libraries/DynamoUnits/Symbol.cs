@@ -78,7 +78,7 @@ namespace DynamoUnits
         public static IEnumerable<Symbol> SymbolsByUnit(Unit unit)
         {
             var symbols = Utilities.ForgeUnitsEngine.getSymbols(unit.TypeId);
-            return Utilities.ConvertSymbolDictionaryToCollection(symbols);
+            return Utilities.ConvertForgeSymbolDictionaryToCollection(symbols);
         }
 
         /// <summary>
