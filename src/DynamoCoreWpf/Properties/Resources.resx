@@ -2520,7 +2520,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Label used in the general tab</comment>
   </data>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
-    <value>_Extensions</value>
+    <value>E_xtensions</value>
     <comment>Extensions menu</comment>
   </data>
   <data name="ConnectorContextMenuHeaderBreakConnections" xml:space="preserve">
