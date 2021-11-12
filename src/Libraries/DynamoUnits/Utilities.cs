@@ -114,7 +114,6 @@ namespace DynamoUnits
         /// <summary>
         /// Engine which loads schemas and is responsible for all ForgeUnit operations.
         /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
         internal static ForgeUnitsCLR.UnitsEngine ForgeUnitsEngine
         {
             get
@@ -138,122 +137,242 @@ namespace DynamoUnits
             }
         }
 
-        internal const string BaseAutodeskId = "autodesk.unit.unit:";
-
         /// <summary>
-        /// Get all the loaded Quanities within the Dynamo session.
+        /// Get all the loaded Quantities within the Dynamo session.
         /// </summary>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static List<Quantity> GetAllQuantities()
+        public static IEnumerable<Quantity> GetAllQuantities()
         {
-            return DynamoUnits.Utilities.CovertQuantityDictionaryToList(
-                DynamoUnits.Utilities.ForgeUnitsEngine.getAllQuantities());
+            return CovertForgeQuantityDictionaryToCollection(ForgeUnitsEngine.getAllQuantities());
         }
 
         /// <summary>
         /// Get all the loaded Units within the Dynamo session.
         /// </summary>
         /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static List<Unit> GetAllUnits()
+        public static IEnumerable<Unit> GetAllUnits()
         {
-            return DynamoUnits.Utilities.ConvertUnitDictionaryToList(
-                DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
+            return ConvertForgeUnitDictionaryToCollection(ForgeUnitsEngine.getAllUnits());
         }
 
         /// <summary>
         /// Get all the loaded Symbols within the Dynamo session.
         /// </summary>
         /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static List<Symbol> GetAllSymbols()
+        public static IEnumerable<Symbol> GetAllSymbols()
         {
-            return DynamoUnits.Utilities.ConvertSymbolDictionaryToList(
-                DynamoUnits.Utilities.ForgeUnitsEngine.getAllSymbols());
+            return ConvertForgeSymbolDictionaryToCollection(ForgeUnitsEngine.getAllSymbols());
         }
 
-        [IsVisibleInDynamoLibrary(false)]
-        private static string TypeIdShortName(string typeId)
-        {
-            var split = typeId.Split(':', '-');
-            
-            return split.Length > 0 ? split[1] : typeId;
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        internal static List<Quantity> CovertQuantityDictionaryToList(
+        /// <summary>
+        /// Converts a dictionary of Forge SDK Quantities to a collection of Quantities
+        /// </summary>
+        /// <param name="forgeDictionary">A dictionary keyed by a forge typeID and Forge SDK Quantities as values</param>
+        /// <returns></returns>
+        internal static IEnumerable<Quantity> CovertForgeQuantityDictionaryToCollection(
             Dictionary<string, ForgeUnitsCLR.Quantity> forgeDictionary)
         {
             var dynQuantities = new List<Quantity>();
 
-            if (!forgeDictionary.Any())
+            var versionDictionary = GetAllRegisteredQuantityVersions(forgeDictionary);
+
+            foreach (var item in versionDictionary)
             {
-                return dynQuantities;
+                var typeId = item.Key + "-" + item.Value.ToString();
+                if (forgeDictionary.TryGetValue(typeId, out var quantity))
+                {
+                    dynQuantities.Add(new Quantity(quantity));
+                }
             }
-
-            var values = forgeDictionary.Values.ToArray();
-            for (int i = 0; i < values.Length - 1; i++)
-            {
-                if (TypeIdShortName(values[i].getTypeId()).Equals(TypeIdShortName(values[i + 1].getTypeId())))
-                    continue;
-
-                dynQuantities.Add(new Quantity(values[i]));
-            }
-
-            dynQuantities.Add(new Quantity(values.Last()));
 
             return dynQuantities;
         }
 
-        [IsVisibleInDynamoLibrary(false)]
-        internal static List<Symbol> ConvertSymbolDictionaryToList(
+        /// <summary>
+        /// Converts a dictionary of Forge SDK Symbols to a collection of Symbols
+        /// </summary>
+        /// <param name="forgeDictionary">A dictionary keyed by a forge typeID and Forge SDK Symbols as values</param>
+        /// <returns></returns>
+        internal static IEnumerable<Symbol> ConvertForgeSymbolDictionaryToCollection(
             Dictionary<string, ForgeUnitsCLR.Symbol> forgeDictionary)
         {
             var dynSymbols = new List<Symbol>();
 
-            if (!forgeDictionary.Any())
+            var versionDictionary = GetAllLastestRegisteredSymbolVersions(forgeDictionary);
+
+            foreach (var item in versionDictionary)
             {
-                return dynSymbols;
+                var typeId = item.Key + "-" + item.Value.ToString();
+                if (forgeDictionary.TryGetValue(typeId, out var symbol))
+                {
+                    dynSymbols.Add(new Symbol(symbol));
+                }
             }
-
-            var values = forgeDictionary.Values.ToArray();
-            for (int i = 0; i < values.Length - 1; i++)
-            {
-                if (TypeIdShortName(values[i].getTypeId()).Equals(TypeIdShortName(values[i + 1].getTypeId())))
-                    continue;
-
-                dynSymbols.Add(new Symbol(values[i]));
-            }
-
-            dynSymbols.Add(new Symbol(values.Last()));
 
             return dynSymbols;
         }
 
-        [IsVisibleInDynamoLibrary(false)]
-        internal static List<Unit> ConvertUnitDictionaryToList(
+        /// <summary>
+        /// Converts a dictionary of Forge SDK Units to a collection of Units
+        /// </summary>
+        /// <param name="forgeDictionary">A dictionary keyed by a forge typeID and Forge SDK Units as values</param>
+        /// <returns></returns>
+        internal static IEnumerable<Unit> ConvertForgeUnitDictionaryToCollection(
             Dictionary<string, ForgeUnitsCLR.Unit> forgeDictionary)
         {
             var dynUnits = new List<Unit>();
 
-            if (!forgeDictionary.Any())
+            var versionDictionary = GetAllLatestRegisteredUnitVersions(forgeDictionary);
+
+            foreach (var item in versionDictionary)
             {
-                return dynUnits;
+                var typeId = item.Key + "-" + item.Value.ToString();
+                if (forgeDictionary.TryGetValue(typeId, out var unit))
+                {
+                    dynUnits.Add(new Unit(unit));
+                }
             }
-
-            var values = forgeDictionary.Values.ToArray();
-            for (int i = 0; i < values.Length - 1; i++)
-            {
-                if (TypeIdShortName(values[i].getTypeId()).Equals(TypeIdShortName(values[i + 1].getTypeId())))
-                    continue;
-
-                dynUnits.Add(new Unit(values[i]));
-            }
-
-            dynUnits.Add(new Unit(values.Last()));
 
             return dynUnits;
+        }
+
+        /// <summary>
+        /// Get latest versions of registered Quantities within the Dynamo session.
+        /// </summary>
+        /// <returns>A dictionary keyed by a version-less typeID and the latest registered version as value</returns>
+        internal static Dictionary<string, Version> GetAllRegisteredQuantityVersions()
+        {
+            return GetAllRegisteredQuantityVersions(ForgeUnitsEngine.getAllQuantities());
+        }
+
+        /// <summary>
+        /// Get latest versions of registered Quantities from a dictionary of Forge SDK Quantities
+        /// </summary>
+        /// <param name="forgeDictionary">A dictionary keyed by a forge typeID and Forge SDK Quantities as values</param>
+        /// <returns>A dictionary keyed by a version-less typeID and the latest registered version as value</returns>
+        internal static Dictionary<string, Version> GetAllRegisteredQuantityVersions(Dictionary<string, ForgeUnitsCLR.Quantity> forgeDictionary)
+        {
+            var versionDictionary = new Dictionary<string, Version>();
+
+            foreach (var typeId in forgeDictionary.Keys)
+            {
+                if (TryParseTypeId(typeId, out string typeName, out Version version))
+                {
+                    if (versionDictionary.TryGetValue(typeName, out var existingVersion))
+                    {
+                        if (existingVersion.CompareTo(version) >= 0)
+                        {
+                            continue;
+                        }
+                    }
+
+                    versionDictionary[typeName] = version;
+                }
+            }
+
+            return versionDictionary;
+        }
+
+        /// <summary>
+        /// Get latest versions of registered Symbols within the Dynamo session.
+        /// </summary>
+        /// <returns>A dictionary keyed by a version-less typeID and the latest registered version as value</returns>
+        internal static Dictionary<string, Version> GetAllLastestRegisteredSymbolVersions()
+        {
+            return GetAllLastestRegisteredSymbolVersions(ForgeUnitsEngine.getAllSymbols());
+        }
+
+        /// <summary>
+        /// Get latest versions of registered Symbols from a dictionary of Forge SDK Symbols
+        /// </summary>
+        /// <param name="forgeDictionary">A dictionary keyed by a forge typeID and Forge SDK Symbols as values</param>
+        /// <returns>A dictionary keyed by a version-less typeID and the latest registered version as value</returns>
+        internal static Dictionary<string, Version> GetAllLastestRegisteredSymbolVersions(Dictionary<string, ForgeUnitsCLR.Symbol> forgeDictionary)
+        {
+            var versionDictionary = new Dictionary<string, Version>();
+
+            foreach (var typeId in forgeDictionary.Keys)
+            {
+                if (TryParseTypeId(typeId, out string typeName, out Version version))
+                {
+                    if (versionDictionary.TryGetValue(typeName, out var existingVersion))
+                    {
+                        if (existingVersion.CompareTo(version) >= 0)
+                        {
+                            continue;
+                        }
+                    }
+
+                    versionDictionary[typeName] = version;
+                }
+            }
+
+            return versionDictionary;
+        }
+
+        /// <summary>
+        /// Get latest versions of registered Units within the Dynamo session.
+        /// </summary>
+        /// <returns>A dictionary keyed by a version-less typeID and the latest registered version as value</returns>
+        internal static Dictionary<string, Version> GetAllLatestRegisteredUnitVersions()
+        {
+            return GetAllLatestRegisteredUnitVersions(ForgeUnitsEngine.getAllUnits());
+        }
+
+        /// <summary>
+        /// Get latest versions of registered Units from a dictionary of Forge SDK Units
+        /// </summary>
+        /// <param name="forgeDictionary">A dictionary keyed by a forge typeID and Forge SDK Units as values</param>
+        /// <returns>A dictionary keyed by a version-less typeID and the latest registered version as value</returns>
+        internal static Dictionary<string, Version> GetAllLatestRegisteredUnitVersions(Dictionary<string, ForgeUnitsCLR.Unit> forgeDictionary)
+        {
+            var versionDictionary = new Dictionary<string, Version>();
+
+            foreach (var typeId in forgeDictionary.Keys)
+            {
+                if (TryParseTypeId(typeId, out string typeName, out Version version))
+                {
+                    if (versionDictionary.TryGetValue(typeName, out var existingVersion))
+                    {
+                        if (existingVersion.CompareTo(version) >= 0)
+                        {
+                            continue;
+                        }
+                    }
+
+                    versionDictionary[typeName] = version;
+                }
+            }
+
+            return versionDictionary;
+        }
+
+        /// <summary>
+        /// Try to get a valid typeName and version from a Forge TypeID string
+        /// By convention the Id should be in the format of "foo-1.0.2" where a "-" is the divider between typeName and version.
+        /// </summary>
+        /// <param name="typeId">Forge TypeID string</param>
+        /// <param name="typeName">Type name for the TypeID. This is the TypeID stripped of version.</param>
+        /// <param name="version">Version object</param>
+        /// <returns>True if the format is valid</returns>
+        internal static bool TryParseTypeId(string typeId, out string typeName, out Version version)
+        {
+            var split = typeId.Split('-');
+            if (split.Length == 2)
+            {
+                if (Version.TryParse(split[1], out var versionFound))
+                {
+                    typeName = split[0];
+                    version = versionFound;
+                    return true;
+                }
+            }
+
+            typeName = "";
+            version = null;
+
+            return false;
         }
     }
 }

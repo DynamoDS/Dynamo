@@ -29,10 +29,10 @@ namespace DynamoUnits
         public string Name => forgeQuantity.getName();
 
         /// <summary>
-        /// Gets a list of all available Units associated with a Quantity.
+        /// Gets all available Units associated with a Quantity.
         /// </summary>
         /// <returns name="Unit[]">List of Units</returns>
-        public List<Unit> Units
+        public IEnumerable<Unit> Units
         {
             get
             {

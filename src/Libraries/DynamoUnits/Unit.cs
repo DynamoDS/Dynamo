@@ -29,28 +29,28 @@ namespace DynamoUnits
         public string TypeId => forgeUnit.getTypeId();
 
         /// <summary>
-        /// Gets a list of Units are convertible from a Unit.
+        /// Gets all Units which are convertible from a Unit.
         /// </summary>
         /// <returns name="Unit[]">List of Units</returns>
-        public List<Unit> ConvertibleUnits 
+        public IEnumerable<Unit> ConvertibleUnits 
         {
             get
             {
                 Dictionary<string, ForgeUnitsCLR.Unit> units = Utilities.ForgeUnitsEngine.getConvertibleUnits(TypeId);
-                return Utilities.ConvertUnitDictionaryToList(units);
+                return Utilities.ConvertUnitDictionaryToCollection(units);
             }
         }
 
         /// <summary>
-        /// Gets a list of Quantity objects which contain a Unit. 
+        /// Gets all Quantity objects which contain a Unit. 
         /// </summary>
         /// /// <returns name="Quantity[]">List of Quantities</returns>
-        public List<Quantity> QuantitiesContainingUnit
+        public IEnumerable<Quantity> QuantitiesContainingUnit
         {
             get
             {
                 var quantities = Utilities.ForgeUnitsEngine.getQuantitiesContainingUnit(TypeId);
-                return Utilities.CovertQuantityDictionaryToList(quantities);
+                return Utilities.CovertQuantityDictionaryToCollection(quantities);
             }
         }
 

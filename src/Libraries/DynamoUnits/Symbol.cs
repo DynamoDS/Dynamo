@@ -53,14 +53,14 @@ namespace DynamoUnits
         }
 
         /// <summary>
-        /// Gets a list of all available Symbols associated with a Unit.
+        /// Gets all available Symbols associated with a Unit.
         /// </summary>
         /// <param name="unit">Unit object</param>
         /// <returns name="Symbol[]">List of Symbols</returns>
-        public static List<Symbol> SymbolsByUnit(Unit unit)
+        public static IEnumerable<Symbol> SymbolsByUnit(Unit unit)
         {
             var symbols = Utilities.ForgeUnitsEngine.getSymbols(unit.TypeId);
-            return Utilities.ConvertSymbolDictionaryToList(symbols);
+            return Utilities.ConvertSymbolDictionaryToCollection(symbols);
         }
 
         /// <summary>
