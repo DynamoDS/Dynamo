@@ -4,10 +4,9 @@ using Dynamo.PythonServices;
 using Python.Runtime;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
+using PythonEngine = Python.Runtime.PythonEngine;
 
 namespace DSCPython
 {
@@ -28,7 +27,7 @@ namespace DSCPython
         /// The scope used by the engine.  This is where all the loaded symbols
         /// are stored.  It's essentially an environment dictionary.
         /// </summary>
-        private PyScope Scope
+        internal PyScope Scope
         {
             get { return scope; }
             set { scope = (PyScope)value; }
@@ -264,13 +263,16 @@ clr.setPreload(True)
         #region PythonCodeCompletionProviderCommon protected methods implementations
         protected override object EvaluateScript(string script, PythonScriptType evalType)
         {
-            switch (evalType)
+            using (Py.GIL())
             {
-                case PythonScriptType.Expression:
-                    return Scope.Eval(script);
-                default:
-                    Scope.Exec(script);
-                    return null;
+                switch (evalType)
+                {
+                    case PythonScriptType.Expression:
+                        return Scope.Eval(script);
+                    default:
+                        Scope.Exec(script);
+                        return null;
+                }
             }
         }
 
@@ -279,9 +281,12 @@ clr.setPreload(True)
             Log(msg);
         }
 
-        protected override bool ScopeHasVariable(string name)
+        internal override bool ScopeHasVariable(string name)
         {
-            return Scope.Contains(name);
+            using (Py.GIL())
+            {
+                return Scope.Contains(name);
+            }
         }
         #endregion
 

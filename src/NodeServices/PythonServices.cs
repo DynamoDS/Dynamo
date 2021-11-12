@@ -309,8 +309,12 @@ namespace Dynamo.PythonServices
         internal static readonly string atLeastOneSpaceRegex = @"(\s+)";
         internal static readonly string dictRegex = "({.*})";
         internal static readonly string basicImportRegex = @"(import)";
-        internal static readonly string fromImportRegex = @"^(from)";
-
+        internal static readonly string fromImportRegex = @"^(from)"; internal static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
+        internal static string singleQuoteStringRegex = "(\'[^\']*\')"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
+        internal static string arrayRegex = "(\\[.*\\])";
+        internal static string equals = @"(=)"; // Not CLS compliant - replaced with equalsRegex - Remove in Dynamo 3.0
+        internal static string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
+        internal static string intRegex = @"([-+]?\d+)[\s\n]*$";
         internal const string quotesStringRegex = "[\"']([^\"']*)[\"']";
         internal const string equalsRegex = @"(=)";
 
@@ -581,13 +585,13 @@ namespace Dynamo.PythonServices
 
         protected abstract void LogError(string msg);
 
-        protected abstract bool ScopeHasVariable(string name);
+        internal abstract bool ScopeHasVariable(string name);
 
         /// <summary>
         /// Find all import statements and import into scope.  If the type is already in the scope, this will be skipped.
         /// </summary>
         /// <param name="code">The code to discover the import statements.</param>
-        protected void UpdateImportedTypes(string code)
+        internal void UpdateImportedTypes(string code)
         {
             // Detect all lib references prior to attempting to import anything
             var refs = FindClrReferences(code);
@@ -704,7 +708,7 @@ namespace Dynamo.PythonServices
         /// the current scope
         /// </summary>
         /// <param name="code">The source code to look through</param>
-        protected void UpdateVariableTypes(string code)
+        internal void UpdateVariableTypes(string code)
         {
             VariableTypes.Clear();
             VariableTypes = FindAllVariableAssignments(code);
@@ -828,7 +832,7 @@ namespace Dynamo.PythonServices
         /// </summary>
         /// <param name="code">The code to search</param>
         /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
-        protected static Dictionary<string, string> FindAllTypeImportStatements(string code)
+        internal static Dictionary<string, string> FindAllTypeImportStatements(string code)
         {
             // matches the following types:
             //     from lib import *
@@ -866,7 +870,7 @@ namespace Dynamo.PythonServices
         /// </summary>
         /// <param name="code">The code to search</param>
         /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
-        protected static Dictionary<string, string> FindTypeSpecificImportStatements(string code)
+        internal static Dictionary<string, string> FindTypeSpecificImportStatements(string code)
         {
 
             var pattern = fromImportRegex +
@@ -910,7 +914,7 @@ namespace Dynamo.PythonServices
         /// <param name="code">The code to search</param>
         /// <param name="valueRegex">Your regex to match the type</param>
         /// <returns>A dictionary of name to assignment line pairs</returns>
-        protected static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
+        internal static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
         {
             var pattern = variableName + spacesOrNone + equalsRegex + spacesOrNone + valueRegex;
 
@@ -1011,7 +1015,7 @@ namespace Dynamo.PythonServices
         /// <param name="code">The code to search</param>
         /// <param name="valueRegex">Your regex to match the type</param>
         /// <returns>A dictionary of name to assignment line pairs</returns>
-        protected Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code)
+        internal Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code)
         {
             var variables = new Dictionary<string, Tuple<string, int, Type>>();
             var pattern = variableName + spacesOrNone +
@@ -1080,7 +1084,7 @@ namespace Dynamo.PythonServices
         /// </summary>
         /// <param name="code">The code to search</param>
         /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
-        protected static Dictionary<string, string> FindBasicImportStatements(string code)
+        internal static Dictionary<string, string> FindBasicImportStatements(string code)
         {
             var pattern = "^" + basicImportRegex + spacesOrNone + variableName;
 
