@@ -35,7 +35,7 @@ jobs:
           releasenotes=$(cat releasenotes.out)
           echo "Building JSON message"
           cat << EOF > ./slack_message.json
-          curl ${{ secrets.SLACK_WEBHOOK_RELEASE_NOTES }} \
+          curl https://hooks.slack.com/services/${{ secrets.SLACK_WEBHOOK_RELEASE_NOTES }} \
           --request POST \
           --header 'Content-type: application/json' \
           --data '{"text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes"}'
