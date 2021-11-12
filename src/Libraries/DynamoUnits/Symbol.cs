@@ -49,7 +49,25 @@ namespace DynamoUnits
         /// <returns name="Symbol">Symbol object</returns>
         public static Symbol ByTypeID(string typeId)
         {
-            return new Symbol(Utilities.ForgeUnitsEngine.getSymbol(typeId));
+            try
+            {
+                return new Symbol(Utilities.ForgeUnitsEngine.getSymbol(typeId));
+            }
+            catch (Exception e)
+            {
+                //The exact match for the Forge TypeID failed.  Test for a fallback.  This can be either earlier or later version number.
+                if (Utilities.TryParseTypeId(typeId, out string typeName, out Version version))
+                {
+                    var versionDictionary = Utilities.GetAllLastestRegisteredSymbolVersions();
+                    if (versionDictionary.TryGetValue(typeName, out var existingVersion))
+                    {
+                        return new Symbol(Utilities.ForgeUnitsEngine.getSymbol(typeName + "-" + existingVersion.ToString()));
+                    }
+                }
+
+                //else re-throw existing exception as there is no fallback
+                throw;
+            }
         }
 
         /// <summary>
