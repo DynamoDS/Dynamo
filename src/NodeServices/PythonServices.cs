@@ -189,9 +189,9 @@ namespace Dynamo.PythonServices
         /// <param name="evaluationMethod"></param>
         internal void GetEvaluatorInfo(PythonEngineVersion engine, out string evaluatorClass, out string evaluationMethod)
         {
-            var IP2Engine = GetEngine(PythonEngineVersion.IronPython2.ToString());
             // Provide evaluator info when the selected engine is loaded
-            if (IP2Engine != null)
+            if (engine == PythonEngineVersion.IronPython2 &&
+                AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2))
             {
                 evaluatorClass = IronPythonEvaluatorClass;
                 evaluationMethod = IronPythonEvaluationMethod;
