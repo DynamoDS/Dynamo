@@ -168,7 +168,7 @@
                                             <Trigger Property="IsMouseOver" Value="False">
                                                 <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
                                             </Trigger>
-                                            <DataTrigger Binding="{Binding ElementName=ContentPresenter, Path=Content}" Value="Dismissed Alerts">
+                                            <DataTrigger Binding="{Binding ElementName=ContentPresenter, Path=Content}" Value="{x:Static p:Resources.NodeInformationalStateDismissedAlerts}">
                                                 <Setter TargetName="dismissedAlertsBadge" Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                             <Trigger Property="IsChecked" Value="True">
