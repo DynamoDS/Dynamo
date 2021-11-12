@@ -123,13 +123,6 @@ namespace Dynamo.PythonServices
 
         internal ObservableCollection<PythonEngine> AvailableEngines;
 
-        public static object Evaluate(string engine, string code,
-                                        IList bindingNames,
-                                        [ArbitraryDimensionArrayImport] IList bindingValues) 
-        {
-            return Instance.GetEngine(engine).Evaluate(code, bindingNames, bindingValues);
-        }
-
         #region Constant strings
         // TODO: The following fields might be removed after dynamic loading applied
         internal static string PythonEvaluatorSingletonInstance = "Instance";
