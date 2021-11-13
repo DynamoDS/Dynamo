@@ -151,6 +151,7 @@ namespace DynamoUnits
         /// Get all the loaded Units within the Dynamo session.
         /// </summary>
         /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
         public static IEnumerable<Unit> GetAllUnits()
         {
             return ConvertForgeUnitDictionaryToCollection(ForgeUnitsEngine.getAllUnits());
@@ -160,6 +161,7 @@ namespace DynamoUnits
         /// Get all the loaded Symbols within the Dynamo session.
         /// </summary>
         /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
         public static IEnumerable<Symbol> GetAllSymbols()
         {
             return ConvertForgeSymbolDictionaryToCollection(ForgeUnitsEngine.getAllSymbols());
