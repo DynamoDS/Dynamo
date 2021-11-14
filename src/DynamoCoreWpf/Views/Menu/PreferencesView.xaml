@@ -433,12 +433,10 @@
                                         </StackPanel>
                                     </Grid>
                                     <Button x:Name="ReloadCPython"
-                                                Style="{StaticResource FlatButtonStyle}" 
+                                                Style="{StaticResource SolidButtonStyle}" 
                                                 HorizontalAlignment="Left"                                             
-                                                Height="25"
-                                                MinWidth="100"
                                                 Grid.Row="0"
-                                                Margin="0,10,0,10"
+                                                Margin="0,10,0,0"
                                                 Click="ReloadCPython_Click"
                                                 Content="{x:Static p:Resources.ResetCPythonButtonText}"
                                                 ToolTip="{x:Static p:Resources.ResetCPythonButtonToolTip}">
