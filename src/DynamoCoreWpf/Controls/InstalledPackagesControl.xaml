@@ -146,10 +146,11 @@
                                                             </MenuItem>
                                                             <Separator BorderBrush="{StaticResource ExpanderCaretToggleButtonBackground}" BorderThickness="0 1 0 0"/>
                                                             <MenuItem Name="UninstallButton"
-                                                                      Style="{StaticResource MenuItemCollapseStyle}"
                                                                       Command="{Binding Path=UninstallCommand}"
                                                                       Header="{Binding Path=PackageViewContextMenuUninstallText}"
-                                                                      ToolTip="{Binding Path=PackageViewContextMenuUninstallTooltip}">
+                                                                      ToolTip="{Binding Path=PackageViewContextMenuUninstallTooltip}"
+                                                                      ToolTipService.ShowOnDisabled="true"
+                                                                      Visibility="{Binding Path=LoadedWithNoScheduledOperation, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                                             </MenuItem>
                                                             <MenuItem Name="UnmarkUninstallButton"
                                                                               Style="{StaticResource MenuItemCollapseStyle}"

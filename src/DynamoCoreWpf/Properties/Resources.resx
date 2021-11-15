@@ -2759,7 +2759,7 @@ Do you wish to restart {2} to first uninstall {1}, then download {0} again?</val
     <value>&lt;Double click here to edit group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
-    <value>Add group to group</value>
+    <value>Add Group to Group</value>
   </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this guide later from the Help menu.</value>
@@ -2947,5 +2947,8 @@ Delete the following packages: {2}?
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Package dependencies</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
+    <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
   </data>
 </root>
