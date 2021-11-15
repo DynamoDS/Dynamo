@@ -1056,6 +1056,16 @@ namespace Dynamo.Tests
             Assert.AreEqual(DynamoUnits.Utilities.GetAllQuantities().Distinct().Count(), DynamoUnits.Utilities.GetAllQuantities().Count());
             Assert.AreEqual(DynamoUnits.Utilities.GetAllSymbols().Distinct().Count(), DynamoUnits.Utilities.GetAllSymbols().Count());
         }
+
+        [Test, Category("UnitTests")]
+        public void PointToBadSchemaDirectory_DoesNotThrow()
+        {
+           Assert.DoesNotThrow(()=> { DynamoUnits.Utilities.SetTestEngine(@"C:\BadPath"); });
+            //this should throw an exception about not loading schemas
+           Assert.Throws<Exception>(() => { DynamoUnits.Utilities.GetAllUnits(); });
+           //reset engine.
+          DynamoUnits.Utilities.Initialize();
+        }
         #endregion unit utils
 
     }
