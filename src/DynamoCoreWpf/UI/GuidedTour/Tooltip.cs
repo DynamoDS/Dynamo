@@ -11,9 +11,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
     public class Tooltip : Step
     {
         double PointerHeight = 30;
-        double PointerWidth = 15;
+        double PointerWidth = 10;
+        double PointerDownWidth = 20;
         double PointerTooltipOverlap = 5;
         double PointerVerticalOffset;
+        double PointerHorizontalOffset;
 
         /// <summary>
         /// The Tooltip constructor
@@ -29,6 +31,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             //The offset represent the distance vertically from the top/bottom for showing the tooltip pointer (a triangle)
             PointerVerticalOffset = (Height / 8) + verticalTooltipOffset;
+            PointerHorizontalOffset = (Width / 8);
             DrawPointerDirection(direction);
         }
 
@@ -54,6 +57,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             //Due that we are drawing the 2 direction pointers we need to add 20 to the current width (Width + PointerWidth*2 - PointerTooltipOverlap*2)
             double realWidth = Width + PointerWidth * 2 - PointerTooltipOverlap * 2;
+            double realHeight = Height + PointerHeight * 2 - PointerTooltipOverlap * 2;
 
             //For each Y coordinate we add the Vertical offset otherwise the pointer will be always at the top or the botton
             if (direction == PointerDirection.TOP_LEFT)
@@ -101,6 +105,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 pointX3 = realWidth;
                 pointY3 = Height - PointerHeight / 2 - PointerVerticalOffset;
+            }
+            else if (direction == PointerDirection.BOTTOM_DOWN)
+            {
+                pointX1 = PointerHorizontalOffset;
+                pointY1 = Height + PointerWidth;
+
+                pointX2 = PointerDownWidth + PointerHorizontalOffset;
+                pointY2 = Height + PointerWidth;
+
+                pointX3 = PointerDownWidth / 2 + PointerHorizontalOffset;
+                pointY3 = realHeight - PointerHeight;
             }
 
             TooltipPointerPoints = new PointCollection(new[] { new Point(pointX1, pointY1),
