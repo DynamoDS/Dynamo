@@ -124,7 +124,10 @@ namespace Dynamo.PythonServices
         public static PythonEngineManager Instance { get { return lazy.Value; } }
         #endregion
 
-        internal ObservableCollection<PythonEngine> AvailableEngines;
+        /// <summary>
+        /// An observable collection of all the loaded Python engines
+        /// </summary>
+        public ObservableCollection<PythonEngine> AvailableEngines;
 
         #region Constant strings
         // TODO: The following fields might be removed after dynamic loading applied
