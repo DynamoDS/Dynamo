@@ -29,10 +29,10 @@ namespace DynamoUnits
         public string Name => forgeQuantity.getName();
 
         /// <summary>
-        /// Gets a list of all available Units associated with a Quantity.
+        /// Gets all available Units associated with a Quantity.
         /// </summary>
         /// <returns name="Unit[]">List of Units</returns>
-        public List<Unit> Units
+        public IEnumerable<Unit> Units
         {
             get
             {
@@ -53,7 +53,25 @@ namespace DynamoUnits
         /// <returns name="Quantity">Quantity object</returns>
         public static Quantity ByTypeID(string typeId)
         {
-            return new Quantity(Utilities.ForgeUnitsEngine.getQuantity(typeId));
+            try
+            {
+                return new Quantity(Utilities.ForgeUnitsEngine.getQuantity(typeId));
+            }
+            catch (Exception e)
+            {
+                //The exact match for the Forge TypeID failed.  Test for a fallback.  This can be either earlier or later version number.
+                if (Utilities.TryParseTypeId(typeId, out string typeName, out Version version))
+                {
+                    var versionDictionary = Utilities.GetAllRegisteredQuantityVersions();
+                    if (versionDictionary.TryGetValue(typeName, out var existingVersion))
+                    {
+                        return new Quantity(Utilities.ForgeUnitsEngine.getQuantity(typeName + "-" + existingVersion.ToString()));
+                    }
+                }
+
+                //else re-throw existing exception as there is no fallback
+                throw;
+            }
         }
 
         public override string ToString()

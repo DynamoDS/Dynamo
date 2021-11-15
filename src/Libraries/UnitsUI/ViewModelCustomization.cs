@@ -72,17 +72,17 @@ namespace UnitsUI
         }
 
         /// <summary>
-        /// List of Quantity types that can be selected
+        /// Collection of Quantity types that can be selected
         /// </summary>
-        public List<DynamoUnits.Quantity> QuantityConversionSource
+        public IEnumerable<DynamoUnits.Quantity> QuantityConversionSource
         {
             get { return dynamoConvertModel.QuantityConversionSource; }
         }
 
         /// <summary>
-        /// List of Unit types that can be selected for conversion.  Will be updated when SelectedQuantityConversion is changed 
+        /// Collection of Unit types that can be selected for conversion.  Will be updated when SelectedQuantityConversion is changed 
         /// </summary>
-        public List<DynamoUnits.Unit> SelectedFromConversionSource
+        public IEnumerable<DynamoUnits.Unit> SelectedFromConversionSource
         {
             get { return dynamoConvertModel.SelectedFromConversionSource; }
             set
@@ -93,9 +93,9 @@ namespace UnitsUI
         }
 
         /// <summary>
-        /// List of Unit types that can be selected for conversion.  Will be updated when SelectedQuantityConversion is changed 
+        /// Collection of Unit types that can be selected for conversion.  Will be updated when SelectedQuantityConversion is changed 
         /// </summary>
-        public List<DynamoUnits.Unit> SelectedToConversionSource
+        public IEnumerable<DynamoUnits.Unit> SelectedToConversionSource
         {
             get { return dynamoConvertModel.SelectedToConversionSource; }
             set

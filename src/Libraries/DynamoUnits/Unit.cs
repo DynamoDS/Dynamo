@@ -29,28 +29,28 @@ namespace DynamoUnits
         public string TypeId => forgeUnit.getTypeId();
 
         /// <summary>
-        /// Gets a list of Units are convertible from a Unit.
+        /// Gets all Units which are convertible from a Unit.
         /// </summary>
         /// <returns name="Unit[]">List of Units</returns>
-        public List<Unit> ConvertibleUnits 
+        public IEnumerable<Unit> ConvertibleUnits 
         {
             get
             {
                 Dictionary<string, ForgeUnitsCLR.Unit> units = Utilities.ForgeUnitsEngine.getConvertibleUnits(TypeId);
-                return Utilities.ConvertUnitDictionaryToList(units);
+                return Utilities.ConvertForgeUnitDictionaryToCollection(units);
             }
         }
 
         /// <summary>
-        /// Gets a list of Quantity objects which contain a Unit. 
+        /// Gets all Quantity objects which contain a Unit. 
         /// </summary>
         /// /// <returns name="Quantity[]">List of Quantities</returns>
-        public List<Quantity> QuantitiesContainingUnit
+        public IEnumerable<Quantity> QuantitiesContainingUnit
         {
             get
             {
                 var quantities = Utilities.ForgeUnitsEngine.getQuantitiesContainingUnit(TypeId);
-                return Utilities.CovertQuantityDictionaryToList(quantities);
+                return Utilities.CovertForgeQuantityDictionaryToCollection(quantities);
             }
         }
 
@@ -61,7 +61,25 @@ namespace DynamoUnits
         /// <returns name="Unit">Unit object</returns>
         public static Unit ByTypeID(string typeId)
         {
-            return new Unit(Utilities.ForgeUnitsEngine.getUnit(typeId));
+            try
+            {
+                return new Unit(Utilities.ForgeUnitsEngine.getUnit(typeId));
+            }
+            catch (Exception e)
+            {
+                //The exact match for the Forge TypeID failed.  Test for a fallback.  This can be either earlier or later version number.
+                if (Utilities.TryParseTypeId(typeId, out string typeName, out Version version))
+                {
+                    var versionDictionary = Utilities.GetAllLatestRegisteredUnitVersions();
+                    if (versionDictionary.TryGetValue(typeName, out var existingVersion))
+                    {
+                        return new Unit(Utilities.ForgeUnitsEngine.getUnit(typeName + "-" + existingVersion.ToString()));
+                    }
+                }
+
+                //else re-throw existing exception as there is no fallback
+                throw;
+            }
         }
 
         /// <summary>

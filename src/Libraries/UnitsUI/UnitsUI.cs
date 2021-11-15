@@ -292,14 +292,14 @@ namespace UnitsUI
             }
         }
         
-        private List<DynamoUnits.Unit> items;
+        private IEnumerable<DynamoUnits.Unit> items;
         private const string defaultUnit = "Feet";
 
         /// <summary>
-        /// List of unit type ids.
+        /// Collection of unit type ids.
         /// </summary>
         [JsonIgnore]
-        public List<DynamoUnits.Unit> Items
+        public IEnumerable<DynamoUnits.Unit> Items
         {
             get { return items; }
             private set
@@ -349,7 +349,7 @@ namespace UnitsUI
             try
             {
                 Items = DynamoUnits.Utilities.GetAllUnits();
-                SelectedUnit = Items.Find(u => u.Name == defaultUnit);
+                SelectedUnit = Items.ToList().Find(u => u.Name == defaultUnit);
             }
             catch
             {
@@ -442,9 +442,9 @@ namespace UnitsUI
         private DynamoUnits.Quantity selectedQuantityConversion;
         private bool isSelectionFromBoxEnabled;
         private string selectionFromBoxToolTip;
-        private List<DynamoUnits.Quantity> quantityConversionSource;
-        private List<DynamoUnits.Unit> selectedFromConversionSource;
-        private List<DynamoUnits.Unit> selectedToConversionSource;
+        private IEnumerable<DynamoUnits.Quantity> quantityConversionSource;
+        private IEnumerable<DynamoUnits.Unit> selectedFromConversionSource;
+        private IEnumerable<DynamoUnits.Unit> selectedToConversionSource;
         private const string defaultSelectedQuantity = "Length"; 
 
         /// <summary>
@@ -465,7 +465,7 @@ namespace UnitsUI
         /// Examples of this would be 'length', 'time', 'volume'.
         /// </summary>
         [JsonIgnore]
-        public List<DynamoUnits.Quantity> QuantityConversionSource
+        public IEnumerable<DynamoUnits.Quantity> QuantityConversionSource
         {
             get { return quantityConversionSource; }
             private set
@@ -480,7 +480,7 @@ namespace UnitsUI
         /// Examples of this are 'meters', 'millimeters', 'feet'.
         /// </summary>
         [JsonIgnore]
-        public List<DynamoUnits.Unit> SelectedFromConversionSource
+        public IEnumerable<DynamoUnits.Unit> SelectedFromConversionSource
         {
             get { return selectedFromConversionSource; }
             set
@@ -495,7 +495,7 @@ namespace UnitsUI
         /// Examples of this are 'meters', 'millimeters', 'feet'.
         /// </summary>
         [JsonIgnore]
-        public List<DynamoUnits.Unit> SelectedToConversionSource
+        public IEnumerable<DynamoUnits.Unit> SelectedToConversionSource
         {
             get { return selectedToConversionSource; }
             set
@@ -608,7 +608,7 @@ namespace UnitsUI
             try
             {
                 QuantityConversionSource = DynamoUnits.Utilities.GetAllQuantities();
-                SelectedQuantityConversion = QuantityConversionSource.Find(q => q.Name == defaultSelectedQuantity);
+                SelectedQuantityConversion = QuantityConversionSource.ToList().Find(q => q.Name == defaultSelectedQuantity);
             }
             catch
             {
@@ -693,7 +693,7 @@ namespace UnitsUI
         {
             Items.Clear();
 
-            List<Unit> units = null;
+            IEnumerable<Unit> units = null;
             try
             {
                 units = DynamoUnits.Utilities.GetAllUnits();
@@ -756,7 +756,7 @@ namespace UnitsUI
         {
             Items.Clear();
 
-            List<Quantity> quantities = null;
+            IEnumerable<Quantity> quantities = null;
             try
             {
                 quantities = DynamoUnits.Utilities.GetAllQuantities();
@@ -820,7 +820,7 @@ namespace UnitsUI
         {
             Items.Clear();
 
-            List<Symbol> symbols = null;
+            IEnumerable<Symbol> symbols = null;
             try
             {
                 symbols = DynamoUnits.Utilities.GetAllSymbols();
