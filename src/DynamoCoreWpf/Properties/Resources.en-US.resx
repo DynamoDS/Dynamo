@@ -538,7 +538,7 @@ You will get a chance to save your work.</value>
     <comment>Edit menu | Align selected nodes evenly on vertical direction</comment>
   </data>
   <data name="DynamoViewEditMenuCleanupLayout" xml:space="preserve">
-    <value>_Cleanup Node Layout</value>
+    <value>Cleanup Node _Layout</value>
     <comment>Edit menu | Automatically layout graph</comment>
   </data>
   <data name="DynamoViewEditMenuCopy" xml:space="preserve">
@@ -546,15 +546,15 @@ You will get a chance to save your work.</value>
     <comment>Edit menu | Copy</comment>
   </data>
   <data name="DynamoViewEditMenuCreateCustomNode" xml:space="preserve">
-    <value>_Create Custom Node</value>
+    <value>Crea_te Custom Node</value>
     <comment>Edit menu | Create custom node from selected nodes</comment>
   </data>
   <data name="DynamoViewEditMenuCreateGroup" xml:space="preserve">
-    <value>_Create Group</value>
+    <value>Create _Group</value>
     <comment>Edit menu | Create Grouping for nodes</comment>
   </data>
   <data name="DynamoViewEditMenuCreateNote" xml:space="preserve">
-    <value>_Create Note</value>
+    <value>Create _Note</value>
     <comment>Edit menu | Create note for a node</comment>
   </data>
   <data name="DynamoViewEditMenuCreatePreset" xml:space="preserve">
@@ -633,7 +633,7 @@ You will get a chance to save your work.</value>
     <comment>File menu | Open</comment>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
-    <value>_Open Recent Files</value>
+    <value>Open _Recent Files</value>
     <comment>File menu | Open Recent files</comment>
   </data>
   <data name="DynamoViewFileMenuSave" xml:space="preserve">
@@ -645,7 +645,7 @@ You will get a chance to save your work.</value>
     <comment>File menu | Save as</comment>
   </data>
   <data name="DynamoViewHelpDictionary" xml:space="preserve">
-    <value>Dynamo Dictionary</value>
+    <value>Dynamo Di_ctionary</value>
     <comment>Help menu | Go to Dynamo Dictionary</comment>
   </data>
   <data name="DynamoViewHelpMenu" xml:space="preserve">
@@ -657,11 +657,11 @@ You will get a chance to save your work.</value>
     <comment>Help menu | Display start page</comment>
   </data>
   <data name="DynamoViewHelpMenuGotoWebsite" xml:space="preserve">
-    <value>_Dynamo Website</value>
+    <value>Dynamo _Website</value>
     <comment>Help menu | Go go Dynamo website</comment>
   </data>
   <data name="DynamoViewHelpMenuGotoWiki" xml:space="preserve">
-    <value>Dynamo Project _Wiki</value>
+    <value>Dynamo _Project Wiki</value>
     <comment>Help menu | Go to wiki</comment>
   </data>
   <data name="DynamoViewHelpMenuReportBug" xml:space="preserve">
@@ -673,7 +673,7 @@ You will get a chance to save your work.</value>
     <comment>Help menu | Show in Folder</comment>
   </data>
   <data name="DynamoViewHepMenuSamples" xml:space="preserve">
-    <value>Samples</value>
+    <value>_Samples</value>
     <comment>Help menu | Samples</comment>
   </data>
   <data name="DynamoViewPackageMenu" xml:space="preserve">
@@ -685,15 +685,15 @@ You will get a chance to save your work.</value>
     <comment>Package menu | Manage packages...</comment>
   </data>
   <data name="DynamoViewPackageMenuPublishNodes" xml:space="preserve">
-    <value>_Publish Selected Nodes...</value>
+    <value>Publish _Selected Nodes...</value>
     <comment>Package menu | Publish selected nodes as a package</comment>
   </data>
   <data name="DynamoViewPackageMenuPublishPackage" xml:space="preserve">
-    <value>_Publish New Package...</value>
+    <value>Publish _New Package...</value>
     <comment>Package menu | Publish new package</comment>
   </data>
   <data name="DynamoViewPackageMenuPublishWorkspace" xml:space="preserve">
-    <value>_Publish Current Workspace...</value>
+    <value>Publish _Current Workspace...</value>
     <comment>Package menu | Publish current workspace as a package</comment>
   </data>
   <data name="DynamoViewPackageMenuSearchPackage" xml:space="preserve">
@@ -767,8 +767,8 @@ You will get a chance to save your work.</value>
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
-    <value>Agreement to Collect Usability Data</value>
-    <comment>Setting menu | Show user agreement dialog about data collecting</comment>
+    <value>Agreement to _Collect Usability Data</value>
+    <comment>Dynamo menu | Show user agreement dialog about data collecting</comment>
   </data>
   <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
     <value>Fractional Foot</value>
@@ -969,7 +969,7 @@ You will get a chance to save your work.</value>
     <comment>View menu | Show connectors</comment>
   </data>
   <data name="DynamoViewViewMenuShowConsole" xml:space="preserve">
-    <value>Show Console</value>
+    <value>_Show Console</value>
     <comment>View menu | Show console</comment>
   </data>
   <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
@@ -1086,7 +1086,7 @@ Failed to publish file(s):
     <value>Cleanup Node Layout</value>
   </data>
   <data name="GroupContextMenuUngroup" xml:space="preserve">
-    <value>Ungroup</value>
+    <value>_Ungroup</value>
   </data>
   <data name="HideClassicNodeLibrary" xml:space="preserve">
     <value>Hide Classic Node Library</value>
@@ -1991,7 +1991,7 @@ Want to publish a different package?</value>
     <comment>Start page | Link to DynamoBIM</comment>
   </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
-    <value>Getting Started</value>
+    <value>_Getting Started</value>
   </data>
   <data name="StringInputNodeEditMenu" xml:space="preserve">
     <value>Edit...</value>
@@ -2479,7 +2479,7 @@ Do you wish to restart {2} to first uninstall {1}, then download {0} again?</val
     <comment>Get Started Dynamo Tour</comment>
   </data>
   <data name="InteractiveGuides" xml:space="preserve">
-    <value>Interactive Guides</value>
+    <value>_Interactive Guides</value>
     <comment>Dynamo Guided Tours</comment>
   </data>
   <data name="GetStartedGuideLibraryText" xml:space="preserve">

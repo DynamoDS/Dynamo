@@ -1334,7 +1334,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Cleanup Node Layout.
+        ///   Looks up a localized string similar to Cleanup Node _Layout.
         /// </summary>
         public static string DynamoViewEditMenuCleanupLayout {
             get {
@@ -1352,7 +1352,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Create Custom Node.
+        ///   Looks up a localized string similar to Crea_te Custom Node.
         /// </summary>
         public static string DynamoViewEditMenuCreateCustomNode {
             get {
@@ -1361,7 +1361,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Create Group.
+        ///   Looks up a localized string similar to Create _Group.
         /// </summary>
         public static string DynamoViewEditMenuCreateGroup {
             get {
@@ -1370,7 +1370,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Create Note.
+        ///   Looks up a localized string similar to Create _Note.
         /// </summary>
         public static string DynamoViewEditMenuCreateNote {
             get {
@@ -1568,7 +1568,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Open Recent Files.
+        ///   Looks up a localized string similar to Open _Recent Files.
         /// </summary>
         public static string DynamoViewFileMenuRecentFiles {
             get {
@@ -1595,7 +1595,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo Dictionary.
+        ///   Looks up a localized string similar to Dynamo Di_ctionary.
         /// </summary>
         public static string DynamoViewHelpDictionary {
             get {
@@ -1622,7 +1622,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Dynamo Website.
+        ///   Looks up a localized string similar to Dynamo _Website.
         /// </summary>
         public static string DynamoViewHelpMenuGotoWebsite {
             get {
@@ -1631,7 +1631,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo Project _Wiki.
+        ///   Looks up a localized string similar to Dynamo _Project Wiki.
         /// </summary>
         public static string DynamoViewHelpMenuGotoWiki {
             get {
@@ -1658,7 +1658,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Samples.
+        ///   Looks up a localized string similar to _Samples.
         /// </summary>
         public static string DynamoViewHepMenuSamples {
             get {
@@ -1685,7 +1685,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Publish Selected Nodes....
+        ///   Looks up a localized string similar to Publish _Selected Nodes....
         /// </summary>
         public static string DynamoViewPackageMenuPublishNodes {
             get {
@@ -1694,7 +1694,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Publish New Package....
+        ///   Looks up a localized string similar to Publish _New Package....
         /// </summary>
         public static string DynamoViewPackageMenuPublishPackage {
             get {
@@ -1703,7 +1703,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Publish Current Workspace....
+        ///   Looks up a localized string similar to Publish _Current Workspace....
         /// </summary>
         public static string DynamoViewPackageMenuPublishWorkspace {
             get {
@@ -1982,7 +1982,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Agreement to Collect Usability Data.
+        ///   Looks up a localized string similar to Agreement to _Collect Usability Data.
         /// </summary>
         public static string DynamoViewSettingMenuShowDataReportingDialog {
             get {
@@ -2306,7 +2306,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Console.
+        ///   Looks up a localized string similar to _Show Console.
         /// </summary>
         public static string DynamoViewViewMenuShowConsole {
             get {
@@ -2939,7 +2939,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ungroup.
+        ///   Looks up a localized string similar to _Ungroup.
         /// </summary>
         public static string GroupContextMenuUngroup {
             get {
@@ -3263,7 +3263,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Interactive Guides.
+        ///   Looks up a localized string similar to _Interactive Guides.
         /// </summary>
         public static string InteractiveGuides {
             get {
@@ -7053,7 +7053,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Getting Started.
+        ///   Looks up a localized string similar to _Getting Started.
         /// </summary>
         public static string StartPageWhatsNew {
             get {
