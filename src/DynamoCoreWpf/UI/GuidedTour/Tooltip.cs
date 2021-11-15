@@ -11,8 +11,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
     public class Tooltip : Step
     {
         double PointerHeight = 30;
-        double PointerWidth = 10;
+        double PointerWidth = 15;
         double PointerDownWidth = 20;
+        double PointerDownHeight = 10;
         double PointerTooltipOverlap = 5;
         double PointerVerticalOffset;
         double PointerHorizontalOffset;
@@ -109,10 +110,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
             else if (direction == PointerDirection.BOTTOM_DOWN)
             {
                 pointX1 = PointerHorizontalOffset;
-                pointY1 = Height + PointerWidth;
+                pointY1 = Height + PointerDownHeight;
 
                 pointX2 = PointerDownWidth + PointerHorizontalOffset;
-                pointY2 = Height + PointerWidth;
+                pointY2 = Height + PointerDownHeight;
 
                 pointX3 = PointerDownWidth / 2 + PointerHorizontalOffset;
                 pointY3 = realHeight - PointerHeight;
