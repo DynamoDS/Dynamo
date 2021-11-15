@@ -54,9 +54,6 @@
                 Height ="29" 
                 MinWidth="180"
                 Margin="0,0,0, 3"
-                ToolTip="{Binding SelectionFromBoxToolTip}"
-                ToolTipService.ShowOnDisabled="True" 
-                IsEnabled="{Binding IsSelectionFromBoxEnabled}"
                 SelectedItem="{Binding SelectedFromConversion, Mode=TwoWay}"
                 Style="{StaticResource ResourceKey=RefreshComboBox}">
                 <ComboBox.ItemTemplate>

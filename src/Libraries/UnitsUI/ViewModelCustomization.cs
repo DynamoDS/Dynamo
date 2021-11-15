@@ -106,42 +106,16 @@ namespace UnitsUI
             }
         }
 
-        /// <summary>
-        /// Property alerting the UI whether a selection from the dropdowns is enabled.
-        /// </summary>
-        public bool IsSelectionFromBoxEnabled
-        {
-            get { return dynamoConvertModel.IsSelectionFromBoxEnabled; }
-            set
-            {
-                dynamoConvertModel.IsSelectionFromBoxEnabled = value;
-                RaisePropertyChanged(nameof(IsSelectionFromBoxEnabled));
-            }
-        }
-
-        /// <summary>
-        /// Provides the SelectionFromBox with a tooltip describing the conversion.
-        /// </summary>
-        public string SelectionFromBoxToolTip
-        {
-            get { return dynamoConvertModel.SelectionFromBoxToolTip; }
-            set
-            {
-                dynamoConvertModel.SelectionFromBoxToolTip = value;
-                RaisePropertyChanged(nameof(SelectionFromBoxToolTip));
-            }
-        }
-
         public UnitConverterViewModel(DynamoUnitConvert model, NodeView nodeView)
         {
             dynamoConvertModel = model;
             nodeViewModel = nodeView.ViewModel;
             nodeModel = nodeView.ViewModel.NodeModel;
             model.PropertyChanged += model_PropertyChanged;
-            ToggleButtonClick = new DelegateCommand(OnToggleButtonClick, CanToggleButton);
+            SwitchUnitsButtonClick = new DelegateCommand(OnSwitchUnitsButtonClick, CanSwitchUnitsButton);
         }
 
-        private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        internal void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -162,12 +136,6 @@ namespace UnitsUI
                     break;
                 case nameof(SelectedToConversion):
                     RaisePropertyChanged(nameof(SelectedToConversion));
-                    break;
-                case nameof(IsSelectionFromBoxEnabled):
-                    RaisePropertyChanged(nameof(IsSelectionFromBoxEnabled));
-                    break;
-                case nameof(SelectionFromBoxToolTip):
-                    RaisePropertyChanged(nameof(SelectionFromBoxToolTip));
                     break;
             }
         }
