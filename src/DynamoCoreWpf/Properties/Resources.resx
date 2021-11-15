@@ -223,35 +223,35 @@
     <comment>Debug menu</comment>
   </data>
   <data name="DynamoViewDebugMenuCheckDailyBuild" xml:space="preserve">
-    <value>Check Daily Builds</value>
+    <value>_Check Daily Builds</value>
     <comment>Debug menu | Check the latest daily build</comment>
   </data>
   <data name="DynamoViewDebugMenuDumpLibrary" xml:space="preserve">
-    <value>Dump Library</value>
+    <value>_Dump Library</value>
     <comment>Debug menu | Dump all imported libraries</comment>
   </data>
   <data name="DynamoViewDebugMenuForceReExecute" xml:space="preserve">
-    <value>Force Re-execute</value>
+    <value>_Force Re-execute</value>
     <comment>Debug menu | Force to re-execute the whole graph</comment>
   </data>
   <data name="DynamoViewDebugMenuForceUpdate" xml:space="preserve">
-    <value>Force Update</value>
+    <value>Force _Update</value>
     <comment>Debug menu | Force to update Dynamo</comment>
   </data>
   <data name="DynamoViewDebugMenuRunMutationTest" xml:space="preserve">
-    <value>Run mutation test</value>
+    <value>_Run mutation test</value>
     <comment>Debug menu | Run mutation test</comment>
   </data>
   <data name="DynamoViewDebugMenuShowDebugAST" xml:space="preserve">
-    <value>Show Debug ASTs</value>
+    <value>_Show Debug ASTs</value>
     <comment>Debug menu | Show debug abstract syntax tree</comment>
   </data>
   <data name="DynamoViewDebugMenuVerboseLogging" xml:space="preserve">
-    <value>Verbose Logging</value>
+    <value>_Verbose Logging</value>
     <comment>Debug menu | Verbose logging</comment>
   </data>
   <data name="DynamoViewDebugMenuDebugModes" xml:space="preserve">
-    <value>Debug Modes</value>
+    <value>Debug _Modes</value>
     <comment>Debug menu | Show debug modes</comment>
   </data>
   <data name="DynamoViewEditMenu" xml:space="preserve">

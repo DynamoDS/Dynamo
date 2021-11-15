@@ -1136,7 +1136,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check Daily Builds.
+        ///   Looks up a localized string similar to _Check Daily Builds.
         /// </summary>
         public static string DynamoViewDebugMenuCheckDailyBuild {
             get {
@@ -1145,7 +1145,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Debug Modes.
+        ///   Looks up a localized string similar to Debug _Modes.
         /// </summary>
         public static string DynamoViewDebugMenuDebugModes {
             get {
@@ -1154,7 +1154,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dump Library.
+        ///   Looks up a localized string similar to _Dump Library.
         /// </summary>
         public static string DynamoViewDebugMenuDumpLibrary {
             get {
@@ -1163,7 +1163,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Force Re-execute.
+        ///   Looks up a localized string similar to _Force Re-execute.
         /// </summary>
         public static string DynamoViewDebugMenuForceReExecute {
             get {
@@ -1172,7 +1172,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Force Update.
+        ///   Looks up a localized string similar to Force _Update.
         /// </summary>
         public static string DynamoViewDebugMenuForceUpdate {
             get {
@@ -1181,7 +1181,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run mutation test.
+        ///   Looks up a localized string similar to _Run mutation test.
         /// </summary>
         public static string DynamoViewDebugMenuRunMutationTest {
             get {
@@ -1190,7 +1190,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Debug ASTs.
+        ///   Looks up a localized string similar to _Show Debug ASTs.
         /// </summary>
         public static string DynamoViewDebugMenuShowDebugAST {
             get {
@@ -1199,7 +1199,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Verbose Logging.
+        ///   Looks up a localized string similar to _Verbose Logging.
         /// </summary>
         public static string DynamoViewDebugMenuVerboseLogging {
             get {
