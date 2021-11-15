@@ -100,11 +100,20 @@ clr.setPreload(True)
                 try
                 {
                     var completionType = ExternalCodeCompletionType.Field;
-
-                    if (d.GetAttr(member.ToString()).ToString().Contains(inBuiltMethod) ||
-                        d.GetAttr(member.ToString()).ToString().Contains(method))
+                    var attr = d.GetAttr(member.ToString()).ToString();
+                    if (attr.IndexOf(method, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        attr.IndexOf(inBuiltMethod, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         completionType = ExternalCodeCompletionType.Method;
+                    }
+                    else if (attr.IndexOf("class", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        completionType = ExternalCodeCompletionType.Class;
+                    }
+                    else if (attr.IndexOf("namespace", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                             attr.IndexOf("module", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        completionType = ExternalCodeCompletionType.Namespace;
                     }
 
                     items.Add(Tuple.Create((string)member.ToString(), name, false, completionType));
@@ -194,6 +203,10 @@ clr.setPreload(True)
                             else
                             {// Python objects from the Scope
                                 var mem = LookupMember(name);
+                                if (mem == null && expand)
+                                {
+                                    mem = EvaluateScript(string.Format("{0}", name), PythonScriptType.Expression);
+                                }
                                 var pythonObject = mem as PyObject;
                                 // Python Module type
                                 if (pythonObject != null)
@@ -281,7 +294,7 @@ clr.setPreload(True)
             Log(msg);
         }
 
-        internal override bool ScopeHasVariable(string name)
+        protected internal override bool ScopeHasVariable(string name)
         {
             using (Py.GIL())
             {

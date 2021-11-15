@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Dynamo.Logging;
 using Dynamo.Python;
+using Dynamo.PythonServices;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -140,7 +141,7 @@ namespace IronPythonTests
         public void CanMatchBasicNumVarSingleLine()
         {
             var matchNumVar = "a = 5.0";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchNumVar, IronPythonCompletionProvider.doubleRegex);
+            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchNumVar, PythonCodeCompletionProviderCommon.doubleRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("5.0", matches["a"]);
@@ -151,7 +152,7 @@ namespace IronPythonTests
         public void CanMatchBasicArrayVarSingleLine()
         {
             var matchArray = "a = []";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchArray, IronPythonCompletionProvider.arrayRegex);
+            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchArray, PythonCodeCompletionProviderCommon.arrayRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("[]", matches["a"]);
@@ -162,7 +163,7 @@ namespace IronPythonTests
         public void CanMatchBasicDictVarSingleLine()
         {
             var matchDict = "a = {}";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict, IronPythonCompletionProvider.dictRegex);
+            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict, PythonCodeCompletionProviderCommon.dictRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("{}", matches["a"]);
@@ -173,7 +174,7 @@ namespace IronPythonTests
         public void CanMatchIntSingleLine()
         {
             var matchDict = "a = 2";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict, IronPythonCompletionProvider.intRegex);
+            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict, PythonCodeCompletionProviderCommon.intRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("2", matches["a"]);
@@ -184,7 +185,7 @@ namespace IronPythonTests
         public void CanMatchComplexDictVarSingleLine()
         {
             var matchDict2 = "a = { 'Alice': 7, 'Toby': 'Nuts' }";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict2, IronPythonCompletionProvider.dictRegex);
+            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict2, PythonCodeCompletionProviderCommon.dictRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("{ 'Alice': 7, 'Toby': 'Nuts' }", matches["a"]);
@@ -195,7 +196,7 @@ namespace IronPythonTests
         public void CanMatchComplexDictVarMultiLine()
         {
             var matchDict2 = "\n\na = { 'Alice': 7, 'Toby': 'Nuts' }\nb = 5.0";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict2, IronPythonCompletionProvider.dictRegex);
+            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict2, PythonCodeCompletionProviderCommon.dictRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("{ 'Alice': 7, 'Toby': 'Nuts' }", matches["a"]);
@@ -206,7 +207,7 @@ namespace IronPythonTests
         public void DoesntMatchBadVariable()
         {
             var matchDict2 = "a! = { 'Alice': 7, 'Toby': 'Nuts' }";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict2, IronPythonCompletionProvider.dictRegex);
+            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict2, PythonCodeCompletionProviderCommon.dictRegex);
             Assert.AreEqual(0, matches.Count);
         }
 

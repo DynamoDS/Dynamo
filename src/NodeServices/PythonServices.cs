@@ -578,7 +578,7 @@ namespace Dynamo.PythonServices
 
         protected abstract void LogError(string msg);
 
-        internal abstract bool ScopeHasVariable(string name);
+        protected internal abstract bool ScopeHasVariable(string name);
 
         /// <summary>
         /// Find all import statements and import into scope.  If the type is already in the scope, this will be skipped.

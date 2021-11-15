@@ -382,7 +382,7 @@ namespace DSIronPython
             Log(msg);
         }
 
-        internal override bool ScopeHasVariable(string name)
+        protected internal override bool ScopeHasVariable(string name)
         {
             return scope.ContainsVariable(name);
         }

@@ -387,7 +387,6 @@ namespace DynamoPythonTests
 
             Assert.AreEqual(3, completionProvider.ImportedTypes.Count);
             Assert.IsTrue(completionProvider.ScopeHasVariable("repeat"));
-            Assert.IsTrue(completionProvider.ScopeHasVariable("izip"));
             Assert.IsTrue(completionProvider.ScopeHasVariable("math"));
             Assert.IsTrue(completionProvider.ScopeHasVariable("callstats"));
         }
