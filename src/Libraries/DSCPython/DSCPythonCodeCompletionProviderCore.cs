@@ -205,11 +205,14 @@ clr.setPreload(True)
                                 var mem = LookupMember(name);
                                 if (mem == null && expand)
                                 {
+                                    // There is an issue with calling Dir() on nested PyObjects (not all members are discovered)
+                                    // As a workaround we can retrieve the PyObject by evaluating directly in Python as a last resort
+          
+                                    // Get the PyObject that corresponds to the name
                                     mem = EvaluateScript(string.Format("{0}", name), PythonScriptType.Expression);
                                 }
-                                var pythonObject = mem as PyObject;
                                 // Python Module type
-                                if (pythonObject != null)
+                                if (mem is PyObject pythonObject)
                                 {
                                     items = EnumerateMembersForPyObj(pythonObject, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                                 }

@@ -278,7 +278,8 @@ namespace DynamoPythonTests
 
         [Test]
         [Category("UnitTests")]
-        public void CanImportSystemCollectionsLibraryAndGetCompletionData()
+        public void CanImportSystemCollectionsLibraryAndGetCompletionData
+            ()
         {
             var str = "\nimport System.Collections\nSystem.Collections.";
             var completionProvider = new DSCPythonCodeCompletionProviderCore();
@@ -287,7 +288,7 @@ namespace DynamoPythonTests
             var completionList = completionData.Select(d => d.Text);
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack" }).Count() == 3);
-            Assert.AreEqual(29, completionData.Length);
+            Assert.AreEqual(57, completionData.Length);
         }
 
         [Test]
