@@ -2541,7 +2541,7 @@ Do you wish to restart {2} to first uninstall {1}, then download {0} again?</val
     <value>&lt;Click here to edit the group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
-    <value>Add group to group</value>
+    <value>Add Group to Group</value>
   </data>
   <data name="NodeInformationalStateDismiss" xml:space="preserve">
     <value>Dismiss</value>
@@ -2963,5 +2963,8 @@ This package will be unloaded after the next Dynamo restart.</value>
   </data>
   <data name="PackagesGuideSearchResultsTitle" xml:space="preserve">
     <value>Search results</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
+    <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
   </data>
 </root>

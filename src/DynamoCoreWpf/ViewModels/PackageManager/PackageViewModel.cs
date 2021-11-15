@@ -36,7 +36,21 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Specifies whether or not this Package's LoadState is set to Unloaded.
+        /// Specifies whether or not this Package's LoadState is Loaded with no scheduled operation.
+        /// </summary>
+        public bool LoadedWithNoScheduledOperation
+        {
+            get
+            {
+                return Model.BuiltInPackage ?
+                    Model.LoadState.State != PackageLoadState.StateTypes.Unloaded &&
+                    Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForUnload :
+                    Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForDeletion;
+            }
+        }
+
+        /// <summary>
+        /// Specifies whether or not this Package's LoadState is set to Unloaded
         /// </summary>
         public bool Unloaded
         {
@@ -99,7 +113,23 @@ namespace Dynamo.ViewModels
 
         public string PackageViewContextMenuUninstallTooltip
         {
-            get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnloadPackageTooltip : Resources.PackageContextMenuDeletePackageTooltip; }
+            get
+            {
+                // Built in package
+                if (Model.BuiltInPackage)
+                {
+                    return Resources.PackageContextMenuUnloadPackageTooltip;
+                }
+
+                // Package with custom nodes that are in use
+                if (!CanUninstall())
+                {
+                    return Resources.PackageContextMenuDeletePackageCustomNodesInUseTooltip;
+                }
+
+                // Package that can be uninstalled
+                return Resources.PackageContextMenuDeletePackageTooltip;
+            }
         }
 
         public string PackageViewContextMenuUnmarkUninstallText
@@ -281,10 +311,7 @@ namespace Dynamo.ViewModels
         {
             if (!Model.InUse(dynamoModel) || Model.LoadedAssemblies.Any())
             {
-                return Model.BuiltInPackage ?
-                    Model.LoadState.State != PackageLoadState.StateTypes.Unloaded &&
-                    Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForUnload :
-                    Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForDeletion;
+                return LoadedWithNoScheduledOperation;
             }
             return false;
         }
@@ -357,7 +384,7 @@ namespace Dynamo.ViewModels
                 (Model.LoadState.State == PackageLoadState.StateTypes.Unloaded);
         }
 
-    private void GoToRootDirectory()
+        private void GoToRootDirectory()
         {
             // Check for the existance of RootDirectory
             if (Directory.Exists(Model.RootDirectory))
