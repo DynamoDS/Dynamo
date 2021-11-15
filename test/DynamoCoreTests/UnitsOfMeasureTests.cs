@@ -768,6 +768,7 @@ namespace Dynamo.Tests
         const string milimeters = "autodesk.unit.unit:millimeters";
         const string meters = "autodesk.unit.unit:meters";
 
+        #region units
         [Test, Category("UnitTests")]
         public void CanCreateForgeUnitType_FromLoadedTypeString()
         {
@@ -816,6 +817,16 @@ namespace Dynamo.Tests
             Assert.False(unitType2 != unitType);
             Assert.True(unitType != unitType3);
             Assert.True(unitType3 != unitType);
+
+            var dictionary = new Dictionary<Unit, string>();
+            dictionary.Add(unitType, "0");
+            dictionary[unitType2] = "1";
+            dictionary.Add(unitType3, "2");
+            Assert.AreEqual(2, dictionary.Count);
+            Assert.AreEqual(dictionary[unitType],"1");
+            Assert.AreEqual(dictionary[unitType2], "1");
+            Assert.AreEqual(dictionary[unitType3], "2");
+
         }
 
         [Test, Category("UnitTests")]
@@ -842,6 +853,8 @@ namespace Dynamo.Tests
             var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
             Assert.IsTrue(unitType.ToString().Contains(unitType.Name));
         }
+        #endregion
+        #region symbols
 
         [Test, Category("UnitTests")]
         public void CanCreateForgeSymbol_FromLoadedTypeId()
@@ -877,6 +890,7 @@ namespace Dynamo.Tests
             var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
             var symbolType = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
             Assert.IsTrue(symbolType.Space);
+            Assert.AreEqual(symbolType.Unit, unitType);
         }
         [Test, Category("UnitTests")]
         public void SymbolDataFormatDecimalIsCorrect()
@@ -916,6 +930,133 @@ namespace Dynamo.Tests
             var symbolType = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
             Assert.AreEqual("Symbol(Text = mm)", symbolType.ToString());
         }
+
+        [Test, Category("UnitTests"), Category("Failure")]
+        public void Symbol_Equality()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var symbolType = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
+            var symbolType2 = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
+            Assert.AreEqual(symbolType.Text, symbolType2.Text);
+            Assert.AreEqual(symbolType,symbolType2);
+        }
+        #endregion
+        #region quantity
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeQuantity_FromLoadedTypeId()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var quantityType = Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.4");
+            Assert.IsTrue(quantityType.Units.Contains(unitType));
+        }
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeQuantity_FromOldTypeId()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var quantityType = Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.3");
+            Assert.IsTrue(quantityType.Units.Contains(unitType));
+        }
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeQuantity_FromFutureTypeId()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var quantityType = Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.5");
+            Assert.IsTrue(quantityType.Units.Contains(unitType));
+        }
+
+        [Test, Category("UnitTests")]
+        public void ForgeQuantityContainsMultipleUnits()
+        {
+            var quantityType = Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.5");
+            Assert.GreaterOrEqual(16,quantityType.Units.Count());
+        }
+        [Test, Category("UnitTests")]
+        public void ForgeQuantityEquality()
+        {
+            var quantityType = Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.4");
+            var quantityType2 = Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.4");
+            var quantityType3 = Quantity.ByTypeID("autodesk.unit.quantity:volume-1.0.1");
+            Assert.NotNull(quantityType);
+            Assert.NotNull(quantityType2);
+            Assert.NotNull(quantityType3);
+
+            Assert.True(quantityType.Equals(quantityType2));
+            Assert.True(quantityType2.Equals(quantityType));
+            Assert.False(quantityType.Equals(quantityType3));
+            Assert.False(quantityType3.Equals(quantityType));
+
+            Assert.True(quantityType == quantityType2);
+            Assert.True(quantityType2 == quantityType);
+            Assert.False(quantityType == quantityType3);
+            Assert.False(quantityType3 == quantityType);
+
+            Assert.False(quantityType != quantityType2);
+            Assert.False(quantityType2 != quantityType);
+            Assert.True(quantityType != quantityType3);
+            Assert.True(quantityType3 != quantityType);
+
+            var dictionary = new Dictionary<Quantity, string>();
+            dictionary.Add(quantityType, "0");
+            dictionary[quantityType2] = "1";
+            dictionary.Add(quantityType3, "2");
+            Assert.AreEqual(2, dictionary.Count);
+            Assert.AreEqual(dictionary[quantityType], "1");
+            Assert.AreEqual(dictionary[quantityType2], "1");
+            Assert.AreEqual(dictionary[quantityType3], "2");
+        }
+        #endregion
+        #region unit utils
+        [Test, Category("UnitTests")]
+        public void ConvertByunitsSameQuantity()
+        {
+            var unitType1 = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var unitType2 = Unit.ByTypeID($"{meters}-1.0.0");
+            Assert.AreEqual(.1,DynamoUnits.Utilities.ConvertByUnits(100, unitType1, unitType2));
+            Assert.AreEqual(100000, DynamoUnits.Utilities.ConvertByUnits(100, unitType2, unitType1));
+        }
+        [Test, Category("UnitTests")]
+        public void ConvertByunitsIncompatible()
+        {
+            var unitType1 = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var unitType2 = Unit.ByTypeID("autodesk.unit.unit:calories-1.0.1");
+            Assert.That(()=> { DynamoUnits.Utilities.ConvertByUnits(100, unitType1, unitType2); },Throws.Exception);
+        }
+        [Test, Category("UnitTests")]
+        public void ParseUnitExpression()
+        {
+            var unitType2 = Unit.ByTypeID($"{meters}-1.0.0");
+            var unitType3 = Unit.ByTypeID("autodesk.unit.unit:squareMeters-1.0.1");
+            Assert.AreEqual(3.2, DynamoUnits.Utilities.ParseExpressionByUnit(unitType2,"100 mm + 100mm + 1m + 2 m"));
+            Assert.AreEqual(3.0002, DynamoUnits.Utilities.ParseExpressionByUnit(unitType3, "100 mm^2 + 100mm^2 + 1m^2 + 2 m^2"));
+        }
+        [Test, Category("UnitTests")]
+        public void ParseUnitExpressionIncompatible()
+        {
+            var unitType2 = Unit.ByTypeID($"{meters}-1.0.0");
+            Assert.That(() => Assert.AreEqual(3.2, DynamoUnits.Utilities.ParseExpressionByUnit(unitType2, "100 mm + 100mm + 1m + 2 m^2")),Throws.Exception);
+        }
+        [Test, Category("UnitTests")]
+        public void ParseExpression()
+        {
+            Assert.AreEqual(6.5, DynamoUnits.Utilities.ParseExpression("3 + 3 + 1/2"));
+        }
+        [Test, Category("UnitTests")]
+        public void ParseExpressionIncompatible()
+        {
+            Assert.That(() => { DynamoUnits.Utilities.ParseExpression("3mm"); }, Throws.Exception);
+        }
+        [Test, Category("UnitTests")]
+        public void GetAll ()
+        {
+            Assert.Greater(DynamoUnits.Utilities.GetAllUnits().Count(), 0);
+            Assert.Greater(DynamoUnits.Utilities.GetAllQuantities().Count(), 0);
+            Assert.Greater(DynamoUnits.Utilities.GetAllSymbols().Count(), 0);
+
+            Assert.AreEqual(DynamoUnits.Utilities.GetAllUnits().Distinct().Count() , DynamoUnits.Utilities.GetAllUnits().Count());
+            Assert.AreEqual(DynamoUnits.Utilities.GetAllQuantities().Distinct().Count(), DynamoUnits.Utilities.GetAllQuantities().Count());
+            Assert.AreEqual(DynamoUnits.Utilities.GetAllSymbols().Distinct().Count(), DynamoUnits.Utilities.GetAllSymbols().Count());
+        }
+        #endregion unit utils
 
     }
 }
