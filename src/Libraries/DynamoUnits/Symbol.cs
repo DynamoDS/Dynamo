@@ -85,7 +85,7 @@ namespace DynamoUnits
         /// Returns the formatted unit expression for a given value and symbol in a decimal format.
         /// </summary>
         /// <param name="value">Number value for the unit</param>
-        /// <param name="precision">Decimal precession for the expression</param>
+        /// <param name="precision">Decimal precision for the expression</param>
         /// <param name="symbol">Symbol type</param>
         /// <param name="removeTrailingZeros">Remove trailing zeros in the output</param>
         /// <returns name="string">Formatted unit expression</returns>
@@ -100,7 +100,7 @@ namespace DynamoUnits
         /// Returns the formatted expression for a given value and symbol in a fraction format.
         /// </summary>
         /// <param name="value">Number value for the expression</param>
-        /// <param name="precision">precession associated with the fraction</param>
+        /// <param name="precision">precision associated with the fraction</param>
         /// <param name="symbol">Symbol type</param>
         /// <returns name="string">Formatted unit expression</returns>
         public static string StringifyFraction(double value, int precision, Symbol symbol)

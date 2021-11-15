@@ -7,6 +7,7 @@ namespace DynamoUnits
     /// <summary>
     /// Data used to set display and formatting preferences for Dynamo UI
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class Display
     {
         /// <summary>

@@ -223,7 +223,6 @@ namespace UnitsUI
             Grid.SetColumn(combo, 0);
             Grid.SetRow(combo, 1);
 
-            //combo.DropDownOpened += combo_DropDownOpened;
             combo.SelectionChanged += delegate
             {
                 if (combo.SelectedIndex != -1)
