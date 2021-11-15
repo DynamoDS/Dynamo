@@ -837,11 +837,86 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("UnitTests")]
-        public void ToString_IncludesName()
+        public void UnitToString_IncludesName()
         {
             var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
             Assert.IsTrue(unitType.ToString().Contains(unitType.Name));
         }
+
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeSymbol_FromLoadedTypeId()
+        {
+            var symbolType = Symbol.ByTypeID("autodesk.unit.symbol:mm-1.0.1");
+            Assert.IsTrue(symbolType.ToString().Contains(symbolType.Text));
+        }
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeSymbol_FromOldTypeId()
+        {
+            var symbolType = Symbol.ByTypeID("autodesk.unit.symbol:mm-1.0.0");
+            Assert.IsTrue(symbolType.ToString().Contains(symbolType.Text));
+        }
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeSymbol_FromFutureTypeId()
+        {
+            var symbolType = Symbol.ByTypeID("autodesk.unit.symbol:mm-1.0.2");
+            Assert.IsTrue(symbolType.ToString().Contains(symbolType.Text));
+        }
+
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeSymbol_FromUnit()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var symbolType = Symbol.SymbolsByUnit(unitType);
+            Assert.AreEqual(1, symbolType.Count());
+            Assert.AreEqual("mm", symbolType.FirstOrDefault().Text);
+        }
+
+        [Test, Category("UnitTests")]
+        public void SymbolDataIsCorrect()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var symbolType = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
+            Assert.IsTrue(symbolType.Space);
+        }
+        [Test, Category("UnitTests")]
+        public void SymbolDataFormatDecimalIsCorrect()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var symbolType = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
+            Assert.AreEqual("100.00 mm",Symbol.StringifyDecimal(100.00, 2, symbolType, false));
+            Assert.AreEqual("100.0000 mm", Symbol.StringifyDecimal(100.00, 4, symbolType, false));
+            Assert.AreEqual("100 mm", Symbol.StringifyDecimal(100.00, 2, symbolType, true));
+            Assert.AreEqual("0 mm", Symbol.StringifyDecimal(0.00, 2, symbolType, true));
+
+        }
+        [Test, Category("UnitTests")]
+        public void SymbolDataFormatFractionCorrect()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var symbolType = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
+            Assert.AreEqual("1/2 mm", Symbol.StringifyFraction(.5, 2, symbolType));
+            Assert.AreEqual("11/16 mm", Symbol.StringifyFraction(.666, 4, symbolType));
+            Assert.AreEqual("1 11/16 mm", Symbol.StringifyFraction(1.666, 4, symbolType));
+            Assert.AreEqual("0 mm", Symbol.StringifyFraction(.01, 1, symbolType));
+            Assert.AreEqual("0 mm", Symbol.StringifyFraction(.01, 2, symbolType));
+            Assert.AreEqual("0 mm", Symbol.StringifyFraction(.01, 3, symbolType));
+            Assert.AreEqual("0 mm", Symbol.StringifyFraction(.01, 4, symbolType));
+            Assert.AreEqual("1/128 mm", Symbol.StringifyFraction(.01, 7, symbolType));
+            //does not support 1/1024
+            Assert.That(() =>
+            {
+                Assert.AreEqual("1/128 mm", Symbol.StringifyFraction(.01, 10, symbolType));
+            },Throws.Exception);
+        }
+
+        [Test, Category("UnitTests")]
+        public void Symbol_ToStringCorrect()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var symbolType = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
+            Assert.AreEqual("Symbol(Text = mm)", symbolType.ToString());
+        }
+
     }
 }
 
