@@ -588,7 +588,7 @@ namespace Dynamo.PythonServices
         /// Find all import statements and import into scope.  If the type is already in the scope, this will be skipped.
         /// </summary>
         /// <param name="code">The code to discover the import statements.</param>
-        internal void UpdateImportedTypes(string code)
+        protected internal void UpdateImportedTypes(string code)
         {
             // Detect all lib references prior to attempting to import anything
             var refs = FindClrReferences(code);

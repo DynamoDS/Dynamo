@@ -90,7 +90,8 @@ clr.setPreload(True)
         }
 
         /// <summary>
-        /// List all of the members in a PythonObject
+        /// List all of the members in a PythonObject. 
+        /// This method calls into Python objects and thus needs to be wrappd in a GIL block.
         /// </summary>
         /// <param name="pyObject">A reference to the module</param>
         /// <param name="name">The name of the module</param>
