@@ -2949,11 +2949,8 @@ This package will be unloaded after the next Dynamo restart.</value>
   <data name="InfoBubbleInfo" xml:space="preserve">
     <value>Info</value>
   </data>
-  <data name="AutodeskSamplePackage" xml:space="preserve">
-    <value>Autodesk sample</value>
-  </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>If you need other software or tools in order to use this package, they are listed under Dependencies. The interactive guide for Package Dependencies will tell you more.</value>
+    <value>\nIf you need other software or tools in order to use this package, they are listed under Dependencies.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Package dependencies</value>
