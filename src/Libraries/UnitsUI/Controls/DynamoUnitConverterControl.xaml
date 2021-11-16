@@ -71,7 +71,7 @@
                 Height ="29"
                 Margin="3,0,3, 3"
                 Background="#666666"
-                Width="34" Command="{Binding ToggleButtonClick}"/>
+                Width="34" Command="{Binding SwitchUnitsButtonClick}"/>
 
             <ComboBox x:Name="SelectConversionTo"   
                 Grid.Column="2"

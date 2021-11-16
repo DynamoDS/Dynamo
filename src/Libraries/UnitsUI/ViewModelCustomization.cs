@@ -24,7 +24,7 @@ namespace UnitsUI
         /// Command that fires when one of the unit conversion controls is clicked,
         /// triggering a recalculation of the conversion.
         /// </summary>
-        public DelegateCommand ToggleButtonClick { get; set; }
+        public DelegateCommand SwitchUnitsButtonClick { get; set; }
 
         /// <summary>
         /// Selected Quantity type for conversion
@@ -146,13 +146,13 @@ namespace UnitsUI
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void OnToggleButtonClick(object obj)
+        private void OnSwitchUnitsButtonClick(object obj)
         {
-            dynamoConvertModel.ToggleDropdownValues();
+            dynamoConvertModel.SwitchUnitsDropdownValues();
             nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
-        private bool CanToggleButton(object obj)
+        private bool CanSwitchUnitsButton(object obj)
         {
             return true;
         }

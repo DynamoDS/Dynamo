@@ -616,7 +616,7 @@ namespace UnitsUI
         /// <summary>
         /// This methods flips the 'to' and 'from' unit of the conversion.
         /// </summary>
-        public void ToggleDropdownValues()
+        public void SwitchUnitsDropdownValues()
         {
             (this.SelectedFromConversion, this.SelectedToConversion) =
                 (this.SelectedToConversion, this.SelectedFromConversion);
