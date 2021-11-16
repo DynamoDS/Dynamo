@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -6,6 +9,7 @@ using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.PythonServices;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Windows;
@@ -23,8 +27,9 @@ namespace PythonNodeModelsWpf
         private ScriptEditorWindow editWindow;
         private ModelessChildWindow.WindowRect editorWindowRect;
         private readonly MenuItem editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
-        private readonly MenuItem pythonEngine2Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo, IsCheckable = false };
-        private readonly MenuItem pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = false };
+        private MenuItem pythonEngineVersionMenu;
+        private MenuItem pythonEngine2Item;
+        private MenuItem pythonEngine3Item;
         private readonly MenuItem learnMoreItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuLearnMoreButton };
 
         public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
@@ -39,30 +44,34 @@ namespace PythonNodeModelsWpf
             nodeView.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += EditScriptContent;
 
-            var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
+            pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
-            pythonEngine2Item.Click += UpdateToPython2Engine;
-            // Bind menu item check state to the Engine property in the ViewModel.
-            // By doing this, we make sure the check status is in sync with the ViewModel,
-            // no matter if we update it through the context menu or other means.
-            // Setting the IsChecked property, on the other hand, is error prone and redundant
-            // once data binding has been set up.
-            pythonEngine2Item.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonNodeModel.Engine))
-            {
-                Source = pythonNodeModel,
-                Converter = new EnumToBooleanConverter(),
-                ConverterParameter = PythonEngineVersion.IronPython2.ToString()
-            });
-            pythonEngine3Item.Click += UpdateToPython3Engine;
-            pythonEngine3Item.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonNodeModel.Engine))
-            {
-                Source = pythonNodeModel,
-                Converter = new EnumToBooleanConverter(),
-                ConverterParameter = PythonEngineVersion.CPython3.ToString()
-            });
+
             learnMoreItem.Click += OpenPythonLearningMaterial;
-            pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
-            pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
+
+            var availableEngines = PythonEngineManager.Instance.AvailableEngines;
+            if (availableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2) ||
+                nodeModel.Engine.Equals(PythonEngineVersion.IronPython2)) 
+            {
+                AddIronPython2MenuItem();
+            }
+
+            if (availableEngines.Any(x => x.Version == PythonEngineVersion.CPython3) ||
+                nodeModel.Engine.Equals(PythonEngineVersion.CPython3))
+            {
+                pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = false };
+                pythonEngine3Item.Click += UpdateToPython3Engine;
+                pythonEngine3Item.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonNodeModel.Engine))
+                {
+                    Source = pythonNodeModel,
+                    Converter = new EnumToBooleanConverter(),
+                    ConverterParameter = PythonEngineVersion.CPython3.ToString()
+                });
+                pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
+            }
+
+            availableEngines.CollectionChanged += PythonEnginesChanged;
+
             nodeView.MainContextMenu.Items.Add(learnMoreItem);
 
             nodeView.UpdateLayout();
@@ -99,8 +108,16 @@ namespace PythonNodeModelsWpf
                 editWindow.Close();
             }
             editWindowItem.Click -= EditScriptContent;
-            pythonEngine2Item.Click -= UpdateToPython2Engine;
-            pythonEngine3Item.Click -= UpdateToPython3Engine;
+            if (pythonEngine2Item != null)
+            {
+                pythonEngine2Item.Click -= UpdateToPython2Engine;
+            }
+            if (pythonEngine3Item != null)
+            {
+                pythonEngine3Item.Click -= UpdateToPython3Engine;
+            }
+
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= PythonEnginesChanged;
             learnMoreItem.Click -= OpenPythonLearningMaterial;
         }
 
@@ -175,6 +192,46 @@ namespace PythonNodeModelsWpf
            new DynamoModel.UpdateModelValueCommand(
                Guid.Empty, pythonNodeModel.GUID, nameof(pythonNodeModel.Engine), PythonEngineVersion.CPython3.ToString()));
             pythonNodeModel.OnNodeModified();
+        }
+
+        private void PythonEnginesChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    PythonEngine engine = item as PythonEngine;
+                    if (engine != null && engine.Version.Equals(PythonEngineVersion.IronPython2))
+                    {// Handle only IronPython2 for now
+                        AddIronPython2MenuItem();
+                        break;
+                    }
+                }      
+            }
+        }
+
+        /// <summary>
+        /// Adds IronPython2 MenuItem
+        /// </summary>
+        private void AddIronPython2MenuItem()
+        {
+            if (pythonEngine2Item != null) return;
+
+            pythonEngine2Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo, IsCheckable = false };
+            pythonEngine2Item.Click += UpdateToPython2Engine;
+            // Bind menu item check state to the Engine property in the ViewModel.
+            // By doing this, we make sure the check status is in sync with the ViewModel,
+            // no matter if we update it through the context menu or other means.
+            // Setting the IsChecked property, on the other hand, is error prone and redundant
+            // once data binding has been set up.
+            pythonEngine2Item.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonNodeModel.Engine))
+            {
+                Source = pythonNodeModel,
+                Converter = new EnumToBooleanConverter(),
+                ConverterParameter = PythonEngineVersion.IronPython2.ToString()
+            });
+
+            pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
         }
     }
 }

@@ -9,6 +9,7 @@ using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.DocumentationBrowser;
 using Dynamo.Graph.Workspaces;
+using Dynamo.PythonServices;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
@@ -40,7 +41,7 @@ namespace DynamoCoreWpfTests
             base.Start();
             // Make sure Python Engine Selector Singleton has all the info up-to-date.
             // This is not needed for Dynamo in normal use case but useful in unit test case.
-            PythonEngineSelector.Instance.ScanPythonEngines();
+            PythonEngineManager.Instance.ScanPythonEngines();
         }
 
         protected override void GetLibrariesToPreload(List<string> libraries)
@@ -435,7 +436,7 @@ namespace DynamoCoreWpfTests
         public void ChangingDropdownEngineDoesNotSavesCodeOrRun()
         {
             // Arrange
-            var engineChange = PythonNodeModels.PythonEngineVersion.CPython3;
+            var engineChange = PythonEngineVersion.CPython3;
 
             Open(@"core\python\python.dyn");
             (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunType = Dynamo.Models.RunType.Automatic;
@@ -536,8 +537,8 @@ namespace DynamoCoreWpfTests
             // Arrange
             // Setup the python3 debug mode, otherwise we wont be able to get the engine version selector 
             // from the nodes context menu
-            var expectedEngineVersionOnOpen = PythonNodeModels.PythonEngineVersion.CPython3;
-            var expectedEngineVersionAfterChange = PythonNodeModels.PythonEngineVersion.IronPython2;
+            var expectedEngineVersionOnOpen = PythonEngineVersion.CPython3;
+            var expectedEngineVersionAfterChange = PythonEngineVersion.IronPython2;
 
             Open(@"core\python\pythonFromString.dyn");
 
@@ -572,7 +573,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(false, cPython3MenuItem.IsChecked);
 
             // Act
-            nodeModel.Engine = PythonNodeModels.PythonEngineVersion.CPython3;
+            nodeModel.Engine = PythonEngineVersion.CPython3;
 
             // Assert
             Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
@@ -588,8 +589,8 @@ namespace DynamoCoreWpfTests
         public void PythonNodeHasLabelDisplayingCurrentEngine()
         {
             // Arrange
-            var expectedDefaultEngineLabelText = PythonNodeModels.PythonEngineVersion.IronPython2.ToString();
-            var engineChange = PythonNodeModels.PythonEngineVersion.CPython3;
+            var expectedDefaultEngineLabelText = PythonEngineVersion.IronPython2.ToString();
+            var engineChange = PythonEngineVersion.CPython3;
 
             Open(@"core\python\python.dyn");
 

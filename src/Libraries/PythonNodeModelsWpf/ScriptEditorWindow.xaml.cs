@@ -14,6 +14,8 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
+using System.Linq;
+using Dynamo.PythonServices;
 
 namespace PythonNodeModelsWpf
 {
@@ -88,14 +90,14 @@ namespace PythonNodeModelsWpf
             editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
 
-            AvailableEngines = new ObservableCollection<PythonEngineVersion>(PythonEngineSelector.Instance.AvailableEngines);
+            AvailableEngines = new ObservableCollection<PythonEngineVersion>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Version));
             // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
             if (!AvailableEngines.Contains(nodeModel.Engine))
             {
                 AvailableEngines.Add(nodeModel.Engine);
             }
 
-            PythonEngineSelector.Instance.AvailableEngines.CollectionChanged += UpdateAvailableEngines;
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged += UpdateAvailableEngines;
 
             editText.Text = propValue;
             originalScript = propValue;
@@ -264,9 +266,10 @@ namespace PythonNodeModelsWpf
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
         {
+            completionProvider?.Dispose();
             nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
             this.Closed -= OnScriptEditorWindowClosed;
-            PythonEngineSelector.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
 
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Close,
