@@ -352,6 +352,7 @@ namespace Dynamo.Wpf.Utilities
                 {
                     Source = NodeViewModel,
                     Path = new PropertyPath(nameof(NodeViewModel.DismissedAlerts)),
+                    Converter = new AlertsLengthTruncater(),
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
                 }
             );
