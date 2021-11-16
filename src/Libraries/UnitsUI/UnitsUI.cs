@@ -284,14 +284,6 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class UnitInput : CoreNodeModels.Input.String
     {
-        public override string NodeType
-        {
-            get
-            {
-                return "UnitInputNode";
-            }
-        }
-        
         private IEnumerable<DynamoUnits.Unit> items;
         private const string defaultUnit = "Feet";
 
@@ -443,20 +435,7 @@ namespace UnitsUI
         private IEnumerable<DynamoUnits.Quantity> quantityConversionSource;
         private IEnumerable<DynamoUnits.Unit> selectedFromConversionSource;
         private IEnumerable<DynamoUnits.Unit> selectedToConversionSource;
-        private const string defaultSelectedQuantity = "Length"; 
-
-        /// <summary>
-        /// The NodeType property provides a name which maps to the
-        /// server type for the node. This property should only be
-        /// used for serialization.
-        /// </summary>
-        public override string NodeType
-        {
-            get
-            {
-                return "ConvertUnitsNode";
-            }
-        }
+        private const string defaultSelectedQuantity = "Length";
 
         /// <summary>
         /// This corresponds to the list of available quantities we can select to convert in.

@@ -101,7 +101,7 @@ namespace DynamoUnits
         /// Returns the formatted expression for a given value and symbol in a fraction format.
         /// </summary>
         /// <param name="value">Number value for the expression</param>
-        /// <param name="precision">precision associated with the fraction</param>
+        /// <param name="precision">Bits of precision for the resulting fraction - i.e 2-> 1/4, 7 -> 1/128. Max supported precision is 9 bits</param>
         /// <param name="symbol">Symbol type</param>
         /// <returns name="string">Formatted unit expression</returns>
         public static string StringifyFraction(double value, int precision, Symbol symbol)
