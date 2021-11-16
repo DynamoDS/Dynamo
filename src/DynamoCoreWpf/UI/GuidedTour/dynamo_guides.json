@@ -222,7 +222,16 @@
 						"WidthBoxDelta": 0,
 						"HeightBoxDelta": 3
 					}
-				}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "button",
+						"WindowName": "PopupWindow",
+						"Name": "BackButton",
+						"Action": "disable"
+					}
+				]
 			},
 			{
 				"Sequence": 2,
@@ -259,6 +268,20 @@
 						"ControlType": "MenuItem",
 						"Name": "PackageManagerMenu",
 						"Action": "open"
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "SubscribeSearchForPackagesOption",
+						"Action": "execute",
+						"UpdatePlacementTarget": true,
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "showPMSearch",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "SearchForPackage_Click"
+							}
+						]
 					}
 				]
 			},
@@ -470,23 +493,18 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
 					"DynamicHostWindow": true,
-					"WindowName": "PackageSearch",
 					"HostUIElementString": "PackageDetailsWindow",
-					"VerticalPopupOffset": 50,
-					"HorizontalPopupOffset": 0
+					"VerticalPopupOffset": 400,
+					"HorizontalPopupOffset": 0,
+					"CutOffRectArea": {
+						"WindowElementNameString": "PackageDetailsWindow",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					}
 				},
 				"UIAutomation": [
 					{
 						"Sequence": 1,
-						"ControlType": "function",
-						"Name": "ExecutePackageSearch",
-						"ExecuteCleanUpForward": false,
-						"ExecuteCleanUpBackward": false,
-						"Action": "execute",
-						"UpdatePlacementTarget": true
-					},
-					{
-						"Sequence": 2,
 						"ControlType": "function",
 						"Name": "ExecuteViewDetailsSideBar",
 						"ExecuteCleanUpForward": false,
