@@ -138,7 +138,10 @@ namespace UnitsUI
         }
     }
 
-    public class StringInputNodeViewCustomization : INodeViewCustomization<UnitInput>
+    /// <summary>
+    /// View customization class for the Unit Input node.  Provides the String input field and Drop down ComboBox for Unit selection. 
+    /// </summary>
+    public class UnitInputNodeViewCustomization : INodeViewCustomization<UnitInput>
     {
         private DynamoViewModel dynamoViewModel;
         private UnitInput nodeModel;
@@ -272,6 +275,9 @@ namespace UnitsUI
         }
     }
 
+    /// <summary>
+    /// View customization class for Unit Converter.  Provides the Drop down ComboBoxes for Quantity and Units.
+    /// </summary>
     public class ConverterNodeViewCustomization : INodeViewCustomization<DynamoUnitConvert>
     {
         private NodeModel nodeModel;
