@@ -813,11 +813,13 @@ namespace Dynamo.ViewModels
         /// pins when a WatchNode is placed in the center of a connector.
         /// </summary>
         /// <param name="point"></param>
-        public void PinConnectorPlacementFromWatchNode(ConnectorModel[] connectors, int connectorWireIndex, Point point)
+        public void PinConnectorPlacementFromWatchNode(ConnectorModel[] connectors, int connectorWireIndex, Point point, List<ModelBase> createdModels)
         {
-            var connectorPinModel = new ConnectorPinModel(point.X, point.Y, Guid.NewGuid(), model.GUID);
-            connectors[connectorWireIndex].AddPin(connectorPinModel);
-            workspaceViewModel.Model.RecordCreatedModel(connectorPinModel);
+            var selectedConnector = connectors[connectorWireIndex];
+
+            var connectorPinModel = new ConnectorPinModel(point.X, point.Y, Guid.NewGuid(), selectedConnector.GUID);
+            selectedConnector.AddPin(connectorPinModel);
+            createdModels.Add(connectorPinModel);
         }
 
         private void HandlerRedrawRequest(object sender, EventArgs e)
@@ -1209,15 +1211,23 @@ namespace Dynamo.ViewModels
 
 
         /// <summary>
-        /// Removes all connectorPinViewModels/ connectorPinModels. This occurs during 'dispose'
+        ///  Removes all connectorPinViewModels/ connectorPinModels. This occurs during 'dispose'
         /// operation as well as during the 'PlaceWatchNode', where all previous pins corresponding 
         /// to a connector are cleareed.
         /// </summary>
-        internal void DiscardAllConnectorPinModels()
+        /// <param name="allDeletedModels"> This argument is used when placing a WatchNode from ConnectorAnchorViewModel. A reference
+        /// to all previous pins is required for undo/redo recorder.</param>
+        internal void DiscardAllConnectorPinModels(List<ModelBase> allDeletedModels = null)
         {
             foreach (var pin in ConnectorPinViewCollection)
             {
                 workspaceViewModel.Pins.Remove(pin);
+                ConnectorModel.RemovePin(pin.Model);
+
+                if(allDeletedModels != null)
+                {
+                    allDeletedModels.Add(pin.Model);
+                }
                 pin.Model.Dispose();
                 pin.Dispose();
             }

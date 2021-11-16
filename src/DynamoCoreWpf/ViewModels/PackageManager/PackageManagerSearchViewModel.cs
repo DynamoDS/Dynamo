@@ -916,13 +916,13 @@ namespace Dynamo.PackageManager
                     results.Sort((e1, e2) => e1.Model.Name.ToLower().CompareTo(e2.Model.Name.ToLower()));
                     break;
                 case PackageSortingKey.Downloads:
-                    results.Sort((e1, e2) => e2.Model.Downloads.CompareTo(e1.Model.Downloads));
+                    results.Sort((e1, e2) => e1.Model.Downloads.CompareTo(e2.Model.Downloads));
                     break;
                 case PackageSortingKey.LastUpdate:
-                    results.Sort((e1, e2) => e2.Versions.Last().Item1.created.CompareTo(e1.Versions.Last().Item1.created));
+                    results.Sort((e1, e2) => e1.Versions.Last().Item1.created.CompareTo(e2.Versions.Last().Item1.created));
                     break;
                 case PackageSortingKey.Votes:
-                    results.Sort((e1, e2) => e2.Model.Votes.CompareTo(e1.Model.Votes));
+                    results.Sort((e1, e2) => e1.Model.Votes.CompareTo(e2.Model.Votes));
                     break;
                 case PackageSortingKey.Maintainers:
                     results.Sort((e1, e2) => e1.Model.Maintainers.ToLower().CompareTo(e2.Model.Maintainers.ToLower()));

@@ -440,8 +440,6 @@ namespace UnitsUI
         private DynamoUnits.Unit selectedFromConversion;
         private DynamoUnits.Unit selectedToConversion;
         private DynamoUnits.Quantity selectedQuantityConversion;
-        private bool isSelectionFromBoxEnabled;
-        private string selectionFromBoxToolTip;
         private IEnumerable<DynamoUnits.Quantity> quantityConversionSource;
         private IEnumerable<DynamoUnits.Unit> selectedFromConversionSource;
         private IEnumerable<DynamoUnits.Unit> selectedToConversionSource;
@@ -555,33 +553,6 @@ namespace UnitsUI
                 RaisePropertyChanged(nameof(SelectedToConversion));
             }
         }
-        /// <summary>
-        /// Property alerting the UI whether a selection from the dropdowns is enabled.
-        /// </summary>
-        [JsonIgnore]
-        public bool IsSelectionFromBoxEnabled
-        {
-            get { return isSelectionFromBoxEnabled; }
-            set
-            {
-                isSelectionFromBoxEnabled = value;
-                RaisePropertyChanged(nameof(IsSelectionFromBoxEnabled));
-            }
-        }
-
-        /// <summary>
-        /// Provides the SelectionFromBox with a tooltip describing the conversion.
-        /// </summary>
-        [JsonIgnore]
-        public string SelectionFromBoxToolTip
-        {
-            get { return selectionFromBoxToolTip; }
-            set
-            {
-                selectionFromBoxToolTip = value;
-                RaisePropertyChanged(nameof(SelectionFromBoxToolTip));
-            }
-        }
 
         [JsonConstructor]
         private DynamoUnitConvert(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
@@ -600,7 +571,6 @@ namespace UnitsUI
             if (inPorts != null) inPorts.First().DefaultValue = defaultNode;
 
             ShouldDisplayPreviewCore = true;
-            IsSelectionFromBoxEnabled = true;
         }
 
         public DynamoUnitConvert()
@@ -621,7 +591,6 @@ namespace UnitsUI
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Resources.CovertUnitOutputTooltip)));
 
             ShouldDisplayPreviewCore = true;
-            IsSelectionFromBoxEnabled = true;
             RegisterAllPorts();
         }
 
@@ -647,7 +616,7 @@ namespace UnitsUI
         /// <summary>
         /// This methods flips the 'to' and 'from' unit of the conversion.
         /// </summary>
-        public void ToggleDropdownValues()
+        public void SwitchUnitsDropdownValues()
         {
             (this.SelectedFromConversion, this.SelectedToConversion) =
                 (this.SelectedToConversion, this.SelectedFromConversion);

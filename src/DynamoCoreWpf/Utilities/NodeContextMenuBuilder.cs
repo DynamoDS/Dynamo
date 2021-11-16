@@ -40,7 +40,10 @@ namespace Dynamo.Wpf.Utilities
             AddContextMenuItem(BuildRenameMenuItem());
             if (nodeViewModel.ArgumentLacing != LacingStrategy.Disabled) AddContextMenuItem(BuildLacingMenuItem());
             
-            //AddContextMenuItem(BuildDismissedAlertsMenuItem());
+            if(NodeViewModel.DismissedAlerts.Count > 0)
+            {
+                AddContextMenuItem(BuildDismissedAlertsMenuItem());
+            }
             
             if (nodeViewCustomizationMenuItems.Count > 0)
             {
@@ -339,45 +342,43 @@ namespace Dynamo.Wpf.Utilities
             return lacingMenuItem;
         }
 
-        // To be connected in a future PR for Node Info States.
-        private static MenuItem BuildDismissedAlertsMenuItem()
+        internal static MenuItem BuildDismissedAlertsMenuItem()
         {
-            //MenuItem dismissedAlertsMenuItem = CreateMenuItem
-            //(
-            //    name: "dismissedAlerts",
-            //    header: Wpf.Properties.Resources.NodeInformationalStateDismissedAlerts,
-            //    itemsSource: new Binding
-            //    {
-            //        Source = viewModel,
-            //        Path = new PropertyPath(nameof("DismissedAlerts"),
-            //        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            //    }
-            //);
-            //DataTemplate itemTemplate = new DataTemplate(typeof(MenuItem));
-
-            //FrameworkElementFactory grid = new FrameworkElementFactory(typeof(Grid));
-            //grid.Name = "mainTemplateGrid";
-            //grid.SetValue(WidthProperty, 220.0);
-            //grid.SetValue(HeightProperty, 30.0);
-            //grid.SetValue(MarginProperty, new Thickness(-15,0,0,0));
-            //grid.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left);
-            //grid.SetValue(VerticalAlignmentProperty, VerticalAlignment.Stretch);
-            //grid.SetValue(BackgroundProperty, new SolidColorBrush(Colors.Transparent));
-
-            //FrameworkElementFactory textBlock = new FrameworkElementFactory(typeof(TextBlock));
-            //textBlock.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-            //textBlock.SetValue(MarginProperty, new Thickness(15, 0, 0, 0));
-            //textBlock.SetValue(IsHitTestVisibleProperty, false);
-            //textBlock.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
-            //textBlock.SetValue(ForegroundProperty, new SolidColorBrush(Color.FromRgb(238,238,238)));
-
-            //dismissedAlertsMenuItem.ItemTemplate = itemTemplate;
-
-            //AddContextMenuItem(dismissedAlertsMenuItem, insertionPoint++);
-
-            return null;
+            MenuItem dismissedAlertsMenuItem = CreateMenuItem
+            (
+                name: "dismissedAlerts",
+                header: Properties.Resources.NodeInformationalStateDismissedAlerts,
+                itemsSource: new Binding
+                {
+                    Source = NodeViewModel,
+                    Path = new PropertyPath(nameof(NodeViewModel.DismissedAlerts)),
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                }
+            );
+            
+            dismissedAlertsMenuItem.Click += DismissedAlertsMenuItemOnClick;
+            return dismissedAlertsMenuItem;
         }
 
+        /// <summary>
+        /// Allows for any previously-dismissed errors/warnings/info messages to be un-dismissed
+        /// and re-displayed on the node in question.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void DismissedAlertsMenuItemOnClick(object sender, RoutedEventArgs e)
+        {
+            if (!(e.OriginalSource is MenuItem menuItem)) return;
+
+            NodeViewModel.ErrorBubble.UndismissMessageCommand.Execute(menuItem.Header);
+        }
+
+        /// <summary>
+        /// Loops through the previously-stashed collection of MenuItems that were injected
+        /// during the NodeViewCustomization process and adds them back into the node's
+        /// context menu. This ensures they appear in a consistent location.
+        /// </summary>
+        /// <param name="nodeViewCustomizationMenuItems"></param>
         internal static void AddInjectedNodeViewCustomizationMenuItems(OrderedDictionary nodeViewCustomizationMenuItems)
         {
             foreach (DictionaryEntry keyValuePair in nodeViewCustomizationMenuItems)

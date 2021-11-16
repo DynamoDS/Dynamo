@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Autodesk.DesignScript.Runtime;
 
 namespace DynamoUnits
 {
@@ -85,7 +86,7 @@ namespace DynamoUnits
         /// Returns the formatted unit expression for a given value and symbol in a decimal format.
         /// </summary>
         /// <param name="value">Number value for the unit</param>
-        /// <param name="precision">Decimal precession for the expression</param>
+        /// <param name="precision">Decimal precision for the expression</param>
         /// <param name="symbol">Symbol type</param>
         /// <param name="removeTrailingZeros">Remove trailing zeros in the output</param>
         /// <returns name="string">Formatted unit expression</returns>
@@ -100,7 +101,7 @@ namespace DynamoUnits
         /// Returns the formatted expression for a given value and symbol in a fraction format.
         /// </summary>
         /// <param name="value">Number value for the expression</param>
-        /// <param name="precision">precession associated with the fraction</param>
+        /// <param name="precision">precision associated with the fraction</param>
         /// <param name="symbol">Symbol type</param>
         /// <returns name="string">Formatted unit expression</returns>
         public static string StringifyFraction(double value, int precision, Symbol symbol)
@@ -112,5 +113,56 @@ namespace DynamoUnits
         {
             return Text != "" ? "Symbol" + "(Text = " + Text + ")" : "Symbol";
         }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Text ?? String.Empty).GetHashCode() ^
+                       (TypeId ?? String.Empty).GetHashCode();
+            }
+        }
+
+        public override bool Equals(object obj) => this.EqualsImpl(obj as Symbol);
+
+        internal bool EqualsImpl(Symbol u)
+        {
+            if (u is null)
+            {
+                return false;
+            }
+
+            if (Object.ReferenceEquals(this, u))
+            {
+                return true;
+            }
+
+            if (this.GetType() != u.GetType())
+            {
+                return false;
+            }
+
+            return (Text == u.Text) && (TypeId == u.TypeId);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static bool operator ==(Symbol lhs, Symbol rhs)
+        {
+            if (lhs is null)
+            {
+                if (rhs is null)
+                {
+                    return true;
+                }
+
+                // Only the left side is null.
+                return false;
+            }
+            // Equals handles case of null on right side.
+            return lhs.EqualsImpl(rhs);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static bool operator !=(Symbol lhs, Symbol rhs) => !(lhs == rhs);
     }
 }

@@ -54,9 +54,6 @@
                 Height ="29" 
                 MinWidth="180"
                 Margin="0,0,0, 3"
-                ToolTip="{Binding SelectionFromBoxToolTip}"
-                ToolTipService.ShowOnDisabled="True" 
-                IsEnabled="{Binding IsSelectionFromBoxEnabled}"
                 SelectedItem="{Binding SelectedFromConversion, Mode=TwoWay}"
                 Style="{StaticResource ResourceKey=RefreshComboBox}">
                 <ComboBox.ItemTemplate>
@@ -74,7 +71,7 @@
                 Height ="29"
                 Margin="3,0,3, 3"
                 Background="#666666"
-                Width="34" Command="{Binding ToggleButtonClick}"/>
+                Width="34" Command="{Binding SwitchUnitsButtonClick}"/>
 
             <ComboBox x:Name="SelectConversionTo"   
                 Grid.Column="2"

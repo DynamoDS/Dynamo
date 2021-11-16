@@ -195,6 +195,15 @@
   <data name="CannotDownloadPackageMessageBoxTitle" xml:space="preserve">
     <value>Cannot Download Package</value>
   </data>
+  <data name="BuiltInPackageConflictMessageBoxTitle" xml:space="preserve">
+    <value>Package has conflicts with one or more Built-In packages.</value>
+  </data>
+  <data name="PackagesInUseConflictMessageBoxTitle" xml:space="preserve">
+    <value>Package has conflicts with one or more packages in use.</value>
+  </data>
+  <data name="LoadedPackagesConflictMessageBoxTitle" xml:space="preserve">
+    <value>Package has conflicts with one or more loaded packages.</value>
+  </data>
   <data name="CannotSubmitPackage" xml:space="preserve">
     <value>You can't submit a package in this version of {0}.  You'll need a host application, like Revit, to submit a package.</value>
     <comment>ErrorString</comment>
@@ -1227,9 +1236,9 @@ Failed to publish file(s):
     <value>Manual</value>
   </data>
   <data name="MessageAlreadyInstallDynamo" xml:space="preserve">
-    <value>{0} has already installed {1}.
+    <value>Package {1} is already installed.
 
-{0} will attempt to uninstall this package before installing.</value>
+{0} will attempt to uninstall this package before installing {2}.</value>
   </data>
   <data name="MessageConfirmToInstallPackage" xml:space="preserve">
     <value>Are you sure you want to install {0} {1} ?</value>
@@ -1361,13 +1370,19 @@ You can always undeprecate the package.</value>
 
 You can always re-deprecate the package.</value>
   </data>
-  <data name="MessageUninstallToContinue" xml:space="preserve">
-    <value>{0} needs to uninstall {1} to continue, but cannot as one of its types appears to be in use.  Try restarting {0}.</value>
-  </data>
-  <data name="MessageUninstallToContinue2" xml:space="preserve">
-    <value>{2} has dependencies. To install {2}, {0} needs to first uninstall the following dependent packages: {1}. Restart {0} to complete the uninstall, then try and download {2} again.
+  <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
+    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
+    
+Do you wish to continue installing it while keeping the packages that are already installed?
 
-Uninstall the following dependent packages: {1}?</value>
+If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
+  </data>
+  <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
+    <value>Package {0} has one or more dependencies that conflict with the following packages: {1}. Dependency conflicts could cause unintended behavior to occur.
+    
+Do you wish to continue installing it while keeping the packages that are already installed?
+
+If not, {2} needs to uninstall {1} to continue. Restart {2}, then download {0} again.</value>
   </data>
   <data name="MessageUnkownErrorOpeningFile" xml:space="preserve">
     <value>Unknown error opening file: {0}</value>
@@ -1747,7 +1762,7 @@ Want to publish a different package?</value>
     <value>Package Contents</value>
   </data>
   <data name="PublishPackageViewAddFileButton" xml:space="preserve">
-    <value>Add file...</value>
+    <value>Add Files</value>
   </data>
   <data name="PublishPackageViewAddFileButtonTooltip" xml:space="preserve">
     <value>Add File To Package</value>
@@ -1756,13 +1771,10 @@ Want to publish a different package?</value>
     <value>Is Node Library</value>
   </data>
   <data name="PublishPackageViewLicense" xml:space="preserve">
-    <value>License (optional - default is MIT)</value>
+    <value>License (optional)</value>
   </data>
   <data name="PublishPackageViewPackageDependencies" xml:space="preserve">
     <value>Dependencies</value>
-  </data>
-  <data name="PublishPackageViewPackageDescription" xml:space="preserve">
-    <value>Description</value>
   </data>
   <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
     <value>A description that helps people understand what the package might be used for.</value>
@@ -1788,7 +1800,7 @@ Want to publish a different package?</value>
     <value>A unique name for the package.</value>
   </data>
   <data name="PublishPackageViewPackageVersion" xml:space="preserve">
-    <value>Version (major minor build)</value>
+    <value>Version (Major Minor Build)</value>
   </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
     <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
@@ -2336,15 +2348,27 @@ Uninstall the following packages: {0}?</value>
     <value>Requires relaunch of Dynamo</value>
     <comment>Preferences | Features | Python | Requires relaunch of Dynamo</comment>
   </data>
-  <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{1} has dependencies that conflict with the following Built-In packages : {2}. {0} cannot override packages in the Built-In Packages location.</value>
+    <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
+    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
+    
+Do you wish to continue trying to install {0}?</value>
   </data>
-  <data name="MessageSamePackageInBuiltinPackages" xml:space="preserve">
-    <value>The package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location.</value>
+    <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
+    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
+    
+You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
   </data>
-  <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>A different version of the package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location.</value>
+  <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
+    <value>The same version of package {0} is already installed as a built-in package and need not be installed again.</value>
   </data>
+  <data name="MessageSamePackageSameVersInLocalPackages" xml:space="preserve">
+    <value>The same version of {0} is already installed and does not need to be installed again.</value>
+  </data>
+  <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
+        <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+        
+Do you wish to restart {2} to first uninstall {1}, then download {0} again?</value>
+    </data>
   <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
     <value>Geometry Scaling</value>
     <comment>Expander Header Name</comment>
@@ -2418,7 +2442,7 @@ Uninstall the following packages: {0}?</value>
     <value>Package Manager</value>
   </data>
   <data name="PackagePathAddPathButtonName" xml:space="preserve">
-    <value>Add Paths</value>
+    <value>Add Path</value>
   </data>
   <data name="PackagePathPreferencesTitle" xml:space="preserve">
     <value>Package/Library Search Paths</value>
@@ -2514,10 +2538,34 @@ Uninstall the following packages: {0}?</value>
     <value>&lt;Double click here to edit group description&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>&lt;Double click here to edit group title&gt;</value>
+    <value>&lt;Click here to edit the group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
-    <value>Add group to group</value>
+    <value>Add Group to Group</value>
+  </data>
+  <data name="NodeInformationalStateDismiss" xml:space="preserve">
+    <value>Dismiss</value>
+  </data>
+  <data name="NodeInformationalStateShowAllInfo" xml:space="preserve">
+    <value>Show all info</value>
+  </data>
+  <data name="NodeInformationalStateShowAllWarnings" xml:space="preserve">
+    <value>Show all warnings</value>
+  </data>
+  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
+    <value>Show all errors</value>
+  </data>
+  <data name="NodeInformationalStateShowLess" xml:space="preserve">
+    <value>Show less</value>
+  </data>
+  <data name="NodeInformationalStateDismissAll" xml:space="preserve">
+    <value>Dismiss all</value>
+  </data>
+  <data name="NodeInfoDismissButtonToolTip" xml:space="preserve">
+    <value>Dismisses the info messages on this node. Utilize when you want to design in graph failures, or the info message will not be relevant during graph execution.</value>
+  </data>
+  <data name="NodeWarningDismissButtonToolTip" xml:space="preserve">
+    <value>Dismisses the warning messages on this node. Utilize when you want to design in graph failures, or the warning message will not be relevant during graph execution.</value>
   </data>
   <data name="BreakConnectionPopupMenuItem" xml:space="preserve">
     <value>Break Connection</value>
@@ -2683,6 +2731,94 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Show Preview Bubbles</value>
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
   </data>
+  <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageVersionMinorWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="PublishPackageViewPackageDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PublishPackageViewPackageNameWatermark" xml:space="preserve">
+    <value>Package name</value>
+  </data>
+  <data name="PackageStateScheduledForUnloadTooltip" xml:space="preserve">
+    <value>Scheduled for Unload.
+This package will be unloaded after the next Dynamo restart.</value>
+  </data>
+  <data name="PublishPackageGroupWatermark" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="PublishPackageKeywordsWatermark" xml:space="preserve">
+    <value>Keywords</value>
+  </data>
+  <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
+    <value>Applies to the latest package version. If blank, the package will be licensed under </value>
+  </data>
+  <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolder" xml:space="preserve">
+    <value>Copyright Holder (optional)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderWatermark" xml:space="preserve">
+    <value>Author name</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderSubLabel" xml:space="preserve">
+    <value>If blank, default is your username</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYear" xml:space="preserve">
+    <value>Copyright Year (optional)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearWatermark" xml:space="preserve">
+    <value>Publishing year</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearSubLabel" xml:space="preserve">
+    <value>If blank, default is publishing year</value>
+  </data>
+  <data name="PublishPackageViewRepositoryUrlWatermark" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebSite" xml:space="preserve">
+    <value>Website Url (optional)</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebSiteWatermark" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="PublishPackageViewAddDirectoryButton" xml:space="preserve">
+    <value>Add Directory</value>
+  </data>
+  <data name="PublishPackageViewAddDirectoryButtonTooltip" xml:space="preserve">
+    <value>Add Directory And Its Files To Package</value>
+  </data>
+  <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
+    <value>Markdown Files Directory (optional)</value>
+  </data>
+  <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
+    <value>An optional location for documenting your package in the markdown format.</value>
+  </data>
+  <data name="PublishPackageViewResetMarkdownDirectoryButton" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="PublishPackageViewResetMarkdownDirectoryButtonToolTip" xml:space="preserve">
+    <value>Clears this package's Markdown directory.</value>
+  </data>
+  <data name="PublishPackageViewRemoveItemToolTip" xml:space="preserve">
+    <value>Removes this item from the package contents list.</value>
+  </data>
+  <data name="PublishPackageExternalPackageDependencies" xml:space="preserve">
+    <value>External Package Dependencies</value>
+  </data>
+  <data name="PreferencesViewMarkdownDirectoryTooltip" xml:space="preserve">
+    <value>Markdown documentation can be added to your package that will leverage the Documentation Browser to display author generated information on a per-node basis.</value>
+  </data>
+  <data name="PublishPackageViewPublisherURLWatermark" xml:space="preserve">
+    <value>URL</value>
+  </data>
   <data name="PackagesGuide" xml:space="preserve">
     <value>Packages</value>
   </data>
@@ -2709,7 +2845,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <comment>Header in the PackageDetailsViewExtension.</comment>
   </data>
   <data name="PackageDetailsLicense" xml:space="preserve">
-    <value>LICENSE:</value>
+    <value>LICENSE OF LATEST PACKAGE</value>
     <comment>Header in the PackageDetailsViewExtension.</comment>
   </data>
   <data name="PackageDetailsVersionsAndPackageRequirements" xml:space="preserve">
@@ -2745,20 +2881,19 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Find a package</value>
   </data>
   <data name="PackagesGuideSearchFilterText" xml:space="preserve">
-    <value>You can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar.</value>
+    <value>\nYou can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar.</value>
   </data>
   <data name="PackagesGuideSearchFilterTitle" xml:space="preserve">
     <value>Search, filter, and sort</value>
   </data>
   <data name="PackagesGuideTermsOfServiceText" xml:space="preserve">
-    <value>Packages may come from third parties. Be aware that packages may pose security risks. More information \n\n**Click I Accept** in the Terms of Service to accept it and proceed with this guide.</value>
+    <value>\nPackages may come from third parties. Be aware that packages may pose security risks. #More information=https://dynamobim.org/issues/extend-dynamo-with-packages  \n\n**Click I Accept** in the Terms of Service to accept it and proceed with this guide.</value>
   </data>
   <data name="PackagesGuideTermsOfServiceTitle" xml:space="preserve">
     <value>Accept the Terms of Service</value>
   </data>
   <data name="PackagesGuideThirdPartyText" xml:space="preserve">
-    <value>Packages may come from third parties. Be aware that packages may pose security risks. 
-More information</value>
+    <value>\nPackages may come from third parties.\n\nBe aware that packages may pose security risks. #More information=https://dynamobim.org/issues/extend-dynamo-with-packages/</value>
   </data>
   <data name="PackagesGuideThirdPartyTitle" xml:space="preserve">
     <value>Third-party packages</value>
@@ -2789,5 +2924,47 @@ More information</value>
   </data>
   <data name="ScriptTagsRemovalWarning" xml:space="preserve">
     <value>Script tags detected in the help document have been removed.</value>
+  </data>
+  <data name="PackagesGuideContinueButton" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="PackagesGuideExitButton" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="ShortcutExportAsImageMainMenu" xml:space="preserve">
+    <value>Export as Image</value>
+  </data>
+  <data name="ShortcutExportBackground3DPreview" xml:space="preserve">
+    <value>Background 3D Preview</value>
+  </data>
+  <data name="ShortcutExportWorkspace" xml:space="preserve">
+    <value>Workspace</value>
+  </data>
+  <data name="PackagesGuideExitAcceptTerms" xml:space="preserve">
+    <value>To continue the guide and install the sample package, you must accept the Terms of Service. \n\n **Click Continue.** Then in the terms, **click I Accept.** \n\n\n\n</value>
+  </data>
+  <data name="PackagesGuideExitTitle" xml:space="preserve">
+    <value>Do you want to exit the guide?</value>
+  </data>
+  <data name="InfoBubbleInfo" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="AutodeskSamplePackage" xml:space="preserve">
+    <value>Autodesk sample</value>
+  </data>
+  <data name="PackagesGuideDependenciesText" xml:space="preserve">
+    <value>If you need other software or tools in order to use this package, they are listed under Dependencies. The interactive guide for Package Dependencies will tell you more.</value>
+  </data>
+  <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
+    <value>Package dependencies</value>
+  </data>
+  <data name="PackagesGuideSearchResultsText" xml:space="preserve">
+    <value>\nSearch results display summary information for each package: -author- -likes and downloads- -date of the most recent version- \n**Click View Details** to see more information about a package.</value>
+  </data>
+  <data name="PackagesGuideSearchResultsTitle" xml:space="preserve">
+    <value>Search results</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
+    <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
   </data>
 </root>
