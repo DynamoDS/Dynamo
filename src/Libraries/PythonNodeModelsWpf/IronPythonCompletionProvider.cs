@@ -5,9 +5,6 @@ using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Logging;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using IronPython.Runtime;
-using Microsoft.Scripting.Actions;
-using Microsoft.Scripting.Hosting;
 using PythonNodeModels;
 
 namespace Dynamo.Python
@@ -32,9 +29,9 @@ namespace Dynamo.Python
         /// track of the state of the editor, allowing access to variable types and
         /// imported symbols.
         /// </summary>
-        public ScriptEngine Engine
+        public object Engine
         {
-            get { return (ScriptEngine)(providerImplementation as ILegacyPythonCompletionCore).Engine; }
+            get { return (providerImplementation as ILegacyPythonCompletionCore).Engine; }
             set { (providerImplementation as ILegacyPythonCompletionCore).Engine = value; }
         }
 
@@ -42,9 +39,9 @@ namespace Dynamo.Python
         /// The scope used by the engine.  This is where all the loaded symbols
         /// are stored.  It's essentially an environment dictionary.
         /// </summary>
-        public ScriptScope Scope
+        public object Scope
         {
-            get { return (ScriptScope)(providerImplementation as ILegacyPythonCompletionCore).Scope; }
+            get { return (providerImplementation as ILegacyPythonCompletionCore).Scope; }
             set { (providerImplementation as ILegacyPythonCompletionCore).Scope = value; }
         }
 
@@ -148,7 +145,7 @@ namespace Dynamo.Python
         /// <param name="module">A reference to the module</param>
         /// <param name="name">The name of the module</param>
         /// <returns>A list of completion data for the module</returns>
-        public List<IronPythonCompletionData> EnumerateMembers(PythonModule module, string name)
+        public List<IronPythonCompletionData> EnumerateMembers(object module, string name)
         {
             var items = new List<IronPythonCompletionData>();
             foreach (var completion in (providerImplementation as ILegacyPythonCompletionCore).EnumerateMembers(module, name))
@@ -166,7 +163,7 @@ namespace Dynamo.Python
         /// <param name="ns">A reference to the module</param>
         /// <param name="name">The name of the module</param>
         /// <returns>A list of completion data for the namespace</returns>
-        public List<IronPythonCompletionData> EnumerateMembers(NamespaceTracker ns, string name)
+        public List<IronPythonCompletionData> EnumerateMembersFromTracker(object ns, string name)
         {
             var items = new List<IronPythonCompletionData>();
             foreach (var completion in (providerImplementation as ILegacyPythonCompletionCore).EnumerateMembersFromTracker(ns, name))
@@ -204,7 +201,7 @@ namespace Dynamo.Python
         /// <param name="name">A name for a type, possibly delimited by periods.</param>
         /// <param name="n">The namespace</param>
         /// <returns>The type as an object</returns>
-        public object LookupMember(string name, NamespaceTracker n)
+        public object LookupMember(string name, object n)
         {
             return (this.providerImplementation as ILegacyPythonCompletionCore).LookupMember(name, n);
         }
