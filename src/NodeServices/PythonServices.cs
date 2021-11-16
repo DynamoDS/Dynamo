@@ -337,6 +337,7 @@ namespace Dynamo.PythonServices
         internal static readonly string internalType = "Autodesk";
 
         internal static readonly string clrReference = "clr.AddReference";
+        internal static readonly string clrTypeLookup = "clr.GetClrType({0}) if (\"{0}\" in locals() or \"{0}\" in __builtins__) and isinstance({0}, type) else None";
 
         /// <summary>
         /// A list of short assembly names used with the TryGetTypeFromFullName method
@@ -799,12 +800,10 @@ namespace Dynamo.PythonServices
                 return ImportedTypes[name];
             }
 
-            // If the type name does not exist in the local or built-in variables, then it is out of scope
-            string lookupScr = String.Format("clr.GetClrType({0}) if (\"{0}\" in locals() or \"{0}\" in __builtins__) and isinstance({0}, type) else None", name);
-
             dynamic type = null;
             try
             {
+                string lookupScr = String.Format(clrTypeLookup, name);
                 type = EvaluateScript(lookupScr, PythonScriptType.Expression);
             }
             catch (Exception e)

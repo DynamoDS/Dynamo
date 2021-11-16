@@ -288,7 +288,7 @@ namespace DynamoPythonTests
             var completionList = completionData.Select(d => d.Text);
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack" }).Count() == 3);
-            Assert.AreEqual(57, completionData.Length);
+            Assert.AreEqual(29, completionData.Length);
         }
 
         [Test]
@@ -413,8 +413,37 @@ namespace DynamoPythonTests
             var completionProvider = new DSCPythonCodeCompletionProviderCore();
             var matches = completionProvider.GetCompletionData(str);
 
+            var matchedTexts = matches.Select(x => x.Text);
+            var arrayListMembers = typeof(System.Collections.ArrayList).GetMembers()
+                .Select(x => x.Name);
+            var commonMembers = arrayListMembers.Intersect(matchedTexts).ToList();
+
             Assert.AreNotEqual(0, matches.Length);
-            //Assert.AreEqual(typeof(IronPython.Runtime.PythonDictionary), matches["a"].Item3);
+            Assert.AreEqual(matches.Length, commonMembers.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanGetCompletionDataForPyBuiltInTypes()
+        {
+            var completionProvider = new DSCPythonCodeCompletionProviderCore();
+            var code = "str.";
+            var matches = completionProvider.GetCompletionData(code);
+            Assert.AreNotEqual(0, matches.Length);
+            Assert.IsTrue(matches.Any(x => x.Text.Contains("capitalize")));
+            Assert.IsTrue(matches.Any(x => x.Text.Contains("count")));
+
+            code = "sys.";
+            matches = completionProvider.GetCompletionData(code);
+            Assert.AreNotEqual(0, matches.Length);
+            Assert.IsTrue(matches.Any(x => x.Text.Contains("path")));
+            Assert.IsTrue(matches.Any(x => x.Text.Contains("modules")));
+
+            code = "clr.";
+            matches = completionProvider.GetCompletionData(code);
+            Assert.AreNotEqual(0, matches.Length);
+            Assert.IsTrue(matches.Any(x => x.Text.Contains("GetClrType")));
+            Assert.IsTrue(matches.Any(x => x.Text.Contains("AddReference")));
         }
 
         [Test]

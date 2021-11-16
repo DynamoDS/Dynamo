@@ -23,6 +23,10 @@ namespace DSCPython
 
         private string uniquePythonScopeName = "uniqueScope";
         private static string globalScopeName = "cPythonCompletionGlobal";
+
+        // Dictionary basic of Python types to instances of those types
+        private Dictionary<Type, PyObject> basicPyObjects;
+
         /// <summary>
         /// The scope used by the engine.  This is where all the loaded symbols
         /// are stored.  It's essentially an environment dictionary.
@@ -80,13 +84,18 @@ clr.setPreload(True)
             }
         }
 
+        public new IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembers(Type type, string name)
+        {
+            return base.EnumerateMembers(type, name);
+        }
+
         /// <summary>
         /// List all of the members in a PythonObject
         /// </summary>
         /// <param name="pyObject">A reference to the module</param>
         /// <param name="name">The name of the module</param>
         /// <returns>A list of completion data for the module</returns>
-        private IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembersForPyObj(object pyObject, string name)
+        private IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembers(object pyObject, string name)
         {
             var items = new List<Tuple<string, string, bool, ExternalCodeCompletionType>>();
             var d = pyObject as PyObject;
@@ -95,14 +104,24 @@ clr.setPreload(True)
                 return items;
             }
 
+            var isCLRType = d.GetPythonType()?.ToString().Contains("CLR") ?? false;
             foreach (var member in d.Dir())
             {
                 try
                 {
                     var completionType = ExternalCodeCompletionType.Field;
-                    var attr = d.GetAttr(member.ToString()).ToString();
+
+                    var memberName = member.ToString();
+                    var attr = d.GetAttr(memberName).ToString();
+                    if (isCLRType && (
+                        memberName.StartsWith("__") && memberName.EndsWith("__")))
+                    {//Ignone python specific members when dealing with wrapped .NET objects
+                        continue;
+                    }
+
                     if (attr.IndexOf(method, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        attr.IndexOf(inBuiltMethod, StringComparison.OrdinalIgnoreCase) >= 0)
+                        attr.IndexOf(inBuiltMethod, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        attr.IndexOf("function", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         completionType = ExternalCodeCompletionType.Method;
                     }
@@ -116,7 +135,7 @@ clr.setPreload(True)
                         completionType = ExternalCodeCompletionType.Namespace;
                     }
 
-                    items.Add(Tuple.Create((string)member.ToString(), name, false, completionType));
+                    items.Add(Tuple.Create(member.ToString(), name, false, completionType));
                 }
                 catch (Exception ex)
                 {
@@ -128,23 +147,33 @@ clr.setPreload(True)
         }
 
         /// <summary>
-        /// Recursively lookup a variable in the _scope
+        /// Lookup a variable in the python environment
         /// </summary>
         /// <param name="name">A name for a type, possibly delimited by periods.</param>
-        /// <returns>The type as an object</returns>
-        private object LookupMember(string name)
+        /// <returns>The Python object</returns>
+        private PyObject LookupObject(string name)
         {
             var periodIndex = name.IndexOf('.');
             using (Py.GIL())
             {
                 if (periodIndex == -1)
                 {
-                    if (Scope.TryGet(name, out object varOutput))
+                    if (Scope.TryGet(name, out PyObject varOutput) && varOutput != null)
                     {
                         return varOutput;
                     }
                 }
-                return null;
+                // There is an issue with calling Dir() on nested PyObjects (not all members are discovered)
+                // As a workaround we can retrieve the PyObject by evaluating directly in Python as a last resort
+
+                try
+                {
+                    return Scope.Eval(string.Format("{0}", name));
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
         #endregion
@@ -187,34 +216,33 @@ clr.setPreload(True)
                     {
                         try
                         {
-                            // Attempt to get type using naming
-                            Type type = expand ? TryGetTypeFromFullName(name) : TryGetType(name);
-
-                            // CLR type
-                            if (type != null)
+                            // Try to find the corresponding PyObject from the python environment
+                            // Most types should be successfully retrieved at this stage
+                            var pyObj = LookupObject(name);
+                            if (pyObj != null)
                             {
-                                items = EnumerateMembers(type, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
-                            }
-                            // Variable assignment types
-                            else if (VariableTypes.TryGetValue(name, out type))
-                            {
-                                items = EnumerateMembersForPyObj(PyObject.FromManagedObject(type), name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
-                            }
+                                items = EnumerateMembers(pyObj, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                            } 
                             else
-                            {// Python objects from the Scope
-                                var mem = LookupMember(name);
-                                if (mem == null && expand)
+                            {
+                                // Attempt to get type using naming
+                                Type type = expand ? TryGetTypeFromFullName(name) : TryGetType(name);
+                                // CLR type
+                                if (type != null)
                                 {
-                                    // There is an issue with calling Dir() on nested PyObjects (not all members are discovered)
-                                    // As a workaround we can retrieve the PyObject by evaluating directly in Python as a last resort
-          
-                                    // Get the PyObject that corresponds to the name
-                                    mem = EvaluateScript(string.Format("{0}", name), PythonScriptType.Expression);
+                                    items = EnumerateMembers(type, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                                 }
-                                // Python Module type
-                                if (mem is PyObject pythonObject)
+                                // Variable assignment types
+                                else if (VariableTypes.TryGetValue(name, out type))
                                 {
-                                    items = EnumerateMembersForPyObj(pythonObject, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                                    if (basicPyObjects.TryGetValue(type, out PyObject basicObj))
+                                    {
+                                        items = EnumerateMembers(basicObj, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                                    }
+                                    else
+                                    {
+                                        items = EnumerateMembers(type, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                                    }
                                 }
                             }
                         }
@@ -284,7 +312,9 @@ clr.setPreload(True)
                 switch (evalType)
                 {
                     case PythonScriptType.Expression:
-                        return Scope.Eval(script);
+                        var result = Scope.Eval(script);
+                        return result.GetManagedObject();
+                        //return CPythonEvaluator.OutputMarshaler.Marshal(result);
                     default:
                         Scope.Exec(script);
                         return null;
@@ -387,6 +417,21 @@ clr.setPreload(True)
                             Log("Failed to load ProtoGeometry types for autocomplete. Python autocomplete will not see Autodesk namespace types.");
                         }
                     }
+
+                    // PythonNet evaluates basic types as Python native types:
+                    // Ex: a = ""
+                    // type(a) will have the value {class str} and not the clr System.String
+                    //
+                    // Populate the basic types after python is initialized
+                    // These instance types will correspond to Python basic types (no clr)
+                    // ex. PyString("") => Python's {class str}
+                    // PyInt(0) => Python's {class int}
+                    basicPyObjects = new Dictionary<Type, PyObject>();
+                    basicPyObjects[typeof(PyString)] = new PyString("");
+                    basicPyObjects[typeof(PyFloat)] = new PyFloat(0);
+                    basicPyObjects[typeof(PyInt)] = new PyInt(0);
+                    basicPyObjects[typeof(PyList)] = new PyList();
+                    basicPyObjects[typeof(PyDict)] = new PyDict();
                 }
             }
             catch {}
