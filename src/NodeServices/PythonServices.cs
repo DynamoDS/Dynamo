@@ -9,9 +9,9 @@ using PythonNodeModels;
 
 namespace PythonNodeModels
 {
+    /// TODO: Remove when dynamic loading logic is there then we no longer need a hard copy of the options
     /// <summary>
     /// Enum of possible values of python engine versions.
-    /// TODO: Remove when dynamic loading logic is there then we no longer need a hard copy of the options
     /// </summary>
     public enum PythonEngineVersion
     {
@@ -42,8 +42,13 @@ namespace Dynamo.PythonServices.EventHandlers
 namespace Dynamo.PythonServices
 {
     [SupressImportIntoVM]
+    /// <summary>
+    /// Enum of possible python evaluation states.
+    /// </summary>
     public enum EvaluationState { Success, Failed }
 
+    [SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     /// <summary>
     /// This abstract class is intended to act as a base class for different python engines
     /// </summary>
