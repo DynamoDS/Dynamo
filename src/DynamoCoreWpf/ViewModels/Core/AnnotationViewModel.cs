@@ -8,6 +8,7 @@ using System.Windows.Media;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
@@ -416,6 +417,7 @@ namespace Dynamo.ViewModels
                         this.AnnotationModel.AddToSelectedModels(model, true);
                     }
                 }
+                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Node added to Group");
             }
         }
 
@@ -472,6 +474,7 @@ namespace Dynamo.ViewModels
                         AddToCutGeometryDictionary(groupViewModel);
                     }
                 }
+                Analytics.TrackEvent(Actions.GroupAddedTo, Categories.GroupOperations, "Group Added to a Group");
             }
         }
 
@@ -485,6 +488,7 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynamoModel.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
+            Analytics.TrackEvent(Actions.GroupRemovedFrom, Categories.GroupOperations, "Group Removed from a Group");
         }
 
         private bool CanUngroupGroup(object parameters)
@@ -787,6 +791,8 @@ namespace Dynamo.ViewModels
             if (!collapseConnectors) return;
 
             CollapseConnectors();
+
+            Analytics.TrackEvent(Actions.Collapsed, Categories.GroupOperations, "Group is collapsed");
         }
 
         private void CollapseConnectors()
@@ -861,6 +867,8 @@ namespace Dynamo.ViewModels
             }
 
             UpdateProxyPortsPosition();
+
+            Analytics.TrackEvent(Actions.Expanded, Categories.GroupOperations, "Group is expanded");
         }
 
         private void UpdateFontSize(object parameter)
@@ -971,6 +979,7 @@ namespace Dynamo.ViewModels
 
         private void OnModelRemovedFromGroup(object sender, EventArgs e)
         {
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Node removed from Group");
             RaisePropertyChanged(nameof(ZIndex));
         }
 

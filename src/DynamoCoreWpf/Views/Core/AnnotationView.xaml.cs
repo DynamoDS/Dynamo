@@ -15,6 +15,7 @@ using DynCmd = Dynamo.Models.DynamoModel;
 using TextBox = System.Windows.Controls.TextBox;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Graph.Annotations;
+using Dynamo.Logging;
 
 namespace Dynamo.Nodes
 {
@@ -151,7 +152,7 @@ namespace Dynamo.Nodes
             if (ViewModel != null)
             {
                 DynamoSelection.Instance.ClearSelection();
-                System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
+                Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
 
                 // Expand the group before deleting it
                 // otherwise collapsed content will be "lost" 
@@ -164,6 +165,8 @@ namespace Dynamo.Nodes
                    new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+
+                Analytics.TrackEvent(Actions.Ungroup, Categories.GroupOperations,"Nodes are un-grouped");
             }
         }
 
@@ -299,6 +302,8 @@ namespace Dynamo.Nodes
                 DynamoSelection.Instance.ClearSelection();
                 ViewModel.SelectAll();
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
+
+                Analytics.TrackEvent(Actions.Delete, Categories.GroupOperations, "Group is deleted");
             }
         }
 
