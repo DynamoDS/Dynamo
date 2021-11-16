@@ -313,8 +313,7 @@ clr.setPreload(True)
                 {
                     case PythonScriptType.Expression:
                         var result = Scope.Eval(script);
-                        return result.GetManagedObject();
-                        //return CPythonEvaluator.OutputMarshaler.Marshal(result);
+                        return result.GetManagedObject();//Get the .Net wrapped object
                     default:
                         Scope.Exec(script);
                         return null;
