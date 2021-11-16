@@ -167,7 +167,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (packageManagerViewModel == null)
                     return;
 
-                //Due that we need to search the Autodesk Sample package after the inicial search is completed 
+                //Due that we need to search the Autodesk Sample package after the initial search is completed 
                 //we need to subscribe to the PropertyChanged event so we will know when the SearchState property is equal to Results (meaning that got results)
                 packageManagerViewModel.PropertyChanged += PackageManagerViewModel_PropertyChanged;          
             }

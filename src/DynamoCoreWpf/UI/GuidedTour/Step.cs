@@ -264,7 +264,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This method will update the CutOff rectangle size everytime that the step change
         /// </summary>
-        /// <param name="bVisible">It will say it the CutOff Area will be disabled or enable</param>
+        /// <param name="bVisible">It will say if the CutOff Area will be disabled or enabled</param>
         private void SetCutOffSectionSize(bool bVisible)
         {
             if (HostPopupInfo.CutOffRectArea == null)
@@ -296,7 +296,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This method will set the highlight rectangle color if there is any configured in the json file
         /// </summary>
-        /// <param name="bVisible">It will say it the Highlight Area will be disabled or enable</param>
+        /// <param name="bVisible">It will say if the Highlight Area will be disabled or enabled</param>
         private void SetHighlightSection(bool bVisible)
         {
             if (HostPopupInfo.HighlightRectArea == null)
