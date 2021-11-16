@@ -46,7 +46,7 @@
 				"Sequence": 2,
 				"Name": "run status",
 				"Type": "tooltip",
-				"TooltipPointerDirection": "bottom_left",
+				"TooltipPointerDirection": "bottom_down",
 				"Width": 480,
 				"Height": 260,
 				"StepContent": {
@@ -56,7 +56,7 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "bottom",
 					"HostUIElementString": "bottomBarGrid",
-					"VerticalPopupOffset": 50,
+					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 320,
 					"CutOffRectArea": {
 						"WidthBoxDelta": 0,
@@ -70,7 +70,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 230,
+				"Height": 245,
 				"StepContent": {
 					"Title": "GetStartedGuideToolbarTitle",
 					"FormattedText": "GetStartedGuideToolbarText"
@@ -97,7 +97,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 190,
+				"Height": 205,
 				"StepContent": {
 					"Title": "GetStartedGuidePreferencesTitle",
 					"FormattedText": "GetStartedGuidePreferencesText"
