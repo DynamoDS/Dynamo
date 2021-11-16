@@ -322,6 +322,7 @@ namespace UnitsUI
             converterControl.SelectConversionQuantity.PreviewMouseUp -= SelectConversionQuantity_PreviewMouseUp;
             converterControl.SelectConversionFrom.PreviewMouseUp -= SelectConversionFrom_PreviewMouseUp;
             converterControl.SelectConversionTo.PreviewMouseUp -= SelectConversionTo_MouseLeftButtonDown;
+            convertModel.PropertyChanged -= converterViewModel.model_PropertyChanged;
         }
     }
 }
