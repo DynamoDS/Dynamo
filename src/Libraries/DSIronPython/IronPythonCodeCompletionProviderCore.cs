@@ -18,6 +18,8 @@ namespace DSIronPython
     internal class IronPythonCodeCompletionProviderCore : PythonCodeCompletionProviderCommon, ILegacyPythonCompletionCore, ILogSource, IDisposable
     {
         #region Private Members
+        internal static readonly string clrTypeLookup = "clr.GetClrType({0}) if (\"{0}\" in locals() or \"{0}\" in __builtins__) and isinstance({0}, type) else None";
+
         private ScriptEngine engine;
         /// <summary>
         /// The engine used for autocompletion.  This essentially keeps
@@ -385,6 +387,11 @@ namespace DSIronPython
         protected internal override bool ScopeHasVariable(string name)
         {
             return scope.ContainsVariable(name);
+        }
+
+        protected override Type GetCLRType(string name)
+        {
+            return EvaluateScript(String.Format(clrTypeLookup, name), PythonScriptType.Expression) as Type;
         }
         #endregion
 

@@ -13,6 +13,9 @@ namespace DSCPython
     internal class DSCPythonCodeCompletionProviderCore : PythonCodeCompletionProviderCommon, ILogSource, IDisposable
     {
         #region Private members
+        // Get clr type if name is an instance of type and if name is not a builtin python type.
+        // Builtin python types might have a corresponding clr type but we pythonnet only knows about the python type.
+        internal static readonly string clrTypeLookup = "clr.GetClrType({0}) if isinstance({0}, type) and (\"{0}\" not in __builtins__) else None";
 
         /// <summary>
         /// The engine used for autocompletion.  This essentially keeps
@@ -105,7 +108,14 @@ clr.setPreload(True)
                 return items;
             }
 
-            var isCLRType = d.GetPythonType()?.ToString().Contains("CLR") ?? false;
+            bool isCLRType = false;
+            try
+            {
+                // Usefull when parsing CLR namespaces (ex. System.Collections.)
+                isCLRType = d.GetAttr("__class__").ToString().Contains("CLR");
+            }
+            catch { }
+
             foreach (var member in d.Dir())
             {
                 try
@@ -217,33 +227,33 @@ clr.setPreload(True)
                     {
                         try
                         {
-                            // Try to find the corresponding PyObject from the python environment
-                            // Most types should be successfully retrieved at this stage
-                            var pyObj = LookupObject(name);
-                            if (pyObj != null)
+                            // Attempt to get type using naming
+                            Type type = expand ? TryGetTypeFromFullName(name) : TryGetType(name);
+                            // CLR type
+                            if (type != null)
                             {
-                                items = EnumerateMembers(pyObj, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
-                            } 
-                            else
+                                items = EnumerateMembers(type, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                            }
+                            // Variable assignment types
+                            else if (VariableTypes.TryGetValue(name, out type))
                             {
-                                // Attempt to get type using naming
-                                Type type = expand ? TryGetTypeFromFullName(name) : TryGetType(name);
-                                // CLR type
-                                if (type != null)
+                                if (basicPyObjects.TryGetValue(type, out PyObject basicObj))
+                                {
+                                    items = EnumerateMembers(basicObj, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                                }
+                                else
                                 {
                                     items = EnumerateMembers(type, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                                 }
-                                // Variable assignment types
-                                else if (VariableTypes.TryGetValue(name, out type))
+                            }
+                            else
+                            {
+                                // Try to find the corresponding PyObject from the python environment
+                                // Most types should be successfully retrieved at this stage
+                                var pyObj = LookupObject(name);
+                                if (pyObj != null)
                                 {
-                                    if (basicPyObjects.TryGetValue(type, out PyObject basicObj))
-                                    {
-                                        items = EnumerateMembers(basicObj, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
-                                    }
-                                    else
-                                    {
-                                        items = EnumerateMembers(type, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
-                                    }
+                                    items = EnumerateMembers(pyObj, name).Select(x => new PythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                                 }
                             }
                         }
@@ -314,7 +324,7 @@ clr.setPreload(True)
                 {
                     case PythonScriptType.Expression:
                         var result = Scope.Eval(script);
-                        return result.GetManagedObject();//Get the .Net wrapped object
+                        return CPythonEvaluator.OutputMarshaler.Marshal(result);
                     default:
                         Scope.Exec(script);
                         return null;
@@ -332,6 +342,15 @@ clr.setPreload(True)
             using (Py.GIL())
             {
                 return Scope.Contains(name);
+            }
+        }
+
+        protected override Type GetCLRType(string name)
+        {
+            using (Py.GIL())
+            {
+                var result = Scope.Eval(String.Format(clrTypeLookup, name));
+                return result?.GetManagedObject() as Type;//Get the .Net wrapped object
             }
         }
         #endregion

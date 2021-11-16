@@ -342,7 +342,6 @@ namespace Dynamo.PythonServices
         internal static readonly string internalType = "Autodesk";
 
         internal static readonly string clrReference = "clr.AddReference";
-        internal static readonly string clrTypeLookup = "clr.GetClrType({0}) if (\"{0}\" in locals() or \"{0}\" in __builtins__) and isinstance({0}, type) else None";
 
         /// <summary>
         /// A list of short assembly names used with the TryGetTypeFromFullName method
@@ -589,6 +588,8 @@ namespace Dynamo.PythonServices
 
         protected internal abstract bool ScopeHasVariable(string name);
 
+        protected abstract Type GetCLRType(string name);
+
         /// <summary>
         /// Find all import statements and import into scope.  If the type is already in the scope, this will be skipped.
         /// </summary>
@@ -805,25 +806,22 @@ namespace Dynamo.PythonServices
                 return ImportedTypes[name];
             }
 
-            dynamic type = null;
+            Type type = null;
             try
             {
-                string lookupScr = String.Format(clrTypeLookup, name);
-                type = EvaluateScript(lookupScr, PythonScriptType.Expression);
+                type = GetCLRType(name);
             }
             catch (Exception e)
             {
                 LogError(String.Format("Failed to look up type: {0}", name));
                 LogError(e.ToString());
             }
-
-            var foundType = type as Type;
-            if (foundType != null)
+            if (type != null)
             {
-                ImportedTypes[name] = foundType;
+                ImportedTypes[name] = type;
             }
 
-            return foundType;
+            return type;
         }
 
         /// <summary>
