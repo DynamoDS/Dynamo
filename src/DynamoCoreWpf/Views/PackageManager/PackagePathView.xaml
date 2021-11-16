@@ -118,34 +118,32 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical" Margin="0,6,0,0">
-        <DockPanel>
-            <Label  Style="{StaticResource PreferenceTitleLabelStyle}"  
-                    Content="{x:Static p:Resources.PackagePathPreferencesTitle}" 
-                                            Padding="5,5,5,5"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Left">
-            </Label>
-            <Button x:Name="AddPaths"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Width="100"
-                    Height="25"
-                    Margin="0,0,0,0"
-                    Content="{x:Static p:Resources.PackagePathAddPathButtonName}"
-                    Command="{Binding Path=AddPathCommand}" 
-                    ToolTip="{x:Static p:Resources.PackagePathViewToolTipPlus}">
-                <Button.Style>
-                    <Style BasedOn="{StaticResource FlatButtonStyle}" TargetType="{x:Type Button}">
-                        <Setter Property="IsEnabled" Value="True"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=PreferenceSettings.DisableCustomPackageLocations}" Value="True">
-                                <Setter Property="IsEnabled" Value="False" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
-        </DockPanel>
+        <Label  Style="{StaticResource PreferenceTitleLabelStyle}"  
+                Content="{x:Static p:Resources.PackagePathPreferencesTitle}" 
+                                        Padding="5,5,5,5"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left">
+        </Label>
+        <Button x:Name="AddPaths"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Height="25"
+                MinWidth="55"
+                Margin="5,5,5,5"
+                Content="{x:Static p:Resources.PackagePathAddPathButtonName}"
+                Command="{Binding Path=AddPathCommand}" 
+                ToolTip="{x:Static p:Resources.PackagePathViewToolTipPlus}">
+            <Button.Style>
+                <Style BasedOn="{StaticResource FlatButtonStyle}" TargetType="{x:Type Button}">
+                    <Setter Property="IsEnabled" Value="True"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=PreferenceSettings.DisableCustomPackageLocations}" Value="True">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <ItemsControl
             Background="{StaticResource PreferencesWindowVisualSettingsBackground}"
             ItemsSource="{Binding RootLocations}"

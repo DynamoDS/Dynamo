@@ -5,7 +5,6 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -169,7 +168,7 @@
                                             <Trigger Property="IsMouseOver" Value="False">
                                                 <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
                                             </Trigger>
-                                            <DataTrigger Binding="{Binding ElementName=ContentPresenter, Path=Content}" Value="Dismissed Alerts">
+                                            <DataTrigger Binding="{Binding ElementName=ContentPresenter, Path=Content}" Value="{x:Static p:Resources.NodeInformationalStateDismissedAlerts}">
                                                 <Setter TargetName="dismissedAlertsBadge" Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                             <Trigger Property="IsChecked" Value="True">
@@ -349,7 +348,7 @@
             <!--  Ellipse sits within Grid to increase size of MouseOver/ToolTip area  -->
             <Grid HorizontalAlignment="Right"
                   VerticalAlignment="Center"
-                  Panel.ZIndex="100"
+                  Panel.ZIndex="5"
                   Background="Transparent"
                   DockPanel.Dock="Right">
                 <Ellipse Name="nodeRenamedBlueDot"
@@ -378,10 +377,10 @@
         <ItemsControl Name="inputPortControl"
                       Grid.Row="2"
                       Grid.Column="0"
-                      Margin="0,3,0,0"
+                      Margin="-25,3,0,0"
                       VerticalAlignment="Top"
                       HorizontalContentAlignment="Stretch"
-                      Canvas.ZIndex="4"
+                      Canvas.ZIndex="6"
                       ItemsSource="{Binding Path=InPorts}"
                       Style="{StaticResource InOutPortControlStyle}" />
 
@@ -410,7 +409,6 @@
             </Grid.RowDefinitions>
 
             <!--  INPUT GRID  -->
-
             <Grid Name="inputGrid"
                   MinHeight="{Binding Source={x:Static configuration:Configurations.PortHeightInPixels}}"
                   HorizontalAlignment="Stretch"
@@ -522,7 +520,6 @@
 
         <Grid Name="PresentationGrid"
               Grid.Row="2"
-              Grid.RowSpan="2"
               Grid.Column="1"
               Margin="6,6,6,3"
               HorizontalAlignment="Left"

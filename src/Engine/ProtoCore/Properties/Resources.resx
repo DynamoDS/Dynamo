@@ -240,8 +240,8 @@
   <data name="kCyclicDependency" xml:space="preserve">
     <value>A cyclic dependency exists between two variables href=kCyclicDependency.html</value>
   </data>
-  <data name="kDeferencingNonPointer" xml:space="preserve">
-    <value>Internal error, please report: Dereferencing a non-pointer. href=DeferencingNonPointer.html</value>
+  <data name="kDereferencingNonPointer" xml:space="preserve">
+    <value>Internal error, please report: Dereferencing a non-pointer. href=DereferencingNonPointer.html</value>
   </data>
   <data name="kExceptionTypeUndefined" xml:space="preserve">
     <value>The exception type '{0}' is not defined</value>

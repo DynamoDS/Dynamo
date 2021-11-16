@@ -74,16 +74,16 @@ limitations under the License.
     <Reference Include="Analytics.NET.Google">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=2.1.7962.24801, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.2.1.7962.24801\lib\net48\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=2.1.7972.24350, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.2.1.7972.24350\lib\net48\Greg.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ProtoGeometry, Version=2.12.0.6565, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_228_0_0.2.12.0.6565\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.13.0.6656, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_228_0_0.2.13.0.6656\lib\net48\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=106.12.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.106.12.0\lib\net452\RestSharp.dll</HintPath>

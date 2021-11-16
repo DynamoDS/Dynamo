@@ -2122,7 +2122,10 @@ namespace Dynamo.Models
                 return;
 
             //Check for empty group
-            var annotations = Workspaces.SelectMany(ws => ws.Annotations);
+            var annotations = Workspaces
+                .SelectMany(ws => ws.Annotations)
+                .OrderBy(x => x.HasNestedGroups);
+
             foreach (var annotation in annotations)
             {
                 //record the annotation before the models in it are deleted.
@@ -2131,7 +2134,8 @@ namespace Dynamo.Models
                     //If there is only one model, then deleting that model should delete the group. In that case, do not record
                     //the group for modification. Until we have one model in a group, group should be recorded for modification
                     //otherwise, undo operation cannot get the group back.
-                    if (annotation.Nodes.Count() > 1 && annotation.Nodes.Where(x => x.GUID == model.GUID).Any())
+                    if (annotation.Nodes.Count() > 1 && 
+                        annotation.Nodes.Where(x => x.GUID == model.GUID).Any())
                     {
                         CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                     }
@@ -2205,14 +2209,13 @@ namespace Dynamo.Models
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
             var selectedGroups = workspaceAnnotations
-                .Where(x => x.IsSelected);
+                .Where(x => x.IsSelected && x.IsExpanded);
 
             // If multiple groups are selected, chances are that we
             // have a group that contains a nested group.
             // If this is the case we want to make sure that we add the
             // node to the parent folder.
-            var selectedGroup = selectedGroups.Count() > 1 ?
-                selectedGroups.FirstOrDefault(x => x.HasNestedGroups) :
+            var selectedGroup = selectedGroups.FirstOrDefault(x => x.HasNestedGroups) ??
                 selectedGroups.FirstOrDefault();
 
             if (selectedGroup != null)

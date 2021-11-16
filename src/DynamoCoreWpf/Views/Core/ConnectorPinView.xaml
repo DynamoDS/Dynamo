@@ -7,8 +7,7 @@
              mc:Ignorable="d" 
              xmlns:ui="clr-namespace:Dynamo.UI"
              MouseLeftButtonDown="OnPinMouseDown"
-             PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
-             MouseLeave="OnPinViewMouseLeave">
+             PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown">
 
     <UserControl.Resources>
         <ResourceDictionary>

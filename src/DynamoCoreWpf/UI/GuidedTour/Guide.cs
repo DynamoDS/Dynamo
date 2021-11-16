@@ -92,15 +92,19 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             if (GuideSteps.Any())
             {
-                Step firstStep = (from step in GuideSteps where step.Sequence == 0 select step).FirstOrDefault();
+                Step firstStep = GuideSteps.FirstOrDefault();
                 CurrentStep = firstStep;
 
                 //When the first step of the guide is a tooltip, then it need to have a background and a hole to highlight the element
                 if (firstStep.HostPopupInfo != null && 
                     firstStep.StepType == Step.StepTypes.TOOLTIP)
-                    SetupBackgroundHole(firstStep);
+                {
+                    SetCutOffSectionSize(firstStep.HostPopupInfo);
+                    SetHighlightSectionColor(firstStep.HostPopupInfo);
+                }
 
-                firstStep.Show();
+
+                firstStep.Show(GuideFlow.FORWARD);
             }
         }
 
@@ -138,6 +142,31 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             UnsubscribeFlowEvents();
             SetLibraryViewVisible(true);
+            ClearSteps();
+        }
+
+        /// <summary>
+        /// This method will remove/undo all the UI Automations previously done when showing each Step
+        /// </summary>
+        internal void ClearSteps()
+        {
+            foreach( var step in GuideSteps)
+            {
+                //In this case we don't need to know the Current Guides Flow when we pass CURRENT
+                step.Hide(GuideFlow.CURRENT);
+            }
+        }
+        /// <summary>
+        /// This method will be executed for continuing to guide tour
+        /// </summary>
+        /// <param name="CurrentStepSequence">This parameter will contain the "sequence" of the current Step so we can continue the same step</param>
+        internal void ContinueStep(int CurrentStepSequence)
+        {
+            if (CurrentStepSequence >= 0)
+            {
+                CalculateStep(GuideFlow.CURRENT, CurrentStepSequence);
+                CurrentStep.Show(GuideFlow.FORWARD);
+            }
         }
 
         /// <summary>
@@ -146,10 +175,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="CurrentStepSequence">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
         internal void NextStep(int CurrentStepSequence)
         {
-            HideCurrentStep(CurrentStepSequence);
+            HideCurrentStep(CurrentStepSequence, GuideFlow.FORWARD);
             if (CurrentStepSequence < TotalSteps)
             {
-                CalculateStep(GuideFlow.FORWARD, CurrentStepSequence);           
+                CalculateStep(GuideFlow.FORWARD, CurrentStepSequence);
+                CurrentStep.Show(GuideFlow.FORWARD);
             }
         }
 
@@ -159,10 +189,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="CurrentStepSequence">This parameter is the "sequence" of the current Step so we can get the previous Step from the list</param>
         internal void PreviousStep(int CurrentStepSequence)
         {
-            HideCurrentStep(CurrentStepSequence);
+            HideCurrentStep(CurrentStepSequence, GuideFlow.BACKWARD);
             if (CurrentStepSequence > 0)
             {
                 CalculateStep(GuideFlow.BACKWARD, CurrentStepSequence);
+                CurrentStep.Show(GuideFlow.BACKWARD);
             }     
         }
 
@@ -172,7 +203,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="stepFlow">The direction flow of the Guide, can be BACKWARD, FORWARD or CURRENT</param>
         /// <param name="CurrentStepSequence">This parameter is the current Step sequence</param>
-        private void CalculateStep(GuideFlow stepFlow, int CurrentStepSequence)
+        internal void CalculateStep(GuideFlow stepFlow, int CurrentStepSequence)
         {
             Step resultStep = null;
             int stepFlowOffSet = Convert.ToInt32(stepFlow);
@@ -196,25 +227,31 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 }
                 if (resultStep != null)
                 {
+
                     SetLibraryViewVisible(resultStep.ShowLibrary);
                     CurrentStep = resultStep;
 
                     if (resultStep.StepType != Step.StepTypes.WELCOME &&
                        resultStep.StepType != Step.StepTypes.SURVEY
                        && resultStep.HostPopupInfo != null)
-                        SetupBackgroundHole(resultStep);
+                    {
+                        SetCutOffSectionSize(CurrentStep.HostPopupInfo);
+                        SetHighlightSectionColor(CurrentStep.HostPopupInfo);
+                    }
                     else
-                        GuideBackgroundElement.HoleRect = new Rect();
-
-                    resultStep.Show();
+                    {
+                        GuideBackgroundElement.ClearCutOffSection();
+                        GuideBackgroundElement.ClearHighlightSection();
+                    }
                 }
             }
         }
 
-        private void HideCurrentStep(int CurrentStepSequence)
+        internal void HideCurrentStep(int CurrentStepSequence, GuideFlow currentFlow)
         {
             CalculateStep(GuideFlow.CURRENT, CurrentStepSequence);
-            CurrentStep.Hide();
+            CurrentStep.Hide(currentFlow);
+            GuideBackgroundElement.ClearHighlightSection();
         }
 
         /// <summary>
@@ -236,46 +273,60 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This method styles the bacground in every step
-        /// </summary>
-        /// <param name="step">This parameter represents the step with informations of the element and color of the border</param>
-        private void SetupBackgroundHole(Step step)
-        {
-            SetupBackgroundHoleSize(step.HostPopupInfo);
-            SetupBackgroundHoleBorderColor(step.HostPopupInfo.HighlightColor);
-        }
-
-        /// <summary>
-        /// This method will set the border color with there is any configured
+        /// This method will set the highlight rectangle color if there is any configured in the json file
         /// </summary>
         /// <param name="highlightColor">This parameter represents the color in hexadecimal</param>
-        private void SetupBackgroundHoleBorderColor(string highlightColor)
+        private void SetHighlightSectionColor(HostControlInfo hostControlInfo)
         {
-            if (string.IsNullOrEmpty(highlightColor))
+            if (hostControlInfo.HighlightRectArea != null)
             {
-                GuideBackgroundElement.HolePath.Stroke = Brushes.Transparent;
-            }
-            else
-            {
-                var converter = new BrushConverter();
-                var brush = (Brush)converter.ConvertFromString(highlightColor);
-                GuideBackgroundElement.HolePath.Stroke = brush;
+                //If is not empty means that the HighlightRectArea.WindowElementNameString doesn't belong to the DynamoView then another way for hightlighting the element will be applied
+                if (!string.IsNullOrEmpty(hostControlInfo.HighlightRectArea.WindowName)) return;
+
+                string highlightColor = hostControlInfo.HighlightRectArea.HighlightColor;
+
+                //This section will get the X,Y coordinates of the HostUIElement based in the Ancestor UI Element so we can put the highlight rectangle
+                Point relativePoint = hostControlInfo.HostUIElement.TransformToAncestor(MainWindow)
+                                  .Transform(new Point(0, 0));
+
+                var holeWidth = hostControlInfo.HostUIElement.DesiredSize.Width + hostControlInfo.HighlightRectArea.WidthBoxDelta;
+                var holeHeight = hostControlInfo.HostUIElement.DesiredSize.Height + hostControlInfo.HighlightRectArea.HeightBoxDelta;
+
+                GuideBackgroundElement.HighlightBackgroundArea.SetHighlighRectSize(relativePoint.Y, relativePoint.X, holeWidth, holeHeight);
+
+                if (string.IsNullOrEmpty(highlightColor))
+                {
+                    GuideBackgroundElement.GuideHighlightRectangle.Stroke = Brushes.Transparent;
+                }
+                else
+                {
+                    var converter = new BrushConverter();
+                    var brush = (Brush)converter.ConvertFromString(highlightColor);
+                    GuideBackgroundElement.GuideHighlightRectangle.Stroke = brush;
+                }
             }
         }
 
         /// <summary>
-        /// This method will update the hole size everytime that the step change
+        /// This method will update the CutOff rectangle size everytime that the step change
         /// </summary>
         /// <param name="hostElement">Element for size and position reference</param>
-        private void SetupBackgroundHoleSize(HostControlInfo hostControlInfo)
+        private void SetCutOffSectionSize(HostControlInfo hostControlInfo)
         {
-            Point relativePoint = hostControlInfo.HostUIElement.TransformToAncestor(MainWindow)
+            if (hostControlInfo.CutOffRectArea != null)
+            {
+                Point relativePoint = hostControlInfo.HostUIElement.TransformToAncestor(MainWindow)
                               .Transform(new Point(0, 0));
 
-            var holeWidth = hostControlInfo.HostUIElement.DesiredSize.Width + hostControlInfo.WidthBoxDelta;
-            var holeHeight = hostControlInfo.HostUIElement.DesiredSize.Height + hostControlInfo.HeightBoxDelta;
+               
+                var holeWidth = hostControlInfo.HostUIElement.DesiredSize.Width + hostControlInfo.CutOffRectArea.WidthBoxDelta;
+                var holeHeight = hostControlInfo.HostUIElement.DesiredSize.Height + hostControlInfo.CutOffRectArea.HeightBoxDelta;
 
-            GuideBackgroundElement.HoleRect = new Rect(relativePoint.X, relativePoint.Y, holeWidth, holeHeight);
+                if (GuideBackgroundElement.CutOffBackgroundArea != null)
+                {
+                    GuideBackgroundElement.CutOffBackgroundArea.CutOffRect = new Rect(relativePoint.X, relativePoint.Y, holeWidth, holeHeight);
+                }
+            }
         }
 
         /// <summary>
@@ -287,6 +338,63 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// If not matching item can be found, a null parent is being returned.</returns>
         internal static UIElement FindChild(DependencyObject parent, string childName)
         {
+            MenuItem menuItem = parent as MenuItem;
+
+            UIElement foundChild;
+            //Due that the child to find can be a MenuItem we need to call a different method for that
+            if (menuItem != null)
+                foundChild = FindChildInMenuItem(parent, childName);
+            else
+                foundChild = FindChildInVisualTree(parent, childName);
+
+            return foundChild;
+        }
+
+        /// <summary>
+        /// Find a Sub MenuItem based in childName passed as parameter
+        /// </summary>
+        /// <param name="parent">Main Window in which the child will be searched </param>
+        /// <param name="childName">Name of the Sub Menu Item</param>
+        /// <returns></returns>
+        internal static UIElement FindChildInMenuItem(DependencyObject parent, string childName)
+        {
+            // Confirm parent is valid. 
+            if (parent == null) return null;
+
+            // Confirm child name is valid. 
+            if (string.IsNullOrEmpty(childName)) return null;
+
+            UIElement foundChild = null;
+
+            MenuItem menuItem = parent as MenuItem;
+
+            foreach (var item in menuItem.Items)
+            {
+                var innerMenuItem = item as MenuItem;
+
+                if(innerMenuItem != null)
+                {
+                    // If the child's name match the searching string
+                    if (innerMenuItem.Name.Equals(childName))
+                    {
+                        foundChild = innerMenuItem;
+                        break;
+                    }
+                }            
+            }
+
+            return foundChild;
+        }
+
+        /// <summary>
+        /// This method will Find a child element in the WPF VisualTree of a Window
+        /// </summary>
+        /// <param name="parent">This represents the Window in which the child will be searched</param>
+        /// <param name="childName">Child UIElement Name</param>
+        /// <returns></returns>
+        internal static UIElement FindChildInVisualTree(DependencyObject parent, string childName)
+        {
+
             // Confirm parent is valid. 
             if (parent == null) return null;
 
@@ -326,6 +434,46 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
 
             return foundChild;
+        }
+
+        /// <summary>
+        /// Due that some Windows are opened dynamically, they are in the Owned Windows but not in the DynamoView VisualTree
+        /// </summary>
+        /// <param name="windowName">String name that represent the Window that will be search</param>
+        /// <param name="mainWindow">The main Window, usually will be the DynamoView</param>
+        /// <returns></returns>
+        internal static Window FindWindowOwned(string windowName, Window mainWindow)
+        {
+            Window findWindow = null;
+            foreach(Window window in mainWindow.OwnedWindows)
+            {
+                if(window.Name.Equals(windowName))
+                {
+                    findWindow = window;
+                    break;
+                }
+            }
+            return findWindow;
+        }
+
+        /// <summary>
+        /// This method will close a specific Window owned by another Window
+        /// </summary>
+        /// <param name="windowName">The name of the Window to be closed</param>
+        /// <param name="mainWindow">MainWindow container of the owned Window</param>
+        internal static void CloseWindowOwned(string windowName, Window mainWindow)
+        {
+            Window findWindow = null;
+            foreach (Window window in mainWindow.OwnedWindows)
+            {
+                if (window.Name.Equals(windowName))
+                {
+                    findWindow = window;
+                    break;
+                }
+            }
+            if (findWindow != null)
+                findWindow.Close();
         }
     }
 }
