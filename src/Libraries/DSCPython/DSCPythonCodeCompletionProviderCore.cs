@@ -164,11 +164,11 @@ clr.setPreload(True)
                         return varOutput;
                     }
                 }
-                // There is an issue with calling Dir() on nested PyObjects (not all members are discovered)
-                // As a workaround we can retrieve the PyObject by evaluating directly in Python as a last resort
 
                 try
                 {
+                    // There is an issue with calling Dir() on nested PyObjects (not all members are discovered)
+                    // As a workaround we can retrieve the PyObject by evaluating directly in Python
                     return Scope.Eval(string.Format("{0}", name));
                 }
                 catch
