@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Autodesk.DesignScript.Runtime;
 
 namespace DynamoUnits
 {
@@ -112,5 +113,56 @@ namespace DynamoUnits
         {
             return Text != "" ? "Symbol" + "(Text = " + Text + ")" : "Symbol";
         }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Text ?? String.Empty).GetHashCode() ^
+                       (TypeId ?? String.Empty).GetHashCode();
+            }
+        }
+
+        public override bool Equals(object obj) => this.EqualsImpl(obj as Symbol);
+
+        internal bool EqualsImpl(Symbol u)
+        {
+            if (u is null)
+            {
+                return false;
+            }
+
+            if (Object.ReferenceEquals(this, u))
+            {
+                return true;
+            }
+
+            if (this.GetType() != u.GetType())
+            {
+                return false;
+            }
+
+            return (Text == u.Text) && (TypeId == u.TypeId);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static bool operator ==(Symbol lhs, Symbol rhs)
+        {
+            if (lhs is null)
+            {
+                if (rhs is null)
+                {
+                    return true;
+                }
+
+                // Only the left side is null.
+                return false;
+            }
+            // Equals handles case of null on right side.
+            return lhs.EqualsImpl(rhs);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static bool operator !=(Symbol lhs, Symbol rhs) => !(lhs == rhs);
     }
 }
