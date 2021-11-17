@@ -9,7 +9,8 @@ In this doc we'll interchangeably use the terms Built-In Packages, Dynamo Built-
 
 ### Considerations / SLA
 * SignedPackages only.
-* Every effort should be made to avoid breaking changes in these packages.
+* Every effort should be made to avoid breaking changes in these packages. This means the package content should have automated tests.
+* Automated tests! Please see above, if a package is included using the Built-In Package mechanism, to a user it appears to be part of the product and should be tested like a produt.
 * High level of polish: icons, node docs, localized content.
 * ... others TBD
 
