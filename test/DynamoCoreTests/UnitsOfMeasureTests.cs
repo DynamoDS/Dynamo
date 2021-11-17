@@ -931,7 +931,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("Symbol(Text = mm)", symbolType.ToString());
         }
 
-        [Test, Category("UnitTests"), Category("Failure")]
+        [Test, Category("UnitTests")]
         public void Symbol_Equality()
         {
             var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
