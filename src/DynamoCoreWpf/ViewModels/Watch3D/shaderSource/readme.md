@@ -20,7 +20,7 @@ This folder contains the following:
 3. Recompile dynamo with a clean and rebuild.
 4. Profit.
 
-## What if I'm missing the FXC Compiler? 
+### What if I'm missing the FXC Compiler? 
 
 If you experience missing fxc errors (_'fxc' is not recognized as an internal or external command_), you will need to install the fxc compiler via the [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/), locate _fxc.exe_ and add it's location to your System Environment Variables (System Properties --> Advanced --> Environment Variables --> User variables for <username>). Example fxc.exe path added: _C:\Program Files (x86)\Windows Kits\10\bin\10.0.20348.0\x64_
 
