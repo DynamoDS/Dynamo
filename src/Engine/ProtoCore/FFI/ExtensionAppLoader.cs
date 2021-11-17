@@ -10,6 +10,7 @@ namespace ProtoFFI
     {
         System.Collections.Hashtable mAssemblies = new System.Collections.Hashtable();
         System.Collections.Hashtable mExtensionApps = new System.Collections.Hashtable();
+
         string mProtoInterface = string.Empty;
 
         // http://csharpindepth.com/articles/general/singleton.aspx
@@ -25,6 +26,7 @@ namespace ProtoFFI
             mProtoInterface = assembly.GetName().Name;
             //Let's resolve ProtoInterface, with the assembly implementing IExtensionApplication i.e. DynamoServices
             mAssemblies.Add("ProtoInterface", assembly);
+
             Initialize();
         }
 
@@ -165,7 +167,7 @@ namespace ProtoFFI
             }
 
             if (null != extesionApp)
-                extesionApp.StartUp();
+                extesionApp.StartUp(new ExtensionStartupParams() { DisableADP = Dynamo.Logging.Analytics.DisableAnalytics });
         }
 
         /// <summary>
@@ -178,7 +180,7 @@ namespace ProtoFFI
             {
                 IExtensionApplication app = i.Value as IExtensionApplication;
                 if (null != app)
-                    app.StartUp();
+                    app.StartUp(new ExtensionStartupParams() { DisableADP = Dynamo.Logging.Analytics.DisableAnalytics });
             }
         }
 

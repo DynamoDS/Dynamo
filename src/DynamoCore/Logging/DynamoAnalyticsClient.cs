@@ -37,7 +37,7 @@ namespace Dynamo.Logging
                 StabilityCookie.WriteCrashingShutdown();
             else
                 StabilityCookie.WriteCleanShutdown();
-            
+
             if (null != heartbeat)
                 Heartbeat.DestroyInstance();
             heartbeat = null;
@@ -103,13 +103,11 @@ namespace Dynamo.Logging
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
 #endif
 
-        private readonly IPreferences preferences = null;
+        private IPreferences preferences = null;
 
         public static IDisposable Disposable { get { return new Dummy(); } }
 
-        private readonly ProductInfo product;
-
-        private readonly HostContextInfo hostInfo;
+        private ProductInfo product;
 
         public virtual IAnalyticsSession Session { get; private set; }
 
@@ -133,6 +131,7 @@ namespace Dynamo.Logging
             {
                 return preferences != null
                     && Service.IsInitialized
+                    && !Analytics.DisableAnalytics
                     && preferences.IsAnalyticsReportingApproved;
             }
         }
@@ -142,11 +141,12 @@ namespace Dynamo.Logging
         /// </summary>
         private bool ReportingADPAnalytics
         {
-            get 
+            get
             {
                 return preferences != null
                     && Service.IsInitialized
-                    && preferences.IsADPAnalyticsReportingApproved; 
+                    && !Analytics.DisableAnalytics
+                    && preferences.IsADPAnalyticsReportingApproved;
             }
         }
 
@@ -155,9 +155,13 @@ namespace Dynamo.Logging
         /// </summary>
         public bool ReportingUsage
         {
-            get { return preferences != null
-                    && Service.IsInitialized
-                    && preferences.IsUsageReportingApproved; }
+            get
+            {
+                return preferences != null
+                  && Service.IsInitialized
+                  && !Analytics.DisableAnalytics
+                  && preferences.IsUsageReportingApproved;
+            }
         }
 
         /// <summary>
@@ -177,13 +181,12 @@ namespace Dynamo.Logging
 
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
-            
+
             var hostName = string.IsNullOrEmpty(dynamoModel.HostName) ? "Dynamo" : dynamoModel.HostName;
 
-            hostInfo = new HostContextInfo() { ParentId = dynamoModel.HostAnalyticsInfo.ParentId, SessionId = dynamoModel.HostAnalyticsInfo.SessionId };
-
-            string buildId = String.Empty, releaseId = String.Empty;
-            if (Version.TryParse(dynamoModel.Version, out Version version))
+            string buildId = "", releaseId = "";
+            Version version;
+            if (Version.TryParse(dynamoModel.Version, out version))
             {
                 buildId = $"{version.Major}.{version.Minor}.{version.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
                 releaseId = $"{version.Major}.{version.Minor}.0"; // ReleaseId has the following format: major.minor.0; ex: 2.5.0
@@ -196,9 +199,10 @@ namespace Dynamo.Logging
             //Some clients such as Revit may allow start/close Dynamo multiple times
             //in the same session so register only if the factory is not registered.
             if (service.GetTrackerFactory(GATrackerFactory.Name) == null)
+            {
                 service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
-
-            Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+                service.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+            }
         }
 
         private void RegisterADPTracker(Service service)
@@ -206,9 +210,10 @@ namespace Dynamo.Logging
             //Some clients such as Revit may allow start/close Dynamo multiple times
             //in the same session so register only if the factory is not registered.
             if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
+            {
                 service.Register(new ADPTrackerFactory());
-
-            Service.Instance.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
+                service.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
+            }
         }
 
         /// <summary>
@@ -217,7 +222,7 @@ namespace Dynamo.Logging
         /// </summary>
         public void Start()
         {
-            if (preferences != null && 
+            if (preferences != null &&
                 (preferences.IsAnalyticsReportingApproved || preferences.IsADPAnalyticsReportingApproved))
             {
                 //Register trackers
@@ -225,7 +230,7 @@ namespace Dynamo.Logging
 
                 // Use separate functions to avoid loading the tracker dlls if they are not opted in (as an extra safety measure).
                 // ADP will be loaded because opt-in/opt-out is handled/serialized exclusively by the ADP module.
-                
+
                 // Register Google Tracker only if the user is opted in.
                 if (preferences.IsAnalyticsReportingApproved)
                     RegisterGATracker(service);
@@ -235,7 +240,7 @@ namespace Dynamo.Logging
                     RegisterADPTracker(service);
 
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
-                Service.StartUp(product, new UserInfo(Session.UserId), hostInfo, TimeSpan.FromMinutes(30));
+                Service.StartUp(product, new UserInfo(Session.UserId), TimeSpan.FromMinutes(30));
                 TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
                 TrackPreferenceInternal("ReportingADPAnalytics", "", ReportingADPAnalytics ? 1 : 0);
             }
