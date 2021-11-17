@@ -1041,7 +1041,7 @@ namespace Dynamo.ViewModels
             // if there is no link, we do nothing
             if (!text.Contains(externalLinkIdentifier)) return null;
 
-            string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
+            string[] split = text.Split(new string[] { externalLinkIdentifier, Environment.NewLine }, StringSplitOptions.None);
 
             // if we only have 1 substring, it means there wasn't anything after the identifier
             if (split.Length <= 1) return null;

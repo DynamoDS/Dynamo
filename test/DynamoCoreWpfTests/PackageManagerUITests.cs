@@ -292,6 +292,370 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Description("User tries to download a package that has a dependency that matches existing built-in package")]
+        public void PackageManagerDepMatchesBltinPackage()
+        {
+            var pathMgr = ViewModel.Model.PathManager;
+            var pkgLoader = GetPackageLoader();
+            PathManager.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
+
+            // Load a builtIn package
+            var builtInPackageLocation = Path.Combine(BuiltinPackagesTestDir, "SignedPackage2");
+            pkgLoader.ScanPackageDirectory(builtInPackageLocation);
+
+            var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
+            Assert.IsNotNull(bltInPackage);
+
+            // Simulate the user downloading the a package from PM that has a dependency of the same name
+            // as the installed built-in package.
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Throws(new Exception("Failed to get your package!"));
+
+            var client = new Dynamo.PackageManager.PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmVm = new PackageManagerClientViewModel(ViewModel, client);
+
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), 
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            var name = "test-123";
+            var deps = new List<Dependency>() { new Dependency {_id = name, name = name},
+                new Dependency {_id = bltInPackage.Name, name = bltInPackage.Name} };
+            var version = "1.0.0";
+
+            // User downloads a package that has a dependency on the same version of the builtIn package
+            // that is locally installled
+            var depVersion = "1.0.0";
+            var depVers = new List<string>() { version, depVersion };
+
+            // IGregClient.ExecuteAndDeserializeWithContent() is called thrice, twice for the package being downloaded
+            // and once for its package dependency, which is why it needs to be mocked thrice in sequence.
+            mockGreg.SetupSequence(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+            .Returns(new ResponseWithContentBody<PackageVersion>()
+            {
+                content = new PackageVersion()
+                {
+                    version = version,
+                    engine_version = bltInPackage.EngineVersion,
+                    name = name,
+                    id = name,
+                    full_dependency_ids = deps,
+                    full_dependency_versions = depVers
+                },
+                success = true
+            }).Returns(new ResponseWithContentBody<PackageVersion>()
+            {
+                content = new PackageVersion()
+                {
+                    version = version,
+                    engine_version = bltInPackage.EngineVersion,
+                    name = name,
+                    id = name,
+                    full_dependency_ids = deps,
+                    full_dependency_versions = depVers
+                },
+                success = true
+            }).Returns(new ResponseWithContentBody<PackageVersion>()
+            {
+                content = new PackageVersion()
+                {
+                    version = depVersion,
+                    engine_version = bltInPackage.EngineVersion,
+                    name = bltInPackage.Name,
+                    id = bltInPackage.Name,
+                    full_dependency_ids = new List<Dependency>(),
+                    full_dependency_versions = new List<string>()
+                },
+                success = true
+            });
+
+            var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(name, VersionUtilities.PartialParse(version));
+            pmVm.DownloadAndInstallPackage(pkgInfo);
+
+            // Users should get 1 warning only:
+            // 1. To confirm that they want to download the specified package.
+
+            // Since the depedency is of the same version as the built-in package installed,
+            // there is no further warning message, and the package will download without further user input.
+            dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
+            dlgMock.ResetCalls();
+        }
+
+        [Test]
+        [Description("User tries to download a package that has a dependency that conflicts with existing built-in package")]
+        public void PackageManagerDepConflictsWithBltinPackage()
+        {
+            var pathMgr = ViewModel.Model.PathManager;
+            var pkgLoader = GetPackageLoader();
+            PathManager.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
+
+            // Load a builtIn package
+            var builtInPackageLocation = Path.Combine(BuiltinPackagesTestDir, "SignedPackage2");
+            pkgLoader.ScanPackageDirectory(builtInPackageLocation);
+
+            var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
+            Assert.IsNotNull(bltInPackage);
+
+            // Simulate the user downloading the a package from PM that has a dependency of the same name
+            // as the installed built-in package.
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Throws(new Exception("Failed to get your package!"));
+
+            var client = new Dynamo.PackageManager.PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmVm = new PackageManagerClientViewModel(ViewModel, client);
+
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(),
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            var name = "test-123";
+            var deps = new List<Dependency>() { new Dependency {_id = name, name = name},
+                new Dependency {_id = bltInPackage.Name, name = bltInPackage.Name} };
+            var version = "1.0.0";
+
+            // User downloads a package that has a dependency on a different version of the builtIn package 
+            // than the one locally installed.
+            var depVersion = "1.9.0";
+            var depVers = new List<string>() { version, depVersion };
+
+            // IGregClient.ExecuteAndDeserializeWithContent() is called thrice, twice for the package being downloaded
+            // and once for its package dependency, which is why it needs to be mocked thrice in sequence.
+            mockGreg.SetupSequence(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+            .Returns(new ResponseWithContentBody<PackageVersion>()
+            {
+                content = new PackageVersion()
+                {
+                    version = version,
+                    engine_version = bltInPackage.EngineVersion,
+                    name = name,
+                    id = name,
+                    full_dependency_ids = deps,
+                    full_dependency_versions = depVers
+                },
+                success = true
+            }).Returns(new ResponseWithContentBody<PackageVersion>()
+            {
+                content = new PackageVersion()
+                {
+                    version = version,
+                    engine_version = bltInPackage.EngineVersion,
+                    name = name,
+                    id = name,
+                    full_dependency_ids = deps,
+                    full_dependency_versions = depVers
+                },
+                success = true
+            }).Returns(new ResponseWithContentBody<PackageVersion>()
+            {
+                content = new PackageVersion()
+                {
+                    version = depVersion,
+                    engine_version = bltInPackage.EngineVersion,
+                    name = bltInPackage.Name,
+                    id = bltInPackage.Name,
+                    full_dependency_ids = new List<Dependency>(),
+                    full_dependency_versions = new List<string>()
+                },
+                success = true
+            });
+
+            var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(name, VersionUtilities.PartialParse(version));
+            pmVm.DownloadAndInstallPackage(pkgInfo);
+
+            // Users should get 2 warnings:
+            // 1. To confirm that they want to download the specified package.
+            // 2. To warn of the built-in package conflict (same name, diff version)
+            dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(2));
+            dlgMock.ResetCalls();
+        }
+
+        [Test]
+        [Description("User tries to download a package that has a dependency that matches existing package")]
+        public void PackageManagerDepMatchesLocalPackage()
+        {
+            var pkgLoader = GetPackageLoader();
+
+            // Load a package
+            string packageLocation = Path.Combine(GetTestDirectory(ExecutingDirectory), @"pkgs\Package");
+            pkgLoader.ScanPackageDirectory(packageLocation);
+
+            var localPkg = pkgLoader.LocalPackages.Where(x => x.Name == "Package").FirstOrDefault();
+            Assert.IsNotNull(localPkg);
+
+            // Simulate the user downloading the a package from PM that has a dependency of the same name
+            // as the installed built-in package.
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Throws(new Exception("Failed to get your package!"));
+
+            var client = new Dynamo.PackageManager.PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmVm = new PackageManagerClientViewModel(ViewModel, client);
+
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(),
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            var name = "test-123";
+            var deps = new List<Dependency>() { new Dependency {_id = name, name = name},
+                new Dependency {_id = localPkg.Name, name = localPkg.Name} };
+            var version = "1.0.0";
+
+            // User downloads a package that has a dependency on the same version of the builtIn package
+            // that is locally installled
+            var depVersion = "1.0.0";
+            var depVers = new List<string>() { version, depVersion };
+
+            // IGregClient.ExecuteAndDeserializeWithContent() is called thrice, twice for the package being downloaded
+            // and once for its package dependency, which is why it needs to be mocked thrice in sequence.
+            mockGreg.SetupSequence(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+            .Returns(new ResponseWithContentBody<PackageVersion>()
+            {
+                content = new PackageVersion()
+                {
+                    version = version,
+                    engine_version = localPkg.EngineVersion,
+                    name = name,
+                    id = name,
+                    full_dependency_ids = deps,
+                    full_dependency_versions = depVers
+                },
+                success = true
+            }).Returns(new ResponseWithContentBody<PackageVersion>()
+            {
+                content = new PackageVersion()
+                {
+                    version = version,
+                    engine_version = localPkg.EngineVersion,
+                    name = name,
+                    id = name,
+                    full_dependency_ids = deps,
+                    full_dependency_versions = depVers
+                },
+                success = true
+            }).Returns(new ResponseWithContentBody<PackageVersion>()
+            {
+                content = new PackageVersion()
+                {
+                    version = depVersion,
+                    engine_version = localPkg.EngineVersion,
+                    name = localPkg.Name,
+                    id = localPkg.Name,
+                    full_dependency_ids = new List<Dependency>(),
+                    full_dependency_versions = new List<string>()
+                },
+                success = true
+            });
+
+            var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(name, VersionUtilities.PartialParse(version));
+            pmVm.DownloadAndInstallPackage(pkgInfo);
+
+            // Users should get 1 warning only:
+            // 1. To confirm that they want to download the specified package.
+
+            // Since the depedency is of the same version as the local package installed,
+            // there is no further warning message, and the package will download without further user input.
+            dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
+            dlgMock.ResetCalls();
+        }
+
+        [Test]
+        [Description("User tries to download a package that has a dependency that conflicts with existing package")]
+        public void PackageManagerDepConflictsWithLocalPackage()
+        {
+            var pkgLoader = GetPackageLoader();
+
+            // Load a package
+            string packageLocation = Path.Combine(GetTestDirectory(ExecutingDirectory), @"pkgs\Package");
+            pkgLoader.ScanPackageDirectory(packageLocation);
+
+            var localPackage = pkgLoader.LocalPackages.Where(x => x.Name == "Package").FirstOrDefault();
+            Assert.IsNotNull(localPackage);
+
+            // Simulate the user downloading the a package from PM that has a dependency of the same name
+            // as the installed built-in package.
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Throws(new Exception("Failed to get your package!"));
+
+            var client = new Dynamo.PackageManager.PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmVm = new PackageManagerClientViewModel(ViewModel, client);
+
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(),
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            var name = "test-123";
+            var deps = new List<Dependency>() { new Dependency {_id = name, name = name},
+                new Dependency {_id = localPackage.Name, name = localPackage.Name} };
+            var version = "1.0.0";
+
+            // User downloads a package that has a dependency on a different version of the builtIn package 
+            // than the one locally installed.
+            var depVersion = "1.9.0";
+            var depVers = new List<string>() { version, depVersion };
+
+            // IGregClient.ExecuteAndDeserializeWithContent() is called thrice, twice for the package being downloaded
+            // and once for its package dependency, which is why it needs to be mocked thrice in sequence.
+            mockGreg.SetupSequence(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+            .Returns(new ResponseWithContentBody<PackageVersion>()
+            {
+                content = new PackageVersion()
+                {
+                    version = version,
+                    engine_version = localPackage.EngineVersion,
+                    name = name,
+                    id = name,
+                    full_dependency_ids = deps,
+                    full_dependency_versions = depVers
+                },
+                success = true
+            }).Returns(new ResponseWithContentBody<PackageVersion>()
+            {
+                content = new PackageVersion()
+                {
+                    version = version,
+                    engine_version = localPackage.EngineVersion,
+                    name = name,
+                    id = name,
+                    full_dependency_ids = deps,
+                    full_dependency_versions = depVers
+                },
+                success = true
+            }).Returns(new ResponseWithContentBody<PackageVersion>()
+            {
+                content = new PackageVersion()
+                {
+                    version = depVersion,
+                    engine_version = localPackage.EngineVersion,
+                    name = localPackage.Name,
+                    id = localPackage.Name,
+                    full_dependency_ids = new List<Dependency>(),
+                    full_dependency_versions = new List<string>()
+                },
+                success = true
+            });
+
+            var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(name, VersionUtilities.PartialParse(version));
+            pmVm.DownloadAndInstallPackage(pkgInfo);
+
+            // Users should get 2 warnings:
+            // 1. To confirm that they want to download the specified package.
+            // 2. To warn of the package conflict (same name, diff version)
+            dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(2));
+            dlgMock.ResetCalls();
+        }
+
+        [Test]
         [Description("User tries to load an unloaded built-in package")]
         public void PackageManagerLoadBuiltIn()
         {
