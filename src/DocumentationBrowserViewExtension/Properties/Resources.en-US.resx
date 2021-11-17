@@ -130,7 +130,7 @@
     <value>Documentation link is not a valid URI.</value>
   </data>
   <data name="MenuItemText" xml:space="preserve">
-    <value>Show Documentation Browser</value>
+    <value>Show _Documentation Browser</value>
   </data>
   <data name="NodeDocumentationCategory" xml:space="preserve">
     <value>Category</value>

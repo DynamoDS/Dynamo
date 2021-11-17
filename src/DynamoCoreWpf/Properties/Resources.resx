@@ -219,39 +219,39 @@
     <comment>Cancel button tooltip</comment>
   </data>
   <data name="DynamoViewDebugMenu" xml:space="preserve">
-    <value>Debug</value>
+    <value>De_bug</value>
     <comment>Debug menu</comment>
   </data>
   <data name="DynamoViewDebugMenuCheckDailyBuild" xml:space="preserve">
-    <value>Check Daily Builds</value>
+    <value>_Check Daily Builds</value>
     <comment>Debug menu | Check the latest daily build</comment>
   </data>
   <data name="DynamoViewDebugMenuDumpLibrary" xml:space="preserve">
-    <value>Dump Library</value>
+    <value>_Dump Library</value>
     <comment>Debug menu | Dump all imported libraries</comment>
   </data>
   <data name="DynamoViewDebugMenuForceReExecute" xml:space="preserve">
-    <value>Force Re-execute</value>
+    <value>_Force Re-execute</value>
     <comment>Debug menu | Force to re-execute the whole graph</comment>
   </data>
   <data name="DynamoViewDebugMenuForceUpdate" xml:space="preserve">
-    <value>Force Update</value>
+    <value>Force _Update</value>
     <comment>Debug menu | Force to update Dynamo</comment>
   </data>
   <data name="DynamoViewDebugMenuRunMutationTest" xml:space="preserve">
-    <value>Run mutation test</value>
+    <value>_Run mutation test</value>
     <comment>Debug menu | Run mutation test</comment>
   </data>
   <data name="DynamoViewDebugMenuShowDebugAST" xml:space="preserve">
-    <value>Show Debug ASTs</value>
+    <value>_Show Debug ASTs</value>
     <comment>Debug menu | Show debug abstract syntax tree</comment>
   </data>
   <data name="DynamoViewDebugMenuVerboseLogging" xml:space="preserve">
-    <value>Verbose Logging</value>
+    <value>_Verbose Logging</value>
     <comment>Debug menu | Verbose logging</comment>
   </data>
   <data name="DynamoViewDebugMenuDebugModes" xml:space="preserve">
-    <value>Debug Modes</value>
+    <value>Debug _Modes</value>
     <comment>Debug menu | Show debug modes</comment>
   </data>
   <data name="DynamoViewEditMenu" xml:space="preserve">
@@ -295,7 +295,7 @@
     <comment>Edit menu | Align selected nodes evenly on vertical direction</comment>
   </data>
   <data name="DynamoViewEditMenuCleanupLayout" xml:space="preserve">
-    <value>_Cleanup Node Layout</value>
+    <value>Cleanup Node _Layout</value>
     <comment>Edit menu | Automatically layout graph</comment>
   </data>
   <data name="DynamoViewEditMenuCopy" xml:space="preserve">
@@ -303,15 +303,15 @@
     <comment>Edit menu | Copy</comment>
   </data>
   <data name="DynamoViewEditMenuCreateCustomNode" xml:space="preserve">
-    <value>_Create Custom Node</value>
+    <value>Crea_te Custom Node</value>
     <comment>Edit menu | Create custom node from selected nodes</comment>
   </data>
   <data name="DynamoViewEditMenuCreateNote" xml:space="preserve">
-    <value>_Create Note</value>
+    <value>Create _Note</value>
     <comment>Edit menu | Create note for a node</comment>
   </data>
   <data name="DynamoViewEditMenuCreateGroup" xml:space="preserve">
-    <value>_Create Group</value>
+    <value>Create _Group</value>
     <comment>Edit menu | Create Grouping for nodes</comment>
   </data>
   <data name="DynamoViewEditMenuDeleteSelected" xml:space="preserve">
@@ -371,7 +371,7 @@
     <comment>File menu | Open</comment>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
-    <value>_Open Recent Files</value>
+    <value>Open _Recent Files</value>
     <comment>File menu | Open Recent files</comment>
   </data>
   <data name="DynamoViewFileMenuSave" xml:space="preserve">
@@ -379,11 +379,11 @@
     <comment>File menu | Save</comment>
   </data>
   <data name="DynamoViewFileMenuSaveAs" xml:space="preserve">
-    <value>_Save As...</value>
+    <value>Save _As...</value>
     <comment>File menu | Save as</comment>
   </data>
   <data name="DynamoViewHelpMenu" xml:space="preserve">
-    <value>Help</value>
+    <value>_Help</value>
     <comment>Help menu</comment>
   </data>
   <data name="DynamoViewDynamoMenuAbout" xml:space="preserve">
@@ -395,11 +395,11 @@
     <comment>Help menu | Display start page</comment>
   </data>
   <data name="DynamoViewHelpMenuGotoWebsite" xml:space="preserve">
-    <value>_Dynamo Website</value>
+    <value>Dynamo _Website</value>
     <comment>Help menu | Go Dynamo website</comment>
   </data>
   <data name="DynamoViewHelpMenuGotoWiki" xml:space="preserve">
-    <value>Dynamo Project _Wiki</value>
+    <value>Dynamo _Project Wiki</value>
     <comment>Help menu | Go to wiki</comment>
   </data>
   <data name="DynamoViewHelpMenuReportBug" xml:space="preserve">
@@ -407,7 +407,7 @@
     <comment>Help menu | Report a bug</comment>
   </data>
   <data name="DynamoViewHepMenuSamples" xml:space="preserve">
-    <value>Samples</value>
+    <value>_Samples</value>
     <comment>Help menu | Samples</comment>
   </data>
   <data name="DynamoViewPackageMenu" xml:space="preserve">
@@ -419,15 +419,15 @@
     <comment>Package menu | Manage packages...</comment>
   </data>
   <data name="DynamoViewPackageMenuPublishNodes" xml:space="preserve">
-    <value>_Publish Selected Nodes...</value>
+    <value>Publish _Selected Nodes...</value>
     <comment>Package menu | Publish selected nodes as a package</comment>
   </data>
   <data name="DynamoViewPackageMenuPublishPackage" xml:space="preserve">
-    <value>_Publish New Package...</value>
+    <value>Publish _New Package...</value>
     <comment>Package menu | Publish new package</comment>
   </data>
   <data name="DynamoViewPackageMenuPublishWorkspace" xml:space="preserve">
-    <value>_Publish Current Workspace...</value>
+    <value>Publish _Current Workspace...</value>
     <comment>Package menu | Publish current workspace as a package</comment>
   </data>
   <data name="DynamoViewPackageMenuSearchPackage" xml:space="preserve">
@@ -487,8 +487,8 @@
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
-    <value>Agreement to Collect Usability Data</value>
-    <comment>Setting menu | Show user agreement dialog about data collecting</comment>
+    <value>Agreement to _Collect Usability Data</value>
+    <comment>Dynamo menu | Show user agreement dialog about data collecting</comment>
   </data>
   <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
     <value>Show Run Preview</value>
@@ -689,7 +689,7 @@
     <comment>View menu | Show connectors</comment>
   </data>
   <data name="DynamoViewViewMenuShowConsole" xml:space="preserve">
-    <value>Show Console</value>
+    <value>_Show Console</value>
     <comment>View menu | Show console</comment>
   </data>
   <data name="DynamoViewViewMenuZoom" xml:space="preserve">
@@ -1830,7 +1830,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Font Size</value>
   </data>
   <data name="GroupContextMenuUngroup" xml:space="preserve">
-    <value>Ungroup</value>
+    <value>_Ungroup</value>
   </data>
   <data name="GroupContextMenuGraphLayout" xml:space="preserve">
     <value>Cleanup Node Layout</value>
@@ -1883,7 +1883,7 @@ Do you want to install the latest Dynamo update?</value>
     <comment>The "More" button on "Publish a Dynamo Package" dialog</comment>
   </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
-    <value>Getting Started</value>
+    <value>_Getting Started</value>
   </data>
   <data name="TermsOfUseAcceptButton" xml:space="preserve">
     <value>I Accept</value>
@@ -2318,7 +2318,7 @@ Want to publish a different package?</value>
     <value>Please update the permissions or go to Preferences &gt;Node and Package Paths...' to change your default directory.</value>
   </data>
   <data name="DynamoViewHelpDictionary" xml:space="preserve">
-    <value>Dynamo Dictionary</value>
+    <value>Dynamo Di_ctionary</value>
     <comment>Help menu | Go to Dynamo dictionary</comment>
   </data>
   <data name="RerunButton" xml:space="preserve">
@@ -2523,7 +2523,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Label used in the general tab</comment>
   </data>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
-    <value>_Extensions</value>
+    <value>E_xtensions</value>
     <comment>Extensions menu</comment>
   </data>
   <data name="ConnectorContextMenuHeaderBreakConnections" xml:space="preserve">
@@ -2707,7 +2707,7 @@ Do you wish to restart {2} to first uninstall {1}, then download {0} again?</val
     <comment>Get Started Dynamo Tour</comment>
   </data>
   <data name="InteractiveGuides" xml:space="preserve">
-    <value>Interactive Guides</value>
+    <value>_Interactive Guides</value>
     <comment>Dynamo Guided Tours</comment>
   </data>
   <data name="GetStartedGuideLibraryText" xml:space="preserve">
@@ -2762,7 +2762,7 @@ Do you wish to restart {2} to first uninstall {1}, then download {0} again?</val
     <value>&lt;Double click here to edit group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
-    <value>Add group to group</value>
+    <value>Add Group to Group</value>
   </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this guide later from the Help menu.</value>
@@ -2933,9 +2933,6 @@ Delete the following packages: {2}?
   <data name="ShortcutExportWorkspace" xml:space="preserve">
     <value>Workspace</value>
   </data>
-  <data name="AutodeskSamplePackage" xml:space="preserve">
-    <value>Autodesk sample</value>
-  </data>
   <data name="PackagesGuideExitAcceptTerms" xml:space="preserve">
     <value>To continue the guide and install the sample package, you must accept the Terms of Service. \n\n **Click Continue.** Then in the terms, **click I Accept.** \n\n\n\n</value>
   </data>
@@ -2946,9 +2943,12 @@ Delete the following packages: {2}?
     <value>\nSearch results display summary information for each package: -author- -likes and downloads- -date of the most recent version- \n**Click View Details** to see more information about a package.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>If you need other software or tools in order to use this package, they are listed under Dependencies. The interactive guide for Package Dependencies will tell you more.</value>
+    <value>\nIf you need other software or tools in order to use this package, they are listed under Dependencies.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Package dependencies</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
+    <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
   </data>
 </root>
