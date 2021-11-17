@@ -376,7 +376,7 @@ namespace Dynamo.PackageManager
         /// <param name="newPaths"></param>
         /// <param name="preferences"></param>
         /// <param name="customNodeManager"></param>
-        internal void LoadCustomNodesAndPackages(IEnumerable<string> newPaths, IPreferences preferences, CustomNodeManager customNodeManager)
+        public void LoadCustomNodesAndPackages(IEnumerable<string> newPaths, IPreferences preferences, CustomNodeManager customNodeManager)
         {
             foreach (var path in preferences.CustomPackageFolders)
             {
@@ -416,7 +416,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        [Obsolete("Do not use. This method is deprecated and will be removed in Dynamo 3.0")]
+        [Obsolete("Do not use. This method is deprecated and will be removed in Dynamo 3.0. Use LoadCustomNodesAndPackages(IEnumerable<string> newPaths, IPreferences preferences, CustomNodeManager customNodeManager) instead.")]
         /// <summary>
         /// This method is called when custom nodes and packages need to be reloaded if there are new package paths.
         /// </summary>
