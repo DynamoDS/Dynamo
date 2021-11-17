@@ -30,6 +30,7 @@ namespace DynamoPythonTests
 
             var completionData = provider.GetCompletionData(str);
             var completionList = completionData.Select(d => d.Text);
+
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack" }).Count() == 3);
             Assert.AreEqual(29, completionData.Length);
@@ -286,6 +287,10 @@ namespace DynamoPythonTests
 
             var completionData = completionProvider.GetCompletionData(str);
             var completionList = completionData.Select(d => d.Text);
+
+            Console.WriteLine("System.Collections: ");
+            foreach(var item in completionList) { Console.Write(item); }
+
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack" }).Count() == 3);
             Assert.AreEqual(29, completionData.Length);
