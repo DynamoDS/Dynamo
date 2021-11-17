@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DSCPython;
-using Dynamo.Logging;
 using Dynamo.Python;
 using Dynamo.PythonServices;
 using Dynamo.Utilities;
@@ -12,7 +11,7 @@ using NUnit.Framework;
 namespace DynamoPythonTests
 {
     [TestFixture]
-    internal class SharedCodeCompletionProviderTests : CodeCompletionTests
+    internal class SharedCodeCompletionProviderTests
     {
         [Test]
         public void SharedCoreCanFindLoadedProviders()
@@ -33,75 +32,14 @@ namespace DynamoPythonTests
 
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack" }).Count() == 3);
-            Assert.AreEqual(29, completionData.Length);
+            // Serial tests load an extra type (System.Collections.Immutable) in the Python engine
+            Assert.IsTrue(completionData.Length >= 29 && completionData.Length <= 30);
         }
     }
 
     [TestFixture]
     internal class CodeCompletionTests
     {
-        private DSCPythonCodeCompletionProviderCore CPythonCodeCompletionProvider;
-
-        private class SimpleLogger : ILogger
-        {
-
-            public string LogPath
-            {
-                get { return ""; }
-            }
-
-            public void Log(string message)
-            {
-
-            }
-
-            public void Log(string message, LogLevel level)
-            {
-
-            }
-
-            public void Log(string tag, string message)
-            {
-
-            }
-
-            public void LogError(string error)
-            {
-
-            }
-
-            public void LogWarning(string warning, WarningLevel level)
-            {
-
-            }
-
-            public void Log(Exception e)
-            {
-
-            }
-
-            public void ClearLog()
-            {
-
-            }
-
-            public string LogText
-            {
-                get { return ""; }
-            }
-
-            public string Warning
-            {
-                get
-                {
-                    return "";
-                }
-                set { return; }
-            }
-        }
-
-        private ILogger logger;
-
         // List of expected default imported types
         private List<string> defaultImports = new List<string>()
         {
@@ -279,8 +217,7 @@ namespace DynamoPythonTests
 
         [Test]
         [Category("UnitTests")]
-        public void CanImportSystemCollectionsLibraryAndGetCompletionData
-            ()
+        public void CanImportSystemCollectionsLibraryAndGetCompletionData()
         {
             var str = "\nimport System.Collections\nSystem.Collections.";
             var completionProvider = new DSCPythonCodeCompletionProviderCore();
@@ -288,12 +225,10 @@ namespace DynamoPythonTests
             var completionData = completionProvider.GetCompletionData(str);
             var completionList = completionData.Select(d => d.Text);
 
-            Console.WriteLine("System.Collections: ");
-            foreach(var item in completionList) { Console.Write(item); }
-
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack" }).Count() == 3);
-            Assert.AreEqual(29, completionData.Length);
+            // Serial tests load an extra type (System.Collections.Immutable) in the Python engine
+            Assert.IsTrue(completionData.Length >= 29 && completionData.Length <= 30);
         }
 
         [Test]
