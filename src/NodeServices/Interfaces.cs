@@ -142,8 +142,7 @@ namespace Autodesk.DesignScript.Interfaces
     }
 
     /// <summary>
-    /// An options class used 
-    /// from DesignScript application.
+    /// An options structure used when calling IExtensionApplication.Startup
     /// </summary>
     public struct ExtensionStartupParams
     {
