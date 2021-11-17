@@ -5,6 +5,8 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:controls="clr-namespace:Dynamo.Views"
+             xmlns:controls1="clr-namespace:Dynamo.Controls"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -30,15 +32,6 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <!--  Sets grid to 70% opacity when node is frozen  -->
-        <Grid.Style>
-            <Style>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsFrozen, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                        <Setter Property="Grid.Opacity" Value="0.7" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </Grid.Style>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" MinWidth="10" />
@@ -605,7 +598,7 @@
                    Height="12"
                    Canvas.ZIndex="1"
                    Fill="{Binding WarningBarColor, UpdateSourceTrigger=PropertyChanged}"
-                   Visibility="{Binding IsWarningBarVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                   Visibility="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
 
         <Canvas Name="expansionBay"
                 Grid.Row="5"

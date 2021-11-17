@@ -350,34 +350,23 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private const double WarningsBarVisibilityThreshold = 0.4;
-
-        /// <summary>
-        /// Determines whether or not the opaque warning bar is visible under nodes with
-        /// undismissed info/warning/error messages.
-        /// </summary>
-        [JsonIgnore]
-        public bool IsWarningBarVisible => WorkspaceViewModel.Zoom >= WarningsBarVisibilityThreshold &&
-                                           ErrorBubble?.NodeErrorsToDisplay.Count > 0 ||
-                                           WorkspaceViewModel.Zoom >= WarningsBarVisibilityThreshold &&
-                                           ErrorBubble?.NodeWarningsToDisplay.Count > 0;
-
         /// <summary>
         /// Determines whether or not the semi-transparent overlay is displaying on the node.
         /// This reflects whether the node is in a info/warning/error/frozen state
         /// </summary>
         [JsonIgnore]
         public bool NodeOverlayVisible => IsFrozen ||
-                                          ErrorBubble?.NodeErrorsToDisplay.Count > 0 && WorkspaceViewModel.Zoom < WarningsBarVisibilityThreshold ||
-                                          ErrorBubble?.NodeWarningsToDisplay.Count > 0 && WorkspaceViewModel.Zoom < WarningsBarVisibilityThreshold;
+                                          ErrorBubble?.NodeErrorsToDisplay.Count > 0 && WorkspaceViewModel.Zoom < Configurations.ZoomedOutThreshold ||
+                                          ErrorBubble?.NodeWarningsToDisplay.Count > 0 && WorkspaceViewModel.Zoom < Configurations.ZoomedOutThreshold;
 
         /// <summary>
         /// The color of the warning bar: blue for info, orange for warnings, red for errors.
         /// </summary>
+        [JsonIgnore]
         public SolidColorBrush WarningBarColor
         {
             get => warningBarColor;
-            set
+            internal set
             {
                 warningBarColor = value;
                 RaisePropertyChanged(nameof(WarningBarColor));
@@ -389,15 +378,13 @@ namespace Dynamo.ViewModels
         /// Determines the color of the node's visual overlay, which displays
         /// if the node is in a Frozen, Info, Error or Warning state.
         /// </summary>
+        [JsonIgnore]
         public SolidColorBrush NodeOverlayColor
         {
             get
             {
                 if (IsFrozen) return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeFrozenOverlayColor"];
-
-                return NodeModel.State == ElementState.Error ?
-                    (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeErrorColor"] :
-                    (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeWarningColor"];
+                return ErrorBubble == null ? null : GetWarningColor(ErrorBubble.InfoBubbleStyle);
             }
         }
 
@@ -805,8 +792,8 @@ namespace Dynamo.ViewModels
         /// <param name="e"></param>
         private void UpdateWarningsAndOverlays(object sender, EventArgs e)
         {
-            RaisePropertyChanged(nameof(IsWarningBarVisible));
             RaisePropertyChanged(nameof(NodeOverlayVisible));
+            RaisePropertyChanged(nameof(NodeOverlayColor));
         }
         
         /// <summary>
@@ -1050,6 +1037,7 @@ namespace Dynamo.ViewModels
                 case "IsFrozen":
                     RaiseFrozenPropertyChanged();
                     RaisePropertyChanged(nameof(NodeOverlayVisible));
+                    RaisePropertyChanged(nameof(NodeOverlayColor));
                     break;
             }
         }
@@ -1092,8 +1080,9 @@ namespace Dynamo.ViewModels
         /// Sets the color of the warning bar, which informs the user that the node is in
         /// either an error or a warning state.
         /// </summary>
-        /// <param name="elementState"></param>
-        private void SetWarningBarColor(InfoBubbleViewModel.Style style)
+        /// <param name="style"></param>
+        /// <returns></returns>
+        private SolidColorBrush GetWarningColor(InfoBubbleViewModel.Style style)
         {
             switch (style)
             {
@@ -1101,18 +1090,15 @@ namespace Dynamo.ViewModels
                     break;
                 case InfoBubbleViewModel.Style.Warning:
                 case InfoBubbleViewModel.Style.WarningCondensed:
-                    WarningBarColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeWarningColor"];
-                    break;
+                    return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeWarningColor"];
                 case InfoBubbleViewModel.Style.Error:
                 case InfoBubbleViewModel.Style.ErrorCondensed:
-                    WarningBarColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeErrorColor"];
-                    break;
+                    return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeErrorColor"];
                 case InfoBubbleViewModel.Style.Info:
-                    WarningBarColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInfoColor"];
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(style), style, null);
+                    return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInfoColor"];
             }
+
+            return null;
         }
 
         
@@ -1165,13 +1151,13 @@ namespace Dynamo.ViewModels
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
                     ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                    SetWarningBarColor(ErrorBubble.InfoBubbleStyle);
+                    WarningBarColor = GetWarningColor(ErrorBubble.InfoBubbleStyle);
                 });
             }
             else
             {
                 ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                SetWarningBarColor(ErrorBubble.InfoBubbleStyle);
+                WarningBarColor = GetWarningColor(ErrorBubble.InfoBubbleStyle);
             }
             
             ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);

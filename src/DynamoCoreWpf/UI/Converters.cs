@@ -1546,24 +1546,14 @@ namespace Dynamo.Controls
         }
     }
 
-    //TODO remove(this is not used anywhere) in Dynamo 3.0
-    public class ZoomToVisibilityConverter : IValueConverter
+    public class ZoomToVisibilityCollapsedConverter : IValueConverter
     {
-        /// <summary>
-        /// Returns hidden for small zoom sizes - appears unused.
-        /// </summary>
-        /// <param name="value">zoom size</param>
-        /// <param name="targetType">unused</param>
-        /// <param name="parameter">unused</param>
-        /// <param name="culture">unused</param>
-        /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             try
             {
                 double zoom = System.Convert.ToDouble(value, CultureInfo.InvariantCulture);
-                if (zoom < .5)
-                    return Visibility.Hidden;
+                if (zoom < Configurations.ZoomedOutThreshold) return Visibility.Collapsed;
             }
             catch(Exception e)
             {
