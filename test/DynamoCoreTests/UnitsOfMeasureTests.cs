@@ -11,7 +11,7 @@ namespace Dynamo.Tests
         [SetUp]
         public void Setup()
         {
-            BaseUnit.NumberFormat = "f4";
+            Display.PrecisionFormat = "f4";
         }
 
         [Test]
