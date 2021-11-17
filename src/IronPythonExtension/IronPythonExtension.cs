@@ -80,7 +80,6 @@ namespace IronPythonExtension
             if (pythonEvaluatorLib != null)
             {
                 libraryLoader.LoadNodeLibrary(pythonEvaluatorLib);
-                PythonEngineManager.Instance.ScanPythonEngines();
             }
         }
 

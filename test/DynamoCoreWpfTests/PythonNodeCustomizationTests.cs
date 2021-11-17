@@ -36,14 +36,6 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
-        public override void Start()
-        {
-            base.Start();
-            // Make sure Python Engine Selector Singleton has all the info up-to-date.
-            // This is not needed for Dynamo in normal use case but useful in unit test case.
-            PythonEngineManager.Instance.ScanPythonEngines();
-        }
-
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("DSCPython.dll");

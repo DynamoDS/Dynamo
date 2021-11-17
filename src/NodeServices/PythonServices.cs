@@ -164,25 +164,21 @@ namespace Dynamo.PythonServices
         {
             AvailableEngines = new ObservableCollection<PythonEngine>();
 
-            ScanPythonEngines();
-            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(AssemblyLoadEventHandler);
-        }
-
-        internal PythonEngine GetEngine(string version)
-        {
-            return AvailableEngines.FirstOrDefault(x => x.Name == version);
-        }
-
-        /// <summary>
-        /// Scan loaded Python engines
-        /// </summary>
-        internal void ScanPythonEngines()
-        {
-            var assems = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assems)
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 ScanPythonEngine(assembly);
             }
+            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(AssemblyLoadEventHandler);
+        }
+
+        private PythonEngine GetEngine(PythonEngineVersion version)
+        {
+            return GetEngine(version.ToString());
+        }
+
+        private PythonEngine GetEngine(string version)
+        {
+            return AvailableEngines.FirstOrDefault(x => x.Name == version);
         }
 
         /// <summary>
@@ -194,15 +190,13 @@ namespace Dynamo.PythonServices
         internal void GetEvaluatorInfo(PythonEngineVersion engine, out string evaluatorClass, out string evaluationMethod)
         {
             // Provide evaluator info when the selected engine is loaded
-            if (engine == PythonEngineVersion.IronPython2 &&
-                AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2))
+            if (engine == PythonEngineVersion.IronPython2 && GetEngine(PythonEngineVersion.IronPython2) != null)
             {
                 evaluatorClass = IronPythonEvaluatorClass;
                 evaluationMethod = IronPythonEvaluationMethod;
                 return;
             }
-            if (engine == PythonEngineVersion.CPython3 &&
-                AvailableEngines.Any(x => x.Version == PythonEngineVersion.CPython3))
+            if (engine == PythonEngineVersion.CPython3 && GetEngine(PythonEngineVersion.CPython3) != null)
             {
                 evaluatorClass = CPythonEvaluatorClass;
                 evaluationMethod = CPythonEvaluationMethod;
@@ -218,7 +212,7 @@ namespace Dynamo.PythonServices
 
         private void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args)
         {
-            PythonEngineManager.Instance.ScanPythonEngine(args.LoadedAssembly);
+            Instance.ScanPythonEngine(args.LoadedAssembly);
         }
 
         private void ScanPythonEngine(Assembly assembly)
@@ -228,21 +222,21 @@ namespace Dynamo.PythonServices
                 return;
             }
 
-            PythonEngine engine = null;
-            // Currently we are using try-catch to validate loaded assembly and evaluation method exist
+            // Currently we are using try-catch to validate loaded assembly and Singleton Instance method exist
             // but we can optimize by checking all loaded types against evaluators interface later
             try
             {
                 var eType = assembly.GetTypes().FirstOrDefault(x => typeof(PythonEngine).IsAssignableFrom(x));
-                engine = (PythonEngine)eType?.GetProperty(PythonEvaluatorSingletonInstance, BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
+                PythonEngine engine = (PythonEngine)eType?.GetProperty(PythonEvaluatorSingletonInstance, BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
+
+                if (engine != null && GetEngine(engine.Name) == null)
+                {
+                    AvailableEngines.Add(engine);
+                }
             }
             catch
             {
                 //Do nothing for now
-            }
-            if (engine != null && !AvailableEngines.Any(x => x.Name == engine.Name))
-            {
-                AvailableEngines.Add(engine);
             }
         }
     }
