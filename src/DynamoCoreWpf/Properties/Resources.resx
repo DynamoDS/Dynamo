@@ -2759,7 +2759,7 @@ Do you wish to restart {2} to first uninstall {1}, then download {0} again?</val
     <value>&lt;Double click here to edit group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
-    <value>Add group to group</value>
+    <value>Add Group to Group</value>
   </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this guide later from the Help menu.</value>
@@ -2930,9 +2930,6 @@ Delete the following packages: {2}?
   <data name="ShortcutExportWorkspace" xml:space="preserve">
     <value>Workspace</value>
   </data>
-  <data name="AutodeskSamplePackage" xml:space="preserve">
-    <value>Autodesk sample</value>
-  </data>
   <data name="PackagesGuideExitAcceptTerms" xml:space="preserve">
     <value>To continue the guide and install the sample package, you must accept the Terms of Service. \n\n **Click Continue.** Then in the terms, **click I Accept.** \n\n\n\n</value>
   </data>
@@ -2943,9 +2940,12 @@ Delete the following packages: {2}?
     <value>\nSearch results display summary information for each package: -author- -likes and downloads- -date of the most recent version- \n**Click View Details** to see more information about a package.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>If you need other software or tools in order to use this package, they are listed under Dependencies. The interactive guide for Package Dependencies will tell you more.</value>
+    <value>\nIf you need other software or tools in order to use this package, they are listed under Dependencies.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Package dependencies</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
+    <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
   </data>
 </root>

@@ -77,8 +77,8 @@
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphBackground" Color="#EBEBEB" />
     <SolidColorBrush x:Key="NodeLacingGlyphBackground" Color="#EBEBEB" />
 
-    <SolidColorBrush x:Key="NodeBodyPreviewOffBackground" Color="#3B4453" />
-    <SolidColorBrush x:Key="NodeHeaderPreviewOffBackground" Color="#454F61" />
+    <SolidColorBrush x:Key="NodeBodyPreviewOffBackground" Color="#666666" />
+    <SolidColorBrush x:Key="NodeHeaderPreviewOffBackground" Color="#535353" />
 
     <SolidColorBrush x:Key="NodeContextMenuForeground" Color="{StaticResource PrimaryCharcoal100}" />
     <SolidColorBrush x:Key="NodeContextMenuBackground" Color="{StaticResource MidGrey}" />
