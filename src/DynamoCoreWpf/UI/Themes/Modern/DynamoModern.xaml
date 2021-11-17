@@ -2576,6 +2576,10 @@
                             <Setter TargetName="border" Property="Opacity" Value="0.9" />
                             <Setter TargetName="mousePressedBorder" Property="Visibility " Value="Visible" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#707070" />
+                            <Setter TargetName="textBlock" Property="Opacity" Value="0.7" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
