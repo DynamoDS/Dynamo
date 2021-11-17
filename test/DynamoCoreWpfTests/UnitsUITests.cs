@@ -32,6 +32,8 @@ namespace DynamoCoreWpfTests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("FunctionObject.ds");
+            libraries.Add("BuiltIn.ds");
+            libraries.Add("DSCoreNodes.dll");
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DynamoConversions.dll");
             libraries.Add("DynamoUnits.dll");
@@ -129,6 +131,21 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(-1, node3.SelectedIndex);
             Assert.AreEqual(-1, node4.SelectedIndex);
             Assert.AreEqual(-1, node5.SelectedIndex);
+        }
+
+        [Test]
+        public void ForgeUnitsEqualityInDynamoListOps()
+        {
+            Open(@"core\units\unit_dropdowns2.dyn");
+            var listequals = Model.CurrentWorkspace.Nodes.Where(x => x.Name == "List.Equals").FirstOrDefault();
+            var stringnode = Model.CurrentWorkspace.Nodes.Where(x => x.Name == "String from Object").FirstOrDefault();
+            var allindices = Model.CurrentWorkspace.Nodes.Where(x => x.Name == "List.AllIndicesOf").FirstOrDefault();
+            var indexof = Model.CurrentWorkspace.Nodes.Where(x => x.Name == "List.IndexOf").FirstOrDefault();
+            Run();
+            Assert.IsTrue((bool)(listequals.CachedValue.Data));
+            Assert.AreEqual("Unit(Name = Millimeters)", stringnode.CachedValue.Data);
+            Assert.AreEqual(new List<int>() { 0, 2 }, allindices.CachedValue.GetElements().Select(x=>x.Data).ToList());
+            Assert.AreEqual(0, indexof.CachedValue.Data);
 
         }
 
@@ -247,6 +264,29 @@ namespace DynamoCoreWpfTests
             }
 
             DynamoUnits.Utilities.Initialize();
+        }
+
+        [Test]
+        public void ForgeUnitConversionsReactCorrectly_ToInteractions()
+        {
+            Open(@"core\units\unit_dropdown_different_schema_version.dyn");
+            var node1 = Model.CurrentWorkspace.Nodes.FirstOrDefault() as DynamoUnitConvert;
+            var node2 = Model.CurrentWorkspace.Nodes.Skip(1).FirstOrDefault() as DynamoUnitConvert;
+
+            Assert.AreEqual("british thermal units per hour", node1.SelectedFromConversion.Name.ToLower());
+            Assert.AreEqual("british thermal units per hour", node1.SelectedToConversion.Name.ToLower());
+            Assert.AreEqual("power", node1.SelectedQuantityConversion.Name.ToLower());
+
+            node1.SelectedQuantityConversion = DynamoUnits.Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.4");
+            Assert.AreEqual("centimeters", node1.SelectedToConversion.Name.ToLower());
+            Assert.AreEqual("centimeters", node1.SelectedFromConversion.Name.ToLower());
+            Assert.AreEqual("length", node1.SelectedQuantityConversion.Name.ToLower());
+
+            node1.SelectedQuantityConversion = DynamoUnits.Quantity.ByTypeID("autodesk.unit.quantity:power-1.0.4");
+            Assert.AreEqual("british thermal units per hour", node1.SelectedFromConversion.Name.ToLower());
+            Assert.AreEqual("british thermal units per hour", node1.SelectedToConversion.Name.ToLower());
+            Assert.AreEqual("power", node1.SelectedQuantityConversion.Name.ToLower());
+
         }
     }
 }
