@@ -354,7 +354,7 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Determines whether or not the opaque warning bar is visible under nodes with
-        /// undismissed warning/error messages.
+        /// undismissed info/warning/error messages.
         /// </summary>
         [JsonIgnore]
         public bool IsWarningBarVisible => WorkspaceViewModel.Zoom >= WarningsBarVisibilityThreshold &&
@@ -364,7 +364,7 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Determines whether or not the semi-transparent overlay is displaying on the node.
-        /// This reflects whether the node is in a warning/error/frozen state
+        /// This reflects whether the node is in a info/warning/error/frozen state
         /// </summary>
         [JsonIgnore]
         public bool NodeOverlayVisible => IsFrozen ||
@@ -372,7 +372,7 @@ namespace Dynamo.ViewModels
                                           ErrorBubble?.NodeWarningsToDisplay.Count > 0 && WorkspaceViewModel.Zoom < WarningsBarVisibilityThreshold;
 
         /// <summary>
-        /// The color of the warning bar: orange for warnings, red for errors.
+        /// The color of the warning bar: blue for info, orange for warnings, red for errors.
         /// </summary>
         public SolidColorBrush WarningBarColor
         {
@@ -387,7 +387,7 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Determines the color of the node's visual overlay, which displays
-        /// if the node is in a Frozen, Error or Warning state.
+        /// if the node is in a Frozen, Info, Error or Warning state.
         /// </summary>
         public SolidColorBrush NodeOverlayColor
         {
@@ -799,7 +799,7 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Updates whether the Warning Bar is visible or not and whether the node's
-        /// Frozen/Warning/Error overlay is displaying.
+        /// Frozen/Info/Warning/Error overlay is displaying.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
