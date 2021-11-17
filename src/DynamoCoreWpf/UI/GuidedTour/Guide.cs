@@ -95,15 +95,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 Step firstStep = GuideSteps.FirstOrDefault();
                 CurrentStep = firstStep;
 
-                //When the first step of the guide is a tooltip, then it need to have a background and a hole to highlight the element
-                if (firstStep.HostPopupInfo != null && 
-                    firstStep.StepType == Step.StepTypes.TOOLTIP)
-                {
-                    SetCutOffSectionSize(firstStep.HostPopupInfo);
-                    SetHighlightSectionColor(firstStep.HostPopupInfo);
-                }
-
-
                 firstStep.Show(GuideFlow.FORWARD);
             }
         }
@@ -229,19 +220,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                     SetLibraryViewVisible(resultStep.ShowLibrary);
                     CurrentStep = resultStep;
-
-                    if (resultStep.StepType != Step.StepTypes.WELCOME &&
-                       resultStep.StepType != Step.StepTypes.SURVEY
-                       && resultStep.HostPopupInfo != null)
-                    {
-                        SetCutOffSectionSize(CurrentStep.HostPopupInfo);
-                        SetHighlightSectionColor(CurrentStep.HostPopupInfo);
-                    }
-                    else
-                    {
-                        GuideBackgroundElement.ClearCutOffSection();
-                        GuideBackgroundElement.ClearHighlightSection();
-                    }
                 }
             }
         }
@@ -268,63 +246,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private void GuideFlowEvents_GuidedTourNextStep(GuidedTourMovementEventArgs args)
         {
             NextStep(args.StepSequence);
-        }
-
-        /// <summary>
-        /// This method will set the highlight rectangle color if there is any configured in the json file
-        /// </summary>
-        /// <param name="highlightColor">This parameter represents the color in hexadecimal</param>
-        private void SetHighlightSectionColor(HostControlInfo hostControlInfo)
-        {
-            if (hostControlInfo.HighlightRectArea != null)
-            {
-                //If is not empty means that the HighlightRectArea.WindowElementNameString doesn't belong to the DynamoView then another way for hightlighting the element will be applied
-                if (!string.IsNullOrEmpty(hostControlInfo.HighlightRectArea.WindowName)) return;
-
-                string highlightColor = hostControlInfo.HighlightRectArea.HighlightColor;
-
-                //This section will get the X,Y coordinates of the HostUIElement based in the Ancestor UI Element so we can put the highlight rectangle
-                Point relativePoint = hostControlInfo.HostUIElement.TransformToAncestor(MainWindow)
-                                  .Transform(new Point(0, 0));
-
-                var holeWidth = hostControlInfo.HostUIElement.DesiredSize.Width + hostControlInfo.HighlightRectArea.WidthBoxDelta;
-                var holeHeight = hostControlInfo.HostUIElement.DesiredSize.Height + hostControlInfo.HighlightRectArea.HeightBoxDelta;
-
-                GuideBackgroundElement.HighlightBackgroundArea.SetHighlighRectSize(relativePoint.Y, relativePoint.X, holeWidth, holeHeight);
-
-                if (string.IsNullOrEmpty(highlightColor))
-                {
-                    GuideBackgroundElement.GuideHighlightRectangle.Stroke = Brushes.Transparent;
-                }
-                else
-                {
-                    var converter = new BrushConverter();
-                    var brush = (Brush)converter.ConvertFromString(highlightColor);
-                    GuideBackgroundElement.GuideHighlightRectangle.Stroke = brush;
-                }
-            }
-        }
-
-        /// <summary>
-        /// This method will update the CutOff rectangle size everytime that the step change
-        /// </summary>
-        /// <param name="hostElement">Element for size and position reference</param>
-        private void SetCutOffSectionSize(HostControlInfo hostControlInfo)
-        {
-            if (hostControlInfo.CutOffRectArea != null)
-            {
-                Point relativePoint = hostControlInfo.HostUIElement.TransformToAncestor(MainWindow)
-                              .Transform(new Point(0, 0));
-
-               
-                var holeWidth = hostControlInfo.HostUIElement.DesiredSize.Width + hostControlInfo.CutOffRectArea.WidthBoxDelta;
-                var holeHeight = hostControlInfo.HostUIElement.DesiredSize.Height + hostControlInfo.CutOffRectArea.HeightBoxDelta;
-
-                if (GuideBackgroundElement.CutOffBackgroundArea != null)
-                {
-                    GuideBackgroundElement.CutOffBackgroundArea.CutOffRect = new Rect(relativePoint.X, relativePoint.Y, holeWidth, holeHeight);
-                }
-            }
         }
 
         /// <summary>
