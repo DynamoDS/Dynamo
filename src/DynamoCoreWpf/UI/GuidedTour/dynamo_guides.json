@@ -46,7 +46,7 @@
 				"Sequence": 2,
 				"Name": "run status",
 				"Type": "tooltip",
-				"TooltipPointerDirection": "bottom_down",
+				"TooltipPointerDirection": "bottom_left",
 				"Width": 480,
 				"Height": 260,
 				"StepContent": {
@@ -56,7 +56,7 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "bottom",
 					"HostUIElementString": "bottomBarGrid",
-					"VerticalPopupOffset": 0,
+					"VerticalPopupOffset": 50,
 					"HorizontalPopupOffset": 320,
 					"CutOffRectArea": {
 						"WidthBoxDelta": 0,
@@ -70,7 +70,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 245,
+				"Height": 230,
 				"StepContent": {
 					"Title": "GetStartedGuideToolbarTitle",
 					"FormattedText": "GetStartedGuideToolbarText"
@@ -97,7 +97,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 205,
+				"Height": 190,
 				"StepContent": {
 					"Title": "GetStartedGuidePreferencesTitle",
 					"FormattedText": "GetStartedGuidePreferencesText"
@@ -105,9 +105,9 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
 					"HostUIElementString": "dynamoMenu",
-					"VerticalPopupOffset": 100,
+					"VerticalPopupOffset": 50,
 					"HighlightColor": "#EF9362",
-					"HorizontalPopupOffset": 250,
+					"HorizontalPopupOffset": 230,
 					"HighlightRectArea": {
 						"HighlightColor": "#EF9362",
 						"WidthBoxDelta": 0,
@@ -206,7 +206,7 @@
 					"PopupPlacement": "relative",
 					"HostUIElementString": "PackageManagerMenu",
 					"VerticalPopupOffset": -20,
-					"HorizontalPopupOffset": 150,
+					"HorizontalPopupOffset": 85,
 					"HtmlPage": {
 						"FileName": "learnPackages.html",
 						"Resources": {
@@ -222,16 +222,7 @@
 						"WidthBoxDelta": 0,
 						"HeightBoxDelta": 3
 					}
-				},
-				"UIAutomation": [
-					{
-						"Sequence": 1,
-						"ControlType": "button",
-						"WindowName": "PopupWindow",
-						"Name": "BackButton",
-						"Action": "disable"
-					}
-				]
+				}
 			},
 			{
 				"Sequence": 2,
@@ -268,20 +259,6 @@
 						"ControlType": "MenuItem",
 						"Name": "PackageManagerMenu",
 						"Action": "open"
-					},
-					{
-						"Sequence": 2,
-						"ControlType": "function",
-						"Name": "SubscribeSearchForPackagesOption",
-						"Action": "execute",
-						"UpdatePlacementTarget": true,
-						"AutomaticHandlers": [
-							{
-								"HandlerElement": "showPMSearch",
-								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "SearchForPackage_Click"
-							}
-						]
 					}
 				]
 			},
@@ -292,12 +269,6 @@
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
 				"Height": 260,
-				"ExitGuide": {
-					"Height": 273,
-					"Width": 480,
-					"Title": "PackagesGuideExitTitle",
-					"FormattedText": "PackagesGuideExitAcceptTerms"
-				},
 				"StepContent": {
 					"Title": "PackagesGuideTermsOfServiceTitle",
 					"FormattedText": "PackagesGuideTermsOfServiceText"
@@ -312,7 +283,6 @@
 					"HighlightRectArea": {
 						"HighlightColor": "#EF9362",
 						"UIElementTypeString": "Button",
-						"UIElementGridContainer": "bordersGrid",
 						"WindowName": "TermsOfUseWindow",
 						"WindowElementNameString": "AcceptTermsOfUseButton",
 						"WidthBoxDelta": 0,
@@ -338,18 +308,6 @@
 						"ControlType": "function",
 						"Name": "ExecuteTermsOfServiceFlow",
 						"Action": "execute",
-						"AutomaticHandlers": [
-							{
-								"HandlerElement": "AcceptTermsOfUseButton",
-								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "AcceptButton_Click"
-							},
-							{
-								"HandlerElement": "DeclineTermsOfUseButton",
-								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "DeclineButton_Click"
-							}
-						],
 						"UpdatePlacementTarget": true
 					}
 				]
@@ -423,90 +381,6 @@
 						"Sequence": 2,
 						"ControlType": "function",
 						"Name": "ExecutePackageSearch",
-						"ExecuteCleanUpForward": false,
-						"ExecuteCleanUpBackward": false,
-						"Action": "execute",
-						"UpdatePlacementTarget": true
-					}
-				]
-			},
-			{
-				"Sequence": 5,
-				"Name": "search-results",
-				"Type": "tooltip",
-				"TooltipPointerDirection": "top_left",
-				"Width": 480,
-				"Height": 260,
-				"StepContent": {
-					"Title": "PackagesGuideSearchResultsTitle",
-					"FormattedText": "PackagesGuideSearchResultsText"
-				},
-				"HostPopupInfo": {
-					"PopupPlacement": "right",
-					"WindowName": "PackageSearch",
-					"DynamicHostWindow": true,
-					"HostUIElementString": "PackageSearch",
-					"VerticalPopupOffset": 150,
-					"HorizontalPopupOffset": 0,
-					"HighlightRectArea": {
-						"HighlightColor": "#EF9362",
-						"UIElementTypeString": "Button",
-						"WindowName": "PackageSearch",
-						"UIElementGridContainer": "viewDetailsGrid",
-						"WindowElementNameString": "viewDetailsButton",
-						"WidthBoxDelta": 0,
-						"HeightBoxDelta": 0
-					}
-				},
-				"UIAutomation": [
-					{
-						"Sequence": 1,
-						"ControlType": "function",
-						"Name": "ExecutePackageSearch",
-						"ExecuteCleanUpForward": false,
-						"ExecuteCleanUpBackward": false,
-						"Action": "execute",
-						"UpdatePlacementTarget": true
-					},
-					{
-						"Sequence": 2,
-						"ControlType": "function",
-						"Name": "SubscribeViewDetailsEvent",
-						"ExecuteCleanUpForward": false,
-						"ExecuteCleanUpBackward": false,
-						"Action": "execute",
-						"UpdatePlacementTarget": true
-					}
-				]
-			},
-			{
-				"Sequence": 6,
-				"Name": "package-dependencies",
-				"Type": "tooltip",
-				"TooltipPointerDirection": "top_right",
-				"Width": 480,
-				"Height": 260,
-				"StepContent": {
-					"Title": "PackagesGuideDependenciesTitle",
-					"FormattedText": "PackagesGuideDependenciesText"
-				},
-				"HostPopupInfo": {
-					"PopupPlacement": "right",
-					"DynamicHostWindow": true,
-					"HostUIElementString": "PackageDetailsWindow",
-					"VerticalPopupOffset": 400,
-					"HorizontalPopupOffset": 0,
-					"CutOffRectArea": {
-						"WindowElementNameString": "PackageDetailsWindow",
-						"WidthBoxDelta": 0,
-						"HeightBoxDelta": 3
-					}
-				},
-				"UIAutomation": [
-					{
-						"Sequence": 1,
-						"ControlType": "function",
-						"Name": "ExecuteViewDetailsSideBar",
 						"ExecuteCleanUpForward": false,
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",

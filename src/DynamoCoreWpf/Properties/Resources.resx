@@ -859,15 +859,6 @@
   <data name="CannotDownloadPackageMessageBoxTitle" xml:space="preserve">
     <value>Cannot Download Package</value>
   </data>
-  <data name="BuiltInPackageConflictMessageBoxTitle" xml:space="preserve">
-    <value>Package has conflicts with one or more Built-In packages.</value>
-  </data>
-  <data name="PackagesInUseConflictMessageBoxTitle" xml:space="preserve">
-    <value>Package has conflicts with one or more packages in use.</value>
-  </data>
-  <data name="LoadedPackagesConflictMessageBoxTitle" xml:space="preserve">
-    <value>Package has conflicts with one or more loaded packages.</value>
-  </data>
   <data name="CustomNodePropertyErrorMessageBoxTitle" xml:space="preserve">
     <value>Custom Node Property Error</value>
   </data>
@@ -906,9 +897,9 @@
     <value>Import Library</value>
   </data>
   <data name="MessageAlreadyInstallDynamo" xml:space="preserve">
-    <value>Package {1} is already installed.
+    <value>{0} has already installed {1}.
 
-{0} will attempt to uninstall this package before installing {2}.</value>
+{0} will attempt to uninstall this package before installing.</value>
   </data>
   <data name="MessageConfirmToInstallPackage" xml:space="preserve">
     <value>Are you sure you want to install {0} {1} ?</value>
@@ -1007,19 +998,13 @@ You can always undeprecate the package.</value>
 
 You can always re-deprecate the package.</value>
   </data>
-  <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
-    
-Do you wish to continue installing it while keeping the packages that are already installed?
-
-If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
+  <data name="MessageUninstallToContinue" xml:space="preserve">
+    <value>{0} needs to uninstall {1} to continue, but cannot as one of its types appears to be in use.  Try restarting {0}.</value>
   </data>
-  <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
-    <value>Package {0} has one or more dependencies that conflict with the following packages: {1}. Dependency conflicts could cause unintended behavior to occur.
-    
-Do you wish to continue installing it while keeping the packages that are already installed?
+  <data name="MessageUninstallToContinue2" xml:space="preserve">
+    <value>{2} has dependencies. To install {2}, {0} needs to first uninstall the following dependent packages: {1}. Restart {0} to complete the uninstall, then try and download {2} again.
 
-If not, {2} needs to uninstall {1} to continue. Restart {2}, then download {0} again.</value>
+Uninstall the following dependent packages: {1}?</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
@@ -2544,26 +2529,14 @@ Uninstall the following packages: {0}?</value>
     <comment>Preferences | Features | Python | Requires relaunch of Dynamo</comment>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
-    
-Do you wish to continue trying to install {0}?</value>
+    <value>{1} has dependencies that conflict with the following Built-In packages : {2}. {0} cannot override packages in the Built-In Packages location.</value>
+  </data>
+  <data name="MessageSamePackageInBuiltinPackages" xml:space="preserve">
+    <value>The package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location.</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
-    
-You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
+    <value>A different version of the package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location.</value>
   </data>
-  <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
-    <value>The same version of {0} is already installed as a built-in package and need not be installed again.</value>
-  </data>
-  <data name="MessageSamePackageSameVersInLocalPackages" xml:space="preserve">
-    <value>The same version of {0} is already installed and does not need to be installed again.</value>
-  </data>
-  <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-        <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
-        
-Do you wish to restart {2} to first uninstall {1}, then download {0} again?</value>
-    </data>
   <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
     <value>Geometry Scaling</value>
     <comment>Expander Header Name</comment>
@@ -2759,7 +2732,7 @@ Do you wish to restart {2} to first uninstall {1}, then download {0} again?</val
     <value>&lt;Double click here to edit group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
-    <value>Add Group to Group</value>
+    <value>Add group to group</value>
   </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>You can return to this guide later from the Help menu.</value>
@@ -2930,22 +2903,13 @@ Delete the following packages: {2}?
   <data name="ShortcutExportWorkspace" xml:space="preserve">
     <value>Workspace</value>
   </data>
+  <data name="AutodeskSamplePackage" xml:space="preserve">
+    <value>Autodesk sample</value>
+  </data>
   <data name="PackagesGuideExitAcceptTerms" xml:space="preserve">
     <value>To continue the guide and install the sample package, you must accept the Terms of Service. \n\n **Click Continue.** Then in the terms, **click I Accept.** \n\n\n\n</value>
   </data>
   <data name="PackagesGuideExitTitle" xml:space="preserve">
     <value>Do you want to exit the guide?</value>
-  </data>
-  <data name="PackagesGuideSearchResultsText" xml:space="preserve">
-    <value>\nSearch results display summary information for each package: -author- -likes and downloads- -date of the most recent version- \n**Click View Details** to see more information about a package.</value>
-  </data>
-  <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>\nIf you need other software or tools in order to use this package, they are listed under Dependencies.</value>
-  </data>
-  <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
-    <value>Package dependencies</value>
-  </data>
-  <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
-    <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
   </data>
 </root>

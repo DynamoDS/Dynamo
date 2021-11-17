@@ -1264,19 +1264,7 @@ namespace Dynamo.ViewModels
             {
                 if (!(modelb is AnnotationModel))
                 {
-                    var guids = new List<Guid> { modelb.GUID };
-                    if (modelb is NodeModel node)
-                    {
-                        var pinnedNotes = CurrentSpaceViewModel.Notes
-                            .Where(x => x.PinnedNode.NodeModel == node)
-                            .Select(x => x.Model.GUID);
-
-                        if (pinnedNotes.Any())
-                        {
-                            guids.AddRange(pinnedNotes);
-                        }
-                    }
-                    var command = new DynamoModel.UngroupModelCommand(guids);
+                    var command = new DynamoModel.UngroupModelCommand(modelb.GUID);
                     this.ExecuteCommand(command);
                 }
             }  

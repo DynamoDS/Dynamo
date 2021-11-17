@@ -636,7 +636,7 @@ namespace ProtoCore.Lang
                 }
                 else
                 {
-                    runtimeCore.RuntimeStatus.LogWarning(WarningID.DereferencingNonPointer, Resources.kDereferencingNonPointer);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.DereferencingNonPointer, Resources.kDeferencingNonPointer);
                     return StackValue.Null;
                 }
             }

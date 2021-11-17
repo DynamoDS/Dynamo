@@ -3,7 +3,6 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
-    <Import Project="..\..\packages\ForgeUnits.NET.3.2.2\build\ForgeUnits.NET.targets" Condition="Exists('..\..\packages\ForgeUnits.NET.3.2.2\build\ForgeUnits.NET.targets')" />
   </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -38,24 +37,15 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ForgeUnitsCLR, Version=3.2.2.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\ForgeUnits.NET.3.2.2\lib\net48\ForgeUnitsCLR.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Display.cs" />
-    <Compile Include="Quantity.cs" />
-    <Compile Include="Utilities.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Symbol.cs" />
-    <Compile Include="Unit.cs" />
     <Compile Include="Units.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -70,10 +60,6 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <!-- Visual Studio 2010: Select FSchemeInterop.dll -->
@@ -109,9 +95,5 @@
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoUnitsImages.resx" OutputResources="$(ProjectDir)DynamoUnitsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoUnitsImages.resources" OutputAssembly="$(OutDir)DynamoUnits.customization.dll" Version="%(AssemblyInfo.Version)" />
-    <ItemGroup>
-      <UnitSchemas Include="..\..\packages\ForgeUnits.Schemas.1.0.0\Content\unit\**\*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(UnitSchemas)" DestinationFolder="$(OutDir)unit\%(RecursiveDir)" />
   </Target>
 </Project>

@@ -46,7 +46,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBox">
-                        <Grid Margin="0,9,4,8">
+                        <Grid Margin="4,8,4,8">
                             <ScrollViewer Margin="0"
                                           Focusable="false">
                                 <WrapPanel IsItemsHost="True" />
@@ -70,7 +70,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
-                        <Grid Margin="0,0,4,5"
+                        <Grid Margin="3,4,3,4"
                               SnapsToDevicePixels="true">
                             <Grid.Background>
                                 <SolidColorBrush Color="Transparent" />
@@ -250,187 +250,74 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
-            <ContextMenu Background="#666666" Style="{StaticResource ContextMenuStyle}">
-                <ContextMenu.Resources>
-                    <ResourceDictionary>
-                        <Style TargetType="{x:Type MenuItem}">
-                            <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
-                            <Setter Property="Width" Value="200" />
-                            <Setter Property="Padding" Value="20,0,20,0" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type MenuItem}">
-                                        <DockPanel x:Name="dockPanel"
-                                                   HorizontalAlignment="Stretch"
-                                                   Background="Transparent"
-                                                   SnapsToDevicePixels="true">
-                                            <Label x:Name="checkBox"
-                                                   Margin="2,0,-20,0"
-                                                   HorizontalAlignment="Left"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalContentAlignment="Center"
-                                                   VerticalContentAlignment="Center"
-                                                   Content="✓"
-                                                   DockPanel.Dock="Left"
-                                                   FontSize="9px"
-                                                   Foreground="White"
-                                                   Visibility="Collapsed" />
-                                            <ContentPresenter x:Name="ContentPresenter"
-                                                              Margin="{TemplateBinding Padding}"
-                                                              VerticalAlignment="Center"
-                                                              ContentSource="Header"
-                                                              DockPanel.Dock="Left"
-                                                              RecognizesAccessKey="True"
-                                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                              TextBlock.Foreground="{StaticResource NodeContextMenuForeground}" />
-                                            <Label x:Name="subMenuArrow"
-                                                   Margin="0,0,15,7"
-                                                   Padding="0"
-                                                   VerticalAlignment="Center"
-                                                   Content="&gt;"
-                                                   DockPanel.Dock="Right"
-                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                   FontSize="13px"
-                                                   Foreground="{StaticResource Blue300Brush}">
-                                                <Label.RenderTransform>
-                                                    <ScaleTransform ScaleX="1" ScaleY="1.5" />
-                                                </Label.RenderTransform>
-                                                <Label.Style>
-                                                    <Style TargetType="{x:Type Label}">
-                                                        <Setter Property="Visibility" Value="Hidden" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Label.Style>
-                                            </Label>
-                                            <Popup x:Name="PART_Popup"
-                                                   AllowsTransparency="true"
-                                                   Focusable="false"
-                                                   HorizontalOffset="0"
-                                                   IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                                   Placement="Right"
-                                                   VerticalOffset="-2">
-                                                <Border Background="{TemplateBinding Background}"
-                                                        BorderBrush="Transparent"
-                                                        BorderThickness="0">
-                                                    <ScrollViewer x:Name="SubMenuScrollViewer"
-                                                                  CanContentScroll="true"
-                                                                  Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
-                                                                                                                TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                                        <Grid RenderOptions.ClearTypeHint="Enabled">
-                                                            <ItemsPresenter x:Name="ItemsPresenter"
-                                                                            Margin="2"
-                                                                            Grid.IsSharedSizeScope="true"
-                                                                            KeyboardNavigation.DirectionalNavigation="Cycle"
-                                                                            KeyboardNavigation.TabNavigation="Cycle"
-                                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                                        </Grid>
-                                                    </ScrollViewer>
-                                                </Border>
-                                            </Popup>
-                                        </DockPanel>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
-                                                <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="False">
-                                                <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
-                                            </Trigger>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                        <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
-                            <Setter Property="OverridesDefaultStyle" Value="true" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type Separator}">
-                                        <Border Height="1"
-                                                Margin="20,8,20,8"
-                                                Background="{StaticResource NodeContextMenuSeparatorColor}" />
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ResourceDictionary>
-                </ContextMenu.Resources>
-                <MenuItem Name="DeleteAnnotation"
-                          Click="OnDeleteAnnotation"
-                          Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}" />
-                <MenuItem Name="UngroupAnnotation"
-                          Click="OnUngroupAnnotation"
-                          Header="{x:Static p:Resources.GroupContextMenuUngroup}" />
-                <MenuItem Name="unGroup_cm"
-                          Command="{Binding Path=RemoveGroupFromGroupCommand}"
-                          Header="{x:Static p:Resources.ContextUnGroupFromSelection}" />
-                <MenuItem Name="AddGroupToGroup"
-                          Command="{Binding AddGroupToGroupCommand}"
-                          Header="{x:Static p:Resources.GroupContextMenuAddGroupToGroup}" />
-                <MenuItem Name="GraphLayoutAnnotation"
-                          Click="OnGraphLayoutAnnotation"
-                          Header="{x:Static p:Resources.GroupContextMenuGraphLayout}" />
-                <MenuItem Name="ChangeSize" Header="{x:Static p:Resources.GroupContextMenuFont}">
-                    <MenuItem Name="FontSize0"
+            <ContextMenu>
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}"
+                           Name="DeleteAnnotation"
+                           Click="OnDeleteAnnotation" />
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                           Name="UngroupAnnotation"
+                           Click="OnUngroupAnnotation" />
+                <MenuItem Header="{x:Static p:Resources.ContextUnGroupFromSelection}"
+                          Name="unGroup_cm"
+                          Command="{Binding Path=RemoveGroupFromGroupCommand}" />
+                <MenuItem Header="{x:Static p:Resources.GroupContextMenuAddGroupToGroup}"
+                          Name="AddGroupToGroup"
+                          Command="{Binding AddGroupToGroupCommand}" />
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuGraphLayout}"
+                           Name="GraphLayoutAnnotation"
+                           Click="OnGraphLayoutAnnotation" />
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuFont}"
+                           Name="ChangeSize">
+                    <MenuItem Header="14"
+                              Name="FontSize0"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="14"
-                              Header="14"
-                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=14}" />
-                    <MenuItem Name="FontSize1"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=14}"></MenuItem>
+                    <MenuItem Header="18"
+                              Name="FontSize1"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="18"
-                              Header="18"
-                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=18}" />
-                    <MenuItem Name="FontSize2"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=18}"></MenuItem>
+                    <MenuItem Header="24"
+                              Name="FontSize2"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="24"
-                              Header="24"
-                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=24}" />
-                    <MenuItem Name="FontSize3"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=24}"></MenuItem>
+                    <MenuItem Header="30"
+                              Name="FontSize3"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="30"
-                              Header="30"
-                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=30}" />
-                    <MenuItem Name="FontSize4"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=30}"></MenuItem>
+                    <MenuItem Header="36"
+                              Name="FontSize4"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="36"
-                              Header="36"
-                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=36}" />
-                    <MenuItem Name="FontSize5"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=36}"></MenuItem>
+                    <MenuItem Header="48"
+                              Name="FontSize5"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="48"
-                              Header="48"
-                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=48}" />
-                    <MenuItem Name="FontSize6"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=48}"></MenuItem>
+                    <MenuItem Header="60"
+                              Name="FontSize6"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="60"
-                              Header="60"
-                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=60}" />
-                    <MenuItem Name="FontSize7"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=60}"></MenuItem>
+                    <MenuItem Header="72"
+                              Name="FontSize7"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="72"
-                              Header="72"
-                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=72}" />
-                    <MenuItem Name="FontSize8"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=72}"></MenuItem>
+                    <MenuItem Header="96"
+                              Name="FontSize8"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="96"
-                              Header="96"
-                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=96}" />
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=96}"></MenuItem>
 
                 </MenuItem>
-                <ListBox ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
-                         SelectionChanged="OnNodeColorSelectionChanged"
-                         Style="{StaticResource ColorSelectorListBox}">
+                <ListBox Style="{StaticResource ColorSelectorListBox}"
+                         ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
+                         SelectionChanged="OnNodeColorSelectionChanged">
                     <ListBox.Items>
                         <Rectangle Fill="#d4b6db" />
                         <Rectangle Fill="#ffb8d8" />

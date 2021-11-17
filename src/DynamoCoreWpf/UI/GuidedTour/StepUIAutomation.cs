@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -36,7 +35,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This will represent the action that will be executed as part of the UI Automation
         /// </summary>
-        public UIAction Action { get; set; }        
+        public UIAction Action { get; set; }
+        
 
         /// <summary>
         /// This will be the WPF UI Element in which the Action will be executed
@@ -63,27 +63,5 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         public string WindowName { get; set; }
 
-        /// <summary>
-        /// This is a list of events to be trigerred and methods subscribed to those events
-        /// </summary>
-        public List<AutomaticHandlers> AutomaticHandlers { get; set; }
-    }
-
-    public class AutomaticHandlers
-    {
-        /// <summary>
-        /// Name of the element to get the event
-        /// </summary>
-        public string HandlerElement { get; set; }
-
-        /// <summary>
-        /// Name of the event
-        /// </summary>
-        public string HandlerElementEvent { get; set; }
-
-        /// <summary>
-        /// Method to be subscribed 
-        /// </summary>
-        public string ExecuteMethod { get; set; }
     }
 }

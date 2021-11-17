@@ -92,8 +92,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Due that we are passing the GuideBackground for each Step we need to create first the background and then Create the Steps
             CreateBackground();
             CreateGuideSteps(GuidesJsonFilePath);
-
-            GuidesValidationMethods.CurrentExecutingGuidesManager = this;
+            
 
             guideBackgroundElement.ClearCutOffSection();
             guideBackgroundElement.ClearHighlightSection();
@@ -229,7 +228,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// Creates the exit modal when close button is pressed
         /// </summary>
         /// <param name="exitGuide">This parameter contains the properties to build exit guide modal</param>
-        internal void CreateExitModal(ExitGuide exitGuide)
+        private void CreateExitModal(ExitGuide exitGuide)
         {
             var viewModel = new ExitGuideWindowViewModel(exitGuide);
             exitGuideWindow = new ExitGuideWindow((FrameworkElement)mainRootElement, viewModel);
@@ -341,8 +340,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <returns></returns>
         private HostControlInfo CreateHostControl(HostControlInfo jsonHostControlInfo)
         {
-            //We use the HostControlInfo copy construtor
-            var popupInfo = new HostControlInfo(jsonHostControlInfo, mainRootElement);
+            var popupInfo = new HostControlInfo()
+            {
+                PopupPlacement = jsonHostControlInfo.PopupPlacement,
+                HostUIElementString = jsonHostControlInfo.HostUIElementString,
+                HostUIElement = mainRootElement,
+                VerticalPopupOffSet = jsonHostControlInfo.VerticalPopupOffSet,
+                HorizontalPopupOffSet = jsonHostControlInfo.HorizontalPopupOffSet,
+                HtmlPage = jsonHostControlInfo.HtmlPage,
+                WindowName = jsonHostControlInfo.WindowName,
+                DynamicHostWindow = jsonHostControlInfo.DynamicHostWindow
+            };
 
             //If the CutOff area was defined in the json file then a section of the background overlay will be removed
             if (jsonHostControlInfo.CutOffRectArea != null)
@@ -357,8 +365,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //If the Highlight area was defined in the json file then a rectangle will be highlighted in the Overlay
             if (jsonHostControlInfo.HighlightRectArea != null)
             {
-                //We use the HighlightArea copy construtor
-                popupInfo.HighlightRectArea = new HighlightArea(jsonHostControlInfo.HighlightRectArea);
+                popupInfo.HighlightRectArea = new HighlightArea()
+                {
+                    HighlightColor = jsonHostControlInfo.HighlightRectArea.HighlightColor,
+                    WidthBoxDelta = jsonHostControlInfo.HighlightRectArea.WidthBoxDelta,
+                    HeightBoxDelta = jsonHostControlInfo.HighlightRectArea.HeightBoxDelta,
+                    WindowName = jsonHostControlInfo.HighlightRectArea.WindowName,
+                    WindowElementNameString = jsonHostControlInfo.HighlightRectArea.WindowElementNameString,
+                    UIElementTypeString = jsonHostControlInfo.HighlightRectArea.UIElementTypeString
+                };
             }
 
             //The host_ui_element read from the json file need to exists otherwise the host will be null

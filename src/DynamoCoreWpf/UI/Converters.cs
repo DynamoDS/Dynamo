@@ -66,6 +66,7 @@ namespace Dynamo.Controls
     public class TooltipLengthTruncater : IValueConverter
     {
         private const int MaxChars = 100;
+        private const double MinFontFactor = 7.0;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -76,31 +77,6 @@ namespace Dynamo.Controls
                 return tooltip.Remove(trimIndex > 0 ? trimIndex : MaxChars - 5) + " ...";
             }
             return value;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    public class AlertsLengthTruncater : IValueConverter
-    {
-        // The value for this variable is highly depending on default width for the alert submenu item
-        private const int MaxChars = 32;
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var result = new ObservableCollection<string>();
-            foreach (var alert in value as ObservableCollection<string>)
-            {
-                if (alert != null && alert.Length > MaxChars)
-                {
-                    var trimIndex = alert.LastIndexOf('\n', MaxChars - 5);
-                    result.Add(alert.Remove(trimIndex > 0 ? trimIndex : MaxChars - 5) + "...");
-                }
-            }
-            return result;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1680,9 +1656,9 @@ namespace Dynamo.Controls
             double dbl;
             if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
             {
-                return (dbl.ToString(DynamoUnits.Display.PrecisionFormat, CultureInfo.InvariantCulture));
+                return (dbl.ToString(SIUnit.NumberFormat, CultureInfo.InvariantCulture));
             }
-            return value ?? 0.ToString(DynamoUnits.Display.PrecisionFormat);
+            return value ?? 0.ToString(SIUnit.NumberFormat);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1949,7 +1925,6 @@ namespace Dynamo.Controls
         }
     }
 
-    [Obsolete("This class will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
     public class MeasureConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

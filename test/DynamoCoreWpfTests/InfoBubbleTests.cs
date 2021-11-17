@@ -73,23 +73,6 @@ namespace DynamoCoreWpfTests
             AssertParsedLinkIsEqualTo(content + badIdentifierIncomplete + goodLink, null);
             AssertParsedLinkIsEqualTo(content + badIdentifierTypo + goodLink, null);
         }
-        [Test]
-        public void DataPacketConstructorCanParseLinksCorrectly_ContainingMultipleHREFs()
-        {
-            // Arrange
-            const string i = "href=";
-            var goodLink = "ExcelNotInstalled.html";
-
-            string content = "This is the base bubble message.";
-
-            // Assert
-            AssertParsedLinkIsEqualTo(content + i + goodLink + Environment.NewLine +
-                content + i + goodLink + Environment.NewLine +
-                content + i + goodLink + Environment.NewLine, goodLink);
-            AssertParsedLinkIsEqualTo(content + i + goodLink + Environment.NewLine +
-              content + i + goodLink + Environment.NewLine +
-              content + i + goodLink, goodLink);
-        }
 
         /// <summary>
         /// Used to check whether a node can have info messages, warnings and errors added to it which are then displayed to the user.

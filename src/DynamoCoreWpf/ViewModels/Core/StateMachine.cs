@@ -692,18 +692,6 @@ namespace Dynamo.ViewModels
 
                     if (dropGroup != null)
                     {
-                        // If groups are being dragged store them here
-                        var dragedGroups = DynamoSelection.Instance.Selection
-                            .OfType<AnnotationModel>()
-                            .ToList();
-
-                        // We do not want to add dragged groups content twice
-                        // so we filter it out here.
-                        var modelsToAdd = DynamoSelection.Instance.Selection
-                            .OfType<ModelBase>()
-                            .Except(dragedGroups.SelectMany(x => x.Nodes))
-                            .ToList();
-
                         // AddModelsToGroupModelCommand adds models to the selected group
                         // therefor we add the dropGroup to the selection before calling
                         // the command.
@@ -722,19 +710,10 @@ namespace Dynamo.ViewModels
                                 .ForEach(x => x.Deselect());
                         }
 
-                        foreach (var item in modelsToAdd)
+                        foreach (var item in DynamoSelection.Instance.Selection.OfType<ModelBase>())
                         {
                             if (item == dropGroup.AnnotationModel) continue;
 
-                            // If the item is a group and the hovered group
-                            // is not a nested group, we add it to the dropGroup
-                            if (item is AnnotationModel && 
-                                !owningWorkspace.Model.Annotations.ContainsModel(dropGroup.AnnotationModel))
-                            {
-                                owningWorkspace.DynamoViewModel.AddGroupToGroupModelCommand.Execute(dropGroup.AnnotationModel.GUID);
-                                continue;
-                            }
-                                
                             owningWorkspace.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
                         }
                         dropGroup.NodeHoveringState = false;
@@ -825,14 +804,11 @@ namespace Dynamo.ViewModels
                     // Update the dragged nodes (note: this isn't recorded).
                     owningWorkspace.UpdateDraggedSelection(mouseCursor.AsDynamoType());
 
-                    var draggedGroups = DynamoSelection.Instance.Selection.OfType<AnnotationModel>();
+                    if (DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any()) return false;
 
                     // Here we check if the mouse cursor is inside any Annotation groups
                     var dropGroups = owningWorkspace.Annotations
-                        .Where(x =>
-                        !draggedGroups.Select(a => a.GUID).Contains(x.AnnotationModel.GUID) &&
-                        x.IsExpanded &&
-                        x.AnnotationModel.Rect.Contains(mouseCursor.X, mouseCursor.Y));
+                        .Where(x => x.IsExpanded && x.AnnotationModel.Rect.Contains(mouseCursor.X, mouseCursor.Y));
 
                     // In scenarios where there are nested groups, the above will return both
                     // the nested group and the parent group, as the mouse coursor will be inside
@@ -842,27 +818,15 @@ namespace Dynamo.ViewModels
 
                     // If the dropGroup is null or any of the selected items is already in the dropGroup,
                     // we disable the drop border by setting NodeHoveringState to false
-                    var draggedModels = DynamoSelection.Instance.Selection
-                        .OfType<ModelBase>()
-                        .Except(draggedGroups.SelectMany(x => x.Nodes));
-
                     if (dropGroup is null ||
-                        draggedModels
+                        DynamoSelection.Instance.Selection
+                        .OfType<ModelBase>()
                         .Any(x => owningWorkspace.Model.Annotations.ContainsModel(x)))
                     {
                         owningWorkspace.Annotations
                             .Where(x => x.NodeHoveringState)
                             .ToList()
                             .ForEach(x => x.NodeHoveringState = false);
-                    }
-
-                    // If we are dragging groups over a group that is already nested
-                    // we return as we cant have more than one nested layer
-                    else if (draggedGroups.Any() && 
-                        owningWorkspace.Model.Annotations.ContainsModel(dropGroup.AnnotationModel) ||
-                        draggedGroups.Any(x=>x.HasNestedGroups))
-                    {
-                        return false; // Mouse event not handled.
                     }
 
                     // If the dropGroups NodeHoveringState is set to false
