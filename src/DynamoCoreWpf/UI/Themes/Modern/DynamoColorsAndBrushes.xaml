@@ -69,6 +69,7 @@
 
     <!--  Nodes  -->
     <SolidColorBrush x:Key="NodeFrozenOverlayColor" Color="#BCD3EE" />
+    <SolidColorBrush x:Key="NodeInfoColor" Color="{StaticResource Blue300}" />
     <SolidColorBrush x:Key="NodeWarningColor" Color="#FAA21B" />
     <SolidColorBrush x:Key="NodeErrorColor" Color="#EB5555" />
     

@@ -1093,16 +1093,25 @@ namespace Dynamo.ViewModels
         /// either an error or a warning state.
         /// </summary>
         /// <param name="elementState"></param>
-        private void SetWarningBarColor(ElementState elementState)
+        private void SetWarningBarColor(InfoBubbleViewModel.Style style)
         {
-            switch (elementState)
+            switch (style)
             {
-                case ElementState.Warning:
+                case InfoBubbleViewModel.Style.None:
+                    break;
+                case InfoBubbleViewModel.Style.Warning:
+                case InfoBubbleViewModel.Style.WarningCondensed:
                     WarningBarColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeWarningColor"];
                     break;
-                case ElementState.Error:
+                case InfoBubbleViewModel.Style.Error:
+                case InfoBubbleViewModel.Style.ErrorCondensed:
                     WarningBarColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeErrorColor"];
                     break;
+                case InfoBubbleViewModel.Style.Info:
+                    WarningBarColor = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInfoColor"];
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(style), style, null);
             }
         }
 
@@ -1156,13 +1165,13 @@ namespace Dynamo.ViewModels
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
                     ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                    SetWarningBarColor(NodeModel.State);
+                    SetWarningBarColor(ErrorBubble.InfoBubbleStyle);
                 });
             }
             else
             {
                 ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                SetWarningBarColor(NodeModel.State);
+                SetWarningBarColor(ErrorBubble.InfoBubbleStyle);
             }
             
             ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
