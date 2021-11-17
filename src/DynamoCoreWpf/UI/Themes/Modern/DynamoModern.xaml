@@ -2608,7 +2608,7 @@
                                 CornerRadius="4"/>
                         <Border x:Name="border"
                                 Margin="4"
-                                Height="24px"
+                                Height="36px"
                                 Padding="8,0,8,0"
                                 BorderThickness="1"
                                 BorderBrush="{TemplateBinding BorderBrush}"
