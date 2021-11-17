@@ -750,7 +750,7 @@ namespace Dynamo.ViewModels
             DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
 
-            WorkspaceViewModel.ZoomChanged += UpdateWarningsAndOverlays;
+            WorkspaceViewModel.ZoomChanged += UpdateOverlays;
             
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
@@ -790,7 +790,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void UpdateWarningsAndOverlays(object sender, EventArgs e)
+        private void UpdateOverlays(object sender, EventArgs e)
         {
             RaisePropertyChanged(nameof(NodeOverlayVisible));
             RaisePropertyChanged(nameof(NodeOverlayColor));
@@ -861,7 +861,7 @@ namespace Dynamo.ViewModels
             }
 
             NodeModel.NodeMessagesClearing -= Logic_NodeMessagesClearing;
-            WorkspaceViewModel.ZoomChanged -= UpdateWarningsAndOverlays;
+            WorkspaceViewModel.ZoomChanged -= UpdateOverlays;
 
             if (ErrorBubble != null) DisposeErrorBubble();
 
@@ -1056,8 +1056,8 @@ namespace Dynamo.ViewModels
         private void BuildErrorBubble()
         {
             if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
-            ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateWarningsAndOverlays;
-            ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateWarningsAndOverlays;
+            ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
+            ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateOverlays;
             if (DynamoViewModel.UIDispatcher != null)
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
@@ -1118,8 +1118,8 @@ namespace Dynamo.ViewModels
                 });
             }
 
-            ErrorBubble.NodeWarningsToDisplay.CollectionChanged -= UpdateWarningsAndOverlays;
-            ErrorBubble.NodeErrorsToDisplay.CollectionChanged -= UpdateWarningsAndOverlays;
+            ErrorBubble.NodeWarningsToDisplay.CollectionChanged -= UpdateOverlays;
+            ErrorBubble.NodeErrorsToDisplay.CollectionChanged -= UpdateOverlays;
 
             ErrorBubble.Dispose();
         }
