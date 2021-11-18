@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using DSCPython;
@@ -14,6 +15,14 @@ namespace DynamoPythonTests
     [TestFixture]
     internal class SharedCodeCompletionProviderTests : UnitTestBase
     {
+        public override void Setup()
+        {
+            base.Setup();
+            //for some legacy tests we'll need the DSCPython binary loaded manually
+            //as the types are found using reflection - during normal dynamo use these types are already loaded. 
+            Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DSCPython.dll"));
+        }
+
         [Test]
         public void SharedCoreCanFindLoadedProviders()
         {

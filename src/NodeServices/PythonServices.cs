@@ -235,7 +235,7 @@ namespace Dynamo.PythonServices
             // but we can optimize by checking all loaded types against evaluators interface later
             try
             {
-                var eType = assembly.GetTypes().FirstOrDefault(x => typeof(PythonEngine).IsAssignableFrom(x));
+                var eType = assembly.GetTypes().FirstOrDefault(x => typeof(PythonEngine).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
                 PythonEngine engine = (PythonEngine)eType?.GetProperty(PythonEvaluatorSingletonInstance, BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null);
 
                 if (engine != null && GetEngine(engine.Name) == null)
