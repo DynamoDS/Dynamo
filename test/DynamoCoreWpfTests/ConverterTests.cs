@@ -617,18 +617,18 @@ namespace Dynamo.Tests
         public void ZoomToVisibilityConverterTest()
         {
             object visibility;
-            ZoomToVisibilityConverter visibilityConverter = new ZoomToVisibilityConverter();
+            ZoomToVisibilityConverter converter = new ZoomToVisibilityConverter();
 
-            visibility = visibilityConverter.Convert("1.0", typeof(string), null, new CultureInfo("en-US"));
+            visibility = converter.Convert("1.0", typeof(string), null, new CultureInfo("en-US"));
             Assert.AreEqual(visibility, Visibility.Visible);
 
-            visibility = visibilityConverter.Convert("1,0", typeof(string), null, new CultureInfo("de-DE"));
+            visibility = converter.Convert("1,0", typeof(string), null, new CultureInfo("de-DE"));
             Assert.AreEqual(visibility, Visibility.Visible);
 
-            visibility = visibilityConverter.Convert(1.0, typeof(double), null, new CultureInfo("en-US"));
+            visibility = converter.Convert(1.0, typeof(double), null, new CultureInfo("en-US"));
             Assert.AreEqual(visibility, Visibility.Visible);
 
-            visibility = visibilityConverter.Convert(1.0, typeof(double), null, new CultureInfo("de-DE"));
+            visibility = converter.Convert(1.0, typeof(double), null, new CultureInfo("de-DE"));
             Assert.AreEqual(visibility, Visibility.Visible);
         }
 
