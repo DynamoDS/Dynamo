@@ -169,15 +169,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autodesk sample.
-        /// </summary>
-        public static string AutodeskSamplePackage {
-            get {
-                return ResourceManager.GetString("AutodeskSamplePackage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Autodesk Sign In.
         /// </summary>
         public static string AutodeskSignIn {
@@ -2939,7 +2930,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Ungroup.
+        ///   Looks up a localized string similar to Ungr_oup.
         /// </summary>
         public static string GroupContextMenuUngroup {
             get {
