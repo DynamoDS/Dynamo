@@ -279,6 +279,11 @@
       <Name>DynamoConversions</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
+      <Project>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</Project>
+      <Name>Units</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">
       <Project>{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}</Project>
       <Name>PythonNodeModelsWpf</Name>
