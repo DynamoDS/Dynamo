@@ -80,7 +80,14 @@
                                                               DockPanel.Dock="Left"
                                                               RecognizesAccessKey="True"
                                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                              TextBlock.Foreground="{StaticResource NodeContextMenuForeground}" />
+                                                              TextBlock.Foreground="{StaticResource NodeContextMenuForeground}">
+                                                <ContentPresenter.Resources>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="MaxWidth" Value="200"></Setter>
+                                                        <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
+                                                    </Style>
+                                                </ContentPresenter.Resources>
+                                            </ContentPresenter>
                                             <Border x:Name="dismissedAlertsBadge"
                                                     Height="15"
                                                     MinWidth="15"

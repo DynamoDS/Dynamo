@@ -139,35 +139,7 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <Style x:Key="CtaButtonStyle" TargetType="Button">
-                <Setter Property="HorizontalAlignment" Value="Right" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="Margin" Value="15,0,0,0" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="border"
-                                    Height="36px"
-                                    Padding="8,11,8,9"
-                                    Background="#0696D7"
-                                    CornerRadius="2">
-                                <TextBlock x:Name="textBlock"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontSize="14px"
-                                           Foreground="#FFFFFF"
-                                           Text="{TemplateBinding Content}" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="border" Property="Background" Value="MediumTurquoise" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+
             <Style x:Key="TextButtonStyle" TargetType="Button">
                 <Setter Property="HorizontalAlignment" Value="Right" />
                 <Setter Property="Cursor" Value="Hand" />
@@ -676,6 +648,7 @@
                                ToolTip="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}" />
                     <TextBox Name="groupInput"
                              Style="{StaticResource InputStyle}"
+                             Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Tag="{x:Static p:Resources.PublishPackageGroupWatermark}" />
 
                     <!--  Keywords  -->
@@ -685,6 +658,7 @@
                                ToolTip="{x:Static p:Resources.PublishPackageViewPackageKeywordsTooltip}" />
                     <TextBox Name="keywordsInput"
                              Style="{StaticResource InputStyle}"
+                             Text="{Binding Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Tag="{x:Static p:Resources.PublishPackageKeywordsWatermark}" />
 
                     <!--  More  -->
@@ -700,6 +674,7 @@
                                        Text="{x:Static p:Resources.PublishPackageViewPublisherWebSite}" />
                             <TextBox Name="websiteUrlInput"
                                      Style="{StaticResource InputStyle}"
+                                     Text="{Binding SiteUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}" />
 
                             <!--  Repository URL  -->
@@ -708,6 +683,7 @@
                                        Text="{x:Static p:Resources.PublishPackageViewRepositoryUrl}" />
                             <TextBox Name="repositoryUrlInput"
                                      Style="{StaticResource InputStyle}"
+                                     Text="{Binding RepositoryUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}" />
 
                             <!--  License  -->
@@ -731,6 +707,7 @@
                                 </Hyperlink>
                             </TextBlock>
                             <TextBox Name="licenseInput"
+                                     Text="{Binding License, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{StaticResource InputStyle}"
                                      Tag="{x:Static p:Resources.PublishPackageViewLicenseWatermark}" />
 
@@ -743,6 +720,7 @@
                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightHolderSubLabel}" />
                             <TextBox Name="copyrightHolderInput"
                                      Style="{StaticResource InputStyle}"
+                                     Text="{Binding CopyrightHolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewCopyrightHolderWatermark}" />
 
                             <!--  Copyright Year  -->
@@ -755,6 +733,7 @@
                             <TextBox Name="copyrightYearInput"
                                      Margin="0,0,0,-20"
                                      Style="{StaticResource InputStyle}"
+                                     Text="{Binding CopyrightYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewCopyrightYearWatermark}" />
                         </StackPanel>
                     </Expander>
@@ -945,17 +924,25 @@
             <Button Command="{Binding Path=SubmitCommand}"
                     Content="{x:Static p:Resources.PublishPackage}"
                     DockPanel.Dock="Right"
+                    Background="#0696D7"
+                    Foreground="White"
+                    BorderBrush="#0696D7"
+                    Margin="0,0,-5,0"
                     Style="{StaticResource CtaButtonStyle}" />
 
             <!--  Publish Locally  -->
             <Button Command="{Binding Path=PublishLocallyCommand}"
                     Content="{x:Static p:Resources.PublishPackageLocally}"
                     DockPanel.Dock="Right"
+                    Margin="0,0,2,0"
+                    Background="#0696D7"
+                    Foreground="White"
+                    BorderBrush="#0696D7"
                     Style="{StaticResource CtaButtonStyle}" />
 
             <!--  Status Label  -->
             <TextBlock Name="statusLabel"
-                       Margin="0,5,0,0"
+                       Margin="0,4,0,0"
                        VerticalAlignment="Center"
                        FontFamily="{StaticResource ArtifaktElementRegular}"
                        Style="{StaticResource LabelStyle}"
