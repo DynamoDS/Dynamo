@@ -222,6 +222,15 @@ namespace Dynamo.PythonServices
                 return;
             }
 
+            var assemblyName = assembly.GetName().Name;
+            if (assemblyName != IronPythonAssemblyName && assemblyName != CPythonAssemblyName)
+            {
+                // Remove this condition once Python engines are truly dynamic (VM execution and UI)
+                // Until then, check for specific assemblies to prevent any performance degradation
+                // TODO: Check performance of Dynamo load time after removing this condition.
+                return;
+            }
+
             // Currently we are using try-catch to validate loaded assembly and Singleton Instance method exist
             // but we can optimize by checking all loaded types against evaluators interface later
             try
