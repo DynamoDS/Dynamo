@@ -18,6 +18,7 @@ namespace DynamoUnits
         /// <summary>
         /// Path to the directory used load the schema definitions.
         /// </summary>
+        [SupressImportIntoVM]
         public static string SchemaDirectory { get; private set; } = Path.Combine(AssemblyDirectory, "unit");
 
 
