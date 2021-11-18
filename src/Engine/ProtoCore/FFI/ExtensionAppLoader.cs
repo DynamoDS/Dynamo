@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Logging;
 
 namespace ProtoFFI
 {
@@ -165,7 +166,7 @@ namespace ProtoFFI
             }
 
             if (null != extesionApp)
-                extesionApp.StartUp();
+                extesionApp.StartUp(new ExtensionStartupParams() {});
         }
 
         /// <summary>
@@ -178,7 +179,7 @@ namespace ProtoFFI
             {
                 IExtensionApplication app = i.Value as IExtensionApplication;
                 if (null != app)
-                    app.StartUp();
+                    app.StartUp(new ExtensionStartupParams() { });
             }
         }
 
