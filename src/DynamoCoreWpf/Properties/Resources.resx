@@ -2945,6 +2945,11 @@ Delete the following packages: {2}?
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Package dependencies</value>
   </data>
+  <data name="PackagesGuideInstalledPackageText" xml:space="preserve">
+    <value>Package installations are typically quick, depending on their size and other factors. \n
+To install the latest version of a package, click Install. \n
+%./UI/Images/alert.png% The sample Autodesk package is already installed on your computer.</value>
+  </data>
   <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
     <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
   </data>
