@@ -173,10 +173,10 @@
                             <Setter Property="Background" Value="#0696D7" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=MessageBoxImage}" Value="{x:Static MessageBoxImage.Warning}">
-                            <Setter Property="Background" Value="{StaticResource YellowOrange500}" />
+                            <Setter Property="Background" Value="{StaticResource YellowOrange500Brush}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=MessageBoxImage}" Value="{x:Static MessageBoxImage.Exclamation}">
-                            <Setter Property="Background" Value="{StaticResource YellowOrange500}" />
+                            <Setter Property="Background" Value="{StaticResource YellowOrange500Brush}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=MessageBoxImage}" Value="{x:Static MessageBoxImage.Stop}">
                             <Setter Property="Background" Value="Red" />

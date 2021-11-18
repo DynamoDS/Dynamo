@@ -1249,7 +1249,7 @@
                                          Margin="0,5,5,0"
                                          Height="9"
                                          Width="9"
-                                         Fill="{StaticResource YellowOrange500}"
+                                         Fill="{StaticResource YellowOrange500Brush}"
                                          VerticalAlignment="Center">
                                     <Ellipse.Style>
                                         <Style TargetType="Ellipse">
