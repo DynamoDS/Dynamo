@@ -36,7 +36,7 @@
                                      Focusable="True"
                                      FontFamily="{StaticResource ArtifaktElementRegular}"
                                      FontSize="12px"
-                                     Foreground="#DFDFDF"
+                                     Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                      MaxLength="{TemplateBinding MaxLength}"
                                      Tag="{TemplateBinding Tag}"
                                      Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
@@ -45,7 +45,7 @@
                                        Padding="10"
                                        FontFamily="{StaticResource ArtifaktElementRegular}"
                                        FontSize="12px"
-                                       Foreground="#DFDFDF"
+                                       Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                        IsHitTestVisible="False"
                                        Opacity="0.5"
                                        Text="{TemplateBinding Tag}">

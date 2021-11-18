@@ -252,7 +252,7 @@
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
                                            FontSize="10px"
                                            FontWeight="Regular"
-                                           Foreground="#DFDFDF"
+                                           Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                            Text="{TemplateBinding Content}" />
                                 <Thumb x:Name="PART_RightHeaderGripper"
                                        Width="2"
@@ -282,7 +282,7 @@
                                        FontFamily="{StaticResource ArtifaktElementRegular}"
                                        FontSize="10px"
                                        FontWeight="Regular"
-                                       Foreground="#DFDFDF"
+                                       Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                        Text="{TemplateBinding Content}" />
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">

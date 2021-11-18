@@ -560,7 +560,7 @@
                                          BorderThickness="1"
                                          FontFamily="{StaticResource ArtifaktElementRegular}"
                                          FontSize="12px"
-                                         Foreground="#DFDFDF"
+                                         Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                          MaxLength="{TemplateBinding MaxLength}"
                                          Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
                                          Tag="{TemplateBinding Tag}"
@@ -569,7 +569,7 @@
                                            Padding="13,13,10,8"
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
                                            FontSize="12px"
-                                           Foreground="#DFDFDF"
+                                           Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                            IsHitTestVisible="False"
                                            Opacity="0.5"
                                            Text="{TemplateBinding Tag}">
@@ -599,7 +599,7 @@
         <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementBold}" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontSize" Value="14px" />
-        <Setter Property="Foreground" Value="#DFDFDF" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="Margin" Value="0,0,0,5" />
     </Style>
@@ -607,7 +607,7 @@
     <Style x:Key="SubLabelStyle" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
         <Setter Property="FontSize" Value="12px" />
-        <Setter Property="Foreground" Value="#DFDFDF" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}" />
         <Setter Property="Margin" Value="0,0,0,5" />
     </Style>
 
@@ -2639,7 +2639,7 @@
                                 Margin="0"
                                 BorderThickness="4"
                                 Visibility="Hidden"
-                                BorderBrush="#DFDFDF"
+                                BorderBrush="{StaticResource PrimaryCharcoal200Brush}"
                                 CornerRadius="4"/>
                         <Border x:Name="border"
                                 Margin="4"
@@ -3645,7 +3645,7 @@
 
     <!--  This Style will be used in the button for adding a Style in the "Group Styles" section  -->
     <Style x:Key="FlatButtonStyle" TargetType="Button">
-        <Setter Property="Foreground" Value="#6DD2FF" />
+        <Setter Property="Foreground" Value="{StaticResource Blue300Brush}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
