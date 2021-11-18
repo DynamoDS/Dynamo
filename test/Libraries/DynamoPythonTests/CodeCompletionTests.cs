@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DSCPython;
+using Dynamo;
 using Dynamo.Python;
 using Dynamo.PythonServices;
 using Dynamo.Utilities;
@@ -11,7 +12,7 @@ using NUnit.Framework;
 namespace DynamoPythonTests
 {
     [TestFixture]
-    internal class SharedCodeCompletionProviderTests
+    internal class SharedCodeCompletionProviderTests : UnitTestBase
     {
         [Test]
         public void SharedCoreCanFindLoadedProviders()
@@ -388,7 +389,7 @@ namespace DynamoPythonTests
 
         [Test]
         [Category("UnitTests")]
-        public void VerifyIronPythonLoadedAssemblies()
+        public void VerifyPythonLoadedAssemblies()
         {
             // Verify IronPython assebmlies are loaded a single time
             List<string> matches = new List<string>();
@@ -396,11 +397,11 @@ namespace DynamoPythonTests
             Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (Assembly assembly in assemblies)
             {
-                if (assembly.FullName.StartsWith("IronPython"))
+                if (assembly.FullName.StartsWith("DSCPython"))
                 {
                     if (matches.Contains(assembly.FullName))
                     {
-                        Assert.Fail("Attempted to load an IronPython assembly multiple times: " + assembly.FullName);
+                        Assert.Fail("Attempted to load an DSCPython assembly multiple times: " + assembly.FullName);
                     }
                     else
                     {
