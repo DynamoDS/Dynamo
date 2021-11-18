@@ -723,7 +723,7 @@ namespace Dynamo.ViewModels
             return newPortViewModels;
         }
 
-        private void UpdateProxyPortsPosition()
+        internal void UpdateProxyPortsPosition()
         {
             var groupInports = GetGroupInPorts();
 
