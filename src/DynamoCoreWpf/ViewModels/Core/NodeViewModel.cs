@@ -355,9 +355,14 @@ namespace Dynamo.ViewModels
         /// This reflects whether the node is in a info/warning/error/frozen state
         /// </summary>
         [JsonIgnore]
-        public bool NodeOverlayVisible => IsFrozen ||
-                                          ErrorBubble?.NodeErrorsToDisplay.Count > 0 && WorkspaceViewModel.Zoom < Configurations.ZoomedOutThreshold ||
-                                          ErrorBubble?.NodeWarningsToDisplay.Count > 0 && WorkspaceViewModel.Zoom < Configurations.ZoomedOutThreshold;
+        public bool NodeOverlayVisible => IsFrozen;
+
+        /// <summary>
+        /// Determines whether the node is showing a bar at its base, indicating that the
+        /// node has undismissed info/warning/error messages.
+        /// </summary>
+        [JsonIgnore]
+        public bool NodeWarningBarVisible => ErrorBubble != null && ErrorBubble.DoesNodeDisplayMessages;
 
         /// <summary>
         /// The color of the warning bar: blue for info, orange for warnings, red for errors.
@@ -379,14 +384,8 @@ namespace Dynamo.ViewModels
         /// if the node is in a Frozen, Info, Error or Warning state.
         /// </summary>
         [JsonIgnore]
-        public SolidColorBrush NodeOverlayColor
-        {
-            get
-            {
-                if (IsFrozen) return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeFrozenOverlayColor"];
-                return ErrorBubble == null ? null : GetWarningColor(ErrorBubble.InfoBubbleStyle);
-            }
-        }
+        public SolidColorBrush NodeOverlayColor => IsFrozen ?
+                    (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeFrozenOverlayColor"] : null;
 
         [JsonIgnore]
         public Visibility PeriodicUpdateVisibility
@@ -750,8 +749,6 @@ namespace Dynamo.ViewModels
             DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
 
-            WorkspaceViewModel.ZoomChanged += UpdateOverlays;
-            
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -792,6 +789,7 @@ namespace Dynamo.ViewModels
         /// <param name="e"></param>
         private void UpdateOverlays(object sender, EventArgs e)
         {
+            RaisePropertyChanged(nameof(NodeWarningBarVisible));
             RaisePropertyChanged(nameof(NodeOverlayVisible));
             RaisePropertyChanged(nameof(NodeOverlayColor));
         }
@@ -861,8 +859,7 @@ namespace Dynamo.ViewModels
             }
 
             NodeModel.NodeMessagesClearing -= Logic_NodeMessagesClearing;
-            WorkspaceViewModel.ZoomChanged -= UpdateOverlays;
-
+            
             if (ErrorBubble != null) DisposeErrorBubble();
 
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
@@ -1056,8 +1053,11 @@ namespace Dynamo.ViewModels
         private void BuildErrorBubble()
         {
             if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
+            
+            ErrorBubble.NodeInfoToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateOverlays;
+            
             if (DynamoViewModel.UIDispatcher != null)
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
@@ -1118,6 +1118,7 @@ namespace Dynamo.ViewModels
                 });
             }
 
+            ErrorBubble.NodeInfoToDisplay.CollectionChanged -= UpdateOverlays;
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged -= UpdateOverlays;
             ErrorBubble.NodeErrorsToDisplay.CollectionChanged -= UpdateOverlays;
 

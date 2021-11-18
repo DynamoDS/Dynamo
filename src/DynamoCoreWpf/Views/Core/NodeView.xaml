@@ -2,11 +2,11 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
+             xmlns:controls="clr-namespace:Dynamo.Views"
+             xmlns:controls1="clr-namespace:Dynamo.Controls"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:controls="clr-namespace:Dynamo.Views"
-             xmlns:controls1="clr-namespace:Dynamo.Controls"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -31,7 +31,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <!--  Sets grid to 70% opacity when node is frozen  -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" MinWidth="10" />
@@ -536,7 +535,7 @@
                 IsHitTestVisible="False"
                 SnapsToDevicePixels="True" />
 
-        <!--  Displays when the node is Frozen/Warning/Error state -->
+        <!--  Displays when the node is Frozen/Warning/Error state  -->
         <Border Name="nodeColorOverlay"
                 Grid.Row="1"
                 Grid.RowSpan="4"
@@ -544,9 +543,9 @@
                 Margin="-8"
                 Background="{Binding NodeOverlayColor, UpdateSourceTrigger=PropertyChanged}"
                 Canvas.ZIndex="7"
-                Opacity="0.5"
                 CornerRadius="8,8,0,0"
                 IsHitTestVisible="False"
+                Opacity="0.5"
                 Visibility="{Binding Path=NodeOverlayVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  Displays when the node is selected  -->
@@ -591,14 +590,14 @@
             </Rectangle.Visibility>
         </Rectangle>-->
 
-        <!--  Warning Bar: Displays when node is in Error/Warning state  -->
+        <!--  Warning Bar: Displays when node is in Info/Warning/Error state  -->
         <Rectangle Grid.Row="4"
                    Grid.Column="0"
                    Grid.ColumnSpan="3"
                    Height="12"
                    Canvas.ZIndex="1"
                    Fill="{Binding WarningBarColor, UpdateSourceTrigger=PropertyChanged}"
-                   Visibility="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                   Visibility="{Binding NodeWarningBarVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
 
         <Canvas Name="expansionBay"
                 Grid.Row="5"

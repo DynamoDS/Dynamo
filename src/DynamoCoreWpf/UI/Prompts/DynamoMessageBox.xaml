@@ -20,6 +20,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -172,10 +173,10 @@
                             <Setter Property="Background" Value="#0696D7" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=MessageBoxImage}" Value="{x:Static MessageBoxImage.Warning}">
-                            <Setter Property="Background" Value="#FAA21B" />
+                            <Setter Property="Background" Value="{StaticResource YellowOrange500}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=MessageBoxImage}" Value="{x:Static MessageBoxImage.Exclamation}">
-                            <Setter Property="Background" Value="#FAA21B" />
+                            <Setter Property="Background" Value="{StaticResource YellowOrange500}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=MessageBoxImage}" Value="{x:Static MessageBoxImage.Stop}">
                             <Setter Property="Background" Value="Red" />

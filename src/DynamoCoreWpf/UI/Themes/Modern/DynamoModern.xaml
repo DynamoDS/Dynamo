@@ -3510,7 +3510,7 @@
                                 Visibility="{Binding Path=IsWarningEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Polygon Points="10,5 18,20 2,20">
                                 <Polygon.Fill>
-                                    <SolidColorBrush Color="#FAA21B" />
+                                    <SolidColorBrush Color="{StaticResource YellowOrange500}" />
                                 </Polygon.Fill>
                             </Polygon>
 

@@ -68,10 +68,10 @@
     <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#3C3C3C" />
 
     <!--  Nodes  -->
-    <SolidColorBrush x:Key="NodeFrozenOverlayColor" Color="#BCD3EE" />
+    <SolidColorBrush x:Key="NodeFrozenOverlayColor" Color="{StaticResource DarkBlue200}" />
     <SolidColorBrush x:Key="NodeInfoColor" Color="{StaticResource Blue300}" />
-    <SolidColorBrush x:Key="NodeWarningColor" Color="#FAA21B" />
-    <SolidColorBrush x:Key="NodeErrorColor" Color="#EB5555" />
+    <SolidColorBrush x:Key="NodeWarningColor" Color="{StaticResource YellowOrange500}" />
+    <SolidColorBrush x:Key="NodeErrorColor" Color="{StaticResource Red500}" />
     
     <SolidColorBrush x:Key="NodeOptionsButtonBackground" Color="#282828" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphForeground" Color="#4B4B4B" />
