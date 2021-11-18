@@ -8,7 +8,7 @@ using PythonNodeModels;
 
 namespace Dynamo.Python
 {
-    internal class SharedCompletionProvider : LogSourceBase
+    internal class SharedCompletionProvider : LogSourceBase, IDisposable
     {
 
         #region Properties and Fields
@@ -47,7 +47,7 @@ namespace Dynamo.Python
                         {
                             return new Type[0];
                         }
-                    }).Where(p => completionType.IsAssignableFrom(p) && !p.IsInterface).ToList();
+                    }).Where(p => completionType.IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract).ToList();
                 //instantiate them - so we can check which is a match using their match method
                 foreach (var type in loadedCodeCompletionTypes)
                 {
@@ -87,5 +87,10 @@ namespace Dynamo.Python
                 Select(x => new IronPythonCompletionData(x)).ToArray();
         }
         #endregion
+
+        public void Dispose()
+        {
+            (providerImplementation as IDisposable)?.Dispose();
+        }
     }
 }

@@ -77,9 +77,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             {
                 ContentRichTextBox.Visibility = Visibility.Hidden;
 
-                if(webBrowserWindow == null)
-                    webBrowserWindow = new WebBrowserWindow(popupViewModel, hostControlInfo);
-
+                webBrowserWindow = new WebBrowserWindow(popupViewModel, hostControlInfo);
                 webBrowserWindow.IsOpen = true;
             }
         }
