@@ -212,9 +212,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     {
                         step.ExecutePreValidation();
                     }
-                    resultStep = (from step in possibleSteps
-                                  where step.PreValidationIsOpenFlag
-                                  select step).FirstOrDefault();
+
+                    resultStep = possibleSteps.FirstOrDefault(x => x.PreValidationIsOpenFlag);
                 }
                 if (resultStep != null)
                 {
@@ -227,7 +226,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         internal void HideCurrentStep(int CurrentStepSequence, GuideFlow currentFlow)
         {
-            CalculateStep(GuideFlow.CURRENT, CurrentStepSequence);
             CurrentStep.Hide(currentFlow);
             GuideBackgroundElement.ClearHighlightSection();
         }

@@ -13,6 +13,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "# Python script to find add or subtract a series of numbers. \r\n\r\n# Boiler-plate import statments included out-of-the-box\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variable.\r\nsign = IN[0]  # -1 for subtract all, 0 for do nothing, 1 for add all\r\nnums = IN[1]  # List of numbers to subtract or add\r\n\r\npartials = [] # Empty array to contain partial sums or differences\r\nresult = 0    # Initialize the sum or difference to 0\r\n\r\n# Loop through each item and add it or subtract it from the result.\r\nfor index in range(len(nums)):\r\n\tif sign > 0:\r\n\t\tresult = result + nums[index]\r\n\t\tpartials.append(result)\r\n\telif sign == 0:\r\n\t\tpartials.append(result)\r\n\t\tcontinue\r\n\telse:\r\n\t\tresult = result - nums[index]\r\n\t\tpartials.append(result)\r\n\r\n# Assign the output to the OUT variable\r\n#OUT = results  # Use this to output only the result.\r\nOUT = []\r\nOUT.append(result)\r\nOUT.append(partials)",
+      "Engine": "CPython3",
       "VariableInputPorts": true,
       "Id": "7183a2fe9a6a4eebb2233525a80ab2f2",
       "Inputs": [
@@ -47,7 +48,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs an embedded IronPython script."
+      "Description": "Runs an embedded CPython script."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
@@ -302,6 +303,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "import clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n#The inputs to this node will be stored as a list in the IN variable.\r\ndataEnteringNode = IN\r\n\r\np1 = Point.ByCoordinates(0, 0, 0);\r\np2 = Point.ByCoordinates(-10, -10, -10);\r\n\r\nl = Line.ByStartPointEndPoint(p1, p2);\r\n\r\npts = [\r\n\tPoint.ByCoordinates(0, 0, 0),\r\n\tPoint.ByCoordinates(10, 10, 0),\r\n\tPoint.ByCoordinates(20, 0, 0),\r\n\tPoint.ByCoordinates(30, 10, 0),\r\n\tPoint.ByCoordinates(40, 0, 0) ]\r\n\t\r\nspline = NurbsCurve.ByPoints(pts)\r\n\r\nsurf = spline.Extrude(Vector.ByCoordinates(0, 0, 1), 10)\r\n\r\n#Assign your output to the OUT variable\r\nOUT = [l, spline, surf]",
+      "Engine": "CPython3",
       "VariableInputPorts": true,
       "Id": "9094d23b33384e5caf7b7d08e547cc25",
       "Inputs": [],
@@ -317,7 +319,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs an embedded IronPython script."
+      "Description": "Runs an embedded CPython script."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -756,7 +758,7 @@
       },
       {
         "Id": "3316bcb825c946cbbb71e61d1f449192",
-        "Title": "PYTHON\r\n\r\nDynamo supports Iron Python through one of two types of Python nodes. (A second type of Python node, not shown here, can read a script from an external file to be executed.)\r\n\r\nDouble click on the Python node to see the script it contains.\r\n\r\nInput is contained in the IN array.  Output must be assigned to the OUT variable.  The output can be a single value or an array itself.",
+        "Title": "PYTHON\r\n\r\nDynamo supports CPython through one of two types of Python nodes. (A second type of Python node, not shown here, can read a script from an external file to be executed.)\r\n\r\nDouble click on the Python node to see the script it contains.\r\n\r\nInput is contained in the IN array.  Output must be assigned to the OUT variable.  The output can be a single value or an array itself.",
         "Nodes": [],
         "Left": 2875.2220283401,
         "Top": 354.253134658213,
