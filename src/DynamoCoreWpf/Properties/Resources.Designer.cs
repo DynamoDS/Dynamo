@@ -927,7 +927,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add-ons Category.
+        ///   Looks up a localized string similar to Add-Ons Category.
         /// </summary>
         public static string CustomNodePropertyWindowCategory {
             get {
@@ -6619,6 +6619,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RunTypeToolTipPeriodicallyEnabled {
             get {
                 return ResourceManager.GetString("RunTypeToolTipPeriodicallyEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
             }
         }
         

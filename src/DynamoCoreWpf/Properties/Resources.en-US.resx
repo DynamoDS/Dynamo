@@ -404,7 +404,7 @@ You will get a chance to save your work.</value>
     <value>Custom Node Property Error</value>
   </data>
   <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
-    <value>Add-ons Category</value>
+    <value>Add-Ons Category</value>
     <comment>Label - specify custom node category</comment>
   </data>
   <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
@@ -2948,6 +2948,9 @@ This package will be unloaded after the next Dynamo restart.</value>
   </data>
   <data name="InfoBubbleInfo" xml:space="preserve">
     <value>Info</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
   </data>
   <data name="PackagesGuideInstallAPackageText" xml:space="preserve">
     <value>Package installations are typically quick, depending on their size and other factors. \n\n **Click Install** to install the latest version of the sample Autodesk package and proceed with this guide.</value>
