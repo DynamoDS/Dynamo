@@ -689,9 +689,9 @@ namespace Dynamo.ViewModels
                 }
 
                 var packageToDownload = $"{name} {package.version}";
-                if (builtinPackages.Any())
+                if (builtinPackages.Any(x => x.LoadState.State == PackageLoadState.StateTypes.Loaded))
                 {
-                    // Conflicts with builtin packages
+                    // Conflicts with a loaded builtin packages
                     var message = string.Format(Resources.MessagePackageDepsInBuiltinPackages, packageToDownload,
                             JoinPackageNames(builtinPackages));
 
