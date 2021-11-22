@@ -76,125 +76,6 @@
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
-            <Style x:Key="LabelStyle" TargetType="TextBlock">
-                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementBold}" />
-                <Setter Property="FontWeight" Value="Bold" />
-                <Setter Property="FontSize" Value="14px" />
-                <Setter Property="Foreground" Value="#DFDFDF" />
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="Margin" Value="0,0,0,5" />
-            </Style>
-            <Style x:Key="SubLabelStyle" TargetType="TextBlock">
-                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-                <Setter Property="FontSize" Value="12px" />
-                <Setter Property="Foreground" Value="#DFDFDF" />
-                <Setter Property="Margin" Value="0,0,0,5" />
-            </Style>
-            <Style x:Key="InputStyle" TargetType="TextBox">
-                <Setter Property="Margin" Value="0,0,0,12" />
-                <Setter Property="MinWidth" Value="62px" />
-                <Setter Property="Cursor" Value="IBeam" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="TextBox">
-                            <Grid>
-                                <TextBox x:Name="InputTextBox"
-                                         Padding="10,12,10,8"
-                                         Background="#353535"
-                                         BorderBrush="Transparent"
-                                         BorderThickness="1"
-                                         FontFamily="{StaticResource ArtifaktElementRegular}"
-                                         FontSize="12px"
-                                         Foreground="#DFDFDF"
-                                         MaxLength="{TemplateBinding MaxLength}"
-                                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
-                                         Tag="{TemplateBinding Tag}"
-                                         TextWrapping="Wrap" />
-                                <TextBlock x:Name="WatermarkLabel"
-                                           Padding="13,13,10,8"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontSize="12px"
-                                           Foreground="#DFDFDF"
-                                           IsHitTestVisible="False"
-                                           Opacity="0.5"
-                                           Text="{TemplateBinding Tag}">
-                                    <TextBlock.Style>
-                                        <Style TargetType="{x:Type TextBlock}">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Text, ElementName=InputTextBox}" Value="">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="False">
-                        <Setter Property="BorderBrush" Value="{StaticResource DarkMidGreyBrush}" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-            <Style x:Key="CtaButtonStyle" TargetType="Button">
-                <Setter Property="HorizontalAlignment" Value="Right" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="Margin" Value="15,0,0,0" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="border"
-                                    Height="36px"
-                                    Padding="8,11,8,9"
-                                    Background="#0696D7"
-                                    CornerRadius="2">
-                                <TextBlock x:Name="textBlock"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontSize="14px"
-                                           Foreground="#FFFFFF"
-                                           Text="{TemplateBinding Content}" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="border" Property="Background" Value="MediumTurquoise" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="TextButtonStyle" TargetType="Button">
-                <Setter Property="HorizontalAlignment" Value="Right" />
-                <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-                <Setter Property="Margin" Value="18,0,0,0" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <TextBlock x:Name="textBlock"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontFamily="{StaticResource ArtifaktElementBold}"
-                                       FontSize="14px"
-                                       Foreground="#6DD2FF"
-                                       Text="{TemplateBinding Content}" />
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="textBlock" Property="Foreground" Value="White" />
-                                </Trigger>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter TargetName="textBlock" Property="Foreground" Value="#999999" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
             <Style x:Key="ComboBoxStyle" TargetType="{x:Type ComboBox}">
                 <Setter Property="OverridesDefaultStyle" Value="true" />
                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
@@ -371,7 +252,7 @@
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
                                            FontSize="10px"
                                            FontWeight="Regular"
-                                           Foreground="#DFDFDF"
+                                           Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                            Text="{TemplateBinding Content}" />
                                 <Thumb x:Name="PART_RightHeaderGripper"
                                        Width="2"
@@ -401,7 +282,7 @@
                                        FontFamily="{StaticResource ArtifaktElementRegular}"
                                        FontSize="10px"
                                        FontWeight="Regular"
-                                       Foreground="#DFDFDF"
+                                       Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                        Text="{TemplateBinding Content}" />
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
@@ -676,6 +557,7 @@
                                ToolTip="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}" />
                     <TextBox Name="groupInput"
                              Style="{StaticResource InputStyle}"
+                             Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Tag="{x:Static p:Resources.PublishPackageGroupWatermark}" />
 
                     <!--  Keywords  -->
@@ -685,6 +567,7 @@
                                ToolTip="{x:Static p:Resources.PublishPackageViewPackageKeywordsTooltip}" />
                     <TextBox Name="keywordsInput"
                              Style="{StaticResource InputStyle}"
+                             Text="{Binding Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Tag="{x:Static p:Resources.PublishPackageKeywordsWatermark}" />
 
                     <!--  More  -->
@@ -700,6 +583,7 @@
                                        Text="{x:Static p:Resources.PublishPackageViewPublisherWebSite}" />
                             <TextBox Name="websiteUrlInput"
                                      Style="{StaticResource InputStyle}"
+                                     Text="{Binding SiteUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}" />
 
                             <!--  Repository URL  -->
@@ -708,6 +592,7 @@
                                        Text="{x:Static p:Resources.PublishPackageViewRepositoryUrl}" />
                             <TextBox Name="repositoryUrlInput"
                                      Style="{StaticResource InputStyle}"
+                                     Text="{Binding RepositoryUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}" />
 
                             <!--  License  -->
@@ -731,6 +616,7 @@
                                 </Hyperlink>
                             </TextBlock>
                             <TextBox Name="licenseInput"
+                                     Text="{Binding License, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{StaticResource InputStyle}"
                                      Tag="{x:Static p:Resources.PublishPackageViewLicenseWatermark}" />
 
@@ -743,6 +629,7 @@
                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightHolderSubLabel}" />
                             <TextBox Name="copyrightHolderInput"
                                      Style="{StaticResource InputStyle}"
+                                     Text="{Binding CopyrightHolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewCopyrightHolderWatermark}" />
 
                             <!--  Copyright Year  -->
@@ -755,6 +642,7 @@
                             <TextBox Name="copyrightYearInput"
                                      Margin="0,0,0,-20"
                                      Style="{StaticResource InputStyle}"
+                                     Text="{Binding CopyrightYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewCopyrightYearWatermark}" />
                         </StackPanel>
                     </Expander>
@@ -945,17 +833,25 @@
             <Button Command="{Binding Path=SubmitCommand}"
                     Content="{x:Static p:Resources.PublishPackage}"
                     DockPanel.Dock="Right"
+                    Background="#0696D7"
+                    Foreground="White"
+                    BorderBrush="#0696D7"
+                    Margin="0,0,-5,0"
                     Style="{StaticResource CtaButtonStyle}" />
 
             <!--  Publish Locally  -->
             <Button Command="{Binding Path=PublishLocallyCommand}"
                     Content="{x:Static p:Resources.PublishPackageLocally}"
                     DockPanel.Dock="Right"
+                    Margin="0,0,2,0"
+                    Background="#0696D7"
+                    Foreground="White"
+                    BorderBrush="#0696D7"
                     Style="{StaticResource CtaButtonStyle}" />
 
             <!--  Status Label  -->
             <TextBlock Name="statusLabel"
-                       Margin="0,5,0,0"
+                       Margin="0,4,0,0"
                        VerticalAlignment="Center"
                        FontFamily="{StaticResource ArtifaktElementRegular}"
                        Style="{StaticResource LabelStyle}"

@@ -872,7 +872,7 @@
     <value>Custom Node Property Error</value>
   </data>
   <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
-    <value>Add-ons Category</value>
+    <value>Add-Ons Category</value>
     <comment>Label - specify custom node category</comment>
   </data>
   <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
@@ -1023,6 +1023,9 @@ If not, {2} needs to uninstall {1} to continue. Restart {2}, then download {0} a
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
   </data>
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>Open {0} Definition...</value>
@@ -1827,7 +1830,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Font Size</value>
   </data>
   <data name="GroupContextMenuUngroup" xml:space="preserve">
-    <value>_Ungroup</value>
+    <value>Ungr_oup</value>
   </data>
   <data name="GroupContextMenuGraphLayout" xml:space="preserve">
     <value>Cleanup Node Layout</value>
@@ -2944,6 +2947,11 @@ Delete the following packages: {2}?
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Package dependencies</value>
+  </data>
+  <data name="PackagesGuideInstalledPackageText" xml:space="preserve">
+    <value>Package installations are typically quick, depending on their size and other factors. \n
+To install the latest version of a package, click Install. \n
+%./UI/Images/alert.png% The sample Autodesk package is already installed on your computer.</value>
   </data>
   <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
     <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>

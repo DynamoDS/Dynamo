@@ -360,7 +360,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if(popUp != null && popUp.IsOpen)
             {
                 var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                positionMethod.Invoke(popUp, null);             
+                positionMethod.Invoke(popUp, null);
             }
         }
 
@@ -434,16 +434,36 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal void ExecutePreValidation()
         {
+            object[] parametersArray;
+            Window ownedWindow = Guide.FindWindowOwned(HostPopupInfo.WindowName, MainWindow as Window);
+
             if (PreValidationInfo != null)
             {
                 if (PreValidationInfo.ControlType.Equals("visibility"))
                 {
                     if (!string.IsNullOrEmpty(PreValidationInfo.FuncName))
                     {
-                        //Due that the function name was read from a json file then we need to use Reflection for executing the Static method in the GuidesValidationMethods class 
                         MethodInfo builderMethod = typeof(GuidesValidationMethods).GetMethod(PreValidationInfo.FuncName, BindingFlags.Static | BindingFlags.NonPublic);
-                        object[] parametersArray = new object[] { DynamoViewModelStep };
+
+                        //Checks if needs to execute 'IsPackageInstalled' method to include the right parameters
+                        if (PreValidationInfo.FuncName.Equals("IsPackageInstalled"))
+                        {
+                            PackageManager.PackageManagerSearchViewModel viewModel = null;
+
+                            if (ownedWindow != null)
+                            {
+                                viewModel = ownedWindow.DataContext as PackageManager.PackageManagerSearchViewModel;
+                            }
+
+                            parametersArray = new object[] { viewModel };
+                        }
+                        else
+                        {
+                            parametersArray = new object[] { DynamoViewModelStep };
+                        }
+
                         var validationResult = (bool)builderMethod.Invoke(null, parametersArray);
+
                         bool expectedValue = bool.Parse(PreValidationInfo.ExpectedValue);
 
                         //Once the execution of the PreValidation method was done we compare the result against the expected (also described in the json) so we set a flag

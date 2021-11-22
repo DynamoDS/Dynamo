@@ -927,7 +927,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add-ons Category.
+        ///   Looks up a localized string similar to Add-Ons Category.
         /// </summary>
         public static string CustomNodePropertyWindowCategory {
             get {
@@ -2930,7 +2930,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Ungroup.
+        ///   Looks up a localized string similar to Ungr_oup.
         /// </summary>
         public static string GroupContextMenuUngroup {
             get {
@@ -5207,6 +5207,17 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package installations are typically quick, depending on their size and other factors. \n
+        ///To install the latest version of a package, click Install. \n
+        ///%./UI/Images/alert.png% The sample Autodesk package is already installed on your computer..
+        /// </summary>
+        public static string PackagesGuideInstalledPackageText {
+            get {
+                return ResourceManager.GetString("PackagesGuideInstalledPackageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Learn about packages.
         /// </summary>
         public static string PackagesGuideLearnAbout {
@@ -6608,6 +6619,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RunTypeToolTipPeriodicallyEnabled {
             get {
                 return ResourceManager.GetString("RunTypeToolTipPeriodicallyEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
             }
         }
         
