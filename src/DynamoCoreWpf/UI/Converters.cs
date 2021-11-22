@@ -24,6 +24,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
+using PythonNodeModels;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -155,7 +156,7 @@ namespace Dynamo.Controls
     /// </summary>
     public class EmptyDepStringToCollapsedConverter : IValueConverter
     {
-        private readonly string[] PythonEngineList = { PythonNodeModels.PythonEngineVersion.CPython3.ToString(), PythonNodeModels.PythonEngineVersion.IronPython2.ToString() };
+        private readonly string[] PythonEngineList = { PythonEngineVersion.CPython3.ToString(), PythonEngineVersion.IronPython2.ToString() };
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {

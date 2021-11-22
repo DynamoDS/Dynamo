@@ -169,6 +169,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autodesk sample.
+        /// </summary>
+        public static string AutodeskSamplePackage {
+            get {
+                return ResourceManager.GetString("AutodeskSamplePackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autodesk Sign In.
         /// </summary>
         public static string AutodeskSignIn {
@@ -5203,6 +5212,17 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagesGuideFindPackageTitle {
             get {
                 return ResourceManager.GetString("PackagesGuideFindPackageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package installations are typically quick, depending on their size and other factors. \n
+        ///To install the latest version of a package, click Install. \n
+        ///%./UI/Images/alert.png% The sample Autodesk package is already installed on your computer..
+        /// </summary>
+        public static string PackagesGuideInstalledPackageText {
+            get {
+                return ResourceManager.GetString("PackagesGuideInstalledPackageText", resourceCulture);
             }
         }
         

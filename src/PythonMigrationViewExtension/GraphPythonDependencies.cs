@@ -1,6 +1,7 @@
 ﻿using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.PythonServices;
 using PythonNodeModels;
 using System;
 using System.Collections.Generic;
@@ -44,13 +45,7 @@ namespace Dynamo.PythonMigration
 
         private static bool IsIronPythonPackageLoaded()
         {
-            PythonEngineSelector.Instance.GetEvaluatorInfo(
-                PythonEngineVersion.IronPython2,
-                out string evaluatorClass,
-                out string evaluationMethod);
-
-            return evaluatorClass == PythonEngineSelector.Instance.IronPythonEvaluatorClass
-                && evaluationMethod == PythonEngineSelector.Instance.IronPythonEvaluationMethod;
+            return PythonEngineManager.Instance.AvailableEngines.Any(x => x.Version == PythonEngineVersion.IronPython2);
         }
 
         /// <summary>
