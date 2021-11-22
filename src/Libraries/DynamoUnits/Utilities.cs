@@ -16,11 +16,21 @@ namespace DynamoUnits
         private static ForgeUnitsCLR.UnitsEngine unitsEngine;
 
         /// <summary>
-        /// Path to the directory used load the 
+        /// Path to the directory used load the schema definitions.
         /// </summary>
-        public static readonly string SchemaDirectory = Path.Combine(AssemblyDirectory, "unit");
+        [SupressImportIntoVM]
+        public static string SchemaDirectory { get; private set; } = Path.Combine(AssemblyDirectory, "unit");
+
 
         static Utilities()
+        {
+            Initialize();
+        }
+
+        /// <summary>
+        /// Is used by static constructor, or during testing to reset schemas and units engine to default state.
+        /// </summary>
+        internal static void Initialize()
         {
             var assemblyFilePath = Assembly.GetExecutingAssembly().Location;
 
@@ -48,7 +58,25 @@ namespace DynamoUnits
                 unitsEngine = null;
                 //There was an issue initializing the schemas at the specified path.
             }
+        }
             
+        /// <summary>
+        /// only use this method during tests - allows setting a different schema location without
+        /// worrying about distributing a test configuration file.
+        /// </summary>
+        internal static void SetTestEngine(string testSchemaDir)
+        {
+            try
+            {
+                unitsEngine = new ForgeUnitsCLR.UnitsEngine();
+                SchemasCLR.SchemaUtility.addDefinitionsFromFolder(testSchemaDir, unitsEngine);
+                unitsEngine.resolveSchemas();
+            }
+            catch
+            {
+                unitsEngine = null;
+                //There was an issue initializing the schemas at the specified path.
+            }
         }
 
         /// <summary>
