@@ -9,6 +9,7 @@ using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.DocumentationBrowser;
 using Dynamo.Graph.Workspaces;
+using Dynamo.PythonServices;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
@@ -35,18 +36,9 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
-        public override void Start()
-        {
-            base.Start();
-            // Make sure Python Engine Selector Singleton has all the info up-to-date.
-            // This is not needed for Dynamo in normal use case but useful in unit test case.
-            PythonEngineSelector.Instance.ScanPythonEngines();
-        }
-
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("DSCPython.dll");
-            libraries.Add("DSIronPython.dll");
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
@@ -62,8 +54,9 @@ namespace DynamoCoreWpfTests
             // Arrange
             var expectedAvailableEngines = new List<PythonEngineVersion>()
             {
+                PythonEngineVersion.CPython3,
                 PythonEngineVersion.IronPython2,
-                PythonEngineVersion.CPython3
+                
             };
             var expectedDefaultEngine = PythonEngineVersion.IronPython2;
             var engineChange = PythonEngineVersion.CPython3;
@@ -435,7 +428,7 @@ namespace DynamoCoreWpfTests
         public void ChangingDropdownEngineDoesNotSavesCodeOrRun()
         {
             // Arrange
-            var engineChange = PythonNodeModels.PythonEngineVersion.CPython3;
+            var engineChange = PythonEngineVersion.CPython3;
 
             Open(@"core\python\python.dyn");
             (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunType = Dynamo.Models.RunType.Automatic;
@@ -536,8 +529,8 @@ namespace DynamoCoreWpfTests
             // Arrange
             // Setup the python3 debug mode, otherwise we wont be able to get the engine version selector 
             // from the nodes context menu
-            var expectedEngineVersionOnOpen = PythonNodeModels.PythonEngineVersion.CPython3;
-            var expectedEngineVersionAfterChange = PythonNodeModels.PythonEngineVersion.IronPython2;
+            var expectedEngineVersionOnOpen = PythonEngineVersion.CPython3;
+            var expectedEngineVersionAfterChange = PythonEngineVersion.IronPython2;
 
             Open(@"core\python\pythonFromString.dyn");
 
@@ -572,7 +565,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(false, cPython3MenuItem.IsChecked);
 
             // Act
-            nodeModel.Engine = PythonNodeModels.PythonEngineVersion.CPython3;
+            nodeModel.Engine = PythonEngineVersion.CPython3;
 
             // Assert
             Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
@@ -588,8 +581,8 @@ namespace DynamoCoreWpfTests
         public void PythonNodeHasLabelDisplayingCurrentEngine()
         {
             // Arrange
-            var expectedDefaultEngineLabelText = PythonNodeModels.PythonEngineVersion.IronPython2.ToString();
-            var engineChange = PythonNodeModels.PythonEngineVersion.CPython3;
+            var expectedDefaultEngineLabelText = PythonEngineVersion.IronPython2.ToString();
+            var engineChange = PythonEngineVersion.CPython3;
 
             Open(@"core\python\python.dyn");
 
@@ -620,48 +613,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(expectedDefaultEngineLabelText, defaultEngineLabelText);
             Assert.AreEqual(engineChange.ToString(), engineLabelTextAfterChange);
             DispatcherUtil.DoEvents();
-        }
-
-        [Test]
-        public void WorkspaceWithMultiplePythonEnginesUpdatesCorrectlyViaContextHandler()
-        {
-            // open test graph
-            Open(@"core\python\WorkspaceWithMultiplePythonEngines.dyn");
-
-            var nodeModels = ViewModel.Model.CurrentWorkspace.Nodes.Where(n => n.NodeType == "PythonScriptNode");
-            List<PythonNode> pythonNodes = nodeModels.Cast<PythonNode>().ToList();
-            var pynode1 = pythonNodes.ElementAt(0);
-            var pynode2 = pythonNodes.ElementAt(1);
-            var pynode1view = NodeViewWithGuid("d060e68f-510f-43fe-8990-c2c1ba7e0f80");
-            var pynode2view = NodeViewWithGuid("4050d23e-529c-43e9-b614-0506d8adb06b");
-
-
-            Assert.AreEqual(new List<string> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x=>x.Data));
-
-            SetEngineViaContextMenu(pynode1view, PythonEngineVersion.CPython3);
-
-            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(new List<string> { "3.8.10", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
-
-            SetEngineViaContextMenu(pynode2view, PythonEngineVersion.CPython3);
-
-            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(new List<string> { "3.8.10", "3.8.10" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
-
-            SetEngineViaContextMenu(pynode1view, PythonEngineVersion.IronPython2);
-            SetEngineViaContextMenu(pynode2view, PythonEngineVersion.IronPython2);
-
-            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(new List<string> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
-            DispatcherUtil.DoEvents();
-
-            Model.CurrentWorkspace.Undo();
-            Assert.AreEqual(new List<string> { "2.7.9", "3.8.10" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
-            DispatcherUtil.DoEvents();
-            Model.CurrentWorkspace.Undo();
-            Assert.AreEqual(new List<string> { "3.8.10", "3.8.10" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
-            DispatcherUtil.DoEvents();
-            
         }
 
         [Test]

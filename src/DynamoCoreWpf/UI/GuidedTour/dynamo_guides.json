@@ -54,7 +54,7 @@
 					"FormattedText": "GetStartedGuideRunStatusBarText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "bottom",
+					"PopupPlacement": "top",
 					"HostUIElementString": "bottomBarGrid",
 					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 320,
@@ -516,22 +516,99 @@
 			},
 			{
 				"Sequence": 7,
-				"Name": "package-dependencies",
+				"Name": "package installed",
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 260,
+				"Height": 320,
 				"StepContent": {
-					"Title": "PackagesGuideDependenciesTitle",
-					"FormattedText": "PackagesGuideDependenciesText"
+					"Title": "PackagesGuideInstallAPackageTitle",
+					"FormattedText": "PackagesGuideInstalledPackageText"
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "ExecutePackageSearch",
+						"ExecuteCleanUpForward": true,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					}
+				],
+				"HostPopupInfo": {
+					"PopupPlacement": "relative",
+					"WindowName": "PackageSearch",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageSearch",
+					"VerticalPopupOffset": 100,
+					"HorizontalPopupOffset": 480,
+					"HtmlPage": {
+						"FileName": "installedPackage.html",
+						"Resources": {
+							"#successIcon": "successIcon.png"
+						}
+					}
+				},
+				"PreValidation": {
+					"ReturnType": "boolean",
+					"ControlType": "visibility",
+					"FuncName": "IsPackageInstalled",
+					"ExpectedValue": true
+				}
+			},
+			{
+				"Sequence": 7,
+				"Name": "install a package",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 263,
+				"StepContent": {
+					"Title": "PackagesGuideInstallAPackageTitle",
+					"FormattedText": "PackagesGuideInstallAPackageText"
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
+					"WindowName": "PackageSearch",
 					"DynamicHostWindow": true,
-					"HostUIElementString": "sidebarGrid",
-					"VerticalPopupOffset": 400,
-					"HorizontalPopupOffset": 0
-				}
+					"HostUIElementString": "installButton",
+					"VerticalPopupOffset": 120,
+					"HorizontalPopupOffset": 0,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "Button",
+						"WindowName": "PackageSearch",
+						"UIElementGridContainer": "installPackageGrid",
+						"WindowElementNameString": "installButton",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
+				"PreValidation": {
+					"ReturnType": "boolean",
+					"ControlType": "visibility",
+					"FuncName": "IsPackageInstalled",
+					"ExpectedValue": false
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "button",
+						"WindowName": "PopupWindow",
+						"Name": "NextButton",
+						"Action": "disable"
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteInstallPackagesFlow",
+						"ExecuteCleanUpForward": true,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					}
+				]
 			},
 			{
 				"Sequence": 8,
