@@ -1,6 +1,6 @@
 ## Workflow for retrieve Release Notes section from PRs
 
-name: PR merged
+name: PR_merged
 
 # Controls when the workflow will run
 on:
