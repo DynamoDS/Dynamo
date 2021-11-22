@@ -5,6 +5,8 @@ using static Dynamo.Models.DynamoModel;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using System;
+using System.Xml;
+using System.IO;
 
 namespace DynamoCoreWpfTests
 {
@@ -13,7 +15,7 @@ namespace DynamoCoreWpfTests
 
         #region Regular Connector Tests
         /// <summary>
-        /// Check to see a connector is visible after pre 2.13 graph open
+        /// Check to see if a connector is visible after pre 2.13 graph open
         /// </summary>
         [Test]
         public void ConnectorVisibilityForLegacyGraphTest()
@@ -22,7 +24,7 @@ namespace DynamoCoreWpfTests
 
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
-            //Default collapse state should be false when opening legacy graph
+            //Default IsHidden state should be false when opening legacy graph
             Assert.AreEqual(connectorViewModel.IsHidden, false);
         }
 
@@ -32,11 +34,16 @@ namespace DynamoCoreWpfTests
         [Test]
         public void ConnectorVisibilityForLegacyXMLGraphTest()
         {
-            Open(@"UI/UI_visual_test.dyn");
+            var filePath = @"UI/UI_visual_test.dyn";
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), filePath);
+            // Assert xml graph open
+            Assert.IsTrue(DynamoUtilities.PathHelper.isValidXML(openPath, out _, out _));
+
+            Open(filePath);
 
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
-            //Default collapse state should be false when opening legacy graph
+            //Default IsHidden state should be false when opening legacy graph
             Assert.AreEqual(connectorViewModel.IsHidden, false);
         }
 
