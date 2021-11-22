@@ -271,37 +271,6 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(infoBubbleViewModel.NodeInfoIteratorVisible);
         }
 
-
-        /// <summary>
-        /// Tests the GetWarningColor method to ensure that the node's WarningBar displays
-        /// the proper colors when a node is displaying Info/Warning/Error messages.
-        /// </summary>
-        [Test]
-        public void WarningColorReflectsElementState()
-        {
-            //// Arrange
-            //OpenModel(@"core\Home.dyn");
-
-            //SolidColorBrush infoBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6AC0E7"));
-            //SolidColorBrush warningBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FAA21B"));
-            //SolidColorBrush errorBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EB5555"));
-
-            //var dummyNode = new DummyNode();
-            //DynamoModel model = GetModel();
-            //model.ExecuteCommand(new DynamoModel.CreateNodeCommand(dummyNode, 0, 0, true, true));
-
-            //NodeViewModel dummyNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
-            //    .FirstOrDefault(x => x.NodeModel.GUID == dummyNode.GUID);
-
-            //// Assert
-            //Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.None), null);
-            //Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.Info), infoBrush);
-            //Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.Warning), warningBrush);
-            //Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.WarningCondensed), warningBrush);
-            //Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.Error), errorBrush);
-            //Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.ErrorCondensed), errorBrush);
-        }
-
         /// <summary>
         /// Tests whether the node's warning bar appears when the node has info/warning/error messages to display.
         /// </summary>
