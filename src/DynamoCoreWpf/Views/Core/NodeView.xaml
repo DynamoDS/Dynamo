@@ -598,7 +598,8 @@
         </Rectangle>-->
 
         <!--  Warning Bar: Displays when node is in Info/Warning/Error state  -->
-        <Rectangle Grid.Row="4"
+        <Rectangle Name="warningBar"
+                   Grid.Row="4"
                    Grid.Column="0"
                    Grid.ColumnSpan="3"
                    Height="12"

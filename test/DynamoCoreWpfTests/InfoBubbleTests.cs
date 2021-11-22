@@ -271,6 +271,88 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(infoBubbleViewModel.NodeInfoIteratorVisible);
         }
 
+
+        /// <summary>
+        /// Tests the GetWarningColor method to ensure that the node's WarningBar displays
+        /// the proper colors when a node is displaying Info/Warning/Error messages.
+        /// </summary>
+        [Test]
+        public void WarningColorReflectsElementState()
+        {
+            //// Arrange
+            //OpenModel(@"core\Home.dyn");
+
+            //SolidColorBrush infoBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6AC0E7"));
+            //SolidColorBrush warningBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FAA21B"));
+            //SolidColorBrush errorBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EB5555"));
+
+            //var dummyNode = new DummyNode();
+            //DynamoModel model = GetModel();
+            //model.ExecuteCommand(new DynamoModel.CreateNodeCommand(dummyNode, 0, 0, true, true));
+
+            //NodeViewModel dummyNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
+            //    .FirstOrDefault(x => x.NodeModel.GUID == dummyNode.GUID);
+
+            //// Assert
+            //Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.None), null);
+            //Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.Info), infoBrush);
+            //Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.Warning), warningBrush);
+            //Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.WarningCondensed), warningBrush);
+            //Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.Error), errorBrush);
+            //Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.ErrorCondensed), errorBrush);
+        }
+
+        /// <summary>
+        /// Tests whether the node's warning bar appears when the node has info/warning/error messages to display.
+        /// </summary>
+        [Test]
+        public void NodeWarningBarVisibility()
+        {
+            OpenModel(@"core\Home.dyn");
+
+            var info = "Information";
+
+            // Arrange
+            var dummyNode = new DummyNode();
+            DynamoModel model = GetModel();
+            model.ExecuteCommand(new DynamoModel.CreateNodeCommand(dummyNode, 0, 0, true, true));
+
+            NodeViewModel dummyNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
+                .FirstOrDefault(x => x.NodeModel.GUID == dummyNode.GUID);
+
+            NodeModel dummyNodeModel = dummyNodeViewModel.NodeModel;
+            
+            if (dummyNodeViewModel.ErrorBubble == null)
+            {
+                dummyNodeViewModel.ErrorBubble = new InfoBubbleViewModel(ViewModel);
+            }
+
+            InfoBubbleViewModel infoBubbleViewModel = dummyNodeViewModel.ErrorBubble;
+
+            ObservableCollection<InfoBubbleDataPacket> nodeMessages = infoBubbleViewModel.NodeMessages;
+
+            // Assert
+            Assert.IsFalse(dummyNodeViewModel.NodeWarningBarVisible);
+
+            // Act
+            InfoBubbleDataPacket infoBubbleDataPacket = new InfoBubbleDataPacket
+            (
+                InfoBubbleViewModel.Style.Info,
+                new Point(dummyNodeModel.X, dummyNodeModel.Y),
+                new Point(dummyNodeModel.X + dummyNodeModel.Width, dummyNodeModel.Y + dummyNodeModel.Height),
+                info,
+                InfoBubbleViewModel.Direction.Top
+            );
+
+            nodeMessages.Add(infoBubbleDataPacket);
+
+            Assert.IsTrue(infoBubbleViewModel.NodeInfoVisible);
+
+            infoBubbleViewModel.DismissMessageCommand.Execute(infoBubbleDataPacket);
+
+            Assert.IsFalse(dummyNodeViewModel.NodeWarningBarVisible);
+        }
+
         #region Helpers
 
         private void AssertParsedLinkIsEqualTo(string content, string expectedLink)

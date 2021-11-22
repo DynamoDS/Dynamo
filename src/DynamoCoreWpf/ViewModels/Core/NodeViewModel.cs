@@ -1082,7 +1082,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="style"></param>
         /// <returns></returns>
-        private SolidColorBrush GetWarningColor(InfoBubbleViewModel.Style style)
+        internal SolidColorBrush GetWarningColor(InfoBubbleViewModel.Style style)
         {
             switch (style)
             {
