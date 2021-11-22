@@ -2949,9 +2949,6 @@ This package will be unloaded after the next Dynamo restart.</value>
   <data name="InfoBubbleInfo" xml:space="preserve">
     <value>Info</value>
   </data>
-  <data name="AutodeskSamplePackage" xml:space="preserve">
-    <value>Autodesk sample</value>
-  </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
