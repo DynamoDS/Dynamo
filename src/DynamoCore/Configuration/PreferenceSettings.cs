@@ -462,15 +462,15 @@ namespace Dynamo.Configuration
             set { NodeSearchTagSizeLimitValue = value; } 
         }
 
-        internal static Version IronPythonMigrVersion = new Version(2, 0, 0);
+        internal static Version IronPythonResolveVersion = new Version(2, 1, 0);
 
         /// <summary>
         /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
         /// </summary>
-        public static string IronPythonMigrationTargetVersion
+        public static string IronPythonResolveTargetVersion
         {
-            get { return IronPythonMigrVersion.ToString(); }
-            set { IronPythonMigrVersion = Version.TryParse(value, out Version newVal) ? newVal : IronPythonMigrVersion; }
+            get { return IronPythonResolveVersion.ToString(); }
+            set { IronPythonResolveVersion = Version.TryParse(value, out Version newVal) ? newVal : IronPythonResolveVersion; }
         }
         #endregion
 
