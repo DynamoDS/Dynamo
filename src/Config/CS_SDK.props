@@ -2,11 +2,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <BaseIntermediateOutputPath>$(OutputPath)\int\</BaseIntermediateOutputPath>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <TargetFramework>net48</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\AnyCPU\$(Configuration)</OutputPath>
+    <BaseIntermediateOutputPath>$(OutputPath)\int\</BaseIntermediateOutputPath>
     <NunitPath Condition=" '$(NunitPath)' == '' ">$(SolutionDir)..\extern\NUnit</NunitPath>
     <SharpDXDirectXVersion>DirectX11</SharpDXDirectXVersion>
     <DebugSymbols>true</DebugSymbols>
