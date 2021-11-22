@@ -5,12 +5,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-        xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:ui="clr-namespace:Dynamo.UI" 
+        xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
+        d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
         Name="PublishInfoControl"
         Width="900"
         Height="710"
         MinWidth="630"
         MinHeight="500"
+        DataContext="{Binding PublishPackageViewModel, RelativeSource={RelativeSource Self}}"
         ResizeMode="CanResizeWithGrip"
         Visibility="Visible"
         WindowStartupLocation="CenterOwner"
@@ -88,7 +91,6 @@
                 <Setter Property="Margin" Value="0,0,0,5" />
             </Style>
             <Style x:Key="InputStyle" TargetType="TextBox">
-                <Setter Property="OverridesDefaultStyle" Value="True" />
                 <Setter Property="Margin" Value="0,0,0,12" />
                 <Setter Property="MinWidth" Value="62px" />
                 <Setter Property="Cursor" Value="IBeam" />
@@ -105,8 +107,8 @@
                                          FontSize="12px"
                                          Foreground="#DFDFDF"
                                          MaxLength="{TemplateBinding MaxLength}"
+                                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
                                          Tag="{TemplateBinding Tag}"
-                                         Text="{TemplateBinding Text}"
                                          TextWrapping="Wrap" />
                                 <TextBlock x:Name="WatermarkLabel"
                                            Padding="13,13,10,8"
@@ -137,35 +139,7 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <Style x:Key="CtaButtonStyle" TargetType="Button">
-                <Setter Property="HorizontalAlignment" Value="Right" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="Margin" Value="15,0,0,0" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="border"
-                                    Height="36px"
-                                    Padding="8,11,8,9"
-                                    Background="#0696D7"
-                                    CornerRadius="2">
-                                <TextBlock x:Name="textBlock"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontSize="14px"
-                                           Foreground="#FFFFFF"
-                                           Text="{TemplateBinding Content}" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="border" Property="Background" Value="MediumTurquoise" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+
             <Style x:Key="TextButtonStyle" TargetType="Button">
                 <Setter Property="HorizontalAlignment" Value="Right" />
                 <Setter Property="Cursor" Value="Hand" />
@@ -504,12 +478,12 @@
                 Grid.Column="0"
                 Background="{StaticResource DarkMidGreyBrush}"
                 CornerRadius="4"
-                MouseDown="PreferencesPanel_MouseDown">
+                MouseDown="PublishPackageView_MouseDown">
             <DockPanel HorizontalAlignment="Stretch">
 
                 <!--  Close Button  -->
                 <Button x:Name="closeButton"
-                        Margin="8"
+                        Margin="0,20,25,20"
                         VerticalAlignment="Top"
                         Click="CloseButton_Click"
                         DockPanel.Dock="Right"
@@ -558,7 +532,9 @@
                                ToolTip="{x:Static p:Resources.PublishPackageViewPackageNameTooltip}" />
                     <TextBox Name="packageNameInput"
                              Style="{StaticResource InputStyle}"
-                             Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}" />
+                             Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}"
+                             IsEnabled ="{Binding Path=CanEditName}"
+                             Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--  Description  -->
                     <TextBlock Name="descriptionLabel"
@@ -568,7 +544,8 @@
                     <TextBox Name="descriptionInput"
                              MinHeight="81px"
                              Style="{StaticResource InputStyle}"
-                             Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}" />
+                             Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}"
+                             Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!--  Version  -->
                     <TextBlock Name="versionLabel"
@@ -580,17 +557,20 @@
                                  Margin="0,0,6,0"
                                  MaxLength="4"
                                  Style="{StaticResource InputStyle}"
-                                 Tag="{x:Static p:Resources.PublishPackageVersionMajorWatermark}" />
+                                 Tag="{x:Static p:Resources.PublishPackageVersionMajorWatermark}"
+                                 Text="{Binding Path=MajorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBox Name="versionMinorInput"
                                  Margin="0,0,6,0"
                                  MaxLength="4"
                                  Style="{StaticResource InputStyle}"
-                                 Tag="{x:Static p:Resources.PublishPackageVersionMinorWatermark}" />
+                                 Tag="{x:Static p:Resources.PublishPackageVersionMinorWatermark}"
+                                 Text="{Binding Path=MinorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBox Name="versionBuildInput"
                                  Margin="0,0,6,0"
                                  MaxLength="4"
                                  Style="{StaticResource InputStyle}"
-                                 Tag="{x:Static p:Resources.PublishPackageVersionBuildWatermark}" />
+                                 Tag="{x:Static p:Resources.PublishPackageVersionBuildWatermark}"
+                                 Text="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
 
                     <!--  External Dependency  -->
@@ -668,6 +648,7 @@
                                ToolTip="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}" />
                     <TextBox Name="groupInput"
                              Style="{StaticResource InputStyle}"
+                             Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Tag="{x:Static p:Resources.PublishPackageGroupWatermark}" />
 
                     <!--  Keywords  -->
@@ -677,6 +658,7 @@
                                ToolTip="{x:Static p:Resources.PublishPackageViewPackageKeywordsTooltip}" />
                     <TextBox Name="keywordsInput"
                              Style="{StaticResource InputStyle}"
+                             Text="{Binding Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Tag="{x:Static p:Resources.PublishPackageKeywordsWatermark}" />
 
                     <!--  More  -->
@@ -692,6 +674,7 @@
                                        Text="{x:Static p:Resources.PublishPackageViewPublisherWebSite}" />
                             <TextBox Name="websiteUrlInput"
                                      Style="{StaticResource InputStyle}"
+                                     Text="{Binding SiteUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}" />
 
                             <!--  Repository URL  -->
@@ -700,13 +683,15 @@
                                        Text="{x:Static p:Resources.PublishPackageViewRepositoryUrl}" />
                             <TextBox Name="repositoryUrlInput"
                                      Style="{StaticResource InputStyle}"
+                                     Text="{Binding RepositoryUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}" />
 
                             <!--  License  -->
                             <TextBlock Name="licenseLabel"
                                        Style="{StaticResource LabelStyle}"
                                        Text="{x:Static p:Resources.PublishPackageViewLicense}" />
-                            <TextBlock Name="licenseSubLabel" Style="{StaticResource SubLabelStyle}">
+                            <TextBlock Name="licenseSubLabel" Style="{StaticResource SubLabelStyle}"
+                                       TextWrapping="Wrap">
                                 <Run Text="{x:Static p:Resources.PublishPackageViewLicenseSubLabel}" />
                                 <Hyperlink Cursor="Hand"
                                            NavigateUri="https://opensource.org/licenses/MIT"
@@ -722,6 +707,7 @@
                                 </Hyperlink>
                             </TextBlock>
                             <TextBox Name="licenseInput"
+                                     Text="{Binding License, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{StaticResource InputStyle}"
                                      Tag="{x:Static p:Resources.PublishPackageViewLicenseWatermark}" />
 
@@ -734,6 +720,7 @@
                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightHolderSubLabel}" />
                             <TextBox Name="copyrightHolderInput"
                                      Style="{StaticResource InputStyle}"
+                                     Text="{Binding CopyrightHolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewCopyrightHolderWatermark}" />
 
                             <!--  Copyright Year  -->
@@ -746,6 +733,7 @@
                             <TextBox Name="copyrightYearInput"
                                      Margin="0,0,0,-20"
                                      Style="{StaticResource InputStyle}"
+                                     Text="{Binding CopyrightYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewCopyrightYearWatermark}" />
                         </StackPanel>
                     </Expander>
@@ -803,7 +791,7 @@
                                                 IsReadOnly="False"
                                                 IsThreeState="False" />
                         <DataGridTextColumn MinWidth="50"
-                                            Binding="{Binding Path=Name}"
+                                            Binding="{Binding Path=FileInfo.Name}"
                                             Header="Name"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
@@ -860,9 +848,9 @@
                         <TextBlock Style="{StaticResource LabelStyle}" Text="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectory}" />
                         <Image Width="16px"
                                Height="16px"
-                               DockPanel.Dock="Left"
-                               VerticalAlignment="Top"
                                Margin="5,0,0,0"
+                               VerticalAlignment="Top"
+                               DockPanel.Dock="Left"
                                Source="/DynamoCoreWpf;component/UI/Images/info-grey.png" />
                         <Button Command="{Binding Path=ClearMarkdownDirectoryCommand}"
                                 Content="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButton}"
@@ -936,17 +924,25 @@
             <Button Command="{Binding Path=SubmitCommand}"
                     Content="{x:Static p:Resources.PublishPackage}"
                     DockPanel.Dock="Right"
+                    Background="#0696D7"
+                    Foreground="White"
+                    BorderBrush="#0696D7"
+                    Margin="0,0,-5,0"
                     Style="{StaticResource CtaButtonStyle}" />
 
             <!--  Publish Locally  -->
             <Button Command="{Binding Path=PublishLocallyCommand}"
                     Content="{x:Static p:Resources.PublishPackageLocally}"
                     DockPanel.Dock="Right"
+                    Margin="0,0,2,0"
+                    Background="#0696D7"
+                    Foreground="White"
+                    BorderBrush="#0696D7"
                     Style="{StaticResource CtaButtonStyle}" />
 
             <!--  Status Label  -->
             <TextBlock Name="statusLabel"
-                       Margin="0,5,0,0"
+                       Margin="0,4,0,0"
                        VerticalAlignment="Center"
                        FontFamily="{StaticResource ArtifaktElementRegular}"
                        Style="{StaticResource LabelStyle}"

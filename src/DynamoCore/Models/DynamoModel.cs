@@ -37,7 +37,6 @@ using Dynamo.Selection;
 using Dynamo.Updates;
 using Dynamo.Utilities;
 using DynamoServices;
-using DynamoUnits;
 using Greg;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -47,6 +46,7 @@ using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
+using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Models
@@ -1500,7 +1500,7 @@ namespace Dynamo.Models
 
         private static void InitializePreferences(IPreferences preferences)
         {
-            BaseUnit.NumberFormat = preferences.NumberFormat;
+            DynamoUnits.Display.PrecisionFormat = preferences.NumberFormat;
 
             var settings = preferences as PreferenceSettings;
             if (settings != null)
@@ -1521,7 +1521,7 @@ namespace Dynamo.Models
             switch (e.PropertyName)
             {
                 case "NumberFormat":
-                    BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
+                    DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
                     break;
             }
         }

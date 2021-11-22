@@ -132,15 +132,15 @@
                        HorizontalAlignment="Left" 
                        Width="459" />
             <StackPanel Grid.Column="1" 
-                        VerticalAlignment="Top"  
+                        VerticalAlignment="Top"
                         Orientation="Horizontal" 
                         HorizontalAlignment="Right">
-                <Button x:Name="CloseButton"  
-                        Style="{DynamicResource CloseButtonStyle}" 
-                        Click="CloseButton_Click" 
+                <Button x:Name="CloseButton"
+                        Style="{DynamicResource CloseButtonStyle}"
+                        Click="CloseButton_Click"
                         VerticalAlignment="Center"
                         KeyboardNavigation.IsTabStop="False"
-                        Margin="0,0,4,0"/>
+                        Margin="10,12,20,8"/>
             </StackPanel>
         </Grid>
 
@@ -392,7 +392,7 @@
                                             Padding="0,5,5,5"
                                             FontSize="13"
                                             Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                    <ComboBox Name="PythonEngineSelector" 
+                                    <ComboBox Name="PythonEngineManager" 
                                                 Width="213"
                                                 HorizontalAlignment="Left"
                                                 ItemsSource="{Binding Path=PythonEnginesList}"

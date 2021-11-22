@@ -1275,7 +1275,7 @@
                                       IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                       Template="{StaticResource RefreshComboBoxToggleButton}" />
                         <ContentPresenter Name="ContentSite"
-                                          Margin="10,0,0,0"
+                                          Margin="10,0,20,0"
                                           HorizontalAlignment="Left"
                                           VerticalAlignment="Center"
                                           Content="{TemplateBinding SelectionBoxItem}"
@@ -2575,6 +2575,10 @@
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Opacity" Value="0.9" />
                             <Setter TargetName="mousePressedBorder" Property="Visibility " Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#707070" />
+                            <Setter TargetName="textBlock" Property="Opacity" Value="0.7" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

@@ -78,6 +78,8 @@ namespace Dynamo.Nodes
                     SetTextMaxWidth();
                     SetTextHeight();
                 }
+
+                ViewModel.UpdateProxyPortsPosition();
             }
         }
 

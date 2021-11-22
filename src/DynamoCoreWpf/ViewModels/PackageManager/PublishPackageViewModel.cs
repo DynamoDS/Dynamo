@@ -349,6 +349,34 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private string copyrightHolder;
+        /// <summary>
+        /// The name of the author who holds this package's copyright.
+        /// </summary>
+        public string CopyrightHolder
+        {
+            get => copyrightHolder;
+            set
+            {
+                copyrightHolder = value;
+                RaisePropertyChanged(nameof(CopyrightHolder));
+            }
+        }
+
+        private string copyrightYear;
+        /// <summary>
+        /// The year of this package's copyright.
+        /// </summary>
+        public string CopyrightYear
+        {
+            get => copyrightYear;
+            set
+            {
+                copyrightYear = value;
+                RaisePropertyChanged(nameof(CopyrightYear));
+            }
+        }
+
         /// <summary>
         /// SiteUrl property </summary>
         /// <value>
@@ -595,7 +623,8 @@ namespace Dynamo.PackageManager
                 {
                     Name = CustomNodeDefinitions[0].DisplayName;
                 }
-                
+
+                RefreshPackageContents();
                 UpdateDependencies();
             }
         }

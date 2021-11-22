@@ -53,7 +53,7 @@ namespace WpfVisualizationTests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
-            libraries.Add("DSIronPython.dll");
+            libraries.Add("DSCPython.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("GeometryColor.dll");
