@@ -172,7 +172,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Button Content="{x:Static p:Resources.ButtonDetails}"
                                             Background="Transparent"
-                                            Foreground="#6DD2FF"
+                                            Foreground="{StaticResource Blue300Brush}"
                                             FontSize="12"
                                             Grid.Column="0"
                                             HorizontalContentAlignment="Left"

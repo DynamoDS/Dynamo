@@ -27,7 +27,7 @@
                 <Setter Property="FontWeight" Value="Bold" />
                 <Setter Property="FontSize" Value="14px" />
                 <Setter Property="MinWidth" Value="200px" />
-                <Setter Property="Foreground" Value="#DFDFDF" />
+                <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="Margin" Value="0,0,0,5" />
                 <Setter Property="TextWrapping" Value="Wrap" />
@@ -35,7 +35,7 @@
             <Style x:Key="BodyTextStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                 <Setter Property="FontSize" Value="12px" />
-                <Setter Property="Foreground" Value="#DFDFDF" />
+                <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}" />
                 <Setter Property="Margin" Value="0,0,0,5" />
                 <Setter Property="TextWrapping" Value="Wrap" />
             </Style>
@@ -97,7 +97,7 @@
                 <Setter Property="BorderThickness" Value="0,0,1,1" />
                 <Setter Property="FontSize" Value="14px" />
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-                <Setter Property="Foreground" Value="#DFDFDF" />
+                <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}" />
             </Style>
             <Style x:Key="DataGrid" TargetType="{x:Type DataGrid}">
                 <Setter Property="BorderThickness" Value="1,1,0,1" />
