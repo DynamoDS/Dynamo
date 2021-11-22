@@ -37,12 +37,36 @@
         input::-ms-clear {
             display: none;
         }
+
+        #glow_active {
+            border: 1px;
+            background-color: transparent;
+            box-shadow: 0px 0px 20px 2px orange;
+            transition: box-shadow 2s ease-in-out;
+        }
+
+        #glow_inactive {
+            border: 1px;
+            background-color: transparent;
+            box-shadow: 0px 0px 2px 0px orange;
+            transition: box-shadow 2s ease-in-out;
+        }
+
+        #cutoff_area {
+            position: absolute;
+            left: 0px;
+            display: none;
+            width: 1000px;
+            pointer-events: none;
+            box-shadow: 0 0px 0px 9999px rgba(0, 0, 0, 0.5);
+        }
     </style>
 </head>
 
 <body>
     <!-- Placeholders must exist before all other scripts that try to access them -->
     <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
+    <div id="cutoff_area"> </div>
     <!-- The main library view component -->
     <script>
         LIBPLACEHOLDER
@@ -51,6 +75,7 @@
     <script>
         var replaceImageDelayTime = 100;
         var currentImage;
+        let intervalId;
 
         // Disable the context menu
         document.oncontextmenu = function () {
@@ -211,6 +236,112 @@
 
             var libraryItemsContainer = document.getElementsByClassName("LibraryItemContainer")[0];
             libraryItemsContainer.style.zoom = dpiScale;
+        }
+
+        function highlightLibraryItem(itemName, enableHighlight) {
+            var found_div = null;
+            var libraryItemsText = document.getElementsByClassName("LibraryItemText");
+            for (var i = 0; i < libraryItemsText.length; i++) {
+                if (libraryItemsText[i].textContent == itemName) {
+                    found_div = libraryItemsText[i].parentNode.parentNode;
+                    break;
+                }
+            }
+            if (found_div != null) {
+                if (enableHighlight == true) {
+                    glowAnimation(found_div, true);
+                }
+                else {
+                    glowAnimation(found_div, false);
+                }
+            }
+        }
+
+        function glowAnimation(divElement, enable) {
+            if (enable == true) {
+                setIdAttribute(divElement);
+                intervalId = window.setInterval(setIdAttribute, 2000, divElement);
+            }
+            else {
+                window.clearInterval(intervalId);
+                divElement.setAttribute("id", "");
+            }
+        }
+
+        function setIdAttribute(divElement) {
+            if (divElement.id == "glow_active") {
+                divElement.setAttribute("id", "glow_inactive");
+            }
+            else {
+                divElement.setAttribute("id", "glow_active");
+            }
+        }
+
+        function subscribePackageClickedEvent(packageName, enable) {
+            var found_div = findPackageDiv(packageName);
+            if (found_div == null) {
+                return;
+            }
+            if (enable == true) {
+                found_div.addEventListener('click', nextStepInGuide);
+                found_div.parentNode.addEventListener('click', nextStepInGuide);
+                found_div.parentNode.parentNode.addEventListener('click', nextStepInGuide);
+            }
+            else {
+                found_div.removeEventListener('click', nextStepInGuide);
+                found_div.parentNode.removeEventListener('click', nextStepInGuide);
+                found_div.parentNode.parentNode.removeEventListener('click', nextStepInGuide);
+            }
+        }
+
+        function findPackageDiv(packageName) {
+            var found_div = null;
+            var libraryItemsText = document.getElementsByClassName("LibraryItemText");
+            for (var i = 0; i < libraryItemsText.length; i++) {
+                if (libraryItemsText[i].textContent.toLowerCase() == packageName.toLowerCase()) {
+                    found_div = libraryItemsText[i];
+                    break;
+                }
+            }
+            return found_div;
+        }
+
+        function collapseExpandPackage(packageName) {
+            var found_div = findPackageDiv(packageName);
+            if (found_div == null) {
+                return;
+            }
+            var containerCatDiv = found_div.parentNode.parentNode;
+            var itemBodyContainer = containerCatDiv.getElementsByClassName("LibraryItemText")[0];
+            itemBodyContainer.click();
+        }
+
+        function nextStepInGuide() {
+            window.external.notify(JSON.stringify({ "func": "NextStep", "data": "" }));
+        }
+
+        function setOverlay(enable) {
+            var tools = document.getElementsByClassName("LibraryItemContainerSection")[0];
+            if (tools == null)
+                return;
+            var addons = document.getElementsByClassName("LibraryItemContainerSection")[1];
+            if (addons == null)
+                return;
+            var searchBar = document.getElementsByClassName("SearchBar")[0];
+            if (searchBar == null)
+                return;
+
+            var cutoffArea = document.getElementById("cutoff_area");
+            var height = (searchBar.clientHeight + tools.clientHeight);
+
+            if (enable == true) {
+                cutoffArea.style.display = "block";
+                cutoffArea.style.top = height + "px";
+                cutoffArea.style.height = addons.clientHeight + "px";
+            }
+            else {
+                cutoffArea.style.display = "none";
+            }          
         }
 
     </script>

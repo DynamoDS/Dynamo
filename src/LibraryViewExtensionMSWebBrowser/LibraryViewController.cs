@@ -18,6 +18,7 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
+using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -74,7 +75,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             {
                 return;
             }
-         
+
             try
             {
                 //a simple refresh of the libary is requested from js context.
@@ -127,6 +128,11 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                     controller.browser.
                      InvokeScript("completeSearch", results);
                     searchReader.Dispose();
+                }
+                //When the html <div> that contains the sample package is clicked then we will be moved to the next Step in the Guide
+                else if (funcName == "NextStep")
+                {
+                    controller.MoveToNextStep();
                 }
             }
             catch (Exception e)
@@ -555,6 +561,13 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             nodeProvider = new NodeItemDataProvider(model.SearchModel, iconProvider);
             searchResultDataProvider = new SearchResultDataProvider(model.SearchModel, iconProvider);
             layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionMSWebBrowser.web.library.layoutSpecs.json");
+        }
+
+        internal void MoveToNextStep()
+        {
+            dynamoViewModel = (dynamoWindow.DataContext as DynamoViewModel);
+            Guide executingGuide = dynamoViewModel.MainGuideManager.CurrentGuide;
+            executingGuide.NextStep(executingGuide.CurrentStep.Sequence);
         }
 
         /// <summary>

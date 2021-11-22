@@ -50,6 +50,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private const string mainGridName = "mainGrid";
         private const string libraryViewName = "Browser";
 
+        public Guide CurrentGuide 
+        {
+            get 
+            {
+                return currentGuide;
+            } 
+        }
+
         internal static string GuidesExecutingDirectory
         {
             get

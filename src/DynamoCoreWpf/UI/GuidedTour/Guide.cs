@@ -30,7 +30,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This variable will contain the current step according to the steps flow in the Guide
         /// </summary>
-        internal Step CurrentStep { get; set; }
+        public Step CurrentStep { get; set; }
 
         /// <summary>
         /// This variable represents the total number of steps that the guide has (every guide can have a different number of steps).
@@ -164,7 +164,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This method will be executed for moving to the next step, basically searches the next step in the list, shows it and hides the current one.
         /// </summary>
         /// <param name="CurrentStepSequence">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
-        internal void NextStep(int CurrentStepSequence)
+        public void NextStep(int CurrentStepSequence)
         {
             HideCurrentStep(CurrentStepSequence, GuideFlow.FORWARD);
             if (CurrentStepSequence < TotalSteps)

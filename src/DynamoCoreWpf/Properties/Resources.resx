@@ -2560,10 +2560,10 @@ You can try disabling loading packages from built-in package paths, or unload th
     <value>The same version of {0} is already installed and does not need to be installed again.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-        <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
         
 Do you wish to restart {2} to first uninstall {1}, then download {0} again?</value>
-    </data>
+  </data>
   <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
     <value>Geometry Scaling</value>
     <comment>Expander Header Name</comment>
@@ -2947,5 +2947,23 @@ Delete the following packages: {2}?
   </data>
   <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
     <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
+  </data>
+  <data name="PackagesGuideNavigatePackagesText" xml:space="preserve">
+    <value>\nWhen you install a package, it appears in the library under Add-ons.   \n\n**Click to expand the package** so you can see its nodes (functions).</value>
+  </data>
+  <data name="PackagesGuideNavigatePackagesTitle" xml:space="preserve">
+    <value>Navigate to packages</value>
+  </data>
+  <data name="PackagesGuideSurveyText" xml:space="preserve">
+    <value>Learn more about packages in the online help</value>
+  </data>
+  <data name="PackagesGuideSurveyTitle" xml:space="preserve">
+    <value>Finished</value>
+  </data>
+  <data name="PackagesGuideUsePackageText" xml:space="preserve">
+    <value>To learn how to use nodes in a package, hover over a node to see a description. To add a node to the workspace, click its name in the list.</value>
+  </data>
+  <data name="PackagesGuideUsePackageTitle" xml:space="preserve">
+    <value>Use package nodes</value>
   </data>
 </root>

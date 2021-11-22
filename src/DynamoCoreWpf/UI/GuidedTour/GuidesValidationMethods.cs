@@ -13,6 +13,7 @@ using Dynamo.ViewModels;
 using static Dynamo.PackageManager.PackageManagerSearchViewModel;
 using static Dynamo.Wpf.UI.GuidedTour.Guide;
 using Res = Dynamo.Wpf.Properties.Resources;
+using Dynamo.Wpf.Views.GuidedTour;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -261,6 +262,66 @@ namespace Dynamo.Wpf.UI.GuidedTour
             else
                 //Just executed when exiting the Guide or when passing to the next Step
                 foundUIElement.Click -= SearchForPackage_Click;
+        }
+
+        internal static void SubscribeNextButtonClickEvent(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+            var nextbuttonFound = Guide.FindChild((stepInfo.StepUIPopup as PopupWindow).mainPopupGrid, "NextButton") as Button;
+            if (nextbuttonFound == null) return;
+            if(enableFunction)
+                nextbuttonFound.Click += ExecutePackage_Click;
+            else
+                nextbuttonFound.Click -= ExecutePackage_Click;
+                
+        }
+
+        internal static void ShowOverlayInWebBrowser(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            var sidebarGrid = (CurrentExecutingStep.MainWindow as Window).FindName("sidebarGrid") as Grid;
+            string jsMethodName = "setOverlay";
+            foreach (var child in sidebarGrid.Children)
+            {
+                Type type = child.GetType();
+                if (type.Name.Equals("LibraryView"))
+                {
+                    var libraryView = child as UserControl;
+                    var browser = libraryView.FindName("Browser");
+
+                    Type typeBrowser = browser.GetType();
+                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == "InvokeScript" && m.GetParameters().Length == 2);              
+                    object[] parametersInvokeScript = new object[] { enableFunction };
+                    object[] parametersJSMethod = new object[] { jsMethodName, parametersInvokeScript };
+                    methodInvokeScriptInfo.Invoke(browser, parametersJSMethod);
+                }
+            }
+        }
+
+        private static void ExecutePackage_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentExecutingStep.CollapseExpandPackage();
+        }
+
+        internal static void SubscribePackageClicked(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            var sidebarGrid = (CurrentExecutingStep.MainWindow as Window).FindName("sidebarGrid") as Grid;
+            const string packageName = "Autodesk Sample";
+            string jsMethodName = "subscribePackageClickedEvent";
+            foreach (var child in sidebarGrid.Children)
+            {
+                Type type = child.GetType();
+                if (type.Name.Equals("LibraryView"))
+                {
+                    var libraryView = child as UserControl;
+                    var browser = libraryView.FindName("Browser");
+
+                    Type typeBrowser = browser.GetType();
+                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == "InvokeScript" && m.GetParameters().Length == 2);
+                    object[] parametersInvokeScript = new object[] { packageName, enableFunction };
+                    object[] parametersJSMethod = new object[] { jsMethodName, parametersInvokeScript };
+                    methodInvokeScriptInfo.Invoke(browser, parametersJSMethod);
+                }
+            }
         }
 
         /// <summary>

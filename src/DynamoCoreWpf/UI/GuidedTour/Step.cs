@@ -147,6 +147,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         internal string GuideName { get; set; }
 
+        internal Popup StepUIPopup 
+        {
+            get
+            {
+                return stepUIPopup;
+            }
+        }
+
         #endregion
 
         #region Protected Properties
@@ -533,6 +541,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     StepGuideBackground.GuideHighlightRectangle.Stroke = brush;
                 }
             }
+            //In case the item to be highlighted is inside the LibraryView (WebBrowser component) then we need to access the WebBrowser instance and call a js function
+            else if (HostPopupInfo.HighlightRectArea.UIElementTypeString.Equals(typeof(WebBrowser).Name))
+            {
+                HighlightLibraryItem(bVisible);
+            }
             //If the UIElementTypeString is not a MenuItem and also not a DynamoView we need to find the Window in the OwnedWindows and search the element inside it
             else
             {
@@ -602,6 +615,81 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 var menuItemHighlightRect = subItemsGrid.Children.OfType<Rectangle>().Where(rect => rect.Name.Equals("HighlightRectangle")).FirstOrDefault();
                 if(menuItemHighlightRect != null)
                     subItemsGrid.Children.Remove(menuItemHighlightRect);
+            }
+        }
+
+        internal void CollapseExpandPackage()
+        {
+            const string webBrowserString = "Browser";
+            const string invokeScriptFunction = "InvokeScript";
+            const string jsMethodName = "collapseExpandPackage";
+            const string packageName = "Autodesk Sample";
+
+            //Try to find the grid that contains the LibraryView
+            var sidebarGrid = (MainWindow as Window).FindName(HostPopupInfo.HostUIElementString) as Grid;
+            if (sidebarGrid == null) return;
+
+            //We need to iterate every child in the grid due that we need to apply reflection to get the Type and find the LibraryView (a reference to LibraryViewExtensionMSWebBrowser cannot be added).
+            foreach (var child in sidebarGrid.Children)
+            {
+                Type type = child.GetType();
+                if (type.Name.Equals(HostPopupInfo.WindowName))
+                {
+                    var libraryView = child as UserControl;
+                    //get the WebBrowser instance inside the LibraryView
+                    var browser = libraryView.FindName(webBrowserString);
+                    if (browser == null) return;
+
+                    Type typeBrowser = browser.GetType();
+                    //Due that there are 2 methods with the same name "InvokeScript", then we need to get the one with 2 parameters
+                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == invokeScriptFunction && m.GetParameters().Length == 2);
+                    //Parameters for the WebBrowser.InvokeScript() function
+                    object[] parametersInvokeScript = new object[] { packageName };
+                    //Parameters for the JS Function collapseExpandPackage
+                    object[] parametersJSFunction = new object[] { jsMethodName, parametersInvokeScript };
+                    //Invoke the JS method located in library.html
+                    var resultHTML = methodInvokeScriptInfo.Invoke(browser, parametersJSFunction);
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// This method will highlight a item (<div></div>) in the WebBrowser instance located inside the LibraryView
+        /// due that we cannot include a reference to LibraryViewExtensionMSWebBrowser then we need to use reflection to get the types
+        /// </summary>
+        /// <param name="visible">enable or disable the highlight in a specific Library item</param>
+        internal void HighlightLibraryItem(bool visible)
+        {
+            const string webBrowserString = "Browser";
+            const string invokeScriptFunction = "InvokeScript";
+            const string jsMethodName = "highlightLibraryItem";
+
+            var sidebarGrid = (MainWindow as Window).FindName(HostPopupInfo.HighlightRectArea.UIElementGridContainer) as Grid;
+            if (sidebarGrid == null) return;
+
+            //We need to iterate every child in the Children collection due that we need to apply reflection to get the Type
+            foreach (var child in sidebarGrid.Children)
+            {
+                Type type = child.GetType();
+                if (type.Name.Equals(HostPopupInfo.HighlightRectArea.WindowName))
+                {
+                    var libraryView = child as UserControl;
+                    //get the WebBrowser instance inside the LibraryView
+                    var browser = libraryView.FindName(webBrowserString); 
+                    if (browser == null) return;
+
+                    Type typeBrowser = browser.GetType();
+                    //Due that there are 2 methods with the same name "InvokeScript", then we need to get the one with 2 parameters
+                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == invokeScriptFunction && m.GetParameters().Length == 2);
+                    //Parameters for the WebBrowser.InvokeScript() function
+                    object[] parametersInvokeScript = new object[] { HostPopupInfo.HighlightRectArea.WindowElementNameString, visible };
+                    //Parameters for the JS Function highlightLibraryItem
+                    object[] parametersJSFunction = new object[] { jsMethodName, parametersInvokeScript };
+                    //Invoke the JS method located in library.html
+                    var resultHTML = methodInvokeScriptInfo.Invoke(browser, parametersJSFunction);
+                    break;
+                }
             }
         }
 
