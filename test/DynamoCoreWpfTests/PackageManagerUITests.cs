@@ -1093,11 +1093,80 @@ namespace DynamoCoreWpfTests
           
 
         }
-        #endregion
-
-        #region PackageManagerSearchView
 
         [Test]
+        [Description("User tries to download packages that might conflict with an unloaded builtIn package")]
+        public void PackageManagerConflictsUnloadedWithBltInPackage()
+        {
+            var pathMgr = ViewModel.Model.PathManager;
+            var pkgLoader = GetPackageLoader();
+            PathManager.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
+
+            // Load a builtIn package
+            var builtInPackageLocation = Path.Combine(BuiltinPackagesTestDir, "SignedPackage2");
+            pkgLoader.ScanPackageDirectory(builtInPackageLocation);
+
+            var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
+            Assert.IsNotNull(bltInPackage);
+
+            // Simulate the user downloading the same package from PM
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Throws(new Exception("Failed to get your package!"));
+
+            var client = new Dynamo.PackageManager.PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmVm = new PackageManagerClientViewModel(ViewModel, client);
+
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            //
+            // 1. User downloads the exact version of a builtIn package
+            //
+            {
+                var id = "test-123";
+                var deps = new List<Dependency>() { new Dependency() { _id = id, name = bltInPackage.Name } };
+                var depVers = new List<string>() { bltInPackage.VersionName };
+
+                mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+                .Returns(new ResponseWithContentBody<PackageVersion>()
+                {
+                    content = new PackageVersion()
+                    {
+                        version = bltInPackage.VersionName,
+                        engine_version = bltInPackage.EngineVersion,
+                        name = bltInPackage.Name,
+                        id = id,
+                        full_dependency_ids = deps,
+                        full_dependency_versions = depVers
+                    },
+                    success = true
+                });
+
+                // Set built in package as unloaded
+                bltInPackage.LoadState.SetAsUnloaded();
+
+                var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(bltInPackage.Name, VersionUtilities.PartialParse(bltInPackage.VersionName));
+                pmVm.DownloadAndInstallPackage(pkgInfo);
+
+                // Users should get 1 warning :
+                // 1. To confirm that they want to download the specified package.
+                dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
+                dlgMock.ResetCalls();
+
+                var nonBuiltInPkg = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault(x => !x.BuiltInPackage);
+                Assert.IsNotNull(nonBuiltInPkg);
+                Assert.AreEqual(PackageLoadState.StateTypes.Loaded, nonBuiltInPkg.LoadState.State);
+            }
+
+        }
+            #endregion
+
+            #region PackageManagerSearchView
+
+            [Test]
         public void CanOpenPackageSearchDialogAndWindowIsOwned()
         {
             ViewModel.OnRequestPackageManagerSearchDialog(null, null);
