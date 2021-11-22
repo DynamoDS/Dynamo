@@ -13,12 +13,26 @@ namespace DynamoCoreWpfTests
 
         #region Regular Connector Tests
         /// <summary>
-        /// Check to see a pin can be added to a connector
+        /// Check to see a connector is visible after pre 2.13 graph open
         /// </summary>
         [Test]
         public void ConnectorVisibilityForLegacyGraphTest()
         {
             Open(@"UI/ConnectorPinTests.dyn");
+
+            var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
+
+            //Default collapse state should be false when opening legacy graph
+            Assert.AreEqual(connectorViewModel.IsHidden, false);
+        }
+
+        /// <summary>
+        /// Check to see a connector is visible after xml graph open
+        /// </summary>
+        [Test]
+        public void ConnectorVisibilityForLegacyXMLGraphTest()
+        {
+            Open(@"UI/UI_visual_test.dyn");
 
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
