@@ -113,14 +113,21 @@ namespace Dynamo.ViewModels
                 }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        internal static bool ShowTermsOfUseDialog(bool forPublishing, string additionalTerms)
+        internal static bool ShowTermsOfUseDialog(bool forPublishing, string additionalTerms, Window parent = null)
         {
             var executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
             var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
             var touFilePath = Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
 
             var termsOfUseView = new TermsOfUseView(touFilePath);
-            termsOfUseView.ShowDialog();
+            if (parent == null)
+                termsOfUseView.ShowDialog();
+            else
+            {
+                //Means that a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
+                termsOfUseView.Owner = parent;
+                termsOfUseView.Show();
+            }
             if (!termsOfUseView.AcceptedTermsOfUse)
                 return false; // User rejected the terms, go no further.
 
@@ -135,7 +142,14 @@ namespace Dynamo.ViewModels
                 throw new FileNotFoundException(additionalTerms);
 
             var additionalTermsView = new TermsOfUseView(additionalTerms);
-            additionalTermsView.ShowDialog();
+            if (parent == null)
+                additionalTermsView.ShowDialog();
+            else
+            {
+                //Means that a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
+                additionalTermsView.Owner = parent;
+                additionalTermsView.Show();
+            }
             return additionalTermsView.AcceptedTermsOfUse;
         }
 
@@ -484,6 +498,63 @@ namespace Dynamo.ViewModels
             return String.Join(", ", pkgs.Select(x => x.Name + " " + x.VersionName));
         }
 
+        /// <summary>
+        /// Warn about duplicate package conflicts depending on whether the package is 
+        /// a built-in package and whether versions match.
+        /// </summary>
+        /// <param name="name">name of package being downloaded</param>
+        /// <param name="package">package version being downloaded</param>
+        /// <param name="duplicatePackage">local package found to be duplicate of one being downloaded</param>
+        private void WarnAboutDuplicatePackageConflicts(string name, PackageVersion package, Package duplicatePackage)
+        {
+            if (duplicatePackage == null) return;
+
+            var packageToDownload = $"{name} {package.version}";
+            if (duplicatePackage.BuiltInPackage)
+            {
+                if (package.version == duplicatePackage.VersionName)
+                {
+                    var message = string.Format(Resources.MessageSamePackageSameVersInBuiltinPackages, packageToDownload);
+
+                    MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    var message = string.Format(Resources.MessageSamePackageDiffVersInBuiltinPackages,
+                        packageToDownload, JoinPackageNames(new[] { duplicatePackage }),
+                        DynamoViewModel.BrandingResourceProvider.ProductName);
+
+                    MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+                return;
+            }
+
+            if (package.version == duplicatePackage.VersionName)
+            {
+                var message = string.Format(Resources.MessageSamePackageSameVersInLocalPackages, packageToDownload);
+                MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
+                MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                var dupPkg = JoinPackageNames(new[] { duplicatePackage });
+                var message = string.Format(Resources.MessageSamePackageDiffVersInLocalPackages, packageToDownload,
+                    dupPkg, DynamoViewModel.BrandingResourceProvider.ProductName);
+
+                var dialogResult = MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
+                    MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+
+                if (dialogResult == MessageBoxResult.OK)
+                {
+                    // mark for uninstallation
+                    duplicatePackage.MarkForUninstall(DynamoViewModel.Model.PreferenceSettings);
+                }
+            }
+            return;
+        }
+
         internal async void ExecutePackageDownload(string name, PackageVersion package, string installPath)
         {
             string msg = String.IsNullOrEmpty(installPath) ?
@@ -497,7 +568,7 @@ namespace Dynamo.ViewModels
             var pmExt = DynamoViewModel.Model.GetPackageManagerExtension();
             if (result == MessageBoxResult.OK)
             {
-                System.Diagnostics.Debug.Assert(package.full_dependency_ids.Count == package.full_dependency_versions.Count);
+                Debug.Assert(package.full_dependency_ids.Count == package.full_dependency_versions.Count);
                 // get all of the dependency version headers
                 // we reverse these arrays because the package manager returns dependencies in topological order starting at 
                 // the current package - and we want to install the dependencies first!.
@@ -532,61 +603,65 @@ namespace Dynamo.ViewModels
                 var immediateUninstalls = new List<Package>();
                 var builtinPackages = new List<Package>();
 
-                // if a package is already installed we need to uninstall it, allowing
-                // the user to cancel if they do not want to uninstall the package
-                var duplicateLocalPackages = dependencyVersionHeaders.Select(dep => localPkgs.FirstOrDefault(v => v.Name == dep.name));
-                foreach (var localPkg in duplicateLocalPackages)
+                // if the new package has one or more dependencies that are already installed
+                // we need to either first uninstall them, or allow the user to forcibly install the package,
+                // or cancel the installation if they do not want either of the first two options.
+
+                // local package that conflicts with package itself.
+                Package duplicatePackage = null;
+
+                // list of local packages that conflict (have different versions) with package dependencies.
+                var localPkgsConflictingWithPkgDeps = new List<Package>();
+                var newPackageHeaders = new List<PackageVersion>();
+
+                foreach(var dependencyHeader in dependencyVersionHeaders)
                 {
-                    if (localPkg == null) continue;
-
-                    if (localPkg.BuiltInPackage)
+                    bool isHeaderDuplicate = false;
+                    foreach(var localPkg in localPkgs)
                     {
-                        builtinPackages.Add(localPkg);
-                        continue;
+                        if (localPkg.Name == dependencyHeader.name)
+                        {
+                            if(localPkg.Name == name)
+                            {
+                                duplicatePackage = localPkg;
+                                break;
+                            }
+                            isHeaderDuplicate = true;
+                            if (localPkg.VersionName != dependencyHeader.version)
+                            {
+                                localPkgsConflictingWithPkgDeps.Add(localPkg);
+                            }
+                        }
                     }
-
-                    if (localPkg.LoadedAssemblies.Any())
-                    {
-                        uninstallsRequiringRestart.Add(localPkg);
-                        continue;
-                    }
-
-                    if (localPkg.InUse(DynamoViewModel.Model))
-                    {
-                        uninstallRequiringUserModifications.Add(localPkg);
-                        continue;
-                    }
-
-                    immediateUninstalls.Add(localPkg);
+                    if (duplicatePackage != null) break;
+                    if(!isHeaderDuplicate) newPackageHeaders.Add(dependencyHeader);
                 }
 
-                if (builtinPackages.Any())
-                {// Conflicts with builtin packages
-                    string message = "";
-                    if (duplicateLocalPackages.Count() == 1 &&
-                        duplicateLocalPackages.First().Name == name)
+                WarnAboutDuplicatePackageConflicts(name, package, duplicatePackage);
+
+                foreach (var pkg in localPkgsConflictingWithPkgDeps)
+                {
+                    if (pkg == null) continue;
+
+                    if (pkg.BuiltInPackage)
                     {
-                        message = duplicateLocalPackages.First().VersionName == package.version ?
-                                    String.Format(Resources.MessageSamePackageInBuiltinPackages,
-                                    DynamoViewModel.BrandingResourceProvider.ProductName,
-                                    JoinPackageNames(builtinPackages))
-                                    :
-                                    String.Format(Resources.MessageSamePackageDiffVersInBuiltinPackages,
-                                    DynamoViewModel.BrandingResourceProvider.ProductName,
-                                    JoinPackageNames(builtinPackages));
-                    } 
-                    else 
-                    {
-                        message = String.Format(Resources.MessagePackageDepsInBuiltinPackages,
-                                                DynamoViewModel.BrandingResourceProvider.ProductName,
-                                                name + " " + package.version,
-                                                JoinPackageNames(builtinPackages));
+                        builtinPackages.Add(pkg);
+                        continue;
                     }
 
-                    MessageBoxService.Show(message,
-                        Resources.CannotDownloadPackageMessageBoxTitle,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
+                    if (pkg.LoadedAssemblies.Any())
+                    {
+                        uninstallsRequiringRestart.Add(pkg);
+                        continue;
+                    }
+
+                    if (pkg.InUse(DynamoViewModel.Model))
+                    {
+                        uninstallRequiringUserModifications.Add(pkg);
+                        continue;
+                    }
+
+                    immediateUninstalls.Add(pkg);
                 }
 
                 // determine if any of the packages contain binaries or python scripts.  
@@ -613,6 +688,20 @@ namespace Dynamo.ViewModels
                     if (res == MessageBoxResult.Cancel) return;
                 }
 
+                var packageToDownload = $"{name} {package.version}";
+                if (builtinPackages.Any())
+                {
+                    // Conflicts with builtin packages
+                    var message = string.Format(Resources.MessagePackageDepsInBuiltinPackages, packageToDownload,
+                            JoinPackageNames(builtinPackages));
+
+                    var dialogResult = MessageBoxService.Show(message,
+                        Resources.BuiltInPackageConflictMessageBoxTitle,
+                        MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+
+                    if(dialogResult == MessageBoxResult.Cancel) return;
+                }
+
                 // Determine if there are any dependencies that are made with a newer version
                 // of Dynamo (this includes the root package)
                 var dynamoVersion = VersionUtilities.PartialParse(DynamoViewModel.Model.Version);
@@ -633,62 +722,63 @@ namespace Dynamo.ViewModels
 
                 if (uninstallRequiringUserModifications.Any())
                 {
-                    MessageBoxService.Show(String.Format(Resources.MessageUninstallToContinue,
-                        DynamoViewModel.BrandingResourceProvider.ProductName,
-                        JoinPackageNames(uninstallRequiringUserModifications)),
-                        Resources.CannotDownloadPackageMessageBoxTitle,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
+                    var conflictingPkgs = JoinPackageNames(uninstallRequiringUserModifications);
+                    var message = string.Format(Resources.MessageForceInstallOrUninstallToContinue, packageToDownload, conflictingPkgs,
+                        DynamoViewModel.BrandingResourceProvider.ProductName);
+                    
+                    var dialogResult = MessageBoxService.Show(message,
+                        Resources.PackagesInUseConflictMessageBoxTitle,
+                        MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+
+                    if(dialogResult == MessageBoxResult.No) return;
                 }
 
                 var settings = DynamoViewModel.Model.PreferenceSettings;
-
                 if (uninstallsRequiringRestart.Any())
                 {
-                    var message = string.Format(Resources.MessageUninstallToContinue2,
-                        DynamoViewModel.BrandingResourceProvider.ProductName,
-                        JoinPackageNames(uninstallsRequiringRestart),
-                        name + " " + package.version);
-                    // different message for the case that the user is
-                    // trying to install the same package/version they already have installed.
-                    if (uninstallsRequiringRestart.Count == 1 &&
-                        uninstallsRequiringRestart.First().Name == name &&
-                        uninstallsRequiringRestart.First().VersionName == package.version)
-                    {
-                        message = String.Format(Resources.MessageUninstallSamePackage, name + " " + package.version);
-                    }
-                    var dialogResult = MessageBoxService.Show(message,
-                        Resources.CannotDownloadPackageMessageBoxTitle,
-                        MessageBoxButton.YesNo, MessageBoxImage.Error);
+                    var conflictingPkgs = JoinPackageNames(uninstallsRequiringRestart);
+                    var message = string.Format(Resources.MessageForceInstallOrUninstallUponRestart, packageToDownload,
+                        conflictingPkgs, DynamoViewModel.BrandingResourceProvider.ProductName);
 
-                    if (dialogResult == MessageBoxResult.Yes)
+                    var dialogResult = MessageBoxService.Show(message,
+                        Resources.LoadedPackagesConflictMessageBoxTitle,
+                        MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation);
+
+                    if (dialogResult == MessageBoxResult.No)
                     {
                         // mark for uninstallation
                         uninstallsRequiringRestart.ForEach(x => x.MarkForUninstall(settings));
+                        return;
                     }
-                    return;
+                    else if(dialogResult == MessageBoxResult.Cancel) return;
                 }
 
                 if (immediateUninstalls.Any())
                 {
-                    // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
-                    if (MessageBoxService.Show(String.Format(Resources.MessageAlreadyInstallDynamo,
+                    // if the package is not in use, tell the user we will uninstall it and give them the opportunity to cancel
+                    var message = String.Format(Resources.MessageAlreadyInstallDynamo,
                         DynamoViewModel.BrandingResourceProvider.ProductName,
-                        JoinPackageNames(immediateUninstalls)),
-                        Resources.DownloadWarningMessageBoxTitle,
-                        MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                        JoinPackageNames(immediateUninstalls), packageToDownload);
+
+                    var dialogResult = MessageBoxService.Show(message,
+                        Resources.DownloadWarningMessageBoxTitle, MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                    if (dialogResult == MessageBoxResult.Cancel)
+                    {
                         return;
+                    }
                 }
 
                 // add custom path to custom package folder list
                 if (!String.IsNullOrEmpty(installPath))
                 {
                     if (!settings.CustomPackageFolders.Contains(installPath))
+                    {
                         settings.CustomPackageFolders.Add(installPath);
+                    }
                 }
 
                 // form header version pairs and download and install all packages
-                var downloadTasks = dependencyVersionHeaders
+                var downloadTasks = newPackageHeaders
                     .Select((dep) => {
                         return new PackageDownloadHandle()
                         {
@@ -704,10 +794,10 @@ namespace Dynamo.ViewModels
                 // When above downloads complete, start installing packages in dependency order.
                 // The downloads have completed in a random order, but the dependencyVersionHeaders list is in correct topological
                 // install order.
-                foreach(var dep in dependencyVersionHeaders)
+                foreach(var dep in newPackageHeaders)
                 {
                     var matchingDownload = downloadTasks.Where(x => x.Result.handle.Id == dep.id).FirstOrDefault();
-                    if(matchingDownload != null)
+                    if (matchingDownload != null)
                     {
                         InstallPackage(matchingDownload.Result.handle, matchingDownload.Result.downloadPath, installPath);
                     }

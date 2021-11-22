@@ -24,6 +24,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
+using PythonNodeModels;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -52,7 +53,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return string.Empty;
+            if (string.IsNullOrEmpty(value as string)) return string.Empty;
             string incomingString = value as string;
             return incomingString.Split(new[] { '\r', '\n' }, 2)[1].Trim();
         }
@@ -66,7 +67,6 @@ namespace Dynamo.Controls
     public class TooltipLengthTruncater : IValueConverter
     {
         private const int MaxChars = 100;
-        private const double MinFontFactor = 7.0;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -156,7 +156,7 @@ namespace Dynamo.Controls
     /// </summary>
     public class EmptyDepStringToCollapsedConverter : IValueConverter
     {
-        private readonly string[] PythonEngineList = { PythonNodeModels.PythonEngineVersion.CPython3.ToString(), PythonNodeModels.PythonEngineVersion.IronPython2.ToString() };
+        private readonly string[] PythonEngineList = { PythonEngineVersion.CPython3.ToString(), PythonEngineVersion.IronPython2.ToString() };
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
@@ -341,6 +341,24 @@ namespace Dynamo.Controls
             return booleanValue
                 ? Resources.PackageManagerInstall
                 : Resources.PackageDownloadStateInstalled;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// If the given string is empty, false is returned, otherwise true is returned.
+    /// </summary>
+    public class EmptyStringToFalseConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return value is string && !string.IsNullOrEmpty(value.ToString());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -1400,8 +1418,8 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             string originalName = value.ToString();
-            if (originalName == "Code Block") return new Thickness(0, 12, 0, 0);
-            return new Thickness(0, 3, 0, 5);
+            if (originalName == "Code Block") return new Thickness(0, 12, -24, 0);
+            return new Thickness(0, 3, -24, 5);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1638,9 +1656,9 @@ namespace Dynamo.Controls
             double dbl;
             if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
             {
-                return (dbl.ToString(SIUnit.NumberFormat, CultureInfo.InvariantCulture));
+                return (dbl.ToString(DynamoUnits.Display.PrecisionFormat, CultureInfo.InvariantCulture));
             }
-            return value ?? 0.ToString(SIUnit.NumberFormat);
+            return value ?? 0.ToString(DynamoUnits.Display.PrecisionFormat);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1840,6 +1858,25 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Truncates a node's warning messages to 30 characters. Used on the node's context menu
+    /// when un-dismissing a node's warnings.
+    /// </summary>
+    public class NodeWarningConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is string stringValue)) return null;
+            string ellipses = stringValue.Length > 30 ? "..." : "";
+            return stringValue.Substring(0, Math.Min(stringValue.Length, 30)) + ellipses;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class TabSizeConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1888,6 +1925,7 @@ namespace Dynamo.Controls
         }
     }
 
+    [Obsolete("This class will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
     public class MeasureConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2600,11 +2638,11 @@ namespace Dynamo.Controls
             }
         }
 
-        /// <summary>
-        /// Checks if the item is last. In that case, this converter controls 
-        /// the last tree view item's  horizontal and vertical line height
-        /// </summary>
-        public class TreeViewLineConverter : IValueConverter
+    /// <summary>
+    /// Checks if the item is last. In that case, this converter controls 
+    /// the last tree view item's  horizontal and vertical line height
+    /// </summary>
+    public class TreeViewLineConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {

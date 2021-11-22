@@ -278,6 +278,9 @@
     <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Category.String.svg">
       <Link>web\library\resources\Category.String.svg</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Category.Units.svg">
+      <Link>web\library\resources\Category.Units.svg</Link>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\default-icon.svg">
       <Link>web\library\resources\default-icon.svg</Link>
     </EmbeddedResource>

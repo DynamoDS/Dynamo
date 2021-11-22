@@ -2,126 +2,38 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Media;
+using System.Text;
 using System.Xml;
-
 using DSCore;
-
 using CoreNodeModels;
-using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Migration;
-using Dynamo.Nodes;
-using Dynamo.UI.Prompts;
-using Dynamo.ViewModels;
-using Dynamo.Wpf;
-
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
 using UnitsUI.Properties;
 using Newtonsoft.Json;
+using AstFactory = ProtoCore.AST.AssociativeAST.AstFactory;
+using DoubleNode = ProtoCore.AST.AssociativeAST.DoubleNode;
+using Dynamo.Utilities;
+using UnitsUI.Converters;
+using Utilities = DynamoUnits.Utilities;
+using Dynamo.Controls;
 
 namespace UnitsUI
 {
-    public abstract class MeasurementInputBaseNodeViewCustomization : INodeViewCustomization<MeasurementInputBase>
-    {
-        private MeasurementInputBase mesBaseModel;
-        private DynamoViewModel dynamoViewModel;
-        private DynamoTextBox tb;
-
-        public void CustomizeView(MeasurementInputBase model, NodeView nodeView)
-        {
-            this.mesBaseModel = model;
-            this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
-
-            //add an edit window option to the 
-            //main context window
-            var editWindowItem = new MenuItem()
-            {
-                Header = Properties.Resources.EditHeader,
-                IsCheckable = false,
-                Tag = nodeView.ViewModel.DynamoViewModel
-            };
-
-            nodeView.MainContextMenu.Items.Add(editWindowItem);
-
-            editWindowItem.Click += editWindowItem_Click;
-
-            //add a text box to the input grid of the control
-            this.tb = new DynamoTextBox();
-            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = VerticalAlignment.Center;
-            nodeView.inputGrid.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
-            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-
-            tb.DataContext = model;
-            tb.BindToProperty(new Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new MeasureConverter(),
-                ConverterParameter = model.Measure,
-                NotifyOnValidationError = false,
-                Source = model,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
-
-            tb.OnChangeCommitted += TextChangehandler; 
-
-            (nodeView.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
-        }
-
-        private void TextChangehandler()
-        {
-            mesBaseModel.OnNodeModified();
-        }
-
-        void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "AreaUnit" ||
-                e.PropertyName == "VolumeUnit" ||
-                e.PropertyName == "LengthUnit" ||
-                e.PropertyName == "NumberFormat")
-            {
-                this.mesBaseModel.ForceValueRaisePropertyChanged();
-
-                this.mesBaseModel.OnNodeModified();
-            }
-        }
-
-        private void editWindowItem_Click(object sender, RoutedEventArgs e)
-        {
-            var viewModel = this.dynamoViewModel;
-            var editWindow = new EditWindow(viewModel) { DataContext = this.mesBaseModel };
-            editWindow.BindToProperty(null, new Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new MeasureConverter(),
-                ConverterParameter = this.mesBaseModel.Measure,
-                NotifyOnValidationError = false,
-                Source = this.mesBaseModel,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
-
-            editWindow.ShowDialog();
-        }
-
-        public void Dispose()
-        {
-            tb.OnChangeCommitted -= TextChangehandler;
-        }
-    }
-
+    /// <summary>
+    /// Class defining the behaviour of a nodemodel which has no inputs, but rather uses wpf comboboxes to select items from collections.
+    /// It then outputs a formatted string from the selections made.
+    /// </summary>
+    [Obsolete("This abstract class will be removed in Dynamo 3.0 - This abstract class will be removed in Dynamo 3.0 - please use the UnitInput node")]
     public abstract class MeasurementInputBase : NodeModel
     {
         [JsonIgnore]
         public SIUnit Measure { get; protected set; }
-
+        /// <summary>
+        /// Numerical value entered into the textbox (to be formatted).
+        /// </summary>
         public double Value
         {
             get
@@ -131,17 +43,17 @@ namespace UnitsUI
             set
             {
                 Measure.Value = value;
-                RaisePropertyChanged("Value");
+                RaisePropertyChanged(nameof(Value));
             }
         }
 
-        public MeasurementInputBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
+        public MeasurementInputBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
 
         public MeasurementInputBase() : base() { }
 
         internal void ForceValueRaisePropertyChanged()
         {
-            RaisePropertyChanged("Value");
+            RaisePropertyChanged(nameof(Value));
         }
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
@@ -188,7 +100,7 @@ namespace UnitsUI
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            if (name == "Value")
+            if (name == nameof(Value))
             {
                 var converter = new MeasureConverter();
                 this.Value = ((double)converter.ConvertBack(value, typeof(double), Measure, null));
@@ -200,27 +112,20 @@ namespace UnitsUI
 
     }
 
-    public class LengthFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
-                                                         INodeViewCustomization<LengthFromString>
-    {
-        public void CustomizeView(LengthFromString model, NodeView nodeView)
-        {
-            base.CustomizeView(model, nodeView);
-        }
-    }
-
     [NodeName("Number From Feet and Inches")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeDescription("LengthFromStringDescription", typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("LengthFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [OutPortTypes("number")]
     [IsDesignScriptCompatible]
+    [NodeDeprecated]
     public class LengthFromString : MeasurementInputBase
     {
         [JsonConstructor]
         private LengthFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
         {
             Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
+            Warning("Number From Feet and Inches " + Properties.Resources.LegthFromStringObsoleteMessage, true);
         }
 
         public LengthFromString():base()
@@ -229,6 +134,7 @@ namespace UnitsUI
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("double", Resources.LengthFromStringPortDataLengthToolTip)));
             RegisterAllPorts();
+            Warning("Number From Feet and Inches " + Properties.Resources.LegthFromStringObsoleteMessage, true);
         }
 
         [NodeMigration(version: "0.6.2")]
@@ -267,14 +173,7 @@ namespace UnitsUI
         }
     }
 
-    public class AreaFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
-                                                     INodeViewCustomization<AreaFromString>
-    {
-        public void CustomizeView(AreaFromString model, NodeView nodeView)
-        {
-            base.CustomizeView(model, nodeView);
-        }
-    }
+
 
     [NodeName("Area From String")]
     [NodeCategory("Units.Area.Create")]
@@ -307,14 +206,7 @@ namespace UnitsUI
         }
     }
 
-    public class VolumeFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
-                                                 INodeViewCustomization<VolumeFromString>
-    {
-        public void CustomizeView(VolumeFromString model, NodeView nodeView)
-        {
-            base.CustomizeView(model, nodeView);
-        }
-    }
+  
 
     [NodeName("Volume From String")]
     [NodeCategory("Units.Volume.Create")]
@@ -353,15 +245,18 @@ namespace UnitsUI
     [NodeSearchTags("UnitTypesSearchTags", typeof(UnitsUI.Properties.Resources))]
     [OutPortTypes("type")]
     [IsDesignScriptCompatible]
+    [NodeDeprecated]
     public class UnitTypes : AllChildrenOfType<SIUnit>
     {
         public UnitTypes() : base()
         {
+            Warning("Unit Types " + Properties.Resources.UnitTypesObsoleteMessage, true);
         }
 
         [JsonConstructor]
         private UnitTypes(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            Warning("Unit Types " + Properties.Resources.UnitTypesObsoleteMessage, true);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -379,6 +274,527 @@ namespace UnitsUI
             }
            
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
+    }
+
+    [NodeName("Parse Unit Input")]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [NodeDescription("ParseUnitInputDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("ParseUnitInputSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [IsDesignScriptCompatible]
+    public class UnitInput : CoreNodeModels.Input.String
+    {
+        private IEnumerable<DynamoUnits.Unit> items;
+        private const string defaultUnit = "Feet";
+
+        /// <summary>
+        /// Collection of unit type ids.
+        /// </summary>
+        [JsonIgnore]
+        public IEnumerable<DynamoUnits.Unit> Items
+        {
+            get { return items; }
+            private set
+            {
+                items = value;
+                RaisePropertyChanged(nameof(Items));
+            }
+        }
+
+        private DynamoUnits.Unit selectedUnit;
+        /// <summary>
+        /// Selected unit type id to convert to.
+        /// </summary>
+        [JsonProperty("UnitType"), JsonConverter(typeof(ForgeUnitConverter))]
+        public DynamoUnits.Unit SelectedUnit
+        {
+            get { return selectedUnit; }
+            set
+            {
+                selectedUnit = value;
+                RaisePropertyChanged(nameof(SelectedUnit));
+            }
+        }
+
+        [JsonConstructor]
+        private UnitInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            try
+            {
+                Items = DynamoUnits.Utilities.GetAllUnits();
+            }
+            catch
+            {
+                //continue with empty node and warning 
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
+
+            ShouldDisplayPreviewCore = true;
+        }
+
+        public UnitInput()
+        {
+            this.OutPorts.Clear();
+            this.OutPorts.Add(new PortModel(PortType.Output, (NodeModel)this, new PortData("Value", Resources.ParseUnitInputValueTooltip)));
+            this.OutPorts.Add(new PortModel(PortType.Output, (NodeModel)this, new PortData("Unit", Resources.ParseUnitInputUnitTooltip)));
+            RegisterAllPorts();
+            try
+            {
+                Items = DynamoUnits.Utilities.GetAllUnits();
+                SelectedUnit = Items.ToList().Find(u => u.Name == defaultUnit);
+            }
+            catch
+            {
+                //continue with empty node and warning 
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
+
+            Value = "";
+            ShouldDisplayPreviewCore = true;
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            if(string.IsNullOrEmpty(Value) || SelectedUnit is null)
+                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+
+            var expression = AstFactory.BuildStringNode(Value);
+
+            var unitID =
+                AstFactory.BuildStringNode(SelectedUnit?.TypeId);
+
+           var node = AstFactory.BuildFunctionCall(
+                new Func<string, string, double>(DynamoUnits.Utilities.ParseExpressionByUnitId),
+                new List<AssociativeNode> { unitID, expression });
+
+           var node2 = AstFactory.BuildFunctionCall(
+               new Func<string, DynamoUnits.Unit>(DynamoUnits.Unit.ByTypeID),
+               new List<AssociativeNode> { unitID });
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node), AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), node2) };
+        }
+
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
+            if (name == "Value")
+            {
+                Value = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            // There's another 'UpdateValueCore' method in 'String' base class,
+            // since they are both bound to the same property, 'StringInput' 
+            // should be given a chance to handle the property value change first
+            // before the base class 'String'.
+            return base.UpdateValueCore(updateValueParams);
+        }
+
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
+        {
+            base.SerializeCore(nodeElement, context);
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(string).FullName);
+
+            var helper = new XmlElementHelper(outEl);
+            helper.SetAttribute("value", SerializeValue());
+            nodeElement.AppendChild(outEl);
+        }
+
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        {
+            base.DeserializeCore(nodeElement, context);
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            {
+                if (subNode.Name.Equals(typeof(string).FullName))
+                {
+                    foreach (XmlAttribute attr in subNode.Attributes)
+                    {
+                        if (attr.Name.Equals("value"))
+                        {
+                            Value = DeserializeValue(attr.Value);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [NodeName("Convert By Units")]
+    [NodeDescription("ConvertUnitsDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("ConvertUnitsSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [OutPortTypes("number")]
+    [IsDesignScriptCompatible]
+    public class DynamoUnitConvert : NodeModel
+    {
+        private DynamoUnits.Unit selectedFromConversion;
+        private DynamoUnits.Unit selectedToConversion;
+        private DynamoUnits.Quantity selectedQuantityConversion;
+        private IEnumerable<DynamoUnits.Quantity> quantityConversionSource;
+        private IEnumerable<DynamoUnits.Unit> selectedFromConversionSource;
+        private IEnumerable<DynamoUnits.Unit> selectedToConversionSource;
+        private const string defaultSelectedQuantity = "Length";
+
+        /// <summary>
+        /// This corresponds to the list of available quantities we can select to convert in.
+        /// Examples of this would be 'length', 'time', 'volume'.
+        /// </summary>
+        [JsonIgnore]
+        public IEnumerable<DynamoUnits.Quantity> QuantityConversionSource
+        {
+            get { return quantityConversionSource; }
+            private set
+            {
+                quantityConversionSource = value;
+                RaisePropertyChanged(nameof(QuantityConversionSource));
+            }
+        }
+
+        /// <summary>
+        /// This corresponds to the a list of available units we are converting FROM.
+        /// Examples of this are 'meters', 'millimeters', 'feet'.
+        /// </summary>
+        [JsonIgnore]
+        public IEnumerable<DynamoUnits.Unit> SelectedFromConversionSource
+        {
+            get { return selectedFromConversionSource; }
+            set
+            {
+                selectedFromConversionSource = value;
+                RaisePropertyChanged(nameof(SelectedFromConversionSource));
+            }
+        }
+
+        /// <summary>
+        /// This corresponds to the a list of available units we are converting TO.
+        /// Examples of this are 'meters', 'millimeters', 'feet'.
+        /// </summary>
+        [JsonIgnore]
+        public IEnumerable<DynamoUnits.Unit> SelectedToConversionSource
+        {
+            get { return selectedToConversionSource; }
+            set
+            {
+                selectedToConversionSource = value;
+                RaisePropertyChanged(nameof(SelectedToConversionSource));
+            }
+        }
+        /// <summary>
+        /// This corresponds to selected quantity we will be converting in.
+        /// An example of this is 'length'.
+        /// </summary>
+        [JsonProperty("MeasurementType"), JsonConverter(typeof(ForgeQuantityConverter))]
+        public DynamoUnits.Quantity SelectedQuantityConversion
+        {
+            get { return selectedQuantityConversion; }
+            set
+            {
+                selectedQuantityConversion = value;
+                SelectedFromConversionSource =
+                    selectedQuantityConversion?.Units;
+                SelectedToConversionSource =
+                    selectedQuantityConversion?.Units;
+                SelectedFromConversion = SelectedFromConversionSource?.First();
+                SelectedToConversion = SelectedToConversionSource?.First();
+
+                RaisePropertyChanged(nameof(SelectedQuantityConversion));
+            }
+        }
+        /// <summary>
+        /// This corresponds to the selected unit we are converting FROM.
+        /// An example of this would be 'meters'.
+        /// </summary>
+        [JsonProperty("FromConversion"), JsonConverter(typeof(ForgeUnitConverter))]
+        public DynamoUnits.Unit SelectedFromConversion
+        {
+            get { return selectedFromConversion; }
+            set
+            {
+                selectedFromConversion = value;
+                this.OnNodeModified();
+                RaisePropertyChanged(nameof(SelectedFromConversion));
+            }
+        }
+        /// <summary>
+        /// This corresponds to the selected unit we are converting TO.
+        /// An example of this would be 'feet'.
+        /// </summary>
+        [JsonProperty("ToConversion"), JsonConverter(typeof(ForgeUnitConverter))]
+        public DynamoUnits.Unit SelectedToConversion
+        {
+            get { return selectedToConversion; }
+            set
+            {
+                selectedToConversion = value;
+                this.OnNodeModified();
+                RaisePropertyChanged(nameof(SelectedToConversion));
+            }
+        }
+
+        [JsonConstructor]
+        private DynamoUnitConvert(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            try
+            {
+                QuantityConversionSource = DynamoUnits.Utilities.GetAllQuantities();
+            }
+            catch
+            {
+                //continue with empty node and warning 
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
+
+            AssociativeNode defaultNode = new DoubleNode(0.0);
+            if (inPorts != null) inPorts.First().DefaultValue = defaultNode;
+
+            ShouldDisplayPreviewCore = true;
+        }
+
+        public DynamoUnitConvert()
+        {
+            try
+            {
+                QuantityConversionSource = DynamoUnits.Utilities.GetAllQuantities();
+                SelectedQuantityConversion = QuantityConversionSource.ToList().Find(q => q.Name == defaultSelectedQuantity);
+            }
+            catch
+            {
+                //continue with empty node and warning 
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
+
+            AssociativeNode defaultNode = new DoubleNode(0.0);
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Resources.CovertUnitInputTooltip, defaultNode)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Resources.CovertUnitOutputTooltip)));
+
+            ShouldDisplayPreviewCore = true;
+            RegisterAllPorts();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
+        {
+            if (null == inputAstNodes || inputAstNodes.Count == 0 || inputAstNodes[0] is ProtoCore.AST.AssociativeAST.NullNode || SelectedToConversion is null || SelectedFromConversion is null)
+                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+            
+            var conversionToNode =
+                AstFactory.BuildStringNode(SelectedToConversion?.TypeId);
+
+            var conversionFromNode =
+                AstFactory.BuildStringNode(SelectedFromConversion?.TypeId);
+            AssociativeNode node = null;
+
+            node = AstFactory.BuildFunctionCall(
+                        new Func<double, string, string, double>(DynamoUnits.Utilities.ConvertByUnitIds),
+                        new List<AssociativeNode> { inputAstNodes[0], conversionFromNode, conversionToNode });
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
+        /// <summary>
+        /// This methods flips the 'to' and 'from' unit of the conversion.
+        /// </summary>
+        public void SwitchUnitsDropdownValues()
+        {
+            (this.SelectedFromConversion, this.SelectedToConversion) =
+                (this.SelectedToConversion, this.SelectedFromConversion);
+        }
+    }
+
+    [NodeName("Units")]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [NodeDescription("UnitsUIDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("UnitsUISearchTags", typeof(UnitsUI.Properties.Resources))]
+    [OutPortTypes("Unit")]
+    [IsDesignScriptCompatible]
+    public class Units : DSDropDownBase
+    {
+        public Units() : base("Unit") { }
+
+        [JsonConstructor]
+        private Units(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base("Unit", inPorts, outPorts) { }
+
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node;
+            if (SelectedIndex < 0 || SelectedIndex >= Items.Count)
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                var args = new List<AssociativeNode>
+                {
+                    AstFactory.BuildStringNode((string)Items[SelectedIndex].Item)
+                };
+
+                var func = new Func<string, DynamoUnits.Unit>(DynamoUnits.Unit.ByTypeID);
+                node = AstFactory.BuildFunctionCall(func, args);
+            }
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
+
+        protected override SelectionState PopulateItemsCore(string currentSelection)
+        {
+            Items.Clear();
+
+            IEnumerable<Unit> units = null;
+            try
+            {
+                units = DynamoUnits.Utilities.GetAllUnits();
+            }
+            catch
+            {
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
+
+            if (units == null)
+            {
+                return SelectionState.Restore;
+            }
+
+            foreach (var unit in units)
+            {
+                Items.Add(new DynamoDropDownItem(unit.Name, unit.TypeId));
+            }
+
+            return SelectionState.Restore;
+        }
+    }
+
+    [NodeName("Quantities")]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [NodeDescription("QuantitiesUIDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("QuantitiesUISearchTags", typeof(UnitsUI.Properties.Resources))]
+    [OutPortTypes("Quantity")]
+    [IsDesignScriptCompatible]
+    public class Quantities : DSDropDownBase
+    {
+        public Quantities() : base("Quantity") { }
+
+        [JsonConstructor]
+        private Quantities(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base("Quantity", inPorts, outPorts) { }
+
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node;
+            if (SelectedIndex < 0 || SelectedIndex >= Items.Count)
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                var args = new List<AssociativeNode>
+                {
+                    AstFactory.BuildStringNode((string)Items[SelectedIndex].Item)
+                };
+
+                var func = new Func<string, DynamoUnits.Quantity>(DynamoUnits.Quantity.ByTypeID);
+                node = AstFactory.BuildFunctionCall(func, args);
+            }
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
+
+        protected override SelectionState PopulateItemsCore(string currentSelection)
+        {
+            Items.Clear();
+
+            IEnumerable<Quantity> quantities = null;
+            try
+            {
+                quantities = DynamoUnits.Utilities.GetAllQuantities();
+            }
+            catch
+            {
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
+
+            if (quantities == null)
+            {
+                return SelectionState.Restore;
+            }
+
+            foreach (var quantity in quantities)
+            {
+                
+                Items.Add(new DynamoDropDownItem(quantity.Name, quantity.TypeId));
+            }
+
+            return SelectionState.Restore;
+        }
+    }
+
+    [NodeName("Symbols")]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [NodeDescription("SymbolsUIDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("SymbolsUISearchTags", typeof(UnitsUI.Properties.Resources))]
+    [OutPortTypes("Symbol")]
+    [IsDesignScriptCompatible]
+    public class Symbols : DSDropDownBase
+    {
+        public Symbols() : base("Symbol") { }
+
+        [JsonConstructor]
+        private Symbols(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base("Symbol", inPorts, outPorts) { }
+
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node;
+            if (SelectedIndex < 0 || SelectedIndex >= Items.Count)
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                var args = new List<AssociativeNode>
+                {
+                    AstFactory.BuildStringNode((string)Items[SelectedIndex].Item)
+                };
+
+                var func = new Func<string, DynamoUnits.Symbol>(DynamoUnits.Symbol.ByTypeID);
+                node = AstFactory.BuildFunctionCall(func, args);
+            }
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
+
+        protected override SelectionState PopulateItemsCore(string currentSelection)
+        {
+            Items.Clear();
+
+            IEnumerable<Symbol> symbols = null;
+            try
+            {
+                symbols = DynamoUnits.Utilities.GetAllSymbols();
+            }
+            catch
+            {
+                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+            }
+
+            if (symbols == null)
+            {
+                return SelectionState.Restore;
+            }
+
+            foreach (var symbol in symbols)
+            {
+
+                Items.Add(new DynamoDropDownItem(SymbolDisplayText(symbol), symbol.TypeId));
+            }
+
+            return SelectionState.Restore;
+        }
+
+        private string SymbolDisplayText(Symbol symbol)
+        {
+            return symbol.Unit.Name + ": " + symbol.Text; ;
         }
     }
 }

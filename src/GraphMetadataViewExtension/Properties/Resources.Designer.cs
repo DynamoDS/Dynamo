@@ -106,7 +106,7 @@ namespace Dynamo.GraphMetadata.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Graph Properties.
+        ///   Looks up a localized string similar to Show Graph _Properties.
         /// </summary>
         public static string MenuItemText {
             get {

@@ -17,6 +17,26 @@ namespace Dynamo.Wpf.UI.GuidedTour
         #endregion
 
         /// <summary>
+        /// Default constructor
+        /// </summary>
+        internal HighlightArea() { }
+
+        /// <summary>
+        /// Copy Constructor
+        /// </summary>
+        /// <param name="copyInstance">Instance with the HighlightArea info</param>
+        internal HighlightArea(HighlightArea copyInstance) 
+        {
+            HighlightColor = copyInstance.HighlightColor;
+            WidthBoxDelta = copyInstance.WidthBoxDelta;
+            HeightBoxDelta = copyInstance.HeightBoxDelta;
+            WindowName = copyInstance.WindowName;
+            WindowElementNameString = copyInstance.WindowElementNameString;
+            UIElementTypeString = copyInstance.UIElementTypeString;
+            UIElementGridContainer = copyInstance.UIElementGridContainer;
+        }
+
+        /// <summary>
         /// Since the box that highlights the elements has its size fixed, this variable applies a value to fix its Width
         /// </summary>
         [JsonProperty(nameof(WidthBoxDelta))]
@@ -52,6 +72,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
+        /// This property will contain the Window name in case we need to highligh a control in a different Window than DynamoView
+        /// </summary>
+        [JsonProperty(nameof(WindowName))]
+        public string WindowName { get; set; }
+
+        /// <summary>
         /// This represent the UIElement as string of the VisualTree that will be highlighted (readed from the json file)
         /// </summary>
         [JsonProperty(nameof(WindowElementNameString))]
@@ -59,10 +85,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
 
         /// <summary>
-        /// This property represent the Window that containss the UIElement (WindowElementName) due that in some cases is not the DynamoView (like the sub MenuItems)
+        /// This property represent the UI Element Type that contains the UIElement (WindowElementName) due that in some cases is not the DynamoView (like the sub MenuItems)
         /// </summary>
         [JsonProperty(nameof(UIElementTypeString))]
         public string UIElementTypeString { get; set; }
+
+        /// <summary>
+        /// In case the UIElement to be highlighted is in a Grid, then this property will have the Grid name
+        /// </summary>
+        [JsonProperty(nameof(UIElementGridContainer))]
+        public string UIElementGridContainer { get; set; }
 
 
         /// <summary>

@@ -42,10 +42,6 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="IronPython, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\..\src\packages\IronPython.2.7.9\lib\net45\IronPython.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.Dynamic, Version=1.2.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <HintPath>..\..\..\src\packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Dynamic.dll</HintPath>
       <Private>False</Private>
@@ -71,12 +67,12 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="ProtoGeometry, Version=2.12.0.6565, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\..\src\packages\DynamoVisualProgramming.LibG_228_0_0.2.12.0.6565\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.13.0.6656, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\..\src\packages\DynamoVisualProgramming.LibG_228_0_0.2.13.0.6656\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Python.Runtime, Version=2.5.1.2374, Culture=neutral, PublicKeyToken=null">
-		<SpecificVersion>False</SpecificVersion>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -116,11 +112,6 @@
       <Name>DSCPython</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Libraries\DSIronPython\DSIronPython.csproj">
-      <Project>{9eef4f42-6b3b-4358-9a8a-c2701539a822}</Project>
-      <Name>DSIronPython</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">
       <Project>{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}</Project>
       <Name>PythonNodeModelsWpf</Name>
@@ -129,6 +120,11 @@
     <ProjectReference Include="..\..\..\src\Libraries\PythonNodeModels\PythonNodeModels.csproj">
       <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
       <Name>PythonNodeModels</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\NodeServices\DynamoServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">

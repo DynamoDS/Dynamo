@@ -545,6 +545,17 @@ namespace Dynamo.Models
                 return;
 
             var modelsToGroup = command.ModelGuids.Select(guid => CurrentWorkspace.GetModelInternal(guid)).ToList();
+            if (modelsToGroup.OfType<NodeModel>().Any())
+            {
+                var nodeModels = modelsToGroup.OfType<NodeModel>();
+                var pinnedNotes = CurrentWorkspace.Notes
+                    .Where(x => x.PinnedNode != null && nodeModels.Contains(x.PinnedNode));
+
+                if (pinnedNotes.Any())
+                {
+                    modelsToGroup.AddRange(pinnedNotes);
+                }
+            }
 
             AddToGroup(modelsToGroup);
         }

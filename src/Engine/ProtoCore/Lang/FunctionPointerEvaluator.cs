@@ -99,7 +99,7 @@ namespace ProtoCore.Lang
             if (!isValidThisPointer || (!thisPtr.IsPointer && !thisPtr.IsArray))
             {
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.DereferencingNonPointer,
-                                              Resources.kDeferencingNonPointer);
+                                              Resources.kDereferencingNonPointer);
                 return StackValue.Null;
             }
 

@@ -624,23 +624,24 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-
-                    <Border x:Name="container" Background="Transparent">
-                        <Border x:Name="inner"
-                                Margin="3"
-                                Background="#55000000"
-                                CornerRadius="2">
-                            <TextBlock x:Name="text"
-                                       Margin="3"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontSize="11"
-                                       FontWeight="Bold"
-                                       Foreground="#BBB"
-                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                    <Grid x:Name="bordersGrid">
+                        <Border x:Name="container" 
+                                Background="Transparent">
+                            <Border x:Name="inner"
+                                        Margin="3"
+                                        Background="#55000000"
+                                        CornerRadius="2">
+                                <TextBlock x:Name="text"
+                                               Margin="3"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontSize="11"
+                                               FontWeight="Bold"
+                                               Foreground="#BBB"
+                                               Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                            </Border>
                         </Border>
-                    </Border>
-
+                    </Grid>
                     <ControlTemplate.Triggers>
 
                         <Trigger Property="Button.IsMouseOver" Value="true">
@@ -857,13 +858,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
-
                     <Border x:Name="container"
                             Background="Transparent"
                             BorderBrush="#3c3c3c"
                             BorderThickness="1">
                         <Grid x:Name="inner" Background="#373737">
-
                             <StackPanel Orientation="Horizontal">
                                 <ContentControl Content="{DynamicResource ResourceKey=Shape}" />
                             </StackPanel>
@@ -1097,6 +1096,50 @@
         </Setter>
     </Style>
 
+    <Style x:Key="DismissButtonStyle"
+           TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Grid Name="ButtonGrid">
+                        <Rectangle Name="ButtonBackground"
+                                   Width="{TemplateBinding Width}"
+                                   Height="{TemplateBinding Height}"
+                                   Fill="White" />
+                        <Path Name="DiagonalLine1"
+                              Data="M 0,0 50,50"
+                              Stretch="UniformToFill"
+                              Stroke="{StaticResource MidGreyBrush}" />
+                        <Path Name="DiagonalLine2"
+                              Data="M 50,0 0,50"
+                              Stretch="UniformToFill"
+                              Stroke="{StaticResource MidGreyBrush}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="ButtonBackground"
+                                    Property="Fill"
+                                    Value="LightGray" />
+                        </Trigger>
+                        <Trigger Property="Button.IsPressed"
+                                 Value="True">
+                            <Setter TargetName="ButtonBackground"
+                                    Property="Fill"
+                                    Value="{StaticResource PrimaryCharcoal100Brush}" />
+                            <Setter TargetName="DiagonalLine1"
+                                    Property="Stroke"
+                                    Value="{StaticResource Blue300Brush}" />
+                            <Setter TargetName="DiagonalLine2"
+                                    Property="Stroke"
+                                    Value="{StaticResource Blue300Brush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+               
     <Style x:Key="RadioButton" TargetType="{x:Type RadioButton}">
         <Setter Property="Template">
             <Setter.Value>
@@ -1232,7 +1275,7 @@
                                       IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                       Template="{StaticResource RefreshComboBoxToggleButton}" />
                         <ContentPresenter Name="ContentSite"
-                                          Margin="10,0,0,0"
+                                          Margin="10,0,20,0"
                                           HorizontalAlignment="Left"
                                           VerticalAlignment="Center"
                                           Content="{TemplateBinding SelectionBoxItem}"
@@ -2533,6 +2576,10 @@
                             <Setter TargetName="border" Property="Opacity" Value="0.9" />
                             <Setter TargetName="mousePressedBorder" Property="Visibility " Value="Visible" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#707070" />
+                            <Setter TargetName="textBlock" Property="Opacity" Value="0.7" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -2934,7 +2981,9 @@
                                           OverridesDefaultStyle="True"
                                           Template="{StaticResource ExpanderPlusToggleButton}">
                                 <ToggleButton.Content>
-                                    <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
+                                    <ContentPresenter ContentSource="Header"
+                                                      RecognizesAccessKey="True"
+                                                      TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}" />
                                 </ToggleButton.Content>
                             </ToggleButton>
                         </Border>
@@ -3702,6 +3751,23 @@
     <SolidColorBrush x:Key="PopupRatingControlBackColor" Color="#F5F5F5" />
 
     <SolidColorBrush x:Key="CheckMarkBackColor" Color="#87B340" />
+    
+    <!-- Style for a self-wrapping ToolTip -->
+    <Style x:Key="ToolTipSelfWrapping" TargetType="ToolTip">
+        <Style.Resources>
+            <Style TargetType="ContentPresenter">
+                <Style.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="TextWrapping"
+                                Value="Wrap" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </Style.Resources>
+        <Setter Property="MaxWidth"
+                Value="300" />
+    </Style>
+
 
     <!--  Style for the buttons in a Tooltip part of the Dynamo Guided Tours  -->
     <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">
@@ -3715,13 +3781,13 @@
                             BorderBrush="Transparent"
                             BorderThickness="0">
                         <Canvas Width="5" Height="10">
-                            <Line x:Name="line1"
+                            <Line x:Name="caret_upper"
                                   Stroke="Black"
                                   X1="5"
                                   X2="0"
                                   Y1="0"
                                   Y2="5" />
-                            <Line x:Name="line2"
+                            <Line x:Name="caret_bottom"
                                   Stroke="Black"
                                   X1="0"
                                   X2="5"
@@ -3731,25 +3797,29 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Tag" Value="Invert">
-                            <Setter TargetName="line1" Property="RenderTransform">
+                            <Setter TargetName="caret_upper" Property="RenderTransform">
                                 <Setter.Value>
                                     <RotateTransform Angle="180" CenterX="2" CenterY="5" />
                                 </Setter.Value>
                             </Setter>
-                            <Setter TargetName="line2" Property="RenderTransform">
+                            <Setter TargetName="caret_bottom" Property="RenderTransform">
                                 <Setter.Value>
                                     <RotateTransform Angle="180" CenterX="2" CenterY="5" />
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="line1" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
-                            <Setter TargetName="line2" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="caret_upper" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="caret_bottom" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="line1" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
-                            <Setter TargetName="line2" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="caret_upper" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="caret_bottom" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
                             <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="caret_upper" Property="Stroke" Value="Gray" />
+                            <Setter TargetName="caret_bottom" Property="Stroke" Value="Gray" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -3834,6 +3904,45 @@
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <!--  Style for the exit button in the exit modal of Dynamo Guided Tours  -->
+    <Style x:Key="PoupExitButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="MaxHeight" Value="36" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="BorderThickness" Value="36" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="PopupButtonBorder"
+                            Background="{StaticResource PopupWhiteColor}"
+                            BorderBrush="#808080"
+                            Opacity="0.5"
+                            BorderThickness="1"
+                            CornerRadius="2">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PopupContentStyle" TargetType="{x:Type ContentControl}">
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Border BorderBrush="White" BorderThickness="2" 
+                            Background="White"
+                         CornerRadius="5,5,5,5" >
+
+                    </Border>
+                </DataTemplate>
             </Setter.Value>
         </Setter>
     </Style>

@@ -78,6 +78,8 @@ namespace Dynamo.Nodes
                     SetTextMaxWidth();
                     SetTextHeight();
                 }
+
+                ViewModel.UpdateProxyPortsPosition();
             }
         }
 
@@ -163,6 +165,7 @@ namespace Dynamo.Nodes
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
+                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }
         }
 

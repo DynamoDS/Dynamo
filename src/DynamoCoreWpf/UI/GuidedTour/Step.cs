@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using Dynamo.Controls;
 using Dynamo.ViewModels;
@@ -19,6 +21,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
     /// </summary>
     public class Step
     {
+        #region Private Fields
+        private static string WindowNamePopup = "PopupWindow";
+        #endregion
         #region Events
         //This event will be raised when a popup (Step) is closed by the user pressing the close button (PopupWindow.xaml).
         public delegate void StepClosedEventHandler(string name, StepTypes stepType);
@@ -107,8 +112,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         [JsonProperty("ShowLibrary")]
         public bool ShowLibrary { get; set; }
 
+        /// <summary>
+        /// This propertu will hold information about the exit guide modal 
+        /// </summary>
+        [JsonProperty("ExitGuide")]
+        internal ExitGuide ExitGuide { get; set; }
 
-        public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT };
+        public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT, BOTTOM_DOWN };
 
         /// <summary>
         /// This will contains the 3 points needed for drawing the Tooltip pointer direction
@@ -134,6 +144,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// Main Window (DynamoView) that will be used by the Step for finding Child items (MenuItems) and calculate UIElement coordinates
         /// </summary>
         internal UIElement MainWindow { get; set; }
+
+        internal string GuideName { get; set; }
 
         #endregion
 
@@ -171,17 +183,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// Show the tooltip in the DynamoUI
+        /// Show the tooltip in the DynamoUI, first execute UI Automation, then Prevalidation, then calculate target host and finally highlight an element
         /// </summary>
-        public void Show()
+        internal void Show(Guide.GuideFlow currentFlow)
         {
-            stepUIPopup.IsOpen = true;
-
             //In case the UIAutomation info is set for the Step we execute all the UI Automation actions when the Next button is pressed
             if (UIAutomation != null)
             {
                 foreach (var automation in UIAutomation)
-                    ExecuteUIAutomationStep(automation, true);
+                    ExecuteUIAutomationStep(automation, true, currentFlow);
             }
 
             //If the PreValidation info was read from the json file then is executed and it will decide which Step should be shown and which not
@@ -190,30 +200,153 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 ExecutePreValidation();
             }
 
-            CalculateTargetHost(true);
+            //After the UI Automation is done we need to calculate the Target (if is not in DynamoView)
+            CalculateTargetHost();
+
+            //After the Popup.PlacementTarget was recalculated (or calculated) then we proceed to put the cut off section
+            SetCutOffSectionSize(true);
+
+            //After UI Automation and calculate the target we need to highlight the element (otherwise probably won't exist)
+            SetHighlightSection(true);
+
+            stepUIPopup.IsOpen = true;
         }
 
         /// <summary>
-        /// Hide the tooltip in the DynamoUI
+        /// Hide the tooltip in the DynamoUI, first undo highlighting an element, then undo UI Automation
         /// </summary>
-        public void Hide()
+        internal void Hide(Guide.GuideFlow currentFlow)
         {
             stepUIPopup.IsOpen = false;
+
+            //Disable the HightlightArea functionality
+            SetHighlightSection(false);
+
+            //We need to remove the cutoff section from the Overlay for the current Step (it will be set again for the next Step)
+            SetCutOffSectionSize(false);
 
             //Disable the current action automation that is executed for the Current Step (if there is one)
             if (UIAutomation != null)
             {
                 foreach (var automation in UIAutomation)
-                    ExecuteUIAutomationStep(automation, false);
+                    ExecuteUIAutomationStep(automation, false, currentFlow);
             }
-            CalculateTargetHost(false);
+            
         }
+
+        /// <summary>
+        /// This method will update the Target in case the UI Automation was executed and the Popup was waiting for a specific Window to be opened
+        /// </summary>
+        internal void UpdatePlacementTarget()
+        {
+            if (stepUIPopup == null)
+            {
+                return;
+            }
+            //This means that the HostPopupInfo.HostUIElementString is in a different Window than DynamoView
+            if (!string.IsNullOrEmpty(HostPopupInfo.WindowName)) 
+            {
+                Window ownedWindow = Guide.FindWindowOwned(HostPopupInfo.WindowName, MainWindow as Window);
+                if (ownedWindow == null)  return;
+                HostPopupInfo.HostUIElement = ownedWindow;
+                stepUIPopup.PlacementTarget = ownedWindow;
+                UpdateLocation();
+            }
+            //This case will be used for UIElements that are in the Dynamo VisualTree but they are shown until there is a user interaction (like the SideBar cases)
+            var hostUIElement = Guide.FindChild(MainWindow, HostPopupInfo.HostUIElementString);
+            if (hostUIElement == null)
+                return;
+            HostPopupInfo.HostUIElement = hostUIElement;
+            stepUIPopup.PlacementTarget = hostUIElement;
+            UpdateLocation();
+        }
+
+        /// <summary>
+        /// This method will update the CutOff rectangle size everytime that the step change
+        /// </summary>
+        /// <param name="bVisible">It will say if the CutOff Area will be disabled or enabled</param>
+        private void SetCutOffSectionSize(bool bVisible)
+        {
+            if (HostPopupInfo.CutOffRectArea == null)
+                return;
+            if(bVisible)
+            {
+                //This will validate that HostPopupInfo.HostUIElement is in the MainWindow VisualTree otherwise the TransformToAncestor() will crash
+                var foundUIElement = Guide.FindChild(MainWindow, HostPopupInfo.HostUIElementString);
+                if (foundUIElement == null)
+                    return;
+
+                Point relativePoint = HostPopupInfo.HostUIElement.TransformToAncestor(MainWindow)
+                              .Transform(new Point(0, 0));
+
+                var holeWidth = HostPopupInfo.HostUIElement.DesiredSize.Width + HostPopupInfo.CutOffRectArea.WidthBoxDelta;
+                var holeHeight = HostPopupInfo.HostUIElement.DesiredSize.Height + HostPopupInfo.CutOffRectArea.HeightBoxDelta;
+
+                if (StepGuideBackground.CutOffBackgroundArea != null)
+                {
+                    StepGuideBackground.CutOffBackgroundArea.CutOffRect = new Rect(relativePoint.X, relativePoint.Y, holeWidth, holeHeight);
+                }
+            }
+            else
+            {
+                StepGuideBackground.ClearCutOffSection();
+            }
+        }
+
+        /// <summary>
+        /// This method will set the highlight rectangle color if there is any configured in the json file
+        /// </summary>
+        /// <param name="bVisible">It will say if the Highlight Area will be disabled or enabled</param>
+        private void SetHighlightSection(bool bVisible)
+        {
+            if (HostPopupInfo.HighlightRectArea == null)
+                return;
+            if (bVisible)
+            {
+                if (!string.IsNullOrEmpty(HostPopupInfo.HighlightRectArea.UIElementTypeString))
+                    HighlightWindowElement(bVisible);
+                else
+                {
+                    //If is not empty means that the HighlightRectArea.WindowElementNameString doesn't belong to the DynamoView then another way for hightlighting the element will be applied
+                    if (!string.IsNullOrEmpty(HostPopupInfo.HighlightRectArea.WindowName)) return;
+
+                    string highlightColor = HostPopupInfo.HighlightRectArea.HighlightColor;
+
+                    //This section will get the X,Y coordinates of the HostUIElement based in the Ancestor UI Element so we can put the highlight rectangle
+                    Point relativePoint = HostPopupInfo.HostUIElement.TransformToAncestor(MainWindow)
+                                      .Transform(new Point(0, 0));
+
+                    var holeWidth = HostPopupInfo.HostUIElement.DesiredSize.Width + HostPopupInfo.HighlightRectArea.WidthBoxDelta;
+                    var holeHeight = HostPopupInfo.HostUIElement.DesiredSize.Height + HostPopupInfo.HighlightRectArea.HeightBoxDelta;
+
+                    StepGuideBackground.HighlightBackgroundArea.SetHighlighRectSize(relativePoint.Y, relativePoint.X, holeWidth, holeHeight);
+
+                    if (string.IsNullOrEmpty(highlightColor))
+                    {
+                        StepGuideBackground.GuideHighlightRectangle.Stroke = Brushes.Transparent;
+                    }
+                    else
+                    {
+                        var converter = new BrushConverter();
+                        var brush = (Brush)converter.ConvertFromString(highlightColor);
+                        StepGuideBackground.GuideHighlightRectangle.Stroke = brush;
+                    }
+                }          
+            }
+            else
+            {
+                HighlightWindowElement(bVisible);
+                StepGuideBackground.ClearHighlightSection();
+            }             
+        }
+
 
         /// <summary>
         /// This method will update the Popup location by calling the private method UpdatePosition using reflection (just when the PlacementTarget is moved or resized).
         /// </summary>
         public void UpdateLocation()
         {
+            SetCutOffSectionSize(true);
             UpdatePopupLocationInvoke(stepUIPopup);
             if(stepUIPopup is PopupWindow)
             {
@@ -227,7 +360,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if(popUp != null && popUp.IsOpen)
             {
                 var positionMethod = typeof(Popup).GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                positionMethod.Invoke(popUp, null);             
+                positionMethod.Invoke(popUp, null);
             }
         }
 
@@ -236,19 +369,61 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="uiAutomationData">UIAutomation info read from a json file</param>
         /// <param name="enableUIAutomation">Enable/Disable the automation action for a specific UIElement</param>
-        private void ExecuteUIAutomationStep(StepUIAutomation uiAutomationData, bool enableUIAutomation)
+        private void ExecuteUIAutomationStep(StepUIAutomation uiAutomationData, bool enableUIAutomation, Guide.GuideFlow currentFlow)
         {
-            switch (uiAutomationData.ControlType.ToUpper())
+            //This section will search the UIElement dynamically in the Dynamo VisualTree in which an automation action will be executed
+            UIElement automationUIElement = Guide.FindChild(MainWindow, uiAutomationData.Name);
+            if (automationUIElement != null)
+                uiAutomationData.UIElementAutomation = automationUIElement;
+          
+            switch (uiAutomationData.ControlType)
             {
-                case "MENUITEM":
-                    if (uiAutomationData.UIElementAutomation != null)
+                case StepUIAutomation.UIControlType.MENUITEM:
+                    if (uiAutomationData.UIElementAutomation == null)
                     {
-                        if (uiAutomationData.Action.ToUpper().Equals("OPEN"))
-                        {
-                            MenuItem menuEntry = uiAutomationData.UIElementAutomation as MenuItem;
+                        return;
+                    }
+                    MenuItem menuEntry = uiAutomationData.UIElementAutomation as MenuItem;
+                    if (menuEntry == null) return;
+                    switch(uiAutomationData.Action)
+                    {
+                        case StepUIAutomation.UIAction.OPEN:
                             menuEntry.IsSubmenuOpen = enableUIAutomation;
                             menuEntry.StaysOpenOnClick = enableUIAutomation;
-                        }
+                            break;                    
+                    }
+                    break;
+                //In this case the UI Automation will be done using a Function located in the static class GuidesValidationMethods
+                case StepUIAutomation.UIControlType.FUNCTION:
+                    MethodInfo builderMethod = typeof(GuidesValidationMethods).GetMethod(uiAutomationData.Name, BindingFlags.Static | BindingFlags.NonPublic);
+                    object[] parametersArray = new object[] { this, uiAutomationData, enableUIAutomation, currentFlow};
+                    builderMethod.Invoke(null, parametersArray);
+                    //If UpdatePlacementTarget = true then means that a new Window was opened after executing the funtion then we need to update the Popup.PlacementTarget
+                    if (uiAutomationData.UpdatePlacementTarget)
+                    {
+                        UpdatePlacementTarget();
+                    }
+                    break;
+                //In this case the UI Automation will be done over a WPF Button 
+                case StepUIAutomation.UIControlType.BUTTON:
+                    if (string.IsNullOrEmpty(uiAutomationData.WindowName)) return;
+                    
+                    //This means that the Button is in a PopupWindow (instead of the DynamoView) so we need to find the button and then apply the automation
+                    if(uiAutomationData.WindowName.Equals(WindowNamePopup))
+                    {
+                        //Finds the Button inside the PopupWindow
+                        var buttonFound = Guide.FindChild((stepUIPopup as PopupWindow).mainPopupGrid, uiAutomationData.Name) as Button;
+                        if (buttonFound == null) return;
+
+                        switch (uiAutomationData.Action)
+                        {
+                            case StepUIAutomation.UIAction.DISABLE:
+                                if (enableUIAutomation)
+                                    buttonFound.IsEnabled = false;
+                                else
+                                    buttonFound.IsEnabled = true;
+                                break;
+                        }                      
                     }
                     break;
             }
@@ -259,16 +434,36 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal void ExecutePreValidation()
         {
+            object[] parametersArray;
+            Window ownedWindow = Guide.FindWindowOwned(HostPopupInfo.WindowName, MainWindow as Window);
+
             if (PreValidationInfo != null)
             {
                 if (PreValidationInfo.ControlType.Equals("visibility"))
                 {
                     if (!string.IsNullOrEmpty(PreValidationInfo.FuncName))
                     {
-                        //Due that the function name was read from a json file then we need to use Reflection for executing the Static method in the GuidesValidationMethods class 
                         MethodInfo builderMethod = typeof(GuidesValidationMethods).GetMethod(PreValidationInfo.FuncName, BindingFlags.Static | BindingFlags.NonPublic);
-                        object[] parametersArray = new object[] { DynamoViewModelStep };
+
+                        //Checks if needs to execute 'IsPackageInstalled' method to include the right parameters
+                        if (PreValidationInfo.FuncName.Equals("IsPackageInstalled"))
+                        {
+                            PackageManager.PackageManagerSearchViewModel viewModel = null;
+
+                            if (ownedWindow != null)
+                            {
+                                viewModel = ownedWindow.DataContext as PackageManager.PackageManagerSearchViewModel;
+                            }
+
+                            parametersArray = new object[] { viewModel };
+                        }
+                        else
+                        {
+                            parametersArray = new object[] { DynamoViewModelStep };
+                        }
+
                         var validationResult = (bool)builderMethod.Invoke(null, parametersArray);
+
                         bool expectedValue = bool.Parse(PreValidationInfo.ExpectedValue);
 
                         //Once the execution of the PreValidation method was done we compare the result against the expected (also described in the json) so we set a flag
@@ -285,7 +480,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// Calculate the Popup.PlacementTarget dynamically if is the case and highlight the sub MenuItem if the information was provided
         /// </summary>
         /// <param name="bVisible">When the Step is shown this variable will be false when is hidden(due to passing to the next Step) it will be false</param>
-        internal void CalculateTargetHost(bool bVisible)
+        internal void CalculateTargetHost()
+        {
+            if (HostPopupInfo.DynamicHostWindow == true)
+            {
+                UpdatePlacementTarget();
+            }
+        }
+
+        /// <summary>
+        /// This function will highlight a Window element (the element can be located in DynamoView or another Window or can be a MenuItem
+        /// <param name="bVisible">Indicates if the highlight should be applied or removed</param>
+        internal void HighlightWindowElement(bool bVisible)
         {
             //Check if the HighlightRectArea was provided in the json file and the HostUIElement was found in the DynamoView VisualTree
             if (HostPopupInfo.HighlightRectArea == null || HostPopupInfo.HostUIElement == null)
@@ -298,17 +504,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 return;
             }
 
-            //If the HighlightRectArea.UIElementTypeString was provided in the json file and is MenuItem type means that the Popup.TargetPlacement will be calculated dinamically due that the element is not in the DynamoView VisualTree.
+            //If is MenuItem type means that the Popup.TargetPlacement will be calculated dinamically
             if (HostPopupInfo.HighlightRectArea.UIElementTypeString.Equals(typeof(MenuItem).Name))
             {
-                //We try to find the WindowElementNameString in the DynamoView VisualTree
+                //We try to find the WindowElementNameString (in this case the MenuItem) in the DynamoView VisualTree
                 var foundUIElement = Guide.FindChild(HostPopupInfo.HostUIElement, HostPopupInfo.HighlightRectArea.WindowElementNameString);
 
-                if(foundUIElement != null)
+                if (foundUIElement != null)
                 {
                     var subMenuItem = foundUIElement as MenuItem;
 
-                    //If the HighlightRectArea.WindowElementNameString described is a MenuItem (Dynamo menu) then we need to activate the Rectangle in the MenuStyleDictionary.xaml style
+                    //If the HighlightRectArea.WindowElementNameString described is a MenuItem (Dynamo menu) then we need to add the Rectangle dynamically to the Template
                     HighlightMenuItem(subMenuItem, bVisible);
                 }
             }
@@ -345,8 +551,43 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     var converter = new BrushConverter();
                     var brush = (Brush)converter.ConvertFromString(highlightColor);
                     StepGuideBackground.GuideHighlightRectangle.Stroke = brush;
-                }                            
-            }                              
+                }
+            }
+            //If the UIElementTypeString is not a MenuItem and also not a DynamoView we need to find the Window in the OwnedWindows and search the element inside it
+            else
+            {
+                string highlightColor = HostPopupInfo.HighlightRectArea.HighlightColor;
+                Window ownedWindow = Guide.FindWindowOwned(HostPopupInfo.HighlightRectArea.WindowName, MainWindow as Window);
+                if (ownedWindow == null) return;
+                UIElement foundElement = Guide.FindChild(ownedWindow, HostPopupInfo.HighlightRectArea.WindowElementNameString);
+                switch (HostPopupInfo.HighlightRectArea.UIElementTypeString.ToUpper())
+                {
+                    //We need to highlight a Button (if the Button template doesn't have a grid then the template needs to be updated)
+                    case "BUTTON":
+                        var buttonElement = foundElement as Button;
+                        if (buttonElement == null) return;
+
+                        //We will be searching for the Grid name provided in the json file and then add the Highlight Rectangle
+                        var bordersGrid = buttonElement.Template.FindName(HostPopupInfo.HighlightRectArea.UIElementGridContainer, buttonElement) as Grid;
+                        if (bordersGrid == null) return;
+
+                        if (bVisible)
+                        {
+                            var buttonRectangle = CreateRectangle(bordersGrid, HostPopupInfo.HighlightRectArea.HighlightColor);
+                            //The Rectangle will be added dynamically in a specific step and then when passing to next step we will remove it
+                            bordersGrid.Children.Add(buttonRectangle);
+
+                        }
+                        else
+                        {
+                            //When we need to undo the highlight we find the Rectangle and remove it
+                            var buttonRectangle = bordersGrid.Children.OfType<Rectangle>().Where(rect => rect.Name.Equals("HighlightRectangle")).FirstOrDefault();
+                            if (buttonRectangle != null)
+                                bordersGrid.Children.Remove(buttonRectangle);
+                        }
+                        break;
+                }
+            }        
         }
 
         /// <summary>
@@ -356,30 +597,73 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="bVisible">True for showing the Highlight rectangle otherwise is false</param>
         internal void HighlightMenuItem(MenuItem highlighMenuItem, bool bVisible)
         {
-            if (highlighMenuItem != null)
-            {
-                //The HighlightRectangle is a Rectangle already created in MenuStyleDictionary.xaml but is Collapsed
-                Rectangle highlightRectangle = highlighMenuItem.Template.FindName("HighlightRectangle", highlighMenuItem) as Rectangle;
-                if (highlightRectangle != null)
-                {
-                    if(bVisible)
-                    {
-                        var converter = new BrushConverter();
-                        highlightRectangle.Stroke = (Brush)converter.ConvertFromString(HostPopupInfo.HighlightRectArea.HighlightColor);
-                        highlightRectangle.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        highlightRectangle.Stroke = new SolidColorBrush(Colors.Transparent);
-                        highlightRectangle.Visibility = Visibility.Collapsed;
-                    }
-                    
+            if (highlighMenuItem == null)
+                return;
 
-                    //Due that we are using the Rectangle located in the ItemMenu we need to hide the GuidBackground Rectangle
-                    if (StepGuideBackground != null)
-                        StepGuideBackground.GuideHighlightRectangle.Stroke = new SolidColorBrush(Colors.Transparent);
-                }
+            //Due that for this Step we are using the Rectangle located in the ItemMenu we need to hide the GuideBackground Rectangle
+            if (StepGuideBackground != null)
+                StepGuideBackground.GuideHighlightRectangle.Stroke = new SolidColorBrush(Colors.Transparent);
+
+            //Get the Grid in which the Rectangle was added so we can execute the animation with Storyboard.Begin
+            Grid subItemsGrid = highlighMenuItem.Template.FindName("SubmenuItemGrid", highlighMenuItem) as Grid;
+            if (subItemsGrid == null) return;
+            if (bVisible)
+            {
+                //Create the rectangle with the specified color and adds the animation
+                var menuItemRectangle = CreateRectangle(subItemsGrid, HostPopupInfo.HighlightRectArea.HighlightColor);
+
+                //The Rectangle will be added dynamically in a specific step and then when passing to next step we will remove it
+                subItemsGrid.Children.Add(menuItemRectangle);
+                Grid.SetColumn(menuItemRectangle, 0);
+                Grid.SetColumnSpan(menuItemRectangle, 2);
             }
+            else
+            {
+                var menuItemHighlightRect = subItemsGrid.Children.OfType<Rectangle>().Where(rect => rect.Name.Equals("HighlightRectangle")).FirstOrDefault();
+                if(menuItemHighlightRect != null)
+                    subItemsGrid.Children.Remove(menuItemHighlightRect);
+            }
+        }
+
+        /// <summary>
+        /// This method will create a Rectangle with glow effect and animation
+        /// </summary>
+        /// <param name="targetElement">the element in which the rectangle will be animated (basically is for creating the Scope)</param>
+        /// <param name="recColor">string representing the rectangle color</param>
+        /// <returns>The Rectangle with the animation started</returns>
+        private Rectangle CreateRectangle(FrameworkElement targetElement, string recColor)
+        {
+            //This is the effect that will be animated with the StoryBoard
+            var blur = new BlurEffect()
+            {
+                Radius = 1.0,
+                KernelType = KernelType.Box
+            };
+            var converter = new BrushConverter();
+            Rectangle menuItemHighlightRec = new Rectangle
+            {
+                Name = "HighlightRectangle",
+                StrokeThickness = 2,
+                Effect = blur,
+                Stroke = (Brush)converter.ConvertFromString(recColor)
+            };
+
+            //We need to create an Scope and Register the Rectangle so the WPF XAML Processor can find the Rectangle.Name
+            NameScope.SetNameScope(targetElement, new NameScope());
+            targetElement.RegisterName(menuItemHighlightRec.Name, menuItemHighlightRec);
+
+            //This is the animation over the BlurEffect.Radius that will be applied
+            DoubleAnimation glowAnimation = new DoubleAnimation(0.0, 4.0, new Duration(TimeSpan.FromSeconds(1)));
+            glowAnimation.AutoReverse = true;
+            glowAnimation.RepeatBehavior = RepeatBehavior.Forever;
+            Storyboard.SetTargetName(glowAnimation, menuItemHighlightRec.Name);
+            Storyboard.SetTargetProperty(glowAnimation, new PropertyPath("(Effect).Radius"));
+
+            Storyboard myStoryboard = new Storyboard();
+            myStoryboard.Children.Add(glowAnimation);
+            myStoryboard.Begin(targetElement);
+
+            return menuItemHighlightRec;
         }
 
         /// <summary>

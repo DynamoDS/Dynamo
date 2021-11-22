@@ -92,19 +92,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             if (GuideSteps.Any())
             {
-                Step firstStep = (from step in GuideSteps where step.Sequence == 0 select step).FirstOrDefault();
+                Step firstStep = GuideSteps.FirstOrDefault();
                 CurrentStep = firstStep;
 
-                //When the first step of the guide is a tooltip, then it need to have a background and a hole to highlight the element
-                if (firstStep.HostPopupInfo != null && 
-                    firstStep.StepType == Step.StepTypes.TOOLTIP)
-                {
-                    SetCutOffSectionSize(firstStep.HostPopupInfo);
-                    SetHighlightSectionColor(firstStep.HostPopupInfo);
-                }
-
-
-                firstStep.Show();
+                firstStep.Show(GuideFlow.FORWARD);
             }
         }
 
@@ -146,14 +137,26 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This method will Calculate the UIElement host when the DynamoView is not the main Window and also apply/remove the orange rectangle from a SubMenuItem
+        /// This method will remove/undo all the UI Automations previously done when showing each Step
         /// </summary>
         internal void ClearSteps()
         {
             foreach( var step in GuideSteps)
             {
-                //Passing false to the method means will remove the subscribed events and removing the orange rectangle 
-                step.CalculateTargetHost(false);
+                //In this case we don't need to know the Current Guides Flow when we pass CURRENT
+                step.Hide(GuideFlow.CURRENT);
+            }
+        }
+        /// <summary>
+        /// This method will be executed for continuing to guide tour
+        /// </summary>
+        /// <param name="CurrentStepSequence">This parameter will contain the "sequence" of the current Step so we can continue the same step</param>
+        internal void ContinueStep(int CurrentStepSequence)
+        {
+            if (CurrentStepSequence >= 0)
+            {
+                CalculateStep(GuideFlow.CURRENT, CurrentStepSequence);
+                CurrentStep.Show(GuideFlow.FORWARD);
             }
         }
 
@@ -163,11 +166,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="CurrentStepSequence">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
         internal void NextStep(int CurrentStepSequence)
         {
-            HideCurrentStep(CurrentStepSequence);
+            HideCurrentStep(CurrentStepSequence, GuideFlow.FORWARD);
             if (CurrentStepSequence < TotalSteps)
             {
                 CalculateStep(GuideFlow.FORWARD, CurrentStepSequence);
-                CurrentStep.Show();
+                CurrentStep.Show(GuideFlow.FORWARD);
             }
         }
 
@@ -177,11 +180,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="CurrentStepSequence">This parameter is the "sequence" of the current Step so we can get the previous Step from the list</param>
         internal void PreviousStep(int CurrentStepSequence)
         {
-            HideCurrentStep(CurrentStepSequence);
+            HideCurrentStep(CurrentStepSequence, GuideFlow.BACKWARD);
             if (CurrentStepSequence > 0)
             {
                 CalculateStep(GuideFlow.BACKWARD, CurrentStepSequence);
-                CurrentStep.Show();
+                CurrentStep.Show(GuideFlow.BACKWARD);
             }     
         }
 
@@ -191,7 +194,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="stepFlow">The direction flow of the Guide, can be BACKWARD, FORWARD or CURRENT</param>
         /// <param name="CurrentStepSequence">This parameter is the current Step sequence</param>
-        private void CalculateStep(GuideFlow stepFlow, int CurrentStepSequence)
+        internal void CalculateStep(GuideFlow stepFlow, int CurrentStepSequence)
         {
             Step resultStep = null;
             int stepFlowOffSet = Convert.ToInt32(stepFlow);
@@ -209,36 +212,21 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     {
                         step.ExecutePreValidation();
                     }
-                    resultStep = (from step in possibleSteps
-                                  where step.PreValidationIsOpenFlag
-                                  select step).FirstOrDefault();
+
+                    resultStep = possibleSteps.FirstOrDefault(x => x.PreValidationIsOpenFlag);
                 }
                 if (resultStep != null)
                 {
 
                     SetLibraryViewVisible(resultStep.ShowLibrary);
                     CurrentStep = resultStep;
-
-                    if (resultStep.StepType != Step.StepTypes.WELCOME &&
-                       resultStep.StepType != Step.StepTypes.SURVEY
-                       && resultStep.HostPopupInfo != null)
-                    {
-                        SetCutOffSectionSize(CurrentStep.HostPopupInfo);
-                        SetHighlightSectionColor(CurrentStep.HostPopupInfo);
-                    }
-                    else
-                    {
-                        GuideBackgroundElement.ClearCutOffSection();
-                        GuideBackgroundElement.ClearHighlightSection();
-                    }
                 }
             }
         }
 
-        private void HideCurrentStep(int CurrentStepSequence)
+        internal void HideCurrentStep(int CurrentStepSequence, GuideFlow currentFlow)
         {
-            CalculateStep(GuideFlow.CURRENT, CurrentStepSequence);
-            CurrentStep.Hide();
+            CurrentStep.Hide(currentFlow);
             GuideBackgroundElement.ClearHighlightSection();
         }
 
@@ -258,60 +246,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private void GuideFlowEvents_GuidedTourNextStep(GuidedTourMovementEventArgs args)
         {
             NextStep(args.StepSequence);
-        }
-
-        /// <summary>
-        /// This method will set the highlight rectangle color if there is any configured in the json file
-        /// </summary>
-        /// <param name="highlightColor">This parameter represents the color in hexadecimal</param>
-        private void SetHighlightSectionColor(HostControlInfo hostControlInfo)
-        {
-            if (hostControlInfo.HighlightRectArea != null)
-            {
-                string highlightColor = hostControlInfo.HighlightRectArea.HighlightColor;
-
-                //This section will get the X,Y coordinates of the HostUIElement based in the Ancestor UI Element so we can put the highlight rectangle
-                Point relativePoint = hostControlInfo.HostUIElement.TransformToAncestor(MainWindow)
-                                  .Transform(new Point(0, 0));
-
-                var holeWidth = hostControlInfo.HostUIElement.DesiredSize.Width + hostControlInfo.HighlightRectArea.WidthBoxDelta;
-                var holeHeight = hostControlInfo.HostUIElement.DesiredSize.Height + hostControlInfo.HighlightRectArea.HeightBoxDelta;
-
-                GuideBackgroundElement.HighlightBackgroundArea.SetHighlighRectSize(relativePoint.Y, relativePoint.X, holeWidth, holeHeight);
-
-                if (string.IsNullOrEmpty(highlightColor))
-                {
-                    GuideBackgroundElement.GuideHighlightRectangle.Stroke = Brushes.Transparent;
-                }
-                else
-                {
-                    var converter = new BrushConverter();
-                    var brush = (Brush)converter.ConvertFromString(highlightColor);
-                    GuideBackgroundElement.GuideHighlightRectangle.Stroke = brush;
-                }
-            }
-        }
-
-        /// <summary>
-        /// This method will update the CutOff rectangle size everytime that the step change
-        /// </summary>
-        /// <param name="hostElement">Element for size and position reference</param>
-        private void SetCutOffSectionSize(HostControlInfo hostControlInfo)
-        {
-            if (hostControlInfo.CutOffRectArea != null)
-            {
-                Point relativePoint = hostControlInfo.HostUIElement.TransformToAncestor(MainWindow)
-                              .Transform(new Point(0, 0));
-
-               
-                var holeWidth = hostControlInfo.HostUIElement.DesiredSize.Width + hostControlInfo.CutOffRectArea.WidthBoxDelta;
-                var holeHeight = hostControlInfo.HostUIElement.DesiredSize.Height + hostControlInfo.CutOffRectArea.HeightBoxDelta;
-
-                if (GuideBackgroundElement.CutOffBackgroundArea != null)
-                {
-                    GuideBackgroundElement.CutOffBackgroundArea.CutOffRect = new Rect(relativePoint.X, relativePoint.Y, holeWidth, holeHeight);
-                }
-            }
         }
 
         /// <summary>
@@ -419,6 +353,46 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
 
             return foundChild;
+        }
+
+        /// <summary>
+        /// Due that some Windows are opened dynamically, they are in the Owned Windows but not in the DynamoView VisualTree
+        /// </summary>
+        /// <param name="windowName">String name that represent the Window that will be search</param>
+        /// <param name="mainWindow">The main Window, usually will be the DynamoView</param>
+        /// <returns></returns>
+        internal static Window FindWindowOwned(string windowName, Window mainWindow)
+        {
+            Window findWindow = null;
+            foreach(Window window in mainWindow.OwnedWindows)
+            {
+                if(window.Name.Equals(windowName))
+                {
+                    findWindow = window;
+                    break;
+                }
+            }
+            return findWindow;
+        }
+
+        /// <summary>
+        /// This method will close a specific Window owned by another Window
+        /// </summary>
+        /// <param name="windowName">The name of the Window to be closed</param>
+        /// <param name="mainWindow">MainWindow container of the owned Window</param>
+        internal static void CloseWindowOwned(string windowName, Window mainWindow)
+        {
+            Window findWindow = null;
+            foreach (Window window in mainWindow.OwnedWindows)
+            {
+                if (window.Name.Equals(windowName))
+                {
+                    findWindow = window;
+                    break;
+                }
+            }
+            if (findWindow != null)
+                findWindow.Close();
         }
     }
 }
