@@ -1086,7 +1086,7 @@ Failed to publish file(s):
     <value>Cleanup Node Layout</value>
   </data>
   <data name="GroupContextMenuUngroup" xml:space="preserve">
-    <value>_Ungroup</value>
+    <value>Ungr_oup</value>
   </data>
   <data name="HideClassicNodeLibrary" xml:space="preserve">
     <value>Hide Classic Node Library</value>
