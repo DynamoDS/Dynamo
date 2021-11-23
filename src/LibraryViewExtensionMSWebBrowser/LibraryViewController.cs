@@ -304,23 +304,29 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         }
 
         //list of resources which have paths embedded directly into the source.
-        private readonly Tuple<string, bool>[] dynamicResourcePaths = new Tuple<string, bool>[15]
+        private readonly Tuple<string, bool>[] dynamicResourcePaths = new Tuple<string, bool>[]
         {
-           Tuple.Create("/resources/library-create.svg",true),
+           Tuple.Create("/resources/ArtifaktElement-Bold.woff",true),
+           Tuple.Create("/resources/ArtifaktElement-Regular.woff",true),
+           Tuple.Create("/resources/bin.svg",true),
            Tuple.Create("/resources/default-icon.svg",true),
            Tuple.Create("/resources/fontawesome-webfont.eot",true),
            Tuple.Create("/resources/fontawesome-webfont.ttf",true),
            Tuple.Create("/resources/fontawesome-webfont.woff2",true),
            Tuple.Create("/resources/fontawesome-webfont.woff",true),
            Tuple.Create("/resources/library-action.svg",true),
+           Tuple.Create("/resources/library-create.svg",true),
            Tuple.Create("/resources/library-query.svg",true),
-           Tuple.Create("/resources/indent-arrow-down-wo-lines.svg",true),
+           Tuple.Create("/resources/indent-arrow-category-down.svg",true),
+           Tuple.Create("/resources/indent-arrow-category-right.svg",true),
            Tuple.Create("/resources/indent-arrow-down.svg",true),
-           Tuple.Create("/resources/indent-arrow-right-last.svg",true),
-           Tuple.Create("/resources/indent-arrow-right-wo-lines.svg",true),
            Tuple.Create("/resources/indent-arrow-right.svg",true),
-           Tuple.Create("/resources/ArtifaktElement-Bold.woff",true),
-           Tuple.Create("/resources/ArtifaktElement-Regular.woff",true)
+           Tuple.Create("/resources/plus-symbol.svg",true),
+           Tuple.Create("/resources/search-detailed.svg",true),
+           Tuple.Create("/resources/search-filter.svg",true),
+           Tuple.Create("/resources/search-filter-selected.svg",true),
+           Tuple.Create("/resources/search-icon.svg",true),
+           Tuple.Create("/resources/search-icon-clear.svg",true)
         };
 
         /// <summary>

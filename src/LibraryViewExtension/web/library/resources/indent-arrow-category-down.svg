@@ -3,9 +3,7 @@
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve">
 <style type="text/css">
-	.st0{fill:none;}
-	.st1{fill:#FCC776;stroke:#FCC776;stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#84D7CE;}
 </style>
-<rect class="st0" width="16" height="16"/>
-<polygon class="st1" points="7,0.2 11.5,9.5 8,9 9,15.9 4.5,6.5 8,7 "/>
+<path class="st0" d="M2.2,2.9L8,8.6l5.7-5.8L16,5.1l-8,8l-8-8L2.2,2.9z"/>
 </svg>
