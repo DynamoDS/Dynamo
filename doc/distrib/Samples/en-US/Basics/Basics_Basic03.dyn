@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Dynamo Basic Sample",
   "Name": "Basics_Basic03",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -392,7 +392,7 @@
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
-  "Thumbnail": null,
+  "Thumbnail": "",
   "GraphDocumentationURL": null,
   "ExtensionWorkspaceData": [
     {
@@ -402,7 +402,7 @@
       "Data": {}
     }
   ],
-  "Author": "None provided",
+  "Author": "Dynamo Team",
   "Linting": {
     "activeLinter": "None",
     "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
@@ -415,7 +415,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.13.0.3196",
+      "Version": "2.13.0.3265",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -551,10 +551,10 @@
         "Left": 2912.1817166845826,
         "Top": 748.84103513165849,
         "Width": 153.31851738062869,
-        "Height": 461.45055986694513,
+        "Height": 457.45055986694513,
         "FontSize": 36.0,
         "InitialTop": 821.84103513165849,
-        "InitialHeight": 418.45055986694535,
+        "InitialHeight": 397.45055986694513,
         "TextblockHeight": 63.0,
         "Background": "#FFC1D676"
       },
