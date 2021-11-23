@@ -173,6 +173,8 @@ namespace DynamoCoreWpfTests
             var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(bltInPackage);
 
+            bltInPackage.SetAsLoaded();
+
             // Simulate the user downloading the same package from PM
             var mockGreg = new Mock<IGregClient>();
             mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Throws(new Exception("Failed to get your package!"));
@@ -399,6 +401,8 @@ namespace DynamoCoreWpfTests
             var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(bltInPackage);
 
+            bltInPackage.SetAsLoaded();
+
             // Simulate the user downloading the a package from PM that has a dependency of the same name
             // as the installed built-in package.
             var mockGreg = new Mock<IGregClient>();
@@ -574,7 +578,8 @@ namespace DynamoCoreWpfTests
 
             // Load a package
             string packageLocation = Path.Combine(GetTestDirectory(ExecutingDirectory), @"pkgs\Package");
-            pkgLoader.ScanPackageDirectory(packageLocation);
+            var newpkg = pkgLoader.ScanPackageDirectory(packageLocation);
+            newpkg?.SetAsLoaded();
 
             var localPackage = pkgLoader.LocalPackages.Where(x => x.Name == "Package").FirstOrDefault();
             Assert.IsNotNull(localPackage);
@@ -1109,9 +1114,12 @@ namespace DynamoCoreWpfTests
             var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(bltInPackage);
 
+            string expectedDownloadPath = "download/" + bltInPackage.Name + "/" + bltInPackage.VersionName;
             // Simulate the user downloading the same package from PM
             var mockGreg = new Mock<IGregClient>();
-            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Throws(new Exception("Failed to get your package!"));
+            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Callback((Request x) => {
+                Assert.AreEqual(expectedDownloadPath, x.Path);
+            });
 
             var client = new Dynamo.PackageManager.PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
             var pmVm = new PackageManagerClientViewModel(ViewModel, client);
@@ -1155,12 +1163,7 @@ namespace DynamoCoreWpfTests
                 dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
                 dlgMock.ResetCalls();
-
-                var nonBuiltInPkg = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault(x => !x.BuiltInPackage);
-                Assert.IsNotNull(nonBuiltInPkg);
-                Assert.AreEqual(PackageLoadState.StateTypes.Loaded, nonBuiltInPkg.LoadState.State);
             }
-
         }
             #endregion
 
