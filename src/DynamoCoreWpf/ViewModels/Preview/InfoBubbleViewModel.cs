@@ -106,7 +106,8 @@ namespace Dynamo.ViewModels
         /// Nodes inside of collapsed groups do not display an error bubble.
         /// </summary>
         public bool DoesNodeDisplayMessages =>
-        !IsCollapsed && NodeWarningsToDisplay.Count + NodeErrorsToDisplay.Count + NodeInfoToDisplay.Count > 0;
+            !IsCollapsed &&
+            NodeWarningsToDisplay.Count + NodeErrorsToDisplay.Count + NodeInfoToDisplay.Count > 0;
         
         /// <summary>
         /// Determines whether the show more/show less buttons are visible to the user at the Info Message level.
