@@ -54,7 +54,7 @@
 					"FormattedText": "GetStartedGuideRunStatusBarText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "bottom",
+					"PopupPlacement": "top",
 					"HostUIElementString": "bottomBarGrid",
 					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 320,
