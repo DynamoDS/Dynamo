@@ -417,7 +417,7 @@ namespace Dynamo.ViewModels
                         this.AnnotationModel.AddToSelectedModels(model, true);
                     }
                 }
-                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Node added to Group");
+                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations);
             }
         }
 
@@ -474,7 +474,7 @@ namespace Dynamo.ViewModels
                         AddToCutGeometryDictionary(groupViewModel);
                     }
                 }
-                Analytics.TrackEvent(Actions.GroupAddedTo, Categories.GroupOperations, "Group Added to a Group");
+                Analytics.TrackEvent(Actions.GroupAddedTo, Categories.GroupOperations);
             }
         }
 
@@ -488,7 +488,7 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynamoModel.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
-            Analytics.TrackEvent(Actions.GroupRemovedFrom, Categories.GroupOperations, "Group Removed from a Group");
+            Analytics.TrackEvent(Actions.GroupRemovedFrom, Categories.GroupOperations);
         }
 
         private bool CanUngroupGroup(object parameters)

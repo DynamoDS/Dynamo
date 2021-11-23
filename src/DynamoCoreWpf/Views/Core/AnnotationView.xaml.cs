@@ -166,7 +166,7 @@ namespace Dynamo.Nodes
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
 
-                Analytics.TrackEvent(Actions.Ungroup, Categories.GroupOperations,"Nodes are un-grouped");
+                Analytics.TrackEvent(Actions.Ungroup, Categories.GroupOperations);
             }
         }
 
@@ -303,7 +303,7 @@ namespace Dynamo.Nodes
                 ViewModel.SelectAll();
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
 
-                Analytics.TrackEvent(Actions.Delete, Categories.GroupOperations, "Group is deleted");
+                Analytics.TrackEvent(Actions.Delete, Categories.GroupOperations);
             }
         }
 
