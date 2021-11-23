@@ -502,9 +502,10 @@ namespace Dynamo.ViewModels
         /// Warn about duplicate package conflicts depending on whether the package is 
         /// a built-in package and whether versions match.
         /// </summary>
-        /// <param name="name">name of package being downloaded</param>
         /// <param name="package">package version being downloaded</param>
         /// <param name="duplicatePackage">local package found to be duplicate of one being downloaded</param>
+        /// <param name="conflicts">List of packages that are in conflict with the dependencies of the package version to be downloaded</param>
+        /// <returns>True if the User opted to continue with the download operation. False otherwise</returns>
         private bool WarnAboutDuplicatePackageConflicts(PackageVersion package, 
                                                         Package duplicatePackage, 
                                                         List<Package> conflicts)
