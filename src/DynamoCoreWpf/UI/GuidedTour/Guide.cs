@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -393,6 +394,43 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
             if (findWindow != null)
                 findWindow.Close();
+        }
+
+        /// <summary>
+        /// This method will ejecute a javascript function located in library.hmtl using reflection.
+        /// due that we cannot include a reference to LibraryViewExtensionMSWebBrowser then we need to use reflection to get the types
+        /// </summary>
+        /// <param name="MainWindow">MainWindow in which the LibraryView is located</param>
+        /// <param name="popupInfo">Popup Information about the Step </param>
+        /// <param name="parametersInvokeScript">Parameters for the WebBrowser.InvokeScript() function</param>
+        internal static void ExecuteJSFunction(UIElement MainWindow, HostControlInfo popupInfo, object[] parametersInvokeScript)
+        {
+            const string webBrowserString = "Browser";
+            const string invokeScriptFunction = "InvokeScript";
+
+            //Try to find the grid that contains the LibraryView
+            var sidebarGrid = (MainWindow as Window).FindName(popupInfo.HostUIElementString) as Grid;
+            if (sidebarGrid == null) return;
+
+            //We need to iterate every child in the grid due that we need to apply reflection to get the Type and find the LibraryView (a reference to LibraryViewExtensionMSWebBrowser cannot be added).
+            foreach (var child in sidebarGrid.Children)
+            {
+                Type type = child.GetType();
+                if (type.Name.Equals(popupInfo.WindowName))
+                {
+                    var libraryView = child as UserControl;
+                    //get the WebBrowser instance inside the LibraryView
+                    var browser = libraryView.FindName(webBrowserString);
+                    if (browser == null) return;
+
+                    Type typeBrowser = browser.GetType();
+                    //Due that there are 2 methods with the same name "InvokeScript", then we need to get the one with 2 parameters
+                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == invokeScriptFunction && m.GetParameters().Length == 2);
+                    //Invoke the JS method located in library.html
+                    var resultHTML = methodInvokeScriptInfo.Invoke(browser, parametersInvokeScript);
+                    break;
+                }
+            }
         }
     }
 }

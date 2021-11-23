@@ -329,64 +329,65 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 foundUIElement.Click -= SearchForPackage_Click;
         }
 
+        /// <summary>
+        /// This method will subscribe the Next button from the Step8 Popup for clicking the Package already installed (then it will be expanded).
+        /// </summary>
+        /// <param name="stepInfo">Information about the Step</param>
+        /// <param name="uiAutomationData">Specific UI Automation step that is being executed</param>
+        /// <param name="enableFunction">it says if the functionality should be enabled or disabled</param>
+        /// <param name="currentFlow">The current flow of the Guide can be FORWARD or BACKWARD</param>
         internal static void SubscribeNextButtonClickEvent(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
             var nextbuttonFound = Guide.FindChild((stepInfo.StepUIPopup as PopupWindow).mainPopupGrid, "NextButton") as Button;
             if (nextbuttonFound == null) return;
             if(enableFunction)
-                nextbuttonFound.Click += ExecutePackage_Click;
+                nextbuttonFound.Click += ExecuteAutomaticPackage_Click;
             else
-                nextbuttonFound.Click -= ExecutePackage_Click;
+                nextbuttonFound.Click -= ExecuteAutomaticPackage_Click;
                 
         }
 
+        /// <summary>
+        /// This method will execute the InvokeScript method using reflection so the overlay will be shown over the LibraryView.Browser
+        /// </summary>
+        /// <param name="stepInfo">Information about the Step</param>
+        /// <param name="uiAutomationData">Specific UI Automation step that is being executed</param>
+        /// <param name="enableFunction">it says if the functionality should be enabled or disabled</param>
+        /// <param name="currentFlow">The current flow of the Guide can be FORWARD or BACKWARD</param>
         internal static void ShowOverlayInWebBrowser(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
-            var sidebarGrid = (CurrentExecutingStep.MainWindow as Window).FindName("sidebarGrid") as Grid;
+            //Javascript method that will executed and is located in the file library.html
             string jsMethodName = "setOverlay";
-            foreach (var child in sidebarGrid.Children)
-            {
-                Type type = child.GetType();
-                if (type.Name.Equals("LibraryView"))
-                {
-                    var libraryView = child as UserControl;
-                    var browser = libraryView.FindName("Browser");
-
-                    Type typeBrowser = browser.GetType();
-                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == "InvokeScript" && m.GetParameters().Length == 2);              
-                    object[] parametersInvokeScript = new object[] { enableFunction };
-                    object[] parametersJSMethod = new object[] { jsMethodName, parametersInvokeScript };
-                    methodInvokeScriptInfo.Invoke(browser, parametersJSMethod);
-                }
-            }
+            object[] parametersInvokeScript = new object[] { jsMethodName, new object[] { enableFunction } };
+            Guide.ExecuteJSFunction(stepInfo.MainWindow, stepInfo.HostPopupInfo, parametersInvokeScript);
         }
 
-        private static void ExecutePackage_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// This handler will be executed when clicking the next button in the Step 8 Popup so it will be expanding the package content in the LibraryView
+        /// </summary>
+        /// <param name="sender">Next Button</param>
+        /// <param name="e">Event Arguments</param>
+        private static void ExecuteAutomaticPackage_Click(object sender, RoutedEventArgs e)
         {
             CurrentExecutingStep.CollapseExpandPackage();
         }
 
+        /// <summary>
+        /// This method will call the subscribePackageClickedEvent function using reflection, 
+        /// the subscribePackageClickedEvent method subscribe an HTML div Click event with a specific handler that will move the guide to the next Step
+        /// </summary>
+        /// <param name="stepInfo">Information about the Step</param>
+        /// <param name="uiAutomationData">Specific UI Automation step that is being executed</param>
+        /// <param name="enableFunction">it says if the functionality should be enabled or disabled</param>
+        /// <param name="currentFlow">The current flow of the Guide can be FORWARD or BACKWARD</param>
         internal static void SubscribePackageClicked(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
-            var sidebarGrid = (CurrentExecutingStep.MainWindow as Window).FindName("sidebarGrid") as Grid;
             const string packageName = "Autodesk Sample";
             string jsMethodName = "subscribePackageClickedEvent";
-            foreach (var child in sidebarGrid.Children)
-            {
-                Type type = child.GetType();
-                if (type.Name.Equals("LibraryView"))
-                {
-                    var libraryView = child as UserControl;
-                    var browser = libraryView.FindName("Browser");
+            object[] parametersInvokeScript = new object[] { jsMethodName, new object[] { packageName, enableFunction } };
+            Guide.ExecuteJSFunction(stepInfo.MainWindow, stepInfo.HostPopupInfo, parametersInvokeScript);
 
-                    Type typeBrowser = browser.GetType();
-                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == "InvokeScript" && m.GetParameters().Length == 2);
-                    object[] parametersInvokeScript = new object[] { packageName, enableFunction };
-                    object[] parametersJSMethod = new object[] { jsMethodName, parametersInvokeScript };
-                    methodInvokeScriptInfo.Invoke(browser, parametersJSMethod);
-                }
-            }
         }
 
         /// <summary>

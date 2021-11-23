@@ -238,12 +238,13 @@
             libraryItemsContainer.style.zoom = dpiScale;
         }
 
+        //This will find a specific div in the html and then it will apply the glow animation on it
         function highlightLibraryItem(itemName, enableHighlight) {
             var found_div = null;
             var libraryItemsText = document.getElementsByClassName("LibraryItemText");
             for (var i = 0; i < libraryItemsText.length; i++) {
                 if (libraryItemsText[i].textContent == itemName) {
-                    found_div = libraryItemsText[i].parentNode.parentNode;
+                    found_div = libraryItemsText[i].parentNode;
                     break;
                 }
             }
@@ -257,6 +258,7 @@
             }
         }
 
+        //This will execute(or stop) the glow animation in a specific <div> based in the enable parameter
         function glowAnimation(divElement, enable) {
             if (enable == true) {
                 setIdAttribute(divElement);
@@ -268,6 +270,7 @@
             }
         }
 
+        //This will change the id of the div that contains the package name so it will apply a glow effect in the border
         function setIdAttribute(divElement) {
             if (divElement.id == "glow_active") {
                 divElement.setAttribute("id", "glow_inactive");
@@ -277,6 +280,7 @@
             }
         }
 
+        //This will subscribe a handler to the div.click event, so when is clicked we will be moved to the next Step
         function subscribePackageClickedEvent(packageName, enable) {
             var found_div = findPackageDiv(packageName);
             if (found_div == null) {
@@ -294,6 +298,7 @@
             }
         }
 
+        //This will find the <div> that contains the package information
         function findPackageDiv(packageName) {
             var found_div = null;
             var libraryItemsText = document.getElementsByClassName("LibraryItemText");
@@ -306,6 +311,7 @@
             return found_div;
         }
 
+        //This will execute a click over a specific <div> that contains the package content
         function collapseExpandPackage(packageName) {
             var found_div = findPackageDiv(packageName);
             if (found_div == null) {
@@ -316,10 +322,12 @@
             itemBodyContainer.click();
         }
 
+        //This will call the NextStep() function located in the LibraryViewController
         function nextStepInGuide() {
             window.external.notify(JSON.stringify({ "func": "NextStep", "data": "" }));
         }
 
+        //Set the overlay and the cutoff are over the WebBrowser
         function setOverlay(enable) {
             var tools = document.getElementsByClassName("LibraryItemContainerSection")[0];
             if (tools == null)
@@ -334,6 +342,7 @@
             var cutoffArea = document.getElementById("cutoff_area");
             var height = (searchBar.clientHeight + tools.clientHeight);
 
+            //Apply a specific style for the <div> depending if the parameter enable is true or false.
             if (enable == true) {
                 cutoffArea.style.display = "block";
                 cutoffArea.style.top = height + "px";

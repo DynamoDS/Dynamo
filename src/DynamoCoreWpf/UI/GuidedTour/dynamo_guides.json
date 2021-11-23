@@ -626,7 +626,7 @@
 					"PopupPlacement": "right",
 					"HostUIElementString": "sidebarGrid",
 					"WindowName": "LibraryView",
-					"VerticalPopupOffset": 250,
+					"VerticalPopupOffset": 260,
 					"HorizontalPopupOffset": -50,
 					"HighlightRectArea": {
 						"HighlightColor": "#EF9362",

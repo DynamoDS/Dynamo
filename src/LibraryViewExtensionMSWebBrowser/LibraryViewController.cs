@@ -563,6 +563,9 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionMSWebBrowser.web.library.layoutSpecs.json");
         }
 
+        /// <summary>
+        /// This method will execute the action of moving the Guide to the next Step (it is triggered when a specific html div that contains the package is clicked).
+        /// </summary>
         internal void MoveToNextStep()
         {
             dynamoViewModel = (dynamoWindow.DataContext as DynamoViewModel);
