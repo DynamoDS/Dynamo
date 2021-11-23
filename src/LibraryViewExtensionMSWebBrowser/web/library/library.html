@@ -14,15 +14,15 @@
             margin: 0;
             background-color: #353535;
             overflow-x: hidden;
-            -webkit-user-drag:none;
+            -webkit-user-drag: none;
             -khtml-user-drag: none;
             -moz-user-drag: none;
             -o-user-drag: none;
             -webkit-touch-callout: none; /* iOS Safari */
-            -webkit-user-select: none;   /* Chrome/Safari/Opera */
-            -khtml-user-select: none;    /* Konqueror */
-            -moz-user-select: none;      /* Firefox */
-            -ms-user-select: none;       /* Internet */
+            -webkit-user-select: none; /* Chrome/Safari/Opera */
+            -khtml-user-select: none; /* Konqueror */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet */
             user-select: none;
             user-drag: none;
             scrollbar-base-color: #353535;
@@ -32,12 +32,28 @@
             scrollbar-arrow-color: #353535;
             scrollbar-shadow-color: #202020;
             scrollbar-width: thin;
+            font-size: 12px;
         }
 
         input::-ms-clear {
             display: none;
         }
+
+        /* 
+            The below style aligns texts in IE
+            as it adds some offset to text when using Artifakt Element font
+        */
+        .LibraryItemHeader .LibraryItemGroupText, 
+        .LibrarySectionHeader .LibraryItemGroupText,
+        .LibraryItemContainerCategory .LibraryItemText {
+            padding-top: 0.5rem;
+        }
+
+        .SearchFilterPanel label.Category > *{
+            margin-top: 0.15rem;
+        }
     </style>
+
 </head>
 
 <body>
