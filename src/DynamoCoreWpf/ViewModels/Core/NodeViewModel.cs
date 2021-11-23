@@ -651,6 +651,8 @@ namespace Dynamo.ViewModels
             set
             {
                 base.IsCollapsed = value;
+                if (ErrorBubble == null) return;
+                ErrorBubble.IsCollapsed = value;
             }
         }
 

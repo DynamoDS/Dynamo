@@ -11,6 +11,7 @@
              xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:nodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore"
              mc:Ignorable="d"
              Height="Auto"
              Width="Auto"
@@ -196,7 +197,28 @@
                                                       HorizontalAlignment="Left">
                                     </ContentPresenter>
 
-                                    <!--Expander button-->
+                                    <!--  Warning/Error Icon  -->
+                                    <Image Grid.Column="0"
+                                           Width="16px"
+                                           Height="16px"
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Right"
+                                           Margin="0,0,2.5,2.5">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding GroupState}" Value="{x:Static nodes:ElementState.Warning}">
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/warning.png"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding GroupState}" Value="{x:Static nodes:ElementState.Error}">
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/error.png"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+
+                                           <!--Expander button-->
                                     <ToggleButton OverridesDefaultStyle="True"
                                                   Grid.Column="1"
                                                   Margin="0,0,0,2.5"

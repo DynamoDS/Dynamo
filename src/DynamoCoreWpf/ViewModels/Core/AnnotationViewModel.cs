@@ -26,6 +26,7 @@ namespace Dynamo.ViewModels
         // vertical offset accounts for the port margins
         private const int verticalOffset = 20;
         private const int portVerticalMidPoint = 17;
+        private ElementState groupState = ElementState.Active;
 
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
@@ -253,6 +254,7 @@ namespace Dynamo.ViewModels
                 WorkspaceViewModel.HasUnsavedChanges = true;
                 AddGroupToGroupCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(nameof(IsExpanded));
+                UpdateErrorAndWarningIconVisibility();
             }
         }
 
@@ -327,6 +329,20 @@ namespace Dynamo.ViewModels
         public GeometryCollection NestedGroupsGeometryCollection
         {
             get => new GeometryCollection(GroupIdToCutGeometry.Values.Select(x => x));
+        }
+
+        /// <summary>
+        /// Whether the group contains nodes that are in an info/warning/error state.
+        /// This includes any nodes that are in nested groups.
+        /// </summary>
+        public ElementState GroupState
+        {
+            get => groupState;
+            set
+            {
+                groupState = value;
+                RaisePropertyChanged(nameof(GroupState));
+            }
         }
 
         #endregion
@@ -536,6 +552,8 @@ namespace Dynamo.ViewModels
                 SetGroupOutPorts();
                 CollapseGroupContents(true);
             }
+
+            UpdateErrorAndWarningIconVisibility();
         }
 
         /// <summary>
@@ -1073,6 +1091,50 @@ namespace Dynamo.ViewModels
         {
             return WorkspaceViewModel.Model.Annotations.ContainsModel(this.annotationModel);
         }
+
+        /// <summary>
+        /// Determines whether this group displays warning or error icons in its header.
+        /// </summary>
+        private void UpdateErrorAndWarningIconVisibility()
+        {
+            // No icons are displayed when the group is expanded / not collapsed.
+            if (IsExpanded)
+            {
+                GroupState = ElementState.Active;
+                return;
+            }
+
+            // Fetching all nodes inside the group.
+            List<NodeModel> nodeModels = Nodes
+                .OfType<NodeModel>()
+                .ToList();
+
+            // Adding to this nodes from any nested groups.
+            nodeModels.AddRange
+            (
+                Nodes.OfType<AnnotationModel>()
+                    .Select(x => x.Nodes)
+                    .SelectMany(x => x)
+                    .OfType<NodeModel>()
+            );
+
+            // If any nodes (even in nested groups) are in error state we display an error icon.
+            if (nodeModels.Any(x => x.State == ElementState.Error))
+            {
+                GroupState = ElementState.Error;
+                return;
+            }
+
+            // If any nodes (even in nested groups) are in error state we display an error icon.
+            if (nodeModels.Any(x => x.State == ElementState.Warning))
+            {
+                GroupState = ElementState.Warning;
+                return;
+            }
+
+            GroupState = ElementState.Active;
+        }
+
 
         public override void Dispose()
         {
