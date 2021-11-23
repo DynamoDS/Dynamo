@@ -461,6 +461,22 @@ namespace Dynamo.Configuration
             get { return NodeSearchTagSizeLimitValue; } 
             set { NodeSearchTagSizeLimitValue = value; } 
         }
+
+        /// <summary>
+        /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
+        /// This static property is not serialized and is assigned IronPythonResolveTargetVersion's value 
+        /// if found at deserialize time.
+        /// </summary>
+        internal static Version IronPythonResolveVersion = new Version(2, 1, 0);
+
+        /// <summary>
+        /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
+        /// </summary>
+        public string IronPythonResolveTargetVersion
+        {
+            get { return IronPythonResolveVersion.ToString(); }
+            set { IronPythonResolveVersion = Version.TryParse(value, out Version newVal) ? newVal : IronPythonResolveVersion; }
+        }
         #endregion
 
         /// <summary>

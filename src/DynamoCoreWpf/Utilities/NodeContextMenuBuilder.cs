@@ -445,7 +445,7 @@ namespace Dynamo.Wpf.Utilities
             Properties.Resources.NodeContextMenuShowLabels,
             Properties.Resources.NodeContextMenuRenameNode,
             Properties.Resources.ContextMenuLacing,
-            //Wpf.Properties.Resources.NodeInformationalStateDismissedAlerts,
+            Properties.Resources.NodeInformationalStateDismissedAlerts,
             Properties.Resources.NodeContextMenuIsInput,
             Properties.Resources.NodeContextMenuIsOutput,
             Properties.Resources.NodeContextMenuHelp
