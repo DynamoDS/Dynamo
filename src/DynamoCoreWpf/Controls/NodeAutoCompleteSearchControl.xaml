@@ -70,7 +70,8 @@
                                TextWrapping="Wrap"
                                Padding="4"
                                Margin="80,1.75,0,0"
-                               Foreground="{StaticResource SearchTextBoxBackground}"
+                               Foreground="{StaticResource autocompletionWindowFont}"
+                               Background="Transparent"
                                TextAlignment="Center"
                                FontSize="14">
                         </TextBlock>
