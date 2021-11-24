@@ -5189,7 +5189,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**click Packages &gt; Search for Packages**..
+        ///   Looks up a localized string similar to Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Search for Packages**..
         /// </summary>
         public static string PackagesGuideFindPackageText {
             get {

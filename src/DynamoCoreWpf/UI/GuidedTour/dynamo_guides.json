@@ -626,8 +626,8 @@
 					"PopupPlacement": "right",
 					"HostUIElementString": "sidebarGrid",
 					"WindowName": "LibraryView",
-					"VerticalPopupOffset": 260,
-					"HorizontalPopupOffset": -50,
+					"VerticalPopupOffset": 600,
+					"HorizontalPopupOffset": -30,
 					"HighlightRectArea": {
 						"HighlightColor": "#EF9362",
 						"UIElementTypeString": "WebBrowser",

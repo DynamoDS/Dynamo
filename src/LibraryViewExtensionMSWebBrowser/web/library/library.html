@@ -53,13 +53,22 @@
             transition: box-shadow 2s ease-in-out;
         }
 
-        #cutoff_area {
-            position: absolute;
-            left: 0px;
-            display: none;
-            width: 1000px;
-            pointer-events: none;
-            box-shadow: 0 0px 0px 9999px rgba(0, 0, 0, 0.5);
+        .overlay {
+            background-color: black;
+            opacity: 0.5;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .hole {
+            background-color: transparent;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
         /* 
             The below style aligns texts in IE
             as it adds some offset to text when using Artifakt Element font
@@ -80,7 +89,6 @@
 <body>
     <!-- Placeholders must exist before all other scripts that try to access them -->
     <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
-    <div id="cutoff_area"> </div>
     <!-- The main library view component -->
     <script>
         LIBPLACEHOLDER
@@ -341,7 +349,7 @@
             window.external.notify(JSON.stringify({ "func": "NextStep", "data": "" }));
         }
 
-        //Set the overlay and the cutoff are over the WebBrowser
+        //Set the overlay and the hole
         function setOverlay(enable) {
             var tools = document.getElementsByClassName("LibraryItemContainerSection")[0];
             if (tools == null)
@@ -353,17 +361,20 @@
             if (searchBar == null)
                 return;
 
-            var cutoffArea = document.getElementById("cutoff_area");
-            var height = (searchBar.clientHeight + tools.clientHeight);
-
             //Apply a specific style for the <div> depending if the parameter enable is true or false.
             if (enable == true) {
-                cutoffArea.style.display = "block";
-                cutoffArea.style.top = height + "px";
-                cutoffArea.style.height = addons.clientHeight + "px";
+                tools.classList.add("overlay");
+                searchBar.classList.add("overlay");
+                let children = addons.childNodes;
+                children[0].classList.add("hole");
+                children[1].classList.add("hole");   
             }
             else {
-                cutoffArea.style.display = "none";
+                tools.classList.remove("overlay");
+                searchBar.classList.remove("overlay");
+                let children = addons.childNodes;
+                children[0].classList.remove("hole");
+                children[1].classList.remove("hole");
             }          
         }
 
