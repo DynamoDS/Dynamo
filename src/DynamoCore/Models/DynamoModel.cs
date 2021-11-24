@@ -510,7 +510,7 @@ namespace Dynamo.Models
             /// <summary>
             /// Disables ADP for the entire process for the lifetime of the process.
             /// </summary>
-            [Obsolete("This method will be removed in Dynamo 3.0 - please use Dynamo.Logging.Analytics.DisableAnalytics instead.")]
+            [Obsolete("This property is no longer used and will be removed in Dynamo 3.0 - please use Dynamo.Logging.Analytics.DisableAnalytics instead.")]
             public bool DisableADP { get; set; }
 
             /// <summary>
