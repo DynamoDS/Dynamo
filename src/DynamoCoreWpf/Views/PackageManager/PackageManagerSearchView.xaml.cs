@@ -35,7 +35,7 @@ namespace Dynamo.PackageManager.UI
 
             ViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
             viewModel.UnregisterTransientHandlers();
-
+            viewModel.SearchText = string.Empty;
             Owner.Focus();
             base.OnClosing(e);
         }
