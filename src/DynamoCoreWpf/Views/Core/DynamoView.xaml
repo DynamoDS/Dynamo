@@ -831,7 +831,7 @@
                                                                                        Focusable="False"
                                                                                        HorizontalOffset="-2"
                                                                                        IsOpen="{TemplateBinding IsSubmenuOpen}"
-                                                                                       Placement="Left"
+                                                                                       Placement="Right"
                                                                                        PopupAnimation="Fade">
                                                                                     <Border Name="SubmenuBorder"
                                                                                             Margin="0 0 5 5"
@@ -1447,7 +1447,7 @@
                       Grid.ColumnSpan="5">
 
             <ScrollViewer.ContextMenu>
-                <ContextMenu>
+                <ContextMenu Style="{StaticResource ContextMenuStyle}">
                     <MenuItem Header="{x:Static p:Resources.DynamoViewContextMenuClearLog}"
                               Command="{Binding ClearLogCommand}" />
                 </ContextMenu>

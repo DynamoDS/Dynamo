@@ -43,6 +43,7 @@
                          x:FieldModifier="public"
                          Background="{StaticResource NodeContextMenuBackground}"
                          Closed="MainContextMenu_OnClosed"
+                         Opened="MainContextMenu_OnOpened"
                          Style="{StaticResource ContextMenuStyle}">
                 <ContextMenu.Resources>
                     <ResourceDictionary>
@@ -136,7 +137,7 @@
                                                    Focusable="false"
                                                    HorizontalOffset="0"
                                                    IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                                   Placement="Left"
+                                                   Placement="Right"
                                                    VerticalOffset="-2">
                                                 <Border Background="{TemplateBinding Background}"
                                                         BorderBrush="Transparent"

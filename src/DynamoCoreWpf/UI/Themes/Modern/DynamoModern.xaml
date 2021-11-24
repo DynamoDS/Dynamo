@@ -2968,33 +2968,9 @@
         </Setter>
     </Style>
 
-    <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}">
-        <Setter Property="Placement" Value="MousePoint" />
-        <Setter Property="Foreground" Value="{StaticResource NodeContextMenuForeground}" />
-        <Setter Property="FontSize" Value="13px" />
-        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-        <Setter Property="FontWeight" Value="Medium" />
-        <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="OverridesDefaultStyle" Value="True" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ContextMenu}">
-                    <Border x:Name="Border"
-                            Background="{TemplateBinding Background}"
-                            BorderThickness="0px">
-                        <StackPanel Margin="0,10"
-                                    ClipToBounds="True"
-                                    IsItemsHost="True"
-                                    Orientation="Vertical" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <Style x:Key="ContextMenuItemStyle" TargetType="{x:Type MenuItem}">
         <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
-        <Setter Property="Height" Value="30" />
+        <Setter Property="Height" Value="Auto" />
         <Setter Property="Width" Value="240" />
         <Setter Property="Padding" Value="15,0,0,0" />
         <Setter Property="Template">
@@ -3005,7 +2981,7 @@
                                Background="Transparent"
                                SnapsToDevicePixels="true">
                         <Label x:Name="checkBox"
-                               Margin="10,0,-10,0"
+                               Margin="2,0,-15,0"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
                                HorizontalContentAlignment="Center"
@@ -3051,7 +3027,7 @@
                                Focusable="false"
                                HorizontalOffset="0"
                                IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                               Placement="Left"
+                               Placement="Right"
                                VerticalOffset="-2">
                             <Border Background="{TemplateBinding Background}"
                                     BorderBrush="Transparent"
@@ -3103,6 +3079,41 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}">
+        <Setter Property="Placement" Value="MousePoint" />
+        <Setter Property="Foreground" Value="{StaticResource NodeContextMenuForeground}" />
+        <Setter Property="FontSize" Value="13px" />
+        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0px">
+                        <StackPanel IsItemsHost="True"
+                                    Margin="0,10"
+                                    ClipToBounds="True"
+                                    Orientation="Vertical" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Resources>
+            <!--  Separator  -->
+            <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}"
+                   BasedOn="{StaticResource ContextMenuSeparatorStyle}"
+                   TargetType="Separator" />
+
+            <!--  MenuItem Style  -->
+            <Style x:Key="{x:Type MenuItem}"
+                   BasedOn="{StaticResource ContextMenuItemStyle}"
+                   TargetType="MenuItem" />
+        </Style.Resources>
     </Style>
 
     <Style x:Key="MenuExpanderStyle" TargetType="Expander">

@@ -467,7 +467,7 @@
                                            Focusable="false"
                                            HorizontalOffset="-1"
                                            IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                           Placement="Left"
+                                           Placement="Right"
                                            VerticalOffset="-2">
                                         <Border Background="{TemplateBinding Background}"
                                                 BorderBrush="Transparent"
