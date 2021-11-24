@@ -2563,10 +2563,10 @@ You can try disabling loading packages from built-in package paths, or unload th
     <value>The same version of {0} is already installed and does not need to be installed again.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-        <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
         
 Do you wish to restart {2} to first uninstall {1}, then download {0} again?</value>
-    </data>
+  </data>
   <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
     <value>Geometry Scaling</value>
     <comment>Expander Header Name</comment>
@@ -2955,5 +2955,8 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
     <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
+  </data>
+  <data name="PackagesGuidePackagesNodeTitle" xml:space="preserve">
+    <value>Use package nodes</value>
   </data>
 </root>

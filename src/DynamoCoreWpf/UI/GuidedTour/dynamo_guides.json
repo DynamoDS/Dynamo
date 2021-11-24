@@ -347,7 +347,12 @@
 							{
 								"HandlerElement": "DeclineTermsOfUseButton",
 								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "DeclineButton_Click"
+								"ExecuteMethod": "CloseButton_Click"
+							},
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
 							}
 						],
 						"UpdatePlacementTarget": true
@@ -388,6 +393,20 @@
 						"ExecuteCleanUpBackward": true,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
 					}
 				]
 			},
@@ -420,12 +439,26 @@
 				},
 				"UIAutomation": [
 					{
-						"Sequence": 2,
+						"Sequence": 1,
 						"ControlType": "function",
 						"Name": "ExecutePackageSearch",
 						"ExecuteCleanUpForward": false,
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					}
 				]
@@ -476,6 +509,20 @@
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
 					}
 				]
 			},
@@ -511,6 +558,20 @@
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
 					}
 				]
 			},
@@ -533,6 +594,21 @@
 						"ExecuteCleanUpForward": true,
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					}
 				],
@@ -616,17 +692,23 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 220,
+				"Height": 490,
 				"StepContent": {
-					"Title": "PackagesGuideInstallAPackageTitle",
+					"Title": "PackagesGuidePackagesNodeTitle",
 					"FormattedText": "PackagesGuideInstalledPackageText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "right",
+					"PopupPlacement": "relative",
 					"DynamicHostWindow": true,
 					"HostUIElementString": "sidebarGrid",
 					"VerticalPopupOffset": 0,
-					"HorizontalPopupOffset": 0
+					"HorizontalPopupOffset": 0,
+					"HtmlPage": {
+						"FileName": "nodePackage.html",
+						"Resources": {
+							"#PackageNodes": "PackageNodes.gif"
+						}
+					}
 				}
 			}
 		]
