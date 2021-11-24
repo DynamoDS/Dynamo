@@ -339,7 +339,7 @@ namespace Dynamo.ViewModels
         public ElementState GroupState
         {
             get => groupState;
-            set
+            internal set
             {
                 groupState = value;
                 RaisePropertyChanged(nameof(GroupState));
@@ -967,9 +967,6 @@ namespace Dynamo.ViewModels
                     break;
                 case "FontSize":
                     RaisePropertyChanged("FontSize");
-                    break;
-                case nameof(NodeModel.State):
-                    UpdateErrorAndWarningIconVisibility();
                     break;
                 case "SelectedModels":
                     this.AnnotationModel.UpdateBoundaryFromSelection();
