@@ -316,7 +316,7 @@
                 </MenuItem>
                 <ListBox ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
                          SelectionChanged="OnNodeColorSelectionChanged"
-                         ScrollViewer.CanContentScroll="False"
+                         Height="Auto"
                          Style="{StaticResource ColorSelectorListBox}">
                     <ListBox.Items>
                         <Rectangle Fill="#d4b6db" />
