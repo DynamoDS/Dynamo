@@ -503,7 +503,7 @@ namespace Dynamo.ViewModels
         /// a built-in package and whether versions match.
         /// </summary>
         /// <param name="package">package version being downloaded</param>
-        /// <param name="duplicatePackage">local package found to be duplicate of one being downloaded</param>
+        /// <param name="duplicatePackage">local package found to be duplicate of one being downloaded (not including the main package)</param>
         /// <param name="conflicts">List of packages that are in conflict with the dependencies of the package version to be downloaded</param>
         /// <returns>True if the User opted to continue with the download operation. False otherwise</returns>
         private bool WarnAboutDuplicatePackageConflicts(PackageVersion package, 
@@ -685,10 +685,9 @@ namespace Dynamo.ViewModels
                     }
                 }).ToList();
 
-                // if any header download fails, abort
-                if (dependencyVersionHeaders.Any(x => x == null))
-                {
-                    return;
+                if (!dependencyVersionHeaders.Any(x => x.name == name))
+                {// Add the main package if it does not exist
+                    dependencyVersionHeaders.Add(package);
                 }
 
                 var localPkgs = pmExt.PackageLoader.LocalPackages;
@@ -706,6 +705,7 @@ namespace Dynamo.ViewModels
                 Package duplicatePackage = null;
 
                 // list of local packages that conflict (have different versions) with package dependencies.
+                // Does not contain the main package since it is handled separately by duplicatePackage
                 var localPkgsConflictingWithPkgDeps = new List<Package>();
                 var newPackageHeaders = new List<PackageVersion>();
 
@@ -720,7 +720,7 @@ namespace Dynamo.ViewModels
                         if (name.Equals(localPkgWithSameName.Name))
                         {// Main package has a duplicate in local packages
                             duplicatePackage = localPkgWithSameName;
-                            break;
+                            break;// Download will not be able to continue
                         }
 
                         // exclude dependencies that exactly match existing local packages
