@@ -176,7 +176,7 @@
                     <!--  When clicked, the sort button displays a ContextMenu of options to the user  -->
                     <Button.ContextMenu>
                         <ContextMenu Width="180"
-                                     Background="{StaticResource DarkerGreyBrush}"
+                                     Background="{StaticResource NodeContextMenuBackground}"
                                      Style="{StaticResource ContextMenuStyle}">
 
                             <!--  Sub-Title 'SORT BY'  -->
@@ -287,12 +287,14 @@
                     <!--  When clicked, the filter button displays a ContextMenu of options to the user  -->
                     <Button.ContextMenu>
                         <ContextMenu Name="HostFilter"
+                                     Background="{StaticResource NodeContextMenuBackground}"
                                      DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
                                      DisplayMemberPath="FilterName"
+                                     Width="180"
                                      ItemsSource="{Binding HostFilter}"
                                      Style="{StaticResource ContextMenuStyle}">
                             <ContextMenu.ItemContainerStyle>
-                                <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="{x:Type MenuItem}">
+                                <Style BasedOn="{StaticResource ContextMenuItemStyle}" TargetType="{x:Type MenuItem}">
                                     <Setter Property="IsCheckable" Value="True" />
                                     <Setter Property="Command" Value="{Binding FilterCommand}" />
                                     <Setter Property="CommandParameter" Value="{Binding FilterName}" />

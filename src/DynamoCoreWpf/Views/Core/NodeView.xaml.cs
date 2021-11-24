@@ -761,10 +761,5 @@ namespace Dynamo.Controls
             grid.ContextMenu.Items.Clear();
             e.Handled = true;
         }
-
-        private void MainContextMenu_OnOpened(object sender, RoutedEventArgs e)
-        {
-            e.Handled = true;
-        }
     }
 }

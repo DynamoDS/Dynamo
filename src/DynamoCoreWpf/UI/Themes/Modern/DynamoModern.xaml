@@ -2972,7 +2972,7 @@
         <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
         <Setter Property="Height" Value="Auto" />
         <Setter Property="Width" Value="240" />
-        <Setter Property="Padding" Value="15,0,0,0" />
+        <Setter Property="Padding" Value="20,0,0,0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type MenuItem}">
@@ -2981,7 +2981,7 @@
                                Background="Transparent"
                                SnapsToDevicePixels="true">
                         <Label x:Name="checkBox"
-                               Margin="2,0,-15,0"
+                               Margin="0,0,-20,0"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
                                HorizontalContentAlignment="Center"

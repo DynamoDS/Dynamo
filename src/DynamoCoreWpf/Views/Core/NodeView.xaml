@@ -43,7 +43,6 @@
                          x:FieldModifier="public"
                          Background="{StaticResource NodeContextMenuBackground}"
                          Closed="MainContextMenu_OnClosed"
-                         Opened="MainContextMenu_OnOpened"
                          Style="{StaticResource ContextMenuStyle}">
                 <ContextMenu.Resources>
                     <ResourceDictionary>
