@@ -9,6 +9,7 @@ namespace Dynamo.Logging
     {
         /// <summary>
         /// Disables all analytics collection (Google, ADP, etc.) for the lifetime of the process.
+        /// To ensure that no analytics get through, please set set this flag to false before the DynamoModel is constructed.
         /// </summary>
         public static bool DisableAnalytics;
 
