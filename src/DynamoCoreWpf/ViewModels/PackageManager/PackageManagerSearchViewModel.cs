@@ -430,7 +430,7 @@ namespace Dynamo.PackageManager
         /// Sort the search results
         /// </summary>
         public void Sort()
-        { 
+        {
             var list = this.SearchResults.AsEnumerable().ToList();
             Sort(list, this.SortingKey);
 
