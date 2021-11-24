@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -967,6 +968,9 @@ namespace Dynamo.ViewModels
                 case "FontSize":
                     RaisePropertyChanged("FontSize");
                     break;
+                case nameof(NodeModel.State):
+                    UpdateErrorAndWarningIconVisibility();
+                    break;
                 case "SelectedModels":
                     this.AnnotationModel.UpdateBoundaryFromSelection();
                     break;
@@ -1109,6 +1113,11 @@ namespace Dynamo.ViewModels
                 .OfType<NodeModel>()
                 .ToList();
 
+            foreach (NodeModel nodeModel in nodeModels)
+            {
+                nodeModel.PropertyChanged += NodeModelOnPropertyChanged;
+            }
+
             // Adding to this nodes from any nested groups.
             nodeModels.AddRange
             (
@@ -1133,6 +1142,16 @@ namespace Dynamo.ViewModels
             }
 
             GroupState = ElementState.Active;
+        }
+
+        private void NodeModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(NodeModel.State):
+                    UpdateErrorAndWarningIconVisibility();
+                    break;
+            }
         }
 
 

@@ -475,6 +475,7 @@ namespace Dynamo.ViewModels
             InfoBubbleState = State.Minimized;
 
             NodeMessages.CollectionChanged += NodeInformation_CollectionChanged;
+            
             RefreshNodeInformationalStateDisplay();
         }
 
@@ -833,7 +834,7 @@ namespace Dynamo.ViewModels
             UpdateShowMoreButtonText();
             // If there are no items to show at a particular message level, the bubble's visibility is collapsed.
             UpdateUserFacingCollectionVisibility();
-
+            
             RaisePropertyChanged(nameof(DoesNodeDisplayMessages));
         }
 

@@ -653,6 +653,7 @@ namespace Dynamo.ViewModels
                 base.IsCollapsed = value;
                 if (ErrorBubble == null) return;
                 ErrorBubble.IsCollapsed = value;
+                RaisePropertyChanged(nameof(NodeWarningBarVisible));
             }
         }
 
@@ -1054,8 +1055,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void BuildErrorBubble()
         {
-            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
-            
+            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(DynamoViewModel)
+            {
+                IsCollapsed = this.IsCollapsed
+            };
+
             ErrorBubble.NodeInfoToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateOverlays;
