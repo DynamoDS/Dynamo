@@ -1156,6 +1156,10 @@ namespace Dynamo.ViewModels
         {
             annotationModel.PropertyChanged -= model_PropertyChanged;
             annotationModel.RemovedFromGroup -= OnModelRemovedFromGroup;
+            foreach (NodeModel nodeModel in Nodes.OfType<NodeModel>())
+            {
+                nodeModel.PropertyChanged -= NodeModelOnPropertyChanged;
+            }
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
         }
