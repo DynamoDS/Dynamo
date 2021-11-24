@@ -1131,7 +1131,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            // If any nodes (even in nested groups) are in error state we display an error icon.
+            // If any nodes (even in nested groups) are in warning state we display a warning icon.
             if (nodeModels.Any(x => x.State == ElementState.Warning))
             {
                 GroupState = ElementState.Warning;
