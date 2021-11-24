@@ -1110,6 +1110,8 @@ namespace Dynamo.ViewModels
                 .OfType<NodeModel>()
                 .ToList();
 
+            // Subscribing to changes in the nodes' state. If a node's state 
+            // changes (e.g. to warning) we'll want to reflect this.
             foreach (NodeModel nodeModel in nodeModels)
             {
                 nodeModel.PropertyChanged += NodeModelOnPropertyChanged;
