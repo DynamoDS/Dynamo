@@ -156,18 +156,18 @@ namespace ProtoFFI
             if (null == appType)
                 return;
 
-            IExtensionApplication extesionApp = null;
+            IExtensionApplication extensionApp = null;
             lock (mAssemblies)
             {
                 if (!mAssemblies.ContainsKey(assembly))
                 {
-                    extesionApp = (IExtensionApplication)Activator.CreateInstance(appType, true);
-                    mExtensionApps.Add(appType, extesionApp);
+                    extensionApp = (IExtensionApplication)Activator.CreateInstance(appType, true);
+                    mExtensionApps.Add(appType, extensionApp);
                 }
             }
 
-            if (null != extesionApp)
-                extesionApp.StartUp(new ExtensionStartupParams() { DisableADP = Dynamo.Logging.Analytics.DisableAnalytics });
+            if (null != extensionApp)
+                extensionApp.StartUp(new ExtensionStartupParams() { DisableADP = Dynamo.Logging.Analytics.DisableAnalytics });
         }
 
         /// <summary>
