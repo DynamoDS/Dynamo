@@ -412,7 +412,7 @@ namespace Dynamo.PackageManager
             ClearDownloadToastNotificationCommand = new DelegateCommand<object>(ClearDownloadToastNotification);
             SearchText = string.Empty;
             SortingKey = PackageSortingKey.LastUpdate;
-            SortingDirection = PackageSortingDirection.Ascending;
+            SortingDirection = PackageSortingDirection.Descending;
             HostFilter = new List<FilterEntry>();
             SelectedHosts = new List<string>();
         }
