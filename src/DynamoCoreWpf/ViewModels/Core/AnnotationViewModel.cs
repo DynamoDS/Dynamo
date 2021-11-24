@@ -1143,6 +1143,12 @@ namespace Dynamo.ViewModels
             GroupState = ElementState.Active;
         }
 
+        /// <summary>
+        /// If a node's State changes (e.g. to, or from, a Warning state) we'll want the UI to reflect
+        /// this and show/hide a warning icon in the group header to reflect this.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NodeModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
