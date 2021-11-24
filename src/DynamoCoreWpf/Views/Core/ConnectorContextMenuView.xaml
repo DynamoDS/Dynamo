@@ -31,7 +31,7 @@
                           Command="{Binding SelectConnectedSurrogateCommand}"/>
                     <MenuItem x:Name="HideItem" Command="{Binding HideConnectorSurrogateCommand}">
                         <MenuItem.Style>
-                            <Style TargetType="MenuItem">
+                            <Style TargetType="MenuItem" BasedOn="{StaticResource ContextMenuItemStyle}">
                                 <Setter Property="IsChecked" Value="False"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsCollapsed}" Value="False">
