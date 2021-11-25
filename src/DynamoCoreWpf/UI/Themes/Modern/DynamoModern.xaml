@@ -3658,8 +3658,10 @@
 
                         <!--  This is the Canvas for the exclamation mark appearing when the Style that the user is trying to insert already exists  -->
                         <Canvas Grid.Column="1"
-                                ToolTip="{x:Static p:Resources.PreferencesViewStyleWarning}"
                                 Visibility="{Binding Path=IsWarningEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Canvas.ToolTip>
+                                <ToolTip Content="{x:Static p:Resources.PreferencesViewStyleWarning}" Style="{StaticResource GenericToolTipLight}"/>
+                            </Canvas.ToolTip>
                             <Polygon Points="10,5 18,20 2,20">
                                 <Polygon.Fill>
                                     <SolidColorBrush Color="{StaticResource YellowOrange500}" />
@@ -3900,23 +3902,6 @@
 
     <SolidColorBrush x:Key="CheckMarkBackColor" Color="#87B340" />
     
-    <!-- Style for a self-wrapping ToolTip -->
-    <Style x:Key="ToolTipSelfWrapping" TargetType="ToolTip">
-        <Style.Resources>
-            <Style TargetType="ContentPresenter">
-                <Style.Resources>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="TextWrapping"
-                                Value="Wrap" />
-                    </Style>
-                </Style.Resources>
-            </Style>
-        </Style.Resources>
-        <Setter Property="MaxWidth"
-                Value="300" />
-    </Style>
-
-
     <!--  Style for the buttons in a Tooltip part of the Dynamo Guided Tours  -->
     <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Width" Value="5" />

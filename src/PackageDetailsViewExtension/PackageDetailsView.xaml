@@ -66,8 +66,11 @@
                                            Foreground="#D8D8D8"
                                            Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content.Text}"
                                            TextWrapping="Wrap"
-                                           ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}"
-                                           ToolTipService.ShowDuration="30000" />
+                                           ToolTipService.ShowDuration="30000">
+                                    <TextBlock.ToolTip>
+                                        <ToolTip Content="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}" Style="{StaticResource GenericToolTipLight}"/>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>

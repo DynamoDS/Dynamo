@@ -445,9 +445,12 @@
                    FontSize="10px"
                    Foreground="{StaticResource NodeLacingGlyphBackground}"
                    Style="{StaticResource SZoomFadeLabel}"
-                   ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
                    ToolTipService.ShowDuration="30000"
-                   Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}" />
+                   Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
+                <Label.ToolTip>
+                    <ToolTip Content="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}" Style="{StaticResource GenericToolTipLight}"/>
+                </Label.ToolTip>
+            </Label>
             <Grid Name="AlertsGlyph"
                   Width="Auto"
                   Height="16">
@@ -479,8 +482,10 @@
                 </Grid.Style>
             </Grid>
             <Button x:Name="OptionsButton"
-                    Click="DisplayNodeContextMenu"
-                    ToolTip="{x:Static p:Resources.ContextMenu}">
+                    Click="DisplayNodeContextMenu">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.ContextMenu}" Style="{StaticResource GenericToolTipLight}"/>
+                </Button.ToolTip>
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Template">

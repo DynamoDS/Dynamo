@@ -19,7 +19,10 @@
 
             <DataTemplate x:Key="packageSearchPathItemTemplate">
              
-                <Grid ToolTip="{Binding}">
+                <Grid>
+                    <Grid.ToolTip>
+                        <ToolTip Content="{Binding}" Style="{StaticResource GenericToolTipLight}"/>
+                    </Grid.ToolTip>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -35,10 +38,12 @@
                               Command="{Binding Path=DataContext.MovePathUpCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
-                        ToolTip="{x:Static p:Resources.PackagePathViewToolTipUp}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                         Style="{StaticResource FlatIconButtonStyle}">
                         <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/up_16_16.png" Width="15" Height="15"></Image>
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipUp}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
                     </Button>
                     <!--the down arrow button-->
                     <Button
@@ -48,9 +53,11 @@
                               Command="{Binding Path=DataContext.MovePathDownCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
-                         ToolTip="{x:Static p:Resources.PackagePathViewToolTipDown}"
-                        Background="{StaticResource PreferencesWindowBackgroundColor}"
+                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                          Style="{StaticResource FlatIconButtonStyle}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipDown}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
                         <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/down_16_16.png" Width="15" Height="15"></Image>
                     </Button>
                     <!--the path text-->
@@ -71,9 +78,11 @@
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
                          ToolTipService.ShowOnDisabled="True"
-                         ToolTip="{x:Static p:Resources.PackagePathUpdatePathTooltip}"
-                        Background="{StaticResource PreferencesWindowBackgroundColor}"
+                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                          Style="{StaticResource FlatIconButtonStyle}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackagePathUpdatePathTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
                         <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/folder_16_16.png" Width="15" Height="15"></Image>
                     </Button>
                     <!--the delete path button-->
@@ -84,9 +93,11 @@
                             RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                         CommandParameter="{Binding}"
                         ToolTipService.ShowOnDisabled="True"
-                        ToolTip="{x:Static p:Resources.PackagePathViewToolTipMinus}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                         Style="{StaticResource FlatIconButtonStyle}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipMinus}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
                         <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/close_16_16.png" Width="15" Height="15"></Image>
                     </Button>
                 </Grid>
@@ -128,8 +139,10 @@
                 HorizontalAlignment="Left"
                 Margin="0"
                 Content="{x:Static p:Resources.PackagePathAddPathButtonName}"
-                Command="{Binding Path=AddPathCommand}" 
-                ToolTip="{x:Static p:Resources.PackagePathViewToolTipPlus}">
+                Command="{Binding Path=AddPathCommand}">
+            <Button.ToolTip>
+                <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipPlus}" Style="{StaticResource GenericToolTipLight}"/>
+            </Button.ToolTip>
             <Button.Style>
                 <Style BasedOn="{StaticResource SolidButtonStyle}" TargetType="{x:Type Button}">
                     <Setter Property="IsEnabled" Value="True"/>

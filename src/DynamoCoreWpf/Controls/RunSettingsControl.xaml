@@ -113,9 +113,11 @@
                     <DataTemplate DataType="{x:Type viewModels:RunTypeItem}">
                         <Label Content="{Binding Name}"
                                IsEnabled="{Binding Enabled}"
-                               ToolTip="{Binding ToolTipText}"
                                ToolTipService.ShowOnDisabled="True"
                                FontStyle="Italic">
+                            <Label.ToolTip>
+                                <ToolTip Content="{Binding ToolTipText}" Style="{StaticResource GenericToolTipLight}"/>
+                            </Label.ToolTip>
                             <Label.Style>
                                 <Style TargetType="Label">
                                     <Style.Triggers>
@@ -154,10 +156,12 @@
                     Content="{x:Static p:Resources.DynamoViewRunButton}"
                     Focusable="False"
                     IsEnabled="{Binding Path=RunButtonEnabled}"
-                    ToolTip="{Binding RunButtonToolTip}"
                     ToolTipService.ShowOnDisabled="True"
                     Visibility="{Binding RunButtonVisibility}"
                     Style="{StaticResource RunButtonStyle}">
+                <Button.ToolTip>
+                    <ToolTip Content="{Binding RunButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                </Button.ToolTip>
             </Button>
 
             <TextBox
