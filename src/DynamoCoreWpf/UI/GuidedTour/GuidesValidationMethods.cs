@@ -349,45 +349,25 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This method will execute the InvokeScript method using reflection so the overlay will be shown over the LibraryView.Browser
-        /// </summary>
-        /// <param name="stepInfo">Information about the Step</param>
-        /// <param name="uiAutomationData">Specific UI Automation step that is being executed</param>
-        /// <param name="enableFunction">it says if the functionality should be enabled or disabled</param>
-        /// <param name="currentFlow">The current flow of the Guide can be FORWARD or BACKWARD</param>
-        internal static void ShowOverlayInWebBrowser(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
-        {
-            //Javascript method that will executed and is located in the file library.html
-            string jsMethodName = "setOverlay";
-            object[] parametersInvokeScript = new object[] { jsMethodName, new object[] { enableFunction } };
-            Guide.ExecuteJSFunction(stepInfo.MainWindow, stepInfo.HostPopupInfo, parametersInvokeScript);
-        }
-
-        /// <summary>
         /// This handler will be executed when clicking the next button in the Step 8 Popup so it will be expanding the package content in the LibraryView
         /// </summary>
         /// <param name="sender">Next Button</param>
         /// <param name="e">Event Arguments</param>
         private static void ExecuteAutomaticPackage_Click(object sender, RoutedEventArgs e)
         {
-            CurrentExecutingStep.CollapseExpandPackage();
+            CollapseExpandPackage(CurrentExecutingStep);
         }
 
         /// <summary>
-        /// This method will call the subscribePackageClickedEvent function using reflection, 
-        /// the subscribePackageClickedEvent method subscribe an HTML div Click event with a specific handler that will move the guide to the next Step
+        /// This method will call the collapseExpandPackage javascript method with reflection, so the package expander in LibraryView will be clicked
         /// </summary>
-        /// <param name="stepInfo">Information about the Step</param>
-        /// <param name="uiAutomationData">Specific UI Automation step that is being executed</param>
-        /// <param name="enableFunction">it says if the functionality should be enabled or disabled</param>
-        /// <param name="currentFlow">The current flow of the Guide can be FORWARD or BACKWARD</param>
-        internal static void SubscribePackageClicked(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        internal static void CollapseExpandPackage(Step stepInfo)
         {
+            CurrentExecutingStep = stepInfo;
+            const string jsMethodName = "collapseExpandPackage";
             const string packageName = "Autodesk Sample";
-            string jsMethodName = "subscribePackageClickedEvent";
-            object[] parametersInvokeScript = new object[] { jsMethodName, new object[] { packageName, enableFunction } };
+            object[] parametersInvokeScript = new object[] { jsMethodName, new object[] { packageName } };
             Guide.ExecuteJSFunction(stepInfo.MainWindow, stepInfo.HostPopupInfo, parametersInvokeScript);
-
         }
 
         /// <summary>

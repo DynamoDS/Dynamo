@@ -282,7 +282,7 @@
 
         //This will execute(or stop) the glow animation in a specific <div> based in the enable parameter
         function glowAnimation(divElement, enable) {
-            if (enable == true) {
+            if (enable) {
                 setIdAttribute(divElement);
                 intervalId = window.setInterval(setIdAttribute, 2000, divElement);
             }
@@ -308,7 +308,7 @@
             if (found_div == null) {
                 return;
             }
-            if (enable == true) {
+            if (enable) {
                 found_div.addEventListener('click', nextStepInGuide);
                 found_div.parentNode.addEventListener('click', nextStepInGuide);
                 found_div.parentNode.parentNode.addEventListener('click', nextStepInGuide);
@@ -361,18 +361,20 @@
             if (searchBar == null)
                 return;
 
+            let children = addons.childNodes;
+            if (children == null || children.lenght == 0)
+                return;
+
             //Apply a specific style for the <div> depending if the parameter enable is true or false.
-            if (enable == true) {
+            if (enable) {
                 tools.classList.add("overlay");
-                searchBar.classList.add("overlay");
-                let children = addons.childNodes;
+                searchBar.classList.add("overlay");           
                 children[0].classList.add("hole");
                 children[1].classList.add("hole");   
             }
             else {
                 tools.classList.remove("overlay");
                 searchBar.classList.remove("overlay");
-                let children = addons.childNodes;
                 children[0].classList.remove("hole");
                 children[1].classList.remove("hole");
             }          

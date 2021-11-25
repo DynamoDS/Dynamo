@@ -397,7 +397,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This method will ejecute a javascript function located in library.hmtl using reflection.
+        /// This method will execute a javascript function located in library.hmtl using reflection.
         /// due that we cannot include a reference to LibraryViewExtensionMSWebBrowser then we need to use reflection to get the types
         /// </summary>
         /// <param name="MainWindow">MainWindow in which the LibraryView is located</param>

@@ -437,6 +437,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         }                      
                     }
                     break;
+                case StepUIAutomation.UIControlType.JSFUNCTION:
+                    if (string.IsNullOrEmpty(uiAutomationData.JSFunctionName)) return;
+                    //We need to create a new list for the parameters due that we will be adding the enableUIAutomation boolean value
+                    var parametersJSFunction = new List<object>(uiAutomationData.JSParameters);
+                    parametersJSFunction.Add(enableUIAutomation);
+                    //Create the array for the parameters that will be sent to the JS Function
+                    object[] jsParameters = parametersJSFunction.ToArray();                 
+                    //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
+                    object[] parametersInvokeScript = new object[] { uiAutomationData.JSFunctionName, jsParameters };
+                    //Execute the JS function with the provided parameters
+                    Guide.ExecuteJSFunction(MainWindow, HostPopupInfo, parametersInvokeScript);
+                    break;
             }
         }
 
@@ -640,17 +652,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if(menuItemHighlightRect != null)
                     subItemsGrid.Children.Remove(menuItemHighlightRect);
             }
-        }
-
-        /// <summary>
-        /// This method will call the collapseExpandPackage javascript method with reflection, so the package expander in LibraryView will be clicked
-        /// </summary>
-        internal void CollapseExpandPackage()
-        {       
-            const string jsMethodName = "collapseExpandPackage";
-            const string packageName = "Autodesk Sample";
-            object[] parametersInvokeScript = new object[] { jsMethodName, new object[] { packageName } };
-            Guide.ExecuteJSFunction(MainWindow, HostPopupInfo, parametersInvokeScript);
         }
 
         /// <summary>
