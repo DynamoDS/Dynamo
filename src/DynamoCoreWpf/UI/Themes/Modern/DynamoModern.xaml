@@ -1772,34 +1772,6 @@
     </Style>
 
     <!--  Generic Dynamo ToolTip  -->
-    <Style x:Key="GenericToolTipDark" TargetType="ToolTip">
-        <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Setter Property="MaxWidth" Value="300" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ToolTip">
-                    <Border Padding="10,8"
-                            Background="{StaticResource DarkMidGreyBrush}"
-                            CornerRadius="2">
-                        <ContentPresenter />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Resources>
-            <Style TargetType="ContentPresenter">
-                <Style.Resources>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="TextWrapping" Value="Wrap" />
-                        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-                        <Setter Property="FontSize" Value="12px" />
-                        <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal100Brush}" />
-                    </Style>
-                </Style.Resources>
-            </Style>
-        </Style.Resources>
-    </Style>
-
     <Style x:Key="GenericToolTipLight" TargetType="ToolTip">
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="MaxWidth" Value="300" />
