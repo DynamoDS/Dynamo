@@ -1007,6 +1007,7 @@ namespace Dynamo.ViewModels
             var removedFromGroup = GroupIdToCutGeometry.Keys
                 .ToList()
                 .Except(allGroupedGroups.Select(x => x.GUID.ToString()));
+            
             foreach (var key in removedFromGroup)
             {
                 RemoveKeyFromCutGeometryDictionary(key);
@@ -1024,6 +1025,8 @@ namespace Dynamo.ViewModels
 
                 AddToCutGeometryDictionary(groupViewModel);
             }
+
+            UpdateErrorAndWarningIconVisibility();
         }
 
         private void RemoveKeyFromCutGeometryDictionary(string groupGuid)
