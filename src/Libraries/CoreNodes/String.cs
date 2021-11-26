@@ -39,6 +39,24 @@ namespace DSCore
         }
 
         /// <summary>
+        /// Get Number In String
+        /// </summary>
+        /// <param name="string">String to be get</param>
+        /// <returns name="str">number get in string</returns>
+        /// <search>getnumber,tonumber,strtonumber,numberinstring,string2number,stringtonumber,int,double,cast</search> 
+        public static string GetNumber(string @string)
+        {
+            string b = string.Empty;
+            List<double> result = new List<double>();
+            for (int i = 0; i < @string.Length; i++)
+            {
+                if (char.IsDigit(@string[i]))
+                    b += @string[i];
+            }
+
+            return b;
+        }
+        /// <summary>
         ///     Concatenates multiple strings into a single string.
         /// </summary>
         /// <param name="strings">List of strings to concatenate.</param>
@@ -74,7 +92,7 @@ namespace DSCore
         {
             separators = separators.Select(s => s == "\n" ? Environment.NewLine : s).ToArray(); // converts all \n in separater array to Environment Newline (i.e. \r\n)
             @string = Regex.Replace(@string, "(?<!\r)\n", Environment.NewLine); // converts all \n in String str to Environment.NewLine (i.e. '\r\n')
-            
+
             return separators.Contains("")
                 ? @string.ToCharArray().Select(char.ToString).ToArray()
                 : @string.Split(separators, StringSplitOptions.RemoveEmptyEntries);
@@ -401,7 +419,7 @@ namespace DSCore
         /// <search>center align,center-align,centered,whitespace,expand string,surround</search>
         public static string Center(string @string, int newLength, string padChars = " ")
         {
-            var padHalf = (newLength - @string.Length)/2;
+            var padHalf = (newLength - @string.Length) / 2;
 
             return
                 new string(
@@ -464,11 +482,11 @@ namespace DSCore
                 // However, the removal process in this function always operates rightwards (left to right).
                 // Therefore, a conversion for start index needs to be done in order to change
                 // from leftwards removal (right to left) to rightwards removal (left to right).
-                startIndex = startIndex + _count + 1; 
+                startIndex = startIndex + _count + 1;
                 _count *= -1;
             }
-            
-            if(_count > @string.Length)
+
+            if (_count > @string.Length)
             {
                 throw new ArgumentOutOfRangeException("count", Properties.Resources.StringRemoveCountOutOfRangeMessage);
             }
@@ -478,7 +496,7 @@ namespace DSCore
                 return string.Empty;
             }
 
-            if (startIndex >= @string.Length || startIndex < 0) 
+            if (startIndex >= @string.Length || startIndex < 0)
             {
                 // startIndex of an array must be within the string length. 
                 // If after the conversion of negative startIndex, startIndex is still
