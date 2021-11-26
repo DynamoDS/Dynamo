@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Media;
 using Dynamo.Logging;
 using Dynamo.Services;
@@ -34,36 +36,18 @@ namespace Dynamo.UI.Prompts
             if (viewModel.Model.PathManager.ResolveDocumentPath(ref googleAnalyticsFile))
                 GoogleAnalyticsConsent.File = googleAnalyticsFile;
 
-            var adpAnalyticsFile = "ADPAnalyticsConsent.rtf";
-
-            if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
-                ADPAnalyticsConsent.File = adpAnalyticsFile;
-
-            AcceptADPAnalyticsTextBlock.Text =
-                string.Format(Wpf.Properties.Resources.ConsentFormADPAnalyticsCheckBoxContent,
-                    dynamoViewModel.BrandingResourceProvider.ProductName);
-            AcceptADPAnalyticsCheck.Visibility = System.Windows.Visibility.Visible;
-            AcceptADPAnalyticsCheck.IsChecked = AnalyticsService.IsADPOptedIn;
+            
 
             AcceptGoogleAnalyticsCheck.IsChecked = UsageReportingManager.Instance.IsAnalyticsReportingApproved;
 
             if (Analytics.DisableAnalytics)
             {
-                AcceptADPAnalyticsCheck.IsChecked = false;
-                AcceptADPAnalyticsTextBlock.IsEnabled = false;
-                AcceptADPAnalyticsCheck.IsEnabled = false;
-
+                //TODO anything to do here?
                 AcceptGoogleAnalyticsCheck.IsChecked = false;
                 AcceptGoogleAnalyticsTextBlock.IsEnabled = false;
                 AcceptGoogleAnalyticsCheck.IsEnabled = false;
             }
-        }
-
-        private void ToggleIsADPAnalyticsChecked(object sender, RoutedEventArgs e)
-        {
-            AnalyticsService.IsADPOptedIn = (
-                AcceptADPAnalyticsCheck.IsChecked.HasValue &&
-                AcceptADPAnalyticsCheck.IsChecked.Value);
+           
         }
 
         private void ToggleIsUsageReportingChecked(object sender, RoutedEventArgs e)
@@ -84,7 +68,8 @@ namespace Dynamo.UI.Prompts
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
             // Update user agreement
-            AnalyticsService.IsADPOptedIn = AcceptADPAnalyticsCheck.IsChecked.Value;
+            //TODO
+            //AnalyticsService.IsADPOptedIn = AcceptADPAnalyticsCheck.IsChecked.Value;
 
             UsageReportingManager.Instance.SetAnalyticsReportingAgreement(AcceptGoogleAnalyticsCheck.IsChecked.Value);
             Close();
@@ -102,6 +87,16 @@ namespace Dynamo.UI.Prompts
         {
             base.OnClosed(e);
             viewModel = null;
+        }
+
+        private void configure_adp_button_Click(object sender, RoutedEventArgs e)
+        {
+            IntPtr handle = new IntPtr();
+            if (Owner != null)
+            {
+                handle = new WindowInteropHelper(Owner).Handle;
+            }
+            AnalyticsService.ShowADPConsetDialog(handle);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Dynamo.Models;
 using Analytics.NET.ADP;
 using Autodesk.Analytics.Core;
+using System;
 
 namespace Dynamo.Logging
 {
@@ -86,6 +87,15 @@ namespace Dynamo.Logging
         internal static void ShutDown()
         {
             Analytics.ShutDown();
+        }
+
+        /// <summary>
+        /// Show the ADP dynamic consents dialog.
+        /// </summary>
+        /// <param name="host">main window</param>
+        public static void ShowADPConsetDialog(IntPtr? host)
+        {
+            adpAnalyticsUI.ShowOptInDialog(System.Threading.Thread.CurrentThread.CurrentUICulture.Name, false, host);
         }
     }
 }
