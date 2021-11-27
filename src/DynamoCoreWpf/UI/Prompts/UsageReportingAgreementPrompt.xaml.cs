@@ -67,10 +67,8 @@ namespace Dynamo.UI.Prompts
 
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
-            // Update user agreement
-            //TODO
-            //AnalyticsService.IsADPOptedIn = AcceptADPAnalyticsCheck.IsChecked.Value;
-
+            // Update user agreement for GA.
+            //ADP is set via the ADPSDK consent window.
             UsageReportingManager.Instance.SetAnalyticsReportingAgreement(AcceptGoogleAnalyticsCheck.IsChecked.Value);
             Close();
         }

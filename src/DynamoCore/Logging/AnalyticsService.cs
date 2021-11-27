@@ -56,6 +56,8 @@ namespace Dynamo.Logging
 
         /// <summary>
         /// Indicates whether the user has opted-in to ADP analytics.
+        /// As of ADP4 this will return true for most users.
+        /// Use IsADPCollectionEnabled with a specific event to avoid unneccsary computations.
         /// </summary>
         internal static bool IsADPOptedIn
         {
@@ -66,9 +68,10 @@ namespace Dynamo.Logging
                 {
                     return false;
                 }
-
-                return adpAnalyticsUI.IsOptedIn();
+                //TODO add this overload to IAnalyticsUI.
+                return (adpAnalyticsUI as ADPAnalyticsUI ).IsOptedIn(30000);
             }
+            
             set
             {
                 if (Analytics.DisableAnalytics ||
@@ -79,6 +82,7 @@ namespace Dynamo.Logging
 
                 adpAnalyticsUI.SetOptedIn(value);
             }
+            
         }
 
         /// <summary>
@@ -96,6 +100,15 @@ namespace Dynamo.Logging
         public static void ShowADPConsetDialog(IntPtr? host)
         {
             adpAnalyticsUI.ShowOptInDialog(System.Threading.Thread.CurrentThread.CurrentUICulture.Name, false, host);
+        }
+
+        /// <summary>
+        /// Check if this event will be logged to ADP, or if it will be filtered out
+        /// by optin status or ADP allow listing.
+        /// </summary>
+        public static bool IsADPCollectionEnabled(Actions action, Categories category)
+        {   
+            return (adpAnalyticsUI as ADPAnalyticsUI).IsCollectionEnabled(action.ToString(), category.ToString());
         }
     }
 }
