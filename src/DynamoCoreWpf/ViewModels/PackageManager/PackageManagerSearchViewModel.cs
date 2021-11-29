@@ -796,6 +796,8 @@ namespace Dynamo.PackageManager
                 this.AddToSearchResults(result);
             }
 
+            this.Sort();
+
             SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
         }
 
@@ -895,7 +897,13 @@ namespace Dynamo.PackageManager
                         PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
                         CanInstallPackage(x.Name), isEnabledForInstall)))
                     .ToList();
+
                 Sort(list, this.SortingKey);
+
+                if (SortingDirection == PackageSortingDirection.Descending)
+                {
+                    list.Reverse();
+                }
             }
 
             foreach (var x in list)
