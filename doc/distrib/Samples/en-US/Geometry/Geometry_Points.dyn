@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Dynamo Geometry Sample",
   "Name": "Geometry_Points",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -18,7 +18,7 @@
         {
           "Id": "26b70b8ac9e545d8ad487fd432f00100",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -27,7 +27,7 @@
         {
           "Id": "7835459af7c642bda84fb06ff760b569",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -36,7 +36,7 @@
         {
           "Id": "704fe2d8004c4734972f7534c32b6cff",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -47,7 +47,7 @@
         {
           "Id": "521d036bc8aa4819a637542c93eb0af7",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -66,7 +66,7 @@
         {
           "Id": "f9d9da6219f34b6aa15abc1ad0fea28b",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -75,7 +75,7 @@
         {
           "Id": "e0ba072f2609431288f4e14469c5744b",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -84,7 +84,7 @@
         {
           "Id": "f25fce624cc54aaab4bd22155c9cd371",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -95,7 +95,7 @@
         {
           "Id": "7964e7cae0ae49ba8f89a4420ce2c1fa",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -221,15 +221,15 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
-      "WatchWidth": 220.0,
-      "WatchHeight": 339.0,
-      "WasExecuted": true,
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "WasExecuted": false,
       "Camera": {
-        "Name": "0e500d65-fbc3-406a-9aef-67574bc1f2a5 Preview",
+        "Name": "Background Preview",
         "EyeX": -17.0,
         "EyeY": 24.0,
         "EyeZ": 50.0,
@@ -416,67 +416,96 @@
     {
       "Start": "521d036bc8aa4819a637542c93eb0af7",
       "End": "37ede02780104521ab5d2706f36ace1d",
-      "Id": "dc326be7af3e4f9783bd3c62aad9a678"
+      "Id": "dc326be7af3e4f9783bd3c62aad9a678",
+      "IsHidden": "False"
     },
     {
       "Start": "521d036bc8aa4819a637542c93eb0af7",
       "End": "329a754afae64710b64441d8e411f9b2",
-      "Id": "4bbeee3ebb7345fd9c6f61b4c66cd66b"
+      "Id": "4bbeee3ebb7345fd9c6f61b4c66cd66b",
+      "IsHidden": "False"
     },
     {
       "Start": "521d036bc8aa4819a637542c93eb0af7",
       "End": "ac47db572abe4a27bc6b2978761bb6f3",
-      "Id": "e813a04d15044605964e819997c99317"
+      "Id": "e813a04d15044605964e819997c99317",
+      "IsHidden": "False"
     },
     {
       "Start": "7964e7cae0ae49ba8f89a4420ce2c1fa",
       "End": "4511a1facd2f45888026aeed210e41ad",
-      "Id": "6be506f895164503a242c260296efb37"
+      "Id": "6be506f895164503a242c260296efb37",
+      "IsHidden": "False"
     },
     {
       "Start": "082fbef8d8b148b6b83859e7d3f8edf9",
       "End": "e0ba072f2609431288f4e14469c5744b",
-      "Id": "7af249c2d3e948a09bf3b2549c539b09"
+      "Id": "7af249c2d3e948a09bf3b2549c539b09",
+      "IsHidden": "False"
     },
     {
       "Start": "8554eccdf807442281356f71e4ce7da7",
       "End": "960ac7e87b2a40ddac10d3f8ca34e33c",
-      "Id": "48e40cd257d443d59727fcd92ad53f24"
+      "Id": "48e40cd257d443d59727fcd92ad53f24",
+      "IsHidden": "False"
     },
     {
       "Start": "852d142951bd42fb8f913cea9cf6a1d2",
       "End": "f7c07b57d9e146128a3fb595e703068e",
-      "Id": "00b6e88f151e46789a26f2437ff3a58f"
+      "Id": "00b6e88f151e46789a26f2437ff3a58f",
+      "IsHidden": "False"
     },
     {
       "Start": "e4fbc3bfd0984d5788c3645e38aa2cf3",
       "End": "16e1a04a787949eb82c577f39fe3dcbe",
-      "Id": "f69842d1c1dd4b99a968186f206a42d7"
+      "Id": "f69842d1c1dd4b99a968186f206a42d7",
+      "IsHidden": "False"
     },
     {
       "Start": "d01407572ef4460dbd4e8cf8feed1089",
       "End": "704fe2d8004c4734972f7534c32b6cff",
-      "Id": "607df6f700fe4c09b0bdb4e5de8d5c1d"
+      "Id": "607df6f700fe4c09b0bdb4e5de8d5c1d",
+      "IsHidden": "False"
     },
     {
       "Start": "319bd5e7ce4146f880fc72d9d2f6f3dd",
       "End": "5129143afc3045deb52cbc84bcac3a13",
-      "Id": "b9603e569da74358a4e0f40813b854cf"
+      "Id": "b9603e569da74358a4e0f40813b854cf",
+      "IsHidden": "False"
     },
     {
       "Start": "0caed96f91934b4d8f989e96c128ea7c",
       "End": "c982d730ba5f4c86a8c4757165838211",
-      "Id": "3ef4fad70c2744c8872ec32242bd196c"
+      "Id": "3ef4fad70c2744c8872ec32242bd196c",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2821",
+      "Version": "2.13.0.3265",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -492,6 +521,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -500,8 +530,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24492.8726906649,
-        "Y": -19896.652824505
+        "X": -24494.80078824006,
+        "Y": -19894.724726929842
       },
       {
         "ShowGeometry": true,
@@ -510,8 +540,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24475.5123494032,
-        "Y": -19298.4741738685
+        "X": -24465.871861527412,
+        "Y": -19302.330369018819
       },
       {
         "ShowGeometry": true,
@@ -530,8 +560,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24970.789680203,
-        "Y": -19298.4741738685
+        "X": -25042.981348977923,
+        "Y": -19370.665842643426
       },
       {
         "ShowGeometry": true,
@@ -540,8 +570,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24972.5011674131,
-        "Y": -19236.9837983206
+        "X": -25049.204815486453,
+        "Y": -19243.751767268248
       },
       {
         "ShowGeometry": true,
@@ -550,8 +580,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24160.7622888382,
-        "Y": -19471.6201986717
+        "X": -24124.128434910195,
+        "Y": -19448.483027769802
       },
       {
         "ShowGeometry": true,
@@ -560,8 +590,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24177.0903888257,
-        "Y": -20169.9179062821
+        "X": -24109.606973695169,
+        "Y": -20248.969906863582
       },
       {
         "ShowGeometry": true,
@@ -570,8 +600,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -23433.1018389433,
-        "Y": -19304.6919184607
+        "X": -23363.690326237611,
+        "Y": -19310.476211186175
       },
       {
         "ShowGeometry": true,
@@ -590,8 +620,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24177.0903888257,
-        "Y": -19653.6670613887
+        "X": -24109.606973695169,
+        "Y": -19649.810866238386
       },
       {
         "ShowGeometry": true,
@@ -600,8 +630,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24974.9875469409,
-        "Y": -19172.8116354338
+        "X": -25042.66723641739,
+        "Y": -19123.179863151043
       },
       {
         "ShowGeometry": true,
@@ -610,98 +640,134 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -23766.2211671275,
-        "Y": -19459.7617313085
+        "X": -23673.672483519913,
+        "Y": -19442.408853132078
       }
     ],
     "Annotations": [
       {
         "Id": "ad3945ee5bd749a6bc9a876ca3acaa2a",
         "Title": "Basic Geometric Elements have default values for numerical inputs.  ",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": -24563.5023638902,
-        "Top": -19956.5969680633,
+        "HasNestedGroups": false,
+        "Left": -24523.80078824006,
+        "Top": -19959.724726929842,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "5b9ce6ead88f4d2d9eac159ed8f3a277"
       },
       {
         "Id": "af4d2a95f2da4a3f828329089eefa229",
         "Title": "After hitting \"Run\" or with Run Automatically enabled, see the geometric entity either in the Background Peview, in Watch 3d, or as data in a Watch node.  Elements will highlight in Background when the node is selected",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": -24177.0903888257,
-        "Top": -20287.4502956788,
+        "HasNestedGroups": false,
+        "Left": -24186.106973695169,
+        "Top": -20356.969906863582,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "0e500d65fbc3406a9aef67574bc1f2a5"
       },
       {
         "Id": "877cc2b8dff5481d9a7cf30738b0b96e",
         "Title": "Arrays of Geometry can be created using Sequences, Ranges, and Lists ",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": -24868.7393184764,
-        "Top": -19358.0035515424,
+        "HasNestedGroups": false,
+        "Left": -24830.6187272669,
+        "Top": -19363.4741738685,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "a6083d4a6070490692041541f146010c"
       },
       {
         "Id": "4741129b8b5849c1999307042d54795a",
         "Title": "Information Can be pulled out of Geometry using tools in the Query subcategory of the entiry",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": -24177.0903888257,
-        "Top": -19709.0244140629,
+        "HasNestedGroups": false,
+        "Left": -24153.606973695169,
+        "Top": -19714.810866238386,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "3c918558fc8a44199ecb187fc5686802"
       },
       {
         "Id": "03f561a9a88e4323bc332353f2776382",
         "Title": "Derivative elements can be created by using tools in the Actions subcategory of the entity",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": -23501.9576318459,
-        "Top": -19376.5158562362,
+        "HasNestedGroups": false,
+        "Left": -23399.690326237611,
+        "Top": -19375.476211186175,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "227c1a9c02d14a9c91aaea7e67d222fb"
       },
       {
         "Id": "d55cd027705a41c9b364ba3f46b7dd08",
         "Title": "Make 1, 2, and 3 dimensional arrays by passing Ranges into the points x, y, and z ports, then changing the Lacing properties in the right click menue for the node ",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": -24525.2047171741,
-        "Top": -19377.8954802656,
+        "HasNestedGroups": false,
+        "Left": -24491.371861527412,
+        "Top": -19396.330369018819,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "0aa5294eaf814a938b6a14a8944d8478"
       }
     ],
-    "X": 17229.897829892332,
-    "Y": 13889.664433342597,
-    "Zoom": 0.68338122777692856
+    "X": 15333.090141958375,
+    "Y": 12417.883180906016,
+    "Zoom": 0.60853276482612972
   }
 }

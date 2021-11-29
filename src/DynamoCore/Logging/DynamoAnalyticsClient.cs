@@ -37,7 +37,7 @@ namespace Dynamo.Logging
                 StabilityCookie.WriteCrashingShutdown();
             else
                 StabilityCookie.WriteCleanShutdown();
-            
+
             if (null != heartbeat)
                 Heartbeat.DestroyInstance();
             heartbeat = null;
@@ -133,6 +133,7 @@ namespace Dynamo.Logging
             {
                 return preferences != null
                     && Service.IsInitialized
+                    && !Analytics.DisableAnalytics
                     && preferences.IsAnalyticsReportingApproved;
             }
         }
@@ -142,11 +143,12 @@ namespace Dynamo.Logging
         /// </summary>
         private bool ReportingADPAnalytics
         {
-            get 
+            get
             {
                 return preferences != null
                     && Service.IsInitialized
-                    && preferences.IsADPAnalyticsReportingApproved; 
+                    && !Analytics.DisableAnalytics
+                    && preferences.IsADPAnalyticsReportingApproved;
             }
         }
 
@@ -155,9 +157,13 @@ namespace Dynamo.Logging
         /// </summary>
         public bool ReportingUsage
         {
-            get { return preferences != null
-                    && Service.IsInitialized
-                    && preferences.IsUsageReportingApproved; }
+            get
+            {
+                return preferences != null
+                  && Service.IsInitialized
+                  && !Analytics.DisableAnalytics
+                  && preferences.IsUsageReportingApproved;
+            }
         }
 
         /// <summary>
@@ -177,7 +183,7 @@ namespace Dynamo.Logging
 
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
-            
+
             var hostName = string.IsNullOrEmpty(dynamoModel.HostName) ? "Dynamo" : dynamoModel.HostName;
 
             hostInfo = new HostContextInfo() { ParentId = dynamoModel.HostAnalyticsInfo.ParentId, SessionId = dynamoModel.HostAnalyticsInfo.SessionId };
@@ -196,9 +202,10 @@ namespace Dynamo.Logging
             //Some clients such as Revit may allow start/close Dynamo multiple times
             //in the same session so register only if the factory is not registered.
             if (service.GetTrackerFactory(GATrackerFactory.Name) == null)
+            {
                 service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
-
-            Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+                service.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+            }
         }
 
         private void RegisterADPTracker(Service service)
@@ -206,9 +213,10 @@ namespace Dynamo.Logging
             //Some clients such as Revit may allow start/close Dynamo multiple times
             //in the same session so register only if the factory is not registered.
             if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
+            {
                 service.Register(new ADPTrackerFactory());
-
-            Service.Instance.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
+                service.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
+            }
         }
 
         /// <summary>
@@ -217,7 +225,7 @@ namespace Dynamo.Logging
         /// </summary>
         public void Start()
         {
-            if (preferences != null && 
+            if (preferences != null &&
                 (preferences.IsAnalyticsReportingApproved || preferences.IsADPAnalyticsReportingApproved))
             {
                 //Register trackers
@@ -225,7 +233,7 @@ namespace Dynamo.Logging
 
                 // Use separate functions to avoid loading the tracker dlls if they are not opted in (as an extra safety measure).
                 // ADP will be loaded because opt-in/opt-out is handled/serialized exclusively by the ADP module.
-                
+
                 // Register Google Tracker only if the user is opted in.
                 if (preferences.IsAnalyticsReportingApproved)
                     RegisterGATracker(service);
