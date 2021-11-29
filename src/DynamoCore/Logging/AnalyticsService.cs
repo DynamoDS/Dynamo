@@ -99,7 +99,10 @@ namespace Dynamo.Logging
         /// <param name="host">main window</param>
         public static void ShowADPConsetDialog(IntPtr? host)
         {
-            adpAnalyticsUI.ShowOptInDialog(System.Threading.Thread.CurrentThread.CurrentUICulture.Name, false, host);
+            if (Analytics.DisableAnalytics && adpAnalyticsUI != null)
+            {
+                adpAnalyticsUI.ShowOptInDialog(System.Threading.Thread.CurrentThread.CurrentUICulture.Name, false, host);
+            }
         }
 
         /// <summary>
@@ -108,10 +111,9 @@ namespace Dynamo.Logging
         /// </summary>
         public static bool IsADPCollectionEnabled(Actions action, Categories category)
         {   
-            if(adpAnalyticsUI != null)
+            if (Analytics.DisableAnalytics && adpAnalyticsUI != null)
             {
                 return (adpAnalyticsUI as ADPAnalyticsUI).IsCollectionEnabled(action.ToString(), category.ToString());
-
             }
             return false;
         }

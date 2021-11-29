@@ -7,10 +7,13 @@ using Dynamo.Models;
 using Dynamo.Scheduler;
 using DynamoShapeManager;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using SystemTestServices;
 using TestServices;
 
@@ -79,7 +82,57 @@ namespace Dynamo.Tests.Loggings
             //Assert
             //At the begining the CurrentWorkspace.Nodes has 4 nodes but two new nodes were added, then verify we have 5 nodes.
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), InitialNodesCount + 2);
+        }
+    }
 
-        }     
+    public class DynamoAnalyticsDisableTest
+    {
+        [Test]
+        public void DysableAnalytics()
+        {
+            var versions = new List<Version>(){
+
+                    new Version(227, 0, 0),
+                    new Version(228, 0, 0)
+            };
+
+            var directory = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
+            var testDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
+            string openPath = Path.Combine(testDirectory, @"core\recorded\MAGN_7348_Surface.xml");
+            //go get a valid asm path.
+            var locatedPath = string.Empty;
+            var coreDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Process dynamoSandbox = null;
+
+            DynamoShapeManager.Utilities.GetInstalledAsmVersion2(versions, ref locatedPath, coreDirectory);
+            try
+            {
+                Assert.DoesNotThrow(() =>
+                {
+                    dynamoSandbox = Process.Start(Path.Combine(coreDirectory, "DynamoSandbox.exe"), $"-gp \"{locatedPath}\" -da -c \"{openPath}\" ");
+                    dynamoSandbox.WaitForInputIdle();
+
+                    Thread.Sleep(5000);// Wait 5 seconds to run the commands
+
+                    var firstASMmodulePath = string.Empty;
+                    foreach (ProcessModule module in dynamoSandbox.Modules)
+                    {
+                        if (module.FileName.IndexOf("Analytics", StringComparison.OrdinalIgnoreCase) != -1)
+                        {
+                            Assert.Fail("Analytics module was loaded");
+                        }
+                        if (module.FileName.IndexOf("AdpSDKCSharpWrapper", StringComparison.OrdinalIgnoreCase) != -1)
+                        {
+                            Assert.Fail("ADP module was loaded");
+                        }
+                    }
+                });
+            }
+            finally
+            {
+
+                dynamoSandbox?.Kill();
+            }
+        }
     }
 }
