@@ -404,7 +404,7 @@ You will get a chance to save your work.</value>
     <value>Custom Node Property Error</value>
   </data>
   <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
-    <value>Add-ons Category</value>
+    <value>Add-Ons Category</value>
     <comment>Label - specify custom node category</comment>
   </data>
   <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
@@ -462,39 +462,39 @@ You will get a chance to save your work.</value>
     <comment>Clear log</comment>
   </data>
   <data name="DynamoViewDebugMenu" xml:space="preserve">
-    <value>Debug</value>
+    <value>De_bug</value>
     <comment>Debug menu</comment>
   </data>
   <data name="DynamoViewDebugMenuCheckDailyBuild" xml:space="preserve">
-    <value>Check Daily Builds</value>
+    <value>_Check Daily Builds</value>
     <comment>Debug menu | Check the latest daily build</comment>
   </data>
   <data name="DynamoViewDebugMenuDumpLibrary" xml:space="preserve">
-    <value>Dump Library</value>
+    <value>_Dump Library</value>
     <comment>Debug menu | Dump all imported libraries</comment>
   </data>
   <data name="DynamoViewDebugMenuForceReExecute" xml:space="preserve">
-    <value>Force Re-execute</value>
+    <value>_Force Re-execute</value>
     <comment>Debug menu | Force to re-execute the whole graph</comment>
   </data>
   <data name="DynamoViewDebugMenuForceUpdate" xml:space="preserve">
-    <value>Force Update</value>
+    <value>Force _Update</value>
     <comment>Debug menu | Force to update Dynamo</comment>
   </data>
   <data name="DynamoViewDebugMenuRunMutationTest" xml:space="preserve">
-    <value>Run mutation test</value>
+    <value>_Run mutation test</value>
     <comment>Debug menu | Run mutation test</comment>
   </data>
   <data name="DynamoViewDebugMenuShowDebugAST" xml:space="preserve">
-    <value>Show Debug ASTs</value>
+    <value>_Show Debug ASTs</value>
     <comment>Debug menu | Show debug abstract syntax tree</comment>
   </data>
   <data name="DynamoViewDebugMenuVerboseLogging" xml:space="preserve">
-    <value>Verbose Logging</value>
+    <value>_Verbose Logging</value>
     <comment>Debug menu | Verbose logging</comment>
   </data>
   <data name="DynamoViewDebugMenuDebugModes" xml:space="preserve">
-    <value>Debug Modes</value>
+    <value>Debug _Modes</value>
     <comment>Debug menu | Show debug modes</comment>
   </data>
   <data name="DynamoViewEditMenu" xml:space="preserve">
@@ -538,7 +538,7 @@ You will get a chance to save your work.</value>
     <comment>Edit menu | Align selected nodes evenly on vertical direction</comment>
   </data>
   <data name="DynamoViewEditMenuCleanupLayout" xml:space="preserve">
-    <value>_Cleanup Node Layout</value>
+    <value>Cleanup Node _Layout</value>
     <comment>Edit menu | Automatically layout graph</comment>
   </data>
   <data name="DynamoViewEditMenuCopy" xml:space="preserve">
@@ -546,15 +546,15 @@ You will get a chance to save your work.</value>
     <comment>Edit menu | Copy</comment>
   </data>
   <data name="DynamoViewEditMenuCreateCustomNode" xml:space="preserve">
-    <value>_Create Custom Node</value>
+    <value>Crea_te Custom Node</value>
     <comment>Edit menu | Create custom node from selected nodes</comment>
   </data>
   <data name="DynamoViewEditMenuCreateGroup" xml:space="preserve">
-    <value>_Create Group</value>
+    <value>Create _Group</value>
     <comment>Edit menu | Create Grouping for nodes</comment>
   </data>
   <data name="DynamoViewEditMenuCreateNote" xml:space="preserve">
-    <value>_Create Note</value>
+    <value>Create _Note</value>
     <comment>Edit menu | Create note for a node</comment>
   </data>
   <data name="DynamoViewEditMenuCreatePreset" xml:space="preserve">
@@ -633,7 +633,7 @@ You will get a chance to save your work.</value>
     <comment>File menu | Open</comment>
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
-    <value>_Open Recent Files</value>
+    <value>Open _Recent Files</value>
     <comment>File menu | Open Recent files</comment>
   </data>
   <data name="DynamoViewFileMenuSave" xml:space="preserve">
@@ -641,15 +641,15 @@ You will get a chance to save your work.</value>
     <comment>File menu | Save</comment>
   </data>
   <data name="DynamoViewFileMenuSaveAs" xml:space="preserve">
-    <value>_Save As...</value>
+    <value>Save _As...</value>
     <comment>File menu | Save as</comment>
   </data>
   <data name="DynamoViewHelpDictionary" xml:space="preserve">
-    <value>Dynamo Dictionary</value>
+    <value>Dynamo Di_ctionary</value>
     <comment>Help menu | Go to Dynamo Dictionary</comment>
   </data>
   <data name="DynamoViewHelpMenu" xml:space="preserve">
-    <value>Help</value>
+    <value>_Help</value>
     <comment>Help menu</comment>
   </data>
   <data name="DynamoViewHelpMenuDisplayStartPage" xml:space="preserve">
@@ -657,11 +657,11 @@ You will get a chance to save your work.</value>
     <comment>Help menu | Display start page</comment>
   </data>
   <data name="DynamoViewHelpMenuGotoWebsite" xml:space="preserve">
-    <value>_Dynamo Website</value>
+    <value>Dynamo _Website</value>
     <comment>Help menu | Go go Dynamo website</comment>
   </data>
   <data name="DynamoViewHelpMenuGotoWiki" xml:space="preserve">
-    <value>Dynamo Project _Wiki</value>
+    <value>Dynamo _Project Wiki</value>
     <comment>Help menu | Go to wiki</comment>
   </data>
   <data name="DynamoViewHelpMenuReportBug" xml:space="preserve">
@@ -673,7 +673,7 @@ You will get a chance to save your work.</value>
     <comment>Help menu | Show in Folder</comment>
   </data>
   <data name="DynamoViewHepMenuSamples" xml:space="preserve">
-    <value>Samples</value>
+    <value>_Samples</value>
     <comment>Help menu | Samples</comment>
   </data>
   <data name="DynamoViewPackageMenu" xml:space="preserve">
@@ -685,15 +685,15 @@ You will get a chance to save your work.</value>
     <comment>Package menu | Manage packages...</comment>
   </data>
   <data name="DynamoViewPackageMenuPublishNodes" xml:space="preserve">
-    <value>_Publish Selected Nodes...</value>
+    <value>Publish _Selected Nodes...</value>
     <comment>Package menu | Publish selected nodes as a package</comment>
   </data>
   <data name="DynamoViewPackageMenuPublishPackage" xml:space="preserve">
-    <value>_Publish New Package...</value>
+    <value>Publish _New Package...</value>
     <comment>Package menu | Publish new package</comment>
   </data>
   <data name="DynamoViewPackageMenuPublishWorkspace" xml:space="preserve">
-    <value>_Publish Current Workspace...</value>
+    <value>Publish _Current Workspace...</value>
     <comment>Package menu | Publish current workspace as a package</comment>
   </data>
   <data name="DynamoViewPackageMenuSearchPackage" xml:space="preserve">
@@ -767,8 +767,8 @@ You will get a chance to save your work.</value>
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
-    <value>Agreement to Collect Usability Data</value>
-    <comment>Setting menu | Show user agreement dialog about data collecting</comment>
+    <value>Agreement to _Collect Usability Data</value>
+    <comment>Dynamo menu | Show user agreement dialog about data collecting</comment>
   </data>
   <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
     <value>Fractional Foot</value>
@@ -969,7 +969,7 @@ You will get a chance to save your work.</value>
     <comment>View menu | Show connectors</comment>
   </data>
   <data name="DynamoViewViewMenuShowConsole" xml:space="preserve">
-    <value>Show Console</value>
+    <value>_Show Console</value>
     <comment>View menu | Show console</comment>
   </data>
   <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
@@ -1086,7 +1086,7 @@ Failed to publish file(s):
     <value>Cleanup Node Layout</value>
   </data>
   <data name="GroupContextMenuUngroup" xml:space="preserve">
-    <value>Ungroup</value>
+    <value>Ungr_oup</value>
   </data>
   <data name="HideClassicNodeLibrary" xml:space="preserve">
     <value>Hide Classic Node Library</value>
@@ -1991,7 +1991,7 @@ Want to publish a different package?</value>
     <comment>Start page | Link to DynamoBIM</comment>
   </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
-    <value>Getting Started</value>
+    <value>_Getting Started</value>
   </data>
   <data name="StringInputNodeEditMenu" xml:space="preserve">
     <value>Edit...</value>
@@ -2325,7 +2325,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Label used in the general tab</comment>
   </data>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
-    <value>_Extensions</value>
+    <value>E_xtensions</value>
     <comment>Extensions menu</comment>
   </data>
   <data name="ConnectorContextMenuHeaderBreakConnections" xml:space="preserve">
@@ -2348,12 +2348,12 @@ Uninstall the following packages: {0}?</value>
     <value>Requires relaunch of Dynamo</value>
     <comment>Preferences | Features | Python | Requires relaunch of Dynamo</comment>
   </data>
-    <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
+  <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
     <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
     
 Do you wish to continue trying to install {0}?</value>
   </data>
-    <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
+  <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
     <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
     
 You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
@@ -2365,10 +2365,10 @@ You can try disabling loading packages from built-in package paths, or unload th
     <value>The same version of {0} is already installed and does not need to be installed again.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-        <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
         
 Do you wish to restart {2} to first uninstall {1}, then download {0} again?</value>
-    </data>
+  </data>
   <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
     <value>Geometry Scaling</value>
     <comment>Expander Header Name</comment>
@@ -2479,7 +2479,7 @@ Do you wish to restart {2} to first uninstall {1}, then download {0} again?</val
     <comment>Get Started Dynamo Tour</comment>
   </data>
   <data name="InteractiveGuides" xml:space="preserve">
-    <value>Interactive Guides</value>
+    <value>_Interactive Guides</value>
     <comment>Dynamo Guided Tours</comment>
   </data>
   <data name="GetStartedGuideLibraryText" xml:space="preserve">
@@ -2949,11 +2949,22 @@ This package will be unloaded after the next Dynamo restart.</value>
   <data name="InfoBubbleInfo" xml:space="preserve">
     <value>Info</value>
   </data>
-  <data name="AutodeskSamplePackage" xml:space="preserve">
-    <value>Autodesk sample</value>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="PackagesGuideInstallAPackageText" xml:space="preserve">
+    <value>Package installations are typically quick, depending on their size and other factors. \n\n**Click Install** to install the latest version of the sample Autodesk package and proceed with this guide.</value>
+  </data>
+  <data name="PackagesGuideInstallAPackageTitle" xml:space="preserve">
+    <value>Install a package</value>
+  </data>
+  <data name="PackagesGuideInstalledPackageText" xml:space="preserve">
+    <value>Package installations are typically quick, depending on their size and other factors. \n
+To install the latest version of a package, click Install. \n
+%./UI/Images/alert.png% The sample Autodesk package is already installed on your computer.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>If you need other software or tools in order to use this package, they are listed under Dependencies. The interactive guide for Package Dependencies will tell you more.</value>
+    <value>\nIf you need other software or tools in order to use this package, they are listed under Dependencies.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Package dependencies</value>

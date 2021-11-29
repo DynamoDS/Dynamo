@@ -28,7 +28,7 @@ SamplerState LinearSampler
 float4 main(PSInput input, bool isFrontFacing : SV_IsFrontFace) : SV_Target
 {
 	//TODO move to common or pass in from material or the vParams.
-	float4 vSelectionColor = float4(0.0, 0.62, 1.0, 1.0);
+	float4 vSelectionColor = float4(0.023529, 0.588235, 0.843137, 1.0);
 
 
 	//flags were passed through from a common buffer per model

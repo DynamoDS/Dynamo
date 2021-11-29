@@ -230,7 +230,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Workspace References.
+        ///   Looks up a localized string similar to Show _Workspace References.
         /// </summary>
         public static string MenuItemString {
             get {

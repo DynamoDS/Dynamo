@@ -42,7 +42,7 @@ namespace DynamoCoreWpfTests
         {
          
             Assert.That(this.Model.ExtensionManager.Extensions.Select(x => x.Name),
-                Is.EquivalentTo (new List<string> { "DynamoPackageManager", "IronPythonExtension", "testExtension" }));
+                Is.EquivalentTo (new List<string> { "DynamoPackageManager", "testExtension" }));
         }
         [Test]
         public void PackageManagerLoadsExtensionAndItWorks()

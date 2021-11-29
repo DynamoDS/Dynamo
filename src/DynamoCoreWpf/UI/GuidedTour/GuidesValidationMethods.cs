@@ -1,14 +1,15 @@
-﻿using System.Linq;
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.ViewModels;
+using static Dynamo.PackageManager.PackageManagerSearchViewModel;
 using static Dynamo.Wpf.UI.GuidedTour.Guide;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -25,6 +26,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static GuidesManager CurrentExecutingGuidesManager;
         
         private static ExitGuide exitGuide;
+        private const string AutodeskSamplePackage = "Sample View Extension";
+        private static PackageManagerSearchViewModel viewModel;
+        private static PackageDownloadHandle packageDownloadHandle;
+
+        internal static PackageManagerSearchViewModel packagesViewModel;
 
         //This method will return a bool that describes if the Terms Of Service was accepted or not.
         internal static bool AcceptedTermsOfUse(DynamoViewModel dynViewModel)
@@ -33,6 +39,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (dynViewModel.Model.PreferenceSettings != null)
                 termsOfServiceAccepted = dynViewModel.Model.PreferenceSettings.PackageDownloadTouAccepted;
             return termsOfServiceAccepted;
+        }
+
+        internal static bool IsPackageInstalled(PackageManagerSearchViewModel viewModel = null)
+        {
+            if (viewModel == null)
+                return true;
+
+            bool canInstall = viewModel.CanInstallPackage(AutodeskSamplePackage);
+            return !canInstall;
         }
 
         /// <summary>
@@ -72,15 +87,68 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
                 if (ownedWindow == null) return;
 
-                foreach (var handler in uiAutomationData.AutomaticHandlers)
-                {
-                    UIElement element = Guide.FindChild(ownedWindow, handler.HandlerElement) as Button;
-                    if (element != null)
-                        ManageEventHandler(element, handler.HandlerElementEvent, handler.ExecuteMethod, false);
-                }                
-
                 //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
                 Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+            }
+        }
+
+        /// <summary>
+        /// This method will be executed when passing from Step 6 to Step 7 in the Packages guide, so it will subscribe the install button event
+        /// </summary>
+        /// <param name="stepInfo"></param>
+        /// <param name="uiAutomationData"></param>
+        /// <param name="enableFunction"></param>
+        /// <param name="currentFlow"></param>
+        internal static void ExecuteInstallPackagesFlow(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+            Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+
+
+            if (enableFunction)
+            {
+                if(ownedWindow != null)
+                    viewModel = ownedWindow.DataContext as PackageManagerSearchViewModel;
+             
+                Button buttonElement = Guide.FindChild(ownedWindow, stepInfo.HostPopupInfo.HostUIElementString) as Button; 
+                viewModel.PackageManagerClientViewModel.Downloads.CollectionChanged += Downloads_CollectionChanged;
+            }
+            else
+            {
+                //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
+                Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+            }
+        }
+
+        //This methos is called when a download is added in the list 
+        private static void Downloads_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            var downloads = (System.Collections.ObjectModel.ObservableCollection<PackageDownloadHandle>) sender;
+
+            if(downloads.Any())
+            {
+                //Gets the first package of the list
+                packageDownloadHandle = downloads.First();
+                packageDownloadHandle.PropertyChanged += GuidesValidationMethods_PropertyChanged1;
+            }
+
+        }
+
+        //This method is called when the package download state is changed
+        private static void GuidesValidationMethods_PropertyChanged1(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(packageDownloadHandle.DownloadState == PackageDownloadHandle.State.Installed)
+            {
+                CurrentExecutingGuide.HideCurrentStep(CurrentExecutingStep.Sequence, GuideFlow.FORWARD);
+                if (CurrentExecutingStep.Sequence < CurrentExecutingGuide.TotalSteps)
+                {
+                    //Move to the next Step in the Guide
+                    CurrentExecutingGuide.CalculateStep(GuideFlow.FORWARD, CurrentExecutingStep.Sequence);
+                    CurrentExecutingGuide.CurrentStep.Show(GuideFlow.FORWARD);
+                }
+
+                viewModel.PackageManagerClientViewModel.Downloads.CollectionChanged -= Downloads_CollectionChanged;
+                packageDownloadHandle.PropertyChanged -= GuidesValidationMethods_PropertyChanged1;
             }
         }
 
@@ -89,7 +157,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="element">The element to subscribe the method I.E: Button</param>
         /// <param name="eventname">The event name that will be subscribed I.E: Click</param>
-        /// <param name="methodname">The method that will listen the event I.E: AcceptButton_Click</param>
+        /// <param name="methodname">The method that will listen the event I.E: AcceptButton_Click
+        /// The method need to have Access Modifier internal and return void 
+        /// </param>
         /// <param name="addEvent">A flag that will check if it's to subscribe or unsubscribe</param>
         internal static void ManageEventHandler(object element, string eventname, string methodname, bool addEvent = true)
         {
@@ -152,39 +222,120 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if(enableFunction)
             {
                 //We need to check if the PackageManager search is already open if that is the case we don't need to open it again
-                if (ownedWindow == null)
-                {
+                if (ownedWindow != null) return;
                     stepInfo.DynamoViewModelStep.ShowPackageManagerSearch(null);
-                    PackageManagerSearchView packageManager = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerSearchView;
-                    if (packageManager == null)
-                        return;
-                    PackageManagerSearchViewModel packageManagerViewModel = packageManager.DataContext as PackageManagerSearchViewModel;
-                    if (packageManagerViewModel == null)
-                        return;
-                    //Put the name of the Package to be searched in the SearchTextBox
-                    packageManagerViewModel.SearchText = Res.AutodeskSamplePackage;
-                    //Execute the Search
-                    packageManagerViewModel.RefreshAndSearchAsync();
-                }             
+
+                PackageManagerSearchView packageManager = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerSearchView;
+                if (packageManager == null)
+                    return;
+                PackageManagerSearchViewModel packageManagerViewModel = packageManager.DataContext as PackageManagerSearchViewModel;
+                if (packageManagerViewModel == null)
+                    return;
+
+                //Due that we need to search the Autodesk Sample package after the initial search is completed 
+                //we need to subscribe to the PropertyChanged event so we will know when the SearchState property is equal to Results (meaning that got results)
+                packageManagerViewModel.PropertyChanged += PackageManagerViewModel_PropertyChanged;          
             }
             else
             {
-                if (ownedWindow == null) return;
+
+                PackageManagerSearchView packageManager = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window) as PackageManagerSearchView;
+                if (packageManager == null)
+                    return;
+                PackageManagerSearchViewModel packageManagerViewModel = packageManager.DataContext as PackageManagerSearchViewModel;
+                if (packageManagerViewModel == null)
+                    return;
 
                 //Depending of the SetUp done in the Guides Json we will make the Clean Up or not, for example there are several Steps that use the PackageManagerSearchView then we won't close it
 
                 //The Guide is moving to FORWARD and the ExecuteCleanUpForward = false, then we don't need to close the PackageManagerSearchView
                 if (uiAutomationData.ExecuteCleanUpForward && currentFlow == GuideFlow.FORWARD)
-                    ownedWindow.Close();
+                {
+                    ClosePackageManager(packageManager);
+                }                  
 
                 //The Guide is moving to FORWARD and the ExecuteCleanUpForward = false, then we don't need to close the PackageManagerSearchView
                 if (uiAutomationData.ExecuteCleanUpBackward && currentFlow == GuideFlow.BACKWARD)
-                    ownedWindow.Close();
+                {
+                    ClosePackageManager(packageManager);
+                }
 
                 //The currentFlow = GuideFlow.CURRENT when exiting the Guide
                 if (currentFlow == GuideFlow.CURRENT)
-                    ownedWindow.Close();
+                {
+                    ClosePackageManager(packageManager);
+                }
             }
+        }
+
+        /// <summary>
+        /// This method will find the PackageManagerSearch window and then close it
+        /// </summary>
+        /// <param name="packageManager"></param>
+        private static void ClosePackageManager(PackageManagerSearchView packageManager)
+        {
+            PackageManagerSearchViewModel packageManagerViewModel = packageManager.DataContext as PackageManagerSearchViewModel;
+            if (packageManagerViewModel == null)
+                return;
+            packageManagerViewModel.PropertyChanged -= PackageManagerViewModel_PropertyChanged;
+            packageManager.Close();
+        }
+
+        /// <summary>
+        /// This method is subscribed to the PropertyChanged event so we will be notified when the SearchState changed
+        /// </summary>
+        /// <param name="sender">PackageManagerSearchViewModel</param>
+        /// <param name="e">PropertyChanged</param>
+        private static void PackageManagerViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            PackageManagerSearchViewModel packageManagerViewModel = sender as PackageManagerSearchViewModel;
+            if (packageManagerViewModel == null) return;
+            if (e.PropertyName == nameof(packageManagerViewModel.SearchState))
+            {
+                //Let wait until the initial Package Search is completed and we got results then we will search the Autodesk Sample package
+                if (packageManagerViewModel.SearchState == PackageSearchState.Results)
+                {
+                    //Put the name of the Package to be searched in the SearchTextBox
+                    packageManagerViewModel.SearchText = AutodeskSamplePackage;
+
+                    //Unsubscribe from the PropertyChanged event otherwise it will enter everytime the SearchTextBox is updated
+                    packageManagerViewModel.PropertyChanged -= PackageManagerViewModel_PropertyChanged;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// This method will subcribe the menu "Packages->Search for a Package" MenuItem to the Next event so when is pressed we will moved to the next Step
+        /// </summary>
+        /// <param name="stepInfo">Information about the Step</param>
+        /// <param name="uiAutomationData">Information about UI Automation that is being executed</param>
+        /// <param name="enableFunction">Variable used to know if we are executing the automation or undoing changes</param>
+        /// <param name="currentFlow">Current Guide Flow</param>
+        internal static void SubscribeSearchForPackagesOption(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+
+            //We try to find the WindowElementNameString (in this case the MenuItem) in the DynamoView VisualTree
+            var foundUIElement = Guide.FindChild(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo.HighlightRectArea.WindowElementNameString) as MenuItem;
+            if (foundUIElement == null)
+                return;
+            if (enableFunction)
+                //Executed then Showing the Step
+                foundUIElement.Click += SearchForPackage_Click;
+            else
+                //Just executed when exiting the Guide or when passing to the next Step
+                foundUIElement.Click -= SearchForPackage_Click;
+        }
+
+        /// <summary>
+        /// When the "Search for a Package" MenuItem is clicked this method will be executed moving to the next Step
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e"></param>
+        internal static void SearchForPackage_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentExecutingGuide.NextStep(CurrentExecutingStep.Sequence);
         }
 
         /// <summary>
@@ -235,16 +386,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             const string packageDetailsName = "Package Details";
             const string closeButtonName = "CloseButton";
-            const string packageDetailsWindowName = "PackageDetailsWindow";
+            const string packageSearchWindowName = "PackageSearch";
 
             CurrentExecutingStep = stepInfo;
             var stepMainWindow = stepInfo.MainWindow as Window;          
-            var packageDetailsWindow = Guide.FindChild(stepMainWindow, packageDetailsWindowName) as UserControl;
+            var packageDetailsWindow = Guide.FindChild(stepMainWindow, stepInfo.HostPopupInfo.HostUIElementString) as UserControl;
 
             if (enableFunction)
             {
                 //This section will open the Package Details Sidebar
-                PackageManagerSearchView packageManager = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepMainWindow) as PackageManagerSearchView;
+                PackageManagerSearchView packageManager = Guide.FindWindowOwned(packageSearchWindowName, stepMainWindow) as PackageManagerSearchView;
                 if (packageManager == null)
                     return;
                 PackageManagerSearchViewModel packageManagerViewModel = packageManager.DataContext as PackageManagerSearchViewModel;
@@ -259,10 +410,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 if (packageDetailsWindow == null)
                     packageManagerViewModel.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
+
+                //The PackageDetails sidebar is using events when is being shown then we need to execute those events before setting the Popup.PlacementTarget.
+                //otherwise the sidebar will not be present (and we don't have host for the Popup) and the Popup will be located out of the Dynamo window
+                CurrentExecutingStep.MainWindow.Dispatcher.Invoke(DispatcherPriority.Background,new Action(delegate { }));
             }
             else
             {
-                //This section will close the Package Details Sidebar (just in case is still opened)
+                //This section will close the Package Details Sidebar (just in case is still opened), 
+                //due that the sidebar (UserControl) is inserted inside a TabItem the only way to close is by using the method dynamoView.CloseExtensionTab
                 var dynamoView = (stepMainWindow as DynamoView);
                 if (packageDetailsWindow == null)
                     return;
@@ -270,6 +426,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 TabItem tabitem = dynamoView.ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == packageDetailsName);
                 if (tabitem == null)
                     return;
+                //Get the Close button from the PackageDetailsView
                 Button closeButton = Guide.FindChild(tabitem, closeButtonName) as Button;
                 if (closeButton == null)
                     return;
