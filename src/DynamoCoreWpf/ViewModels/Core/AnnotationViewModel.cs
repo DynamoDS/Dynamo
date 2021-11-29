@@ -792,7 +792,7 @@ namespace Dynamo.ViewModels
 
             CollapseConnectors();
 
-            Analytics.TrackEvent(Actions.Collapsed, Categories.GroupOperations, "Group is collapsed");
+            Analytics.TrackEvent(Actions.Collapsed, Categories.GroupOperations);
         }
 
         private void CollapseConnectors()
@@ -868,7 +868,7 @@ namespace Dynamo.ViewModels
 
             UpdateProxyPortsPosition();
 
-            Analytics.TrackEvent(Actions.Expanded, Categories.GroupOperations, "Group is expanded");
+            Analytics.TrackEvent(Actions.Expanded, Categories.GroupOperations);
         }
 
         private void UpdateFontSize(object parameter)
@@ -979,7 +979,7 @@ namespace Dynamo.ViewModels
 
         private void OnModelRemovedFromGroup(object sender, EventArgs e)
         {
-            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Node removed from Group");
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations);
             RaisePropertyChanged(nameof(ZIndex));
         }
 
