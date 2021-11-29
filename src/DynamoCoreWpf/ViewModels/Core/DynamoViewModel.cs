@@ -1229,6 +1229,20 @@ namespace Dynamo.ViewModels
             //Check for multiple groups - Delete the group and not the nodes.
             foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>().ToList())
             {
+                if (!group.IsExpanded)
+                {
+                    // If the group is not expanded we expanded
+                    // and show the group content before deleting 
+                    // the group.
+                    var viewModel = this.CurrentSpaceViewModel.Annotations
+                        .FirstOrDefault(x => x.AnnotationModel == group);
+
+                    if (viewModel is null) continue;
+
+                    viewModel.IsExpanded = true;
+                    viewModel.ShowGroupContents();
+                }
+
                 var command = new DynamoModel.DeleteModelCommand(group.GUID);
                 this.ExecuteCommand(command);
             }            
