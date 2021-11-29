@@ -2474,6 +2474,7 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.WidthAdjustment = annotationViewInfo.WidthAdjustment;
 
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
+            annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
 
             //if this group/annotation does not exist, add it to the workspace.
             var matchingAnnotation = this.Annotations.FirstOrDefault(x => x.GUID == annotationModel.GUID);
