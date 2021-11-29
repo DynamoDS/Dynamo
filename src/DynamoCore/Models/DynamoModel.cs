@@ -1125,7 +1125,7 @@ namespace Dynamo.Models
                         var executionTimeSpan = new TimeSpan(end - start);
 
                         //don't attempt to send these events unless GA is active or ADP will actually record these events.
-                        if (Logging.Analytics.ReportingGoogleAnalytics || AnalyticsService.IsADPCollectionEnabled(Actions.Run,Categories.NodeOperations))
+                        if (Logging.Analytics.ReportingAnalytics)
                         {
                             if (updateTask.ModifiedNodes != null && updateTask.ModifiedNodes.Any())
                             {

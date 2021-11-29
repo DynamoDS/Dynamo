@@ -430,6 +430,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configure Autodesk Analytics Program.
+        /// </summary>
+        public static string ConfigureADPButtonText {
+            get {
+                return ResourceManager.GetString("ConfigureADPButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Break Connections.
         /// </summary>
         public static string ConnectorContextMenuHeaderBreakConnections {

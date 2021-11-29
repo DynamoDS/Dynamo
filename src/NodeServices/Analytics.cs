@@ -58,10 +58,6 @@ namespace Dynamo.Logging
         /// </summary>
         public static bool ReportingAnalytics { get { return client != null && client.ReportingAnalytics; } }
 
-        /// <summary>
-        /// Returns if Google analytics reporting is ON.
-        /// </summary>
-        public static bool ReportingGoogleAnalytics { get { return client != null && client.ReportingGoogleAnalytics; } }
 
         /// <summary>
         /// Tracks application startup time
