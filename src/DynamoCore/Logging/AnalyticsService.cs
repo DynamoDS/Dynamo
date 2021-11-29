@@ -108,7 +108,12 @@ namespace Dynamo.Logging
         /// </summary>
         public static bool IsADPCollectionEnabled(Actions action, Categories category)
         {   
-            return (adpAnalyticsUI as ADPAnalyticsUI).IsCollectionEnabled(action.ToString(), category.ToString());
+            if(adpAnalyticsUI != null)
+            {
+                return (adpAnalyticsUI as ADPAnalyticsUI).IsCollectionEnabled(action.ToString(), category.ToString());
+
+            }
+            return false;
         }
     }
 }
