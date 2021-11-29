@@ -1662,6 +1662,9 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
             annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
             AddNewAnnotation(annotationModel);
+
+            Logging.Analytics.TrackEvent(Actions.Create, Categories.GroupOperations);
+
             HasUnsavedChanges = true;
             return annotationModel;
         }
