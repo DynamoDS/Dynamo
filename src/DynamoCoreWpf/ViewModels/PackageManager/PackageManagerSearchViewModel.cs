@@ -427,7 +427,7 @@ namespace Dynamo.PackageManager
         }
         
         /// <summary>
-        /// Sort the search results
+        /// Sort the search results in the view based on the sorting key and sorting direction.
         /// </summary>
         public void Sort()
         {
