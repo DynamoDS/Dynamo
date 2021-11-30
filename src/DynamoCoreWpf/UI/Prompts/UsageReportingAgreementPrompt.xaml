@@ -6,7 +6,7 @@
         xmlns:views="clr-namespace:Dynamo.UI.Views"
         WindowStyle="SingleBorderWindow"
         Width="544"
-        Height="640"
+        Height="620"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
@@ -20,7 +20,7 @@
             <RowDefinition Height="160"></RowDefinition>
             <RowDefinition Height="160"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="85"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="60"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -30,6 +30,7 @@
 
         <!-- The top banner image -->
         <Rectangle Grid.ColumnSpan="2"
+                   Grid.Row="0"
                    Height="100"
                    Stroke="Transparent"
                    VerticalAlignment="Top"
@@ -40,7 +41,7 @@
                       Grid.Column="0"
                       Grid.ColumnSpan="2"
                       HorizontalScrollBarVisibility="Disabled"
-                      Margin="8,8,8,0">
+                      Margin="8,8,8,15">
             <views:RichTextFile x:Name="GoogleAnalyticsConsent"
                                 IsReadOnly="True"
                                 IsEnabled="True"
@@ -51,7 +52,6 @@
                                 OpenLinksInBrowser="True"
                                 BorderThickness="0" />
         </ScrollViewer>
-
         <ScrollViewer Background="#363636" 
                       Grid.Row="2"
                       Grid.Column="0"
@@ -68,6 +68,7 @@
                                 OpenLinksInBrowser="True"
                                 BorderThickness="0" />
         </ScrollViewer>
+
 
         <CheckBox x:Name="AcceptGoogleAnalyticsCheck"
                   Grid.Row="3"
@@ -87,30 +88,25 @@
                        Text="{x:Static p:Resources.ConsentFormGoogleAnalyticsCheckBoxContent}"/>
         </CheckBox>
 
-        <CheckBox x:Name="AcceptADPAnalyticsCheck"
-                  Grid.Row="4"
-                  Grid.Column="0"
-                  Grid.ColumnSpan="2"
-                  Click="ToggleIsADPAnalyticsChecked"
-                  Visibility="Hidden"
-                  Margin="15,16,15,14"
-                  VerticalAlignment="Center"
-                  Foreground="#4790cd"
-                  FontSize="13.333"
-                  Background="White">
-            <TextBlock FontWeight="SemiBold"
-                       Foreground="#4790cd"
-                       TextWrapping="Wrap"
-                       Name="AcceptADPAnalyticsTextBlock"/>
-        </CheckBox>
+        <!--Configure ADP Consent-->
+        <Button Grid.Row="4"
+                Grid.Column="0"
+                x:Name="configure_adp_button"
+                Style="{DynamicResource ResourceKey=STextButton}"
+                VerticalAlignment="Bottom"
+                Margin="15,16,15,15"
+                Width="auto"
+                HorizontalAlignment="Left"
+                Content="{x:Static p:Resources.ConfigureADPButtonText}"
+                Click="configure_adp_button_Click" />
 
-      <!--The instrumentation checkbox will be hidden and unchecked by default-->
+        <!--The instrumentation checkbox will be hidden and unchecked by default-->
         <CheckBox x:Name="AcceptUsageReportingCheck"
-                  Grid.Row="4"
+                  Grid.Row="3"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"
                   Click="ToggleIsUsageReportingChecked"
-                  Visibility="Hidden"
+                  Visibility="Collapsed"
                   Margin="35,16,15,14"
                   VerticalAlignment="Center"
                   Foreground="#4790cd"
@@ -119,6 +115,7 @@
             <TextBlock FontWeight="SemiBold"
                        Foreground="#4790cd"
                        TextWrapping="Wrap"
+                       Visibility="Collapsed"
                        Name="AcceptUsageReportingTextBlock"/>
         </CheckBox>
 
@@ -134,7 +131,7 @@
                            Text="{x:Static p:Resources.LearnMore}" />
             </Hyperlink>
         </TextBlock>
-        
+
         <!--Continue Button-->
         <Button Grid.Row="5"
                 Grid.Column="1"

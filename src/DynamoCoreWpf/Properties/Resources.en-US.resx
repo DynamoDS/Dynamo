@@ -2978,6 +2978,9 @@ To install the latest version of a package, click Install. \n
   <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
     <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
   </data>
+  <data name="ConfigureADPButtonText" xml:space="preserve">
+    <value>Configure Autodesk Analytics Program</value>
+</data>
   <data name="GettingStartedMenuItem" xml:space="preserve">
     <value>_Getting Started</value>
   </data>
