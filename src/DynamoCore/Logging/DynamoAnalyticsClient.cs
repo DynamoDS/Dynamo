@@ -127,7 +127,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Return if Google Analytics Client is allowed to send analytics info
         /// </summary>
-        public bool ReportingGoogleAnalytics
+        private bool ReportingGoogleAnalytics
         {
             get
             {

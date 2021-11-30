@@ -35,7 +35,9 @@ namespace Dynamo.PackageManager.UI
 
             ViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
             viewModel.UnregisterTransientHandlers();
-
+            
+            // Clears the search text so that the 'Please Wait' prompt appears next time this dialog is opened.
+            viewModel.SearchText = string.Empty;
             Owner.Focus();
             base.OnClosing(e);
         }

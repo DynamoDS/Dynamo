@@ -35,17 +35,24 @@ namespace Dynamo.UI.Prompts
 
             if (viewModel.Model.PathManager.ResolveDocumentPath(ref googleAnalyticsFile))
                 GoogleAnalyticsConsent.File = googleAnalyticsFile;
+            var adpAnalyticsFile = "ADPAnalyticsConsent.rtf";
 
-            
+            if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
+                ADPAnalyticsConsent.File = adpAnalyticsFile;
+
+            //disable adp configure dialog version check fails.
+            //also disabled below id all analytics disabled.
+            configure_adp_button.IsEnabled = AnalyticsService.IsADPAvailable();
 
             AcceptGoogleAnalyticsCheck.IsChecked = UsageReportingManager.Instance.IsAnalyticsReportingApproved;
 
             if (Analytics.DisableAnalytics)
             {
-                //TODO anything to do here?
                 AcceptGoogleAnalyticsCheck.IsChecked = false;
                 AcceptGoogleAnalyticsTextBlock.IsEnabled = false;
                 AcceptGoogleAnalyticsCheck.IsEnabled = false;
+
+                configure_adp_button.IsEnabled = false;
             }
            
         }
