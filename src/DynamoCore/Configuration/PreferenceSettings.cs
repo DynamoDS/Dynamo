@@ -74,9 +74,10 @@ namespace Dynamo.Configuration
         /// Indicates whether ADP analytics reporting is approved or not.
         /// </summary>
         [XmlIgnore]
+        [Obsolete("Setter is obsolete - ADP consent should not be set directly, it should be set using the consent dialog.")]
         public bool IsADPAnalyticsReportingApproved { 
             get { return Logging.AnalyticsService.IsADPOptedIn; }
-            set { Logging.AnalyticsService.IsADPOptedIn = value; } 
+            set { throw new Exception("do not use"); } 
         }
         #endregion
 
