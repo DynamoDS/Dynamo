@@ -526,7 +526,7 @@ You will get a chance to save your work.</value>
     <comment>Edit menu | Align based on selected nodes' average X positions</comment>
   </data>
   <data name="DynamoViewEditMenuAlignXDistribute" xml:space="preserve">
-    <value>_X Distribute</value>
+    <value>X _Distribute</value>
     <comment>Edit menu | Align selected nodes evenly on horizontal direction</comment>
   </data>
   <data name="DynamoViewEditMenuAlignYAverage" xml:space="preserve">
@@ -534,7 +534,7 @@ You will get a chance to save your work.</value>
     <comment>Edit menu | Align based on selected nodes' average Y positions</comment>
   </data>
   <data name="DynamoViewEditMenuAlignYDistribute" xml:space="preserve">
-    <value>_Y Distribute</value>
+    <value>Y Di_stribute</value>
     <comment>Edit menu | Align selected nodes evenly on vertical direction</comment>
   </data>
   <data name="DynamoViewEditMenuCleanupLayout" xml:space="preserve">
@@ -965,7 +965,7 @@ You will get a chance to save your work.</value>
     <comment>View menu | Show background preview</comment>
   </data>
   <data name="DynamoViewViewMenuShowConnectors" xml:space="preserve">
-    <value>_Show Connectors</value>
+    <value>Show _Connectors</value>
     <comment>View menu | Show connectors</comment>
   </data>
   <data name="DynamoViewViewMenuShowConsole" xml:space="preserve">
@@ -1991,7 +1991,7 @@ Want to publish a different package?</value>
     <comment>Start page | Link to DynamoBIM</comment>
   </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
-    <value>_Getting Started</value>
+    <value>Getting Started</value>
   </data>
   <data name="StringInputNodeEditMenu" xml:space="preserve">
     <value>Edit...</value>
@@ -2681,7 +2681,7 @@ Delete the following packages: {2}?
     <value>Unload Failure</value>
   </data>
   <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
-    <value>_Show Tooltip</value>
+    <value>Show _Tooltip</value>
   </data>
   <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
     <value>Dismissed Alerts</value>
@@ -2977,5 +2977,8 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
     <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
+  </data>
+  <data name="GettingStartedMenuItem" xml:space="preserve">
+    <value>_Getting Started</value>
   </data>
 </root>
