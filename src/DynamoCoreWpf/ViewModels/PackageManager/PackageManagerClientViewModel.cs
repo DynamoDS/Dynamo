@@ -499,8 +499,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Warn about duplicate package conflicts depending on whether the package is 
-        /// a built-in package and whether versions match.
+        /// Warn about package conflicts.  
         /// </summary>
         /// <param name="package">package version being downloaded</param>
         /// <param name="duplicatePackage">local package found to be duplicate of one being downloaded</param>
