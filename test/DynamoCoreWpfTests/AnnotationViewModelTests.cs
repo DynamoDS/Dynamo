@@ -1115,6 +1115,35 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(ElementState.Warning, annotationViewModel.GroupState);
         }
 
+        [Test]
+        public void CollapsedGroupsUnhidesContentBeforeBeingUngrouped()
+        {
+            // Arrange
+            var groupName = "CollapsedGroup";
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var groupViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == groupName);
+            var groupModel = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.GUID == groupViewModel.AnnotationModel.GUID);
+
+            var groupIsExpandedBefore = groupViewModel.IsExpanded;
+            var collapsedStateBefore = groupViewModel.ViewModelBases
+                .Select(x => x.IsCollapsed)
+                .ToList();
+
+            // Act
+            DynamoSelection.Instance.Selection.Clear();
+            DynamoSelection.Instance.Selection.Add(groupModel);
+
+            ViewModel.UngroupAnnotationCommand.Execute(null);
+
+            var collapsedStateAfter = groupViewModel.ViewModelBases.Select(x => x.IsCollapsed);
+
+            // Assert
+            Assert.IsFalse(groupIsExpandedBefore);
+            Assert.That(collapsedStateBefore.All(x => x is true));
+            Assert.That(collapsedStateAfter.All(x => x is false));
+        }
+
         #endregion
     }
 }
