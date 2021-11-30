@@ -2,6 +2,7 @@
 using Dynamo.Models;
 using Analytics.NET.ADP;
 using Autodesk.Analytics.Core;
+using System;
 
 namespace Dynamo.Logging
 {
@@ -55,6 +56,7 @@ namespace Dynamo.Logging
 
         /// <summary>
         /// Indicates whether the user has opted-in to ADP analytics.
+        /// As of ADP4 this will return true for most users.
         /// </summary>
         internal static bool IsADPOptedIn
         {
@@ -65,9 +67,9 @@ namespace Dynamo.Logging
                 {
                     return false;
                 }
-
-                return adpAnalyticsUI.IsOptedIn();
+                return adpAnalyticsUI.IsOptedIn(150,200);
             }
+            
             set
             {
                 if (Analytics.DisableAnalytics ||
@@ -78,6 +80,12 @@ namespace Dynamo.Logging
 
                 adpAnalyticsUI.SetOptedIn(value);
             }
+            
+        }
+
+        internal static bool IsADPAvailable()
+        {
+            return adpAnalyticsUI.IsProviderAvailable();
         }
 
         /// <summary>
@@ -86,6 +94,18 @@ namespace Dynamo.Logging
         internal static void ShutDown()
         {
             Analytics.ShutDown();
+        }
+
+        /// <summary>
+        /// Show the ADP dynamic consents dialog.
+        /// </summary>
+        /// <param name="host">main window</param>
+        internal static void ShowADPConsetDialog(IntPtr? host)
+        {
+            if (!Analytics.DisableAnalytics && adpAnalyticsUI != null)
+            {
+                adpAnalyticsUI.ShowOptInDialog(System.Threading.Thread.CurrentThread.CurrentUICulture.Name, false, host);
+            }
         }
     }
 }

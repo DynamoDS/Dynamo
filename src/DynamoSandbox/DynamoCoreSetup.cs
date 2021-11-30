@@ -34,6 +34,12 @@ namespace DynamoSandbox
             var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
             var locale = StartupUtils.SetLocale(cmdLineArgs);
             _putenv(locale);
+
+            if (cmdLineArgs.DisableAnalytics)
+            {
+                Analytics.DisableAnalytics = true;
+            }
+
             commandFilePath = cmdLineArgs.CommandFilePath;
             ASMPath = cmdLineArgs.ASMPath;
             analyticsInfo = cmdLineArgs.AnalyticsInfo;
