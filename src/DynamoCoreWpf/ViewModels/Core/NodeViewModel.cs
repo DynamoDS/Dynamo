@@ -1130,7 +1130,7 @@ namespace Dynamo.ViewModels
             if (DynamoViewModel == null) return;
 
             bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning;
-            if (!NodeModel.WasInvolvedInExecution || !hasErrorOrWarning) return;
+            if (!NodeModel.WasInvolvedInExecution && !hasErrorOrWarning) return;
 
             if (ErrorBubble == null) BuildErrorBubble();
 
