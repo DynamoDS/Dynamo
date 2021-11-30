@@ -1,11 +1,10 @@
-﻿using Dynamo.Configuration;
-using Dynamo.Graph.Nodes;
+﻿using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
-using DynamoShapeManager;
+using Microsoft.Diagnostics.Runtime;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,8 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using SystemTestServices;
-using TestServices;
 
 namespace Dynamo.Tests.Loggings
 {
@@ -88,7 +85,7 @@ namespace Dynamo.Tests.Loggings
     public class DynamoAnalyticsDisableTest
     {
         [Test]
-        public void DysableAnalytics()
+        public void DisableAnalytics()
         {
             var versions = new List<Version>(){
 
@@ -98,30 +95,39 @@ namespace Dynamo.Tests.Loggings
 
             var directory = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
             var testDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
-            string openPath = Path.Combine(testDirectory, @"core\recorded\MAGN_7348_Surface.xml");
+            string openPath = Path.Combine(testDirectory, @"core\Angle.dyn");
             //go get a valid asm path.
             var locatedPath = string.Empty;
             var coreDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Process dynamoSandbox = null;
+            Process dynamoCLI = null;
 
             DynamoShapeManager.Utilities.GetInstalledAsmVersion2(versions, ref locatedPath, coreDirectory);
             try
             {
                 Assert.DoesNotThrow(() =>
                 {
-                    dynamoSandbox = Process.Start(Path.Combine(coreDirectory, "DynamoSandbox.exe"), $"-gp \"{locatedPath}\" -da -c \"{openPath}\" ");
-                    dynamoSandbox.WaitForInputIdle();
+                    dynamoCLI = Process.Start(Path.Combine(coreDirectory, "DynamoCLI.exe"), $"-gp \"{locatedPath}\" -k -da -o \"{openPath}\" ");
 
-                    Thread.Sleep(5000);// Wait 5 seconds to run the commands
+                    Thread.Sleep(5000);// Wait 5 seconds to open the dyn
+
+                    var dt = DataTarget.AttachToProcess(dynamoCLI.Id, false);
+                    var assemblies = dt
+                          .ClrVersions
+                          .Select(dtClrVersion => dtClrVersion.CreateRuntime())
+                          .SelectMany(runtime => runtime.AppDomains.SelectMany(runtimeAppDomain => runtimeAppDomain.Modules))
+                          .Select(clrModule => clrModule.AssemblyName)
+                          .Distinct()
+                          .Where(x => x != null)
+                          .ToList();
 
                     var firstASMmodulePath = string.Empty;
-                    foreach (ProcessModule module in dynamoSandbox.Modules)
+                    foreach (string module in assemblies)
                     {
-                        if (module.FileName.IndexOf("Analytics", StringComparison.OrdinalIgnoreCase) != -1)
+                        if (module.IndexOf("Analytics", StringComparison.OrdinalIgnoreCase) != -1)
                         {
                             Assert.Fail("Analytics module was loaded");
                         }
-                        if (module.FileName.IndexOf("AdpSDKCSharpWrapper", StringComparison.OrdinalIgnoreCase) != -1)
+                        if (module.IndexOf("AdpSDKCSharpWrapper", StringComparison.OrdinalIgnoreCase) != -1)
                         {
                             Assert.Fail("ADP module was loaded");
                         }
@@ -131,7 +137,7 @@ namespace Dynamo.Tests.Loggings
             finally
             {
 
-                dynamoSandbox?.Kill();
+                dynamoCLI?.Kill();
             }
         }
     }
