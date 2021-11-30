@@ -70,7 +70,8 @@
                                TextWrapping="Wrap"
                                Padding="4"
                                Margin="80,1.75,0,0"
-                               Foreground="{StaticResource SearchTextBoxBackground}"
+                               Foreground="{StaticResource AutocompletionWindowFontColor}"
+                               Background="Transparent"
                                TextAlignment="Center"
                                FontSize="14">
                         </TextBlock>
@@ -196,13 +197,13 @@
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
                                    HorizontalAlignment="Center"
                                    Height="18"
-                                   Margin="2,2,0,0"
+                                   Margin="6,2,0,0"
                                    Text="{x:Static resx:Resources.AutocompleteSearchTextBlockText}" />
 
                     </StackPanel>
 
                     <TextBox Name="SearchTextBox"
-                             Foreground="{StaticResource SearchBoxBackgroundColor}"
+                             Foreground="{StaticResource AutocompletionWindowFontColor}"
                              Background="Transparent"
                              BorderThickness="0"
                              FontSize="12"
@@ -212,7 +213,7 @@
                              Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              MinWidth="200"
                              CaretBrush="{StaticResource CommonSidebarTextColor}"
-                             Margin="20,0,0,0"
+                             Margin="15,0,0,0"
                              TextChanged="OnSearchTextBoxTextChanged" />
                 </Grid>
             </Border>

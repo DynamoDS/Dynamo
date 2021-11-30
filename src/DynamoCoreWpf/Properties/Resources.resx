@@ -2956,6 +2956,9 @@ To install the latest version of a package, click Install. \n
   <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
     <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
   </data>
+  <data name="PackagesGuideInstallAPackageText" xml:space="preserve">
+    <value>Package installations are typically quick, depending on their size and other factors. \n\n**Click Install** to install the latest version of the sample Autodesk package and proceed with this guide.</value>
+  </data>
   <data name="ConfigureADPButtonText" xml:space="preserve">
     <value>Configure Autodesk Analytics Program</value>
   </data>
