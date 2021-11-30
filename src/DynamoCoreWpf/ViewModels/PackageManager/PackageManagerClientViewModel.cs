@@ -685,11 +685,17 @@ namespace Dynamo.ViewModels
                     }
                 }).ToList();
 
+                // if any header download fails, abort
+                if (dependencyVersionHeaders.Any(x => x == null))
+                {
+                    return;
+                }
+                
                 if (!dependencyVersionHeaders.Any(x => x.name == name))
                 {// Add the main package if it does not exist
                     dependencyVersionHeaders.Add(package);
                 }
-
+                
                 var localPkgs = pmExt.PackageLoader.LocalPackages;
 
                 var uninstallsRequiringRestart = new List<Package>();
