@@ -1380,9 +1380,13 @@ If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Tr
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>Package {0} has one or more dependencies that conflict with the following packages: {1}. Dependency conflicts could cause unintended behavior to occur.
     
-Do you wish to continue installing it while keeping the packages that are already installed?
+Do you wish to continue installing it while keeping the packages that are already installed? 
+If so, please click 'Yes'.
 
-If not, {2} needs to uninstall {1} to continue. Restart {2}, then download {0} again.</value>
+If not, {2} needs to uninstall {1} to continue. Restart {2}, then download {0} again. 
+If so, please click 'No'.
+
+If you wish to cancel the download please click 'Cancel'.</value>
   </data>
   <data name="MessageUnkownErrorOpeningFile" xml:space="preserve">
     <value>Unknown error opening file: {0}</value>
@@ -2980,7 +2984,7 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="ConfigureADPButtonText" xml:space="preserve">
     <value>Configure Autodesk Analytics Program</value>
-</data>
+  </data>
   <data name="GettingStartedMenuItem" xml:space="preserve">
     <value>_Getting Started</value>
   </data>

@@ -3676,9 +3676,13 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following packages: {1}. Dependency conflicts could cause unintended behavior to occur.
         ///    
-        ///Do you wish to continue installing it while keeping the packages that are already installed?
+        ///Do you wish to continue installing it while keeping the packages that are already installed? 
+        ///If so, please click &apos;Yes&apos;.
         ///
-        ///If not, {2} needs to uninstall {1} to continue. Restart {2}, then download {0} again..
+        ///If not, {2} needs to uninstall {1} to continue. Restart {2}, then download {0} again. 
+        ///If so, please click &apos;No&apos;.
+        ///
+        ///If you wish to cancel the download please click &apos;Cancel&apos;..
         /// </summary>
         public static string MessageForceInstallOrUninstallUponRestart {
             get {

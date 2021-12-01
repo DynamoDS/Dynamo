@@ -110,28 +110,7 @@
                            Grid.Row="2"
                            Margin="0,0,20,20"
                            LastChildFill="False">
-                    <Button Name="NoButton"
-                            Width="90"
-                            Margin="0"
-                            Click="NoButton_OnClick"
-                            Content="{x:Static p:Resources.GenericTaskDialogOptionNo}"
-                            DockPanel.Dock="Right"
-                            Background="White"
-                            BorderBrush="#BFBFBF"
-                            Foreground="Black"
-                            Style="{StaticResource CtaButtonStyle}"
-                            Visibility="Collapsed" />
-                    <Button Name="YesButton"
-                            Width="90"
-                            Margin="0"
-                            Click="YesButton_OnClick"
-                            Content="{x:Static p:Resources.GenericTaskDialogOptionYes}"
-                            BorderBrush="#0696D7"
-                            Foreground="White"
-                            Background="#0696D7"
-                            DockPanel.Dock="Right"
-                            Style="{StaticResource CtaButtonStyle}"
-                            Visibility="Collapsed" />
+                    
                     <Button Name="CancelButton"
                             Width="90"
                             Margin="0"
@@ -143,6 +122,31 @@
                             Foreground="Black"
                             Style="{StaticResource CtaButtonStyle}"
                             Visibility="Collapsed" />
+                    
+                    <Button Name="NoButton"
+                            Width="90"
+                            Margin="0"
+                            Click="NoButton_OnClick"
+                            Content="{x:Static p:Resources.GenericTaskDialogOptionNo}"
+                            DockPanel.Dock="Right"
+                            Background="White"
+                            BorderBrush="#BFBFBF"
+                            Foreground="Black"
+                            Style="{StaticResource CtaButtonStyle}"
+                            Visibility="Collapsed" />
+                    
+                    <Button Name="YesButton"
+                            Width="90"
+                            Margin="0"
+                            Click="YesButton_OnClick"
+                            Content="{x:Static p:Resources.GenericTaskDialogOptionYes}"
+                            BorderBrush="#0696D7"
+                            Foreground="White"
+                            Background="#0696D7"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource CtaButtonStyle}"
+                            Visibility="Collapsed" />
+                    
                     <Button Name="OkButton"
                             Width="90"
                             Margin="0"
