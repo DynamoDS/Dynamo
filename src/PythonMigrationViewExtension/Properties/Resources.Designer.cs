@@ -125,7 +125,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph currently contains python nodes that are using the old IronPython Engine which will be deprecated in later versions.Consider updating these nodes to use the new CPython 3.7 Engine..
+        ///   Looks up a localized string similar to This graph currently contains python nodes that are using the old IronPython Engine which has been deprecated. Consider updating these nodes to use the new CPython 3.7 Engine..
         /// </summary>
         public static string IronPythonNotificationDetailedMessage {
             get {
@@ -134,7 +134,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which will be deprecated in later versions. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor..
+        ///   Looks up a localized string similar to This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which has been deprecated. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor..
         /// </summary>
         public static string IronPythonNotificationShortMessage {
             get {
