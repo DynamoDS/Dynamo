@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -162,29 +165,66 @@ namespace Dynamo.UI.Prompts
             return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
         }
 
+        internal static MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button, IEnumerable<string> buttonNames,
+            MessageBoxImage icon)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon
+            };
+
+            dynamoMessageBox.ConfigureButtons(button,buttonNames);
+            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Shows or hides buttons on the view as necessary.
         /// </summary>
         /// <param name="messageBoxButton"></param>
-        private void ConfigureButtons(MessageBoxButton messageBoxButton)
+        /// /// <param name="buttonNames">names that will be used to override the standard button names.
+        /// Number of names must match the number of visible buttons set by messageBoxButton parameter.</param>
+        private void ConfigureButtons(MessageBoxButton messageBoxButton, IEnumerable<string> buttonNames = null)
         {
             switch (messageBoxButton)
             {
                 case MessageBoxButton.OK:
+                    if(buttonNames!=null && buttonNames.Count() == 1)
+                    {
+                        OkButton.Content = buttonNames.ElementAt(0);
+                    }
                     OkButton.Visibility = Visibility.Visible;
                     break;
                 case MessageBoxButton.OKCancel:
+                    if (buttonNames != null && buttonNames.Count() == 2)
+                    {
+                        OkButton.Content = buttonNames.ElementAt(0);
+                        CancelButton.Content = buttonNames.ElementAt(1);
+                    }
                     OkButton.Visibility = Visibility.Visible;
                     CancelButton.Visibility = Visibility.Visible;
                     break;
                 case MessageBoxButton.YesNoCancel:
+                    if (buttonNames != null && buttonNames.Count() == 3)
+                    {
+                        YesButton.Content = buttonNames.ElementAt(0);
+                        NoButton.Content = buttonNames.ElementAt(1);
+                        CancelButton.Content = buttonNames.ElementAt(2);
+                    }
                     YesButton.Visibility = Visibility.Visible;
                     NoButton.Visibility = Visibility.Visible;
                     CancelButton.Visibility = Visibility.Visible;
                     break;
                 case MessageBoxButton.YesNo:
+                    if (buttonNames != null && buttonNames.Count() == 2)
+                    {
+                        YesButton.Content = buttonNames.ElementAt(0);
+                        NoButton.Content = buttonNames.ElementAt(1);
+                    }
                     YesButton.Visibility = Visibility.Visible;
                     NoButton.Visibility = Visibility.Visible;
                     break;

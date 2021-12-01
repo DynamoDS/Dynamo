@@ -112,7 +112,7 @@
                            LastChildFill="False">
                     
                     <Button Name="CancelButton"
-                            Width="90"
+                            MinWidth="90"
                             Margin="0"
                             Background="White"
                             BorderBrush="#BFBFBF"
@@ -124,7 +124,7 @@
                             Visibility="Collapsed" />
                     
                     <Button Name="NoButton"
-                            Width="90"
+                            MinWidth="90"
                             Margin="0"
                             Click="NoButton_OnClick"
                             Content="{x:Static p:Resources.GenericTaskDialogOptionNo}"
@@ -136,7 +136,7 @@
                             Visibility="Collapsed" />
                     
                     <Button Name="YesButton"
-                            Width="90"
+                            MinWidth="90"
                             Margin="0"
                             Click="YesButton_OnClick"
                             Content="{x:Static p:Resources.GenericTaskDialogOptionYes}"
@@ -148,7 +148,7 @@
                             Visibility="Collapsed" />
                     
                     <Button Name="OkButton"
-                            Width="90"
+                            MinWidth="90"
                             Margin="0"
                             Background="#0696D7"
                             Click="OkButton_OnClick"

@@ -738,11 +738,11 @@ namespace Dynamo.ViewModels
                 {
                     var conflictingPkgs = JoinPackageNames(uninstallsRequiringRestart);
                     var message = string.Format(Resources.MessageForceInstallOrUninstallUponRestart, packageToDownload,
-                        conflictingPkgs, DynamoViewModel.BrandingResourceProvider.ProductName);
+                        conflictingPkgs);
 
                     var dialogResult = MessageBoxService.Show(message,
                         Resources.LoadedPackagesConflictMessageBoxTitle,
-                        MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation);
+                        MessageBoxButton.YesNoCancel,new string[] {Resources.ContinueInstall, Resources.UninstallLoaded, Resources.GenericTaskDialogOptionCancel }, MessageBoxImage.Exclamation);
 
                     if (dialogResult == MessageBoxResult.No)
                     {
