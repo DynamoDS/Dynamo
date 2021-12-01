@@ -491,10 +491,10 @@
 					"FormattedText": "PackagesGuideDependenciesText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "right",
+					"PopupPlacement": "left",
 					"DynamicHostWindow": true,
 					"HostUIElementString": "PackageDetailsWindow",
-					"VerticalPopupOffset": 400,
+					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 0,
 					"CutOffRectArea": {
 						"WindowElementNameString": "PackageDetailsWindow",
