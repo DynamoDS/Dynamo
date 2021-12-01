@@ -39,22 +39,22 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Get Number In String
+        /// Get all of the number strings from the target string as a string
         /// </summary>
-        /// <param name="string">String to be get</param>
-        /// <returns name="str">number get in string</returns>
+        /// <param name="string">Target string to be get</param>
+        /// <returns name="str">Number In string</returns>
         /// <search>getnumber,tonumber,strtonumber,numberinstring,string2number,stringtonumber,int,double,cast</search> 
         public static string GetNumber(string @string)
         {
-            string b = string.Empty;
+            string str = string.Empty;
             List<double> result = new List<double>();
             for (int i = 0; i < @string.Length; i++)
             {
                 if (char.IsDigit(@string[i]))
-                    b += @string[i];
+                    str += @string[i];
             }
 
-            return b;
+            return str;
         }
         /// <summary>
         ///     Concatenates multiple strings into a single string.
