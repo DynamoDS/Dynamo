@@ -50,17 +50,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private const string mainGridName = "mainGrid";
         private const string libraryViewName = "Browser";
 
-        /// <summary>
-        /// This property will be used for getting the current guide being executed in other assemblies like LibraryViewExtensionMSWebBrowser
-        /// </summary>
-        public Guide CurrentGuide 
-        {
-            get 
-            {
-                return currentGuide;
-            } 
-        }
-
         internal static string GuidesExecutingDirectory
         {
             get

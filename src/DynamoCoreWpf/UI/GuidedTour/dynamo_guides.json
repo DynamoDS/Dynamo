@@ -642,7 +642,14 @@
 						"ControlType": "function",
 						"WindowName": "PopupWindow",
 						"Name": "SubscribeNextButtonClickEvent",
-						"Action": "execute"
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "NextButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "ExecuteAutomaticPackage_Click"
+							}
+						]
 					},
 					{
 						"Sequence": 2,

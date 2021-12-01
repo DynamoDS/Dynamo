@@ -574,9 +574,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         /// </summary>
         internal void MoveToNextStep()
         {
-            dynamoViewModel = (dynamoWindow.DataContext as DynamoViewModel);
-            Guide executingGuide = dynamoViewModel.MainGuideManager.CurrentGuide;
-            executingGuide.NextStep(executingGuide.CurrentStep.Sequence);
+            GuideFlowEvents.OnGuidedTourNext();
         }
 
         /// <summary>

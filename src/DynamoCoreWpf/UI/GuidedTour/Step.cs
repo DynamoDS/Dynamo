@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using Dynamo.Controls;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
@@ -447,7 +448,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
                     object[] parametersInvokeScript = new object[] { uiAutomationData.JSFunctionName, jsParameters };
                     //Execute the JS function with the provided parameters
-                    Guide.ExecuteJSFunction(MainWindow, HostPopupInfo, parametersInvokeScript);
+                    ResourceUtilities.ExecuteJSFunction(MainWindow, HostPopupInfo, parametersInvokeScript);
                     break;
             }
         }
@@ -662,7 +663,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             const string jsMethodName = "highlightLibraryItem";
             object[] parametersInvokeScript = new object[] { jsMethodName, new object[] { HostPopupInfo.HighlightRectArea.WindowElementNameString, visible } };
-            Guide.ExecuteJSFunction(MainWindow, HostPopupInfo, parametersInvokeScript);
+            ResourceUtilities.ExecuteJSFunction(MainWindow, HostPopupInfo, parametersInvokeScript);
         }
 
         /// <summary>

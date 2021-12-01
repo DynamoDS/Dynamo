@@ -11,8 +11,8 @@ using Dynamo.PackageManager.ViewModels;
 using Dynamo.ViewModels;
 using static Dynamo.PackageManager.PackageManagerSearchViewModel;
 using static Dynamo.Wpf.UI.GuidedTour.Guide;
-using Res = Dynamo.Wpf.Properties.Resources;
 using Dynamo.Wpf.Views.GuidedTour;
+using Dynamo.Utilities;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -172,7 +172,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             Delegate del = Delegate.CreateDelegate(eventInfo.EventHandlerType, validationMethods, eventHandlerMethod);
 
-            if(addEvent)
+            if (addEvent)
                 eventInfo.AddEventHandler(element, del);
             else
                 eventInfo.RemoveEventHandler(element, del);
@@ -339,13 +339,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void SubscribeNextButtonClickEvent(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
-            var nextbuttonFound = Guide.FindChild((stepInfo.StepUIPopup as PopupWindow).mainPopupGrid, "NextButton") as Button;
+            //if there is not handler then the function should return
+            if (uiAutomationData.AutomaticHandlers == null || uiAutomationData.AutomaticHandlers.Count == 0) return;
+            //Due that only one handler was configured we get the first one
+            var automaticHandler = uiAutomationData.AutomaticHandlers.FirstOrDefault();
+            //Find the NextButton inside the Popup
+            var nextbuttonFound = Guide.FindChild((CurrentExecutingStep.StepUIPopup as PopupWindow).mainPopupGrid, automaticHandler.HandlerElement) as Button;
             if (nextbuttonFound == null) return;
-            if(enableFunction)
-                nextbuttonFound.Click += ExecuteAutomaticPackage_Click;
-            else
-                nextbuttonFound.Click -= ExecuteAutomaticPackage_Click;
-                
+            //Add or Remove the handler assigned to the Button.Click
+            ManageEventHandler(nextbuttonFound, automaticHandler.HandlerElementEvent, automaticHandler.ExecuteMethod, enableFunction);
+            
         }
 
         /// <summary>
@@ -353,7 +356,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="sender">Next Button</param>
         /// <param name="e">Event Arguments</param>
-        private static void ExecuteAutomaticPackage_Click(object sender, RoutedEventArgs e)
+        internal void ExecuteAutomaticPackage_Click(object sender, RoutedEventArgs e)
         {
             CollapseExpandPackage(CurrentExecutingStep);
         }
@@ -367,7 +370,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             const string jsMethodName = "collapseExpandPackage";
             const string packageName = "Autodesk Sample";
             object[] parametersInvokeScript = new object[] { jsMethodName, new object[] { packageName } };
-            Guide.ExecuteJSFunction(stepInfo.MainWindow, stepInfo.HostPopupInfo, parametersInvokeScript);
+            ResourceUtilities.ExecuteJSFunction(stepInfo.MainWindow, stepInfo.HostPopupInfo, parametersInvokeScript);
         }
 
         /// <summary>

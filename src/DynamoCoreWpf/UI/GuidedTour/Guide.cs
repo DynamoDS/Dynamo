@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
@@ -31,7 +29,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This variable will contain the current step according to the steps flow in the Guide
         /// </summary>
-        public Step CurrentStep { get; set; }
+        internal Step CurrentStep { get; set; }
 
         /// <summary>
         /// This variable represents the total number of steps that the guide has (every guide can have a different number of steps).
@@ -165,7 +163,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This method will be executed for moving to the next step, basically searches the next step in the list, shows it and hides the current one.
         /// </summary>
         /// <param name="CurrentStepSequence">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
-        public void NextStep(int CurrentStepSequence)
+        internal void NextStep(int CurrentStepSequence)
         {
             HideCurrentStep(CurrentStepSequence, GuideFlow.FORWARD);
             if (CurrentStepSequence < TotalSteps)
@@ -235,18 +233,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This event method will be executed when the user press the Back button in the tooltip/popup
         /// </summary>
         /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the previous Step from the list</param>
-        private void GuideFlowEvents_GuidedTourPrevStep(GuidedTourMovementEventArgs args)
+        private void GuideFlowEvents_GuidedTourPrevStep()
         {
-            PreviousStep(args.StepSequence);
+            PreviousStep(CurrentStep.Sequence);
         }
 
         /// <summary>
         /// This event method will be executed then the user press the Next button in the tooltip/popup
         /// </summary>
         /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
-        private void GuideFlowEvents_GuidedTourNextStep(GuidedTourMovementEventArgs args)
+        private void GuideFlowEvents_GuidedTourNextStep()
         {
-            NextStep(args.StepSequence);
+            NextStep(CurrentStep.Sequence);
         }
 
         /// <summary>
@@ -396,41 +394,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 findWindow.Close();
         }
 
-        /// <summary>
-        /// This method will execute a javascript function located in library.hmtl using reflection.
-        /// due that we cannot include a reference to LibraryViewExtensionMSWebBrowser then we need to use reflection to get the types
-        /// </summary>
-        /// <param name="MainWindow">MainWindow in which the LibraryView is located</param>
-        /// <param name="popupInfo">Popup Information about the Step </param>
-        /// <param name="parametersInvokeScript">Parameters for the WebBrowser.InvokeScript() function</param>
-        internal static void ExecuteJSFunction(UIElement MainWindow, HostControlInfo popupInfo, object[] parametersInvokeScript)
-        {
-            const string webBrowserString = "Browser";
-            const string invokeScriptFunction = "InvokeScript";
 
-            //Try to find the grid that contains the LibraryView
-            var sidebarGrid = (MainWindow as Window).FindName(popupInfo.HostUIElementString) as Grid;
-            if (sidebarGrid == null) return;
-
-            //We need to iterate every child in the grid due that we need to apply reflection to get the Type and find the LibraryView (a reference to LibraryViewExtensionMSWebBrowser cannot be added).
-            foreach (var child in sidebarGrid.Children)
-            {
-                Type type = child.GetType();
-                if (type.Name.Equals(popupInfo.WindowName))
-                {
-                    var libraryView = child as UserControl;
-                    //get the WebBrowser instance inside the LibraryView
-                    var browser = libraryView.FindName(webBrowserString);
-                    if (browser == null) return;
-
-                    Type typeBrowser = browser.GetType();
-                    //Due that there are 2 methods with the same name "InvokeScript", then we need to get the one with 2 parameters
-                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == invokeScriptFunction && m.GetParameters().Length == 2);
-                    //Invoke the JS method located in library.html
-                    var resultHTML = methodInvokeScriptInfo.Invoke(browser, parametersInvokeScript);
-                    break;
-                }
-            }
-        }
     }
 }
