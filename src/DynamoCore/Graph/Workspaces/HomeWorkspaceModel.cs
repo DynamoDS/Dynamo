@@ -711,7 +711,7 @@ namespace Dynamo.Graph.Workspaces
             // Runtime warnings take precedence over build warnings.
             foreach (var warning in updateTask.RuntimeWarnings)
             {
-                var message = string.Join("\n", warning.Value.Select(w => w.Message));
+                var message = string.Join(Environment.NewLine, warning.Value.Select(w => w.Message));
                 messages.Add(warning.Key, message);
             }
 
@@ -839,6 +839,14 @@ namespace Dynamo.Graph.Workspaces
 
                 // The workspace has been built for the first time
                 silenceNodeModifications = false;
+
+                // An event handler we can listen to on the NodeViewModel, to update the 
+                // node's informational state. This is required because Errors and Warnings 
+                // currently fire differently from one another. 
+                foreach (NodeModel nodeModel in task.ModifiedNodes)
+                {
+                    nodeModel.OnNodeMessagesClearing();
+                }
 
                 OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);

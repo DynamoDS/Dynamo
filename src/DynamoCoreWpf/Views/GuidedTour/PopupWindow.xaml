@@ -21,7 +21,6 @@
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
-                
     </Popup.Resources>
 
     <Canvas Background="Transparent"
@@ -73,7 +72,8 @@
             </Polygon.BitmapEffect>
         </Polygon>
 
-        <Grid Width="{Binding Width}"
+        <Grid   x:Name="mainPopupGrid"
+                Width="{Binding Width}"
                 Height="{Binding Height}"
                 MinWidth="480">
             <Grid.RowDefinitions>
@@ -148,6 +148,7 @@
                             Style="{StaticResource CaretButtonStyle}">Back
                     </Button>
                     <Label Name="TourProgress"
+                           Style="{StaticResource PopupStepCounterFontStyle}"
                            Content="{Binding TourLabelProgress}"
                            HorizontalContentAlignment="Center"
                            VerticalContentAlignment="Center"

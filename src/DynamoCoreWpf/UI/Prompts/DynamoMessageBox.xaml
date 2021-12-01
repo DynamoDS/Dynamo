@@ -20,6 +20,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -65,6 +66,10 @@
                                         <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/alert_2.png" />
                                         <Setter Property="Visibility" Value="Visible" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=MessageBoxImage}" Value="{x:Static MessageBoxImage.Error}">
+                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/error-icon.png" />
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Image.Style>
@@ -105,17 +110,6 @@
                            Grid.Row="2"
                            Margin="0,0,20,20"
                            LastChildFill="False">
-                    <Button Name="YesButton"
-                            Width="90"
-                            Margin="0"
-                            Click="YesButton_OnClick"
-                            Content="{x:Static p:Resources.GenericTaskDialogOptionYes}"
-                            BorderBrush="#0696D7"
-                            Foreground="White"
-                            Background="#0696D7"
-                            DockPanel.Dock="Right"
-                            Style="{StaticResource CtaButtonStyle}"
-                            Visibility="Collapsed" />
                     <Button Name="NoButton"
                             Width="90"
                             Margin="0"
@@ -125,6 +119,17 @@
                             Background="White"
                             BorderBrush="#BFBFBF"
                             Foreground="Black"
+                            Style="{StaticResource CtaButtonStyle}"
+                            Visibility="Collapsed" />
+                    <Button Name="YesButton"
+                            Width="90"
+                            Margin="0"
+                            Click="YesButton_OnClick"
+                            Content="{x:Static p:Resources.GenericTaskDialogOptionYes}"
+                            BorderBrush="#0696D7"
+                            Foreground="White"
+                            Background="#0696D7"
+                            DockPanel.Dock="Right"
                             Style="{StaticResource CtaButtonStyle}"
                             Visibility="Collapsed" />
                     <Button Name="CancelButton"
@@ -168,10 +173,10 @@
                             <Setter Property="Background" Value="#0696D7" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=MessageBoxImage}" Value="{x:Static MessageBoxImage.Warning}">
-                            <Setter Property="Background" Value="#FAA21B" />
+                            <Setter Property="Background" Value="{StaticResource YellowOrange500Brush}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=MessageBoxImage}" Value="{x:Static MessageBoxImage.Exclamation}">
-                            <Setter Property="Background" Value="#FAA21B" />
+                            <Setter Property="Background" Value="{StaticResource YellowOrange500Brush}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=MessageBoxImage}" Value="{x:Static MessageBoxImage.Stop}">
                             <Setter Property="Background" Value="Red" />

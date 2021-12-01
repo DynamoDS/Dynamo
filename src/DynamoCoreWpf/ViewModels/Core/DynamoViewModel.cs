@@ -1229,6 +1229,20 @@ namespace Dynamo.ViewModels
             //Check for multiple groups - Delete the group and not the nodes.
             foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>().ToList())
             {
+                if (!group.IsExpanded)
+                {
+                    // If the group is not expanded we expanded
+                    // and show the group content before deleting 
+                    // the group.
+                    var viewModel = this.CurrentSpaceViewModel.Annotations
+                        .FirstOrDefault(x => x.AnnotationModel == group);
+
+                    if (viewModel is null) continue;
+
+                    viewModel.IsExpanded = true;
+                    viewModel.ShowGroupContents();
+                }
+
                 var command = new DynamoModel.DeleteModelCommand(group.GUID);
                 this.ExecuteCommand(command);
             }            
@@ -1264,7 +1278,19 @@ namespace Dynamo.ViewModels
             {
                 if (!(modelb is AnnotationModel))
                 {
-                    var command = new DynamoModel.UngroupModelCommand(modelb.GUID);
+                    var guids = new List<Guid> { modelb.GUID };
+                    if (modelb is NodeModel node)
+                    {
+                        var pinnedNotes = CurrentSpaceViewModel.Notes
+                            .Where(x => x.PinnedNode.NodeModel == node)
+                            .Select(x => x.Model.GUID);
+
+                        if (pinnedNotes.Any())
+                        {
+                            guids.AddRange(pinnedNotes);
+                        }
+                    }
+                    var command = new DynamoModel.UngroupModelCommand(guids);
                     this.ExecuteCommand(command);
                 }
             }  
@@ -1291,7 +1317,8 @@ namespace Dynamo.ViewModels
             //Check for multiple groups - Delete the group and not the nodes.
             foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>())
             {
-                if (!(modelb is AnnotationModel))
+                if (!(modelb is AnnotationModel) && 
+                    !CurrentSpace.Annotations.ContainsModel(modelb)) 
                 {
                     var command = new DynamoModel.AddModelToGroupCommand(modelb.GUID);
                     this.ExecuteCommand(command);

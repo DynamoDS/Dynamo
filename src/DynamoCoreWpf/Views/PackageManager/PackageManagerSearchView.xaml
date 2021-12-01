@@ -222,7 +222,7 @@
                 Grid.RowSpan="4"
                 Background="{StaticResource DarkMidGreyBrush}"
                 CornerRadius="4"
-                MouseDown="PreferencesPanel_MouseDown">
+                MouseDown="PackageManagerSearchView_MouseDown">
             <DockPanel HorizontalAlignment="Stretch">
                 <Button x:Name="closeButton"
                         Margin="25,20"
@@ -540,43 +540,45 @@
                                                     Padding="5,0"
                                                     BorderThickness="2"
                                                     CornerRadius="2">
-                                                <DockPanel>
-                                                    <Rectangle Width="9"
-                                                               Height="9"
-                                                               Margin="0,0,0,0"
-                                                               VerticalAlignment="Center"
-                                                               DockPanel.Dock="Left">
-                                                        <Rectangle.Style>
-                                                            <Style TargetType="Rectangle">
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="True">
-                                                                        <Setter Property="Fill">
-                                                                            <Setter.Value>
-                                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/View details - disabled.png" />
-                                                                            </Setter.Value>
-                                                                        </Setter>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="False">
-                                                                        <Setter Property="Fill">
-                                                                            <Setter.Value>
-                                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/View details.png" />
-                                                                            </Setter.Value>
-                                                                        </Setter>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Rectangle.Style>
-                                                    </Rectangle>
-                                                    <TextBlock Name="textBlock"
-                                                               Padding="4,4,4,3"
-                                                               HorizontalAlignment="Right"
-                                                               VerticalAlignment="Center"
-                                                               Cursor="Hand"
-                                                               DockPanel.Dock="Right"
-                                                               FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                               FontSize="11"
-                                                               Text="{TemplateBinding Content}" />
-                                                </DockPanel>
+                                                <Grid x:Name="viewDetailsGrid">
+                                                    <DockPanel>
+                                                        <Rectangle Width="9"
+                                                                   Height="9"
+                                                                   Margin="0,0,0,0"
+                                                                   VerticalAlignment="Center"
+                                                                   DockPanel.Dock="Left">
+                                                            <Rectangle.Style>
+                                                                <Style TargetType="Rectangle">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="True">
+                                                                            <Setter Property="Fill">
+                                                                                <Setter.Value>
+                                                                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/View details - disabled.png" />
+                                                                                </Setter.Value>
+                                                                            </Setter>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="False">
+                                                                            <Setter Property="Fill">
+                                                                                <Setter.Value>
+                                                                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/View details.png" />
+                                                                                </Setter.Value>
+                                                                            </Setter>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Rectangle.Style>
+                                                        </Rectangle>
+                                                        <TextBlock Name="textBlock"
+                                                                   Padding="4,4,4,3"
+                                                                   HorizontalAlignment="Right"
+                                                                   VerticalAlignment="Center"
+                                                                   Cursor="Hand"
+                                                                   DockPanel.Dock="Right"
+                                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                                   FontSize="11"
+                                                                   Text="{TemplateBinding Content}" />
+                                                    </DockPanel>
+                                                </Grid>
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
@@ -615,7 +617,9 @@
                                                                 Padding="5,0"
                                                                 BorderThickness="2"
                                                                 CornerRadius="2">
-                                                            <DockPanel LastChildFill="False">
+                                                            <Grid x:Name="installPackageGrid">
+
+                                                                <DockPanel LastChildFill="False">
                                                                 <TextBlock Name="textBlock"
                                                                            Padding="4,4,4,3"
                                                                            VerticalAlignment="Center"
@@ -669,6 +673,8 @@
                                                                     </Rectangle.Style>
                                                                 </Rectangle>
                                                             </DockPanel>
+
+                                                            </Grid>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
@@ -716,7 +722,7 @@
                                                         <Setter Property="Foreground" Value="#999999" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Path=Model.IsDeprecated}" Value="False">
-                                                        <Setter Property="Foreground" Value="#DFDFDF" />
+                                                        <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}" />
                                                     </DataTrigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="TextDecorations" Value="Underline" />
@@ -736,7 +742,7 @@
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
                                             Background="Transparent"
-                                            BorderBrush="#DFDFDF"
+                                            BorderBrush="{StaticResource PrimaryCharcoal200Brush}"
                                             BorderThickness="1"
                                             CornerRadius="3"
                                             Visibility="{Binding Path=Model.LatestVersionCreated, Converter={StaticResource DateToVisibilityCollapsedConverter}}">
@@ -746,7 +752,7 @@
                                                    VerticalAlignment="Center"
                                                    FontFamily="{StaticResource ArtifaktElementRegular}"
                                                    FontSize="11"
-                                                   Foreground="#DFDFDF"
+                                                   Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                                    Text="{Binding Path=Model, Converter={StaticResource DateToPackageLabelCollapsedConverter}}" />
                                     </Border>
                                 </Grid>

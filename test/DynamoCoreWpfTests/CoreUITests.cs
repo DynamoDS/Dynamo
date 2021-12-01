@@ -925,10 +925,12 @@ namespace DynamoCoreWpfTests
 
             // show in-canvas search
             ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+            DispatcherUtil.DoEvents();
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
 
             // open context menu
             RightClick(currentWs.zoomBorder);
+            DispatcherUtil.DoEvents();
 
             Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
             Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
@@ -948,6 +950,8 @@ namespace DynamoCoreWpfTests
 
             var searchControl = currentWs.ChildrenOfType<Popup>().Select(x => (x as Popup)?.Child as InCanvasSearchControl).Where(c => c != null).FirstOrDefault();
             Assert.IsNotNull(searchControl);
+
+            DispatcherUtil.DoEvents();
 
             int count = 0;
             (searchControl.DataContext as SearchViewModel).SearchCommand = new Dynamo.UI.Commands.DelegateCommand((object _) => { count++; });
@@ -969,11 +973,13 @@ namespace DynamoCoreWpfTests
 
             // set dummy content for search text
             currentWs.ViewModel.InCanvasSearchViewModel.SearchText = "dummy";
+            DispatcherUtil.DoEvents();
             Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
             Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
 
             // show in-canvas search
             ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+            DispatcherUtil.DoEvents();
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
 
             // check if search text is still empty

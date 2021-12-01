@@ -412,7 +412,7 @@ namespace Dynamo.PackageManager
             ClearDownloadToastNotificationCommand = new DelegateCommand<object>(ClearDownloadToastNotification);
             SearchText = string.Empty;
             SortingKey = PackageSortingKey.LastUpdate;
-            SortingDirection = PackageSortingDirection.Ascending;
+            SortingDirection = PackageSortingDirection.Descending;
             HostFilter = new List<FilterEntry>();
             SelectedHosts = new List<string>();
         }
@@ -427,7 +427,7 @@ namespace Dynamo.PackageManager
         }
         
         /// <summary>
-        /// Sort the search results
+        /// Sort the search results in the view based on the sorting key and sorting direction.
         /// </summary>
         public void Sort()
         {
@@ -511,7 +511,11 @@ namespace Dynamo.PackageManager
         /// <param name="obj"></param>
         public void ViewPackageDetails(object obj)
         {
-            // to be implemented in future PR   
+            if (!(obj is PackageManagerSearchElement packageManagerSearchElement)) return;
+
+            PackageManagerClientViewModel
+                .DynamoViewModel
+                .OnViewExtensionOpenWithParameterRequest("Package Details", packageManagerSearchElement);
         }
 
         /// <summary>
@@ -792,6 +796,8 @@ namespace Dynamo.PackageManager
                 this.AddToSearchResults(result);
             }
 
+            this.Sort();
+
             SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
         }
 
@@ -891,7 +897,13 @@ namespace Dynamo.PackageManager
                         PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
                         CanInstallPackage(x.Name), isEnabledForInstall)))
                     .ToList();
+
                 Sort(list, this.SortingKey);
+
+                if (SortingDirection == PackageSortingDirection.Descending)
+                {
+                    list.Reverse();
+                }
             }
 
             foreach (var x in list)
@@ -912,13 +924,13 @@ namespace Dynamo.PackageManager
                     results.Sort((e1, e2) => e1.Model.Name.ToLower().CompareTo(e2.Model.Name.ToLower()));
                     break;
                 case PackageSortingKey.Downloads:
-                    results.Sort((e1, e2) => e2.Model.Downloads.CompareTo(e1.Model.Downloads));
+                    results.Sort((e1, e2) => e1.Model.Downloads.CompareTo(e2.Model.Downloads));
                     break;
                 case PackageSortingKey.LastUpdate:
-                    results.Sort((e1, e2) => e2.Versions.Last().Item1.created.CompareTo(e1.Versions.Last().Item1.created));
+                    results.Sort((e1, e2) => e1.Versions.Last().Item1.created.CompareTo(e2.Versions.Last().Item1.created));
                     break;
                 case PackageSortingKey.Votes:
-                    results.Sort((e1, e2) => e2.Model.Votes.CompareTo(e1.Model.Votes));
+                    results.Sort((e1, e2) => e1.Model.Votes.CompareTo(e2.Model.Votes));
                     break;
                 case PackageSortingKey.Maintainers:
                     results.Sort((e1, e2) => e1.Model.Maintainers.ToLower().CompareTo(e2.Model.Maintainers.ToLower()));
