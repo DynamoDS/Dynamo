@@ -155,12 +155,7 @@ namespace ProtoFFI
             {
                 try
                 {
-                    var module = helpers[FFILanguage.CSharp].getModule(dllModuleName);
-                    if (module != null)
-                    {
-                        Modules.Add(moduleFileName, module);
-                    }
-                    else return null;
+                    Modules.Add(moduleFileName, helpers[FFILanguage.CSharp].getModule(dllModuleName));
                 }
                 catch(System.IO.FileLoadException e)
                 {

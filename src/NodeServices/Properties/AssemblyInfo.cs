@@ -31,4 +31,3 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoPythonTests")]
 [assembly: InternalsVisibleTo("IronPythonTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
-[assembly: InternalsVisibleTo("DynamoSandbox")]

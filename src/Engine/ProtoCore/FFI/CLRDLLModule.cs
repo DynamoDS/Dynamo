@@ -1192,19 +1192,14 @@ namespace ProtoFFI
                 }
                 catch(System.IO.FileLoadException exception)
                 {
-                    // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL. Please seee the following link for details:
+                    // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL. 
                     if (exception.HResult == unchecked((int)0x80131515))
                     {
-                        //DynamoServices.LoadLibraryEvents.OnLoadLibraryFailure(
-                        //    string.Format(ProtoCore.Properties.Resources.LibraryLoadFailureForBlockedAssembly, exception.Message));
-
-                        //return module;
                         throw exception;
                     }
                 }
                 catch (System.Exception exception)
                 {
-                    
                     System.Diagnostics.Debug.WriteLine(exception.Message);
                     System.Diagnostics.Debug.WriteLine(exception.StackTrace);
                     throw new System.Exception(string.Format("Fail to load library: {0}.", name));

@@ -1862,17 +1862,6 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}
-        ///
-        ///The assembly is likely blocked. Try restarting Dynamo after unblocking the assembly. If you are running a downloaded DynamoSandbox build by unzipping the .zip file, try using 7zip to unzip the Dynamo binaries and try again..
-        /// </summary>
-        public static string LibraryLoadFailureForBlockedAssembly {
-            get {
-                return ResourceManager.GetString("LibraryLoadFailureForBlockedAssembly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Method &apos;{0}&apos; has been deprecated, please use method &apos;{1}&apos; instead with Dictionary type.
         /// </summary>
         public static string ListMethodDeprecated {
