@@ -682,7 +682,8 @@ namespace DynamoCoreWpfTests
 
             var newPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
             // This function is called upon addition of new package paths in the UI.
-            loader.LoadCustomNodesAndPackages(newPaths, loadPackageParams.Preferences, currentDynamoModel.CustomNodeManager);
+            loader.LoadCustomNodesAndPackages(newPaths, loadPackageParams.Preferences.CustomPackageFolders, 
+                currentDynamoModel.CustomNodeManager, loadPackageParams.Preferences.PackageDirectoriesToUninstall);
             Assert.AreEqual(4, loader.LocalPackages.Count());
 
             var dlgMock = new Mock<MessageBoxService.IMessageBox>();

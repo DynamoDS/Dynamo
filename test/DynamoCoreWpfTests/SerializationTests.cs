@@ -1007,7 +1007,8 @@ namespace DynamoCoreWpfTests
             this.ViewModel.Model.PreferenceSettings.CustomPackageFolders = new List<string>() { Path.Combine(Path.GetTempPath(), "NewCustomNodeSaveAndLoad") };
 
             var loader = this.ViewModel.Model.GetPackageManagerExtension().PackageLoader;
-            loader.LoadCustomNodesAndPackages(new List<string>(), ViewModel.Model.PreferenceSettings, this.ViewModel.Model.CustomNodeManager);
+            loader.LoadCustomNodesAndPackages(new List<string>(), ViewModel.Model.PreferenceSettings.CustomPackageFolders, 
+                this.ViewModel.Model.CustomNodeManager, ViewModel.Model.PreferenceSettings.PackageDirectoriesToUninstall);
             // This unit test is a follow-up of NewCustomNodeSaveAndLoadPt1 test to make sure the newly created
             // custom node will be loaded once DynamoCore restarted
             var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");

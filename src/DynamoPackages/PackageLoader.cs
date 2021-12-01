@@ -373,12 +373,13 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// This method is called when custom nodes and packages need to be reloaded if there are new package paths.
         /// </summary>
-        /// <param name="newPaths"></param>
-        /// <param name="preferences"></param>
+        /// <param name="packagePaths"></param>
+        /// <param name="nodePaths"></param>
         /// <param name="customNodeManager"></param>
-        public void LoadCustomNodesAndPackages(IEnumerable<string> newPaths, IPreferences preferences, CustomNodeManager customNodeManager)
+        public void LoadCustomNodesAndPackages(IEnumerable<string> packagePaths, IEnumerable<string> nodePaths, 
+            CustomNodeManager customNodeManager, IEnumerable<string> uninstallPackageDir = null, bool checkPathInPathManager = true)
         {
-            foreach (var path in preferences.CustomPackageFolders)
+            foreach (var path in nodePaths)
             {
                 // Append the definitions subdirectory for custom nodes.
                 var dir = path == DynamoModel.BuiltInPackagesToken ? PathManager.BuiltinPackagesDirectory : path;
@@ -387,13 +388,19 @@ namespace Dynamo.PackageManager
                 customNodeManager.AddUninitializedCustomNodesInPath(dir, false, false);
             }
 
-            foreach (var path in newPaths)
+            foreach (var path in packagePaths)
             {
-                var packageDirectory = pathManager.PackagesDirectories.FirstOrDefault(x => x.StartsWith(path));
-                if (packageDirectory != null)
+                var packageDirectory = path;
+                if (checkPathInPathManager)
                 {
-                    ScanPackageDirectories(packageDirectory, preferences);
+                    packageDirectory = pathManager.PackagesDirectories.FirstOrDefault(x => x.StartsWith(path));
+                    if (packageDirectory == null)
+                    {
+                        continue;
+                    }
                 }
+
+                ScanPackageDirectories(packageDirectory, uninstallPackageDir);
             }
 
             if (pathManager != null)
@@ -410,8 +417,8 @@ namespace Dynamo.PackageManager
 
             if (LocalPackages.Any())
             {
-                // Load only those recently addeed local packages (that are located in any of the new paths)
-                var newPackages = LocalPackages.Where(x => newPaths.Any(y => x.RootDirectory.Contains(y)));
+                // Load only local packages that are located in any of the new paths
+                var newPackages = LocalPackages.Where(x => packagePaths.Any(y => x.RootDirectory.Contains(y)));
                 LoadPackages(newPackages);
             }
         }
@@ -443,12 +450,12 @@ namespace Dynamo.PackageManager
                 }
                 else
                 {
-                    ScanPackageDirectories(packagesDirectory, preferences);
+                    ScanPackageDirectories(packagesDirectory, preferences.PackageDirectoriesToUninstall);
                 }
             }
         }
 
-        private void ScanPackageDirectories(string root, IPreferences preferences)
+        private void ScanPackageDirectories(string root, IEnumerable<string> uninstallPackageDirs)
         {
             try
             {
@@ -488,7 +495,7 @@ namespace Dynamo.PackageManager
                     }
 
                     var pkg = ScanPackageDirectory(dir, checkCertificates);
-                    if (pkg != null && preferences.PackageDirectoriesToUninstall.Contains(dir))
+                    if (pkg != null && uninstallPackageDirs != null && uninstallPackageDirs.Contains(dir))
                     {
                         if (pkg.BuiltInPackage)
                         {

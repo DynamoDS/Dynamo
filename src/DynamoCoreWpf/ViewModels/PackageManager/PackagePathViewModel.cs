@@ -256,14 +256,14 @@ namespace Dynamo.ViewModels
                 PreferenceSettings.CustomPackageFolders = newpaths;
                 if (packageLoader != null)
                 {
-                    packageLoader.LoadCustomNodesAndPackages(additionalPaths, PreferenceSettings, customNodeManager);
+                    packageLoader.LoadCustomNodesAndPackages(additionalPaths, PreferenceSettings.CustomPackageFolders, customNodeManager, PreferenceSettings.PackageDirectoriesToUninstall);
                 }
             }
             // Load packages from paths enabled by disable-path toggles if they are not already loaded.
             if (packageLoader != null && packagePathsEnabled.Any())
             {
                 var newPaths = packagePathsEnabled.Except(additionalPaths);
-                packageLoader.LoadCustomNodesAndPackages(newPaths, PreferenceSettings, customNodeManager);
+                packageLoader.LoadCustomNodesAndPackages(newPaths, PreferenceSettings.CustomPackageFolders, customNodeManager, PreferenceSettings.PackageDirectoriesToUninstall);
             }
             packagePathsEnabled.Clear();
         }
