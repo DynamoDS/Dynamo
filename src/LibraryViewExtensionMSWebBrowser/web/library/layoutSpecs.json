@@ -64,6 +64,9 @@
                   "path": "DSCoreNodes.DSCore.List.IsEmpty"
                 },
                 {
+                  "path": "DSCoreNodes.DSCore.List.IsNullOrEmpty"
+                },
+                {
                   "path": "DSCoreNodes.DSCore.List.IndexOf"
                 },
                 {
