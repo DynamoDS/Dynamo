@@ -762,28 +762,12 @@ namespace DSCore
         ///     Determines if the given list is empty.
         /// </summary>
         /// <param name="list">List to be checked if it is empty</param>
-        /// <returns name="bool">True if list is empty, false if it isn't</returns>
+        /// <returns name="bool">True if list is empty, false if it isnt</returns>
         /// <search>test,is,empty,null,count</search>
         [IsVisibleInDynamoLibrary(true)]
         public static bool IsEmpty(IList list)
         {
             return list.Count == 0;
-        }
-
-        /// <summary>
-        ///  Determines if the given list is null or empty.
-        /// </summary>
-        /// <param name="list">List to be checked if it is empty or null</param>
-        /// <returns name="bool">True if list is empty or null, false if it isn't</returns>
-        /// <search>test,is,empty,null,count</search>
-        [IsVisibleInDynamoLibrary(true)]
-        public static bool IsNullOrEmpty(IList list)
-        {
-            bool flag1 = list == null;
-            if (flag1) return true;
-            bool flag2 = list.Cast<object>().All(x => x == null);
-            if (flag2) return true;
-            return IsEmpty(list);
         }
 
         /// <summary>
