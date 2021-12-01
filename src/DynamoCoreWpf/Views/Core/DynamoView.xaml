@@ -248,7 +248,7 @@
                                             </Grid.ColumnDefinitions>
                                             <ContentPresenter Name="HeaderHost"
                                                               Grid.Column="0"
-                                                              TextBlock.FontSize="16px"
+                                                              TextBlock.FontSize="14px"
                                                               TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}"
                                                               TextBlock.Foreground="{StaticResource NormalForegroundBrush}"
                                                               Margin="5,0,0,0"
@@ -561,7 +561,7 @@
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
                               Name="HelpMenu"
                               Focusable="False">
-                        <MenuItem Header="{x:Static p:Resources.StartPageWhatsNew}"
+                        <MenuItem Header="{x:Static p:Resources.GettingStartedMenuItem}"
                                   Name="WhatsNew"
                                   Command="{Binding ShowGalleryCommand}">
                         </MenuItem>

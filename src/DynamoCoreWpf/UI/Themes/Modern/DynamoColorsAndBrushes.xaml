@@ -91,7 +91,7 @@
 
     <!-- Node Autocomplete -->
     <SolidColorBrush x:Key="autocompletionWindow" Color="#535353" />
-    <SolidColorBrush x:Key="autocompletionWindowFont" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="AutocompletionWindowFontColor" Color="#F5F5F5" />
 
     <!--  Update Manager  -->
     <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed" />

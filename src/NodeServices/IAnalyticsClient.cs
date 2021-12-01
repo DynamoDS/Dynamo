@@ -101,6 +101,11 @@ namespace Dynamo.Logging
         /// Events Category related to saved Workspace References
         /// </summary>
         WorkspaceReferences,
+
+        /// <summary>
+        /// Events Category related to saved Groups
+        /// </summary>
+        GroupOperations,
     }
 
     /// <summary>
@@ -271,6 +276,42 @@ namespace Dynamo.Logging
         /// KeepOldPackage event, when an external refrence is saved in a workspace
         /// </summary>
         ExternalReferences,
+
+        /// <summary>
+        /// Ungroup event, when an group is Ungrouped
+        /// </summary>
+        Ungroup,
+
+        /// <summary>
+        /// Expand event, when an group is Expanded
+        /// </summary>
+        Expanded,
+
+        /// <summary>
+        /// Collapse event, when an group is Collapsed
+        /// </summary>
+        Collapsed,
+
+        /// <summary>
+        /// AddedTo event, when a node is added to the group
+        /// </summary>
+        AddedTo,
+
+        /// <summary>
+        /// RemovedFrom event, when a node is removed from the group
+        /// </summary>
+        RemovedFrom,
+
+        /// <summary>
+        /// GroupAddedTo event, when a group is added to the group
+        /// </summary>
+        GroupAddedTo,
+
+        /// <summary>
+        /// GroupRemovedFrom event, when a group is removed from the group
+        /// </summary>
+        GroupRemovedFrom,
+
     }
 
     /// <summary>

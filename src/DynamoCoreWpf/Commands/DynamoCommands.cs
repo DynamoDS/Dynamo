@@ -147,7 +147,7 @@ namespace Dynamo.ViewModels
                     throw new InvalidOperationException("Unhandled command name");
             }
 
-            if (Dynamo.Logging.Analytics.ReportingAnalytics && !command.IsInPlaybackMode)
+            if (Logging.Analytics.ReportingAnalytics && !command.IsInPlaybackMode)
             {
                 command.TrackAnalytics();
             }
