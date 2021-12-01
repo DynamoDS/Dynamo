@@ -52,7 +52,6 @@ namespace DynamoSandbox
                 DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
                 DynamoModel model;
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
-                DynamoServices.LoadLibraryEvents.LoadLibraryFailure += LoadLibraryEvents_LoadLibraryFailure;
                 model = Dynamo.Applications.StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
 
                 viewModel = DynamoViewModel.Start(
@@ -75,7 +74,6 @@ namespace DynamoSandbox
 
                 DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
-                DynamoServices.LoadLibraryEvents.LoadLibraryFailure -= LoadLibraryEvents_LoadLibraryFailure;
 
             }
             catch(FileLoadException e)
@@ -84,8 +82,8 @@ namespace DynamoSandbox
                 // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL. Please seee the following link for details:
                 if (e.HResult == unchecked((int)0x80131515))
                 {
-                    DynamoServices.LoadLibraryEvents.OnLoadLibraryFailure(
-                        string.Format(Resources.LibraryLoadFailureForBlockedAssembly, e.Message));
+                    var failureMessage = string.Format(Resources.LibraryLoadFailureForBlockedAssembly, e.Message);
+                    MessageBox.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
 
                     Debug.WriteLine(e.Message);
                     Debug.WriteLine(e.StackTrace);
@@ -142,11 +140,6 @@ namespace DynamoSandbox
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
             }
-        }
-
-        private void LoadLibraryEvents_LoadLibraryFailure(string failureMessage)
-        {
-            MessageBox.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         private void ASMPreloadFailureHandler(string failureMessage)

@@ -193,23 +193,7 @@ namespace Dynamo.Engine
             importedLibraries.AddRange(preloadLibraries);
 
             foreach (var library in importedLibraries)
-            {
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
-                //try
-                //{
-                    
-                //}
-                //catch(Exception exception)
-                //{
-                //    // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL. Please seee the following link for details:
-                //    if (exception.HResult == unchecked((int)0x80131515))
-                //    {
-                //        DynamoServices.LoadLibraryEvents.OnLoadLibraryFailure(
-                //            string.Format(ProtoCore.Properties.Resources.LibraryLoadFailureForBlockedAssembly, exception.Message));
-
-                //    }
-                //}
-            }
         }
 
         internal bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)
