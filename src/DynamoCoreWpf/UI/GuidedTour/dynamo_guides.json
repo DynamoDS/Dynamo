@@ -643,6 +643,8 @@
 						"WindowName": "PopupWindow",
 						"Name": "SubscribeNextButtonClickEvent",
 						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Autodesk Sample" ],
 						"AutomaticHandlers": [
 							{
 								"HandlerElement": "NextButton",

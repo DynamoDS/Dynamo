@@ -2963,7 +2963,7 @@ To install the latest version of a package, click Install. \n
     <value>Navigate to packages</value>
   </data>
   <data name="PackagesGuideSurveyText" xml:space="preserve">
-    <value>Learn more about packages in the online help</value>
+    <value>Learn more about packages in the #online help=https://dynamobim.org/issues/extend-dynamo-with-packages</value>
   </data>
   <data name="PackagesGuideSurveyTitle" xml:space="preserve">
     <value>Finished</value>

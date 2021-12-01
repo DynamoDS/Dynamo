@@ -5299,7 +5299,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn more about packages in the online help.
+        ///   Looks up a localized string similar to Learn more about packages in the #online help=https://dynamobim.org/issues/extend-dynamo-with-packages.
         /// </summary>
         public static string PackagesGuideSurveyText {
             get {

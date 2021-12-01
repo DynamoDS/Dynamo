@@ -367,9 +367,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static void CollapseExpandPackage(Step stepInfo)
         {
             CurrentExecutingStep = stepInfo;
-            const string jsMethodName = "collapseExpandPackage";
-            const string packageName = "Autodesk Sample";
-            object[] parametersInvokeScript = new object[] { jsMethodName, new object[] { packageName } };
+            var firstUIAutomation = stepInfo.UIAutomation.FirstOrDefault();
+            if (firstUIAutomation == null) return;
+            object[] parametersInvokeScript = new object[] { firstUIAutomation.JSFunctionName, new object[] { firstUIAutomation.JSParameters.FirstOrDefault() } };
             ResourceUtilities.ExecuteJSFunction(stepInfo.MainWindow, stepInfo.HostPopupInfo, parametersInvokeScript);
         }
 
