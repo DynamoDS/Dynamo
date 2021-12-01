@@ -5,8 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Input;
+using System.Windows.Media;
 using Dynamo.Controls;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
@@ -371,6 +374,35 @@ namespace DynamoCoreWpfTests
         {
             //get the name,this will sometimes cause another propertyChanged event
              var temp = (sender as NodeViewModel).Name;
+        }
+
+
+        /// <summary>
+        /// Tests the GetWarningColor method to ensure that the node's WarningBar displays
+        /// the proper colors when a node is displaying Info/Warning/Error messages.
+        /// </summary>
+        [Test]
+        public void WarningColorReflectsElementState()
+        {
+            // Arrange
+            var node = new CoreNodeModels.Input.DoubleInput();
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(node, true);
+
+            var nodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes.First();
+
+            SolidColorBrush infoBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6AC0E7"));
+            SolidColorBrush warningBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FAA21B"));
+            SolidColorBrush errorBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EB5555"));
+
+            NodeViewModel dummyNodeViewModel = nodeViewModel;
+
+            // Assert
+            Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.None), null);
+            Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.Info).ToString(), infoBrush.ToString());
+            Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.Warning).ToString(), warningBrush.ToString());
+            Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.WarningCondensed).ToString(), warningBrush.ToString());
+            Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.Error).ToString(), errorBrush.ToString());
+            Assert.AreEqual(dummyNodeViewModel.GetWarningColor(InfoBubbleViewModel.Style.ErrorCondensed).ToString(), errorBrush.ToString());
         }
     }
 }

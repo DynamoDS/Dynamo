@@ -412,7 +412,7 @@ namespace Dynamo.PackageManager
             ClearDownloadToastNotificationCommand = new DelegateCommand<object>(ClearDownloadToastNotification);
             SearchText = string.Empty;
             SortingKey = PackageSortingKey.LastUpdate;
-            SortingDirection = PackageSortingDirection.Ascending;
+            SortingDirection = PackageSortingDirection.Descending;
             HostFilter = new List<FilterEntry>();
             SelectedHosts = new List<string>();
         }
@@ -427,7 +427,7 @@ namespace Dynamo.PackageManager
         }
         
         /// <summary>
-        /// Sort the search results
+        /// Sort the search results in the view based on the sorting key and sorting direction.
         /// </summary>
         public void Sort()
         {
@@ -796,6 +796,8 @@ namespace Dynamo.PackageManager
                 this.AddToSearchResults(result);
             }
 
+            this.Sort();
+
             SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
         }
 
@@ -895,7 +897,13 @@ namespace Dynamo.PackageManager
                         PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
                         CanInstallPackage(x.Name), isEnabledForInstall)))
                     .ToList();
+
                 Sort(list, this.SortingKey);
+
+                if (SortingDirection == PackageSortingDirection.Descending)
+                {
+                    list.Reverse();
+                }
             }
 
             foreach (var x in list)

@@ -169,15 +169,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autodesk sample.
-        /// </summary>
-        public static string AutodeskSamplePackage {
-            get {
-                return ResourceManager.GetString("AutodeskSamplePackage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Autodesk Sign In.
         /// </summary>
         public static string AutodeskSignIn {
@@ -435,6 +426,15 @@ namespace Dynamo.Wpf.Properties {
         public static string CompactLayoutTitle {
             get {
                 return ResourceManager.GetString("CompactLayoutTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure Autodesk Analytics Program.
+        /// </summary>
+        public static string ConfigureADPButtonText {
+            get {
+                return ResourceManager.GetString("ConfigureADPButtonText", resourceCulture);
             }
         }
         
@@ -936,7 +936,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add-ons Category.
+        ///   Looks up a localized string similar to Add-Ons Category.
         /// </summary>
         public static string CustomNodePropertyWindowCategory {
             get {
@@ -1307,7 +1307,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _X Distribute.
+        ///   Looks up a localized string similar to X _Distribute.
         /// </summary>
         public static string DynamoViewEditMenuAlignXDistribute {
             get {
@@ -1325,7 +1325,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Y Distribute.
+        ///   Looks up a localized string similar to Y Di_stribute.
         /// </summary>
         public static string DynamoViewEditMenuAlignYDistribute {
             get {
@@ -2189,7 +2189,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Show Tooltip.
+        ///   Looks up a localized string similar to Show _Tooltip.
         /// </summary>
         public static string DynamoViewViewMenuConnectorShowTooltip {
             get {
@@ -2297,7 +2297,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Show Connectors.
+        ///   Looks up a localized string similar to Show _Connectors.
         /// </summary>
         public static string DynamoViewViewMenuShowConnectors {
             get {
@@ -2822,6 +2822,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Getting Started.
+        /// </summary>
+        public static string GettingStartedMenuItem {
+            get {
+                return ResourceManager.GetString("GettingStartedMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel and Show Issues.
         /// </summary>
         public static string GraphIssuesOnSave_CancelBtn {
@@ -2939,7 +2948,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Ungroup.
+        ///   Looks up a localized string similar to Ungr_oup.
         /// </summary>
         public static string GroupContextMenuUngroup {
             get {
@@ -5216,6 +5225,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package installations are typically quick, depending on their size and other factors. \n\n**Click Install** to install the latest version of the sample Autodesk package and proceed with this guide..
+        /// </summary>
+        public static string PackagesGuideInstallAPackageText {
+            get {
+                return ResourceManager.GetString("PackagesGuideInstallAPackageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package installations are typically quick, depending on their size and other factors. \n
         ///To install the latest version of a package, click Install. \n
         ///%./UI/Images/alert.png% The sample Autodesk package is already installed on your computer..
@@ -6632,6 +6650,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirmation.
         /// </summary>
         public static string SaveConfirmationMessageBoxTitle {
@@ -7064,7 +7091,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Getting Started.
+        ///   Looks up a localized string similar to Getting Started.
         /// </summary>
         public static string StartPageWhatsNew {
             get {

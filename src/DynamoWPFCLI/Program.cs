@@ -16,6 +16,11 @@ namespace DynamoWPFCLI
             {
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
+                if (cmdLineArgs.DisableAnalytics)
+                {
+                    Dynamo.Logging.Analytics.DisableAnalytics = true;
+                }
+
                 DynamoModel model;
                 if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
                 {
