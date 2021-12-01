@@ -813,4 +813,9 @@ This package has not been loaded because another conflicting package was loaded 
   <data name="NodeUnhandledMsg" xml:space="preserve">
     <value>Unhandled 'DummyNode.NodeNature' value: {0}</value>
   </data>
+  <data name="LibraryLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+The assembly is likely blocked. Try restarting Dynamo after unblocking the assembly. If you are running a downloaded DynamoSandbox build by unzipping the .zip file, try using 7zip to unzip the Dynamo binaries and try again.</value>
+  </data>
 </root>

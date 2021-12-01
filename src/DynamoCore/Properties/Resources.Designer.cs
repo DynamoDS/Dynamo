@@ -945,6 +945,17 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}
+        ///
+        ///The assembly is likely blocked. Try restarting Dynamo after unblocking the assembly. If you are running a downloaded DynamoSandbox build by unzipping the .zip file, try using 7zip to unzip the Dynamo binaries and try again..
+        /// </summary>
+        public static string LibraryLoadFailureForBlockedAssembly {
+            get {
+                return ResourceManager.GetString("LibraryLoadFailureForBlockedAssembly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot find library path: {0}..
         /// </summary>
         public static string LibraryPathCannotBeFound {

@@ -1169,6 +1169,8 @@ namespace Dynamo.Models
             LibraryServices.MessageLogged -= LogMessage;
             LibraryServices.LibraryLoaded -= LibraryLoaded;
 
+            
+
             EngineController.VMLibrariesReset -= ReloadDummyNodes;
 
             UpdateManager.Log -= UpdateManager_Log;

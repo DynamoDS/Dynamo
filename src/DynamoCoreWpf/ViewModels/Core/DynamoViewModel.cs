@@ -639,7 +639,7 @@ namespace Dynamo.ViewModels
 
         public static DynamoViewModel Start(StartConfiguration startConfiguration = new StartConfiguration())
         {
-            if(startConfiguration.DynamoModel == null) 
+            if (startConfiguration.DynamoModel == null) 
                 startConfiguration.DynamoModel = DynamoModel.Start();
 
             if(startConfiguration.WatchHandler == null)
@@ -655,6 +655,11 @@ namespace Dynamo.ViewModels
             }
 
             return new DynamoViewModel(startConfiguration);
+        }
+
+        private static void LoadLibraryEvents_LoadLibraryFailure(string failureMessage)
+        {
+            System.Windows.MessageBox.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         protected DynamoViewModel(StartConfiguration startConfiguration)
@@ -853,6 +858,8 @@ namespace Dynamo.ViewModels
 
         private void SubscribeModelUiEvents()
         {
+            DynamoServices.LoadLibraryEvents.LoadLibraryFailure += LoadLibraryEvents_LoadLibraryFailure;
+
             model.RequestBugReport += ReportABug;
             model.RequestDownloadDynamo += DownloadDynamo;
             model.Preview3DOutage += Disable3DPreview;
@@ -863,6 +870,8 @@ namespace Dynamo.ViewModels
             model.RequestBugReport -= ReportABug;
             model.RequestDownloadDynamo -= DownloadDynamo;
             model.Preview3DOutage -= Disable3DPreview;
+
+            DynamoServices.LoadLibraryEvents.LoadLibraryFailure -= LoadLibraryEvents_LoadLibraryFailure;
         }
 
         private void SubscribeModelCleaningUpEvent()

@@ -132,9 +132,4 @@
     <value>First Use Setup</value>
     <comment>Title of settings migration dialog</comment>
   </data>
-  <data name="LibraryLoadFailureForBlockedAssembly" xml:space="preserve">
-    <value>{0}
-
-The assembly is likely blocked. Try restarting Dynamo after unblocking the assembly. If you are running a downloaded DynamoSandbox build by unzipping the .zip file, try using 7zip to unzip the Dynamo binaries and try again.</value>
-  </data>
 </root>
