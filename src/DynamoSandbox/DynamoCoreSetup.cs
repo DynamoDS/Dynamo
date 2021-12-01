@@ -78,7 +78,19 @@ namespace DynamoSandbox
                 DynamoServices.LoadLibraryEvents.LoadLibraryFailure -= LoadLibraryEvents_LoadLibraryFailure;
 
             }
+            catch(FileLoadException e)
+            {
+                DynamoModel.IsCrashing = true;
+                // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL. Please seee the following link for details:
+                if (e.HResult == unchecked((int)0x80131515))
+                {
+                    DynamoServices.LoadLibraryEvents.OnLoadLibraryFailure(
+                        string.Format(Resources.LibraryLoadFailureForBlockedAssembly, e.Message));
 
+                    Debug.WriteLine(e.Message);
+                    Debug.WriteLine(e.StackTrace);
+                }
+            }
             catch (Exception e)
             {
                 try

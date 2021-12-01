@@ -1864,7 +1864,7 @@ namespace ProtoCore.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0}
         ///
-        ///The assembly is likely blocked. Try unblocking the assembly and restart Dynamo. If you are running a downloaded DynamoSandbox build by unzipping the .zip file, try using 7zip to unzip the Dynamo binaries and try again..
+        ///The assembly is likely blocked. Try restarting Dynamo after unblocking the assembly. If you are running a downloaded DynamoSandbox build by unzipping the .zip file, try using 7zip to unzip the Dynamo binaries and try again..
         /// </summary>
         public static string LibraryLoadFailureForBlockedAssembly {
             get {

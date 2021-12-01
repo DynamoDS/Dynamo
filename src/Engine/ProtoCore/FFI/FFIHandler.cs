@@ -162,6 +162,13 @@ namespace ProtoFFI
                     }
                     else return null;
                 }
+                catch(System.IO.FileLoadException e)
+                {
+                    if (e.HResult == unchecked((int)0x80131515))
+                    {
+                        throw e;
+                    }
+                }
                 catch
                 {
                     //try loading c++

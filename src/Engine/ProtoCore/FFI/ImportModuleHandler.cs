@@ -88,6 +88,13 @@ namespace ProtoFFI
             {
                 codeNode = ImportCodeBlock(modulePathFileName, typeName, alias, codeNode);
             }
+            catch (FileLoadException e)
+            {
+                if (e.HResult == unchecked((int)0x80131515))
+                {
+                    throw e;
+                }
+            }
             catch (System.Exception ex)
             {
                 if (ex is System.Reflection.ReflectionTypeLoadException)
@@ -246,6 +253,13 @@ namespace ProtoFFI
                 try
                 {
                     dllModule = DLLFFIHandler.GetModule(importModuleName);
+                }
+                catch (System.IO.FileLoadException e)
+                {
+                    if (e.HResult == unchecked((int)0x80131515))
+                    {
+                        throw e;
+                    }
                 }
                 catch
                 {
