@@ -47,6 +47,7 @@ namespace DSCore
         public static string GetNumber(string @string)
         {
             string str = string.Empty;
+            if (string.IsNullOrEmpty(@string)) return str;
             List<double> result = new List<double>();
             for (int i = 0; i < @string.Length; i++)
             {
