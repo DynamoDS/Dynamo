@@ -19,10 +19,10 @@ namespace Dynamo.DynamoSandbox.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resources {
+    internal class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dynamo.DynamoSandbox.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,20 +61,9 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}
-        ///
-        ///The assembly is likely blocked. Try restarting Dynamo after unblocking the assembly. If you are running a downloaded DynamoSandbox build by unzipping the .zip file, try using 7zip to unzip the Dynamo binaries and try again..
-        /// </summary>
-        public static string LibraryLoadFailureForBlockedAssembly {
-            get {
-                return ResourceManager.GetString("LibraryLoadFailureForBlockedAssembly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Goto the Dynamo builds wiki site({0}) for more information..
         /// </summary>
-        public static string SandboxBuildsPageDialogMessage {
+        internal static string SandboxBuildsPageDialogMessage {
             get {
                 return ResourceManager.GetString("SandboxBuildsPageDialogMessage", resourceCulture);
             }
@@ -83,7 +72,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Could not start DynamoSandbox, unhandled exception..
         /// </summary>
-        public static string SandboxCrashMessage {
+        internal static string SandboxCrashMessage {
             get {
                 return ResourceManager.GetString("SandboxCrashMessage", resourceCulture);
             }
@@ -92,7 +81,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Migrating Settings ....
         /// </summary>
-        public static string SettingsMigrationDialogMessage {
+        internal static string SettingsMigrationDialogMessage {
             get {
                 return ResourceManager.GetString("SettingsMigrationDialogMessage", resourceCulture);
             }
@@ -101,7 +90,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         /// <summary>
         ///   Looks up a localized string similar to First Use Setup.
         /// </summary>
-        public static string SettingsMigrationDialogTitle {
+        internal static string SettingsMigrationDialogTitle {
             get {
                 return ResourceManager.GetString("SettingsMigrationDialogTitle", resourceCulture);
             }
