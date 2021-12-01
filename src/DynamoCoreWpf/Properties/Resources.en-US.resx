@@ -2981,4 +2981,7 @@ To install the latest version of a package, click Install. \n
   <data name="GettingStartedMenuItem" xml:space="preserve">
     <value>_Getting Started</value>
   </data>
+  <data name="ConfigureADPButtonText" xml:space="preserve">
+    <value>Configure Autodesk Analytics Program</value>
+  </data>
 </root>
