@@ -526,7 +526,7 @@ You will get a chance to save your work.</value>
     <comment>Edit menu | Align based on selected nodes' average X positions</comment>
   </data>
   <data name="DynamoViewEditMenuAlignXDistribute" xml:space="preserve">
-    <value>_X Distribute</value>
+    <value>X _Distribute</value>
     <comment>Edit menu | Align selected nodes evenly on horizontal direction</comment>
   </data>
   <data name="DynamoViewEditMenuAlignYAverage" xml:space="preserve">
@@ -534,7 +534,7 @@ You will get a chance to save your work.</value>
     <comment>Edit menu | Align based on selected nodes' average Y positions</comment>
   </data>
   <data name="DynamoViewEditMenuAlignYDistribute" xml:space="preserve">
-    <value>_Y Distribute</value>
+    <value>Y Di_stribute</value>
     <comment>Edit menu | Align selected nodes evenly on vertical direction</comment>
   </data>
   <data name="DynamoViewEditMenuCleanupLayout" xml:space="preserve">
@@ -965,7 +965,7 @@ You will get a chance to save your work.</value>
     <comment>View menu | Show background preview</comment>
   </data>
   <data name="DynamoViewViewMenuShowConnectors" xml:space="preserve">
-    <value>_Show Connectors</value>
+    <value>Show _Connectors</value>
     <comment>View menu | Show connectors</comment>
   </data>
   <data name="DynamoViewViewMenuShowConsole" xml:space="preserve">
@@ -1991,7 +1991,7 @@ Want to publish a different package?</value>
     <comment>Start page | Link to DynamoBIM</comment>
   </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
-    <value>_Getting Started</value>
+    <value>Getting Started</value>
   </data>
   <data name="StringInputNodeEditMenu" xml:space="preserve">
     <value>Edit...</value>
@@ -2348,12 +2348,12 @@ Uninstall the following packages: {0}?</value>
     <value>Requires relaunch of Dynamo</value>
     <comment>Preferences | Features | Python | Requires relaunch of Dynamo</comment>
   </data>
-    <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
+  <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
     <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
     
 Do you wish to continue trying to install {0}?</value>
   </data>
-    <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
+  <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
     <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
     
 You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
@@ -2365,10 +2365,10 @@ You can try disabling loading packages from built-in package paths, or unload th
     <value>The same version of {0} is already installed and does not need to be installed again.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-        <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
         
 Do you wish to restart {2} to first uninstall {1}, then download {0} again?</value>
-    </data>
+  </data>
   <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
     <value>Geometry Scaling</value>
     <comment>Expander Header Name</comment>
@@ -2681,7 +2681,7 @@ Delete the following packages: {2}?
     <value>Unload Failure</value>
   </data>
   <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
-    <value>_Show Tooltip</value>
+    <value>Show _Tooltip</value>
   </data>
   <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
     <value>Dismissed Alerts</value>
@@ -2953,7 +2953,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Save</value>
   </data>
   <data name="PackagesGuideInstallAPackageText" xml:space="preserve">
-    <value>Package installations are typically quick, depending on their size and other factors. \n\n **Click Install** to install the latest version of the sample Autodesk package and proceed with this guide.</value>
+    <value>Package installations are typically quick, depending on their size and other factors. \n\n**Click Install** to install the latest version of the sample Autodesk package and proceed with this guide.</value>
   </data>
   <data name="PackagesGuideInstallAPackageTitle" xml:space="preserve">
     <value>Install a package</value>
@@ -2977,5 +2977,11 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
     <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
+  </data>
+  <data name="ConfigureADPButtonText" xml:space="preserve">
+    <value>Configure Autodesk Analytics Program</value>
+</data>
+  <data name="GettingStartedMenuItem" xml:space="preserve">
+    <value>_Getting Started</value>
   </data>
 </root>

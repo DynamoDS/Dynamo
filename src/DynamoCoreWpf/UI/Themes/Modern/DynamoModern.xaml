@@ -4132,4 +4132,9 @@
     </Style>
     <SolidColorBrush x:Key="RealTimeInfoWindowIconColor" Color="#38ABDF" />
     <SolidColorBrush x:Key="RealTimeInfoWindowBackgroundColor" Color="#535353" />
+    <Style x:Key="PopupStepCounterFontStyle"
+           TargetType="Label">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Artifakt Element" />
+    </Style>
 </ResourceDictionary>

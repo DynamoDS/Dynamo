@@ -21,7 +21,6 @@
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
-                
     </Popup.Resources>
 
     <Canvas Background="Transparent"
@@ -149,6 +148,7 @@
                             Style="{StaticResource CaretButtonStyle}">Back
                     </Button>
                     <Label Name="TourProgress"
+                           Style="{StaticResource PopupStepCounterFontStyle}"
                            Content="{Binding TourLabelProgress}"
                            HorizontalContentAlignment="Center"
                            VerticalContentAlignment="Center"

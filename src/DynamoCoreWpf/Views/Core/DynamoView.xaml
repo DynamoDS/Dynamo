@@ -564,7 +564,7 @@
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
                               Name="HelpMenu"
                               Focusable="False">
-                        <MenuItem Header="{x:Static p:Resources.StartPageWhatsNew}"
+                        <MenuItem Header="{x:Static p:Resources.GettingStartedMenuItem}"
                                   Name="WhatsNew"
                                   Command="{Binding ShowGalleryCommand}">
                         </MenuItem>
