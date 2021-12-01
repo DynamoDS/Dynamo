@@ -947,4 +947,9 @@ Parameter name: {0} href-ArgumentNullException.html</value>
   <data name="IntegerOverflow" xml:space="preserve">
     <value>The operation resulted in an integer overflow. Its result may be unexpected.</value>
   </data>
+  <data name="LibraryLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+The assembly is likely blocked. Try unblocking the assembly and restart Dynamo. If you are running a downloaded DynamoSandbox build by unzipping the .zip file, try using 7zip to unzip the Dynamo binaries and try again.</value>
+  </data>
 </root>

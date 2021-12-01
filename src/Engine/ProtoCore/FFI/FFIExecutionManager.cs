@@ -32,11 +32,27 @@ namespace ProtoFFI
         public Assembly LoadAssembly(string name)
         {
             System.Diagnostics.Debug.Write("Trying to load assembly: " + name);
+            Assembly asm = null;
             if (System.IO.File.Exists(name))
-            {
-                return Assembly.LoadFrom(name);
+            {asm = Assembly.LoadFrom(name);
+                //try
+                //{
+                //    
+                //}
+                //catch (Exception ex)
+                //{
+                //    if (ex.HResult == unchecked((int)0x80131515))
+                //    {
+                //        DynamoServices.LoadLibraryEvents.OnLoadLibraryFailure(
+                //            string.Format(ProtoCore.Properties.Resources.LibraryLoadFailureForBlockedAssembly, ex.Message));
+                //    }
+                //}
             }
-            throw new System.IO.FileNotFoundException();
+            else
+            {
+                throw new System.IO.FileNotFoundException();
+            }
+            return asm;
         }
 
         public IExecutionSession GetSession(RuntimeCore runtimeCore)

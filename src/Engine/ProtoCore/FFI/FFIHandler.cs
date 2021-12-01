@@ -155,7 +155,12 @@ namespace ProtoFFI
             {
                 try
                 {
-                    Modules.Add(moduleFileName, helpers[FFILanguage.CSharp].getModule(dllModuleName));
+                    var module = helpers[FFILanguage.CSharp].getModule(dllModuleName);
+                    if (module != null)
+                    {
+                        Modules.Add(moduleFileName, module);
+                    }
+                    else return null;
                 }
                 catch
                 {
@@ -176,8 +181,5 @@ namespace ProtoFFI
         }
     }
 
-    //public class PYthonFFIHandler
-    //{
-    //}
 }
 
