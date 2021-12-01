@@ -103,9 +103,14 @@ namespace Dynamo.Logging
         WorkspaceReferences,
 
         /// <summary>
-        /// Events Category related to saved Groups
+        /// Events Category related to Groups
         /// </summary>
         GroupOperations,
+
+        /// <summary>
+        /// Events Category related to Node context menu
+        /// </summary>
+        NodeContextMenuOperations,
     }
 
     /// <summary>
@@ -311,6 +316,56 @@ namespace Dynamo.Logging
         /// GroupRemovedFrom event, when a group is removed from the group
         /// </summary>
         GroupRemovedFrom,
+
+        /// <summary>
+        /// CreateGroup event, when a group is created
+        /// </summary>
+        CreateGroup,
+
+        /// <summary>
+        /// Preview event, when a node is Previewed
+        /// </summary>
+        Preview,
+
+        /// <summary>
+        /// Freeze event, when a node is Freezed
+        /// </summary>
+        Freeze,
+
+        /// <summary>
+        /// Rename event, when a node is Renamed
+        /// </summary>
+        Rename,
+
+        /// <summary>
+        /// ShowLabels event, when a node is set to Show Labels
+        /// </summary>
+        ShowLabels,
+
+        /// <summary>
+        /// ShowHelp event, when user wants to display help info.
+        /// </summary>
+        ShowHelp,
+
+        /// <summary>
+        /// SetLacing event, when user wants to set a lacing type.
+        /// </summary>
+        SetLacing,
+
+        /// <summary>
+        /// DismissedAlerts event, when alerts are dismissed.
+        /// </summary>
+        DismissedAlerts,
+
+        /// <summary>
+        /// SetAsInput event, when user wants to set a node as input.
+        /// </summary>
+        SetAsInput,
+
+        /// <summary>
+        /// SetAsOutput event, when user wants to set a node as output.
+        /// </summary>
+        SetAsOutput,
 
     }
 
