@@ -4625,14 +4625,6 @@
       "keywords": "test, is, empty, null, count"
     },
     {
-      "fullyQualifiedName": "DSCore.List.IsNullOrEmpty",
-      "iconUrl": null,
-      "contextData": "DSCore.List.IsNullOrEmpty@var[]..[]",
-      "parameters": null,
-      "itemType": "action",
-      "keywords": "test, is, empty, null, count"
-    },
-    {
       "fullyQualifiedName": "DSCore.List.AllTrue",
       "iconUrl": "http://localhost/icons/DSCore.List.AllTrue.Small?path=DSCoreNodes.dll",
       "contextData": "DSCore.List.AllTrue@var[]..[]",
