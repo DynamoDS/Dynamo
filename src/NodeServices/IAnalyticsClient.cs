@@ -308,21 +308,6 @@ namespace Dynamo.Logging
         RemovedFrom,
 
         /// <summary>
-        /// GroupAddedTo event, when a group is added to the group
-        /// </summary>
-        GroupAddedTo,
-
-        /// <summary>
-        /// GroupRemovedFrom event, when a group is removed from the group
-        /// </summary>
-        GroupRemovedFrom,
-
-        /// <summary>
-        /// CreateGroup event, when a group is created
-        /// </summary>
-        CreateGroup,
-
-        /// <summary>
         /// Preview event, when a node is Previewed
         /// </summary>
         Preview,
@@ -338,34 +323,19 @@ namespace Dynamo.Logging
         Rename,
 
         /// <summary>
-        /// ShowLabels event, when a node is set to Show Labels
+        /// Show event, when user wants to display .
         /// </summary>
-        ShowLabels,
+        Show,
 
         /// <summary>
-        /// ShowHelp event, when user wants to display help info.
+        /// Set event, when user wants to set a property.
         /// </summary>
-        ShowHelp,
-
-        /// <summary>
-        /// SetLacing event, when user wants to set a lacing type.
-        /// </summary>
-        SetLacing,
+        Set,
 
         /// <summary>
         /// DismissedAlerts event, when alerts are dismissed.
         /// </summary>
         DismissedAlerts,
-
-        /// <summary>
-        /// SetAsInput event, when user wants to set a node as input.
-        /// </summary>
-        SetAsInput,
-
-        /// <summary>
-        /// SetAsOutput event, when user wants to set a node as output.
-        /// </summary>
-        SetAsOutput,
 
     }
 

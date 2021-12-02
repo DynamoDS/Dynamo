@@ -474,7 +474,7 @@ namespace Dynamo.ViewModels
                         AddToCutGeometryDictionary(groupViewModel);
                     }
                 }
-                Analytics.TrackEvent(Actions.GroupAddedTo, Categories.GroupOperations);
+                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Group added to group");
             }
         }
 
@@ -488,7 +488,7 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynamoModel.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
-            Analytics.TrackEvent(Actions.GroupRemovedFrom, Categories.GroupOperations);
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Group removed from group");
         }
 
         private bool CanUngroupGroup(object parameters)
