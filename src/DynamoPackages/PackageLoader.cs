@@ -299,6 +299,11 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
+                if (e is FileLoadException ex && ex.HResult == unchecked((int)0x80131515))
+                {
+                    var failureMessage = string.Format(Properties.Resources.PackageLoadFailureForBlockedAssembly, ex.Message);
+                    DynamoServices.LoadLibraryEvents.OnLoadLibraryFailure(failureMessage, Properties.Resources.LibraryLoadFailureMessageBoxTitle);
+                }
                 package.LoadState.SetAsError(e.Message);
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
