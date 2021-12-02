@@ -14,6 +14,7 @@ namespace Dynamo.UI.Prompts
 {
     /// <summary>
     /// A stylised version of the WPF MessageBox class, integrated with the MessageBoxService.
+    /// Sets a CustomDialogResult property instead of DialogResult during ShowDialog().
     /// </summary>
     public partial class DynamoMessageBox : INotifyPropertyChanged
     {
@@ -26,7 +27,7 @@ namespace Dynamo.UI.Prompts
 
         #region Public Properties
         
-        [Obsolete("Do not use, instead use CustomDialogResult")]
+        [Obsolete("Do not use, instead use CustomDialogResult. This property will not be set during ShowDialog()")]
         public new bool? DialogResult
         {
             get => base.DialogResult;
@@ -264,35 +265,30 @@ namespace Dynamo.UI.Prompts
 
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
             CustomDialogResult = MessageBoxResult.None;
             Close();
         }
 
         private void OkButton_OnClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
             CustomDialogResult = MessageBoxResult.OK;
             Close();
         }
 
         private void YesButton_OnClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
             CustomDialogResult = MessageBoxResult.Yes;
             Close();
         }
 
         private void NoButton_OnClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
             CustomDialogResult = MessageBoxResult.No;
             Close();
         }
 
         private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
             CustomDialogResult = MessageBoxResult.Cancel;
             Close();
         }

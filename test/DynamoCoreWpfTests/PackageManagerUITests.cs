@@ -701,12 +701,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("1", messageBox.YesButton.Content);
             Assert.AreEqual("2", messageBox.NoButton.Content);
         }
-        /// <summary>
-        /// This test fails because we still set DialogResult as well as CustomDialogResult inside the 
-        /// button click handlers for DynamoMessageBox, if we stop using Window.DialogResult this test will pass.
-        /// </summary>
+      
         [Test]
-        [Category("Failure")]
         [Description("DynamoMessageBox buttons set correct results")]
         public void DynamoMessageBoxButtonsSetCorrectly()
         {
