@@ -189,9 +189,9 @@ namespace Dynamo.Logging
         EngineFailure,
 
         /// <summary>
-        /// Search Filter Button Clicked event
+        /// Filter event, e.g. when package filter is active
         /// </summary>
-        FilterButtonClicked,
+        Filter,
 
         /// <summary>
         /// Unresolved Node found event
@@ -248,6 +248,7 @@ namespace Dynamo.Logging
         /// </summary>
         Rate,
 
+        /// <summary>
         /// Pin event, such as pinning a note to a node
         /// </summary>
         Pin,
@@ -268,17 +269,17 @@ namespace Dynamo.Logging
         KeepOldPackage,
 
         /// <summary>
-        /// PackageReferences event, when a package refrence is saved in a workspace
+        /// PackageReferences event, when a package reference is saved in a workspace
         /// </summary>
         PackageReferences,
 
         /// <summary>
-        /// KeepOldPackage event, when a local refrence is saved in a workspace
+        /// KeepOldPackage event, when a local reference is saved in a workspace
         /// </summary>
         LocalReferences,
 
         /// <summary>
-        /// KeepOldPackage event, when an external refrence is saved in a workspace
+        /// KeepOldPackage event, when an external reference is saved in a workspace
         /// </summary>
         ExternalReferences,
 
@@ -318,17 +319,17 @@ namespace Dynamo.Logging
         GroupRemovedFrom,
 
         /// <summary>
-        /// Break event, when a connection is broken by user choice
+        /// Break event, e.g. when a connection is broken by user choice
         /// </summary>
         Break,
 
         /// <summary>
-        /// Show event, when a connection is shown by user choice
+        /// Show event, e.g. when a connection is shown by user choice
         /// </summary>
         Show,
 
         /// <summary>
-        /// Hide event, when a connection is hidden by user choice
+        /// Hide event, e.g when a connection is hidden by user choice
         /// </summary>
         Hide,
 
