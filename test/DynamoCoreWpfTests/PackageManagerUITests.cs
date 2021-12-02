@@ -22,6 +22,7 @@ using Dynamo.Extensions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Dynamo.UI.Prompts;
+using System.Windows.Controls.Primitives;
 
 namespace DynamoCoreWpfTests
 {
@@ -699,6 +700,31 @@ namespace DynamoCoreWpfTests
             messageBox.ConfigureButtons(MessageBoxButton.YesNo, new string[] { "1", "2" });
             Assert.AreEqual("1", messageBox.YesButton.Content);
             Assert.AreEqual("2", messageBox.NoButton.Content);
+        }
+        /// <summary>
+        /// This test fails because we still set DialogResult as well as CustomDialogResult inside the 
+        /// button click handlers for DynamoMessageBox, if we stop using Window.DialogResult this test will pass.
+        /// </summary>
+        [Test]
+        [Category("Failure")]
+        [Description("DynamoMessageBox buttons set correct results")]
+        public void DynamoMessageBoxButtonsSetCorrectly()
+        {
+            var messageBox = new DynamoMessageBox();
+            messageBox.YesButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.Yes, messageBox.CustomDialogResult);
+
+            messageBox.NoButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.No, messageBox.CustomDialogResult);
+
+            messageBox.CancelButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.Cancel, messageBox.CustomDialogResult);
+
+            messageBox.CloseButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.None, messageBox.CustomDialogResult);
+
+            messageBox.OkButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.OK, messageBox.CustomDialogResult);
         }
 
 
