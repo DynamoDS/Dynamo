@@ -78,9 +78,9 @@ namespace ProtoFFI
                 return node;
             }
 
-            ProtoCore.AST.AssociativeAST.CodeBlockNode codeNode = null;
+            CodeBlockNode codeNode = null;
             if (importedNode == null)
-                codeNode = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
+                codeNode = new CodeBlockNode();
             else
                 codeNode = importedNode.CodeNode;
 
@@ -88,16 +88,13 @@ namespace ProtoFFI
             {
                 codeNode = ImportCodeBlock(modulePathFileName, typeName, alias, codeNode);
             }
-            catch (FileLoadException e)
+            catch (Exception ex)
             {
-                if (e.HResult == unchecked((int)0x80131515))
+                if(ex is FileLoadException e && e.HResult == unchecked((int)0x80131515))
                 {
                     throw e;
                 }
-            }
-            catch (System.Exception ex)
-            {
-                if (ex is System.Reflection.ReflectionTypeLoadException)
+                if (ex is ReflectionTypeLoadException)
                 {
                     StringBuilder sb = new StringBuilder();
                     var typeLoadException = ex as ReflectionTypeLoadException;
@@ -254,15 +251,12 @@ namespace ProtoFFI
                 {
                     dllModule = DLLFFIHandler.GetModule(importModuleName);
                 }
-                catch (System.IO.FileLoadException e)
+                catch(Exception ex)
                 {
-                    if (e.HResult == unchecked((int)0x80131515))
+                    if (ex is FileLoadException e && e.HResult == unchecked((int)0x80131515))
                     {
                         throw e;
                     }
-                }
-                catch
-                {
                     _coreObj.LogSemanticError(string.Format(Resources.FailedToImport, importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
                 }
             }

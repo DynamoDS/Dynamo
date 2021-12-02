@@ -157,15 +157,12 @@ namespace ProtoFFI
                 {
                     Modules.Add(moduleFileName, helpers[FFILanguage.CSharp].getModule(dllModuleName));
                 }
-                catch(System.IO.FileLoadException e)
+                catch(Exception exception)
                 {
-                    if (e.HResult == unchecked((int)0x80131515))
+                    if (exception is System.IO.FileLoadException ex && ex.HResult == unchecked((int)0x80131515))
                     {
-                        throw e;
+                        throw ex;
                     }
-                }
-                catch
-                {
                     //try loading c++
                     try
                     {
