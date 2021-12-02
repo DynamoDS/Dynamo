@@ -373,7 +373,7 @@ namespace Dynamo.Wpf.Utilities
 
             NodeViewModel.ErrorBubble.UndismissMessageCommand.Execute(menuItem.Header);
 
-            Analytics.TrackEvent(Actions.Dismiss, Categories.NodeContextMenuOperations, "NodeAlerts");
+            Analytics.TrackEvent(Actions.Undismiss, Categories.NodeContextMenuOperations, "NodeAlerts");
         }
 
         /// <summary>
