@@ -624,10 +624,9 @@ namespace Dynamo.ViewModels
             // outside of the group
             if (ownerNodes != null)
             {
-                return Nodes.OfType<NodeModel>()
-                    .SelectMany(x => x.InPorts
+                return ownerNodes.SelectMany(x => x.InPorts
                         .Where(p => !p.IsConnected || !p.Connectors.Any(c => ownerNodes.Contains(c.Start.Owner)))
-                    );
+                    ) ;
             }
 
             // If this group does contain any AnnotationModels
@@ -646,7 +645,7 @@ namespace Dynamo.ViewModels
             // outside of the group
             if (ownerNodes != null)
             {
-                return Nodes.OfType<NodeModel>()
+                return ownerNodes
                     .SelectMany(x => x.OutPorts
                         .Where(p => !p.IsConnected || !p.Connectors.Any(c => ownerNodes.Contains(c.End.Owner)))
                     );
@@ -729,7 +728,21 @@ namespace Dynamo.ViewModels
 
         internal void UpdateProxyPortsPosition()
         {
-            var groupInports = GetGroupInPorts();
+            var parent = WorkspaceViewModel.Annotations
+                .FirstOrDefault(x => x.AnnotationModel.ContainsModel(AnnotationModel));
+
+            if (parent != null && !parent.IsExpanded) return;
+
+            IEnumerable<NodeModel> nestedNodes = null;
+            if (annotationModel.HasNestedGroups)
+            {
+                nestedNodes = Nodes
+                    .OfType<AnnotationModel>()
+                    .SelectMany(x => x.Nodes.OfType<NodeModel>())
+                    .Concat(Nodes.OfType<NodeModel>());
+            }
+
+            var groupInports = GetGroupInPorts(nestedNodes);
 
             for (int i = 0; i < groupInports.Count(); i++)
             {
@@ -781,8 +794,6 @@ namespace Dynamo.ViewModels
                     // we collapse that and all of its content.
                     annotationViewModel.IsCollapsed = true;
                     annotationViewModel.CollapseGroupContents(false);
-                    annotationViewModel.SetGroupInputPorts();
-                    annotationViewModel.SetGroupOutPorts();
                 }
 
                 viewModel.IsCollapsed = true;
