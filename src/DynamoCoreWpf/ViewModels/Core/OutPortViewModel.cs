@@ -217,7 +217,14 @@ namespace Dynamo.ViewModels
 
                 connectorViewModel.HideConnectorCommand.Execute(!SetConnectorsVisibility);
             }
-            Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
+            if (SetConnectorsVisibility)
+            {
+                Analytics.TrackEvent(Actions.Show, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
+            }
+            else
+            {
+                Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
+            }
             RefreshHideWiresButton();
         }
 

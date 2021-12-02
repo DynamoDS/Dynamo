@@ -88,7 +88,7 @@ namespace Dynamo.PackageManager
             /// Constructor
             /// </summary>
             /// <param name="filterName">Filter name, same as host name</param>
-            /// <param name="pmSearchViewModel">a reference of the PackageManagerSearchViewModel</param>
+            /// <param name="packageManagerSearchViewModel">a reference of the PackageManagerSearchViewModel</param>
             public FilterEntry(string filterName, PackageManagerSearchViewModel packageManagerSearchViewModel)
             {
                 FilterName = filterName;

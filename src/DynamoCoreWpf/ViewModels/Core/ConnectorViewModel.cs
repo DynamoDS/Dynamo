@@ -570,9 +570,9 @@ namespace Dynamo.ViewModels
                 }
                 isDataFlowCollection = isCollectionofFiveorMore;
             }
-            catch (Exception ex)///the odd case of model.Start.Owner value not being available. 
+            catch (Exception ex)//the odd case of model.Start.Owner value not being available. 
             {
-                string m = ex.Message;
+                _ = ex.Message;
             }
         }
 

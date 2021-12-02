@@ -50,6 +50,10 @@ namespace Dynamo.ViewModels
 
         #endregion
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="connectorViewModel"></param>
         public ConnectorContextMenuViewModel(ConnectorViewModel connectorViewModel)
         {
             ViewModel = connectorViewModel;
@@ -105,7 +109,9 @@ namespace Dynamo.ViewModels
         private void BreakConnectionsSurrogateCommandExecute(object obj)
         {
             ViewModel.BreakConnectionCommand.Execute(null);
-            Analytics.TrackEvent(Actions.Break, Categories.ConnectorOperations, ViewModel.GetType().Name, 1);
+            // Track break connection event, this is distinguished with break connections from input/output port.
+            // So sending connector and number of connector as 1
+            Analytics.TrackEvent(Actions.Break, Categories.ConnectorOperations, "Connector", 1);
         }
 
         /// <summary>
@@ -115,6 +121,8 @@ namespace Dynamo.ViewModels
         private void SelectConnectedSurrogateCommandExecute(object obj)
         {
             ViewModel.SelectConnectedCommand.Execute(null);
+            // Track select connected nodes event
+            Analytics.TrackEvent(Actions.Select, Categories.ConnectorOperations, "SelectConnected");
         }
         /// <summary>
         /// Request disposal of this viewmodel after command has run.
@@ -123,6 +131,7 @@ namespace Dynamo.ViewModels
         private void HideConnectorSurrogateCommandExecute(object obj)
         {
             ViewModel.HideConnectorCommand.Execute(null);
+            // Track Show or hide connected nodes event
             Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, ViewModel.GetType().Name, 1);
         }
 
