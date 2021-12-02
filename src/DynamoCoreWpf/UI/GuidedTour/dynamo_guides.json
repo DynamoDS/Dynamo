@@ -491,10 +491,10 @@
 					"FormattedText": "PackagesGuideDependenciesText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "right",
+					"PopupPlacement": "left",
 					"DynamicHostWindow": true,
 					"HostUIElementString": "PackageDetailsWindow",
-					"VerticalPopupOffset": 400,
+					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 0,
 					"CutOffRectArea": {
 						"WindowElementNameString": "PackageDetailsWindow",
@@ -612,19 +612,104 @@
 			},
 			{
 				"Sequence": 8,
-				"Name": "library show",
+				"Name": "navigate-to-packages",
 				"Type": "tooltip",
-				"TooltipPointerDirection": "top_left",
+				"TooltipPointerDirection": "bottom_left",
 				"Width": 480,
-				"Height": 220,
+				"Height": 230,
+				"ShowLibrary": true,
 				"StepContent": {
-					"Title": "PackagesGuideInstallAPackageTitle",
-					"FormattedText": "PackagesGuideInstalledPackageText"
+					"Title": "PackagesGuideNavigatePackagesTitle",
+					"FormattedText": "PackagesGuideNavigatePackagesText"
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
-					"DynamicHostWindow": true,
 					"HostUIElementString": "sidebarGrid",
+					"WindowName": "LibraryView",
+					"VerticalPopupOffset": 600,
+					"HorizontalPopupOffset": -30,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "WebBrowser",
+						"UIElementGridContainer": "sidebarGrid",
+						"WindowElementNameString": "Autodesk Sample",
+						"WindowName": "LibraryView"
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"WindowName": "PopupWindow",
+						"Name": "SubscribeNextButtonClickEvent",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Autodesk Sample" ],
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "NextButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "ExecuteAutomaticPackage_Click"
+							}
+						]
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "setOverlay",
+						"JSParameters": [],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "subscribePackageClickedEvent",
+						"JSParameters": [ "Autodesk Sample" ],
+						"Action": "execute"
+					}
+				]
+			},
+			{
+				"Sequence": 9,
+				"Name": "use-package-nodes",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 260,
+				"ShowLibrary": true,
+				"StepContent": {
+					"Title": "PackagesGuideUsePackageTitle",
+					"FormattedText": "PackagesGuideUsePackageText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"HostUIElementString": "sidebarGrid",
+					"WindowName": "LibraryView",
+					"VerticalPopupOffset": 400,
+					"HorizontalPopupOffset": 0
+				}
+			},
+			{
+				"Sequence": 10,
+				"Name": "survey",
+				"Type": "survey",
+				"Width": 400,
+				"Height": 450,
+				"StepContent": {
+					"Title": "PackagesGuideSurveyTitle",
+					"FormattedText": "PackagesGuideSurveyText"
+				},
+				"ExtraContent": [
+					{
+						"Property": "RatingTextTitle",
+						"Value": "GetStartedGuideRatingTextTitle"
+					}
+				],
+				"HostPopupInfo": {
+					"PopupPlacement": "center",
+					"HostUIElementString": "WorkspaceTabs",
 					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 0
 				}

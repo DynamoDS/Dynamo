@@ -58,6 +58,7 @@ namespace Dynamo.Logging
         /// </summary>
         public static bool ReportingAnalytics { get { return client != null && client.ReportingAnalytics; } }
 
+
         /// <summary>
         /// Tracks application startup time
         /// </summary>
