@@ -3,6 +3,7 @@ using System.Windows.Threading;
 using Dynamo.Core;
 using Dynamo.UI.Commands;
 using System;
+using Dynamo.Logging;
 
 namespace Dynamo.ViewModels
 {
@@ -104,7 +105,9 @@ namespace Dynamo.ViewModels
         private void BreakConnectionsSurrogateCommandExecute(object obj)
         {
             ViewModel.BreakConnectionCommand.Execute(null);
+            Analytics.TrackEvent(Actions.Break, Categories.ConnectorOperations, ViewModel.GetType().Name, 1);
         }
+
         /// <summary>
         /// Request disposal of this viewmodel after command has run.
         /// </summary>
@@ -120,6 +123,7 @@ namespace Dynamo.ViewModels
         private void HideConnectorSurrogateCommandExecute(object obj)
         {
             ViewModel.HideConnectorCommand.Execute(null);
+            Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, ViewModel.GetType().Name, 1);
         }
 
         #endregion

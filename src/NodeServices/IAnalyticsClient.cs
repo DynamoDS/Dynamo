@@ -106,6 +106,11 @@ namespace Dynamo.Logging
         /// Events Category related to saved Groups
         /// </summary>
         GroupOperations,
+
+        /// <summary>
+        /// Events Category related to connectors
+        /// </summary>
+        ConnectorOperations,
     }
 
     /// <summary>
@@ -311,6 +316,21 @@ namespace Dynamo.Logging
         /// GroupRemovedFrom event, when a group is removed from the group
         /// </summary>
         GroupRemovedFrom,
+
+        /// <summary>
+        /// Break event, when a connection is broken by user choice
+        /// </summary>
+        Break,
+
+        /// <summary>
+        /// Show event, when a connection is shown by user choice
+        /// </summary>
+        Show,
+
+        /// <summary>
+        /// Hide event, when a connection is hidden by user choice
+        /// </summary>
+        Hide,
 
     }
 
