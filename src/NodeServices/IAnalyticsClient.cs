@@ -323,7 +323,7 @@ namespace Dynamo.Logging
         Rename,
 
         /// <summary>
-        /// Show event, when user wants to display .
+        /// Show event, when user wants to toggle display.
         /// </summary>
         Show,
 
