@@ -26,6 +26,15 @@ namespace Dynamo.UI.Prompts
 
         #region Public Properties
         
+        [Obsolete("Do not use, instead use CustomDialogResult")]
+        public new bool? DialogResult
+        {
+            get => base.DialogResult;
+            set => base.DialogResult = value;
+        }
+
+        internal MessageBoxResult CustomDialogResult { get; set; } = MessageBoxResult.None;
+
         /// <summary>
         /// The title/caption of the message
         /// </summary>
@@ -109,7 +118,8 @@ namespace Dynamo.UI.Prompts
             };
 
             dynamoMessageBox.ConfigureButtons(button);
-            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
         }
 
         /// <summary>
@@ -129,7 +139,8 @@ namespace Dynamo.UI.Prompts
             };
 
             dynamoMessageBox.ConfigureButtons(button);
-            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
         }
 
         /// <summary>
@@ -147,7 +158,8 @@ namespace Dynamo.UI.Prompts
             };
 
             dynamoMessageBox.ConfigureButtons(MessageBoxButton.OK);
-            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
         }
 
         /// <summary>
@@ -162,7 +174,8 @@ namespace Dynamo.UI.Prompts
                 BodyText = messageBoxText
             };
             dynamoMessageBox.ConfigureButtons(MessageBoxButton.OK);
-            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
         }
 
         internal static MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button, IEnumerable<string> buttonNames,
@@ -177,7 +190,8 @@ namespace Dynamo.UI.Prompts
             };
 
             dynamoMessageBox.ConfigureButtons(button,buttonNames);
-            return dynamoMessageBox.ConvertResult(dynamoMessageBox.ShowDialog());
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -188,7 +202,7 @@ namespace Dynamo.UI.Prompts
         /// <param name="messageBoxButton"></param>
         /// /// <param name="buttonNames">names that will be used to override the standard button names.
         /// Number of names must match the number of visible buttons set by messageBoxButton parameter.</param>
-        private void ConfigureButtons(MessageBoxButton messageBoxButton, IEnumerable<string> buttonNames = null)
+        internal void ConfigureButtons(MessageBoxButton messageBoxButton, IEnumerable<string> buttonNames = null)
         {
             switch (messageBoxButton)
             {
@@ -231,33 +245,6 @@ namespace Dynamo.UI.Prompts
             }
         }
 
-        /// <summary>
-        /// Converts the nullable bool result from ShowDialog into the appropriate MessageBoxResult.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public MessageBoxResult ConvertResult(bool? value)
-        {
-            switch (MessageBoxButton)
-            {
-                case MessageBoxButton.OK:
-                    if (value == null || value == false) return MessageBoxResult.None;
-                    return MessageBoxResult.OK;
-                case MessageBoxButton.OKCancel:
-                    if (value == null) return MessageBoxResult.None;
-                    return value == true ? MessageBoxResult.OK : MessageBoxResult.Cancel;
-                case MessageBoxButton.YesNoCancel:
-                    if (value == null) return MessageBoxResult.None;
-                    return value == true ? MessageBoxResult.Yes : MessageBoxResult.No;
-                case MessageBoxButton.YesNo:
-                    if (value == null) return MessageBoxResult.None;
-                    return value == true ? MessageBoxResult.Yes : MessageBoxResult.No;
-                default:
-                    return MessageBoxResult.None;
-            }
-        }
-
-
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -278,30 +265,35 @@ namespace Dynamo.UI.Prompts
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+            CustomDialogResult = MessageBoxResult.None;
             Close();
         }
 
         private void OkButton_OnClick(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
+            CustomDialogResult = MessageBoxResult.OK;
             Close();
         }
 
         private void YesButton_OnClick(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
+            CustomDialogResult = MessageBoxResult.Yes;
             Close();
         }
 
         private void NoButton_OnClick(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+            CustomDialogResult = MessageBoxResult.No;
             Close();
         }
 
         private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+            CustomDialogResult = MessageBoxResult.Cancel;
             Close();
         }
     }

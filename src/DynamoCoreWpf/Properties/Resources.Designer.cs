@@ -3683,7 +3683,8 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following package(s): 
+        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following package(s):
+        ///
         ///{1}
         ///
         ///If you continue to install the package, unintended behavior may occur.
