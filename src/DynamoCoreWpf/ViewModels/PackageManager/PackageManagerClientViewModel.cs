@@ -696,12 +696,6 @@ namespace Dynamo.ViewModels
                 }
                 
                 var localPkgs = pmExt.PackageLoader.LocalPackages;
-
-                var uninstallsRequiringRestart = new List<Package>();
-                var uninstallRequiringUserModifications = new List<Package>();
-                var immediateUninstalls = new List<Package>();
-                var builtinPackages = new List<Package>();
-
                 // if the new package has one or more dependencies that are already installed
                 // we need to either first uninstall them, or allow the user to forcibly install the package,
                 // or cancel the installation if they do not want either of the first two options.
