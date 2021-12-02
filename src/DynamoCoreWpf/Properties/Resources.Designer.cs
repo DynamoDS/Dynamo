@@ -5207,7 +5207,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**click Packages &gt; Search for Packages**..
+        ///   Looks up a localized string similar to Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Search for Packages**..
         /// </summary>
         public static string PackagesGuideFindPackageText {
             get {
@@ -5254,6 +5254,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to \nWhen you install a package, it appears in the library under Add-ons.   \n\n**Click to expand the package** so you can see its nodes (functions)..
+        /// </summary>
+        public static string PackagesGuideNavigatePackagesText {
+            get {
+                return ResourceManager.GetString("PackagesGuideNavigatePackagesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate to packages.
+        /// </summary>
+        public static string PackagesGuideNavigatePackagesTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideNavigatePackagesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to \nYou can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar..
         /// </summary>
         public static string PackagesGuideSearchFilterText {
@@ -5277,6 +5295,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagesGuideSearchResultsText {
             get {
                 return ResourceManager.GetString("PackagesGuideSearchResultsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more about packages in the #online help=https://dynamobim.org/issues/extend-dynamo-with-packages.
+        /// </summary>
+        public static string PackagesGuideSurveyText {
+            get {
+                return ResourceManager.GetString("PackagesGuideSurveyText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finished.
+        /// </summary>
+        public static string PackagesGuideSurveyTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideSurveyTitle", resourceCulture);
             }
         }
         
@@ -5313,6 +5349,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagesGuideThirdPartyTitle {
             get {
                 return ResourceManager.GetString("PackagesGuideThirdPartyTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To learn how to use nodes in a package, hover over a node to see a description. To add a node to the workspace, click its name in the list..
+        /// </summary>
+        public static string PackagesGuideUsePackageText {
+            get {
+                return ResourceManager.GetString("PackagesGuideUsePackageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use package nodes.
+        /// </summary>
+        public static string PackagesGuideUsePackageTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideUsePackageTitle", resourceCulture);
             }
         }
         

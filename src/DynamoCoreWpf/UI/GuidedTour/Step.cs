@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using Dynamo.Controls;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
@@ -146,6 +147,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal UIElement MainWindow { get; set; }
 
         internal string GuideName { get; set; }
+
+        /// <summary>
+        /// This will give access to the Popup instance so we can find UIElements on it.
+        /// </summary>
+        internal Popup StepUIPopup 
+        {
+            get
+            {
+                return stepUIPopup;
+            }
+        }
 
         #endregion
 
@@ -426,6 +438,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         }                      
                     }
                     break;
+                case StepUIAutomation.UIControlType.JSFUNCTION:
+                    if (string.IsNullOrEmpty(uiAutomationData.JSFunctionName)) return;
+                    //We need to create a new list for the parameters due that we will be adding the enableUIAutomation boolean value
+                    var parametersJSFunction = new List<object>(uiAutomationData.JSParameters);
+                    parametersJSFunction.Add(enableUIAutomation);
+                    //Create the array for the parameters that will be sent to the JS Function
+                    object[] jsParameters = parametersJSFunction.ToArray();                 
+                    //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
+                    object[] parametersInvokeScript = new object[] { uiAutomationData.JSFunctionName, jsParameters };
+                    //Execute the JS function with the provided parameters
+                    ResourceUtilities.ExecuteJSFunction(MainWindow, HostPopupInfo, parametersInvokeScript);
+                    break;
             }
         }
 
@@ -553,6 +577,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     StepGuideBackground.GuideHighlightRectangle.Stroke = brush;
                 }
             }
+            //This case is for when the item to be highlighted is inside the LibraryView (WebBrowser component) 
+            else if (HostPopupInfo.HighlightRectArea.UIElementTypeString.Equals(typeof(WebBrowser).Name))
+            {
+                //We need to access the WebBrowser instance and call a js function to highlight the html div border of the item
+                HighlightLibraryItem(bVisible);
+            }
             //If the UIElementTypeString is not a MenuItem and also not a DynamoView we need to find the Window in the OwnedWindows and search the element inside it
             else
             {
@@ -623,6 +653,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if(menuItemHighlightRect != null)
                     subItemsGrid.Children.Remove(menuItemHighlightRect);
             }
+        }
+
+        /// <summary>
+        /// This method will execute a js function for highlighting a item (<div></div>) in the WebBrowser instance located inside the LibraryView using reflection
+        /// </summary>
+        /// <param name="visible">enable or disable the highlight in a specific Library item</param>
+        internal void HighlightLibraryItem(bool visible)
+        {
+            const string jsMethodName = "highlightLibraryItem";
+            object[] parametersInvokeScript = new object[] { jsMethodName, new object[] { HostPopupInfo.HighlightRectArea.WindowElementNameString, visible } };
+            ResourceUtilities.ExecuteJSFunction(MainWindow, HostPopupInfo, parametersInvokeScript);
         }
 
         /// <summary>
