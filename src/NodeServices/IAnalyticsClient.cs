@@ -333,9 +333,9 @@ namespace Dynamo.Logging
         Set,
 
         /// <summary>
-        /// DismissedAlerts event, when alerts are dismissed.
+        /// Dismiss event, when alerts are dismissed.
         /// </summary>
-        DismissedAlerts,
+        Dismiss,
 
     }
 
