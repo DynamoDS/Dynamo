@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
 
@@ -234,18 +233,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This event method will be executed when the user press the Back button in the tooltip/popup
         /// </summary>
         /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the previous Step from the list</param>
-        private void GuideFlowEvents_GuidedTourPrevStep(GuidedTourMovementEventArgs args)
+        private void GuideFlowEvents_GuidedTourPrevStep()
         {
-            PreviousStep(args.StepSequence);
+            PreviousStep(CurrentStep.Sequence);
         }
 
         /// <summary>
         /// This event method will be executed then the user press the Next button in the tooltip/popup
         /// </summary>
         /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
-        private void GuideFlowEvents_GuidedTourNextStep(GuidedTourMovementEventArgs args)
+        private void GuideFlowEvents_GuidedTourNextStep()
         {
-            NextStep(args.StepSequence);
+            NextStep(CurrentStep.Sequence);
         }
 
         /// <summary>
@@ -394,5 +393,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (findWindow != null)
                 findWindow.Close();
         }
+
+
     }
 }
