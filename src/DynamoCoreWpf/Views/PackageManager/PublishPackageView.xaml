@@ -700,13 +700,13 @@
                                                 IsReadOnly="False"
                                                 IsThreeState="False" />
                         <DataGridTextColumn MinWidth="50"
-                                            Binding="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}"
+                                            Binding="{Binding Path=FileInfo.Name}"
                                             Header="Name"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Width="*"
                                             MinWidth="66"
-                                            Binding="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"
+                                            Binding="{Binding Path=FileInfo.FullName}"
                                             Header="File Path"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
@@ -737,9 +737,9 @@
                                             </Button.Template>
                                         </Button>
                                         <TextBlock Margin="0,0,0,0"
-                                                   Text="{Binding Path=TargetPath}"
+                                                   Text="{Binding Path=FileInfo.Directory}"
                                                    TextTrimming="CharacterEllipsis"
-                                                   ToolTip="{Binding TargetPath}" />
+                                                   ToolTip="{Binding FileInfo.Directory}" />
                                     </DockPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
