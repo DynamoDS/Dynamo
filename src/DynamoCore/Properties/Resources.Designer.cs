@@ -967,7 +967,7 @@ namespace Dynamo.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0}
         ///
-        ///This assembly is likely blocked. Try restarting Dynamo after unblocking this assembly and all other core assemblies that might be blocked. If you are running a downloaded DynamoSandbox build by unzipping the .zip file, try using 7zip to unzip the Dynamo binaries and try again..
+        ///This assembly is likely blocked. Try restarting Dynamo after unblocking this assembly and all other core assemblies that might be blocked. If you are running a downloaded DynamoSandbox build that is extracted from a .zip file, try using 7zip to extract the Dynamo binaries and try again..
         /// </summary>
         public static string LibraryPreloadFailureForBlockedAssembly {
             get {
