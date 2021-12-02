@@ -1,9 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Threading;
-using Dynamo.Core;
-using Dynamo.UI.Commands;
-using System;
+﻿using System;
+using System.Windows;
 using Dynamo.Logging;
+using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
@@ -133,11 +131,11 @@ namespace Dynamo.ViewModels
             // Track Show or hide connected nodes event
             if (ViewModel.IsHidden)
             {
-                Analytics.TrackEvent(Actions.Show, Categories.ConnectorOperations, ViewModel.GetType().Name, 1);
+                Analytics.TrackEvent(Actions.Show, Categories.ConnectorOperations, "Connector", 1);
             }
             else
             {
-                Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, ViewModel.GetType().Name, 1);
+                Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, "Connector", 1);
             }
             ViewModel.ShowhideConnectorCommand.Execute(null);
         }
