@@ -2875,7 +2875,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Hide Wire</value>
   </data>
   <data name="PackagesGuideFindPackageText" xml:space="preserve">
-    <value>Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Search for Packages**.</value>
+    <value>Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**click Packages &gt; Search for Packages**.</value>
   </data>
   <data name="PackagesGuideFindPackageTitle" xml:space="preserve">
     <value>Find a package</value>
@@ -2978,27 +2978,9 @@ To install the latest version of a package, click Install. \n
   <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
     <value>This package contains custom nodes that are in use. These custom nodes need to be deleted or the graph needs to be closed before the package can be deleted.</value>
   </data>
-  <data name="PackagesGuideNavigatePackagesText" xml:space="preserve">
-    <value>\nWhen you install a package, it appears in the library under Add-ons.  \n\n**Click to expand the package** so you can see its nodes (functions).</value>
-  </data>
-  <data name="PackagesGuideNavigatePackagesTitle" xml:space="preserve">
-    <value>Navigate to packages</value>
-  </data>
-  <data name="PackagesGuideSurveyText" xml:space="preserve">
-    <value>Learn more about packages in the #online help=https://dynamobim.org/issues/extend-dynamo-with-packages</value>
-  </data>
-  <data name="PackagesGuideSurveyTitle" xml:space="preserve">
-    <value>Finished</value>
-  </data>
-  <data name="PackagesGuideUsePackageText" xml:space="preserve">
-    <value>To learn how to use nodes in a package, hover over a node to see a description. To add a node to the workspace, click its name in the list.</value>
-  </data>
-  <data name="PackagesGuideUsePackageTitle" xml:space="preserve">
-    <value>Use package nodes</value>
-  </data>
   <data name="ConfigureADPButtonText" xml:space="preserve">
     <value>Configure Autodesk Analytics Program</value>
-  </data>
+</data>
   <data name="GettingStartedMenuItem" xml:space="preserve">
     <value>_Getting Started</value>
   </data>

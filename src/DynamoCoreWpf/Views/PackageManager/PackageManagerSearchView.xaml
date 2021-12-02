@@ -901,10 +901,6 @@
                                 Background="#4E4E4E"
                                 CornerRadius="3">
                             <Grid Height="40">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="23" />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
@@ -914,8 +910,6 @@
                                 <!--  Download Icon  -->
                                 <Image Name="downloadCompletedIcon"
                                        Grid.Column="0"
-                                       Grid.Row="0"
-                                       Grid.RowSpan="2"
                                        Width="16"
                                        Height="16"
                                        VerticalAlignment="Center"
@@ -923,8 +917,6 @@
                                        Visibility="Collapsed" />
                                 <Image Name="downloadingIcon"
                                        Grid.Column="0"
-                                       Grid.Row="0"
-                                       Grid.RowSpan="2"
                                        Width="16"
                                        Height="16"
                                        VerticalAlignment="Center"
@@ -950,54 +942,42 @@
                                         </EventTrigger>
                                     </Image.Triggers>
                                 </Image>
-
-                                <!--  Package Name  -->
                                 <TextBlock Name="name"
-                                           Grid.Row="0"
                                            Grid.Column="1"
-                                           Margin="10,0,0,0"
-                                           VerticalAlignment="Bottom"
+                                           Margin="5,0,0,0"
+                                           Padding="5"
+                                           VerticalAlignment="Top"
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
                                            FontSize="14"
                                            Foreground="#F5F5F5"
                                            Text="{Binding Path=Name}"
                                            TextTrimming="CharacterEllipsis" />
-                                
-                                <!--  Error Message  -->
                                 <TextBlock Name="error"
-                                           Grid.Row="1"
                                            Grid.Column="1"
-                                           Margin="10,0,0,0"
-                                           VerticalAlignment="Top"
+                                           Margin="5,0,0,0"
+                                           Padding="5"
+                                           VerticalAlignment="Bottom"
                                            FontSize="10"
                                            Foreground="White"
                                            Text="{Binding Path=ErrorString}"
                                            TextTrimming="CharacterEllipsis" />
-                                
-                                <!--  Download State  -->
                                 <TextBlock Name="downloadState"
-                                           Grid.Row="0"
                                            Grid.Column="2"
-                                           Margin="0,0,0,2"
-                                           VerticalAlignment="Bottom"
-                                           HorizontalAlignment="Left"
+                                           Padding="5"
+                                           VerticalAlignment="Top"
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
                                            FontSize="10"
                                            Foreground="#F5F5F5"
                                            Text="{Binding Path=DownloadState, Converter={StaticResource PackageDownloadStateToStringConverter}}" />
-
-                                <!--  Version  -->
                                 <TextBlock Name="version"
-                                           Grid.Row="1"
                                            Grid.Column="2"
-                                           VerticalAlignment="Top"
+                                           Padding="5"
+                                           VerticalAlignment="Bottom"
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
                                            FontSize="10"
                                            Foreground="#F5F5F5"
                                            Text="{Binding Path=VersionName}" />
                                 <Button Name="closeDownloadToastButton"
-                                        Grid.Row="0"
-                                        Grid.RowSpan="2"
                                         Grid.Column="3"
                                         Width="16"
                                         Height="16"
