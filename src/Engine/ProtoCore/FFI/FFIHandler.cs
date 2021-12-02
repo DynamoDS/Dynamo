@@ -159,6 +159,7 @@ namespace ProtoFFI
                 }
                 catch(Exception exception)
                 {
+                    // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
                     if (exception is System.IO.FileLoadException ex && ex.HResult == unchecked((int)0x80131515))
                     {
                         throw ex;

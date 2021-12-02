@@ -621,19 +621,13 @@ namespace Dynamo.Engine
                     ImportProcedure(library, globalFunction);
                 }
             }
-            catch(FileLoadException e)
+            catch (Exception e)
             {
-                // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL. Please seee the following link for details:
-                if (e.HResult == unchecked((int)0x80131515))
+                // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
+                if (e is FileLoadException fle && fle.HResult == unchecked((int)0x80131515))
                 {
                     throw e;
                 }
-                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message,
-                        throwOnFailure: !isExplicitlyImportedLib));
-                return false;
-            }
-            catch (Exception e)
-            {
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message,
                     throwOnFailure: !isExplicitlyImportedLib));
                 return false;

@@ -2633,6 +2633,7 @@ namespace Dynamo.ViewModels
                 }
                 catch(FileLoadException ex)
                 {
+                    // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
                     if (ex.HResult == unchecked((int)0x80131515))
                     {
                         var failureMessage = string.Format(Properties.Resources.LibraryLoadFailureForBlockedAssembly, ex.Message);

@@ -90,7 +90,8 @@ namespace ProtoFFI
             }
             catch (Exception ex)
             {
-                if(ex is FileLoadException e && e.HResult == unchecked((int)0x80131515))
+                // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
+                if (ex is FileLoadException e && e.HResult == unchecked((int)0x80131515))
                 {
                     throw e;
                 }
@@ -253,6 +254,7 @@ namespace ProtoFFI
                 }
                 catch(Exception ex)
                 {
+                    // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
                     if (ex is FileLoadException e && e.HResult == unchecked((int)0x80131515))
                     {
                         throw e;
