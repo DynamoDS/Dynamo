@@ -84,7 +84,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
         private void StartTourButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            GuideFlowEvents.OnGuidedTourNext(popupViewModel.Step.Sequence);            
+            GuideFlowEvents.OnGuidedTourNext();            
         }
 
         private void CloseButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -103,12 +103,12 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
-            GuideFlowEvents.OnGuidedTourNext(popupViewModel.Step.Sequence);            
+            GuideFlowEvents.OnGuidedTourNext();            
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            GuideFlowEvents.OnGuidedTourPrev(popupViewModel.Step.Sequence);           
+            GuideFlowEvents.OnGuidedTourPrev();           
         }
     }
 }
