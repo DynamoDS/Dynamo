@@ -1085,6 +1085,22 @@ namespace DynamoCoreWpfTests
             Assert.That(collapsedStateAfter.All(x => x is false));
         }
 
+        [Test]
+        public void SelectAllCommandSelectGroupTest()
+        {
+            // Arrange
+            var groupName = "CollapsedGroup";
+
+            // Graph contains collapsed group as well as nodes, notes, connector pins outside of group
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var groupViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == groupName);
+            var groupModel = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.GUID == groupViewModel.AnnotationModel.GUID);
+
+            // Assert that select all command should include target group
+            ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
+            Assert.IsTrue(DynamoSelection.Instance.Selection.Contains(groupModel));
+        }
+
         #endregion
     }
 }
