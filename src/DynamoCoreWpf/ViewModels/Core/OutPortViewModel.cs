@@ -209,7 +209,7 @@ namespace Dynamo.ViewModels
                 // Attempting to get the relevant ConnectorViewModel via matching GUID
                 var connectorViewModel = node.WorkspaceViewModel.Connectors
                     .FirstOrDefault(x => x.ConnectorModel.GUID == connector.GUID);
-                connectorViewModel?.HideConnectorCommand.Execute(!SetConnectorsVisibility);
+                connectorViewModel?.ShowhideConnectorCommand.Execute(!SetConnectorsVisibility);
             }
             if (SetConnectorsVisibility)
             {

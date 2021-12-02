@@ -139,7 +139,7 @@ namespace Dynamo.ViewModels
             {
                 Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, ViewModel.GetType().Name, 1);
             }
-            ViewModel.HideConnectorCommand.Execute(null);
+            ViewModel.ShowhideConnectorCommand.Execute(null);
         }
 
         #endregion
