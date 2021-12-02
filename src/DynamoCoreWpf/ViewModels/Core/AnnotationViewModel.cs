@@ -841,6 +841,10 @@ namespace Dynamo.ViewModels
             {
                 if (viewModel is AnnotationViewModel annotationViewModel)
                 {
+                    if(annotationViewModel.Nodes.Any())
+                    {
+                        UpdateConnectorsAndPortsOnShowContents(annotationViewModel.Nodes);
+                    }
                     // If there is a group in this group
                     // we expand that and all of its content.
                     annotationViewModel.IsCollapsed = false;
@@ -850,7 +854,15 @@ namespace Dynamo.ViewModels
                 viewModel.IsCollapsed = false;
             }
 
-            foreach (var nodeModel in Nodes.OfType<NodeModel>())
+            UpdateConnectorsAndPortsOnShowContents(Nodes);
+            UpdateProxyPortsPosition();
+
+            Analytics.TrackEvent(Actions.Expanded, Categories.GroupOperations);
+        }
+
+        private void UpdateConnectorsAndPortsOnShowContents(IEnumerable<ModelBase> nodes)
+        {
+            foreach (var nodeModel in nodes.OfType<NodeModel>())
             {
                 var connectorGuids = nodeModel.AllConnectors
                     .Select(x => x.GUID);
@@ -865,10 +877,6 @@ namespace Dynamo.ViewModels
                 nodeModel.InPorts.ToList().ForEach(x => x.IsProxyPort = false);
                 nodeModel.OutPorts.ToList().ForEach(x => x.IsProxyPort = false);
             }
-
-            UpdateProxyPortsPosition();
-
-            Analytics.TrackEvent(Actions.Expanded, Categories.GroupOperations);
         }
 
         private void UpdateFontSize(object parameter)
