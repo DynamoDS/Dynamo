@@ -74,13 +74,13 @@ namespace Dynamo.ViewModels
         /// In order to overwrite visibility of all connectors associated with a port, us this 
         /// flag again.
         /// </summary>
-        public bool SetConnectorsVisibility
+        internal bool AreConnectorsHidden
         {
             get => areConnectorsHidden;
             set
             {
                 areConnectorsHidden = value; 
-                RaisePropertyChanged(nameof(SetConnectorsVisibility));
+                RaisePropertyChanged(nameof(AreConnectorsHidden));
             }
         }
 
@@ -101,12 +101,12 @@ namespace Dynamo.ViewModels
         /// Takes care of the multiple UI concerns when dealing with the Unhide/Hide Wires button
         /// on the output port's context menu.
         /// </summary>
-        internal void RefreshHideWiresButton()
+        internal void RefreshHideWiresState()
         {
             HideWiresButtonEnabled = port.Connectors.Count > 0;
-            SetConnectorsVisibility = CheckIfConnectorsAreHidden();
+            AreConnectorsHidden = CheckIfConnectorsAreHidden();
 
-            ShowHideWiresButtonContent = SetConnectorsVisibility
+            ShowHideWiresButtonContent = AreConnectorsHidden
                 ? Wpf.Properties.Resources.ShowWiresPopupMenuItem
                 : Wpf.Properties.Resources.HideWiresPopupMenuItem;
 
@@ -117,7 +117,7 @@ namespace Dynamo.ViewModels
 
         public OutPortViewModel(NodeViewModel node, PortModel port) :base(node, port)
         {
-            RefreshHideWiresButton();
+            RefreshHideWiresState();
         }
 
         internal override PortViewModel CreateProxyPortViewModel(PortModel portModel)
@@ -184,9 +184,9 @@ namespace Dynamo.ViewModels
                     continue;
                 }
 
-                connectorViewModel.HideConnectorCommand.Execute(!SetConnectorsVisibility);
+                connectorViewModel.HideConnectorCommand.Execute(!AreConnectorsHidden);
             }
-            RefreshHideWiresButton();
+            RefreshHideWiresState();
         }
 
         /// <summary>

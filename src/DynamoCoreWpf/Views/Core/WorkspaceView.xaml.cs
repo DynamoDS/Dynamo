@@ -224,7 +224,7 @@ namespace Dynamo.Views
 
                             if (portViewModel is OutPortViewModel outPortViewModel)
                             {
-                                outPortViewModel.RefreshHideWiresButton();
+                                outPortViewModel.RefreshHideWiresState();
                             }
 
                             portViewModel.SetupPortContextMenuPlacement(popup);
