@@ -574,7 +574,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         protected virtual void RefreshPortColors()
         {
-            PortBackgroundColor = node.IsVisible ? PortBackgroundColorDefault : PortBackgroundColorPreviewOff;
+            PortBackgroundColor = PortBackgroundColorDefault;
             PortBorderBrushColor = PortBorderBrushColorDefault;
         }
 
