@@ -1590,7 +1590,7 @@ namespace Dynamo.ViewModels
         private void UngroupNode(object parameters)
         {
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
-            Analytics.TrackEvent(Actions.RemovedFrom, Categories.NodeContextMenuOperations);
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.NodeContextMenuOperations, "Node");
         }
 
         private bool CanUngroupNode(object parameters)
@@ -1606,7 +1606,7 @@ namespace Dynamo.ViewModels
         private void AddToGroup(object parameters)
         {
             WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
-            Analytics.TrackEvent(Actions.AddedTo, Categories.NodeContextMenuOperations);
+            Analytics.TrackEvent(Actions.AddedTo, Categories.NodeContextMenuOperations, "Node");
         }
 
         private bool CanAddToGroup(object parameters)
