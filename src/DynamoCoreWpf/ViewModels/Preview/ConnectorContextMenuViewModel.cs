@@ -91,7 +91,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public DelegateCommand SelectConnectedSurrogateCommand { get; set; }
         /// <summary>
-        /// Alets ConnectorViewModel to break the current connection.
+        /// Alerts ConnectorViewModel to break the current connection.
         /// </summary>
         public DelegateCommand BreakConnectionsSurrogateCommand { get; set; }
 
@@ -130,9 +130,16 @@ namespace Dynamo.ViewModels
         /// <param name="obj"></param>
         private void HideConnectorSurrogateCommandExecute(object obj)
         {
-            ViewModel.HideConnectorCommand.Execute(null);
             // Track Show or hide connected nodes event
-            Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, ViewModel.GetType().Name, 1);
+            if (ViewModel.IsHidden)
+            {
+                Analytics.TrackEvent(Actions.Show, Categories.ConnectorOperations, ViewModel.GetType().Name, 1);
+            }
+            else
+            {
+                Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, ViewModel.GetType().Name, 1);
+            }
+            ViewModel.HideConnectorCommand.Execute(null);
         }
 
         #endregion

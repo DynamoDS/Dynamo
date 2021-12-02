@@ -204,18 +204,12 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         private void HideConnections(object parameter)
         {
-            for (var i = port.Connectors.Count - 1; i >= 0; i--)
+            foreach(var connector in port.Connectors)
             {
                 // Attempting to get the relevant ConnectorViewModel via matching GUID
                 var connectorViewModel = node.WorkspaceViewModel.Connectors
-                    .FirstOrDefault(x => x.ConnectorModel.GUID == port.Connectors[i].GUID);
-
-                if (connectorViewModel == null)
-                {
-                    continue;
-                }
-
-                connectorViewModel.HideConnectorCommand.Execute(!SetConnectorsVisibility);
+                    .FirstOrDefault(x => x.ConnectorModel.GUID == connector.GUID);
+                connectorViewModel?.HideConnectorCommand.Execute(!SetConnectorsVisibility);
             }
             if (SetConnectorsVisibility)
             {
