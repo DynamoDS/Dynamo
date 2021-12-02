@@ -706,15 +706,12 @@ namespace Dynamo.PackageManager
             RemoveItemCommand = new Dynamo.UI.Commands.DelegateCommand(RemoveItem);
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
             Dependencies.CollectionChanged += DependenciesOnCollectionChanged;
-            PackageContents.CollectionChanged += PackageContentsOnCollectionChanged;
             Assemblies = new List<PackageAssembly>();
             PropertyChanged += ThisPropertyChanged;
             RefreshPackageContents();
             RefreshDependencyNames();
         }
 
-        private void PackageContentsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RefreshPackageContents();
-        
         private void DependenciesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RefreshDependencyNames();
         
         private void RefreshDependencyNames()
@@ -729,12 +726,16 @@ namespace Dynamo.PackageManager
 
         private void RefreshPackageContents()
         {
-            PackageContents = CustomNodeDefinitions.Select(
-                    (def) => new PackageItemRootViewModel(def))
+            PackageContents.Clear();
+            
+            var itemsToAdd = CustomNodeDefinitions
+                .Select(def => new PackageItemRootViewModel(def))
                 .Concat(Assemblies.Select((pa) => new PackageItemRootViewModel(pa)))
                 .Concat(AdditionalFiles.Select((s) => new PackageItemRootViewModel(new FileInfo(s))))
                 .ToList()
                 .ToObservableCollection();
+
+            foreach (var item in itemsToAdd) PackageContents.Add(item);
         }
 
         /// <summary>
