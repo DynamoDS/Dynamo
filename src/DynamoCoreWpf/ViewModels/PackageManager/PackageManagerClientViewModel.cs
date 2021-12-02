@@ -751,7 +751,7 @@ namespace Dynamo.ViewModels
                         uninstallsRequiringRestart.ForEach(x => x.MarkForUninstall(settings));
                         return;
                     }
-                    else if(dialogResult == MessageBoxResult.Cancel) return;
+                    else if(dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None) return;
                 }
 
                 if (immediateUninstalls.Any())
