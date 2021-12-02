@@ -2640,6 +2640,15 @@ namespace Dynamo.ViewModels
                 {
                     System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
                 }
+                catch(FileLoadException ex)
+                {
+                    if (ex.HResult == unchecked((int)0x80131515))
+                    {
+                        var failureMessage = string.Format(Properties.Resources.LibraryLoadFailureForBlockedAssembly, ex.Message);
+                        System.Windows.MessageBox.Show(failureMessage, BrandingResourceProvider.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                    else throw ex;
+                }
             }
         }
 

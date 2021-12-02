@@ -82,7 +82,7 @@ namespace DynamoSandbox
                 // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL. Please seee the following link for details:
                 if (e.HResult == unchecked((int)0x80131515))
                 {
-                    var failureMessage = string.Format(Dynamo.Properties.Resources.LibraryLoadFailureForBlockedAssembly, e.Message);
+                    var failureMessage = string.Format(Dynamo.Properties.Resources.LibraryPreloadFailureForBlockedAssembly, e.Message);
                     MessageBox.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
 
                     Debug.WriteLine(e.Message);
