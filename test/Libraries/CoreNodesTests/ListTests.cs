@@ -572,17 +572,6 @@ namespace DSCoreNodesTests
             Assert.IsTrue(List.IsEmpty(List.Empty));
             Assert.IsFalse(List.IsEmpty(new ArrayList { 1 }));
         }
-        [Test]
-        [Category("UnitTests")]
-        public static void IsNullOrEmptyList()
-        {
-            Assert.IsTrue(List.IsNullOrEmpty(List.Empty));
-            Assert.IsFalse(List.IsNullOrEmpty(new ArrayList { 1 }));
-            Assert.IsTrue(List.IsNullOrEmpty(new ArrayList {  }));
-            Assert.IsTrue(List.IsNullOrEmpty(new ArrayList { null }));
-            Assert.IsTrue(List.IsNullOrEmpty(null));
-            Assert.IsFalse(List.IsNullOrEmpty(new ArrayList{"data",null}));
-        }
 
         [Test]
         [Category("UnitTests")]
