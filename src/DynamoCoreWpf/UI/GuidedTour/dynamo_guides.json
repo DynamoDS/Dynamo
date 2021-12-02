@@ -754,6 +754,7 @@
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
 				"Height": 490,
+				"ShowLibrary": true,
 				"StepContent": {
 					"Title": "PackagesGuidePackagesNodeTitle",
 					"FormattedText": "PackagesGuideInstalledPackageText"
@@ -763,9 +764,33 @@
 					"DynamicHostWindow": true,
 					"HostUIElementString": "sidebarGrid",
 					"WindowName": "LibraryView",
-					"VerticalPopupOffset": 400,
-					"HorizontalPopupOffset": 0
-				}
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 300,
+					"HtmlPage": {
+						"FileName": "nodePackage.html",
+						"Resources": {
+							"#PackageNodes": "PackageNodes.gif"
+						}
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 0,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "setOverlay",
+						"JSParameters": [],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 1,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Revit" ]
+					}
+				]
 			},
 			{
 				"Sequence": 10,
@@ -786,14 +811,7 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "center",
 					"HostUIElementString": "WorkspaceTabs",
-					"VerticalPopupOffset": 0,
-					"HorizontalPopupOffset": 400,
-					"HtmlPage": {
-						"FileName": "nodePackage.html",
-						"Resources": {
-							"#PackageNodes": "PackageNodes.gif"
-						}
-					}
+					"VerticalPopupOffset": 0			
 				}
 			}
 		]
