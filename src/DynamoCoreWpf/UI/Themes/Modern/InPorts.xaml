@@ -81,14 +81,14 @@
                        IsHitTestVisible="False"
                        SnapsToDevicePixels="True" />
 
-            <!--  A circular marker indicating that the port has a default value  -->
+            <!--  A rectangular marker indicating that the port has a default value  -->
             <Border x:Name="PortDefaultValueMarker"
                     Grid.Column="0"
-                    Width="5"
-                    Height="12"
+                    Width="4"
+                    Height="27px"
+                    Margin="0,0,1,0"
                     HorizontalAlignment="Right"
                     Background="{StaticResource Blue300Brush}"
-                    CornerRadius="6,0,0,6"
                     Visibility="{Binding PortDefaultValueMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
             <!--  The name of this port  -->
