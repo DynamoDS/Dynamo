@@ -362,7 +362,7 @@ namespace Dynamo.ViewModels
         /// node has undismissed info/warning/error messages.
         /// </summary>
         [JsonIgnore]
-        public bool NodeWarningBarVisible => ErrorBubble != null && ErrorBubble.DoesNodeDisplayMessages || IsVisible == false;
+        public bool NodeWarningBarVisible => (ErrorBubble != null && ErrorBubble.DoesNodeDisplayMessages) || IsVisible == false;
 
         /// <summary>
         /// The color of the warning bar: blue for info, orange for warnings, red for errors.
@@ -778,6 +778,8 @@ namespace Dynamo.ViewModels
             }
             
             logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
+
+            logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsVisible)));
         }
 
 
