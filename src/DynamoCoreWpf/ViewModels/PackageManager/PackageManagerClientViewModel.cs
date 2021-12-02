@@ -685,7 +685,7 @@ namespace Dynamo.ViewModels
                         Resources.PackageDownloadMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
-                    if (res == MessageBoxResult.Cancel) return;
+                    if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None) return;
                 }
 
                 var packageToDownload = $"{name} {package.version}";
@@ -699,7 +699,7 @@ namespace Dynamo.ViewModels
                         Resources.BuiltInPackageConflictMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
-                    if(dialogResult == MessageBoxResult.Cancel) return;
+                    if(dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None) return;
                 }
 
                 // Determine if there are any dependencies that are made with a newer version
@@ -711,10 +711,11 @@ namespace Dynamo.ViewModels
                 // allowing them to cancel the package download
                 if (futureDeps.Any())
                 {
-                    if (MessageBoxService.Show(string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName),
+                    var res = MessageBoxService.Show(string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName),
                         string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
                         MessageBoxButton.OKCancel,
-                        MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                        MessageBoxImage.Warning);
+                    if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None)
                     {
                         return;
                     }
@@ -730,7 +731,7 @@ namespace Dynamo.ViewModels
                         Resources.PackagesInUseConflictMessageBoxTitle,
                         MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
 
-                    if(dialogResult == MessageBoxResult.No) return;
+                    if(dialogResult == MessageBoxResult.No || dialogResult == MessageBoxResult.None) return;
                 }
 
                 var settings = DynamoViewModel.Model.PreferenceSettings;
@@ -762,7 +763,7 @@ namespace Dynamo.ViewModels
 
                     var dialogResult = MessageBoxService.Show(message,
                         Resources.DownloadWarningMessageBoxTitle, MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                    if (dialogResult == MessageBoxResult.Cancel)
+                    if (dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None)
                     {
                         return;
                     }
