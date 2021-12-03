@@ -12,6 +12,9 @@ namespace Dynamo.UI.Controls
     {
         internal event Action<ShowHideFlags, PortViewModel> RequestShowPortContextMenu;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public OutPortContextMenu()
         {
             InitializeComponent();
@@ -47,10 +50,7 @@ namespace Dynamo.UI.Controls
         /// <param name="flags"></param>
         private void OnRequestShowPortContextMenu(ShowHideFlags flags)
         {
-            if (RequestShowPortContextMenu != null)
-            {
-                RequestShowPortContextMenu(flags, DataContext as PortViewModel);
-            }
+            RequestShowPortContextMenu?.Invoke(flags, DataContext as PortViewModel);
         }
     }
 }

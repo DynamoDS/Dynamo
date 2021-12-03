@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.DocumentationBrowser;
@@ -28,6 +29,24 @@ namespace DynamoCoreWpfTests
             PythonEngineVersion.IronPython2.ToString(),
             PythonEngineVersion.CPython3.ToString()
         };
+
+        private static DependencyObject GetInfoBubble(DependencyObject parent)
+        {
+            if (parent.GetType().Name == nameof(InfoBubbleView))
+            {
+                return parent;
+            }
+
+            foreach (var child in parent.Children())
+            {
+                var output = GetInfoBubble(child);
+                if (output != null)
+                {
+                    return output;
+                }
+            }
+            return null;
+        }
 
         public override void Open(string path)
         {
@@ -662,6 +681,34 @@ namespace DynamoCoreWpfTests
 
             // Assert
             StringAssert.StartsWith("    \t", codeEditor.Text);
+        }
+
+        [Test]
+        public void PythonNodeErrorBubblePersists()
+        {
+            // open file
+            var model = ViewModel.Model;
+            Open(@"core\python\python.dyn");
+            Run();
+
+            // get the python node and check Engine property
+            var workspace = model.CurrentWorkspace;
+            var nodeModel = workspace.NodeFromWorkspace("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            var pynode = nodeModel as PythonNode;
+            Assert.AreEqual(pynode.Engine, PythonEngineVersion.IronPython2);
+
+            Assert.AreEqual(pynode.State, Dynamo.Graph.Nodes.ElementState.Warning);
+
+            var nodeView = NodeViewWithGuid(nodeModel.GUID.ToString());
+  
+            Assert.IsNotNull(nodeView);
+            Assert.IsNotNull(nodeView.ViewModel.ErrorBubble);
+
+            nodeView.UpdateLayout();
+       
+            var errorBubble = GetInfoBubble(View);
+            Assert.IsNotNull(errorBubble);
+            Assert.AreEqual(Visibility.Visible, (errorBubble as UIElement).Visibility);
         }
     }
 }

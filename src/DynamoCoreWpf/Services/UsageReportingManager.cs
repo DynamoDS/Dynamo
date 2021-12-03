@@ -109,6 +109,11 @@ namespace Dynamo.Services
 
             private set
             {
+                if (Analytics.DisableAnalytics)
+                {
+                    return;// Do not override anything when DisableAnalytics is on
+                }
+
                 dynamoViewModel.Model.PreferenceSettings.IsAnalyticsReportingApproved = value;
                 RaisePropertyChanged("IsAnalyticsReportingApproved");
                 var path = dynamoViewModel.Model.PathManager.PreferenceFilePath;
