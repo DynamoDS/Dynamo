@@ -417,7 +417,7 @@ namespace Dynamo.ViewModels
                         this.AnnotationModel.AddToSelectedModels(model, true);
                     }
                 }
-                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations);
+                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Node");
             }
         }
 
@@ -474,7 +474,7 @@ namespace Dynamo.ViewModels
                         AddToCutGeometryDictionary(groupViewModel);
                     }
                 }
-                Analytics.TrackEvent(Actions.GroupAddedTo, Categories.GroupOperations);
+                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Group");
             }
         }
 
@@ -488,7 +488,7 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynamoModel.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
-            Analytics.TrackEvent(Actions.GroupRemovedFrom, Categories.GroupOperations);
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Group");
         }
 
         private bool CanUngroupGroup(object parameters)
@@ -624,10 +624,9 @@ namespace Dynamo.ViewModels
             // outside of the group
             if (ownerNodes != null)
             {
-                return Nodes.OfType<NodeModel>()
-                    .SelectMany(x => x.InPorts
+                return ownerNodes.SelectMany(x => x.InPorts
                         .Where(p => !p.IsConnected || !p.Connectors.Any(c => ownerNodes.Contains(c.Start.Owner)))
-                    );
+                    ) ;
             }
 
             // If this group does contain any AnnotationModels
@@ -646,7 +645,7 @@ namespace Dynamo.ViewModels
             // outside of the group
             if (ownerNodes != null)
             {
-                return Nodes.OfType<NodeModel>()
+                return ownerNodes
                     .SelectMany(x => x.OutPorts
                         .Where(p => !p.IsConnected || !p.Connectors.Any(c => ownerNodes.Contains(c.End.Owner)))
                     );
@@ -729,7 +728,21 @@ namespace Dynamo.ViewModels
 
         internal void UpdateProxyPortsPosition()
         {
-            var groupInports = GetGroupInPorts();
+            var parent = WorkspaceViewModel.Annotations
+                .FirstOrDefault(x => x.AnnotationModel.ContainsModel(AnnotationModel));
+
+            if (parent != null && !parent.IsExpanded) return;
+
+            IEnumerable<NodeModel> nestedNodes = null;
+            if (annotationModel.HasNestedGroups)
+            {
+                nestedNodes = Nodes
+                    .OfType<AnnotationModel>()
+                    .SelectMany(x => x.Nodes.OfType<NodeModel>())
+                    .Concat(Nodes.OfType<NodeModel>());
+            }
+
+            var groupInports = GetGroupInPorts(nestedNodes);
 
             for (int i = 0; i < groupInports.Count(); i++)
             {
@@ -781,8 +794,6 @@ namespace Dynamo.ViewModels
                     // we collapse that and all of its content.
                     annotationViewModel.IsCollapsed = true;
                     annotationViewModel.CollapseGroupContents(false);
-                    annotationViewModel.SetGroupInputPorts();
-                    annotationViewModel.SetGroupOutPorts();
                 }
 
                 viewModel.IsCollapsed = true;
@@ -841,6 +852,10 @@ namespace Dynamo.ViewModels
             {
                 if (viewModel is AnnotationViewModel annotationViewModel)
                 {
+                    if(annotationViewModel.Nodes.Any())
+                    {
+                        UpdateConnectorsAndPortsOnShowContents(annotationViewModel.Nodes);
+                    }
                     // If there is a group in this group
                     // we expand that and all of its content.
                     annotationViewModel.IsCollapsed = false;
@@ -850,7 +865,15 @@ namespace Dynamo.ViewModels
                 viewModel.IsCollapsed = false;
             }
 
-            foreach (var nodeModel in Nodes.OfType<NodeModel>())
+            UpdateConnectorsAndPortsOnShowContents(Nodes);
+            UpdateProxyPortsPosition();
+
+            Analytics.TrackEvent(Actions.Expanded, Categories.GroupOperations);
+        }
+
+        private void UpdateConnectorsAndPortsOnShowContents(IEnumerable<ModelBase> nodes)
+        {
+            foreach (var nodeModel in nodes.OfType<NodeModel>())
             {
                 var connectorGuids = nodeModel.AllConnectors
                     .Select(x => x.GUID);
@@ -865,10 +888,6 @@ namespace Dynamo.ViewModels
                 nodeModel.InPorts.ToList().ForEach(x => x.IsProxyPort = false);
                 nodeModel.OutPorts.ToList().ForEach(x => x.IsProxyPort = false);
             }
-
-            UpdateProxyPortsPosition();
-
-            Analytics.TrackEvent(Actions.Expanded, Categories.GroupOperations);
         }
 
         private void UpdateFontSize(object parameter)
@@ -979,7 +998,7 @@ namespace Dynamo.ViewModels
 
         private void OnModelRemovedFromGroup(object sender, EventArgs e)
         {
-            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations);
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Node");
             RaisePropertyChanged(nameof(ZIndex));
         }
 
