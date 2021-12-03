@@ -157,13 +157,12 @@ namespace ProtoFFI
                 {
                     Modules.Add(moduleFileName, helpers[FFILanguage.CSharp].getModule(dllModuleName));
                 }
-                catch(Exception exception)
+                catch (DynamoServices.AssemblyBlockedException exception)
                 {
-                    // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
-                    if (exception is System.IO.FileLoadException ex && ex.HResult == unchecked((int)0x80131515))
-                    {
-                        throw ex;
-                    }
+                    throw exception;
+                }
+                catch (Exception)
+                {
                     //try loading c++
                     try
                     {

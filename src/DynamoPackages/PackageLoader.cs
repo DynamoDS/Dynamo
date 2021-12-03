@@ -299,10 +299,9 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
-                if (e is FileLoadException ex && ex.HResult == unchecked((int)0x80131515))
+                if (e is DynamoServices.AssemblyBlockedException)
                 {
-                    var failureMessage = string.Format(Properties.Resources.PackageLoadFailureForBlockedAssembly, ex.Message);
+                    var failureMessage = string.Format(Properties.Resources.PackageLoadFailureForBlockedAssembly, e.Message);
                     DynamoServices.LoadLibraryEvents.OnLoadLibraryFailure(failureMessage, Properties.Resources.LibraryLoadFailureMessageBoxTitle);
                 }
                 package.LoadState.SetAsError(e.Message);
@@ -714,6 +713,16 @@ namespace Dynamo.PackageManager
             {
                 assem = Assembly.LoadFrom(filename);
                 return true;
+            }
+            catch (FileLoadException e)
+            {
+                // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
+                if (e.HResult == unchecked((int)0x80131515))
+                {
+                    throw new DynamoServices.AssemblyBlockedException(e.Message);
+                }
+                assem = null;
+                return false;
             }
             catch (BadImageFormatException)
             {

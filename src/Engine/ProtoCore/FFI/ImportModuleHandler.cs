@@ -88,13 +88,12 @@ namespace ProtoFFI
             {
                 codeNode = ImportCodeBlock(modulePathFileName, typeName, alias, codeNode);
             }
+            catch (DynamoServices.AssemblyBlockedException ex)
+            {
+                throw ex;
+            }
             catch (Exception ex)
             {
-                // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
-                if (ex is FileLoadException e && e.HResult == unchecked((int)0x80131515))
-                {
-                    throw e;
-                }
                 if (ex is ReflectionTypeLoadException)
                 {
                     StringBuilder sb = new StringBuilder();
@@ -252,13 +251,12 @@ namespace ProtoFFI
                 {
                     dllModule = DLLFFIHandler.GetModule(importModuleName);
                 }
-                catch(Exception ex)
+                catch (DynamoServices.AssemblyBlockedException ex)
                 {
-                    // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
-                    if (ex is FileLoadException e && e.HResult == unchecked((int)0x80131515))
-                    {
-                        throw e;
-                    }
+                    throw ex;
+                }
+                catch (Exception)
+                {
                     _coreObj.LogSemanticError(string.Format(Resources.FailedToImport, importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
                 }
             }

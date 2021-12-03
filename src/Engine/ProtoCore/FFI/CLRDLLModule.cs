@@ -1190,13 +1190,12 @@ namespace ProtoFFI
                     System.Diagnostics.Debug.WriteLine(exception.StackTrace);
                     throw new Exception(string.Format("Dynamo can only import .NET DLLs. Failed to load library: {0}.", name));
                 }
+                catch(DynamoServices.AssemblyBlockedException exception)
+                {
+                    throw exception;
+                }
                 catch (Exception exception)
                 {
-                    // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
-                    if (exception is System.IO.FileLoadException ex && ex.HResult == unchecked((int)0x80131515))
-                    {
-                        throw ex;
-                    }
                     System.Diagnostics.Debug.WriteLine(exception.Message);
                     System.Diagnostics.Debug.WriteLine(exception.StackTrace);
                     throw new Exception(string.Format("Fail to load library: {0}.", name));

@@ -2641,16 +2641,11 @@ namespace Dynamo.ViewModels
                     Wpf.Utilities.MessageBoxService.Show(
                         ex.Message, Properties.Resources.LibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
-                catch(FileLoadException ex)
+                catch(DynamoServices.AssemblyBlockedException ex)
                 {
-                    // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
-                    if (ex.HResult == unchecked((int)0x80131515))
-                    {
-                        var failureMessage = string.Format(Properties.Resources.LibraryLoadFailureForBlockedAssembly, ex.Message);
-                        Wpf.Utilities.MessageBoxService.Show(
-                            failureMessage, Properties.Resources.LibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    }
-                    else throw ex;
+                    var failureMessage = string.Format(Properties.Resources.LibraryLoadFailureForBlockedAssembly, ex.Message);
+                    Wpf.Utilities.MessageBoxService.Show(
+                        failureMessage, Properties.Resources.LibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
         }

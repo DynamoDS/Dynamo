@@ -76,19 +76,14 @@ namespace DynamoSandbox
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
 
             }
-            catch(FileLoadException e)
+            catch(DynamoServices.AssemblyBlockedException e)
             {
-                DynamoModel.IsCrashing = true;
-                // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
-                if (e.HResult == unchecked((int)0x80131515))
-                {
-                    var failureMessage = string.Format(Dynamo.Properties.Resources.CoreLibraryLoadFailureForBlockedAssembly, e.Message);
-                    Dynamo.Wpf.Utilities.MessageBoxService.Show(
-                        failureMessage, Dynamo.Properties.Resources.CoreLibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                var failureMessage = string.Format(Dynamo.Properties.Resources.CoreLibraryLoadFailureForBlockedAssembly, e.Message);
+                Dynamo.Wpf.Utilities.MessageBoxService.Show(
+                    failureMessage, Dynamo.Properties.Resources.CoreLibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    Debug.WriteLine(e.Message);
-                    Debug.WriteLine(e.StackTrace);
-                }
+                Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.StackTrace);
             }
             catch (Exception e)
             {
