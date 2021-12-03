@@ -201,7 +201,7 @@ namespace Dynamo.UI.Prompts
         /// Shows or hides buttons on the view as necessary.
         /// </summary>
         /// <param name="messageBoxButton"></param>
-        /// /// <param name="buttonNames">names that will be used to override the standard button names.
+        /// <param name="buttonNames">names that will be used to override the standard button names.
         /// Number of names must match the number of visible buttons set by messageBoxButton parameter.</param>
         internal void ConfigureButtons(MessageBoxButton messageBoxButton, IEnumerable<string> buttonNames = null)
         {

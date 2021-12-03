@@ -493,9 +493,9 @@ namespace Dynamo.ViewModels
             ExecutePackageDownload(packageInfo.Name, version, downloadPath);
         }
 
-        private string JoinPackageNames(IEnumerable<Package> pkgs)
+        private string JoinPackageNames(IEnumerable<Package> pkgs, string seperator = ", ")
         {
-            return String.Join(", ", pkgs.Select(x => x.Name + " " + x.VersionName));
+            return String.Join(seperator, pkgs.Select(x => x.Name + " " + x.VersionName));
         }
 
         /// <summary>
@@ -737,7 +737,7 @@ namespace Dynamo.ViewModels
                 var settings = DynamoViewModel.Model.PreferenceSettings;
                 if (uninstallsRequiringRestart.Any())
                 {
-                    var conflictingPkgs = JoinPackageNames(uninstallsRequiringRestart);
+                    var conflictingPkgs = JoinPackageNames(uninstallsRequiringRestart,System.Environment.NewLine);
                     var message = string.Format(Resources.MessageForceInstallOrUninstallUponRestart, packageToDownload,
                         conflictingPkgs);
 
