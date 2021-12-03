@@ -764,7 +764,7 @@
 					"DynamicHostWindow": true,
 					"HostUIElementString": "sidebarGrid",
 					"WindowName": "LibraryView",
-					"VerticalPopupOffset": 0,
+					"VerticalPopupOffset": 300,
 					"HorizontalPopupOffset": 300,
 					"HtmlPage": {
 						"FileName": "nodePackage.html",
