@@ -1378,11 +1378,13 @@ Do you wish to continue installing it while keeping the packages that are alread
 If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
-    <value>Package {0} has one or more dependencies that conflict with the following packages: {1}. Dependency conflicts could cause unintended behavior to occur.
-    
-Do you wish to continue installing it while keeping the packages that are already installed?
+    <value>Package {0} has one or more dependencies that conflict with the following package(s):
 
-If not, {2} needs to uninstall {1} to continue. Restart {2}, then download {0} again.</value>
+{1}
+
+If you continue to install the package, unintended behavior may occur.
+
+To avoid unintended behavior, uninstall the conflicting loaded package(s), restart Dynamo, and download {0} again.</value>
   </data>
   <data name="MessageUnkownErrorOpeningFile" xml:space="preserve">
     <value>Unknown error opening file: {0}</value>
@@ -3001,5 +3003,11 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="GettingStartedMenuItem" xml:space="preserve">
     <value>_Getting Started</value>
+  </data>
+  <data name="ContinueInstall" xml:space="preserve">
+    <value>Continue install</value>
+  </data>
+  <data name="UninstallLoaded" xml:space="preserve">
+    <value>Uninstall loaded packages</value>
   </data>
 </root>
