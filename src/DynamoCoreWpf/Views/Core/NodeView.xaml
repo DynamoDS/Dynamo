@@ -240,11 +240,6 @@
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="Background" Value="{StaticResource DarkerGreyBrush}" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsVisible}" Value="False">
-                            <Setter Property="Background" Value="{StaticResource NodeBodyPreviewOffBackground}" />
-                        </DataTrigger>
-                    </Style.Triggers>
                 </Style>
             </Border.Style>
         </Border>
@@ -290,11 +285,6 @@
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="Background" Value="{StaticResource DarkMidGreyBrush}" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsVisible}" Value="False">
-                            <Setter Property="Background" Value="{StaticResource NodeHeaderPreviewOffBackground}" />
-                        </DataTrigger>
-                    </Style.Triggers>
                 </Style>
             </Border.Style>
         </Border>
