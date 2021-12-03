@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
+using Dynamo.Logging;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.Utilities
@@ -371,6 +372,8 @@ namespace Dynamo.Wpf.Utilities
             if (!(e.OriginalSource is MenuItem menuItem)) return;
 
             NodeViewModel.ErrorBubble.UndismissMessageCommand.Execute(menuItem.Header);
+
+            Analytics.TrackEvent(Actions.Undismiss, Categories.NodeContextMenuOperations, "NodeAlerts");
         }
 
         /// <summary>

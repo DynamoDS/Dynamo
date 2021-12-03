@@ -1871,7 +1871,7 @@
                                 <VisualState x:Name="MouseOver">
                                     <Storyboard>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                            <EasingColorKeyFrame KeyTime="0" Value="#a1dbff" />
+                                            <EasingColorKeyFrame KeyTime="0" Value="#EEEEEE" />
                                         </ColorAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -2642,7 +2642,9 @@
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="border" Property="Background" Value="#707070" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="#707070" />
                             <Setter TargetName="textBlock" Property="Opacity" Value="0.7" />
+                            <Setter Property="Cursor" Value="No" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
