@@ -736,10 +736,22 @@ namespace Dynamo.ViewModels
             IEnumerable<NodeModel> nestedNodes = null;
             if (annotationModel.HasNestedGroups)
             {
-                nestedNodes = Nodes
-                    .OfType<AnnotationModel>()
-                    .SelectMany(x => x.Nodes.OfType<NodeModel>())
-                    .Concat(Nodes.OfType<NodeModel>());
+                if (!IsExpanded)
+                {
+                    nestedNodes = Nodes
+                        .OfType<AnnotationModel>()
+                        .SelectMany(x => x.Nodes.OfType<NodeModel>())
+                        .Concat(Nodes.OfType<NodeModel>());
+                }
+
+                // If any of the nested groups are collapsed
+                // we need to update the posistion of the 
+                // prox ports on it.
+                ViewModelBases
+                    .OfType<AnnotationViewModel>()
+                    .Where(x => !x.IsExpanded)
+                    .ToList()
+                    .ForEach(x => x.UpdateProxyPortsPosition());
             }
 
             var groupInports = GetGroupInPorts(nestedNodes);
@@ -753,7 +765,7 @@ namespace Dynamo.ViewModels
                 model.Owner.ReportPosition();
             }
 
-            var groupOutports = GetGroupOutPorts();
+            var groupOutports = GetGroupOutPorts(nestedNodes);
 
             for (int i = 0; i < groupOutports.Count(); i++)
             {
