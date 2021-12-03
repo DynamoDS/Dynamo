@@ -214,11 +214,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Break Connection.
+        ///   Looks up a localized string similar to Break Connections.
         /// </summary>
-        public static string BreakConnectionPopupMenuItem {
+        public static string BreakConnectionsPopupMenuItem {
             get {
-                return ResourceManager.GetString("BreakConnectionPopupMenuItem", resourceCulture);
+                return ResourceManager.GetString("BreakConnectionsPopupMenuItem", resourceCulture);
             }
         }
         
@@ -439,11 +439,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Break Connections.
+        ///   Looks up a localized string similar to Break Connection.
         /// </summary>
-        public static string ConnectorContextMenuHeaderBreakConnections {
+        public static string ConnectorContextMenuHeaderBreakConnection {
             get {
-                return ResourceManager.GetString("ConnectorContextMenuHeaderBreakConnections", resourceCulture);
+                return ResourceManager.GetString("ConnectorContextMenuHeaderBreakConnection", resourceCulture);
             }
         }
         
