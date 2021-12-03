@@ -741,7 +741,6 @@ namespace Dynamo.ViewModels
                     .SelectMany(x => x.Nodes.OfType<NodeModel>())
                     .Concat(Nodes.OfType<NodeModel>());
 
-
                 // If any of the nested groups are collapsed
                 // we need to update the posistion of the 
                 // prox ports on it.
