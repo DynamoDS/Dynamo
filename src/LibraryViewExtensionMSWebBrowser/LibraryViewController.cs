@@ -18,6 +18,7 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
+using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -74,7 +75,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             {
                 return;
             }
-         
+
             try
             {
                 //a simple refresh of the libary is requested from js context.
@@ -127,6 +128,11 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                     controller.browser.
                      InvokeScript("completeSearch", results);
                     searchReader.Dispose();
+                }
+                //When the html <div> that contains the sample package is clicked then we will be moved to the next Step in the Guide
+                else if (funcName == "NextStep")
+                {
+                    controller.MoveToNextStep();
                 }
             }
             catch (Exception e)
@@ -304,23 +310,29 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         }
 
         //list of resources which have paths embedded directly into the source.
-        private readonly Tuple<string, bool>[] dynamicResourcePaths = new Tuple<string, bool>[15]
+        private readonly Tuple<string, bool>[] dynamicResourcePaths = new Tuple<string, bool>[]
         {
-           Tuple.Create("/resources/library-create.svg",true),
+           Tuple.Create("/resources/ArtifaktElement-Bold.woff",true),
+           Tuple.Create("/resources/ArtifaktElement-Regular.woff",true),
+           Tuple.Create("/resources/bin.svg",true),
            Tuple.Create("/resources/default-icon.svg",true),
            Tuple.Create("/resources/fontawesome-webfont.eot",true),
            Tuple.Create("/resources/fontawesome-webfont.ttf",true),
            Tuple.Create("/resources/fontawesome-webfont.woff2",true),
            Tuple.Create("/resources/fontawesome-webfont.woff",true),
            Tuple.Create("/resources/library-action.svg",true),
+           Tuple.Create("/resources/library-create.svg",true),
            Tuple.Create("/resources/library-query.svg",true),
-           Tuple.Create("/resources/indent-arrow-down-wo-lines.svg",true),
+           Tuple.Create("/resources/indent-arrow-category-down.svg",true),
+           Tuple.Create("/resources/indent-arrow-category-right.svg",true),
            Tuple.Create("/resources/indent-arrow-down.svg",true),
-           Tuple.Create("/resources/indent-arrow-right-last.svg",true),
-           Tuple.Create("/resources/indent-arrow-right-wo-lines.svg",true),
            Tuple.Create("/resources/indent-arrow-right.svg",true),
-           Tuple.Create("/resources/ArtifaktElement-Bold.woff",true),
-           Tuple.Create("/resources/ArtifaktElement-Regular.woff",true)
+           Tuple.Create("/resources/plus-symbol.svg",true),
+           Tuple.Create("/resources/search-detailed.svg",true),
+           Tuple.Create("/resources/search-filter.svg",true),
+           Tuple.Create("/resources/search-filter-selected.svg",true),
+           Tuple.Create("/resources/search-icon.svg",true),
+           Tuple.Create("/resources/search-icon-clear.svg",true)
         };
 
         /// <summary>
@@ -555,6 +567,14 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             nodeProvider = new NodeItemDataProvider(model.SearchModel, iconProvider);
             searchResultDataProvider = new SearchResultDataProvider(model.SearchModel, iconProvider);
             layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionMSWebBrowser.web.library.layoutSpecs.json");
+        }
+
+        /// <summary>
+        /// This method will execute the action of moving the Guide to the next Step (it is triggered when a specific html div that contains the package is clicked).
+        /// </summary>
+        internal void MoveToNextStep()
+        {
+            GuideFlowEvents.OnGuidedTourNext();
         }
 
         /// <summary>

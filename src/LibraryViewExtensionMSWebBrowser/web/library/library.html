@@ -14,15 +14,15 @@
             margin: 0;
             background-color: #353535;
             overflow-x: hidden;
-            -webkit-user-drag:none;
+            -webkit-user-drag: none;
             -khtml-user-drag: none;
             -moz-user-drag: none;
             -o-user-drag: none;
             -webkit-touch-callout: none; /* iOS Safari */
-            -webkit-user-select: none;   /* Chrome/Safari/Opera */
-            -khtml-user-select: none;    /* Konqueror */
-            -moz-user-select: none;      /* Firefox */
-            -ms-user-select: none;       /* Internet */
+            -webkit-user-select: none; /* Chrome/Safari/Opera */
+            -khtml-user-select: none; /* Konqueror */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet */
             user-select: none;
             user-drag: none;
             scrollbar-base-color: #353535;
@@ -32,12 +32,59 @@
             scrollbar-arrow-color: #353535;
             scrollbar-shadow-color: #202020;
             scrollbar-width: thin;
+            font-size: 12px;
         }
 
         input::-ms-clear {
             display: none;
         }
+
+        #glow_active {
+            border: 1px;
+            background-color: transparent;
+            box-shadow: 0px 0px 20px 2px orange;
+            transition: box-shadow 2s ease-in-out;
+        }
+
+        #glow_inactive {
+            border: 1px;
+            background-color: transparent;
+            box-shadow: 0px 0px 2px 0px orange;
+            transition: box-shadow 2s ease-in-out;
+        }
+
+        .overlay {
+            background-color: black;
+            pointer-events: none;
+            opacity: 0.5;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .hole {
+            background-color: transparent;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+        /* 
+            The below style aligns texts in IE
+            as it adds some offset to text when using Artifakt Element font
+        */
+        .LibraryItemHeader .LibraryItemGroupText, 
+        .LibrarySectionHeader .LibraryItemGroupText,
+        .LibraryItemContainerCategory .LibraryItemText {
+            padding-top: 0.5rem;
+        }
+
+        .SearchFilterPanel label.Category > *{
+            margin-top: 0.15rem;
+        }
     </style>
+
 </head>
 
 <body>
@@ -51,6 +98,7 @@
     <script>
         var replaceImageDelayTime = 100;
         var currentImage;
+        let intervalId;
 
         // Disable the context menu
         document.oncontextmenu = function () {
@@ -211,6 +259,126 @@
 
             var libraryItemsContainer = document.getElementsByClassName("LibraryItemContainer")[0];
             libraryItemsContainer.style.zoom = dpiScale;
+        }
+
+        //This will find a specific div in the html and then it will apply the glow animation on it
+        function highlightLibraryItem(itemName, enableHighlight) {
+            var found_div = null;
+            var libraryItemsText = document.getElementsByClassName("LibraryItemText");
+            for (var i = 0; i < libraryItemsText.length; i++) {
+                if (libraryItemsText[i].textContent == itemName) {
+                    found_div = libraryItemsText[i].parentNode;
+                    break;
+                }
+            }
+            if (found_div != null) {
+                if (enableHighlight == true) {
+                    glowAnimation(found_div, true);
+                }
+                else {
+                    glowAnimation(found_div, false);
+                }
+            }
+        }
+
+        //This will execute(or stop) the glow animation in a specific <div> based in the enable parameter
+        function glowAnimation(divElement, enable) {
+            if (enable) {
+                setIdAttribute(divElement);
+                intervalId = window.setInterval(setIdAttribute, 2000, divElement);
+            }
+            else {
+                window.clearInterval(intervalId);
+                divElement.setAttribute("id", "");
+            }
+        }
+
+        //This will change the id of the div that contains the package name so it will apply a glow effect in the border
+        function setIdAttribute(divElement) {
+            if (divElement.id == "glow_active") {
+                divElement.setAttribute("id", "glow_inactive");
+            }
+            else {
+                divElement.setAttribute("id", "glow_active");
+            }
+        }
+
+        //This will subscribe a handler to the div.click event, so when is clicked we will be moved to the next Step
+        function subscribePackageClickedEvent(packageName, enable) {
+            var found_div = findPackageDiv(packageName);
+            if (found_div == null) {
+                return;
+            }
+            if (enable) {
+                found_div.addEventListener('click', nextStepInGuide);
+                found_div.parentNode.addEventListener('click', nextStepInGuide);
+                found_div.parentNode.parentNode.addEventListener('click', nextStepInGuide);
+            }
+            else {
+                found_div.removeEventListener('click', nextStepInGuide);
+                found_div.parentNode.removeEventListener('click', nextStepInGuide);
+                found_div.parentNode.parentNode.removeEventListener('click', nextStepInGuide);
+            }
+        }
+
+        //This will find the <div> that contains the package information
+        function findPackageDiv(packageName) {
+            var found_div = null;
+            var libraryItemsText = document.getElementsByClassName("LibraryItemText");
+            for (var i = 0; i < libraryItemsText.length; i++) {
+                if (libraryItemsText[i].textContent.toLowerCase() == packageName.toLowerCase()) {
+                    found_div = libraryItemsText[i];
+                    break;
+                }
+            }
+            return found_div;
+        }
+
+        //This will execute a click over a specific <div> that contains the package content
+        function collapseExpandPackage(packageName) {
+            var found_div = findPackageDiv(packageName);
+            if (found_div == null) {
+                return;
+            }
+            var containerCatDiv = found_div.parentNode.parentNode;
+            var itemBodyContainer = containerCatDiv.getElementsByClassName("LibraryItemText")[0];
+            itemBodyContainer.click();
+        }
+
+        //This will call the NextStep() function located in the LibraryViewController
+        function nextStepInGuide() {
+            window.external.notify(JSON.stringify({ "func": "NextStep", "data": "" }));
+        }
+
+        //Set the overlay and the hole
+        function setOverlay(enable) {
+            var tools = document.getElementsByClassName("LibraryItemContainerSection")[0];
+            if (tools == null)
+                return;
+            var addons = document.getElementsByClassName("LibraryItemContainerSection")[1];
+            if (addons == null)
+                return;
+            var searchBar = document.getElementsByClassName("SearchBar")[0];
+            if (searchBar == null)
+                return;
+
+            let children = addons.childNodes;
+            if (children == null || children.lenght == 0)
+                return;
+
+            //Apply a specific style for the <div> depending if the parameter enable is true or false.
+            if (enable) {
+                tools.classList.add("overlay");
+                searchBar.classList.add("overlay");           
+                children[0].classList.add("hole");
+                children[1].classList.add("hole");   
+            }
+            else {
+                tools.classList.remove("overlay");
+                searchBar.classList.remove("overlay");
+                children[0].classList.remove("hole");
+                children[1].classList.remove("hole");
+            }          
         }
 
     </script>

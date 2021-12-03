@@ -245,6 +245,9 @@
     <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Autodesk.DesignScript.Geometry.Vertex.png">
       <Link>web\library\resources\Autodesk.DesignScript.Geometry.Vertex.png</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\bin.svg">
+      <Link>web\library\resources\bin.svg</Link>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Category.Dictionary.svg">
       <Link>web\library\resources\Category.Dictionary.svg</Link>
     </EmbeddedResource>
@@ -290,20 +293,14 @@
     <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\fontawesome-webfont.svg">
       <Link>web\library\resources\fontawesome-webfont.svg</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-down-without-line.svg">
-      <Link>web\library\resources\indent-arrow-down-without-line.svg</Link>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-category-down.svg">
+      <Link>web\library\resources\indent-arrow-category-down.svg</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-down-wo-lines.svg">
-      <Link>web\library\resources\indent-arrow-down-wo-lines.svg</Link>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-category-right.svg">
+      <Link>web\library\resources\indent-arrow-category-right.svg</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-down.svg">
       <Link>web\library\resources\indent-arrow-down.svg</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-right-last.svg">
-      <Link>web\library\resources\indent-arrow-right-last.svg</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-right-wo-lines.svg">
-      <Link>web\library\resources\indent-arrow-right-wo-lines.svg</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\indent-arrow-right.svg">
       <Link>web\library\resources\indent-arrow-right.svg</Link>
@@ -319,6 +316,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\plus-symbol.svg">
       <Link>web\library\resources\plus-symbol.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\search-detailed.svg">
+      <Link>web\library\resources\search-detailed.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\search-filter.svg">
+      <Link>web\library\resources\search-filter.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\search-filter-selected.svg">
+      <Link>web\library\resources\search-filter-selected.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\search-icon.svg">
+      <Link>web\library\resources\search-icon.svg</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\search-icon-clear.svg">
+      <Link>web\library\resources\search-icon-clear.svg</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\Tessellation.ConvexHull.png">
       <Link>web\library\resources\Tessellation.ConvexHull.png</Link>

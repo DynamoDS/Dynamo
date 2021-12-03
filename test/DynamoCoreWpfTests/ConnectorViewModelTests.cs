@@ -5,6 +5,8 @@ using static Dynamo.Models.DynamoModel;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using System;
+using System.Xml;
+using System.IO;
 
 namespace DynamoCoreWpfTests
 {
@@ -13,7 +15,7 @@ namespace DynamoCoreWpfTests
 
         #region Regular Connector Tests
         /// <summary>
-        /// Check to see a pin can be added to a connector
+        /// Check to see if a connector is visible after pre 2.13 graph open
         /// </summary>
         [Test]
         public void ConnectorVisibilityForLegacyGraphTest()
@@ -22,7 +24,26 @@ namespace DynamoCoreWpfTests
 
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
 
-            //Default collapse state should be false when opening legacy graph
+            //Default IsHidden state should be false when opening legacy graph
+            Assert.AreEqual(connectorViewModel.IsHidden, false);
+        }
+
+        /// <summary>
+        /// Check to see a connector is visible after xml graph open
+        /// </summary>
+        [Test]
+        public void ConnectorVisibilityForLegacyXMLGraphTest()
+        {
+            var filePath = @"UI/UI_visual_test.dyn";
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), filePath);
+            // Assert xml graph open
+            Assert.IsTrue(DynamoUtilities.PathHelper.isValidXML(openPath, out _, out _));
+
+            Open(filePath);
+
+            var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
+
+            //Default IsHidden state should be false when opening legacy graph
             Assert.AreEqual(connectorViewModel.IsHidden, false);
         }
 
@@ -124,7 +145,7 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
             bool initialVisibility = connectorViewModel.IsHidden;
             //Toggles hide (visibility == off)
-            connectorViewModel.HideConnectorCommand.Execute(null);
+            connectorViewModel.ShowhideConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.IsHidden, !initialVisibility);
         }
 
@@ -139,10 +160,10 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
             bool initialVisibility = connectorViewModel.IsHidden;
             //Toggles hide (visibility == off)
-            connectorViewModel.HideConnectorCommand.Execute(null);
+            connectorViewModel.ShowhideConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.IsHidden, !initialVisibility);
             //Toggles hide on/off (visibility == on)
-            connectorViewModel.HideConnectorCommand.Execute(null);
+            connectorViewModel.ShowhideConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.IsHidden, initialVisibility);
         }
 

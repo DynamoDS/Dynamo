@@ -40,7 +40,7 @@
                                           ContentSource="Header"
                                           RecognizesAccessKey="True"
                                           TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}"
-                                          TextBlock.FontSize="16px" />
+                                          TextBlock.FontSize="14px" />
                         <Path Name="DownArrow"
                               Grid.Column="1"
                               Width="10px"
@@ -109,7 +109,7 @@
                                           ContentSource="Header"
                                           RecognizesAccessKey="True"
                                           TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}"
-                                          TextBlock.FontSize="16px"
+                                          TextBlock.FontSize="14px"
                                           TextBlock.Foreground="#AFAFAF" />
                     </Grid>
                 </Border>
@@ -161,7 +161,7 @@
                                           ContentSource="Header"
                                           RecognizesAccessKey="True"
                                           TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}"
-                                          TextBlock.FontSize="16px" />
+                                          TextBlock.FontSize="14px" />
                         <TextBlock x:Name="InputGestureText"
                                    Grid.Column="2"
                                    Margin="0,2,2,2"
@@ -246,7 +246,7 @@
                                           VerticalAlignment="Center"
                                           ContentSource="Icon"
                                           TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}"
-                                          TextBlock.FontSize="16px" />
+                                          TextBlock.FontSize="14px" />
                         <Border Name="CheckMarkBackground"
                                 Grid.Column="0"
                                 HorizontalAlignment="Stretch"
@@ -268,7 +268,7 @@
                                           ContentSource="Header"
                                           RecognizesAccessKey="True"
                                           TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}"
-                                          TextBlock.FontSize="16px" />
+                                          TextBlock.FontSize="14px" />
                         <TextBlock x:Name="InputGestureText"
                                    Grid.Column="2"
                                    Margin="5,0,0,2"
@@ -332,7 +332,7 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Margin" Value="0,0,0,0" />
         <Setter Property="Template">

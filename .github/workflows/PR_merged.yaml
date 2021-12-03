@@ -1,10 +1,10 @@
 ## Workflow for retrieve Release Notes section from PRs
 
-name: CI
+name: PR_merged
 
 # Controls when the workflow will run
 on:
-   pull_request:
+   pull_request_target:
     branches: [master]
     types: [closed]
 
