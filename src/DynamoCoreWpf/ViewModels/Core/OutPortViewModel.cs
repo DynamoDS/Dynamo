@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using Dynamo.Graph.Nodes;
+using Dynamo.Logging;
 using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
@@ -127,7 +127,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Used by the 'Break Connection' button in the node output context menu.
+        /// Used by the 'Break Connections' button in the node output context menu.
         /// Removes any current connections this port has.
         /// </summary>
         public DelegateCommand BreakConnectionsCommand
@@ -136,7 +136,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Used by the 'Hide Connection' button in the node output context menu.
+        /// Used by the 'Show/Hide Wires' button in the node output context menu.
         /// Hides or Shows any connections this port has.
         /// </summary>
         public DelegateCommand HideConnectionsCommand
@@ -145,12 +145,14 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Used by the 'Break Connection' button in the node output context menu.
+        /// Used by the 'Break Connections' button in the node output context menu.
         /// Removes any current connections this port has.
         /// </summary>
         /// <param name="parameter"></param>
         private void BreakConnections(object parameter)
         {
+            // Send analytics data ahead of the actual break operation so connector count is still accurate
+            Analytics.TrackEvent(Actions.Break, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
             for (var i = port.Connectors.Count - 1; i >= 0; i--)
             {
                 // Attempting to get the relevant ConnectorViewModel via matching GUID
@@ -163,7 +165,7 @@ namespace Dynamo.ViewModels
                 }
 
                 connectorViewModel.BreakConnectionCommand.Execute(null);
-            }
+            }            
         }
 
         /// <summary>
@@ -173,18 +175,20 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         private void HideConnections(object parameter)
         {
-            for (var i = port.Connectors.Count - 1; i >= 0; i--)
+            foreach(var connector in port.Connectors)
             {
                 // Attempting to get the relevant ConnectorViewModel via matching GUID
                 var connectorViewModel = node.WorkspaceViewModel.Connectors
-                    .FirstOrDefault(x => x.ConnectorModel.GUID == port.Connectors[i].GUID);
-
-                if (connectorViewModel == null)
-                {
-                    continue;
-                }
-
-                connectorViewModel.HideConnectorCommand.Execute(!AreConnectorsHidden);
+                    .FirstOrDefault(x => x.ConnectorModel.GUID == connector.GUID);
+                connectorViewModel?.ShowhideConnectorCommand.Execute(!AreConnectorsHidden);
+            }
+            if (SetConnectorsVisibility)
+            {
+                Analytics.TrackEvent(Actions.Show, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
+            }
+            else
+            {
+                Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
             }
             RefreshHideWiresState();
         }
