@@ -711,7 +711,8 @@ namespace Dynamo.ViewModels
                 foreach(var dependencyHeader in dependencyVersionHeaders)
                 {
                     var localPkgWithSameName = localPkgs.FirstOrDefault(x =>
-                        (x.LoadState.State == PackageLoadState.StateTypes.Loaded) &&
+                        (x.LoadState.State == PackageLoadState.StateTypes.Loaded ||
+                        x.LoadState.State == PackageLoadState.StateTypes.Error) &&
                         x.Name.Equals(dependencyHeader.name));
 
                     if (localPkgWithSameName != null)
@@ -735,6 +736,7 @@ namespace Dynamo.ViewModels
 
                 if (!WarnAboutDuplicatePackageConflicts(package, duplicatePackage, localPkgsConflictingWithPkgDeps))
                 {
+                    // User chose to cancel because of conflicts.
                     return;
                 }
 
