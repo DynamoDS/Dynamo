@@ -182,7 +182,7 @@ namespace Dynamo.ViewModels
                     .FirstOrDefault(x => x.ConnectorModel.GUID == connector.GUID);
                 connectorViewModel?.ShowhideConnectorCommand.Execute(!AreConnectorsHidden);
             }
-            if (SetConnectorsVisibility)
+            if (AreConnectorsHidden)
             {
                 Analytics.TrackEvent(Actions.Show, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
             }
