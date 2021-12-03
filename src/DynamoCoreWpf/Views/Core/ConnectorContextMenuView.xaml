@@ -25,7 +25,7 @@
                          Background="#666666"
                          MouseLeave="OnMouseLeaveContextMenu"
                          ContextMenuClosing="OnContextMenuClosing">
-                <MenuItem x:Name="BreakItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnections}" 
+                <MenuItem x:Name="BreakItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnection}" 
                           Command="{Binding BreakConnectionsSurrogateCommand}"/>
                     <MenuItem x:Name="SelectItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderSelectConnected}" 
                           Command="{Binding SelectConnectedSurrogateCommand}"/>

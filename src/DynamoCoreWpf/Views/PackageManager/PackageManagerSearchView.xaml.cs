@@ -19,6 +19,10 @@ namespace Dynamo.PackageManager.UI
     {
         public PackageManagerSearchViewModel ViewModel { get;  }
         
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="pm"></param>
         public PackageManagerSearchView(PackageManagerSearchViewModel pm)
         {
             ViewModel = pm;
