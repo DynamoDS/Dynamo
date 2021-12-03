@@ -743,7 +743,7 @@ namespace Dynamo.ViewModels
 
                 // If any of the nested groups are collapsed
                 // we need to update the posistion of the 
-                // prox ports on it.
+                // proxy ports on it.
                 foreach (var nestedGroup in ViewModelBases.OfType<AnnotationViewModel>().Where(x => !x.IsExpanded))
                 {
                     nestedGroup.SetGroupInputPorts();
