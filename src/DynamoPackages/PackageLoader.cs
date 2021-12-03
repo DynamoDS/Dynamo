@@ -299,6 +299,7 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
+                // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
                 if (e is FileLoadException ex && ex.HResult == unchecked((int)0x80131515))
                 {
                     var failureMessage = string.Format(Properties.Resources.PackageLoadFailureForBlockedAssembly, ex.Message);
