@@ -21,6 +21,8 @@ using Dynamo.Core;
 using Dynamo.Extensions;
 using System.Reflection;
 using System.Threading.Tasks;
+using Dynamo.UI.Prompts;
+using System.Windows.Controls.Primitives;
 
 namespace DynamoCoreWpfTests
 {
@@ -654,6 +656,74 @@ namespace DynamoCoreWpfTests
                 It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(2));
             dlgMock.ResetCalls();
         }
+
+        [Test]
+        [Description("DynamoMessageBox converts button inputs correctly.")]
+        public void DynamoMessageBoxButtonCases()
+        {
+            var messageBox = new DynamoMessageBox();
+
+            messageBox.ConfigureButtons(MessageBoxButton.YesNoCancel);
+            Assert.AreEqual("Yes", messageBox.YesButton.Content);
+            Assert.AreEqual("No", messageBox.NoButton.Content);
+            Assert.AreEqual("Cancel", messageBox.CancelButton.Content);
+
+            messageBox.ConfigureButtons(MessageBoxButton.YesNoCancel, new string[] { "continue", "unload", "cancel" });
+            Assert.AreEqual("continue", messageBox.YesButton.Content);
+            Assert.AreEqual("unload", messageBox.NoButton.Content);
+            Assert.AreEqual("cancel", messageBox.CancelButton.Content);
+
+            messageBox = new DynamoMessageBox();
+
+            messageBox.ConfigureButtons(MessageBoxButton.OK);
+            Assert.AreEqual("OK", messageBox.OkButton.Content);
+
+            messageBox.ConfigureButtons(MessageBoxButton.OK, new string[] { "ok2" });
+            Assert.AreEqual("ok2", messageBox.OkButton.Content);
+
+            messageBox = new DynamoMessageBox();
+
+            messageBox.ConfigureButtons(MessageBoxButton.OKCancel);
+            Assert.AreEqual("OK", messageBox.OkButton.Content);
+            Assert.AreEqual("Cancel", messageBox.CancelButton.Content);
+
+            messageBox.ConfigureButtons(MessageBoxButton.OKCancel, new string[] { "1", "2" });
+            Assert.AreEqual("1", messageBox.OkButton.Content);
+            Assert.AreEqual("2", messageBox.CancelButton.Content);
+
+            messageBox = new DynamoMessageBox();
+
+            messageBox.ConfigureButtons(MessageBoxButton.YesNo);
+            Assert.AreEqual("Yes", messageBox.YesButton.Content);
+            Assert.AreEqual("No", messageBox.NoButton.Content);
+
+            messageBox.ConfigureButtons(MessageBoxButton.YesNo, new string[] { "1", "2" });
+            Assert.AreEqual("1", messageBox.YesButton.Content);
+            Assert.AreEqual("2", messageBox.NoButton.Content);
+        }
+      
+        [Test]
+        [Description("DynamoMessageBox buttons set correct results")]
+        public void DynamoMessageBoxButtonsSetCorrectly()
+        {
+            var messageBox = new DynamoMessageBox();
+            messageBox.YesButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.Yes, messageBox.CustomDialogResult);
+
+            messageBox.NoButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.No, messageBox.CustomDialogResult);
+
+            messageBox.CancelButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.Cancel, messageBox.CustomDialogResult);
+
+            messageBox.CloseButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.None, messageBox.CustomDialogResult);
+
+            messageBox.OkButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.OK, messageBox.CustomDialogResult);
+        }
+
+
 
         [Test]
         [Description("User tries to load an unloaded built-in package")]
