@@ -417,7 +417,7 @@ namespace Dynamo.ViewModels
                         this.AnnotationModel.AddToSelectedModels(model, true);
                     }
                 }
-                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations);
+                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Node");
             }
         }
 
@@ -474,7 +474,7 @@ namespace Dynamo.ViewModels
                         AddToCutGeometryDictionary(groupViewModel);
                     }
                 }
-                Analytics.TrackEvent(Actions.GroupAddedTo, Categories.GroupOperations);
+                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Group");
             }
         }
 
@@ -488,7 +488,7 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynamoModel.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
-            Analytics.TrackEvent(Actions.GroupRemovedFrom, Categories.GroupOperations);
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Group");
         }
 
         private bool CanUngroupGroup(object parameters)
@@ -998,7 +998,7 @@ namespace Dynamo.ViewModels
 
         private void OnModelRemovedFromGroup(object sender, EventArgs e)
         {
-            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations);
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Node");
             RaisePropertyChanged(nameof(ZIndex));
         }
 
