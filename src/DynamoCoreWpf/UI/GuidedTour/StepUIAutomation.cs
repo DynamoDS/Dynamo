@@ -77,6 +77,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// The list of arguments sent to the javascript function
         /// </summary>
         public List<object> JSParameters { get; set; }
+
+        /// <summary>
+        /// This flag checks if is necessary to enable next step button only if packages list is already loaded
+        /// </summary>
+        public bool CheckPackagesListEnableNextStep { get; set; }
     }
 
     public class AutomaticHandlers
