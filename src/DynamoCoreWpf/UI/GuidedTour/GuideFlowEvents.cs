@@ -2,8 +2,8 @@
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
-    public delegate void GuidedTourNextEventHandler(GuidedTourMovementEventArgs args);
-    public delegate void GuidedTourPrevEventHandler(GuidedTourMovementEventArgs args);
+    public delegate void GuidedTourNextEventHandler();
+    public delegate void GuidedTourPrevEventHandler();
     public delegate void GuidedTourStartEventHandler(GuidedTourStateEventArgs args);
     public delegate void GuidedTourFinishEventHandler(GuidedTourStateEventArgs args);
 
@@ -15,18 +15,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
         //Event that will be raised when the Popup Next button is pressed, the value passed as parameter is the current Step Sequence
         public static event GuidedTourNextEventHandler GuidedTourNextStep;
         private static bool isAnyGuideActive { get; set; } = false;
-        internal static void OnGuidedTourNext(int sequence)
+        public static void OnGuidedTourNext()
         {
             if (GuidedTourNextStep != null)
-                GuidedTourNextStep(new GuidedTourMovementEventArgs(sequence));
+                GuidedTourNextStep();
         }
 
         //Event that will be raised when the Popup Back button is pressed, the value passed as parameter is the current Step Sequence
         public static event GuidedTourPrevEventHandler GuidedTourPrevStep;
-        internal static void OnGuidedTourPrev(int sequence)
+        public static void OnGuidedTourPrev()
         {
             if (GuidedTourPrevStep != null)
-                GuidedTourPrevStep(new GuidedTourMovementEventArgs(sequence));
+                GuidedTourPrevStep();
         }
 
         //Event that will be raised when the Guide is started (the first popup will be shown)
@@ -58,19 +58,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             get { return isAnyGuideActive; }
             private set { isAnyGuideActive = value; }
-        }
-    }
-
-    /// <summary>
-    /// This event class will be used to hold the Step.Sequence parameter for the OnGuidedTourNext and OnGuidedTourPrev events
-    /// </summary>
-    public class GuidedTourMovementEventArgs : EventArgs
-    {
-        public int StepSequence { get; set; }
-
-        public GuidedTourMovementEventArgs(int stepSequence)
-        {
-            StepSequence = stepSequence;
         }
     }
 

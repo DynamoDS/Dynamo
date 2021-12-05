@@ -229,6 +229,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Library_ViewExtensionDefinition.xml" />
+    <EmbeddedResource Include="web\library\resources\bin.svg" />
+    <EmbeddedResource Include="web\library\resources\indent-arrow-category-down.svg" />
+    <EmbeddedResource Include="web\library\resources\indent-arrow-category-right.svg" />
+    <EmbeddedResource Include="web\library\resources\search-detailed.svg" />
+    <EmbeddedResource Include="web\library\resources\search-filter-selected.svg" />
+    <EmbeddedResource Include="web\library\resources\search-filter.svg" />
+    <EmbeddedResource Include="web\library\resources\search-icon-clear.svg" />
+    <EmbeddedResource Include="web\library\resources\search-icon.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

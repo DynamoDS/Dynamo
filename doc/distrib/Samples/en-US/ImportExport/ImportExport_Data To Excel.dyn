@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Dynamo Import Export Sample",
   "Name": "ImportExport_Data To Excel",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -18,7 +18,7 @@
         {
           "Id": "b63dc8493243498eb0d6ad1837aa7fc1",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -27,7 +27,7 @@
         {
           "Id": "22ddd00923814f0ea103c705ae4472a7",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -36,7 +36,7 @@
         {
           "Id": "89d7c0b116d5488082ce2c15ebaef847",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -47,7 +47,7 @@
         {
           "Id": "43c7009cdf1742e49eabe32a2a54fa02",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -76,8 +76,8 @@
       "Outputs": [
         {
           "Id": "16f164b8510f4aa098765f039b5f8013",
-          "Name": "cos",
-          "Description": "Cosine of the angle.",
+          "Name": "double",
+          "Description": "Cosine of the angle",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -106,7 +106,7 @@
       "Outputs": [
         {
           "Id": "ae92e4fa54624deb804db94b52b70be3",
-          "Name": "sin",
+          "Name": "double",
           "Description": "Sine of the angle.",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -160,7 +160,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Users\\alfarok\\Documents\\Dynamo_alfarok\\bin\\AnyCPU\\Debug\\samples\\Data\\icosohedron_points.csv",
+      "HintPath": "C:\\Users\\tanga\\Documents\\GitHub\\Dynamo\\doc\\distrib\\Samples\\Data\\icosohedron_points.csv",
       "InputValue": "..\\..\\Data\\icosohedron_points.csv",
       "NodeType": "ExtensionNode",
       "Id": "0675124556b44d48a4a1832dc0eca24e",
@@ -177,7 +177,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows you to select a file on the system to get its filename"
+      "Description": "Allows you to select a file on the system to get its file path."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -188,7 +188,7 @@
         {
           "Id": "4e676ec6cef6404997844bc773425b91",
           "Name": "lists",
-          "Description": "A list of lists to be transposed.\n\nvar[]..[]",
+          "Description": "List of lists to be transposed\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -199,7 +199,7 @@
         {
           "Id": "038119b9a0dd42fe930edb4b16e09a18",
           "Name": "lists",
-          "Description": "A list of transposed lists.",
+          "Description": "List of transposed lists",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -332,7 +332,7 @@
         {
           "Id": "7cd1f2c12af84fc9bcd9bf8258aefec3",
           "Name": "filePath",
-          "Description": "File path to the Microsoft Excel spreadsheet.\n\nstring",
+          "Description": "File path to the Microsoft Excel spreadsheet\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -341,7 +341,7 @@
         {
           "Id": "140637200fb34d14978e982eddfb4614",
           "Name": "sheetName",
-          "Description": "Name of the workseet to write data to.\n\nstring",
+          "Description": "Name of the workseet to write data to\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -358,7 +358,7 @@
         },
         {
           "Id": "305f65603a9d4a4a8fc757453ed042af",
-          "Name": "startCol",
+          "Name": "startColumn",
           "Description": "Start column for writing data. Enter 0 for Column A, 1 for Column B, etc.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -368,7 +368,7 @@
         {
           "Id": "528643cdbac841c188cc740bdd32ada9",
           "Name": "data",
-          "Description": "Data to write to the spreadsheet.\n\nvar[][]",
+          "Description": "Data to write to the spreadsheet\n\nvar[][]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -377,7 +377,7 @@
         {
           "Id": "b989ef34815348bfbbd24394a5456dc7",
           "Name": "overWrite",
-          "Description": "bool\nDefault value : false",
+          "Description": "True to overwrite file, false not to overwrite\n\nbool\nDefault value : false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -388,7 +388,7 @@
         {
           "Id": "807175d6befa4f8982bb556dccf53e1d",
           "Name": "data",
-          "Description": "Data written to the spreadsheet.",
+          "Description": "Data written to the spreadsheet",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -396,89 +396,129 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Write data to a Microsoft Excel spreadsheet. Data is written by row with sublists to be written in successive rows. Rows and columns are zero-indexed; for example, the value in the data list at [0,0] will be written to cell A1. Null values and empty lists are written to Excel as empty cells. This node requires Microsoft Excel to be installed.\n\nData.ExportExcel (filePath: string, sheetName: string, startRow: int, startCol: int, data: var[][], overWrite: bool = false): var[][]"
+      "Description": "Write data to a Microsoft Excel spreadsheet. Data is written by row with sublists to be written in successive rows. Rows and columns are zero-indexed; for example, the value in the data list at [0,0] will be written to cell A1. Null values and empty lists are written to Excel as empty cells. This node requires Microsoft Excel to be installed.\n\nData.ExportExcel (filePath: string, sheetName: string, startRow: int, startColumn: int, data: var[][], overWrite: bool = false): var[][]"
     }
   ],
   "Connectors": [
     {
       "Start": "43c7009cdf1742e49eabe32a2a54fa02",
       "End": "b83c3f9388d24791a19d40f7ecc409f4",
-      "Id": "e4a9932e8c504de68ac0c0f5dd75cd74"
+      "Id": "e4a9932e8c504de68ac0c0f5dd75cd74",
+      "IsHidden": "False"
     },
     {
       "Start": "16f164b8510f4aa098765f039b5f8013",
       "End": "b63dc8493243498eb0d6ad1837aa7fc1",
-      "Id": "2697930adde649b4b58f6aef7ff9c3ea"
+      "Id": "2697930adde649b4b58f6aef7ff9c3ea",
+      "IsHidden": "False"
     },
     {
       "Start": "ae92e4fa54624deb804db94b52b70be3",
       "End": "22ddd00923814f0ea103c705ae4472a7",
-      "Id": "0a5ef4a37c62496492bca5fca2269f45"
+      "Id": "0a5ef4a37c62496492bca5fca2269f45",
+      "IsHidden": "False"
     },
     {
       "Start": "a2454cf5bfce43af9ab8b31a076ea213",
       "End": "140637200fb34d14978e982eddfb4614",
-      "Id": "578d74099c0e4c11a72b95d6aaba92a6"
+      "Id": "578d74099c0e4c11a72b95d6aaba92a6",
+      "IsHidden": "False"
     },
     {
       "Start": "633fa7bb931d4e0fa23271407e9aff38",
       "End": "305f65603a9d4a4a8fc757453ed042af",
-      "Id": "bf04dfc95b4d4c54b70cb6617d3ee662"
+      "Id": "bf04dfc95b4d4c54b70cb6617d3ee662",
+      "IsHidden": "False"
     },
     {
       "Start": "633fa7bb931d4e0fa23271407e9aff38",
       "End": "d15c9bc0a56046cc9892a5d2a15eb3e6",
-      "Id": "c36737c39b7e44ccb994eb6484bc2c31"
+      "Id": "c36737c39b7e44ccb994eb6484bc2c31",
+      "IsHidden": "False"
     },
     {
       "Start": "9622a78e84a2462081837244b3b269b4",
       "End": "7cd1f2c12af84fc9bcd9bf8258aefec3",
-      "Id": "77b9ba6ca3f342cd933cfeefb5ef9751"
+      "Id": "77b9ba6ca3f342cd933cfeefb5ef9751",
+      "IsHidden": "False"
     },
     {
       "Start": "038119b9a0dd42fe930edb4b16e09a18",
       "End": "528643cdbac841c188cc740bdd32ada9",
-      "Id": "e2d58b55aa784de19503695d6efd9fde"
+      "Id": "e2d58b55aa784de19503695d6efd9fde",
+      "IsHidden": "False"
     },
     {
       "Start": "1303d9c0474644a28e45c2d5267fae85",
       "End": "4e676ec6cef6404997844bc773425b91",
-      "Id": "842b57dd44574b839d80433d557f897d"
+      "Id": "842b57dd44574b839d80433d557f897d",
+      "IsHidden": "False"
     },
     {
       "Start": "08e65edefdcd4f91b37441ed429d9b5c",
       "End": "7e3f6e59d2ca4d19ba5f68cf156e1eb3",
-      "Id": "247ed050047c42feb36e0e9a7a3e72e4"
+      "Id": "247ed050047c42feb36e0e9a7a3e72e4",
+      "IsHidden": "False"
     },
     {
       "Start": "08e65edefdcd4f91b37441ed429d9b5c",
       "End": "258478d24ffa4fcdb76ab9f386b4a92a",
-      "Id": "4771e388d7d9485d8d50410d80877003"
+      "Id": "4771e388d7d9485d8d50410d80877003",
+      "IsHidden": "False"
     },
     {
       "Start": "08e65edefdcd4f91b37441ed429d9b5c",
       "End": "feddee28464f4f0a89d5d6d289f4af7f",
-      "Id": "2c459d06ff3c471c855c56d92818b6c8"
+      "Id": "2c459d06ff3c471c855c56d92818b6c8",
+      "IsHidden": "False"
     },
     {
       "Start": "fa4a96df70eb485287d9c6c7cfe4f85e",
       "End": "89d7c0b116d5488082ce2c15ebaef847",
-      "Id": "8795734ae83440b4aab32c2b84a5705d"
+      "Id": "8795734ae83440b4aab32c2b84a5705d",
+      "IsHidden": "False"
     },
     {
       "Start": "1a5c1e985475451db34903fbc0d8a146",
       "End": "4f1ee4c4cad24a34b078c8ee9c857e1c",
-      "Id": "e50fbd1fd0a745ca8c80031eb93eb4d1"
+      "Id": "e50fbd1fd0a745ca8c80031eb93eb4d1",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "icosohedron_points.csv",
+      "ReferenceType": "External",
+      "Nodes": [
+        "0675124556b44d48a4a1832dc0eca24e"
+      ]
+    }
+  ],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2821",
+      "Version": "2.13.0.3265",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -494,6 +534,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -512,8 +553,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -25.7039169624567,
-        "Y": 389.724955920528
+        "X": -24.260957576034031,
+        "Y": 348.31558607982066
       },
       {
         "ShowGeometry": true,
@@ -532,8 +573,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 730.729723405822,
-        "Y": 260.610265519358
+        "X": 750.2865259719805,
+        "Y": 235.62101779593348
       },
       {
         "ShowGeometry": true,
@@ -542,8 +583,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 722.125610899177,
-        "Y": 321.293015210892
+        "X": 759.0662379685873,
+        "Y": 363.66608743756831
       },
       {
         "ShowGeometry": true,
@@ -552,8 +593,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 547.13285214786,
-        "Y": 167.491111150313
+        "X": 617.7546391923205,
+        "Y": 99.042302168759
       },
       {
         "ShowGeometry": true,
@@ -562,8 +603,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 621.246002241678,
-        "Y": 461.125503329612
+        "X": 753.79766407897307,
+        "Y": 502.412086524835
       },
       {
         "ShowGeometry": true,
@@ -572,8 +613,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 392.261474160315,
-        "Y": 459.453771319994
+        "X": 473.7481515193079,
+        "Y": 465.97270550871343
       },
       {
         "ShowGeometry": true,
@@ -592,8 +633,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 0.376627305667398,
-        "Y": 576.382494833701
+        "X": -0.39934322334806893,
+        "Y": 640.56065194143969
       },
       {
         "ShowGeometry": true,
@@ -612,13 +653,13 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 886.488728395189,
-        "Y": 241.864407838795
+        "X": 1028.8187915155631,
+        "Y": 247.29685299606115
       }
     ],
     "Annotations": [],
-    "X": 343.00623040661833,
-    "Y": 128.72833845981742,
-    "Zoom": 0.37326585284643576
+    "X": 523.1689203035,
+    "Y": 135.67291186241306,
+    "Zoom": 0.64983919750008523
   }
 }

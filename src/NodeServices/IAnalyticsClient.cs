@@ -101,6 +101,21 @@ namespace Dynamo.Logging
         /// Events Category related to saved Workspace References
         /// </summary>
         WorkspaceReferences,
+
+        /// <summary>
+        /// Events Category related to Groups
+        /// </summary>
+        GroupOperations,
+
+        /// <summary>
+        /// Events Category related to Node context menu
+        /// </summary>
+        NodeContextMenuOperations,
+
+        /// <summary>
+        /// Events Category related to connectors
+        /// </summary>
+        ConnectorOperations,
     }
 
     /// <summary>
@@ -179,9 +194,9 @@ namespace Dynamo.Logging
         EngineFailure,
 
         /// <summary>
-        /// Search Filter Button Clicked event
+        /// Filter event, e.g. when package filter is active
         /// </summary>
-        FilterButtonClicked,
+        Filter,
 
         /// <summary>
         /// Unresolved Node found event
@@ -238,6 +253,7 @@ namespace Dynamo.Logging
         /// </summary>
         Rate,
 
+        /// <summary>
         /// Pin event, such as pinning a note to a node
         /// </summary>
         Pin,
@@ -258,19 +274,89 @@ namespace Dynamo.Logging
         KeepOldPackage,
 
         /// <summary>
-        /// PackageReferences event, when a package refrence is saved in a workspace
+        /// PackageReferences event, when a package reference is saved in a workspace
         /// </summary>
         PackageReferences,
 
         /// <summary>
-        /// KeepOldPackage event, when a local refrence is saved in a workspace
+        /// KeepOldPackage event, when a local reference is saved in a workspace
         /// </summary>
         LocalReferences,
 
         /// <summary>
-        /// KeepOldPackage event, when an external refrence is saved in a workspace
+        /// KeepOldPackage event, when an external reference is saved in a workspace
         /// </summary>
         ExternalReferences,
+
+        /// <summary>
+        /// Ungroup event, when an group is Ungrouped
+        /// </summary>
+        Ungroup,
+
+        /// <summary>
+        /// Expand event, when an group is Expanded
+        /// </summary>
+        Expanded,
+
+        /// <summary>
+        /// Collapse event, when an group is Collapsed
+        /// </summary>
+        Collapsed,
+
+        /// <summary>
+        /// AddedTo event, when a node is added to the group
+        /// </summary>
+        AddedTo,
+
+        /// <summary>
+        /// RemovedFrom event, when a node is removed from the group
+        /// </summary>
+        RemovedFrom,
+
+        /// <summary>
+        /// Preview event, when a node is Previewed
+        /// </summary>
+        Preview,
+
+        /// <summary>
+        /// Freeze event, when a node is Freezed
+        /// </summary>
+        Freeze,
+
+        /// <summary>
+        /// Rename event, when a node is Renamed
+        /// </summary>
+        Rename,
+
+        /// <summary>
+        /// Show event, when user wants to toggle display.
+        /// </summary>
+        Show,
+
+        /// <summary>
+        /// Set event, when user wants to set a property.
+        /// </summary>
+        Set,
+
+        /// <summary>
+        /// Dismiss event, e.g. to dismiss node alerts.
+        /// </summary>
+        Dismiss,
+
+        /// <summary>
+        /// Undismiss event, to show dismissed alerts.
+        /// </summary>
+        Undismiss,
+
+        /// <summary>
+        /// Break event, e.g. when a connection is broken by user choice
+        /// </summary>
+        Break,
+
+        /// <summary>
+        /// Hide event, e.g when a connection is hidden by user choice
+        /// </summary>
+        Hide,
     }
 
     /// <summary>

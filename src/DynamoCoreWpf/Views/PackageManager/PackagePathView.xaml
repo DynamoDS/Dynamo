@@ -126,15 +126,12 @@
         </Label>
         <Button x:Name="AddPaths"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Height="25"
-                MinWidth="55"
-                Margin="5,5,5,5"
+                Margin="0"
                 Content="{x:Static p:Resources.PackagePathAddPathButtonName}"
                 Command="{Binding Path=AddPathCommand}" 
                 ToolTip="{x:Static p:Resources.PackagePathViewToolTipPlus}">
             <Button.Style>
-                <Style BasedOn="{StaticResource FlatButtonStyle}" TargetType="{x:Type Button}">
+                <Style BasedOn="{StaticResource SolidButtonStyle}" TargetType="{x:Type Button}">
                     <Setter Property="IsEnabled" Value="True"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=PreferenceSettings.DisableCustomPackageLocations}" Value="True">

@@ -105,6 +105,9 @@ namespace Dynamo.Applications
                 bool keepAlive = false;
                 bool showHelp = false;
 
+                // Disables all analytics (Google and ADP)
+                bool disableAnalytics = false;
+
                 // Allow Dynamo launcher to identify Dynamo variation for log purpose like analytics, e.g. Dynamo Revit
                 var hostname = string.Empty;
 
@@ -128,6 +131,7 @@ namespace Dynamo.Applications
                 .Add("hn=|HN=|hostname", "Identify Dynamo variation associated with host", hn => hostname = hn)
                 .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
+                .Add("da|DA|disableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
                 ;
                 optionsSet.Parse(args);
 
@@ -152,6 +156,7 @@ namespace Dynamo.Applications
                     ImportedPaths = importPaths,
                     ASMPath = asmPath,
                     KeepAlive = keepAlive,
+                    DisableAnalytics = disableAnalytics,
                     AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname,  ParentId = parentId, SessionId = sessionId }
                 };
             }
@@ -173,6 +178,7 @@ namespace Dynamo.Applications
             public bool KeepAlive { get; set; }
             [Obsolete("This property will be removed in Dynamo 3.0 - please use AnalyticsInfo")]
             public string HostName { get; set; }
+            public bool DisableAnalytics { get; set; }
             public HostAnalyticsInfo AnalyticsInfo { get; set; } 
         }
 

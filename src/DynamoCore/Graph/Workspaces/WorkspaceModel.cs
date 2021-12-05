@@ -1662,6 +1662,9 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
             annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
             AddNewAnnotation(annotationModel);
+
+            Logging.Analytics.TrackEvent(Actions.Create, Categories.GroupOperations);
+
             HasUnsavedChanges = true;
             return annotationModel;
         }
@@ -2472,6 +2475,9 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.GUID = annotationGuidValue;
             annotationModel.HeightAdjustment = annotationViewInfo.HeightAdjustment;
             annotationModel.WidthAdjustment = annotationViewInfo.WidthAdjustment;
+
+            annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
+            annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
 
             //if this group/annotation does not exist, add it to the workspace.
             var matchingAnnotation = this.Annotations.FirstOrDefault(x => x.GUID == annotationModel.GUID);
