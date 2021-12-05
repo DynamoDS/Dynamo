@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using Dynamo.UI.Prompts;
 
 namespace Dynamo.Wpf.Utilities
@@ -9,6 +10,7 @@ namespace Dynamo.Wpf.Utilities
         internal interface IMessageBox
         {
             MessageBoxResult Show(string msg, string title, MessageBoxButton button, MessageBoxImage img);
+            MessageBoxResult Show(string msg, string title, MessageBoxButton button, IEnumerable<string> buttonNames, MessageBoxImage img);
         }
 
         // Default implementation of the IDialogService interface
@@ -18,6 +20,10 @@ namespace Dynamo.Wpf.Utilities
             MessageBoxResult IMessageBox.Show(string msg, string title, MessageBoxButton button, MessageBoxImage img)
             {
                 return DynamoMessageBox.Show(msg, title, button, img);
+            }
+            MessageBoxResult IMessageBox.Show(string msg, string title, MessageBoxButton button, IEnumerable<string> buttonNames, MessageBoxImage img)
+            {
+                return DynamoMessageBox.Show(msg, title, button,buttonNames, img);
             }
         }
 
@@ -29,6 +35,10 @@ namespace Dynamo.Wpf.Utilities
         internal static MessageBoxResult Show(string msg, string title, MessageBoxButton button, MessageBoxImage img)
         {
             return (msg_box ?? (msg_box = new DefaultMessageBox())).Show(msg, title, button, img);
+        }
+        internal static MessageBoxResult Show(string msg, string title, MessageBoxButton button, IEnumerable<string> buttonNames, MessageBoxImage img)
+        {
+            return (msg_box ?? (msg_box = new DefaultMessageBox())).Show(msg, title, button, buttonNames, img);
         }
     }
 }
