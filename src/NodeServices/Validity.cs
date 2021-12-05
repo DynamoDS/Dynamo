@@ -51,7 +51,7 @@ namespace DynamoServices
 
     /// <summary>
     /// Represents FileLoadException having HRESULT value of 0x80131515. 
-    /// Rethrow the FileLoadException as this exception when we need to instruct the user to "unblock" the downloaded assembly.
+    /// Throw this when we need to instruct the user to "unblock" the downloaded assembly.
     /// </summary>
     internal class AssemblyBlockedException : FileLoadException
     {

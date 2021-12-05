@@ -159,6 +159,7 @@ namespace ProtoFFI
                 }
                 catch (DynamoServices.AssemblyBlockedException exception)
                 {
+                    // this exception is caught upstream after displaying a failed load library warning to the user.
                     throw exception;
                 }
                 catch (Exception)

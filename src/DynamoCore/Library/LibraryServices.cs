@@ -623,6 +623,7 @@ namespace Dynamo.Engine
             }
             catch (DynamoServices.AssemblyBlockedException e)
             {
+                // This exception is caught upstream after displaying a failed load library warning to the user.
                 throw e;
             }
             catch (Exception e)
