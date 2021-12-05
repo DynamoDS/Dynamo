@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{A65338
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoAssociative", "Engine\ProtoAssociative\ProtoAssociative.csproj", "{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoCore", "Engine\ProtoCore\ProtoCore.csproj", "{7A9E0314-966F-4584-BAA3-7339CBB849D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoCore", "Engine\ProtoCore\ProtoCore.csproj", "{7A9E0314-966F-4584-BAA3-7339CBB849D1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
@@ -122,7 +122,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tessellation", "Libraries\T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitsUI", "Libraries\UnitsUI\UnitsUI.csproj", "{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphLayout", "Engine\GraphLayout\GraphLayout.csproj", "{C2595B04-856D-40AE-8B99-4804C7A70708}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphLayout", "Engine\GraphLayout\GraphLayout.csproj", "{C2595B04-856D-40AE-8B99-4804C7A70708}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
@@ -285,8 +285,8 @@ Global
 		{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}.Release|x64.Build.0 = Release|x64
 		{7A9E0314-966F-4584-BAA3-7339CBB849D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7A9E0314-966F-4584-BAA3-7339CBB849D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A9E0314-966F-4584-BAA3-7339CBB849D1}.Debug|x64.ActiveCfg = Debug|x64
-		{7A9E0314-966F-4584-BAA3-7339CBB849D1}.Debug|x64.Build.0 = Debug|x64
+		{7A9E0314-966F-4584-BAA3-7339CBB849D1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7A9E0314-966F-4584-BAA3-7339CBB849D1}.Debug|x64.Build.0 = Debug|Any CPU
 		{7A9E0314-966F-4584-BAA3-7339CBB849D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A9E0314-966F-4584-BAA3-7339CBB849D1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7A9E0314-966F-4584-BAA3-7339CBB849D1}.Release|x64.ActiveCfg = Release|x64
@@ -497,8 +497,8 @@ Global
 		{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}.Release|x64.Build.0 = Release|x64
 		{C2595B04-856D-40AE-8B99-4804C7A70708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C2595B04-856D-40AE-8B99-4804C7A70708}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2595B04-856D-40AE-8B99-4804C7A70708}.Debug|x64.ActiveCfg = Debug|x64
-		{C2595B04-856D-40AE-8B99-4804C7A70708}.Debug|x64.Build.0 = Debug|x64
+		{C2595B04-856D-40AE-8B99-4804C7A70708}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C2595B04-856D-40AE-8B99-4804C7A70708}.Debug|x64.Build.0 = Debug|Any CPU
 		{C2595B04-856D-40AE-8B99-4804C7A70708}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2595B04-856D-40AE-8B99-4804C7A70708}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2595B04-856D-40AE-8B99-4804C7A70708}.Release|x64.ActiveCfg = Release|x64
