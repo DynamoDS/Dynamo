@@ -738,11 +738,15 @@ namespace Dynamo.ViewModels
                         x.LoadState.State == PackageLoadState.StateTypes.Error) &&
                         x.Name.Equals(dependencyHeader.name));
 
+                    bool sameName = false;
+                    bool sameVersion = false;
                     if (localPkgWithSameName != null)
                     {
-                         // exclude dependencies that exactly match existing local packages
-                        if (localPkgWithSameName.VersionName.Equals(dependencyHeader.version))
-                            continue;
+                        // Packages with same name
+                        sameName = true;
+
+                        // Packages with same name and same version
+                        sameVersion = localPkgWithSameName.VersionName.Equals(dependencyHeader.version);
 
                         if (name.Equals(localPkgWithSameName.Name))
                         {// Handle the main package duplicate
@@ -750,13 +754,21 @@ namespace Dynamo.ViewModels
                             duplicatePackage = localPkgWithSameName;
                         }
                         else
-                        {// Handle the dependencies duplicate here
-                            // Local packages that have the same name but different versions
-                            localPkgsConflictingWithPkgDeps.Add(localPkgWithSameName);
+                        {// Handle the dependency duplicates here
+                            // exclude dependencies that exactly match existing local packages
+                            if (!sameVersion)
+                            {
+                                // Local packages that have the same name but different versions
+                                localPkgsConflictingWithPkgDeps.Add(localPkgWithSameName);
+                            }
                         }
                     }
-                    // Package headers that do not match by name or version with existing local packages
-                    newPackageHeaders.Add(dependencyHeader);
+                    
+                    if (!sameName || !sameVersion)
+                    {
+                        // Package headers that do not match by name or version with existing local packages
+                        newPackageHeaders.Add(dependencyHeader);
+                    }
                 }
 
                 if (!WarnAboutDuplicatePackageConflicts(package, duplicatePackage, localPkgsConflictingWithPkgDeps))
