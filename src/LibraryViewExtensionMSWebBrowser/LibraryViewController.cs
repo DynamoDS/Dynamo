@@ -375,13 +375,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
             LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel, this, this.customization);
-
-            browser.DpiChanged += Browser_DpiChanged;
-        }
-
-        private void Browser_DpiChanged(object sender, DpiChangedEventArgs e)
-        {
-            browser.InvokeScript("adaptDPI");
         }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
@@ -594,7 +587,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             {
                 browser.SizeChanged -= Browser_SizeChanged;
                 browser.Loaded -= Browser_Loaded;
-                browser.DpiChanged -= Browser_DpiChanged;
                 browser.Dispose();
                 browser = null;
             }
