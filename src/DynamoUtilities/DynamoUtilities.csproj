@@ -66,6 +66,7 @@
     <Compile Include="DataMarshaler.cs" />
     <Compile Include="DebugModes.cs" />
     <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="ExceptionHelpers.cs" />
     <Compile Include="Guid.cs" />
     <Compile Include="Md2Html.cs" />
     <Compile Include="ModifierKeys.cs" />

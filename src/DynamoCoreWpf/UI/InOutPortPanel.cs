@@ -1,5 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
@@ -48,8 +52,23 @@ namespace Dynamo.UI.Controls
                     // Default behavior of getting each child to measure.
                     child.Measure(constraint);
                 }
-                catch(System.Exception)
+                catch(XamlParseException e)
                 {
+                    if(e != null)
+                        //if the inner exeption is not null, gather its inner stack trace
+                        //and create a new exception 
+                    {   if(e.InnerException != null)
+                        {
+                            var aggregatedException = new DynamoUtilities.ExceptionHelpers.DynamoWrappedException
+                                (e,
+                                $"{e.StackTrace} {System.Environment.NewLine} {e.InnerException.StackTrace}" );
+
+                             Analytics.TrackException(aggregatedException,false);
+                            continue;
+                        }
+
+                        Analytics.TrackException(e,false);
+                    }
                     continue;
                 }
 
