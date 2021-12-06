@@ -493,9 +493,9 @@ namespace Dynamo.ViewModels
             ExecutePackageDownload(packageInfo.Name, version, downloadPath);
         }
 
-        private string JoinPackageNames(IEnumerable<Package> pkgs)
+        private string JoinPackageNames(IEnumerable<Package> pkgs, string seperator = ", ")
         {
-            return String.Join(", ", pkgs.Select(x => x.Name + " " + x.VersionName));
+            return String.Join(seperator, pkgs.Select(x => x.Name + " " + x.VersionName));
         }
 
         /// <summary>
@@ -585,43 +585,43 @@ namespace Dynamo.ViewModels
 
                 immediateUninstalls.Add(pkg);
             }
-
+                
             if (builtinPackages.Any())
             {
                 // Conflicts with builtin packages
-                var message = string.Format(Resources.MessagePackageDepsInBuiltinPackages, package,
+                var message = string.Format(Resources.MessagePackageDepsInBuiltinPackages, packageToDownload,
                         JoinPackageNames(builtinPackages));
 
                 var dialogResult = MessageBoxService.Show(message,
                     Resources.BuiltInPackageConflictMessageBoxTitle,
                     MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
-                if (dialogResult == MessageBoxResult.Cancel) return false;
+                if(dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None) return false;
             }
 
             if (uninstallRequiringUserModifications.Any())
             {
                 var conflictingPkgs = JoinPackageNames(uninstallRequiringUserModifications);
-                var message = string.Format(Resources.MessageForceInstallOrUninstallToContinue, package, conflictingPkgs,
+                var message = string.Format(Resources.MessageForceInstallOrUninstallToContinue, packageToDownload, conflictingPkgs,
                     DynamoViewModel.BrandingResourceProvider.ProductName);
-
+                
                 var dialogResult = MessageBoxService.Show(message,
                     Resources.PackagesInUseConflictMessageBoxTitle,
                     MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
 
-                if (dialogResult == MessageBoxResult.No) return false;
+                if(dialogResult == MessageBoxResult.No || dialogResult == MessageBoxResult.None) return false;
             }
 
             var settings = DynamoViewModel.Model.PreferenceSettings;
             if (uninstallsRequiringRestart.Any())
             {
-                var conflictingPkgs = JoinPackageNames(uninstallsRequiringRestart);
-                var message = string.Format(Resources.MessageForceInstallOrUninstallUponRestart, package,
-                    conflictingPkgs, DynamoViewModel.BrandingResourceProvider.ProductName);
+                var conflictingPkgs = JoinPackageNames(uninstallsRequiringRestart,System.Environment.NewLine);
+                var message = string.Format(Resources.MessageForceInstallOrUninstallUponRestart, packageToDownload,
+                    conflictingPkgs);
 
                 var dialogResult = MessageBoxService.Show(message,
                     Resources.LoadedPackagesConflictMessageBoxTitle,
-                    MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation);
+                    MessageBoxButton.YesNoCancel,new string[] {Resources.ContinueInstall, Resources.UninstallLoaded, Resources.GenericTaskDialogOptionCancel }, MessageBoxImage.Exclamation);
 
                 if (dialogResult == MessageBoxResult.No)
                 {
@@ -629,7 +629,7 @@ namespace Dynamo.ViewModels
                     uninstallsRequiringRestart.ForEach(x => x.MarkForUninstall(settings));
                     return false;
                 }
-                else if (dialogResult == MessageBoxResult.Cancel) return false;
+                else if(dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None) return false;
             }
 
             if (immediateUninstalls.Any())
@@ -637,11 +637,11 @@ namespace Dynamo.ViewModels
                 // if the package is not in use, tell the user we will uninstall it and give them the opportunity to cancel
                 var message = String.Format(Resources.MessageAlreadyInstallDynamo,
                     DynamoViewModel.BrandingResourceProvider.ProductName,
-                    JoinPackageNames(immediateUninstalls), package);
+                    JoinPackageNames(immediateUninstalls), packageToDownload);
 
                 var dialogResult = MessageBoxService.Show(message,
                     Resources.DownloadWarningMessageBoxTitle, MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                if (dialogResult == MessageBoxResult.Cancel)
+                if (dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None)
                 {
                     return false;
                 }
@@ -761,7 +761,7 @@ namespace Dynamo.ViewModels
                         Resources.PackageDownloadMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
-                    if (res == MessageBoxResult.Cancel) return;
+                    if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None) return;
                 }
 
                 // Determine if there are any dependencies that are made with a newer version
@@ -773,10 +773,11 @@ namespace Dynamo.ViewModels
                 // allowing them to cancel the package download
                 if (futureDeps.Any())
                 {
-                    if (MessageBoxService.Show(string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName),
+                    var res = MessageBoxService.Show(string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName),
                         string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
                         MessageBoxButton.OKCancel,
-                        MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                        MessageBoxImage.Warning);
+                    if (res == MessageBoxResult.Cancel || res == MessageBoxResult.None)
                     {
                         return;
                     }

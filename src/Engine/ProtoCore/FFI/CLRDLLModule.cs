@@ -1188,17 +1188,18 @@ namespace ProtoFFI
                     //This probably wasn't a .NET dll
                     System.Diagnostics.Debug.WriteLine(exception.Message);
                     System.Diagnostics.Debug.WriteLine(exception.StackTrace);
-                    throw new System.Exception(string.Format("Dynamo can only import .NET DLLs. Failed to load library: {0}.", name));
+                    throw new Exception(string.Format("Dynamo can only import .NET DLLs. Failed to load library: {0}.", name));
                 }
-
-                catch (System.Exception exception)
+                catch(DynamoServices.AssemblyBlockedException exception)
                 {
-                    // If the exception is having HRESULT of 0x80131515, then perhaps we need to instruct the user to "unblock" the downloaded DLL. Please seee the following link for details:
-                    // http://blogs.msdn.com/b/brada/archive/2009/12/11/visual-studio-project-sample-loading-error-assembly-could-not-be-loaded-and-will-be-ignored-could-not-load-file-or-assembly-or-one-of-its-dependencies-operation-is-not-supported-exception-from-hresult-0x80131515.aspx
-                    // 
+                    // this exception is caught upstream after displaying a failed load library warning to the user.
+                    throw exception;
+                }
+                catch (Exception exception)
+                {
                     System.Diagnostics.Debug.WriteLine(exception.Message);
                     System.Diagnostics.Debug.WriteLine(exception.StackTrace);
-                    throw new System.Exception(string.Format("Fail to load library: {0}.", name));
+                    throw new Exception(string.Format("Fail to load library: {0}.", name));
                 }
             }
 

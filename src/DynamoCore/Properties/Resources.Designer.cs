@@ -269,6 +269,26 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}
+        ///
+        ///This assembly is likely blocked. Try restarting Dynamo after unblocking this assembly and all other core assemblies that might be blocked. If you are running a downloaded DynamoSandbox build that is extracted from a .zip file, try using 7zip to extract the Dynamo binaries and try again..
+        /// </summary>
+        public static string CoreLibraryLoadFailureForBlockedAssembly {
+            get {
+                return ResourceManager.GetString("CoreLibraryLoadFailureForBlockedAssembly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Core library load failure.
+        /// </summary>
+        public static string CoreLibraryLoadFailureMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("CoreLibraryLoadFailureMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not compress file.  Is the file in use?.
         /// </summary>
         public static string CouldNotCompressFile {
@@ -945,6 +965,26 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}
+        ///
+        ///This assembly is likely blocked. Try importing it again after unblocking the assembly..
+        /// </summary>
+        public static string LibraryLoadFailureForBlockedAssembly {
+            get {
+                return ResourceManager.GetString("LibraryLoadFailureForBlockedAssembly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Library load failure.
+        /// </summary>
+        public static string LibraryLoadFailureMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("LibraryLoadFailureMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot find library path: {0}..
         /// </summary>
         public static string LibraryPathCannotBeFound {
@@ -1250,6 +1290,17 @@ namespace Dynamo.Properties {
         public static string PackageEmpty {
             get {
                 return ResourceManager.GetString("PackageEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}
+        ///
+        ///This package likely contains an assembly that is blocked. You will need to load the package again after unblocking the assembly. Restart Dynamo to reload the package..
+        /// </summary>
+        public static string PackageLoadFailureForBlockedAssembly {
+            get {
+                return ResourceManager.GetString("PackageLoadFailureForBlockedAssembly", resourceCulture);
             }
         }
         
