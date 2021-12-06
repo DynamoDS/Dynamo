@@ -640,14 +640,15 @@ namespace Dynamo.ViewModels
 
                 var dialogResult = MessageBoxService.Show(message,
                     Resources.LoadedPackagesConflictMessageBoxTitle,
-                    MessageBoxButton.OKCancel, new string[] { Resources.UninstallLoadedPackages, Resources.GenericTaskDialogOptionCancel }, MessageBoxImage.Exclamation);
+                    MessageBoxButton.YesNoCancel, new string[] { Resources.ContinueInstall, Resources.UninstallLoadedPackages, Resources.GenericTaskDialogOptionCancel }, MessageBoxImage.Exclamation);
 
-                if (dialogResult == MessageBoxResult.OK)
+                if (dialogResult == MessageBoxResult.No)
                 {
                     // mark for uninstallation
                     uninstallsRequiringRestart.ForEach(x => x.MarkForUninstall(settings));
+                    return false;
                 }
-                return false;
+                else if (dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None) return false;
             }
 
             if (immediateUninstalls.Any())
