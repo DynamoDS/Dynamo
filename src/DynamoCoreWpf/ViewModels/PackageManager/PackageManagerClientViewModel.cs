@@ -507,7 +507,7 @@ namespace Dynamo.ViewModels
         /// <returns>True if the User opted to continue with the download operation. False otherwise</returns>
         private bool WarnAboutDuplicatePackageConflicts(PackageVersion package, 
                                                         Package duplicatePackage, 
-                                                        List<Package> conflicts)
+                                                        List<Package> dependencyConflicts)
         {
             var packageToDownload = $"{package.name} {package.version}";
             if (duplicatePackage != null)
@@ -562,7 +562,7 @@ namespace Dynamo.ViewModels
                     {
                         dialogResult = MessageBoxService.Show(String.Format(Resources.MessageAlreadyInstallDynamo,
                             DynamoViewModel.BrandingResourceProvider.ProductName, dupPkg, packageToDownload), 
-                            Resources.CannotDownloadPackageMessageBoxTitle,
+                            Resources.PackagesInUseConflictMessageBoxTitle,
                             MessageBoxButton.OKCancel, new string[] { Resources.UninstallLoadedPackage, Resources.GenericTaskDialogOptionCancel }, 
                             MessageBoxImage.Exclamation);
 
@@ -579,7 +579,7 @@ namespace Dynamo.ViewModels
             var uninstallRequiringUserModifications = new List<Package>();
             var immediateUninstalls = new List<Package>();
             var builtinPackages = new List<Package>();
-            foreach (var pkg in conflicts)
+            foreach (var pkg in dependencyConflicts)
             {
                 if (pkg == null) continue;
 
