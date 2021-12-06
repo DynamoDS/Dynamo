@@ -510,6 +510,7 @@ namespace Dynamo.ViewModels
                                                         List<Package> conflicts)
         {
             var packageToDownload = $"{package.name} {package.version}";
+            var dupPkg = JoinPackageNames(new[] { duplicatePackage });
             if (duplicatePackage != null)
             {
                 if (duplicatePackage.BuiltInPackage)
@@ -523,8 +524,7 @@ namespace Dynamo.ViewModels
                     }
                     else
                     {
-                        var message = string.Format(Resources.MessageSamePackageDiffVersInBuiltinPackages,
-                            packageToDownload, JoinPackageNames(new[] { duplicatePackage }),
+                        var message = string.Format(Resources.MessageSamePackageDiffVersInBuiltinPackages, packageToDownload, dupPkg,
                             DynamoViewModel.BrandingResourceProvider.ProductName);
 
                         MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
@@ -543,12 +543,11 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    var dupPkg = JoinPackageNames(new[] { duplicatePackage });
                     MessageBoxResult dialogResult;
 
                     if (duplicatePackage.InUse(DynamoViewModel.Model))
                     {// Loaded assemblies or pacakge in use in workspace
-                        dialogResult = MessageBoxService.Show(string.Format(Resources.MessageSamePackageDiffVersInLocalPackages, packageToDownload, duplicatePackage),
+                        dialogResult = MessageBoxService.Show(string.Format(Resources.MessageSamePackageDiffVersInLocalPackages, packageToDownload, dupPkg),
                             Resources.LoadedPackagesConflictMessageBoxTitle,
                             MessageBoxButton.OKCancel, new string[] { Resources.UninstallLoadedPackage, Resources.GenericTaskDialogOptionCancel }, MessageBoxImage.Exclamation);
 
