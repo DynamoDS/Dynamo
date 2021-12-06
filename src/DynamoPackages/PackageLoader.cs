@@ -376,6 +376,11 @@ namespace Dynamo.PackageManager
         /// <param name="packagePaths"></param>
         /// <param name="nodePaths"></param>
         /// <param name="customNodeManager"></param>
+        /// <param name="uninstallPackageDir">
+        /// After the next Dynamo restart, the package will be in an unloaded state (if it is a built-in package) or 
+        /// deleted from package locations if it's path is among uninstallPackeDir.
+        /// </param>
+        /// <param name="checkPathInPathManager">Load new packages only if their path is accounted for in path manager</param>
         public void LoadCustomNodesAndPackages(IEnumerable<string> packagePaths, IEnumerable<string> nodePaths, 
             CustomNodeManager customNodeManager, IEnumerable<string> uninstallPackageDir = null, bool checkPathInPathManager = true)
         {
