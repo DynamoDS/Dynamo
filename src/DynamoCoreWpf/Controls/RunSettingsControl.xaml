@@ -175,7 +175,7 @@
                 Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, Mode=TwoWay}"
                 Visibility="{Binding RunPeriodInputVisibility}">
                 <TextBox.ToolTip>
-                    <ToolTip Style="{StaticResource GenericToolTipLight}" Content="{Binding RelativeSource={RelativeSource AncestorType= TextBox}, Path=Text}"></ToolTip>
+                    <ToolTip Style="{StaticResource GenericToolTipLight}" Content="{Binding RelativeSource={RelativeSource AncestorType= TextBox}, Path=Text}"/>
                 </TextBox.ToolTip>
             </TextBox>
 
