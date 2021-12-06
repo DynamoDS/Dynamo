@@ -87,7 +87,7 @@
 
 </head>
 
-<body>
+<body onresize="bodyResizeEvent()">
     <!-- Placeholders must exist before all other scripts that try to access them -->
     <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
     <!-- The main library view component -->
@@ -381,6 +381,37 @@
             }          
         }
 
+        //get information about the current position of a specific div element, if the WebBrowser is resized the values will change
+        function getDocumentClientRect(divElement) {
+            var targetDiv = findPackageDiv(divElement);
+            if (targetDiv == null) return;
+            var rect = targetDiv.parentNode.getBoundingClientRect();
+            var clientRectDiv = {
+                "width": rect.width,
+                "height": rect.height,
+                "top": rect.top,
+                "bottom": rect.bottom
+            }
+            var documentSize = {
+                "width": document.body.clientWidth,
+                "height": document.body.clientHeight
+            }
+            var locationInfo = {
+                "document": documentSize,
+                "client": clientRectDiv
+            }     
+            return JSON.stringify(locationInfo);
+        }
+
+        //scroll down until the bottom of the page so the AddOns always be visible
+        function scrollToBottom() {
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        //This method will be executed when the WebBrowser change its size, so we can update the Popup vertical location that is over the library
+        function bodyResizeEvent() {
+            window.external.notify(JSON.stringify({ "func": "ResizedEvent", "data": "" }));
+        }
     </script>
 
 </body>

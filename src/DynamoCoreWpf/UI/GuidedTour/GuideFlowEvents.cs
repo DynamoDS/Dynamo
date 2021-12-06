@@ -4,6 +4,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 {
     public delegate void GuidedTourNextEventHandler();
     public delegate void GuidedTourPrevEventHandler();
+    public delegate void UpdatePopupLocationEventHandler();
     public delegate void GuidedTourStartEventHandler(GuidedTourStateEventArgs args);
     public delegate void GuidedTourFinishEventHandler(GuidedTourStateEventArgs args);
 
@@ -49,6 +50,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 isAnyGuideActive = false;
                 GuidedTourFinish(new GuidedTourStateEventArgs(name));
             }
+        }
+
+        //Event that will be raised when we want to update the Popup location of the current step being executed
+        public static event UpdatePopupLocationEventHandler UpdatePopupLocation;
+        public static void OnUpdatePopupLocation()
+        {
+            if (GuidedTourFinish != null)
+                UpdatePopupLocation();
         }
 
         /// <summary>

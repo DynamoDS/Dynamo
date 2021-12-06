@@ -626,7 +626,7 @@
 					"PopupPlacement": "right",
 					"HostUIElementString": "sidebarGrid",
 					"WindowName": "LibraryView",
-					"VerticalPopupOffset": 600,
+					"VerticalPopupOffset": -70,
 					"HorizontalPopupOffset": -30,
 					"HighlightRectArea": {
 						"HighlightColor": "#EF9362",
@@ -668,6 +668,30 @@
 						"JSFunctionName": "subscribePackageClickedEvent",
 						"JSParameters": [ "Autodesk Sample" ],
 						"Action": "execute"
+					},
+					{
+						"Sequence": 4,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "getDocumentClientRect",
+						"JSParameters": [ "Autodesk Sample" ],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 5,
+						"ControlType": "function",
+						"Name": "LibraryScrollToBottom",
+						"JSFunctionName": "scrollToBottom",
+						"JSParameters": [],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 6,
+						"ControlType": "function",
+						"Name": "CalculateLibraryItemLocation",
+						"JSFunctionName": "getDocumentClientRect",
+						"JSParameters": [ "Autodesk Sample" ],
+						"Action": "execute"
 					}
 				]
 			},
@@ -689,7 +713,7 @@
 					"WindowName": "LibraryView",
 					"VerticalPopupOffset": 400,
 					"HorizontalPopupOffset": 0
-				}
+				}		
 			},
 			{
 				"Sequence": 10,
