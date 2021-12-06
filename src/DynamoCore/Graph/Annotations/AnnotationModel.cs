@@ -504,30 +504,25 @@ namespace Dynamo.Graph.Annotations
                 return;
             }
 
-            // Fetching all nodes inside the group.
-            List<NodeModel> nodeModels = Nodes
+            List<NodeModel> nodes = Nodes
                 .OfType<NodeModel>()
                 .ToList();
 
-
-            // Adding to this nodes from any nested groups.
-            nodeModels.AddRange
-            (
-                Nodes.OfType<AnnotationModel>()
-                    .Select(x => x.Nodes)
-                    .SelectMany(x => x)
-                    .OfType<NodeModel>()
-            );
-
-            // If any nodes (even in nested groups) are in error state we display an error icon.
-            if (nodeModels.Any(x => x.State == ElementState.Error))
+            List<AnnotationModel> groups = Nodes
+                .OfType<AnnotationModel>()
+                .ToList();
+                
+            // If anything in this group is in an error state, we display an error icon.
+            if (nodes.Any(x => x.State == ElementState.Error) ||
+                groups.Any(x => x.GroupState == ElementState.Error))
             {
                 GroupState = ElementState.Error;
                 return;
             }
 
-            // If any nodes (even in nested groups) are in warning state we display a warning icon.
-            if (nodeModels.Any(x => x.State == ElementState.Warning))
+            // If anything in this group is in a warning state, we display a warning icon.
+            if (nodes.Any(x => x.State == ElementState.Warning) ||
+                groups.Any(x => x.GroupState == ElementState.Warning))
             {
                 GroupState = ElementState.Warning;
                 return;
