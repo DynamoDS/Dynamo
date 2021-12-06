@@ -510,9 +510,9 @@ namespace Dynamo.ViewModels
                                                         List<Package> conflicts)
         {
             var packageToDownload = $"{package.name} {package.version}";
-            var dupPkg = JoinPackageNames(new[] { duplicatePackage });
             if (duplicatePackage != null)
             {
+                var dupPkg = JoinPackageNames(new[] { duplicatePackage });
                 if (duplicatePackage.BuiltInPackage)
                 {
                     if (package.version == duplicatePackage.VersionName)
