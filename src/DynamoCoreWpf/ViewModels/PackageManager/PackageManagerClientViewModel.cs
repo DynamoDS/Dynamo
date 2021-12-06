@@ -738,15 +738,11 @@ namespace Dynamo.ViewModels
                         x.LoadState.State == PackageLoadState.StateTypes.Error) &&
                         x.Name.Equals(dependencyHeader.name));
 
-                    bool sameName = false;
-                    bool sameVersion = false;
+                    bool exactMatch = false;
                     if (localPkgWithSameName != null)
                     {
-                        // Packages with same name
-                        sameName = true;
-
                         // Packages with same name and same version
-                        sameVersion = localPkgWithSameName.VersionName.Equals(dependencyHeader.version);
+                        exactMatch = localPkgWithSameName.VersionName.Equals(dependencyHeader.version);
 
                         if (name.Equals(localPkgWithSameName.Name))
                         {// Handle the main package duplicate
@@ -756,15 +752,15 @@ namespace Dynamo.ViewModels
                         else
                         {// Handle the dependency duplicates here
                             // exclude dependencies that exactly match existing local packages
-                            if (!sameVersion)
+                            if (!exactMatch)
                             {
                                 // Local packages that have the same name but different versions
                                 localPkgsConflictingWithPkgDeps.Add(localPkgWithSameName);
                             }
                         }
                     }
-                    
-                    if (!sameName || !sameVersion)
+
+                    if (!exactMatch)
                     {
                         // Package headers that do not match by name or version with existing local packages
                         newPackageHeaders.Add(dependencyHeader);
