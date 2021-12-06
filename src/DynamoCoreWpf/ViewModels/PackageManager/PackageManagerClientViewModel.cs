@@ -736,18 +736,20 @@ namespace Dynamo.ViewModels
 
                     if (localPkgWithSameName != null)
                     {
-                        if (name.Equals(localPkgWithSameName.Name))
-                        {// Main package has a duplicate in local packages
-                            duplicatePackage = localPkgWithSameName;
-                            break;// Download will not be able to continue
-                        }
-
-                        // exclude dependencies that exactly match existing local packages
+                         // exclude dependencies that exactly match existing local packages
                         if (localPkgWithSameName.VersionName.Equals(dependencyHeader.version))
                             continue;
 
-                        // Local packages that have the same name but different versions
-                        localPkgsConflictingWithPkgDeps.Add(localPkgWithSameName);
+                        if (name.Equals(localPkgWithSameName.Name))
+                        {// Handle the main package duplicate
+                            // Main package has a duplicate in local packages
+                            duplicatePackage = localPkgWithSameName;
+                        }
+                        else
+                        {// Handle the dependencies duplicate here
+                            // Local packages that have the same name but different versions
+                            localPkgsConflictingWithPkgDeps.Add(localPkgWithSameName);
+                        }
                     }
                     // Package headers that do not match by name or version with existing local packages
                     newPackageHeaders.Add(dependencyHeader);
