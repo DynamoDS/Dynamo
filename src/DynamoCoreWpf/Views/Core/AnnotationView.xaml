@@ -207,10 +207,10 @@
                                         <Image.Style>
                                             <Style TargetType="Image">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding GroupState}" Value="{x:Static nodes:ElementState.Warning}">
+                                                    <DataTrigger Binding="{Binding AnnotationModel.GroupState}" Value="{x:Static nodes:ElementState.Warning}">
                                                         <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/warning.png"/>
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding GroupState}" Value="{x:Static nodes:ElementState.Error}">
+                                                    <DataTrigger Binding="{Binding AnnotationModel.GroupState}" Value="{x:Static nodes:ElementState.Error}">
                                                         <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/error.png"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>

@@ -28,8 +28,7 @@ namespace Dynamo.ViewModels
         // vertical offset accounts for the port margins
         private const int verticalOffset = 20;
         private const int portVerticalMidPoint = 17;
-        private ElementState groupState = ElementState.Active;
-
+        
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
         #region Properties
@@ -256,7 +255,7 @@ namespace Dynamo.ViewModels
                 WorkspaceViewModel.HasUnsavedChanges = true;
                 AddGroupToGroupCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(nameof(IsExpanded));
-                UpdateErrorAndWarningIconVisibility();
+                AnnotationModel.UpdateErrorAndWarningIconVisibility();
             }
         }
 
@@ -331,20 +330,6 @@ namespace Dynamo.ViewModels
         public GeometryCollection NestedGroupsGeometryCollection
         {
             get => new GeometryCollection(GroupIdToCutGeometry.Values.Select(x => x));
-        }
-
-        /// <summary>
-        /// Indicates whether the group contains nodes that are in an info/warning/error state.
-        /// This includes the state of any nodes that are in nested groups.
-        /// </summary>
-        public ElementState GroupState
-        {
-            get => groupState;
-            internal set
-            {
-                groupState = value;
-                RaisePropertyChanged(nameof(GroupState));
-            }
         }
 
         #endregion
@@ -558,7 +543,7 @@ namespace Dynamo.ViewModels
                 CollapseGroupContents(true);
             }
 
-            UpdateErrorAndWarningIconVisibility();
+            AnnotationModel.UpdateErrorAndWarningIconVisibility();
         }
 
         /// <summary>
@@ -1064,7 +1049,7 @@ namespace Dynamo.ViewModels
                 AddToCutGeometryDictionary(groupViewModel);
             }
 
-            UpdateErrorAndWarningIconVisibility();
+            AnnotationModel.UpdateErrorAndWarningIconVisibility();
         }
 
         private void RemoveKeyFromCutGeometryDictionary(string groupGuid)
@@ -1133,82 +1118,12 @@ namespace Dynamo.ViewModels
         {
             return WorkspaceViewModel.Model.Annotations.ContainsModel(this.annotationModel);
         }
-
-        /// <summary>
-        /// Determines whether this group displays warning or error icons in its header.
-        /// </summary>
-        private void UpdateErrorAndWarningIconVisibility()
-        {
-            // No icons are displayed when the group is expanded / not collapsed.
-            if (IsExpanded)
-            {
-                GroupState = ElementState.Active;
-                return;
-            }
-
-            // Fetching all nodes inside the group.
-            List<NodeModel> nodeModels = Nodes
-                .OfType<NodeModel>()
-                .ToList();
-
-            // Subscribing to changes in the nodes' state. If a node's state 
-            // changes (e.g. to warning) we'll want to reflect this.
-            foreach (NodeModel nodeModel in nodeModels)
-            {
-                nodeModel.PropertyChanged += NodeModelOnPropertyChanged;
-            }
-
-            // Adding to this nodes from any nested groups.
-            nodeModels.AddRange
-            (
-                Nodes.OfType<AnnotationModel>()
-                    .Select(x => x.Nodes)
-                    .SelectMany(x => x)
-                    .OfType<NodeModel>()
-            );
-
-            // If any nodes (even in nested groups) are in error state we display an error icon.
-            if (nodeModels.Any(x => x.State == ElementState.Error))
-            {
-                GroupState = ElementState.Error;
-                return;
-            }
-
-            // If any nodes (even in nested groups) are in warning state we display a warning icon.
-            if (nodeModels.Any(x => x.State == ElementState.Warning))
-            {
-                GroupState = ElementState.Warning;
-                return;
-            }
-
-            GroupState = ElementState.Active;
-        }
-
-        /// <summary>
-        /// If a node's State changes (e.g. to, or from, a Warning state) we'll want the UI to reflect
-        /// this and show/hide a warning icon in the group header to reflect this.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NodeModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(NodeModel.State):
-                    UpdateErrorAndWarningIconVisibility();
-                    break;
-            }
-        }
-
-
+        
         public override void Dispose()
         {
             annotationModel.PropertyChanged -= model_PropertyChanged;
             annotationModel.RemovedFromGroup -= OnModelRemovedFromGroup;
-            foreach (NodeModel nodeModel in Nodes.OfType<NodeModel>())
-            {
-                nodeModel.PropertyChanged -= NodeModelOnPropertyChanged;
-            }
+            
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
         }

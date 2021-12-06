@@ -8,6 +8,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Properties;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Dynamo.Graph.Annotations
 {
@@ -334,6 +335,22 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
+        private ElementState groupState = ElementState.Active;
+
+        /// <summary>
+        /// Indicates whether the group contains nodes that are in an info/warning/error state.
+        /// This includes the state of any nodes that are in nested groups.
+        /// </summary>
+        public ElementState GroupState
+        {
+            get => groupState;
+            internal set
+            {
+                groupState = value;
+                RaisePropertyChanged(nameof(GroupState));
+            }
+        }
+
         /// <summary>
         /// Checks if this group contains any nested groups.
         /// </summary>
@@ -400,6 +417,9 @@ namespace Dynamo.Graph.Annotations
                 case nameof(ModelBase.Height):
                 case nameof(ModelBase.Width):
                     UpdateBoundaryFromSelection();
+                    break;
+                case nameof(NodeModel.State):
+                    UpdateErrorAndWarningIconVisibility();
                     break;
             }
         }
@@ -470,6 +490,50 @@ namespace Dynamo.Graph.Annotations
                 this.Width = 0;
                 this.height = 0;               
             }
+        }
+
+        /// <summary>
+        /// Determines whether this group displays warning or error icons in its header.
+        /// </summary>
+        internal void UpdateErrorAndWarningIconVisibility()
+        {
+            // No icons are displayed when the group is expanded / not collapsed.
+            if (IsExpanded)
+            {
+                GroupState = ElementState.Active;
+                return;
+            }
+
+            // Fetching all nodes inside the group.
+            List<NodeModel> nodeModels = Nodes
+                .OfType<NodeModel>()
+                .ToList();
+
+
+            // Adding to this nodes from any nested groups.
+            nodeModels.AddRange
+            (
+                Nodes.OfType<AnnotationModel>()
+                    .Select(x => x.Nodes)
+                    .SelectMany(x => x)
+                    .OfType<NodeModel>()
+            );
+
+            // If any nodes (even in nested groups) are in error state we display an error icon.
+            if (nodeModels.Any(x => x.State == ElementState.Error))
+            {
+                GroupState = ElementState.Error;
+                return;
+            }
+
+            // If any nodes (even in nested groups) are in warning state we display a warning icon.
+            if (nodeModels.Any(x => x.State == ElementState.Warning))
+            {
+                GroupState = ElementState.Warning;
+                return;
+            }
+
+            GroupState = ElementState.Active;
         }
 
         /// <summary>

@@ -1168,7 +1168,7 @@ namespace DynamoCoreWpfTests
             ObservableCollection<InfoBubbleDataPacket> nodeMessages = infoBubbleViewModel.NodeMessages;
             nodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Warning, topLeft, botRight, "Warning", InfoBubbleViewModel.Direction.Top));
 
-            Assert.AreEqual(ElementState.Warning, annotationViewModel.GroupState);
+            Assert.AreEqual(ElementState.Warning, annotationViewModel.AnnotationModel.GroupState);
         }
 
         [Test]
