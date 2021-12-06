@@ -541,7 +541,6 @@ namespace Dynamo.Graph.Annotations
         private void OnRemovedFromGroup()
         {
             RemovedFromGroup?.Invoke(this, EventArgs.Empty);
-            UpdateErrorAndWarningIconVisibility();
         }
 
         /// <summary>
