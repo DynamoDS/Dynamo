@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,35 @@ namespace DynamoShapeManager
         /// <summary>
         /// Key words for Products containing ASM binaries
         /// </summary>
-        private static readonly List<string> ProductsWithASM = new List<string>() { "Revit", "Civil", "Robot Structural Analysis", "FormIt" };
+        private static List<string> ProductsWithASM
+        {
+            get
+            {
+                List<string> defaultProducts = new List<string>() { "Revit", "Civil", "Robot Structural Analysis", "FormIt" };
+                List<string> configProducts = new List<string>();
+                try
+                {
+                    var assemblyConfig = ConfigurationManager.OpenExeConfiguration(typeof(Utilities).Assembly.Location);
+                    if (assemblyConfig != null)
+                    {
+                        var products = assemblyConfig.AppSettings.Settings["productsWithASM"];
+                        if (products != null)
+                        {
+                            configProducts = products.Value.Split(',').ToList();
+                            return configProducts;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Following exception was thrown when trying to read DynamoShapeManager's app.config");
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Using default list of products with ASM");
+                }
+                return defaultProducts;
+            }
+        }
+            //
 
         #region ASM DLLs per version (to be kept in sync with LibG)
 
