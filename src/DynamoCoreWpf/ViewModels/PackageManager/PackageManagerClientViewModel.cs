@@ -680,6 +680,11 @@ namespace Dynamo.ViewModels
             var pmExt = DynamoViewModel.Model.GetPackageManagerExtension();
             if (result == MessageBoxResult.OK)
             {
+                if (string.IsNullOrEmpty(package.name))
+                {// package.name is not set sometimes
+                    package.name = name;
+                }
+
                 Debug.Assert(package.full_dependency_ids.Count == package.full_dependency_versions.Count);
                 // get all of the dependency version headers
                 // we reverse these arrays because the package manager returns dependencies in topological order starting at 
