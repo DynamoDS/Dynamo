@@ -332,6 +332,7 @@ namespace Dynamo.Graph.Annotations
             {
                 isExpanded = value;
                 UpdateBoundaryFromSelection();
+                UpdateErrorAndWarningIconVisibility();
             }
         }
 
@@ -384,6 +385,7 @@ namespace Dynamo.Graph.Annotations
                 .ToList();
 
             UpdateBoundaryFromSelection();
+            UpdateErrorAndWarningIconVisibility();
         }
 
         private ConnectorPinModel[] GetPinsFromNodes(IEnumerable<NodeModel> nodeModels)
@@ -495,7 +497,7 @@ namespace Dynamo.Graph.Annotations
         /// <summary>
         /// Determines whether this group displays warning or error icons in its header.
         /// </summary>
-        internal void UpdateErrorAndWarningIconVisibility()
+        private void UpdateErrorAndWarningIconVisibility()
         {
             // No icons are displayed when the group is expanded / not collapsed.
             if (IsExpanded)
@@ -539,6 +541,7 @@ namespace Dynamo.Graph.Annotations
         private void OnRemovedFromGroup()
         {
             RemovedFromGroup?.Invoke(this, EventArgs.Empty);
+            UpdateErrorAndWarningIconVisibility();
         }
 
         /// <summary>
@@ -674,6 +677,7 @@ namespace Dynamo.Graph.Annotations
             list.Add(model);
             this.Nodes = list;
             this.UpdateBoundaryFromSelection();
+            UpdateErrorAndWarningIconVisibility();
         }
 
         private void UnsubscribeRemovedModel(ModelBase model)

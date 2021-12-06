@@ -254,7 +254,6 @@ namespace Dynamo.ViewModels
                 WorkspaceViewModel.HasUnsavedChanges = true;
                 AddGroupToGroupCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(nameof(IsExpanded));
-                AnnotationModel.UpdateErrorAndWarningIconVisibility();
             }
         }
 
@@ -541,8 +540,6 @@ namespace Dynamo.ViewModels
                 SetGroupOutPorts();
                 CollapseGroupContents(true);
             }
-
-            AnnotationModel.UpdateErrorAndWarningIconVisibility();
         }
 
         /// <summary>
@@ -1047,8 +1044,6 @@ namespace Dynamo.ViewModels
 
                 AddToCutGeometryDictionary(groupViewModel);
             }
-
-            AnnotationModel.UpdateErrorAndWarningIconVisibility();
         }
 
         private void RemoveKeyFromCutGeometryDictionary(string groupGuid)
