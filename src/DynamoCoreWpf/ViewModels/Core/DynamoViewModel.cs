@@ -639,7 +639,7 @@ namespace Dynamo.ViewModels
 
         public static DynamoViewModel Start(StartConfiguration startConfiguration = new StartConfiguration())
         {
-            if(startConfiguration.DynamoModel == null) 
+            if (startConfiguration.DynamoModel == null) 
                 startConfiguration.DynamoModel = DynamoModel.Start();
 
             if(startConfiguration.WatchHandler == null)
@@ -856,6 +856,8 @@ namespace Dynamo.ViewModels
             model.RequestBugReport += ReportABug;
             model.RequestDownloadDynamo += DownloadDynamo;
             model.Preview3DOutage += Disable3DPreview;
+
+            DynamoServices.LoadLibraryEvents.LoadLibraryFailure += LoadLibraryEvents_LoadLibraryFailure;
         }
 
         private void UnsubscribeModelUiEvents()
@@ -863,6 +865,8 @@ namespace Dynamo.ViewModels
             model.RequestBugReport -= ReportABug;
             model.RequestDownloadDynamo -= DownloadDynamo;
             model.Preview3DOutage -= Disable3DPreview;
+
+            DynamoServices.LoadLibraryEvents.LoadLibraryFailure -= LoadLibraryEvents_LoadLibraryFailure;
         }
 
         private void SubscribeModelCleaningUpEvent()
@@ -2593,6 +2597,11 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private static void LoadLibraryEvents_LoadLibraryFailure(string failureMessage, string messageBoxTitle)
+        {
+            Wpf.Utilities.MessageBoxService.Show(failureMessage, messageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+        }
+
         public void ImportLibrary(object parameter)
         {
             string[] fileFilter = {string.Format(Resources.FileDialogLibraryFiles, "*.dll; *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"), 
@@ -2629,7 +2638,14 @@ namespace Dynamo.ViewModels
                 }
                 catch(LibraryLoadFailedException ex)
                 {
-                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                    Wpf.Utilities.MessageBoxService.Show(
+                        ex.Message, Properties.Resources.LibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+                catch(DynamoServices.AssemblyBlockedException ex)
+                {
+                    var failureMessage = string.Format(Properties.Resources.LibraryLoadFailureForBlockedAssembly, ex.Message);
+                    Wpf.Utilities.MessageBoxService.Show(
+                        failureMessage, Properties.Resources.LibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
         }

@@ -570,9 +570,9 @@ namespace Dynamo.ViewModels
                 }
                 isDataFlowCollection = isCollectionofFiveorMore;
             }
-            catch (Exception ex)///the odd case of model.Start.Owner value not being available. 
+            catch (Exception ex)//the odd case of model.Start.Owner value not being available. 
             {
-                string m = ex.Message;
+                _ = ex.Message;
             }
         }
 
@@ -586,7 +586,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Delegate command used to set the visibility of the connector to 'transparent'.
         /// </summary>
-        public DelegateCommand HideConnectorCommand { get; set; }
+        public DelegateCommand ShowhideConnectorCommand { get; set; }
         /// <summary>
         /// Delegate command us to select the nodes connected to this connector.
         /// </summary>
@@ -844,7 +844,7 @@ namespace Dynamo.ViewModels
         private void InitializeCommands()
         {
             BreakConnectionCommand = new DelegateCommand(BreakConnectionCommandExecute, x => true);
-            HideConnectorCommand = new DelegateCommand(HideConnectorCommandExecute, x => true);
+            ShowhideConnectorCommand = new DelegateCommand(HideConnectorCommandExecute, x => true);
             SelectConnectedCommand = new DelegateCommand(SelectConnectedCommandExecute, x => true);
             MouseHoverCommand = new DelegateCommand(MouseHoverCommandExecute, CanRunMouseHover);
             MouseUnhoverCommand = new DelegateCommand(MouseUnhoverCommandExecute, CanRunMouseUnhover);
