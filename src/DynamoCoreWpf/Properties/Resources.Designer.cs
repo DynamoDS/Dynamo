@@ -3863,7 +3863,7 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
         ///
-        ///Do you wish to first uninstall {1}, restart {2} then download {0} again?.
+        ///Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again..
         /// </summary>
         public static string MessageSamePackageDiffVersInLocalPackages {
             get {
