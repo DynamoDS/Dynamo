@@ -385,9 +385,23 @@
 						"ControlType": "function",
 						"Name": "ExecutePackageSearch",
 						"ExecuteCleanUpForward": false,
+						"CheckPackagesListEnableNextStep": true,
 						"ExecuteCleanUpBackward": true,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 0,
+						"ControlType": "button",
+						"WindowName": "PopupWindow",
+						"Name": "NextButton",
+						"Action": "disable"
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "EnableNextButton",
+						"Action": "execute"
 					}
 				]
 			},
@@ -465,16 +479,8 @@
 						"Name": "ExecutePackageSearch",
 						"ExecuteCleanUpForward": false,
 						"ExecuteCleanUpBackward": false,
-						"CheckPackagesListEnableNextStep": true,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
-					},
-					{
-						"Sequence": 0,
-						"ControlType": "button",
-						"WindowName": "PopupWindow",
-						"Name": "NextButton",
-						"Action": "disable"
 					},
 					{
 						"Sequence": 2,
@@ -484,12 +490,6 @@
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
-					},
-					{
-						"Sequence": 3,
-						"ControlType": "function",
-						"Name": "EnableNextButton",
-						"Action": "execute"
 					}
 				]
 			},
