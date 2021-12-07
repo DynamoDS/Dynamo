@@ -41,6 +41,8 @@ namespace Dynamo.UI.Controls
 
         protected override Size MeasureOverride(Size constraint)
         {
+            string aggretatedExceptionStack = string.Empty;
+
             if (this.Children.Count <= 0)
                 return new Size(0, 0);
 
@@ -55,19 +57,10 @@ namespace Dynamo.UI.Controls
                 catch(XamlParseException e)
                 {
                     if(e != null)
-                        //if the inner exeption is not null, gather its inner stack trace
-                        //and create a new exception 
-                    {   if(e.InnerException != null)
-                        {
-                            var aggregatedException = new DynamoUtilities.ExceptionHelpers.DynamoWrappedException
-                                (e,
-                                $"{e.StackTrace} {System.Environment.NewLine} {e.InnerException.StackTrace}" );
-
-                             Analytics.TrackException(aggregatedException,false);
-                            continue;
-                        }
-
-                        Analytics.TrackException(e,false);
+                     //aggregate the stack traces as we'll loop over all children in this panel.
+                    {
+                        aggretatedExceptionStack += $"------------------ {System.Environment.NewLine } { e.StackTrace} {System.Environment.NewLine}" +
+                        e.InnerException != null ? $" inner: {e.InnerException.StackTrace} {System.Environment.NewLine}" : string.Empty;
                     }
                     continue;
                 }
@@ -80,6 +73,13 @@ namespace Dynamo.UI.Controls
                 // Having one child item stack on top of another.
                 cumulative.Height += child.DesiredSize.Height;
             }
+            //log to analytics if we recorded any exceptions
+            if(aggretatedExceptionStack != string.Empty)
+            {
+                var aggException = new DynamoUtilities.ExceptionHelpers.DynamoWrappedException(new XamlParseException(), aggretatedExceptionStack);
+                Analytics.TrackException(aggException, false);
+            }
+           
 
             return cumulative;
         }
