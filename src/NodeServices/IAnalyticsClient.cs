@@ -264,14 +264,14 @@ namespace Dynamo.Logging
         Unpin,
 
         /// <summary>
-        /// Download new event, such as downloading a new package
+        /// Download new event, such as downloading a new package in package reference section by user
         /// </summary>
         DownloadNew,
 
         /// <summary>
-        /// KeepOldPackage event, choosing to keep the old package
+        /// KeepOld event, e.g. choosing to keep the old package in package reference section by user
         /// </summary>
-        KeepOldPackage,
+        KeepOld,
 
         /// <summary>
         /// PackageReferences event, when a package reference is saved in a workspace
