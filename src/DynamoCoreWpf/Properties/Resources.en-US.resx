@@ -3010,4 +3010,7 @@ To install the latest version of a package, click Install. \n
   <data name="UninstallLoaded" xml:space="preserve">
     <value>Uninstall loaded packages</value>
   </data>
+  <data name="PackagesGuidePackagesNodeTitle" xml:space="preserve">
+    <value>Use package nodes</value>
+  </data>
 </root>
