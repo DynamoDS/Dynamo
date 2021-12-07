@@ -127,8 +127,8 @@
     <value>Change between Side-by-Side and Inline view.</value>
   </data>
   <data name="IronPythonDialogDescription" xml:space="preserve">
-    <value>Dynamo is moving away from the old IronPython2 (Python 2) engine towards a new CPython3 (Python 3) engine. 
-There will be a time of transition where both versions of Python node will work inside of Dynamo, but eventually the CPython3 engine will be set as default.</value>
+    <value>Dynamo has moved away from the old IronPython2 (Python 2) engine towards a new CPython3 (Python 3) engine. 
+The IronPython engine is still available as a package from the Dynamo package manager, but only the CPython3 engine will be supported.</value>
   </data>
   <data name="IronPythonDialogSummary" xml:space="preserve">
     <value>This graph contains nodes that reference an outdated Python engine.</value>
