@@ -404,7 +404,7 @@ namespace Dynamo.ViewModels
                 DynamoSelection.Instance.Selection.Count >= 0 && 
                 IsExpanded;
         }
-
+         
         private void AddToGroup(object obj)
         {
             if (annotationModel.IsSelected)
