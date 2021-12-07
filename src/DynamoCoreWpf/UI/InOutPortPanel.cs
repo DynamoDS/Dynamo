@@ -41,7 +41,7 @@ namespace Dynamo.UI.Controls
 
         protected override Size MeasureOverride(Size constraint)
         {
-            var aggretatedExceptions = new List<Exception>();
+            var aggregatedExceptions = new List<Exception>();
 
             if (this.Children.Count <= 0)
                 return new Size(0, 0);
@@ -59,7 +59,7 @@ namespace Dynamo.UI.Controls
                     if(e != null)
                      //aggregate the exceptions as we'll loop over all children in this panel and send one exception to analytics.
                     {
-                        aggretatedExceptions.Add(e);
+                        aggregatedExceptions.Add(e);
                     }
                     continue;
                 }
@@ -73,9 +73,9 @@ namespace Dynamo.UI.Controls
                 cumulative.Height += child.DesiredSize.Height;
             }
             //log to analytics if we recorded any exceptions
-            if(aggretatedExceptions.Count > 0)
+            if(aggregatedExceptions.Count > 0)
             {
-                var aggException = new AggregateException($"XamlParseException(s) InOutPortPanel MeasureOverride:{aggretatedExceptions.Count}", aggretatedExceptions);
+                var aggException = new AggregateException($"XamlParseException(s) InOutPortPanel MeasureOverride:{aggregatedExceptions.Count}", aggregatedExceptions);
                 Analytics.TrackException(aggException, false);
             }
            
