@@ -145,7 +145,7 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
             bool initialVisibility = connectorViewModel.IsHidden;
             //Toggles hide (visibility == off)
-            connectorViewModel.ShowhideConnectorCommand.Execute(null);
+            connectorViewModel.HideConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.IsHidden, !initialVisibility);
         }
 
@@ -160,10 +160,10 @@ namespace DynamoCoreWpfTests
             var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
             bool initialVisibility = connectorViewModel.IsHidden;
             //Toggles hide (visibility == off)
-            connectorViewModel.ShowhideConnectorCommand.Execute(null);
+            connectorViewModel.HideConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.IsHidden, !initialVisibility);
             //Toggles hide on/off (visibility == on)
-            connectorViewModel.ShowhideConnectorCommand.Execute(null);
+            connectorViewModel.HideConnectorCommand.Execute(null);
             Assert.AreEqual(connectorViewModel.IsHidden, initialVisibility);
         }
 

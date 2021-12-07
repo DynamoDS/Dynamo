@@ -214,11 +214,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Break Connections.
+        ///   Looks up a localized string similar to Break Connection.
         /// </summary>
-        public static string BreakConnectionsPopupMenuItem {
+        public static string BreakConnectionPopupMenuItem {
             get {
-                return ResourceManager.GetString("BreakConnectionsPopupMenuItem", resourceCulture);
+                return ResourceManager.GetString("BreakConnectionPopupMenuItem", resourceCulture);
             }
         }
         
@@ -439,11 +439,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Break Connection.
+        ///   Looks up a localized string similar to Break Connections.
         /// </summary>
-        public static string ConnectorContextMenuHeaderBreakConnection {
+        public static string ConnectorContextMenuHeaderBreakConnections {
             get {
-                return ResourceManager.GetString("ConnectorContextMenuHeaderBreakConnection", resourceCulture);
+                return ResourceManager.GetString("ConnectorContextMenuHeaderBreakConnections", resourceCulture);
             }
         }
         
@@ -804,15 +804,6 @@ namespace Dynamo.Wpf.Properties {
         public static string ContinueButton {
             get {
                 return ResourceManager.GetString("ContinueButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Continue install.
-        /// </summary>
-        public static string ContinueInstall {
-            get {
-                return ResourceManager.GetString("ContinueInstall", resourceCulture);
             }
         }
         
@@ -3683,13 +3674,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following package(s):
+        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following packages: {1}. Dependency conflicts could cause unintended behavior to occur.
+        ///    
+        ///Do you wish to continue installing it while keeping the packages that are already installed?
         ///
-        ///{1}
-        ///
-        ///If you continue to install the package, unintended behavior may occur.
-        ///
-        ///To avoid unintended behavior, uninstall the conflicting loaded package(s), restart Dynamo, and download {0} again..
+        ///If not, {2} needs to uninstall {1} to continue. Restart {2}, then download {0} again..
         /// </summary>
         public static string MessageForceInstallOrUninstallUponRestart {
             get {
@@ -7179,15 +7168,6 @@ namespace Dynamo.Wpf.Properties {
         public static string UndeprecatingPackageMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UndeprecatingPackageMessageBoxTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Uninstall loaded packages.
-        /// </summary>
-        public static string UninstallLoaded {
-            get {
-                return ResourceManager.GetString("UninstallLoaded", resourceCulture);
             }
         }
         

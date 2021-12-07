@@ -9,7 +9,6 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Tests;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -930,62 +929,6 @@ namespace DynamoCoreWpfTests
             // Assert
             CollectionAssert.AreNotEquivalent(groupNodesCollapsedStatusAfter, groupNodesCollapsedStatusBefore);
             Assert.That(groupNodesCollapsedStatusAfter.All(x => x == true));
-        }
-
-        /// <summary>
-        /// Expands parent group, child group is expanded already, so wire coming out of nested group node should be hidden == false.
-        /// </summary>
-        [Test]
-        public void NestedCollapsedGroupWiresDisplayCorrectlyWhenParentGroupExpands()
-        {
-            //Arrange
-            var outerGroupName = "OuterGroupCollapsed";
-            var innerGroupName = "InnerGroupExpanded";
-
-            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
-            var outerGroup = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == outerGroupName);
-            var innerGroup = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == innerGroupName);
-
-            var innerGroupWiresBefore = innerGroup.Nodes.OfType<NodeModel>()
-              .SelectMany(x => x.OutPorts.SelectMany(c => c.Connectors));
-
-            // Act
-            outerGroup.IsExpanded = true;
-
-            var innerGroupWiresAfter = innerGroup.Nodes.OfType<NodeModel>()
-                .SelectMany(x => x.OutPorts.SelectMany(c => c.Connectors));
-
-            // Assert
-            CollectionAssert.AreEquivalent(innerGroupWiresBefore, innerGroupWiresAfter);
-            Assert.That(innerGroupWiresAfter.All(x => !x.IsHidden));
-        }
-
-        /// <summary>
-        /// Expands parent group, child group is collapsed, but wire coming out of proxy port for nested group should still be hidden == false.
-        /// </summary>
-        [Test]
-        public void NestedExpandedGroupWiresDisplayCorrectlyWhenParentGroupExpands()
-        {
-            //Arrange
-            var outerGroupName = "OuterGroupCollapsed2";
-            var innerGroupName = "InnerGroupCollapsed";
-
-            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
-            var outerGroup = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == outerGroupName);
-            var innerGroup = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == innerGroupName);
-
-            var innerGroupWiresBefore = innerGroup.Nodes.OfType<NodeModel>()
-                .SelectMany(x => x.OutPorts.SelectMany(c => c.Connectors));
-
-            // Act
-            outerGroup.IsExpanded = true;
-
-            var innerGroupWiresAfter = innerGroup.Nodes.OfType<NodeModel>()
-                .SelectMany(x => x.OutPorts.SelectMany(c => c.Connectors));
-
-            // Assert
-            CollectionAssert.AreEquivalent(innerGroupWiresBefore, innerGroupWiresAfter);
-            Assert.That(innerGroupWiresAfter.All(x => !x.IsHidden));
         }
 
 

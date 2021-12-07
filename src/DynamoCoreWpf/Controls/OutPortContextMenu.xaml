@@ -30,12 +30,12 @@
                 CornerRadius="2">
             <StackPanel>
 
-                <!--  Break Connections  -->
+                <!--  Break Connection  -->
                 <Button Name="BreakConnectionsButton"
                         Margin="0,3"
                         HorizontalAlignment="Left"
                         Command="{Binding Path=BreakConnectionsCommand}"
-                        Content="{x:Static p:Resources.BreakConnectionsPopupMenuItem}"
+                        Content="{x:Static p:Resources.BreakConnectionPopupMenuItem}"
                         IsEnabled="{Binding IsConnected, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource PopupButtonStyle}" />
 

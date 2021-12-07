@@ -34,18 +34,7 @@ namespace ProtoFFI
             System.Diagnostics.Debug.Write("Trying to load assembly: " + name);
             if (System.IO.File.Exists(name))
             {
-                try
-                {
-                    return Assembly.LoadFrom(name);
-                }
-                catch(System.IO.FileLoadException e)
-                {
-                    // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
-                    if (e.HResult == unchecked((int)0x80131515))
-                    {
-                        throw new DynamoServices.AssemblyBlockedException(e.Message);
-                    }
-                }
+                return Assembly.LoadFrom(name);
             }
             throw new System.IO.FileNotFoundException();
         }

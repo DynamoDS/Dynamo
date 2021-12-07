@@ -275,7 +275,7 @@ namespace Dynamo.ViewModels
                         MessageNeedToRestartTitle,
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Exclamation);
-                if (resAssem == MessageBoxResult.Cancel || resAssem == MessageBoxResult.None) return;
+                if (resAssem == MessageBoxResult.Cancel) return;
             }
 
             if (!Model.BuiltInPackage)
@@ -284,7 +284,7 @@ namespace Dynamo.ViewModels
                     Resources.MessageNeedToRestartAfterDeleteTitle,
                     MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                if (res == MessageBoxResult.No || res == MessageBoxResult.None) return;
+                if (res == MessageBoxResult.No) return;
             }
 
 
@@ -344,7 +344,7 @@ namespace Dynamo.ViewModels
                         MessageBoxImage.Exclamation);
 
                 // Proceed only if we have the user's consent.
-                if (dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None ) return;
+                if (dialogResult == MessageBoxResult.Cancel) return;
             }
 
             try

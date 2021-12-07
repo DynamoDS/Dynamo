@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using System.IO;
 
 namespace DynamoServices
 {
@@ -49,14 +48,4 @@ namespace DynamoServices
         }
     }
 
-    /// <summary>
-    /// Represents FileLoadException having HRESULT value of 0x80131515. 
-    /// Throw this when we need to instruct the user to "unblock" the downloaded assembly.
-    /// </summary>
-    internal class AssemblyBlockedException : FileLoadException
-    {
-        public AssemblyBlockedException(string message) : base(message)
-        {
-        }
-    }
 }

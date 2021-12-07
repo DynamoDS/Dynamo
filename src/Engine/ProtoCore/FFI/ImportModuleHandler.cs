@@ -78,9 +78,9 @@ namespace ProtoFFI
                 return node;
             }
 
-            CodeBlockNode codeNode = null;
+            ProtoCore.AST.AssociativeAST.CodeBlockNode codeNode = null;
             if (importedNode == null)
-                codeNode = new CodeBlockNode();
+                codeNode = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
             else
                 codeNode = importedNode.CodeNode;
 
@@ -88,14 +88,9 @@ namespace ProtoFFI
             {
                 codeNode = ImportCodeBlock(modulePathFileName, typeName, alias, codeNode);
             }
-            catch (DynamoServices.AssemblyBlockedException ex)
+            catch (System.Exception ex)
             {
-                // this exception is caught upstream after displaying a failed load library warning to the user.
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                if (ex is ReflectionTypeLoadException)
+                if (ex is System.Reflection.ReflectionTypeLoadException)
                 {
                     StringBuilder sb = new StringBuilder();
                     var typeLoadException = ex as ReflectionTypeLoadException;
@@ -252,12 +247,7 @@ namespace ProtoFFI
                 {
                     dllModule = DLLFFIHandler.GetModule(importModuleName);
                 }
-                catch (DynamoServices.AssemblyBlockedException ex)
-                {
-                    // this exception is caught upstream after displaying a failed load library warning to the user.
-                    throw ex;
-                }
-                catch (Exception)
+                catch
                 {
                     _coreObj.LogSemanticError(string.Format(Resources.FailedToImport, importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
                 }

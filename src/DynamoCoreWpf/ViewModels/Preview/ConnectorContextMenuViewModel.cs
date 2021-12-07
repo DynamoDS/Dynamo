@@ -1,7 +1,8 @@
-﻿using System;
-using System.Windows;
-using Dynamo.Logging;
+﻿using System.Windows;
+using System.Windows.Threading;
+using Dynamo.Core;
 using Dynamo.UI.Commands;
+using System;
 
 namespace Dynamo.ViewModels
 {
@@ -48,10 +49,6 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="connectorViewModel"></param>
         public ConnectorContextMenuViewModel(ConnectorViewModel connectorViewModel)
         {
             ViewModel = connectorViewModel;
@@ -89,7 +86,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public DelegateCommand SelectConnectedSurrogateCommand { get; set; }
         /// <summary>
-        /// Alerts ConnectorViewModel to break the current connection.
+        /// Alets ConnectorViewModel to break the current connection.
         /// </summary>
         public DelegateCommand BreakConnectionsSurrogateCommand { get; set; }
 
@@ -107,11 +104,7 @@ namespace Dynamo.ViewModels
         private void BreakConnectionsSurrogateCommandExecute(object obj)
         {
             ViewModel.BreakConnectionCommand.Execute(null);
-            // Track break connection event, this is distinguished with break connections from input/output port.
-            // So sending connector and number of connector as 1
-            Analytics.TrackEvent(Actions.Break, Categories.ConnectorOperations, "Connector", 1);
         }
-
         /// <summary>
         /// Request disposal of this viewmodel after command has run.
         /// </summary>
@@ -119,8 +112,6 @@ namespace Dynamo.ViewModels
         private void SelectConnectedSurrogateCommandExecute(object obj)
         {
             ViewModel.SelectConnectedCommand.Execute(null);
-            // Track select connected nodes event
-            Analytics.TrackEvent(Actions.Select, Categories.ConnectorOperations, "SelectConnected");
         }
         /// <summary>
         /// Request disposal of this viewmodel after command has run.
@@ -128,16 +119,7 @@ namespace Dynamo.ViewModels
         /// <param name="obj"></param>
         private void HideConnectorSurrogateCommandExecute(object obj)
         {
-            // Track Show or hide connected nodes event
-            if (ViewModel.IsHidden)
-            {
-                Analytics.TrackEvent(Actions.Show, Categories.ConnectorOperations, "Connector", 1);
-            }
-            else
-            {
-                Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, "Connector", 1);
-            }
-            ViewModel.ShowhideConnectorCommand.Execute(null);
+            ViewModel.HideConnectorCommand.Execute(null);
         }
 
         #endregion

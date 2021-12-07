@@ -621,11 +621,6 @@ namespace Dynamo.Engine
                     ImportProcedure(library, globalFunction);
                 }
             }
-            catch (DynamoServices.AssemblyBlockedException e)
-            {
-                // This exception is caught upstream after displaying a failed load library warning to the user.
-                throw e;
-            }
             catch (Exception e)
             {
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message,
@@ -636,6 +631,7 @@ namespace Dynamo.Engine
             {
                 importedLibraries.Add(library);
             }
+
             return true;
         }
 
