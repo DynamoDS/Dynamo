@@ -162,15 +162,22 @@
 
             <TextBox
                 Name="RunPeriodTextBox"
-                Width="80"
+                MinWidth="80"
+                MaxWidth="120"
                 Margin="2.5,0,0,0"
+                Padding="3,0,10,0"
                 VerticalContentAlignment="Center"
                 FontSize="14px"
                 Foreground="{StaticResource DynamoStandardLabelTextBrush}"
                 KeyDown="UIElement_OnKeyDown"
+                TextWrapping="NoWrap"
                 Style="{DynamicResource ResourceKey=SDarkTextBox}"
                 Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, Mode=TwoWay}"
-                Visibility="{Binding RunPeriodInputVisibility}" />
+                Visibility="{Binding RunPeriodInputVisibility}">
+                <TextBox.ToolTip>
+                    <ToolTip Style="{StaticResource GenericToolTipLight}" Content="{Binding RelativeSource={RelativeSource AncestorType= TextBox}, Path=Text}"/>
+                </TextBox.ToolTip>
+            </TextBox>
 
             <CheckBox
                 Name="debugCheckBox"

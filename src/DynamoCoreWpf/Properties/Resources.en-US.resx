@@ -2368,8 +2368,8 @@ You can try disabling loading packages from built-in package paths, or unload th
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
     <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
-        
-Do you wish to restart {2} to first uninstall {1}, then download {0} again?</value>
+
+Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
   </data>
   <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
     <value>Geometry Scaling</value>
@@ -3007,7 +3007,13 @@ To install the latest version of a package, click Install. \n
   <data name="ContinueInstall" xml:space="preserve">
     <value>Continue install</value>
   </data>
-  <data name="UninstallLoaded" xml:space="preserve">
+  <data name="UninstallLoadedPackages" xml:space="preserve">
     <value>Uninstall loaded packages</value>
+  </data>
+  <data name="UninstallLoadedPackage" xml:space="preserve">
+    <value>Uninstall loaded package</value>
+  </data>
+  <data name="PackagesGuidePackagesNodeTitle" xml:space="preserve">
+    <value>Use package nodes</value>
   </data>
 </root>
