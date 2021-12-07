@@ -79,15 +79,7 @@ namespace Dynamo.UI.Controls
         {
             this.scheduler = nodeViewModel.DynamoViewModel.Model.Scheduler;
             this.nodeViewModel = nodeViewModel;
-            try
-            {
-                InitializeComponent();
-            }
-            catch(System.Windows.Markup.XamlParseException e)
-            {
-                // See https://docs.microsoft.com/en-us/dotnet/api/system.windows.markup.xamlparseexception?view=windowsdesktop-6.0#remarks
-                Logging.Analytics.TrackException(e, false);
-            }
+            InitializeComponent();
             Loaded += PreviewControl_Loaded;
             SizeChanged += UpdateMargin;
             Unloaded += PreviewControl_Unloaded;
