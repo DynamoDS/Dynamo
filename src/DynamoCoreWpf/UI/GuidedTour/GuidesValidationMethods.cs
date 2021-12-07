@@ -235,6 +235,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (packageManagerViewModel == null)
                     return;
 
+                searchPackagesLoaded = false;
                 //Due that we need to search the Autodesk Sample package after the initial search is completed 
                 //we need to subscribe to the PropertyChanged event so we will know when the SearchState property is equal to Results (meaning that got results)
                 searchPackagesPropertyChanged = (sender, e) => { PackageManagerViewModel_PropertyChanged(sender, e, uiAutomationData); } ;
@@ -309,7 +310,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     //Unsubscribe from the PropertyChanged event otherwise it will enter everytime the SearchTextBox is updated
                     packageManagerViewModel.PropertyChanged -= searchPackagesPropertyChanged.Invoke;
 
-                    searchPackagesLoaded = false;
                 }
             }
         }

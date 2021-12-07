@@ -327,13 +327,6 @@
 				},
 				"UIAutomation": [
 					{
-						"Sequence": 1,
-						"ControlType": "button",
-						"WindowName": "PopupWindow",
-						"Name": "NextButton",
-						"Action": "disable"
-					},
-					{
 						"Sequence": 2,
 						"ControlType": "function",
 						"Name": "ExecuteTermsOfServiceFlow",
@@ -385,24 +378,9 @@
 						"ControlType": "function",
 						"Name": "ExecutePackageSearch",
 						"ExecuteCleanUpForward": false,
-						"CheckPackagesListEnableNextStep": true,
-						"ElementName": "NextButton",
 						"ExecuteCleanUpBackward": true,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
-					},
-					{
-						"Sequence": 0,
-						"ControlType": "button",
-						"WindowName": "PopupWindow",
-						"Name": "NextButton",
-						"Action": "disable"
-					},
-					{
-						"Sequence": 3,
-						"ControlType": "function",
-						"Name": "EnableNextButton",
-						"Action": "execute"
 					}
 				]
 			},
@@ -423,6 +401,7 @@
 					"DynamicHostWindow": true,
 					"HostUIElementString": "PackageSearch",
 					"VerticalPopupOffset": 40,
+					"ElementName": "NextButton",
 					"HorizontalPopupOffset": 470,
 					"HtmlPage": {
 						"FileName": "searchPackages.html",
@@ -435,13 +414,28 @@
 				},
 				"UIAutomation": [
 					{
-						"Sequence": 2,
+						"Sequence": 0,
 						"ControlType": "function",
 						"Name": "ExecutePackageSearch",
 						"ExecuteCleanUpForward": false,
 						"ExecuteCleanUpBackward": false,
+						"ElementName": "NextButton",
 						"Action": "execute",
 						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 1,
+						"ControlType": "button",
+						"WindowName": "PopupWindow",
+						"Name": "NextButton",
+						"Action": "disable"
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "EnableNextButton",
+						"ElementName": "NextButton",
+						"Action": "execute"
 					}
 				]
 			},
