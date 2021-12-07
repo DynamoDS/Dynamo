@@ -5254,6 +5254,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to \nWhen you install a package, it appears in the library under Add-ons.   \n\n**Click to expand the package** so you can see its nodes (functions)..
+        /// </summary>
+        public static string PackagesGuideNavigatePackagesText {
+            get {
+                return ResourceManager.GetString("PackagesGuideNavigatePackagesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate to packages.
+        /// </summary>
+        public static string PackagesGuideNavigatePackagesTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideNavigatePackagesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use package nodes.
+        /// </summary>
+        public static string PackagesGuidePackagesNodeTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuidePackagesNodeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to \nYou can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar..
         /// </summary>
         public static string PackagesGuideSearchFilterText {
