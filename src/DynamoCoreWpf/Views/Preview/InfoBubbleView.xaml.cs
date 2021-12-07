@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Dynamo.Configuration;
+using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -1042,7 +1043,8 @@ namespace Dynamo.Controls
             // Clearing and recreating all existing warning-level messages from the dismissed collection.
             RefreshDismissedMessages(InfoBubbleViewModel.Style.Warning);
             RefreshDismissedMessages(InfoBubbleViewModel.Style.WarningCondensed);
-            
+            // Track dismiss warning event and how many warnings dismissed
+            Analytics.TrackEvent(Actions.Dismiss, Categories.NodeOperations, "Warning", ViewModel.DismissedMessages.Count);
             ViewModel.RefreshNodeInformationalStateDisplay();
         }
 

@@ -417,7 +417,7 @@ namespace Dynamo.ViewModels
                         this.AnnotationModel.AddToSelectedModels(model, true);
                     }
                 }
-                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations);
+                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Node");
             }
         }
 
@@ -474,7 +474,7 @@ namespace Dynamo.ViewModels
                         AddToCutGeometryDictionary(groupViewModel);
                     }
                 }
-                Analytics.TrackEvent(Actions.GroupAddedTo, Categories.GroupOperations);
+                Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Group");
             }
         }
 
@@ -488,7 +488,7 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynamoModel.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
-            Analytics.TrackEvent(Actions.GroupRemovedFrom, Categories.GroupOperations);
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Group");
         }
 
         private bool CanUngroupGroup(object parameters)
@@ -740,9 +740,19 @@ namespace Dynamo.ViewModels
                     .OfType<AnnotationModel>()
                     .SelectMany(x => x.Nodes.OfType<NodeModel>())
                     .Concat(Nodes.OfType<NodeModel>());
+
+                // If any of the nested groups are collapsed
+                // we need to update the posistion of the 
+                // proxy ports on it.
+                foreach (var nestedGroup in ViewModelBases.OfType<AnnotationViewModel>().Where(x => !x.IsExpanded))
+                {
+                    nestedGroup.SetGroupInputPorts();
+                    nestedGroup.SetGroupOutPorts();
+                    nestedGroup.UpdateProxyPortsPosition();
+                }
             }
 
-            var groupInports = GetGroupInPorts(nestedNodes);
+            var groupInports = GetGroupInPorts(IsExpanded ? null : nestedNodes);
 
             for (int i = 0; i < groupInports.Count(); i++)
             {
@@ -753,7 +763,7 @@ namespace Dynamo.ViewModels
                 model.Owner.ReportPosition();
             }
 
-            var groupOutports = GetGroupOutPorts();
+            var groupOutports = GetGroupOutPorts(IsExpanded ? null : nestedNodes);
 
             for (int i = 0; i < groupOutports.Count(); i++)
             {
@@ -998,7 +1008,7 @@ namespace Dynamo.ViewModels
 
         private void OnModelRemovedFromGroup(object sender, EventArgs e)
         {
-            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations);
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Node");
             RaisePropertyChanged(nameof(ZIndex));
         }
 

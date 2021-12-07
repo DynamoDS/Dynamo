@@ -103,9 +103,19 @@ namespace Dynamo.Logging
         WorkspaceReferences,
 
         /// <summary>
-        /// Events Category related to saved Groups
+        /// Events Category related to Groups
         /// </summary>
         GroupOperations,
+
+        /// <summary>
+        /// Events Category related to Node context menu
+        /// </summary>
+        NodeContextMenuOperations,
+
+        /// <summary>
+        /// Events Category related to connectors
+        /// </summary>
+        ConnectorOperations,
     }
 
     /// <summary>
@@ -184,9 +194,9 @@ namespace Dynamo.Logging
         EngineFailure,
 
         /// <summary>
-        /// Search Filter Button Clicked event
+        /// Filter event, e.g. when package filter is active
         /// </summary>
-        FilterButtonClicked,
+        Filter,
 
         /// <summary>
         /// Unresolved Node found event
@@ -243,6 +253,7 @@ namespace Dynamo.Logging
         /// </summary>
         Rate,
 
+        /// <summary>
         /// Pin event, such as pinning a note to a node
         /// </summary>
         Pin,
@@ -253,27 +264,27 @@ namespace Dynamo.Logging
         Unpin,
 
         /// <summary>
-        /// Download new event, such as downloading a new package
+        /// Download new event, such as downloading a new package in package reference section by user
         /// </summary>
         DownloadNew,
 
         /// <summary>
-        /// KeepOldPackage event, choosing to keep the old package
+        /// KeepOld event, e.g. choosing to keep the old package in package reference section by user
         /// </summary>
-        KeepOldPackage,
+        KeepOld,
 
         /// <summary>
-        /// PackageReferences event, when a package refrence is saved in a workspace
+        /// PackageReferences event, when a package reference is saved in a workspace
         /// </summary>
         PackageReferences,
 
         /// <summary>
-        /// KeepOldPackage event, when a local refrence is saved in a workspace
+        /// KeepOldPackage event, when a local reference is saved in a workspace
         /// </summary>
         LocalReferences,
 
         /// <summary>
-        /// KeepOldPackage event, when an external refrence is saved in a workspace
+        /// KeepOldPackage event, when an external reference is saved in a workspace
         /// </summary>
         ExternalReferences,
 
@@ -303,15 +314,49 @@ namespace Dynamo.Logging
         RemovedFrom,
 
         /// <summary>
-        /// GroupAddedTo event, when a group is added to the group
+        /// Preview event, when a node is Previewed
         /// </summary>
-        GroupAddedTo,
+        Preview,
 
         /// <summary>
-        /// GroupRemovedFrom event, when a group is removed from the group
+        /// Freeze event, when a node is Freezed
         /// </summary>
-        GroupRemovedFrom,
+        Freeze,
 
+        /// <summary>
+        /// Rename event, when a node is Renamed
+        /// </summary>
+        Rename,
+
+        /// <summary>
+        /// Show event, when user wants to toggle display.
+        /// </summary>
+        Show,
+
+        /// <summary>
+        /// Set event, when user wants to set a property.
+        /// </summary>
+        Set,
+
+        /// <summary>
+        /// Dismiss event, e.g. to dismiss node alerts.
+        /// </summary>
+        Dismiss,
+
+        /// <summary>
+        /// Undismiss event, to show dismissed alerts.
+        /// </summary>
+        Undismiss,
+
+        /// <summary>
+        /// Break event, e.g. when a connection is broken by user choice
+        /// </summary>
+        Break,
+
+        /// <summary>
+        /// Hide event, e.g when a connection is hidden by user choice
+        /// </summary>
+        Hide,
     }
 
     /// <summary>
