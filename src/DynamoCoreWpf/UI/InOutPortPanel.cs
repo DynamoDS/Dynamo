@@ -54,13 +54,10 @@ namespace Dynamo.UI.Controls
                     // Default behavior of getting each child to measure.
                     child.Measure(constraint);
                 }
-                catch(XamlParseException e)
+                catch (XamlParseException e)
                 {
-                    if(e != null)
-                     //aggregate the exceptions as we'll loop over all children in this panel and send one exception to analytics.
-                    {
-                        aggregatedExceptions.Add(e);
-                    }
+                    //aggregate the exceptions as we'll loop over all children in this panel and send one exception to analytics.
+                    aggregatedExceptions.Add(e);
                     continue;
                 }
 
@@ -73,12 +70,12 @@ namespace Dynamo.UI.Controls
                 cumulative.Height += child.DesiredSize.Height;
             }
             //log to analytics if we recorded any exceptions
-            if(aggregatedExceptions.Count > 0)
+            if (aggregatedExceptions.Count > 0)
             {
                 var aggException = new AggregateException($"XamlParseException(s) InOutPortPanel MeasureOverride:{aggregatedExceptions.Count}", aggregatedExceptions);
                 Analytics.TrackException(aggException, false);
             }
-           
+
 
             return cumulative;
         }
