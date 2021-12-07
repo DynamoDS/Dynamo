@@ -5283,6 +5283,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use package nodes.
+        /// </summary>
+        public static string PackagesGuidePackagesNodeTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuidePackagesNodeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to \nYou can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar..
         /// </summary>
         public static string PackagesGuideSearchFilterText {

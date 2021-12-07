@@ -202,7 +202,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        internal void DeclineButton_Click(object sender, RoutedEventArgs e)
+        internal void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             CurrentExecutingGuide.HideCurrentStep(CurrentExecutingStep.Sequence, GuideFlow.FORWARD);
             CurrentExecutingGuidesManager.CreateExitModal(exitGuide);
