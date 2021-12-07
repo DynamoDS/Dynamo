@@ -237,7 +237,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 //Due that we need to search the Autodesk Sample package after the initial search is completed 
                 //we need to subscribe to the PropertyChanged event so we will know when the SearchState property is equal to Results (meaning that got results)
-                searchPackagesPropertyChanged = (sender, e) => { PackageManagerViewModel_PropertyChanged(sender, e, uiAutomationData.CheckPackagesListEnableNextStep); } ;
+                searchPackagesPropertyChanged = (sender, e) => { PackageManagerViewModel_PropertyChanged(sender, e, uiAutomationData); } ;
                 packageManagerViewModel.PropertyChanged += searchPackagesPropertyChanged.Invoke;
             }
             else
@@ -290,7 +290,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="sender">PackageManagerSearchViewModel</param>
         /// <param name="e">PropertyChanged</param>
-        private static void PackageManagerViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e, bool checkPackagesListEnableNextStep)
+        private static void PackageManagerViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e, StepUIAutomation uiAutomationData)
         {
             PackageManagerSearchViewModel packageManagerViewModel = sender as PackageManagerSearchViewModel;
             if (packageManagerViewModel == null) return;
@@ -304,7 +304,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                     searchPackagesLoaded = true;
 
-                    EnableNextButton(null, null, true, GuideFlow.FORWARD);
+                    EnableNextButton(null, uiAutomationData, true, GuideFlow.FORWARD);
 
                     //Unsubscribe from the PropertyChanged event otherwise it will enter everytime the SearchTextBox is updated
                     packageManagerViewModel.PropertyChanged -= searchPackagesPropertyChanged.Invoke;
@@ -318,8 +318,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             if (searchPackagesLoaded)
             {
-                var nextButton = Guide.FindChild((CurrentExecutingStep.StepUIPopup as PopupWindow).mainPopupGrid, "NextButton") as Button;
-                nextButton.IsEnabled = true;
+                var nextButton = Guide.FindChild((CurrentExecutingStep.StepUIPopup as PopupWindow).mainPopupGrid, uiAutomationData.ElementName) as Button;
+                if(nextButton != null)
+                    nextButton.IsEnabled = true;
             }
         }
 

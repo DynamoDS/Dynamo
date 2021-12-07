@@ -386,6 +386,7 @@
 						"Name": "ExecutePackageSearch",
 						"ExecuteCleanUpForward": false,
 						"CheckPackagesListEnableNextStep": true,
+						"ElementName": "NextButton",
 						"ExecuteCleanUpBackward": true,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
