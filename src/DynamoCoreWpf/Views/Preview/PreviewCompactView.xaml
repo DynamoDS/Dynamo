@@ -10,6 +10,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -20,7 +21,7 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="15" />
         </Grid.ColumnDefinitions>
-        <TextBlock Name="Label" Foreground="#DCDCDC" Grid.Column="0" Margin="10,5,0,5" FontFamily="{StaticResource SourceCodePro}" Text="{Binding Path=NodeLabel}" />
+        <TextBlock Name="Label" Foreground="{StaticResource PrimaryCharcoal200}" Grid.Column="0" Margin="10,5,0,5" FontFamily="{StaticResource SourceCodePro}" Text="{Binding Path=NodeLabel}" />
 
         <TextBlock Name="Items" Grid.Column="2" Margin="0,3,0,7" Foreground="{StaticResource PrimaryCharcoal200Brush}"
                    FontFamily="{StaticResource SourceCodePro}"
