@@ -97,7 +97,7 @@ namespace DynamoSandbox
 #endif
 
                     DynamoModel.IsCrashing = true;
-                    Dynamo.Logging.Analytics.TrackException(e, true);
+                    Analytics.TrackException(e, true);
 
                     if (viewModel != null)
                     {
@@ -115,16 +115,14 @@ namespace DynamoSandbox
                         //can effectively report the issue.
                         var shortStackTrace = String.Join(Environment.NewLine, e.StackTrace.Split(Environment.NewLine.ToCharArray()).Take(10));
 
-                        var result = MessageBox.Show($"{Resources.SandboxCrashMessage} {Environment.NewLine} {e.Message}" +
+                        var result = Dynamo.Wpf.Utilities.MessageBoxService.Show(e.Message +
                             $"  {Environment.NewLine} {e.InnerException?.Message} {Environment.NewLine} {shortStackTrace} {Environment.NewLine} " +
                              Environment.NewLine + string.Format(Resources.SandboxBuildsPageDialogMessage, sandboxWikiPage),
-
-                            "DynamoSandbox",
-                            MessageBoxButton.YesNo, MessageBoxImage.Error);
+                             Resources.SandboxCrashMessage, MessageBoxButton.YesNo, MessageBoxImage.Error);
 
                         if (result == MessageBoxResult.Yes)
                         {
-                            System.Diagnostics.Process.Start(sandboxWikiPage);
+                            Process.Start(sandboxWikiPage);
                         }
                     }
                 }
