@@ -27,7 +27,7 @@
                 <Setter Property="FontWeight" Value="Bold" />
                 <Setter Property="FontSize" Value="14px" />
                 <Setter Property="MinWidth" Value="200px" />
-                <Setter Property="Foreground" Value="{StaticResource ExtensionBackgroundColor}" />
+                <Setter Property="Foreground" Value="#D8D8D8" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="Margin" Value="0,0,0,5" />
                 <Setter Property="TextWrapping" Value="Wrap" />
