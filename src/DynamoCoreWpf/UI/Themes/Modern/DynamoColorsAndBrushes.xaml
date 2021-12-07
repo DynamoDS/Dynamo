@@ -113,6 +113,8 @@
 <!--  Extensions Sidebar  -->
     <SolidColorBrush x:Key="BorderBrushWhite" Color="#FF3F4040" />
     <SolidColorBrush x:Key="FeedbackSectionBackground" Color="#4192D9" />
+    <SolidColorBrush x:Key="ExtensionBackgroundColor" Color="#353535" />
+    <SolidColorBrush x:Key="ExtensionButtonBackgroundColor" Color="#535353" />
 
     <!--  Library background  -->
     <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#444444" />
