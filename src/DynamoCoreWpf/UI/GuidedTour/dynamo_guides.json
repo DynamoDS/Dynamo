@@ -616,7 +616,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "bottom_left",
 				"Width": 480,
-				"Height": 230,
+				"Height": 250,
 				"ShowLibrary": true,
 				"StepContent": {
 					"Title": "PackagesGuideNavigatePackagesTitle",
