@@ -26,6 +26,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
     {
         #region Private Fields
         private static string WindowNamePopup = "PopupWindow";
+        private static string calculateLibraryFuncName = "CalculateLibraryItemLocation";
+        private static string libraryScrollToBottomFuncName = "LibraryScrollToBottom";
         #endregion
         #region Events
         //This event will be raised when a popup (Step) is closed by the user pressing the close button (PopupWindow.xaml).
@@ -226,7 +228,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (HostPopupInfo.WindowName != null  && HostPopupInfo.WindowName.Equals(nameof(LibraryView)))
             {
                 var automationStep = (from automation in UIAutomation
-                                      where automation.Name.Equals("CalculateLibraryItemLocation")
+                                      where automation.Name.Equals(calculateLibraryFuncName)
                                       select automation).FirstOrDefault();
                 GuidesValidationMethods.CalculateLibraryItemLocation(this, automationStep, true, Guide.GuideFlow.CURRENT);
             }
@@ -386,13 +388,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
             if (HostPopupInfo.WindowName != null && HostPopupInfo.WindowName.Equals(nameof(LibraryView)))
             {
                 var automationScrollDownStep = (from automation in UIAutomation
-                                      where automation.Name.Equals("LibraryScrollToBottom")
+                                      where automation.Name.Equals(libraryScrollToBottomFuncName)
                                       select automation).FirstOrDefault();
                 if (automationScrollDownStep == null) return;
                 GuidesValidationMethods.LibraryScrollToBottom(this, automationScrollDownStep, true, Guide.GuideFlow.CURRENT);
 
                 var automationCalculateStep = (from automation in UIAutomation
-                                      where automation.Name.Equals("CalculateLibraryItemLocation")
+                                      where automation.Name.Equals(calculateLibraryFuncName)
                                       select automation).FirstOrDefault();
                 if (automationCalculateStep == null) return;
                 GuidesValidationMethods.CalculateLibraryItemLocation(this, automationCalculateStep, true, Guide.GuideFlow.CURRENT);

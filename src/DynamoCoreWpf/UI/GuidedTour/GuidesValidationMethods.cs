@@ -487,7 +487,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             CurrentExecutingStep = stepInfo;
             if (uiAutomationData == null) return;
-            string jsFunctionName = uiAutomationData.JSFunctionName;
+            var jsFunctionName = uiAutomationData.JSFunctionName;
             object[] jsParameters = new object[] { uiAutomationData.JSParameters[0] };
             //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
             object[] parametersInvokeScript = new object[] { jsFunctionName, jsParameters };
