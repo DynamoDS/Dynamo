@@ -347,7 +347,12 @@
 							{
 								"HandlerElement": "DeclineTermsOfUseButton",
 								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "DeclineButton_Click"
+								"ExecuteMethod": "CloseButton_Click"
+							},
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
 							}
 						],
 						"UpdatePlacementTarget": true
@@ -388,6 +393,20 @@
 						"ExecuteCleanUpBackward": true,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
 					}
 				]
 			},
@@ -420,12 +439,26 @@
 				},
 				"UIAutomation": [
 					{
-						"Sequence": 2,
+						"Sequence": 1,
 						"ControlType": "function",
 						"Name": "ExecutePackageSearch",
 						"ExecuteCleanUpForward": false,
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					}
 				]
@@ -476,6 +509,20 @@
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
 					}
 				]
 			},
@@ -491,10 +538,10 @@
 					"FormattedText": "PackagesGuideDependenciesText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "right",
+					"PopupPlacement": "left",
 					"DynamicHostWindow": true,
 					"HostUIElementString": "PackageDetailsWindow",
-					"VerticalPopupOffset": 400,
+					"VerticalPopupOffset": 0,
 					"HorizontalPopupOffset": 0,
 					"CutOffRectArea": {
 						"WindowElementNameString": "PackageDetailsWindow",
@@ -510,6 +557,20 @@
 						"ExecuteCleanUpForward": false,
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					}
 				]
@@ -533,6 +594,21 @@
 						"ExecuteCleanUpForward": true,
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					}
 				],
@@ -612,21 +688,130 @@
 			},
 			{
 				"Sequence": 8,
-				"Name": "library show",
+				"Name": "navigate-to-packages",
 				"Type": "tooltip",
-				"TooltipPointerDirection": "top_left",
+				"TooltipPointerDirection": "bottom_left",
 				"Width": 480,
-				"Height": 220,
+				"Height": 230,
+				"ShowLibrary": true,
 				"StepContent": {
-					"Title": "PackagesGuideInstallAPackageTitle",
-					"FormattedText": "PackagesGuideInstalledPackageText"
+					"Title": "PackagesGuideNavigatePackagesTitle",
+					"FormattedText": "PackagesGuideNavigatePackagesText"
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
+					"HostUIElementString": "sidebarGrid",
+					"WindowName": "LibraryView",
+					"VerticalPopupOffset": 600,
+					"HorizontalPopupOffset": -30,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "WebBrowser",
+						"UIElementGridContainer": "sidebarGrid",
+						"WindowElementNameString": "Autodesk Sample",
+						"WindowName": "LibraryView"
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"WindowName": "PopupWindow",
+						"Name": "SubscribeNextButtonClickEvent",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Autodesk Sample" ],
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "NextButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "ExecuteAutomaticPackage_Click"
+							}
+						]
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "setOverlay",
+						"JSParameters": [],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "subscribePackageClickedEvent",
+						"JSParameters": [ "Autodesk Sample" ],
+						"Action": "execute"
+					}
+				]
+			},
+			{
+				"Sequence": 9,
+				"Name": "use-package-nodes",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 490,
+				"ShowLibrary": true,
+				"StepContent": {
+					"Title": "PackagesGuidePackagesNodeTitle",
+					"FormattedText": "PackagesGuideInstalledPackageText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "relative",
 					"DynamicHostWindow": true,
 					"HostUIElementString": "sidebarGrid",
-					"VerticalPopupOffset": 0,
-					"HorizontalPopupOffset": 0
+					"WindowName": "LibraryView",
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 300,
+					"HtmlPage": {
+						"FileName": "nodePackage.html",
+						"Resources": {
+							"#PackageNodes": "PackageNodes.gif"
+						}
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 0,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "setOverlay",
+						"JSParameters": [],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 1,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Revit" ]
+					}
+				]
+			},
+			{
+				"Sequence": 10,
+				"Name": "survey",
+				"Type": "survey",
+				"Width": 400,
+				"Height": 450,
+				"StepContent": {
+					"Title": "PackagesGuideSurveyTitle",
+					"FormattedText": "PackagesGuideSurveyText"
+				},
+				"ExtraContent": [
+					{
+						"Property": "RatingTextTitle",
+						"Value": "GetStartedGuideRatingTextTitle"
+					}
+				],
+				"HostPopupInfo": {
+					"PopupPlacement": "center",
+					"HostUIElementString": "WorkspaceTabs",
+					"VerticalPopupOffset": 0			
 				}
 			}
 		]

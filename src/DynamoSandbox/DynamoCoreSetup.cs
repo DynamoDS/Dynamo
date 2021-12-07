@@ -34,6 +34,12 @@ namespace DynamoSandbox
             var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
             var locale = StartupUtils.SetLocale(cmdLineArgs);
             _putenv(locale);
+
+            if (cmdLineArgs.DisableAnalytics)
+            {
+                Analytics.DisableAnalytics = true;
+            }
+
             commandFilePath = cmdLineArgs.CommandFilePath;
             ASMPath = cmdLineArgs.ASMPath;
             analyticsInfo = cmdLineArgs.AnalyticsInfo;
@@ -70,7 +76,15 @@ namespace DynamoSandbox
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
 
             }
+            catch(DynamoServices.AssemblyBlockedException e)
+            {
+                var failureMessage = string.Format(Dynamo.Properties.Resources.CoreLibraryLoadFailureForBlockedAssembly, e.Message);
+                Dynamo.Wpf.Utilities.MessageBoxService.Show(
+                    failureMessage, Dynamo.Properties.Resources.CoreLibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Error);
 
+                Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.StackTrace);
+            }
             catch (Exception e)
             {
                 try

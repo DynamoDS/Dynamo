@@ -282,16 +282,13 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30" />
-                <ColumnDefinition Width="60" />
+                <ColumnDefinition Width="120" />
                 <ColumnDefinition Width="150" MinWidth="150" />
             </Grid.ColumnDefinitions>
 
             <nodes1:DynamoTextBox
                 x:Name="ValTb"
                 Grid.Column="1"
-                Width="48"
-                MinWidth="48"
-                MaxWidth="48"
                 Height="34"
                 Margin="10,0,2,0"
                 Padding="4,6"
@@ -300,9 +297,14 @@
                 Background="{StaticResource MidGreyBrush}"
                 BorderBrush="#4A4A4A"
                 BorderThickness="1"
+                TextWrapping="NoWrap"
                 Foreground="{StaticResource PrimaryCharcoal100Brush}"
                 Opacity="1"
-                Text="{Binding ValueText, Mode=OneWay}" />
+                Text="{Binding ValueText, Mode=OneWay}">
+                <nodes1:DynamoTextBox.ToolTip>
+                    <ToolTip Style="{StaticResource GenericToolTipLight}" Content="{Binding RelativeSource={RelativeSource AncestorType=TextBox}, Path=Text}"/>
+                </nodes1:DynamoTextBox.ToolTip>
+            </nodes1:DynamoTextBox>
 
             <Slider
                 Name="slider"
