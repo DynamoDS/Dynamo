@@ -86,9 +86,7 @@ namespace Dynamo.UI.Controls
             catch(System.Windows.Markup.XamlParseException e)
             {
                 // See https://docs.microsoft.com/en-us/dotnet/api/system.windows.markup.xamlparseexception?view=windowsdesktop-6.0#remarks
-                var args = new Core.CrashPromptArgs(e);
-                var ex = new Exception(args.Details);
-                Logging.Analytics.TrackException(ex, false);
+                Logging.Analytics.TrackException(e, false);
             }
             Loaded += PreviewControl_Loaded;
             SizeChanged += UpdateMargin;
