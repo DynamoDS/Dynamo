@@ -11,6 +11,8 @@
         AllowsTransparency="True"
         IsEnabled="True" 
         IsOpen="False"
+        Focusable="True"
+        PreviewKeyDown="Popup_KeyDown"
         d:DesignHeight="{Binding MainWinHeight}" 
         d:DesignWidth="{Binding MainWinWidth}">
     <Popup.Resources>
@@ -72,10 +74,10 @@
             </Polygon.BitmapEffect>
         </Polygon>
 
-        <Grid   x:Name="mainPopupGrid"
-                Width="{Binding Width}"
-                Height="{Binding Height}"
-                MinWidth="480">
+        <Grid  x:Name="mainPopupGrid"
+               Width="{Binding Width}"
+               Height="{Binding Height}"
+               MinWidth="480">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="50"/>
@@ -142,7 +144,8 @@
                             Grid.Column="0"
                             Visibility="{Binding ShowTooltipNavigationControls, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Button x:Name="BackButton"
-                            Margin="0,0,15,0"
+                            Width="25"
+                            Height="25"
                             Grid.Column="0"
                             Click="BackButton_Click"
                             Style="{StaticResource CaretButtonStyle}">Back
@@ -157,7 +160,8 @@
                            Grid.Column="1"/>
 
                     <Button x:Name="NextButton"
-                            Margin="15,0,0,0"
+                            Width="25"
+                            Height="25"
                             Grid.Column="2"
                             Tag="Invert"
                             Click="NextButton_Click"
