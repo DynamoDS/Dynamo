@@ -620,7 +620,7 @@
                             <TextBlock Name="copyrightHolderSubLabel"
                                        Style="{StaticResource SubLabelStyle}"
                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightHolderSubLabel}" />
-                            <TextBox Name="copyrightHolderInput"
+                            <TextBox Name="CopyrightHolder"
                                      Style="{StaticResource InputStyle}"
                                      Text="{Binding CopyrightHolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewCopyrightHolderWatermark}" />
@@ -632,7 +632,7 @@
                             <TextBlock Name="copyrightYearSubLabel"
                                        Style="{StaticResource SubLabelStyle}"
                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightYearSubLabel}" />
-                            <TextBox Name="copyrightYearInput"
+                            <TextBox Name="CopyrightYear"
                                      Margin="0,0,0,-20"
                                      Style="{StaticResource InputStyle}"
                                      Text="{Binding CopyrightYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

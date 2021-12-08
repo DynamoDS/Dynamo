@@ -26,6 +26,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
     {
         #region Private Fields
         private static string WindowNamePopup = "PopupWindow";
+        private static readonly string NextButton = "NextButton";
         private static string calculateLibraryFuncName = "CalculateLibraryItemLocation";
         private static string libraryScrollToBottomFuncName = "LibraryScrollToBottom";
         #endregion
@@ -232,9 +233,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
                                       select automation).FirstOrDefault();
                 GuidesValidationMethods.CalculateLibraryItemLocation(this, automationStep, true, Guide.GuideFlow.CURRENT);
             }
-               
 
             stepUIPopup.IsOpen = true;
+
+            if (this.StepUIPopup is PopupWindow popupWindow)
+            {
+                if (Guide.FindChild((popupWindow).mainPopupGrid, NextButton) is Button nextbuttonFound)
+                {
+                    nextbuttonFound.Focus();
+                }
+            }
         }
 
         /// <summary>

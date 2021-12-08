@@ -3022,4 +3022,10 @@ To install the latest version of a package, click Install. \n
   <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
     <value>Node Library</value>
   </data>
+  <data name="NodeTooltipRenamed" xml:space="preserve">
+    <value>Renamed from {0}</value>
+  </data>
+  <data name="WorkspaceTabTooltipHeaderUnsaved" xml:space="preserve">
+    <value>Unsaved</value>
+  </data>
 </root>

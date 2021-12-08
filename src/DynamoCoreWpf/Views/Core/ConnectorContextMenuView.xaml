@@ -23,6 +23,7 @@
             <ContextMenu Name="MainContextMenu"
                          Style="{StaticResource ContextMenuStyle}"
                          Background="#666666"
+                         Width="170"
                          MouseLeave="OnMouseLeaveContextMenu"
                          ContextMenuClosing="OnContextMenuClosing">
                 <MenuItem x:Name="BreakItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnection}" 
@@ -31,7 +32,7 @@
                           Command="{Binding SelectConnectedSurrogateCommand}"/>
                     <MenuItem x:Name="HideItem" Command="{Binding HideConnectorSurrogateCommand}">
                         <MenuItem.Style>
-                            <Style TargetType="MenuItem">
+                            <Style TargetType="MenuItem" BasedOn="{StaticResource ContextMenuItemStyle}">
                                 <Setter Property="IsChecked" Value="False"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsCollapsed}" Value="False">
