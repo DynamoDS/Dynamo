@@ -233,13 +233,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
                                       select automation).FirstOrDefault();
                 GuidesValidationMethods.CalculateLibraryItemLocation(this, automationStep, true, Guide.GuideFlow.CURRENT);
             }
-               
 
             stepUIPopup.IsOpen = true;
 
-            if (Guide.FindChild((this.StepUIPopup as PopupWindow).mainPopupGrid, NextButton) is Button nextbuttonFound)
+            if (this.StepUIPopup is PopupWindow popupWindow)
             {
-                nextbuttonFound.Focus();
+                if (Guide.FindChild((popupWindow).mainPopupGrid, NextButton) is Button nextbuttonFound)
+                {
+                    nextbuttonFound.Focus();
+                }
             }
         }
 
