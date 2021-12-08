@@ -340,12 +340,7 @@
 							{
 								"HandlerElement": "DeclineTermsOfUseButton",
 								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "CloseButton_Click"
-							},
-							{
-								"HandlerElement": "closeButton",
-								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "CloseButton_Click"
+								"ExecuteMethod": "DeclineButton_Click"
 							}
 						],
 						"UpdatePlacementTarget": true
@@ -390,7 +385,7 @@
 					{
 						"Sequence": 2,
 						"ControlType": "function",
-						"Name": "ExecuteTermsOfServiceFlow",
+						"Name": "ExecuteClosePackagesSearch",
 						"Action": "execute",
 						"AutomaticHandlers": [
 							{
@@ -445,7 +440,7 @@
 					{
 						"Sequence": 2,
 						"ControlType": "function",
-						"Name": "ExecuteTermsOfServiceFlow",
+						"Name": "ExecuteClosePackagesSearch",
 						"Action": "execute",
 						"AutomaticHandlers": [
 							{
@@ -522,7 +517,7 @@
 					{
 						"Sequence": 3,
 						"ControlType": "function",
-						"Name": "ExecuteTermsOfServiceFlow",
+						"Name": "ExecuteClosePackagesSearch",
 						"Action": "execute",
 						"AutomaticHandlers": [
 							{
@@ -571,7 +566,7 @@
 					{
 						"Sequence": 2,
 						"ControlType": "function",
-						"Name": "ExecuteTermsOfServiceFlow",
+						"Name": "ExecuteClosePackagesSearch",
 						"Action": "execute",
 						"AutomaticHandlers": [
 							{
@@ -609,7 +604,7 @@
 					{
 						"Sequence": 2,
 						"ControlType": "function",
-						"Name": "ExecuteTermsOfServiceFlow",
+						"Name": "ExecuteClosePackagesSearch",
 						"Action": "execute",
 						"AutomaticHandlers": [
 							{
@@ -691,6 +686,20 @@
 						"ExecuteCleanUpForward": true,
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					}
 				]
