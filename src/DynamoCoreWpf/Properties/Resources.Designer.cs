@@ -7664,6 +7664,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unsaved.
+        /// </summary>
+        public static string WorkspaceTabTooltipHeaderUnsaved {
+            get {
+                return ResourceManager.GetString("WorkspaceTabTooltipHeaderUnsaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DLL.
         /// </summary>
         public static string ZeroTouchTypeShortString {
