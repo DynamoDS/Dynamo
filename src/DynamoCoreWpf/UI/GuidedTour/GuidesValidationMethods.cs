@@ -32,6 +32,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private static PackageManagerSearchViewModel viewModel;
         private static PackageDownloadHandle packageDownloadHandle;
 
+        private static Action<object, System.ComponentModel.PropertyChangedEventArgs> searchPackagesPropertyChanged;
+        private static bool searchPackagesLoaded;
+
         internal static PackageManagerSearchViewModel packagesViewModel;
 
         //This method will return a bool that describes if the Terms Of Service was accepted or not.
@@ -105,7 +108,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             CurrentExecutingStep = stepInfo;
             Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
-
 
             if (enableFunction)
             {
@@ -234,9 +236,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (packageManagerViewModel == null)
                     return;
 
+                searchPackagesLoaded = false;
                 //Due that we need to search the Autodesk Sample package after the initial search is completed 
                 //we need to subscribe to the PropertyChanged event so we will know when the SearchState property is equal to Results (meaning that got results)
-                packageManagerViewModel.PropertyChanged += PackageManagerViewModel_PropertyChanged;          
+                searchPackagesPropertyChanged = (sender, e) => { PackageManagerViewModel_PropertyChanged(sender, e, uiAutomationData); } ;
+                packageManagerViewModel.PropertyChanged += searchPackagesPropertyChanged.Invoke;
             }
             else
             {
@@ -279,7 +283,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             PackageManagerSearchViewModel packageManagerViewModel = packageManager.DataContext as PackageManagerSearchViewModel;
             if (packageManagerViewModel == null)
                 return;
-            packageManagerViewModel.PropertyChanged -= PackageManagerViewModel_PropertyChanged;
+            packageManagerViewModel.PropertyChanged -= searchPackagesPropertyChanged.Invoke;
             packageManager.Close();
         }
 
@@ -288,7 +292,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="sender">PackageManagerSearchViewModel</param>
         /// <param name="e">PropertyChanged</param>
-        private static void PackageManagerViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private static void PackageManagerViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e, StepUIAutomation uiAutomationData)
         {
             PackageManagerSearchViewModel packageManagerViewModel = sender as PackageManagerSearchViewModel;
             if (packageManagerViewModel == null) return;
@@ -300,9 +304,24 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     //Put the name of the Package to be searched in the SearchTextBox
                     packageManagerViewModel.SearchText = AutodeskSamplePackage;
 
+                    searchPackagesLoaded = true;
+
+                    EnableNextButton(null, uiAutomationData, true, GuideFlow.FORWARD);
+
                     //Unsubscribe from the PropertyChanged event otherwise it will enter everytime the SearchTextBox is updated
-                    packageManagerViewModel.PropertyChanged -= PackageManagerViewModel_PropertyChanged;
+                    packageManagerViewModel.PropertyChanged -= searchPackagesPropertyChanged.Invoke;
+
                 }
+            }
+        }
+
+        internal static void EnableNextButton(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            if (searchPackagesLoaded)
+            {
+                var nextButton = Guide.FindChild((CurrentExecutingStep.StepUIPopup as PopupWindow).mainPopupGrid, uiAutomationData.ElementName) as Button;
+                if(nextButton != null)
+                    nextButton.IsEnabled = true;
             }
         }
 
