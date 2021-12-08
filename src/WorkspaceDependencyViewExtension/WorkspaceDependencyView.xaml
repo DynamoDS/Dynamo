@@ -90,19 +90,11 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock FontSize="14" Grid.Column="0"
-                   FontWeight="Medium"
-                   Text="{Binding}" />
+                    <TextBlock Grid.Column="0" FontSize="14" FontWeight="Medium" Text="{Binding}" />
                     <Image Grid.Column="1" Margin="10,0,0,0" Width="14" Height="14" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" VerticalAlignment="Center">
-                        <Image.Style>
-                            <Style TargetType="{x:Type Image}">
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="ToolTip" Value="{x:Static w:Resources.PackagesToolTip}" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Image.Style>
+                        <Image.ToolTip>
+                            <ToolTip Content="{x:Static w:Resources.PackagesToolTip}"/>
+                        </Image.ToolTip>
                     </Image>
                 </Grid>
             </DataTemplate>
@@ -112,19 +104,11 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock FontSize="14" Grid.Column="0"
-                   FontWeight="Medium"
-                   Text="{Binding}" />
+                    <TextBlock Grid.Column="0" FontSize="14" FontWeight="Medium" Text="{Binding}" />
                     <Image Grid.Column="1" Margin="10,0,0,0" Width="14" Height="14" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" VerticalAlignment="Center">
-                        <Image.Style>
-                            <Style TargetType="{x:Type Image}">
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="ToolTip" Value="{x:Static w:Resources.LocalDefinitionsToolTip}" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Image.Style>
+                        <Image.ToolTip>
+                            <ToolTip Content="{x:Static w:Resources.LocalDefinitionsToolTip}"/>
+                        </Image.ToolTip>
                     </Image>
                 </Grid>
             </DataTemplate>
@@ -134,19 +118,11 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock FontSize="14" Grid.Column="0"
-                   FontWeight="Medium"
-                   Text="{Binding}" />
+                    <TextBlock Grid.Column="0" FontSize="14" FontWeight="Medium" Text="{Binding}" />
                     <Image Grid.Column="1" Margin="10,0,0,0" Width="14" Height="14" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" VerticalAlignment="Center">
-                        <Image.Style>
-                            <Style TargetType="{x:Type Image}">
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="ToolTip" Value="{x:Static w:Resources.ExternalFilesToolTip}" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Image.Style>
+                        <Image.ToolTip>
+                            <ToolTip Content="{x:Static w:Resources.ExternalFilesToolTip}"/>
+                        </Image.ToolTip>
                     </Image>
                 </Grid>
             </DataTemplate>
