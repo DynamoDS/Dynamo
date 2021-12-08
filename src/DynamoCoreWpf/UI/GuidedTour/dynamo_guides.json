@@ -717,7 +717,7 @@
 						"HighlightColor": "#EF9362",
 						"UIElementTypeString": "WebBrowser",
 						"UIElementGridContainer": "sidebarGrid",
-						"WindowElementNameString": "Autodesk Sample",
+						"WindowElementNameString": "SampleLibraryUI",
 						"WindowName": "LibraryView"
 					}
 				},
@@ -729,7 +729,7 @@
 						"Name": "SubscribeNextButtonClickEvent",
 						"Action": "execute",
 						"JSFunctionName": "collapseExpandPackage",
-						"JSParameters": [ "Autodesk Sample" ],
+						"JSParameters": [ "SampleLibraryUI" ],
 						"AutomaticHandlers": [
 							{
 								"HandlerElement": "NextButton",
@@ -751,7 +751,7 @@
 						"ControlType": "JSFunction",
 						"Name": "InvokeJSFunction",
 						"JSFunctionName": "subscribePackageClickedEvent",
-						"JSParameters": [ "Autodesk Sample" ],
+						"JSParameters": [ "SampleLibraryUI" ],
 						"Action": "execute"
 					},
 					{
@@ -759,7 +759,7 @@
 						"ControlType": "JSFunction",
 						"Name": "InvokeJSFunction",
 						"JSFunctionName": "getDocumentClientRect",
-						"JSParameters": [ "Autodesk Sample" ],
+						"JSParameters": [ "SampleLibraryUI" ],
 						"Action": "execute"
 					},
 					{
@@ -775,7 +775,7 @@
 						"ControlType": "function",
 						"Name": "CalculateLibraryItemLocation",
 						"JSFunctionName": "getDocumentClientRect",
-						"JSParameters": [ "Autodesk Sample" ],
+						"JSParameters": [ "SampleLibraryUI" ],
 						"Action": "execute"
 					}
 				]
