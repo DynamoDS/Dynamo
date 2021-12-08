@@ -50,128 +50,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.Resources>
-            <!--  Local style for ContextMenu MenuItems, used for the Filter/Sort buttons  -->
-            <Style TargetType="{x:Type MenuItem}">
-                <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
-                <Setter Property="Height" Value="30" />
-                <Setter Property="Padding" Value="25,0,0,0" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type MenuItem}">
-                            <DockPanel x:Name="dockPanel"
-                                       HorizontalAlignment="Stretch"
-                                       Background="Transparent"
-                                       SnapsToDevicePixels="true">
-                                <Label x:Name="checkBox"
-                                       Margin="3,0,-26,0"
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Center"
-                                       HorizontalContentAlignment="Center"
-                                       VerticalContentAlignment="Center"
-                                       Content="✓"
-                                       DockPanel.Dock="Left"
-                                       FontFamily="{StaticResource ArtifaktElementBold}"
-                                       FontSize="10px"
-                                       FontWeight="Bold"
-                                       Foreground="#0696D7"
-                                       Visibility="Collapsed" />
-                                <ContentPresenter x:Name="ContentPresenter"
-                                                  Margin="{TemplateBinding Padding}"
-                                                  VerticalAlignment="Center"
-                                                  ContentSource="Header"
-                                                  DockPanel.Dock="Left"
-                                                  RecognizesAccessKey="True"
-                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                  TextBlock.Foreground="{StaticResource PrimaryCharcoal100Brush}" />
-                                <Label x:Name="subMenuArrow"
-                                       Margin="0,0,15,7"
-                                       Padding="0"
-                                       VerticalAlignment="Center"
-                                       Content="&gt;"
-                                       DockPanel.Dock="Right"
-                                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                                       FontSize="13px"
-                                       Foreground="{StaticResource Blue300Brush}">
-                                    <Label.RenderTransform>
-                                        <ScaleTransform ScaleX="1" ScaleY="1.5" />
-                                    </Label.RenderTransform>
-                                    <Label.Style>
-                                        <Style TargetType="{x:Type Label}">
-                                            <Setter Property="Visibility" Value="Hidden" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Label.Style>
-                                </Label>
-                                <Popup x:Name="PART_Popup"
-                                       AllowsTransparency="true"
-                                       Focusable="false"
-                                       HorizontalOffset="0"
-                                       IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                       Placement="Left"
-                                       VerticalOffset="-2">
-                                    <Border Background="{TemplateBinding Background}"
-                                            BorderBrush="Transparent"
-                                            BorderThickness="0">
-                                        <ScrollViewer x:Name="SubMenuScrollViewer"
-                                                      CanContentScroll="true"
-                                                      Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
-                                                                                                    TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                            <Grid RenderOptions.ClearTypeHint="Enabled">
-                                                <ItemsPresenter x:Name="ItemsPresenter"
-                                                                Margin="2"
-                                                                Grid.IsSharedSizeScope="true"
-                                                                KeyboardNavigation.DirectionalNavigation="Cycle"
-                                                                KeyboardNavigation.TabNavigation="Cycle"
-                                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                            </Grid>
-                                        </ScrollViewer>
-                                    </Border>
-                                </Popup>
-                            </DockPanel>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
-                                    <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="False">
-                                    <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource DarkerGreyBrush}" />
-                                </Trigger>
-                                <Trigger Property="IsChecked" Value="True">
-                                    <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
-                                    <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="1.0" />
-                                </Trigger>
-                                <Trigger Property="IsChecked" Value="False">
-                                    <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.7" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <!--  Local style for ContextMenu Separators, used for the Filter/Sort buttons  -->
-            <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
-                <Setter Property="OverridesDefaultStyle" Value="true" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Separator}">
-                            <Grid>
-                                <Border Height="1"
-                                        Margin="0,8,0,8"
-                                        Background="#4D4D4D" />
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
+           
             <!--  Local style for ListBoxItems, used in the package search results  -->
             <Style TargetType="{x:Type ListBoxItem}">
                 <Setter Property="Background" Value="Transparent" />
@@ -297,7 +176,7 @@
                     <!--  When clicked, the sort button displays a ContextMenu of options to the user  -->
                     <Button.ContextMenu>
                         <ContextMenu Width="180"
-                                     Background="{StaticResource DarkerGreyBrush}"
+                                     Background="{StaticResource NodeContextMenuBackground}"
                                      Style="{StaticResource ContextMenuStyle}">
 
                             <!--  Sub-Title 'SORT BY'  -->
@@ -408,12 +287,14 @@
                     <!--  When clicked, the filter button displays a ContextMenu of options to the user  -->
                     <Button.ContextMenu>
                         <ContextMenu Name="HostFilter"
+                                     Background="{StaticResource NodeContextMenuBackground}"
                                      DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
                                      DisplayMemberPath="FilterName"
+                                     Width="180"
                                      ItemsSource="{Binding HostFilter}"
                                      Style="{StaticResource ContextMenuStyle}">
                             <ContextMenu.ItemContainerStyle>
-                                <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="{x:Type MenuItem}">
+                                <Style BasedOn="{StaticResource ContextMenuItemStyle}" TargetType="{x:Type MenuItem}">
                                     <Setter Property="IsCheckable" Value="True" />
                                     <Setter Property="Command" Value="{Binding FilterCommand}" />
                                     <Setter Property="CommandParameter" Value="{Binding FilterName}" />

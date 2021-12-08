@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Threading;
 using CoreNodeModels;
 using Dynamo.Configuration;
@@ -39,6 +40,8 @@ namespace CoreNodeModelsWpf.Nodes
             this.syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
 
             var watchTree = new WatchTree();
+            watchTree.BorderThickness = new Thickness(1, 1, 1, 1);
+            watchTree.BorderBrush = new SolidColorBrush(Color.FromRgb(161, 161, 161));
 
             watchTree.SetWatchNodeProperties();
 

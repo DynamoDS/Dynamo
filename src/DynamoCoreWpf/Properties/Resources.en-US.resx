@@ -3013,4 +3013,13 @@ To install the latest version of a package, click Install. \n
   <data name="UninstallLoadedPackage" xml:space="preserve">
     <value>Uninstall loaded package</value>
   </data>
+  <data name="PackagesGuidePackagesNodeTitle" xml:space="preserve">
+    <value>Use package nodes</value>
+  </data>
+  <data name="NodeTooltipRenamed" xml:space="preserve">
+    <value>Renamed from {0}</value>
+  </data>
+  <data name="WorkspaceTabTooltipHeaderUnsaved" xml:space="preserve">
+    <value>Unsaved</value>
+  </data>
 </root>
