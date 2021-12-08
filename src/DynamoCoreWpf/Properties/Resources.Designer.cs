@@ -4252,6 +4252,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Renamed from {0}.
+        /// </summary>
+        public static string NodeTooltipRenamed {
+            get {
+                return ResourceManager.GetString("NodeTooltipRenamed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was an error while finding node view customizations for {0}. Contact the author of this assembly for more information..
         /// </summary>
         public static string NodeViewCustomizationFindErrorMessage {
@@ -7651,6 +7660,15 @@ namespace Dynamo.Wpf.Properties {
         public static string WorkspaceTabSavingUnnecessary {
             get {
                 return ResourceManager.GetString("WorkspaceTabSavingUnnecessary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsaved.
+        /// </summary>
+        public static string WorkspaceTabTooltipHeaderUnsaved {
+            get {
+                return ResourceManager.GetString("WorkspaceTabTooltipHeaderUnsaved", resourceCulture);
             }
         }
         

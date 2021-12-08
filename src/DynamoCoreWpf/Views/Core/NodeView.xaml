@@ -2,11 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
-             xmlns:controls="clr-namespace:Dynamo.Views"
-             xmlns:controls1="clr-namespace:Dynamo.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             xmlns:ui="clr-namespace:Dynamo.UI"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -354,7 +352,7 @@
                                        FontFamily="{StaticResource ArtifaktElementRegular}"
                                        FontSize="14"
                                        FontWeight="Medium"
-                                       Text="{Binding Path=OriginalName, UpdateSourceTrigger=PropertyChanged, StringFormat='Renamed from {0}'}"
+                                       Text="{Binding Path=OriginalName, UpdateSourceTrigger=PropertyChanged, StringFormat={x:Static p:Resources.NodeTooltipRenamed}}"
                                        TextAlignment="Center"
                                        TextWrapping="Wrap" />
                         </Grid>
