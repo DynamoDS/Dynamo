@@ -45,8 +45,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=2.1.8012.24290, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.2.1.8012.24290\lib\net48\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=2.1.8012.31283, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\src\packages\Greg.2.1.8012.31283\lib\net48\Greg.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Diagnostics.Runtime, Version=2.0.4.26801, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
