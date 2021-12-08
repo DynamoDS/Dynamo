@@ -237,10 +237,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             stepUIPopup.IsOpen = true;
 
-            var nextButton = stepUIPopup.FindName(NextButton) as Button;
-            if (nextButton != null) 
+            if (Guide.FindChild((this.StepUIPopup as PopupWindow).mainPopupGrid, NextButton) is Button nextbuttonFound)
             {
-                nextButton.Focus();
+                nextbuttonFound.Focus();
             }
         }
 
