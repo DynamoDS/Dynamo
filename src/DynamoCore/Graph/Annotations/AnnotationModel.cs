@@ -342,6 +342,7 @@ namespace Dynamo.Graph.Annotations
         /// Indicates whether the group contains nodes that are in an info/warning/error state.
         /// This includes the state of any nodes that are in nested groups.
         /// </summary>
+        [JsonIgnore]
         public ElementState GroupState
         {
             get => groupState;
