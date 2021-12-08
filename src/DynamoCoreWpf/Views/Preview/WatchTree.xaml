@@ -284,7 +284,7 @@
 
         <TreeView Name="treeView1"
                   Background="#3C3C3C"
-                  BorderBrush="#DCDCDC"
+                  BorderBrush="{StaticResource PrimaryCharcoal200Brush}"
                   BorderThickness="0,0,0,1"
                   Margin="0,5,0,0"
                   ItemContainerStyle="{StaticResource WatchTreeViewItem}"
@@ -340,7 +340,7 @@
                                    Visibility="{Binding Path=ViewPath, Converter={StaticResource EmptyStringToCollapsedConverter}}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Foreground" Value="#DCDCDC"/>
+                                    <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=Children.Count}" Value="0">
                                             <Setter Property="Foreground" Value="#4D4D4D" />
@@ -352,7 +352,7 @@
                         <TextBlock Width="Auto"
                                    Margin="{Binding Path=IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}"
                                    VerticalAlignment="Center"
-                                   Foreground="#DCDCDC"
+                                   Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                    FontFamily="{StaticResource SourceCodePro}"
                                    Text="{Binding Path=NodeLabel}"
                                    Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
@@ -377,8 +377,8 @@
         <Border Grid.Row="1"
                 HorizontalAlignment="Stretch"
                 BorderBrush="#D3D3D3"
-                CornerRadius="0,0,3,3"
-                BorderThickness="0,0,0,0">
+                CornerRadius="0,0,2,2"
+                BorderThickness="0">
 
             <Grid Name="ListLevelsDisplay" Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -454,7 +454,7 @@
                 <Thumb Name="resizeThumb"
                        Grid.Row="1"
                        Grid.Column="2"
-                       Margin="3,3,3,3"
+                       Margin="3"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Center"
                        Cursor="SizeNWSE"
