@@ -3016,4 +3016,10 @@ To install the latest version of a package, click Install. \n
   <data name="PackagesGuidePackagesNodeTitle" xml:space="preserve">
     <value>Use package nodes</value>
   </data>
+  <data name="PublishPackageViewFilePath" xml:space="preserve">
+    <value>File Path</value>
+  </data>
+  <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
+    <value>Node Library</value>
+  </data>
 </root>
