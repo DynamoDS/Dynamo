@@ -73,6 +73,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             GuideFlowEvents.GuidedTourNextStep -= GuideFlowEvents_GuidedTourNextStep;
             GuideFlowEvents.GuidedTourPrevStep -= GuideFlowEvents_GuidedTourPrevStep;
+            GuideFlowEvents.UpdatePopupLocation -= GuideFlowEvents_UpdatePopupLocation;
         }
 
         /// <summary>
@@ -82,6 +83,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             GuideFlowEvents.GuidedTourNextStep += GuideFlowEvents_GuidedTourNextStep;
             GuideFlowEvents.GuidedTourPrevStep += GuideFlowEvents_GuidedTourPrevStep;
+            GuideFlowEvents.UpdatePopupLocation += GuideFlowEvents_UpdatePopupLocation;
+        }
+
+        /// <summary>
+        /// This event handler will be executed when the GuideFlowEvents.UpdatePopupLocation event is raised
+        /// </summary>
+        private void GuideFlowEvents_UpdatePopupLocation()
+        {
+            CurrentStep.UpdateLibraryPopupsLocation();
         }
 
         /// <summary>

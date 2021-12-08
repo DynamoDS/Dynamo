@@ -128,6 +128,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal void UpdateGuideStepsLocation()
         {
+            //If there is no guide being executed then we shouldn't do anything
+            if (!GuideFlowEvents.IsAnyGuideActive) return;
+
             if (currentGuide != null)
             {
                 currentGuide.CurrentStep.UpdateLocation();
