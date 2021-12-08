@@ -20,7 +20,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -69,7 +69,7 @@
               VerticalAlignment="Top"
               Background="Transparent">
             <Grid.ContextMenu>
-                <ContextMenu>
+                <ContextMenu Style="{StaticResource ContextMenuStyle}">
                     <MenuItem Header="{x:Static p:Resources.ContextMenuCopy}" Click="OnCopyToClipboardClick"/>
                 </ContextMenu>
             </Grid.ContextMenu>
