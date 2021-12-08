@@ -704,12 +704,6 @@
                                             Header="Name"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
-                        <DataGridTextColumn Width="*"
-                                            MinWidth="66"
-                                            Binding="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"
-                                            Header="File Path"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                            IsReadOnly="True" />
                         <DataGridTemplateColumn MinWidth="90"
                                                 Header="Target Path"
                                                 HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
@@ -737,9 +731,9 @@
                                             </Button.Template>
                                         </Button>
                                         <TextBlock Margin="0,0,0,0"
-                                                   Text="{Binding Path=TargetPath}"
+                                                   Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"
                                                    TextTrimming="CharacterEllipsis"
-                                                   ToolTip="{Binding TargetPath}" />
+                                                   ToolTip="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}" />
                                     </DockPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
