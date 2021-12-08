@@ -27,10 +27,11 @@
     <Compile Remove="LexUtils.cs" />
     <Compile Remove="Parser/AssociativeGraph.cs" />
   </ItemGroup>
-  <Target Name="AfterBuild">
+  <Target Name="CopyDSFiles" AfterTargets="Build">
     <ItemGroup>
       <ExtendedLibraries Include="$(ProjectDir)ExtendedLibraries\*.ds" />
     </ItemGroup>
-    <Copy SourceFiles="@(ExtendedLibraries)" DestinationFolder="$(OutputPath)" />
+      <Message Importance="high" Text="Copying DS files to $(OutputPath)"/>
+      <Copy SourceFiles="@(ExtendedLibraries)" DestinationFolder="$(OutputPath)" />
   </Target>
 </Project>
