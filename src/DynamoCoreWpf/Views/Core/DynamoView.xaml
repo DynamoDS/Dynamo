@@ -298,9 +298,12 @@
                                   Name="ToggleIsAnalyticsReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialogTooltip}"
-                                  Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
-                        <Separator />
+                                  Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
+                            <MenuItem.ToolTip>
+                                <ToolTip Content="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialogTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            </MenuItem.ToolTip>
+                        </MenuItem>
+                            <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuPreferences}"
                                   Click="OnPreferencesWindowClick"
                                   Name="preferencesOption"/>
@@ -561,7 +564,7 @@
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
                               Name="HelpMenu"
                               Focusable="False">
-                        <MenuItem Header="{x:Static p:Resources.StartPageWhatsNew}"
+                        <MenuItem Header="{x:Static p:Resources.GettingStartedMenuItem}"
                                   Name="WhatsNew"
                                   Command="{Binding ShowGalleryCommand}">
                         </MenuItem>
@@ -757,8 +760,8 @@
                                                         <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
                                                     <ScrollViewer Grid.Column="0"
-                                                                  Margin="0,0,0,0"
-                                                                  HorizontalScrollBarVisibility="Hidden"
+                                                                  Margin="0,0,150,0"
+                                                                  HorizontalScrollBarVisibility="Auto"
                                                                   VerticalScrollBarVisibility="Disabled">
                                                         <TabPanel x:Name="HeaderPanel"
                                                                   IsItemsHost="True"
@@ -1025,6 +1028,8 @@
                         </Style>
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="MaxWidth"
+                                    Value="{Binding Source={x:Static configuration:Configurations.TabDefaultWidth}}" />
+                            <Setter Property="MinWidth"
                                     Value="{Binding Source={x:Static configuration:Configurations.TabDefaultWidth}}" />
                             <Setter Property="Width">
                                 <Setter.Value>

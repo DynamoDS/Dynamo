@@ -3088,7 +3088,7 @@ namespace Dynamo.Controls
             {
                 return "Transparent";
             }
-            return "#aaaaaa";
+            return "#DCDCDC";
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

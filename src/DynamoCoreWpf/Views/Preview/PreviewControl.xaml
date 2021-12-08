@@ -73,8 +73,9 @@
                     <MenuItem Header="{x:Static p:Resources.ContextMenuCopy}" Click="OnCopyToClipboardClick"/>
                 </ContextMenu>
             </Grid.ContextMenu>
-            <Border Background="White"
-                    BorderThickness="1"
+            <Border Background="{StaticResource DarkerGreyBrush}"
+                    CornerRadius="2"
+                    BorderThickness="0"
                     BorderBrush="{StaticResource BubblePreviewBorderColor}" />
             <!--bubbleTools is a pin icon which expands large preview bubble on mouse hover -->
             <Border Name="bubbleTools"

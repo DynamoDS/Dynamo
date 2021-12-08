@@ -84,8 +84,10 @@
             <Button Content="{x:Static p:Resources.PythonScriptEditorRunButton}"
                     Style="{StaticResource IconTextButton}"
                     Name="RunPythonScriptButton"
-                    Click="OnRunClicked"
-                    ToolTip="{x:Static p:Resources.PythonScriptEditorRunButtonTooltip}">
+                    Click="OnRunClicked">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.PythonScriptEditorRunButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                </Button.ToolTip>
                 <Button.Resources>
                     <Polygon x:Key="Shape"
                              Points="5,0 12,7 5,14 5,0"
@@ -101,15 +103,20 @@
                       SelectionChanged="OnEngineChanged"
                       Style="{StaticResource DropDown}"
                       Name="EngineSelectorComboBox"
-                      Visibility="Collapsed" 
-                      ToolTip="{x:Static p:Resources.PythonScriptEditorEngineDropdownTooltip}"/>
+                      Visibility="Collapsed">
+                <ComboBox.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.PythonScriptEditorEngineDropdownTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                </ComboBox.ToolTip>
+            </ComboBox>
             <Button Style="{StaticResource IconButton}"
                     Name="MigrationAssistantBtn"
                     Click="OnMigrationAssistantClicked"
-                    ToolTip="{x:Static p:Resources.PythonScriptEditorMigrationAssistantButtonTooltip}"
                     ToolTipService.ShowOnDisabled="True"
                     ToolTipService.IsEnabled="True"
                     IsEnabled="{Binding SelectedItem, ElementName=EngineSelectorComboBox, Converter={StaticResource SelectedPythonEngineToMigrationConverter}}">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.PythonScriptEditorMigrationAssistantButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                </Button.ToolTip>
                 <Button.Resources>
                     <Image x:Key="Shape"
                            Width="44"
@@ -118,8 +125,10 @@
             </Button>
             <Button Style="{StaticResource IconButton}"
                     Name="MoreInfoButton"
-                    Click="OnMoreInfoClicked"
-                    ToolTip="{x:Static p:Resources.PythonScriptEditorMoreInfoButtonTooltip}">
+                    Click="OnMoreInfoClicked">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.PythonScriptEditorMoreInfoButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                </Button.ToolTip>
                 <Button.Resources>
                     <fa:ImageAwesome x:Key="Shape"
                                      Style="{StaticResource ImageAwesomeIcons}"
@@ -132,8 +141,10 @@
                     Grid.Row="1">
             <Button Style="{StaticResource IconButton}"
                     Name="SaveScriptChangesButton"
-                    Click="OnSaveClicked"
-                    ToolTip="{x:Static p:Resources.PythonScriptEditorSaveChangesButtonTooltip}">
+                    Click="OnSaveClicked">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.PythonScriptEditorSaveChangesButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                </Button.ToolTip>
                 <Button.Resources>
                     <fa:ImageAwesome x:Key="Shape"
                                      Style="{StaticResource ImageAwesomeIcons}"
@@ -142,8 +153,10 @@
             </Button>
             <Button Style="{StaticResource IconButton}"
                     Name="RevertScriptChangesButton"
-                    Click="OnRevertClicked"
-                    ToolTip="{x:Static p:Resources.PythonScriptEditorRevertButtonTooltip}">
+                    Click="OnRevertClicked">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.PythonScriptEditorRevertButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                </Button.ToolTip>
                 <Button.Resources>
                     <fa:ImageAwesome x:Key="Shape"
                                      Style="{StaticResource ImageAwesomeIcons}"

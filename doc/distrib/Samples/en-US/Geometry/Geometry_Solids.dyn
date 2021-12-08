@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Dynamo Geometry Sample",
   "Name": "Geometry_Solids",
   "ElementResolver": {
     "ResolutionMap": {
@@ -27,7 +27,7 @@
         {
           "Id": "58b983a89c044bb08eb3ba927a841793",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -36,7 +36,7 @@
         {
           "Id": "ef51ce2c7c354d55aac70e544d78327d",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -45,7 +45,7 @@
         {
           "Id": "99bb94539d5b4abfaadf02a304b5bfb7",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -56,7 +56,7 @@
         {
           "Id": "96e34ce33ad44e4b830708b638ae1027",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -75,7 +75,7 @@
         {
           "Id": "679f9df719004adc911199024cc13a79",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -84,7 +84,7 @@
         {
           "Id": "2bec1e057c9a4b9bbd6c2b19f2565c1b",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -93,7 +93,7 @@
         {
           "Id": "1b65e460e6f24da6b55afd2a7109c2f3",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -104,7 +104,7 @@
         {
           "Id": "3c4614b939c144cebe60b73c3b44de92",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -123,7 +123,7 @@
         {
           "Id": "ec3accb46b9f4dcdb921692d6873d179",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -132,7 +132,7 @@
         {
           "Id": "4550726cee3d4ceb8a528b9ea596c288",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -141,7 +141,7 @@
         {
           "Id": "95f0ab827cd24c23ae0abffb1d0b9fcd",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -152,7 +152,7 @@
         {
           "Id": "9734c5089fb641cc8507abb30c60812d",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -213,7 +213,7 @@
         {
           "Id": "d54d979467b645d0ba3ab946d3317370",
           "Name": "firstPoint",
-          "Description": "First point along the curve\n\nPoint",
+          "Description": "1st point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -222,7 +222,7 @@
         {
           "Id": "9fef95d9168342d585c0c4c0a6e31b63",
           "Name": "secondPoint",
-          "Description": "Second point along the curve\n\nPoint",
+          "Description": "2nd point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -231,7 +231,7 @@
         {
           "Id": "3172b8d3f9da4a4b843a36f9011fd45b",
           "Name": "thirdPoint",
-          "Description": "Third point along the curve\n\nPoint",
+          "Description": "3rd point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -242,7 +242,7 @@
         {
           "Id": "0deefd422c544aaa943911e7abbeb667",
           "Name": "Arc",
-          "Description": "An Arc",
+          "Description": "Arc created from three points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -300,7 +300,7 @@
         {
           "Id": "6b1d0e8f2dce4ceebec5a12ad6efccdb",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -309,7 +309,7 @@
         {
           "Id": "b710b9eb704c4df581f6001c16337152",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -318,7 +318,7 @@
         {
           "Id": "0c2c044eed5c48a79261bb4b84e351aa",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -329,7 +329,7 @@
         {
           "Id": "dd69dbba8ba542729bfe6eefa9950009",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -369,7 +369,7 @@
         {
           "Id": "991b18f91b2641c5adc1fe7f3d043c8b",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -378,7 +378,7 @@
         {
           "Id": "fa5543bd6ce24c8caa6e4d625de3d2e0",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -387,7 +387,7 @@
         {
           "Id": "b5f7009001d5454683e515697b03a4d1",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -398,7 +398,7 @@
         {
           "Id": "191c038e864041659636fefc97279963",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -438,7 +438,7 @@
         {
           "Id": "1e31cd8bd7914969a7bbdd7348453b11",
           "Name": "firstPoint",
-          "Description": "First point along the curve\n\nPoint",
+          "Description": "1st point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -447,7 +447,7 @@
         {
           "Id": "6e4d6e1fee9d40089801be861a1be2f7",
           "Name": "secondPoint",
-          "Description": "Second point along the curve\n\nPoint",
+          "Description": "2nd point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -456,7 +456,7 @@
         {
           "Id": "8548057b05624aa9a87940431b65bd58",
           "Name": "thirdPoint",
-          "Description": "Third point along the curve\n\nPoint",
+          "Description": "3rd point of arc\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -467,7 +467,7 @@
         {
           "Id": "1be2c20381f54da49d1ec7e66d711c02",
           "Name": "Arc",
-          "Description": "An Arc",
+          "Description": "Arc created from three points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -486,7 +486,7 @@
         {
           "Id": "50b0d0b153a847bc91795b5975fc9892",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -495,7 +495,7 @@
         {
           "Id": "a21f3fef08304bd183e5d4089d5db781",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -504,7 +504,7 @@
         {
           "Id": "47d7ae08cdad4bc2bfb19352666ccf17",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -515,7 +515,7 @@
         {
           "Id": "7733ea44eda04c13bc36b1bedc2ee47d",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -597,7 +597,7 @@
         {
           "Id": "c3615c063b4146a38e40df3a0c5bb905",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -606,7 +606,7 @@
         {
           "Id": "3fefc05cd8a44fbf8ea656eb0d3da87c",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -615,7 +615,7 @@
         {
           "Id": "406f6f96cd2842bc939390b7424c1e32",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -626,7 +626,7 @@
         {
           "Id": "c7e51c9ed2a145bbb32cece969052ea9",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -664,7 +664,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "The total volume of the Solid\n\nSolid.Volume: double"
+      "Description": "Returns the total volume of the Solid\n\nSolid.Volume: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -705,7 +705,7 @@
         {
           "Id": "e75c05679c924cc9a6c552bff87251ec",
           "Name": "startPoint",
-          "Description": "Point",
+          "Description": "Line start point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -714,7 +714,7 @@
         {
           "Id": "cd460704eafc4a8d89a5f1b64c3b87a0",
           "Name": "endPoint",
-          "Description": "Point",
+          "Description": "Line end point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -725,7 +725,7 @@
         {
           "Id": "199ada7b8663427da4aaebef7b76bdb5",
           "Name": "Line",
-          "Description": "Line",
+          "Description": "Line from start and end point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -764,7 +764,7 @@
         {
           "Id": "ef961de359a14949ad8b0f1e24307eaf",
           "Name": "PolyCurve",
-          "Description": "PolyCurve",
+          "Description": "Polycurve created by joined curves",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -822,7 +822,7 @@
         {
           "Id": "160a95dbbff445cc9d96169440e3d17c",
           "Name": "startPoint",
-          "Description": "Point",
+          "Description": "Line start point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -831,7 +831,7 @@
         {
           "Id": "848100afa963406f8167339296a42322",
           "Name": "endPoint",
-          "Description": "Point",
+          "Description": "Line end point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -842,7 +842,7 @@
         {
           "Id": "00a1cbe17b5f40758fea4a9ab5bba1ff",
           "Name": "Line",
-          "Description": "Line",
+          "Description": "Line from start and end point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -920,7 +920,7 @@
         {
           "Id": "dbaa468e05ae4b64b807f9efd176b5e8",
           "Name": "PolyCurve",
-          "Description": "PolyCurve",
+          "Description": "Polycurve created by joined curves",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1026,7 +1026,7 @@
         {
           "Id": "534e280029984d2280a8b122b9bca3ed",
           "Name": "points",
-          "Description": "Point[]",
+          "Description": "Points for nurbs curve\n\nPoint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1037,7 +1037,7 @@
         {
           "Id": "1c8eb0e03cdc4f64874afd365a53e9a3",
           "Name": "NurbsCurve",
-          "Description": "NurbsCurve",
+          "Description": "Nurbscurve created from points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1250,7 +1250,7 @@
         {
           "Id": "19673ebbaec4433eb48549d4a02876bc",
           "Name": "origin",
-          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disabled)",
+          "Description": "Origin point of plane\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1259,7 +1259,7 @@
         {
           "Id": "873cde54e7e84db2adf559f3590a23fa",
           "Name": "normal",
-          "Description": "Vector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1) (disabled)",
+          "Description": "Normal direction vector of plane\n\nVector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1) (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1270,7 +1270,7 @@
         {
           "Id": "a9ffbe24a2214ad0b208398f68651c7f",
           "Name": "Plane",
-          "Description": "Plane",
+          "Description": "Plane created by origin and normal",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1415,252 +1415,318 @@
     {
       "Start": "96e34ce33ad44e4b830708b638ae1027",
       "End": "d54d979467b645d0ba3ab946d3317370",
-      "Id": "e72ef72593c8469c92f57713cb120f32"
+      "Id": "e72ef72593c8469c92f57713cb120f32",
+      "IsHidden": "False"
     },
     {
       "Start": "96e34ce33ad44e4b830708b638ae1027",
       "End": "e75c05679c924cc9a6c552bff87251ec",
-      "Id": "53c0f7ca7f4f423baa7118de9deedec0"
+      "Id": "53c0f7ca7f4f423baa7118de9deedec0",
+      "IsHidden": "False"
     },
     {
       "Start": "96e34ce33ad44e4b830708b638ae1027",
       "End": "9ca8b6b2844b4c888d7e958262f1a5fa",
-      "Id": "6cf1a374250e4c679a1a020b8215c510"
+      "Id": "6cf1a374250e4c679a1a020b8215c510",
+      "IsHidden": "False"
     },
     {
       "Start": "3c4614b939c144cebe60b73c3b44de92",
       "End": "3172b8d3f9da4a4b843a36f9011fd45b",
-      "Id": "fb854cd55d5c4c42ac328855e7b770d5"
+      "Id": "fb854cd55d5c4c42ac328855e7b770d5",
+      "IsHidden": "False"
     },
     {
       "Start": "3c4614b939c144cebe60b73c3b44de92",
       "End": "cd460704eafc4a8d89a5f1b64c3b87a0",
-      "Id": "4d45d33fc8f44cd5bdedec9b30d41630"
+      "Id": "4d45d33fc8f44cd5bdedec9b30d41630",
+      "IsHidden": "False"
     },
     {
       "Start": "9734c5089fb641cc8507abb30c60812d",
       "End": "9fef95d9168342d585c0c4c0a6e31b63",
-      "Id": "39106d19ec504836b6a88910f583c8a3"
+      "Id": "39106d19ec504836b6a88910f583c8a3",
+      "IsHidden": "False"
     },
     {
       "Start": "90b54361a73e45d6b3acb158c0bebce2",
       "End": "679f9df719004adc911199024cc13a79",
-      "Id": "998a4d2ba50b482d87c3d5b0c523e536"
+      "Id": "998a4d2ba50b482d87c3d5b0c523e536",
+      "IsHidden": "False"
     },
     {
       "Start": "90b54361a73e45d6b3acb158c0bebce2",
       "End": "b710b9eb704c4df581f6001c16337152",
-      "Id": "f5bb46928b3845fbb410bb6d25342398"
+      "Id": "f5bb46928b3845fbb410bb6d25342398",
+      "IsHidden": "False"
     },
     {
       "Start": "75ecbaf30a2a43e1b01a919ed36be2bd",
       "End": "95f0ab827cd24c23ae0abffb1d0b9fcd",
-      "Id": "a230cb7b2c194d10b5bfb3e04d44b8ae"
+      "Id": "a230cb7b2c194d10b5bfb3e04d44b8ae",
+      "IsHidden": "False"
     },
     {
       "Start": "0deefd422c544aaa943911e7abbeb667",
       "End": "aadcac4797c749d481417533330edb83",
-      "Id": "611705c4762d49878859546ffef933dc"
+      "Id": "611705c4762d49878859546ffef933dc",
+      "IsHidden": "False"
     },
     {
       "Start": "4ce0dac5e2ca42d4932c9313a386b2df",
       "End": "6258a9b4ac64458c95f4421ecd3a541b",
-      "Id": "6552da6ecdfd46bfa0cddf7d2e2797f9"
+      "Id": "6552da6ecdfd46bfa0cddf7d2e2797f9",
+      "IsHidden": "False"
     },
     {
       "Start": "4ce0dac5e2ca42d4932c9313a386b2df",
       "End": "238e29d0748448bd9e4f83c7d324c65d",
-      "Id": "c22655d5cba5409bae9d24e15b48c46a"
+      "Id": "c22655d5cba5409bae9d24e15b48c46a",
+      "IsHidden": "False"
     },
     {
       "Start": "4ce0dac5e2ca42d4932c9313a386b2df",
       "End": "ef3737fea0b946199a3d2cec4763cf15",
-      "Id": "8001f35fdf54477ebe69cd507811de68"
+      "Id": "8001f35fdf54477ebe69cd507811de68",
+      "IsHidden": "False"
     },
     {
       "Start": "dd69dbba8ba542729bfe6eefa9950009",
       "End": "1e31cd8bd7914969a7bbdd7348453b11",
-      "Id": "ea857824623c4cfeb633c27b1cb6586b"
+      "Id": "ea857824623c4cfeb633c27b1cb6586b",
+      "IsHidden": "False"
     },
     {
       "Start": "dd69dbba8ba542729bfe6eefa9950009",
       "End": "160a95dbbff445cc9d96169440e3d17c",
-      "Id": "33ecf7f3b69849c5bb51648e2ce436e8"
+      "Id": "33ecf7f3b69849c5bb51648e2ce436e8",
+      "IsHidden": "False"
     },
     {
       "Start": "dd69dbba8ba542729bfe6eefa9950009",
       "End": "9de1859ebc944597b3ee6217f7434555",
-      "Id": "1e5fa08fc67547708f557ebfd7ce1c82"
+      "Id": "1e5fa08fc67547708f557ebfd7ce1c82",
+      "IsHidden": "False"
     },
     {
       "Start": "db00b850c3c043408a3bad03602e2463",
       "End": "991b18f91b2641c5adc1fe7f3d043c8b",
-      "Id": "c440d1312e2140dab900548382808a23"
+      "Id": "c440d1312e2140dab900548382808a23",
+      "IsHidden": "False"
     },
     {
       "Start": "191c038e864041659636fefc97279963",
       "End": "d783c8c60ac54f878ac8d017b0f94544",
-      "Id": "d9aa8548f39c4b1a91239e87679ae0e0"
+      "Id": "d9aa8548f39c4b1a91239e87679ae0e0",
+      "IsHidden": "False"
     },
     {
       "Start": "64816e2dbb314b4098f5c94f68aab0f5",
       "End": "fa5543bd6ce24c8caa6e4d625de3d2e0",
-      "Id": "53b38438b75e4964b897446da846b885"
+      "Id": "53b38438b75e4964b897446da846b885",
+      "IsHidden": "False"
     },
     {
       "Start": "1be2c20381f54da49d1ec7e66d711c02",
       "End": "f7820169635343849644de4305f0dc16",
-      "Id": "bda41d80e5e4434a9f0be099f4c6b30c"
+      "Id": "bda41d80e5e4434a9f0be099f4c6b30c",
+      "IsHidden": "False"
     },
     {
       "Start": "7733ea44eda04c13bc36b1bedc2ee47d",
       "End": "6e4d6e1fee9d40089801be861a1be2f7",
-      "Id": "2f72c63ac6d747d7a074190bf182a3a1"
+      "Id": "2f72c63ac6d747d7a074190bf182a3a1",
+      "IsHidden": "False"
     },
     {
       "Start": "a3ee02dc14d140bb8cef9a184a63b606",
       "End": "50b0d0b153a847bc91795b5975fc9892",
-      "Id": "4ca36d4cfa1e4136a5373b29fcd563b4"
+      "Id": "4ca36d4cfa1e4136a5373b29fcd563b4",
+      "IsHidden": "False"
     },
     {
       "Start": "a1d3132809b34e6fb6766c8152792224",
       "End": "a21f3fef08304bd183e5d4089d5db781",
-      "Id": "ea455af87ec74715b90422a26f896f04"
+      "Id": "ea455af87ec74715b90422a26f896f04",
+      "IsHidden": "False"
     },
     {
       "Start": "a1d3132809b34e6fb6766c8152792224",
       "End": "47d7ae08cdad4bc2bfb19352666ccf17",
-      "Id": "29cfd8fbba2f4525a286b599dfe2ebcb"
+      "Id": "29cfd8fbba2f4525a286b599dfe2ebcb",
+      "IsHidden": "False"
     },
     {
       "Start": "a11cf4e74458404bba9a6319796eb789",
       "End": "c3615c063b4146a38e40df3a0c5bb905",
-      "Id": "dfd68119e92f42bfa3cbcc8b3878afe0"
+      "Id": "dfd68119e92f42bfa3cbcc8b3878afe0",
+      "IsHidden": "False"
     },
     {
       "Start": "a11cf4e74458404bba9a6319796eb789",
       "End": "3fefc05cd8a44fbf8ea656eb0d3da87c",
-      "Id": "56e1c2e071c64c55873307a155b192b0"
+      "Id": "56e1c2e071c64c55873307a155b192b0",
+      "IsHidden": "False"
     },
     {
       "Start": "c7e51c9ed2a145bbb32cece969052ea9",
       "End": "8548057b05624aa9a87940431b65bd58",
-      "Id": "e32baf255bd040e99737896b1a81b99d"
+      "Id": "e32baf255bd040e99737896b1a81b99d",
+      "IsHidden": "False"
     },
     {
       "Start": "c7e51c9ed2a145bbb32cece969052ea9",
       "End": "848100afa963406f8167339296a42322",
-      "Id": "d02f05cdc88042a18b4f3e14e6491bc7"
+      "Id": "d02f05cdc88042a18b4f3e14e6491bc7",
+      "IsHidden": "False"
     },
     {
       "Start": "aa9e36cbe5d244898b3a5e2fbff0570c",
       "End": "1ad999068281411581acaa7877904774",
-      "Id": "c958bedad19a41a8ab579396bc58d69a"
+      "Id": "c958bedad19a41a8ab579396bc58d69a",
+      "IsHidden": "False"
     },
     {
       "Start": "aa9e36cbe5d244898b3a5e2fbff0570c",
       "End": "27711d0ac34d4249bbafad73086a28cb",
-      "Id": "51900bbff1d343bc83637d25c3281186"
+      "Id": "51900bbff1d343bc83637d25c3281186",
+      "IsHidden": "False"
     },
     {
       "Start": "199ada7b8663427da4aaebef7b76bdb5",
       "End": "a6486c1d8d34434a9530bde8f1ce7b7f",
-      "Id": "8a57a527f8f84d09b78004a7314448bd"
+      "Id": "8a57a527f8f84d09b78004a7314448bd",
+      "IsHidden": "False"
     },
     {
       "Start": "ef961de359a14949ad8b0f1e24307eaf",
       "End": "f885bf8dfe644f03ac62e0596be39a98",
-      "Id": "1dc2452217f348cfacff4550df22e037"
+      "Id": "1dc2452217f348cfacff4550df22e037",
+      "IsHidden": "False"
     },
     {
       "Start": "8d8f9da5976a4a9b8237f90527cb17e4",
       "End": "4fba0baa988c417990ecc8bdae1cb864",
-      "Id": "445fb4e071a1470fb76287772e418082"
+      "Id": "445fb4e071a1470fb76287772e418082",
+      "IsHidden": "False"
     },
     {
       "Start": "00a1cbe17b5f40758fea4a9ab5bba1ff",
       "End": "562f71a4dda54cf8aee7044842573920",
-      "Id": "2f2824c0778d4a5e99b851bd986130b7"
+      "Id": "2f2824c0778d4a5e99b851bd986130b7",
+      "IsHidden": "False"
     },
     {
       "Start": "ed7faf36e53f43b98ca57c77d3b9de09",
       "End": "152b832fc3b84b8fa49edb1ff422780b",
-      "Id": "6c426fee41754ec88538b3c2192084dd"
+      "Id": "6c426fee41754ec88538b3c2192084dd",
+      "IsHidden": "False"
     },
     {
       "Start": "dbaa468e05ae4b64b807f9efd176b5e8",
       "End": "6a75e519fc8646d896f0095c4bbc24e9",
-      "Id": "fb2c03eb74ae4eb99dbd87469d36ee04"
+      "Id": "fb2c03eb74ae4eb99dbd87469d36ee04",
+      "IsHidden": "False"
     },
     {
       "Start": "7c6584e113b441a1ab68cd7f465fc304",
       "End": "c54806f494914599b0c3d9140f3e855c",
-      "Id": "f967a13a6e0448448f00c9e7aafe9220"
+      "Id": "f967a13a6e0448448f00c9e7aafe9220",
+      "IsHidden": "False"
     },
     {
       "Start": "ea3c676659d84cce9b8c541ab0a18cad",
       "End": "534e280029984d2280a8b122b9bca3ed",
-      "Id": "06c57d9679544fe8b326e2ae250d30ab"
+      "Id": "06c57d9679544fe8b326e2ae250d30ab",
+      "IsHidden": "False"
     },
     {
       "Start": "1c8eb0e03cdc4f64874afd365a53e9a3",
       "End": "96bbafb46d6c485fb6ee2e21ee58ac74",
-      "Id": "ee7a4f9ef60f4342a8dfb21e6ad0a5e1"
+      "Id": "ee7a4f9ef60f4342a8dfb21e6ad0a5e1",
+      "IsHidden": "False"
     },
     {
       "Start": "3a86ade6975d4aa3afd65783d61f5031",
       "End": "16b72c48c5da44aead02ba3ecd6f61ad",
-      "Id": "b21c6e2a1a7a415f93e4eeb51db86f8e"
+      "Id": "b21c6e2a1a7a415f93e4eeb51db86f8e",
+      "IsHidden": "False"
     },
     {
       "Start": "4106de4282b842cd94d37cdd0ad36e4b",
       "End": "019ed2eb6a0f49f3bd57c6415cb62f2a",
-      "Id": "d6db01295f11410a954607958aecf65a"
+      "Id": "d6db01295f11410a954607958aecf65a",
+      "IsHidden": "False"
     },
     {
       "Start": "4a25024d709442f189e49b34051220de",
       "End": "b8d8efb68f974f84a2f50b1ee0a80d95",
-      "Id": "177680a29f06425ea07f26e17ac6eae3"
+      "Id": "177680a29f06425ea07f26e17ac6eae3",
+      "IsHidden": "False"
     },
     {
       "Start": "a9ffbe24a2214ad0b208398f68651c7f",
       "End": "9081544c2a66418fb2a736229ef8b456",
-      "Id": "c445ed16900245498c8a60f0af303111"
+      "Id": "c445ed16900245498c8a60f0af303111",
+      "IsHidden": "False"
     },
     {
       "Start": "9e37be8905064d3eaccfbdb7b390bb6f",
       "End": "eb627b3005e54fc1ae20ccdb6d05f95d",
-      "Id": "442c627589bc426a84ac2fd6990300f3"
+      "Id": "442c627589bc426a84ac2fd6990300f3",
+      "IsHidden": "False"
     },
     {
       "Start": "d54f6c03c6294e52b0d13c7de5c51b23",
       "End": "5efb94a55f1a45a18fb9fdeecb0b856a",
-      "Id": "f332e56027684f88a0499f90bed8ec67"
+      "Id": "f332e56027684f88a0499f90bed8ec67",
+      "IsHidden": "False"
     },
     {
       "Start": "1438286989f444e8b189c1d8a3cfb08b",
       "End": "873cde54e7e84db2adf559f3590a23fa",
-      "Id": "7d2f4eb84da54058b976215d0cf629bc"
+      "Id": "7d2f4eb84da54058b976215d0cf629bc",
+      "IsHidden": "False"
     },
     {
       "Start": "07c9a98e9df144aca361522e0f7283d1",
       "End": "19673ebbaec4433eb48549d4a02876bc",
-      "Id": "1dc589e6e1be42fc80f215cb0747940c"
+      "Id": "1dc589e6e1be42fc80f215cb0747940c",
+      "IsHidden": "False"
     },
     {
       "Start": "240d9a7d40db4caea68a84186ee09ced",
       "End": "236b495f3fc3410483361b78d32b2f1d",
-      "Id": "4f3c95836ff84c2aa0efbc33afd1d54b"
+      "Id": "4f3c95836ff84c2aa0efbc33afd1d54b",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.1.4357",
+      "Version": "2.13.0.3265",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -1676,6 +1742,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -1684,8 +1751,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24863.5725084611,
-        "Y": -19988.0843072235
+        "X": -24851.3986361472,
+        "Y": -20047.214544176732
       },
       {
         "ShowGeometry": true,
@@ -1694,8 +1761,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24863.5725084611,
-        "Y": -19690.2362488626
+        "X": -24856.616009996014,
+        "Y": -19672.845002699883
       },
       {
         "ShowGeometry": true,
@@ -1704,8 +1771,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24863.5725084611,
-        "Y": -19837.7921779339
+        "X": -24853.137760763471,
+        "Y": -19858.661673329159
       },
       {
         "ShowGeometry": true,
@@ -1714,8 +1781,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -25017.8259159932,
-        "Y": -19653.407616734
+        "X": -25059.564906783715,
+        "Y": -19656.885865966542
       },
       {
         "ShowGeometry": true,
@@ -1724,8 +1791,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -25017.8259159932,
-        "Y": -19806.8715331044
+        "X": -25056.086657551168,
+        "Y": -19799.915034639314
       },
       {
         "ShowGeometry": true,
@@ -1734,8 +1801,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24576.8179745144,
-        "Y": -19783.0302503288
+        "X": -24531.600734491341,
+        "Y": -19737.813010305741
       },
       {
         "ShowGeometry": true,
@@ -1744,8 +1811,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -23826.5909600944,
-        "Y": -19626.0765853476
+        "X": -23654.417623083526,
+        "Y": -19606.946214568612
       },
       {
         "ShowGeometry": true,
@@ -1754,8 +1821,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24852.4228564223,
-        "Y": -19043.4262684969
+        "X": -24861.118479503657,
+        "Y": -18921.687545357898
       },
       {
         "ShowGeometry": true,
@@ -1764,8 +1831,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24999.5444058485,
-        "Y": -19122.8692607342
+        "X": -25065.631141266815,
+        "Y": -19128.086634583015
       },
       {
         "ShowGeometry": true,
@@ -1774,8 +1841,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24850.6824161447,
-        "Y": -19186.3777479036
+        "X": -24857.638914609786,
+        "Y": -19113.334514020196
       },
       {
         "ShowGeometry": true,
@@ -1784,8 +1851,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24999.5444058485,
-        "Y": -19058.475817975
+        "X": -25063.892016650545,
+        "Y": -18997.606456405498
       },
       {
         "ShowGeometry": true,
@@ -1794,8 +1861,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24576.8179745144,
-        "Y": -19431.2687936034
+        "X": -24514.209488328626,
+        "Y": -19427.790544370859
       },
       {
         "ShowGeometry": true,
@@ -1804,8 +1871,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24860.0065794082,
-        "Y": -19550.2751569744
+        "X": -24856.528330175657,
+        "Y": -19487.666670788625
       },
       {
         "ShowGeometry": true,
@@ -1814,7 +1881,7 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -25014.2599869403,
+        "X": -25062.9554761959,
         "Y": -19532.8985356299
       },
       {
@@ -1824,8 +1891,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -25014.2599869403,
-        "Y": -19460.4537295892
+        "X": -25062.9554761959,
+        "Y": -19403.062617252242
       },
       {
         "ShowGeometry": true,
@@ -1834,8 +1901,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -25014.2599869403,
-        "Y": -19375.3754270868
+        "X": -25061.216351579627,
+        "Y": -19276.245323959327
       },
       {
         "ShowGeometry": true,
@@ -1844,8 +1911,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24862.0206093756,
-        "Y": -19392.7520484312
+        "X": -24860.281484759325,
+        "Y": -19300.578443768816
       },
       {
         "ShowGeometry": true,
@@ -1854,8 +1921,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -23122.652160493,
-        "Y": -19802.1216786819
+        "X": -22989.829118888847,
+        "Y": -19823.151993602558
       },
       {
         "ShowGeometry": true,
@@ -1874,7 +1941,7 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24576.8179745144,
+        "X": -24555.948479119143,
         "Y": -19959.0571473541
       },
       {
@@ -1884,8 +1951,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24121.7122637897,
-        "Y": -19865.3616625485
+        "X": -23979.104045255444,
+        "Y": -19787.101054816285
       },
       {
         "ShowGeometry": true,
@@ -1894,8 +1961,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24292.363608456,
-        "Y": -19861.8025892582
+        "X": -24210.624751491236,
+        "Y": -19795.71585383988
       },
       {
         "ShowGeometry": true,
@@ -1904,8 +1971,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24576.8179745144,
-        "Y": -19268.3580660668
+        "X": -24521.165986793712,
+        "Y": -19200.532206032211
       },
       {
         "ShowGeometry": true,
@@ -1914,8 +1981,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24264.0378052168,
-        "Y": -19368.2549140925
+        "X": -24225.777063658828,
+        "Y": -19361.298415627414
       },
       {
         "ShowGeometry": true,
@@ -1924,8 +1991,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24121.7122637897,
-        "Y": -19357.9517791398
+        "X": -23979.104045255437,
+        "Y": -19366.647402221155
       },
       {
         "ShowGeometry": false,
@@ -1944,8 +2011,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24576.8179745144,
-        "Y": -19089.2953804814
+        "X": -24500.296491398458,
+        "Y": -19002.339149667827
       },
       {
         "ShowGeometry": true,
@@ -1964,8 +2031,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -23063.6966452388,
-        "Y": -19329.3214060416
+        "X": -22959.651929315547,
+        "Y": -19323.787112641425
       },
       {
         "ShowGeometry": false,
@@ -1984,8 +2051,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -22675.4709488018,
-        "Y": -19464.6053578783
+        "X": -22831.538022686676,
+        "Y": -19460.17792315816
       },
       {
         "ShowGeometry": false,
@@ -1994,8 +2061,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -22280.9171643262,
-        "Y": -19460.0485934353
+        "X": -22213.055641561576,
+        "Y": -19464.289938608086
       },
       {
         "ShowGeometry": true,
@@ -2004,8 +2071,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -21612.9284118068,
-        "Y": -19432.0507890966
+        "X": -21489.929401795911,
+        "Y": -19354.292794262132
       },
       {
         "ShowGeometry": true,
@@ -2014,8 +2081,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -21836.9791824384,
-        "Y": -19342.8901377335
+        "X": -21855.358344853823,
+        "Y": -19301.890467729871
       },
       {
         "ShowGeometry": true,
@@ -2034,8 +2101,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -22558.9464295075,
-        "Y": -19369.8357245293
+        "X": -22607.648211429023,
+        "Y": -19311.172214487469
       },
       {
         "ShowGeometry": true,
@@ -2044,8 +2111,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -21958.3895046828,
-        "Y": -19254.4151347148
+        "X": -22152.077600906843,
+        "Y": -19165.346886086227
       },
       {
         "ShowGeometry": true,
@@ -2054,8 +2121,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -22127.8970784874,
-        "Y": -19347.9840439574
+        "X": -22239.585834704183,
+        "Y": -19297.08790188393
       },
       {
         "ShowGeometry": true,
@@ -2064,8 +2131,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -21943.5566237263,
-        "Y": -19168.1112237505
+        "X": -21891.246699928568,
+        "Y": -19122.870208574084
       },
       {
         "ShowGeometry": true,
@@ -2082,7 +2149,12 @@
       {
         "Id": "9e22bfe5fa1f430da622671f92d965b1",
         "Title": "Multiple creation methods exist for most Solids.  These examples show Closed Profiles as the base, but polysurfaces can be stitched, many primitives are available (Surfaces, Cuboid, Cone, etc)",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": -23371.7848897669,
         "Top": -19616.0024997915,
         "Width": 0.0,
@@ -2096,35 +2168,52 @@
       {
         "Id": "e2183066af9f44368269b415ca9909f7",
         "Title": "Geometric Boolean operations (Intersect, Difference, Union, Etc) are available in the Geometry Category.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": -21755.327872524,
-        "Top": -19487.4576925417,
+        "HasNestedGroups": false,
+        "Left": -21515.929401795911,
+        "Top": -19433.292794262132,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "66746ec0c2bd4a5ca36563fe4ca239ba"
       },
       {
         "Id": "d8476cea84d544ca90a313a833c5a6f4",
         "Title": "Tip:  Turn off \"Preview\" in Node Right Click menus to exclude elements from Showing",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": -22582.6567837286,
-        "Top": -19573.2738069245,
+        "HasNestedGroups": false,
+        "Left": -22587.6820628078,
+        "Top": -19582.2591035862,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "71a453ec6bed4435a6306478b3011d91"
       },
       {
         "Id": "b72f32081e1b43c397beba15741070b0",
         "Title": "Tip:  Turn off \"Preview\" in Node Right Click menus to exclude elements from Showing",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": -23426.3112170555,
         "Top": -19374.5268630841,
         "Width": 0.0,
@@ -2136,8 +2225,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": 4422.4614136011878,
-    "Y": 3728.8026540876617,
-    "Zoom": 0.17557326637216744
+    "X": 8535.6511224989772,
+    "Y": 7038.4619123494758,
+    "Zoom": 0.33933520662464767
   }
 }

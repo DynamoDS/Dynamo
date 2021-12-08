@@ -16,7 +16,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Represent all Control Types that can be used in UI Automation for executing actions like disable or open
         /// </summary>
-        public enum UIControlType { MENUITEM, BUTTON, FUNCTION };
+        public enum UIControlType { MENUITEM, BUTTON, FUNCTION, JSFUNCTION };
 
         /// <summary>
         /// This Sequence will be unique for each automation step
@@ -67,6 +67,26 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This is a list of events to be trigerred and methods subscribed to those events
         /// </summary>
         public List<AutomaticHandlers> AutomaticHandlers { get; set; }
+
+        /// <summary>
+        /// The javascript function name (located in library.html) to be executed if is the case
+        /// </summary>
+        public string JSFunctionName { get; set; }
+
+        /// <summary>
+        /// The list of arguments sent to the javascript function
+        /// </summary>
+        public List<object> JSParameters { get; set; }
+
+        /// <summary>
+        /// This flag checks if is necessary to enable next step button only if packages list is already loaded
+        /// </summary>
+        public bool CheckPackagesListEnableNextStep { get; set; }
+
+        /// <summary>
+        /// This string contains the element to execute the Automatic Function
+        /// </summary>
+        public string ElementName { get; set; }
     }
 
     public class AutomaticHandlers

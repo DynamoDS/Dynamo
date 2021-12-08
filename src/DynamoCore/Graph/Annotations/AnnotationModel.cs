@@ -8,6 +8,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Properties;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Dynamo.Graph.Annotations
 {
@@ -331,6 +332,24 @@ namespace Dynamo.Graph.Annotations
             {
                 isExpanded = value;
                 UpdateBoundaryFromSelection();
+                UpdateErrorAndWarningIconVisibility();
+            }
+        }
+
+        private ElementState groupState = ElementState.Active;
+
+        /// <summary>
+        /// Indicates whether the group contains nodes that are in an info/warning/error state.
+        /// This includes the state of any nodes that are in nested groups.
+        /// </summary>
+        [JsonIgnore]
+        public ElementState GroupState
+        {
+            get => groupState;
+            internal set
+            {
+                groupState = value;
+                RaisePropertyChanged(nameof(GroupState));
             }
         }
 
@@ -367,6 +386,7 @@ namespace Dynamo.Graph.Annotations
                 .ToList();
 
             UpdateBoundaryFromSelection();
+            UpdateErrorAndWarningIconVisibility();
         }
 
         private ConnectorPinModel[] GetPinsFromNodes(IEnumerable<NodeModel> nodeModels)
@@ -400,6 +420,9 @@ namespace Dynamo.Graph.Annotations
                 case nameof(ModelBase.Height):
                 case nameof(ModelBase.Width):
                     UpdateBoundaryFromSelection();
+                    break;
+                case nameof(NodeModel.State):
+                    UpdateErrorAndWarningIconVisibility();
                     break;
             }
         }
@@ -470,6 +493,45 @@ namespace Dynamo.Graph.Annotations
                 this.Width = 0;
                 this.height = 0;               
             }
+        }
+
+        /// <summary>
+        /// Determines whether this group displays warning or error icons in its header.
+        /// </summary>
+        private void UpdateErrorAndWarningIconVisibility()
+        {
+            // No icons are displayed when the group is expanded / not collapsed.
+            if (IsExpanded)
+            {
+                GroupState = ElementState.Active;
+                return;
+            }
+
+            List<NodeModel> nodes = Nodes
+                .OfType<NodeModel>()
+                .ToList();
+
+            List<AnnotationModel> groups = Nodes
+                .OfType<AnnotationModel>()
+                .ToList();
+                
+            // If anything in this group is in an error state, we display an error icon.
+            if (nodes.Any(x => x.State == ElementState.Error) ||
+                groups.Any(x => x.GroupState == ElementState.Error))
+            {
+                GroupState = ElementState.Error;
+                return;
+            }
+
+            // If anything in this group is in a warning state, we display a warning icon.
+            if (nodes.Any(x => x.State == ElementState.Warning) ||
+                groups.Any(x => x.GroupState == ElementState.Warning))
+            {
+                GroupState = ElementState.Warning;
+                return;
+            }
+
+            GroupState = ElementState.Active;
         }
 
         /// <summary>
@@ -615,6 +677,7 @@ namespace Dynamo.Graph.Annotations
             list.Add(model);
             this.Nodes = list;
             this.UpdateBoundaryFromSelection();
+            UpdateErrorAndWarningIconVisibility();
         }
 
         private void UnsubscribeRemovedModel(ModelBase model)
