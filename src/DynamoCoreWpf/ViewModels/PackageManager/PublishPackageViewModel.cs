@@ -771,17 +771,17 @@ namespace Dynamo.PackageManager
         private void ClearAllEntries()
         {
             // this function clears all the entries of the publish package dialog
-            this.Name = "";
-            this.RepositoryUrl = "";
-            this.SiteUrl = "";
-            this.License = "";
-            this.Keywords = "";
-            this.Description = "";
-            this.Group = "";
+            this.Name = string.Empty;
+            this.RepositoryUrl = string.Empty;
+            this.SiteUrl = string.Empty;
+            this.License = string.Empty;
+            this.Keywords = string.Empty;
+            this.Description = string.Empty;
+            this.Group = string.Empty;
             this.MajorVersion = "0";
             this.MinorVersion = "0";
             this.BuildVersion = "0";
-            this.ErrorString = "";
+            this.ErrorString = string.Empty;
             this.Uploading = false;
             this.UploadHandle = null;
             this.IsNewVersion = false;
@@ -793,6 +793,8 @@ namespace Dynamo.PackageManager
             this.Assemblies = new List<PackageAssembly>();
             this.SelectedHosts = new List<String>();
             this.SelectedHostsString = string.Empty;
+            this.copyrightHolder = string.Empty;
+            this.copyrightYear = string.Empty;
         }
 
         private void ClearPackageContents()
@@ -841,7 +843,9 @@ namespace Dynamo.PackageManager
                 SiteUrl = l.SiteUrl ?? "",
                 Package = l,
                 License = l.License,
-                SelectedHosts = l.HostDependencies as List<string>
+                SelectedHosts = l.HostDependencies as List<string>,
+                CopyrightHolder = l.CopyrightHolder,
+                CopyrightYear = l.CopyrightYear
             };
 
             // add additional files
@@ -1570,7 +1574,9 @@ namespace Dynamo.PackageManager
                 Package.Keywords = KeywordList;
                 Package.License = License;
                 Package.SiteUrl = SiteUrl;
-                Package.RepositoryUrl = RepositoryUrl;                
+                Package.RepositoryUrl = RepositoryUrl;
+                Package.CopyrightHolder = CopyrightHolder;
+                Package.CopyrightYear = CopyrightYear;
 
                 AppendPackageContents();
 
@@ -1579,13 +1585,13 @@ namespace Dynamo.PackageManager
 
                 Package.HostDependencies = Enumerable.Empty<string>();
                 Package.HostDependencies = SelectedHosts;
-                foreach (var py in GetPythonDependency()) 
+                foreach (string py in GetPythonDependency()) 
                 {
                     if (!Package.HostDependencies.Contains(py)) 
                     {
                         Package.HostDependencies = Package.HostDependencies.Concat(new[] { py });
                     }
-                }                                
+                }
 
                 var files = GetAllFiles().ToList();
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
