@@ -367,6 +367,11 @@
                     </VirtualizingStackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
+
+            <TreeView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                 Color="{StaticResource Blue300}" />
+            </TreeView.Resources>
         </TreeView>
 
         <Border Grid.Row="1"
