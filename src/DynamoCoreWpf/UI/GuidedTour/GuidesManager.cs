@@ -203,6 +203,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         private void ExitTour()
         {
+
             if (currentGuide != null)
             {
                 foreach (Step tmpStep in currentGuide.GuideSteps)

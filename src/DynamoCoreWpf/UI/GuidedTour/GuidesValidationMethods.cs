@@ -96,7 +96,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// This method will be executed when passing from Step 2 to Step 3 in the Packages guide, so it will show the TermsOfUse Window in case it was not accepted yet
+        /// This method will be executed when packages search window is opened, so it can identify the close button of the window
         /// </summary>
         /// <param name="stepInfo"></param>
         /// <param name="uiAutomationData"></param>
@@ -556,17 +556,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal static void LibraryScrollToBottom(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
-            if (enableFunction)
-            {
-                CurrentExecutingStep = stepInfo;
-                if (uiAutomationData == null) return;
-                string jsFunctionName = uiAutomationData.JSFunctionName;
-                //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
-                object[] parametersInvokeScript = new object[] { jsFunctionName, new object[] { } };
-                //Execute the JS function with the provided parameters
-                ResourceUtilities.ExecuteJSFunction(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo, parametersInvokeScript);
-            }
-
+            CurrentExecutingStep = stepInfo;
+            if (uiAutomationData == null) return;
+            string jsFunctionName = uiAutomationData.JSFunctionName;
+            //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
+            object[] parametersInvokeScript = new object[] { jsFunctionName, new object[] { } };
+            //Execute the JS function with the provided parameters
+            ResourceUtilities.ExecuteJSFunction(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo, parametersInvokeScript);
         }
     }
 }
