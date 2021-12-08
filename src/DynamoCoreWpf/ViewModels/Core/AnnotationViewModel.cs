@@ -27,7 +27,7 @@ namespace Dynamo.ViewModels
         // vertical offset accounts for the port margins
         private const int verticalOffset = 20;
         private const int portVerticalMidPoint = 17;
-
+        
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
         #region Properties
@@ -404,7 +404,7 @@ namespace Dynamo.ViewModels
                 DynamoSelection.Instance.Selection.Count >= 0 && 
                 IsExpanded;
         }
-
+         
         private void AddToGroup(object obj)
         {
             if (annotationModel.IsSelected)
@@ -1026,6 +1026,7 @@ namespace Dynamo.ViewModels
             var removedFromGroup = GroupIdToCutGeometry.Keys
                 .ToList()
                 .Except(allGroupedGroups.Select(x => x.GUID.ToString()));
+            
             foreach (var key in removedFromGroup)
             {
                 RemoveKeyFromCutGeometryDictionary(key);
@@ -1111,11 +1112,12 @@ namespace Dynamo.ViewModels
         {
             return WorkspaceViewModel.Model.Annotations.ContainsModel(this.annotationModel);
         }
-
+        
         public override void Dispose()
         {
             annotationModel.PropertyChanged -= model_PropertyChanged;
             annotationModel.RemovedFromGroup -= OnModelRemovedFromGroup;
+            
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
         }
