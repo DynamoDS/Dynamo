@@ -3862,8 +3862,8 @@ namespace Dynamo.Wpf.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
-        ///        
-        ///Do you wish to restart {2} to first uninstall {1}, then download {0} again?.
+        ///
+        ///Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again..
         /// </summary>
         public static string MessageSamePackageDiffVersInLocalPackages {
             get {
@@ -5279,6 +5279,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagesGuideNavigatePackagesTitle {
             get {
                 return ResourceManager.GetString("PackagesGuideNavigatePackagesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use package nodes.
+        /// </summary>
+        public static string PackagesGuidePackagesNodeTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuidePackagesNodeTitle", resourceCulture);
             }
         }
         
@@ -7237,11 +7246,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Uninstall loaded package.
+        /// </summary>
+        public static string UninstallLoadedPackage {
+            get {
+                return ResourceManager.GetString("UninstallLoadedPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uninstall loaded packages.
         /// </summary>
-        public static string UninstallLoaded {
+        public static string UninstallLoadedPackages {
             get {
-                return ResourceManager.GetString("UninstallLoaded", resourceCulture);
+                return ResourceManager.GetString("UninstallLoadedPackages", resourceCulture);
             }
         }
         
