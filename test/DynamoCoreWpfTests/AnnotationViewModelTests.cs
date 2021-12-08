@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -1111,6 +1113,62 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.IsFalse(addNodeViewModel.AddToGroupCommand.CanExecute(null));
+        }
+
+        /// <summary>
+        /// Tests that a collapsed group with a node containing a warning will display a warning icon in its header.
+        /// </summary>
+        [Test]
+        [Category("DynamoUI")]
+        public void CollapsedGroupDisplaysWarningIfNodeInWarningState()
+        {
+            // Adding a dummy node to the workspace
+            var dummyNode = new DummyNode();
+            DynamoModel model = GetModel();
+            model.ExecuteCommand(new DynamoModel.CreateNodeCommand(dummyNode, 0, 0, true, true));
+
+            NodeViewModel dummyNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
+                .FirstOrDefault(x => x.NodeModel.GUID == dummyNode.GUID);
+            
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(dummyNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
+
+            //Select the node for group
+            DynamoSelection.Instance.Selection.Add(dummyNode);
+
+            //Create a Group around that node
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
+            var annotationViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
+
+            //Check if the group is created
+            Assert.IsNotNull(annotation);
+
+            //Clear the selection
+            DynamoSelection.Instance.ClearSelection();
+
+            // Collapses the group
+            annotationViewModel.IsExpanded = false;
+
+            NodeModel dummyNodeModel = dummyNodeViewModel.NodeModel;
+
+            var topLeft = new Point(dummyNodeViewModel.X, dummyNodeViewModel.Y);
+            var botRight = new Point(dummyNodeViewModel.X + dummyNodeModel.Width, dummyNodeViewModel.Y + dummyNodeModel.Height);
+
+            if (dummyNodeViewModel.ErrorBubble == null)
+            {
+                dummyNodeViewModel.ErrorBubble = new InfoBubbleViewModel(ViewModel);
+            }
+
+            InfoBubbleViewModel infoBubbleViewModel = dummyNodeViewModel.ErrorBubble;
+
+            // The collection of messages the node receives
+            ObservableCollection<InfoBubbleDataPacket> nodeMessages = infoBubbleViewModel.NodeMessages;
+            nodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Warning, topLeft, botRight, "Warning", InfoBubbleViewModel.Direction.Top));
+
+            Assert.AreEqual(ElementState.Warning, annotationViewModel.AnnotationModel.GroupState);
         }
 
         [Test]

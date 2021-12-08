@@ -365,7 +365,7 @@ namespace Dynamo.ViewModels
         /// node has undismissed info/warning/error messages.
         /// </summary>
         [JsonIgnore]
-        public bool NodeWarningBarVisible => ErrorBubble != null && ErrorBubble.DoesNodeDisplayMessages;
+        public bool NodeWarningBarVisible => (ErrorBubble != null && ErrorBubble.DoesNodeDisplayMessages) || IsVisible == false;
 
         /// <summary>
         /// The color of the warning bar: blue for info, orange for warnings, red for errors.
@@ -655,6 +655,9 @@ namespace Dynamo.ViewModels
             set
             {
                 base.IsCollapsed = value;
+                if (ErrorBubble == null) return;
+                ErrorBubble.IsCollapsed = value;
+                RaisePropertyChanged(nameof(NodeWarningBarVisible));
             }
         }
 
@@ -782,6 +785,8 @@ namespace Dynamo.ViewModels
             }
             
             logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
+
+            logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsVisible)));
         }
 
 
@@ -1006,6 +1011,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
+                    RaisePropertyChanged(nameof(NodeWarningBarVisible));
+                    if (ErrorBubble != null) return;
+                    WarningBarColor = GetWarningColor(InfoBubbleViewModel.Style.None);
                     break;
                 case "Width":
                     RaisePropertyChanged("Width");
@@ -1056,8 +1064,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void BuildErrorBubble()
         {
-            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
-            
+            if (ErrorBubble == null) ErrorBubble = new InfoBubbleViewModel(DynamoViewModel)
+            {
+                IsCollapsed = this.IsCollapsed
+            };
+
             ErrorBubble.NodeInfoToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateOverlays;
@@ -1091,6 +1102,10 @@ namespace Dynamo.ViewModels
             switch (style)
             {
                 case InfoBubbleViewModel.Style.None:
+                    if (IsVisible == false)
+                    {
+                        return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
+                    }
                     break;
                 case InfoBubbleViewModel.Style.Warning:
                 case InfoBubbleViewModel.Style.WarningCondensed:

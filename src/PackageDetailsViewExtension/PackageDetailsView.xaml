@@ -27,7 +27,7 @@
                 <Setter Property="FontWeight" Value="Bold" />
                 <Setter Property="FontSize" Value="14px" />
                 <Setter Property="MinWidth" Value="200px" />
-                <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal200Brush}" />
+                <Setter Property="Foreground" Value="#D8D8D8" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="Margin" Value="0,0,0,5" />
                 <Setter Property="TextWrapping" Value="Wrap" />
@@ -42,7 +42,7 @@
             <Style x:Key="BorderStyle" TargetType="Border">
                 <Setter Property="CornerRadius" Value="3" />
                 <Setter Property="Margin" Value="0,0,11,0" />
-                <Setter Property="Background" Value="#373737" />
+                <Setter Property="Background" Value="{StaticResource ExtensionButtonBackgroundColor}" />
                 <Setter Property="Padding" Value="8,0" />
                 <Setter Property="Height" Value="22px" />
             </Style>
@@ -54,7 +54,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type DataGridCell}">
                             <Border Padding="{TemplateBinding Padding}"
-                                    Background="#535353"
+                                    Background="{StaticResource ExtensionBackgroundColor}"
                                     BorderThickness="0"
                                     SnapsToDevicePixels="True">
                                 <TextBlock Margin="5,8,5,0"
@@ -66,8 +66,11 @@
                                            Foreground="#D8D8D8"
                                            Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content.Text}"
                                            TextWrapping="Wrap"
-                                           ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}"
-                                           ToolTipService.ShowDuration="30000" />
+                                           ToolTipService.ShowDuration="30000">
+                                    <TextBlock.ToolTip>
+                                        <ToolTip Content="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}" Style="{StaticResource GenericToolTipLight}"/>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
@@ -92,7 +95,7 @@
                 <Setter Property="Height" Value="52px" />
                 <Setter Property="Padding" Value="10,0" />
                 <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="Background" Value="#535353" />
+                <Setter Property="Background" Value="{StaticResource ExtensionBackgroundColor}" />
                 <Setter Property="BorderBrush" Value="#CCCCCC" />
                 <Setter Property="BorderThickness" Value="0,0,1,1" />
                 <Setter Property="FontSize" Value="14px" />
@@ -128,7 +131,7 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Background="#535353">
+    <Grid Background="{StaticResource ExtensionBackgroundColor}">
         <ScrollViewer Name="MainScrollViewer" DataContextChanged="FrameworkElement_OnDataContextChanged" Margin="17px" VerticalScrollBarVisibility="Visible">
 
             <!--  Contains Everything  -->
@@ -269,7 +272,7 @@
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                                <Grid Background="#535353" IsHitTestVisible="True">
+                                                <Grid Background="{StaticResource ExtensionBackgroundColor}" IsHitTestVisible="True">
                                                     <StackPanel Margin="12,8,10,5">
                                                         <TextBlock HorizontalAlignment="Left"
                                                                    Foreground="#D8D8D8"
@@ -383,7 +386,7 @@
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                                <Grid Background="#535353" IsHitTestVisible="True">
+                                                <Grid Background="{StaticResource ExtensionBackgroundColor}" IsHitTestVisible="True">
                                                     <ItemsControl Margin="12,8,10,5" ItemsSource="{Binding Packages}">
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>

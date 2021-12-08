@@ -214,11 +214,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Break Connection.
+        ///   Looks up a localized string similar to Break Connections.
         /// </summary>
-        public static string BreakConnectionPopupMenuItem {
+        public static string BreakConnectionsPopupMenuItem {
             get {
-                return ResourceManager.GetString("BreakConnectionPopupMenuItem", resourceCulture);
+                return ResourceManager.GetString("BreakConnectionsPopupMenuItem", resourceCulture);
             }
         }
         
@@ -439,11 +439,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Break Connections.
+        ///   Looks up a localized string similar to Break Connection.
         /// </summary>
-        public static string ConnectorContextMenuHeaderBreakConnections {
+        public static string ConnectorContextMenuHeaderBreakConnection {
             get {
-                return ResourceManager.GetString("ConnectorContextMenuHeaderBreakConnections", resourceCulture);
+                return ResourceManager.GetString("ConnectorContextMenuHeaderBreakConnection", resourceCulture);
             }
         }
         
@@ -804,6 +804,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ContinueButton {
             get {
                 return ResourceManager.GetString("ContinueButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue install.
+        /// </summary>
+        public static string ContinueInstall {
+            get {
+                return ResourceManager.GetString("ContinueInstall", resourceCulture);
             }
         }
         
@@ -3674,11 +3683,13 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following packages: {1}. Dependency conflicts could cause unintended behavior to occur.
-        ///    
-        ///Do you wish to continue installing it while keeping the packages that are already installed?
+        ///   Looks up a localized string similar to Package {0} has one or more dependencies that conflict with the following package(s):
         ///
-        ///If not, {2} needs to uninstall {1} to continue. Restart {2}, then download {0} again..
+        ///{1}
+        ///
+        ///If you continue to install the package, unintended behavior may occur.
+        ///
+        ///To avoid unintended behavior, uninstall the conflicting loaded package(s), restart Dynamo, and download {0} again..
         /// </summary>
         public static string MessageForceInstallOrUninstallUponRestart {
             get {
@@ -3851,8 +3862,8 @@ namespace Dynamo.Wpf.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
-        ///        
-        ///Do you wish to restart {2} to first uninstall {1}, then download {0} again?.
+        ///
+        ///Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again..
         /// </summary>
         public static string MessageSamePackageDiffVersInLocalPackages {
             get {
@@ -7222,6 +7233,24 @@ namespace Dynamo.Wpf.Properties {
         public static string UndeprecatingPackageMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UndeprecatingPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall loaded package.
+        /// </summary>
+        public static string UninstallLoadedPackage {
+            get {
+                return ResourceManager.GetString("UninstallLoadedPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall loaded packages.
+        /// </summary>
+        public static string UninstallLoadedPackages {
+            get {
+                return ResourceManager.GetString("UninstallLoadedPackages", resourceCulture);
             }
         }
         

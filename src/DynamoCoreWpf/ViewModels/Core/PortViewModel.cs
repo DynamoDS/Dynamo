@@ -505,6 +505,12 @@ namespace Dynamo.ViewModels
 
         private void NodePortContextMenu(object obj)
         {
+            // If this port does not display a Chevron button to open the context menu and it doesn't
+            // have a default value then using right-click to open the context menu should also do nothing.
+            if (obj is InPortViewModel inPortViewModel &&
+                inPortViewModel.UseLevelVisibility == Visibility.Collapsed &&
+                !inPortViewModel.DefaultValueEnabled) return;
+            
             var wsViewModel = node.WorkspaceViewModel;
             
             wsViewModel.CancelActiveState();
@@ -574,7 +580,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         protected virtual void RefreshPortColors()
         {
-            PortBackgroundColor = node.IsVisible ? PortBackgroundColorDefault : PortBackgroundColorPreviewOff;
+            PortBackgroundColor = PortBackgroundColorDefault;
             PortBorderBrushColor = PortBorderBrushColorDefault;
         }
 

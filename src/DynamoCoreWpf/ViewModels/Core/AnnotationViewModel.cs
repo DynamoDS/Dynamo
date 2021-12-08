@@ -27,7 +27,7 @@ namespace Dynamo.ViewModels
         // vertical offset accounts for the port margins
         private const int verticalOffset = 20;
         private const int portVerticalMidPoint = 17;
-
+        
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
         #region Properties
@@ -404,7 +404,7 @@ namespace Dynamo.ViewModels
                 DynamoSelection.Instance.Selection.Count >= 0 && 
                 IsExpanded;
         }
-
+         
         private void AddToGroup(object obj)
         {
             if (annotationModel.IsSelected)
@@ -740,9 +740,19 @@ namespace Dynamo.ViewModels
                     .OfType<AnnotationModel>()
                     .SelectMany(x => x.Nodes.OfType<NodeModel>())
                     .Concat(Nodes.OfType<NodeModel>());
+
+                // If any of the nested groups are collapsed
+                // we need to update the posistion of the 
+                // proxy ports on it.
+                foreach (var nestedGroup in ViewModelBases.OfType<AnnotationViewModel>().Where(x => !x.IsExpanded))
+                {
+                    nestedGroup.SetGroupInputPorts();
+                    nestedGroup.SetGroupOutPorts();
+                    nestedGroup.UpdateProxyPortsPosition();
+                }
             }
 
-            var groupInports = GetGroupInPorts(nestedNodes);
+            var groupInports = GetGroupInPorts(IsExpanded ? null : nestedNodes);
 
             for (int i = 0; i < groupInports.Count(); i++)
             {
@@ -753,7 +763,7 @@ namespace Dynamo.ViewModels
                 model.Owner.ReportPosition();
             }
 
-            var groupOutports = GetGroupOutPorts();
+            var groupOutports = GetGroupOutPorts(IsExpanded ? null : nestedNodes);
 
             for (int i = 0; i < groupOutports.Count(); i++)
             {
@@ -1016,6 +1026,7 @@ namespace Dynamo.ViewModels
             var removedFromGroup = GroupIdToCutGeometry.Keys
                 .ToList()
                 .Except(allGroupedGroups.Select(x => x.GUID.ToString()));
+            
             foreach (var key in removedFromGroup)
             {
                 RemoveKeyFromCutGeometryDictionary(key);
@@ -1101,11 +1112,12 @@ namespace Dynamo.ViewModels
         {
             return WorkspaceViewModel.Model.Annotations.ContainsModel(this.annotationModel);
         }
-
+        
         public override void Dispose()
         {
             annotationModel.PropertyChanged -= model_PropertyChanged;
             annotationModel.RemovedFromGroup -= OnModelRemovedFromGroup;
+            
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
         }

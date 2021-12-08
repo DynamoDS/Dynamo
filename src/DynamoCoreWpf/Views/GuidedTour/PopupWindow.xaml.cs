@@ -2,8 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
-using System.Windows.Interop;
+using System.Windows.Input;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 
@@ -84,7 +83,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
         private void StartTourButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            GuideFlowEvents.OnGuidedTourNext();            
+            GuideFlowEvents.OnGuidedTourNext();
         }
 
         private void CloseButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -103,12 +102,25 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
-            GuideFlowEvents.OnGuidedTourNext();            
+            GuideFlowEvents.OnGuidedTourNext();
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            GuideFlowEvents.OnGuidedTourPrev();           
+            GuideFlowEvents.OnGuidedTourPrev();
+        }
+
+        private void Popup_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Left:
+                    GuideFlowEvents.OnGuidedTourPrev();
+                    break;
+                case Key.Right:
+                    GuideFlowEvents.OnGuidedTourNext();
+                    break;
+            }
         }
     }
 }

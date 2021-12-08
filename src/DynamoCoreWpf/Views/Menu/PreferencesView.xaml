@@ -234,7 +234,10 @@
                                 <!--This Grid contains controls for selecting Run Preview options-->
                                 <Grid Grid.Row="2"
                                   Margin="4,0,0,20">
-                                    <Grid ToolTip="{x:Static p:Resources.PreferencesViewShowRunPreviewTooltip}">
+                                    <Grid>
+                                        <Grid.ToolTip>
+                                            <ToolTip Content="{x:Static p:Resources.PreferencesViewShowRunPreviewTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                        </Grid.ToolTip>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
@@ -438,8 +441,10 @@
                                                 Grid.Row="0"
                                                 Margin="0,10,0,0"
                                                 Click="ReloadCPython_Click"
-                                                Content="{x:Static p:Resources.ResetCPythonButtonText}"
-                                                ToolTip="{x:Static p:Resources.ResetCPythonButtonToolTip}">
+                                                Content="{x:Static p:Resources.ResetCPythonButtonText}">
+                                        <Button.ToolTip>
+                                            <ToolTip Content="{x:Static p:Resources.ResetCPythonButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                                        </Button.ToolTip>
                                     </Button>
                                     
                                 </StackPanel>
@@ -474,8 +479,10 @@
                                                Height="26" 
                                                Width="53" 
                                                Margin="0 3 0 0" 
-                                               MouseLeftButtonUp="OnMoreInfoClicked"
-                                               ToolTip="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteTooltipText}">
+                                               MouseLeftButtonUp="OnMoreInfoClicked">
+                                            <Label.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Label.ToolTip>
                                             <Label.Content>
                                                 <fa:ImageAwesome Width="15" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Left" Icon="QuestionCircleOutline" Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                             </Label.Content>
@@ -752,8 +759,11 @@
                                         <Label  Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}" 
                                                 Padding="5,5,5,5"
                                                 FontSize="13"
-                                                Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                ToolTip="{x:Static p:Resources.PreferencesPackageDownloadDirectoryTooltip}"/>
+                                                Foreground="{StaticResource PreferencesWindowFontColor}">
+                                            <Label.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.PreferencesPackageDownloadDirectoryTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Label.ToolTip>
+                                        </Label>
                                         <ComboBox Grid.Row="1"
                                                   x:Name="PackageDownloadDirectoryComboBox"
                                                   Width="Auto"
@@ -761,8 +771,10 @@
                                                   HorizontalAlignment="Left"
                                                   ItemsSource="{Binding Path=PackagePathsForInstall}"
                                                   SelectedItem="{Binding Path=SelectedPackagePathForInstall}"
-                                                  Style="{StaticResource NoBordersComboBoxStyle}"
-                                                  ToolTip="{Binding Path=SelectedPackagePathForInstall}">
+                                                  Style="{StaticResource NoBordersComboBoxStyle}">
+                                            <ComboBox.ToolTip>
+                                                <ToolTip Content="{Binding Path=SelectedPackagePathForInstall}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </ComboBox.ToolTip>
                                         </ComboBox>
                                         <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
                                             <packagemanager:PackagePathView x:Name="PackagePathView" DataContext="{Binding PackagePathsViewModel}"/>
@@ -788,7 +800,7 @@
                                                VerticalAlignment="Center"
                                                Style="{StaticResource ToggleInfoStyle}">
                                             <Image.ToolTip>
-                                                <ToolTip>
+                                                <ToolTip Style="{StaticResource GenericToolTipLight}">
                                                     <TextBlock Text="{x:Static p:Resources.DisableBuiltInPackageToggleInfo}" TextWrapping="Wrap" Width="300"/>
                                                 </ToolTip>
                                             </Image.ToolTip>
@@ -815,7 +827,7 @@
                                                VerticalAlignment="Center"
                                                Style="{StaticResource ToggleInfoStyle}">
                                             <Image.ToolTip>
-                                                <ToolTip>
+                                                <ToolTip Style="{StaticResource GenericToolTipLight}">
                                                     <TextBlock Text="{x:Static p:Resources.DisableCustomPackageToggleInfo}" TextWrapping="Wrap" Width="300"/>
                                                 </ToolTip> 
                                             </Image.ToolTip>
@@ -856,8 +868,11 @@
                    VerticalAlignment="Center"
                    Foreground ="{StaticResource PreferencesWindowFontColor}"
                    Margin="0,0,14,0"
-                   Content="{Binding SavedChangesLabel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                   ToolTip="{Binding SavedChangesTooltip, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                   Content="{Binding SavedChangesLabel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <Label.ToolTip>
+                    <ToolTip Content="{Binding SavedChangesTooltip, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource GenericToolTipLight}"/>
+                </Label.ToolTip>
+            </Label>
         </Grid>
     </Grid>
 </Window>

@@ -10,10 +10,12 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using Dynamo.Controls;
+using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -24,6 +26,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
     {
         #region Private Fields
         private static string WindowNamePopup = "PopupWindow";
+        private static readonly string NextButton = "NextButton";
+        private static string calculateLibraryFuncName = "CalculateLibraryItemLocation";
+        private static string libraryScrollToBottomFuncName = "LibraryScrollToBottom";
         #endregion
         #region Events
         //This event will be raised when a popup (Step) is closed by the user pressing the close button (PopupWindow.xaml).
@@ -221,7 +226,21 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //After UI Automation and calculate the target we need to highlight the element (otherwise probably won't exist)
             SetHighlightSection(true);
 
+            if (HostPopupInfo.WindowName != null  && HostPopupInfo.WindowName.Equals(nameof(LibraryView)))
+            {
+                var automationStep = (from automation in UIAutomation
+                                      where automation.Name.Equals(calculateLibraryFuncName)
+                                      select automation).FirstOrDefault();
+                GuidesValidationMethods.CalculateLibraryItemLocation(this, automationStep, true, Guide.GuideFlow.CURRENT);
+            }
+               
+
             stepUIPopup.IsOpen = true;
+
+            if (Guide.FindChild((this.StepUIPopup as PopupWindow).mainPopupGrid, NextButton) is Button nextbuttonFound)
+            {
+                nextbuttonFound.Focus();
+            }
         }
 
         /// <summary>
@@ -366,7 +385,41 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 UpdatePopupLocationInvoke(stepUiPopupWindow?.webBrowserWindow);
             }
         }
-        
+
+        /// <summary>
+        /// Update the Location of Popups only when they are located over the Library (HostPopupInfo.WindowName = LibraryView)
+        /// </summary>
+        public void UpdateLibraryPopupsLocation()
+        {
+            if (HostPopupInfo.WindowName != null && HostPopupInfo.WindowName.Equals(nameof(LibraryView)))
+            {
+                var automationScrollDownStep = (from automation in UIAutomation
+                                      where automation.Name.Equals(libraryScrollToBottomFuncName)
+                                      select automation).FirstOrDefault();
+                if (automationScrollDownStep == null) return;
+                GuidesValidationMethods.LibraryScrollToBottom(this, automationScrollDownStep, true, Guide.GuideFlow.CURRENT);
+
+                var automationCalculateStep = (from automation in UIAutomation
+                                      where automation.Name.Equals(calculateLibraryFuncName)
+                                      select automation).FirstOrDefault();
+                if (automationCalculateStep == null) return;
+                GuidesValidationMethods.CalculateLibraryItemLocation(this, automationCalculateStep, true, Guide.GuideFlow.CURRENT);
+            }
+        }
+
+      
+
+        /// <summary>
+        /// This method will update the Popup vertical location
+        /// </summary>
+        /// <param name="verticalPosition"></param>
+        internal void UpdatePopupVerticalPlacement(double verticalPosition)
+        {
+            stepUIPopup.VerticalOffset = verticalPosition + HostPopupInfo.VerticalPopupOffSet;
+            UpdatePopupLocationInvoke(stepUIPopup);
+        }
+
+
         private void UpdatePopupLocationInvoke(Popup popUp)
         {
             if(popUp != null && popUp.IsOpen)

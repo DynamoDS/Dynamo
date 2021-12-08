@@ -21,6 +21,8 @@ using Dynamo.Core;
 using Dynamo.Extensions;
 using System.Reflection;
 using System.Threading.Tasks;
+using Dynamo.UI.Prompts;
+using System.Windows.Controls.Primitives;
 
 namespace DynamoCoreWpfTests
 {
@@ -172,6 +174,8 @@ namespace DynamoCoreWpfTests
 
             var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(bltInPackage);
+
+            bltInPackage.SetAsLoaded();
 
             // Simulate the user downloading the same package from PM
             var mockGreg = new Mock<IGregClient>();
@@ -399,6 +403,8 @@ namespace DynamoCoreWpfTests
             var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(bltInPackage);
 
+            bltInPackage.SetAsLoaded();
+
             // Simulate the user downloading the a package from PM that has a dependency of the same name
             // as the installed built-in package.
             var mockGreg = new Mock<IGregClient>();
@@ -574,7 +580,8 @@ namespace DynamoCoreWpfTests
 
             // Load a package
             string packageLocation = Path.Combine(GetTestDirectory(ExecutingDirectory), @"pkgs\Package");
-            pkgLoader.ScanPackageDirectory(packageLocation);
+            var newpkg = pkgLoader.ScanPackageDirectory(packageLocation);
+            newpkg?.SetAsLoaded();
 
             var localPackage = pkgLoader.LocalPackages.Where(x => x.Name == "Package").FirstOrDefault();
             Assert.IsNotNull(localPackage);
@@ -654,6 +661,74 @@ namespace DynamoCoreWpfTests
                 It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(2));
             dlgMock.ResetCalls();
         }
+
+        [Test]
+        [Description("DynamoMessageBox converts button inputs correctly.")]
+        public void DynamoMessageBoxButtonCases()
+        {
+            var messageBox = new DynamoMessageBox();
+
+            messageBox.ConfigureButtons(MessageBoxButton.YesNoCancel);
+            Assert.AreEqual("Yes", messageBox.YesButton.Content);
+            Assert.AreEqual("No", messageBox.NoButton.Content);
+            Assert.AreEqual("Cancel", messageBox.CancelButton.Content);
+
+            messageBox.ConfigureButtons(MessageBoxButton.YesNoCancel, new string[] { "continue", "unload", "cancel" });
+            Assert.AreEqual("continue", messageBox.YesButton.Content);
+            Assert.AreEqual("unload", messageBox.NoButton.Content);
+            Assert.AreEqual("cancel", messageBox.CancelButton.Content);
+
+            messageBox = new DynamoMessageBox();
+
+            messageBox.ConfigureButtons(MessageBoxButton.OK);
+            Assert.AreEqual("OK", messageBox.OkButton.Content);
+
+            messageBox.ConfigureButtons(MessageBoxButton.OK, new string[] { "ok2" });
+            Assert.AreEqual("ok2", messageBox.OkButton.Content);
+
+            messageBox = new DynamoMessageBox();
+
+            messageBox.ConfigureButtons(MessageBoxButton.OKCancel);
+            Assert.AreEqual("OK", messageBox.OkButton.Content);
+            Assert.AreEqual("Cancel", messageBox.CancelButton.Content);
+
+            messageBox.ConfigureButtons(MessageBoxButton.OKCancel, new string[] { "1", "2" });
+            Assert.AreEqual("1", messageBox.OkButton.Content);
+            Assert.AreEqual("2", messageBox.CancelButton.Content);
+
+            messageBox = new DynamoMessageBox();
+
+            messageBox.ConfigureButtons(MessageBoxButton.YesNo);
+            Assert.AreEqual("Yes", messageBox.YesButton.Content);
+            Assert.AreEqual("No", messageBox.NoButton.Content);
+
+            messageBox.ConfigureButtons(MessageBoxButton.YesNo, new string[] { "1", "2" });
+            Assert.AreEqual("1", messageBox.YesButton.Content);
+            Assert.AreEqual("2", messageBox.NoButton.Content);
+        }
+      
+        [Test]
+        [Description("DynamoMessageBox buttons set correct results")]
+        public void DynamoMessageBoxButtonsSetCorrectly()
+        {
+            var messageBox = new DynamoMessageBox();
+            messageBox.YesButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.Yes, messageBox.CustomDialogResult);
+
+            messageBox.NoButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.No, messageBox.CustomDialogResult);
+
+            messageBox.CancelButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.Cancel, messageBox.CustomDialogResult);
+
+            messageBox.CloseButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.None, messageBox.CustomDialogResult);
+
+            messageBox.OkButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            Assert.AreEqual(MessageBoxResult.OK, messageBox.CustomDialogResult);
+        }
+
+
 
         [Test]
         [Description("User tries to load an unloaded built-in package")]
@@ -1093,11 +1168,78 @@ namespace DynamoCoreWpfTests
           
 
         }
-        #endregion
-
-        #region PackageManagerSearchView
 
         [Test]
+        [Description("User tries to download packages that might conflict with an unloaded builtIn package")]
+        public void PackageManagerConflictsUnloadedWithBltInPackage()
+        {
+            var pathMgr = ViewModel.Model.PathManager;
+            var pkgLoader = GetPackageLoader();
+            PathManager.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
+
+            // Load a builtIn package
+            var builtInPackageLocation = Path.Combine(BuiltinPackagesTestDir, "SignedPackage2");
+            pkgLoader.ScanPackageDirectory(builtInPackageLocation);
+
+            var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
+            Assert.IsNotNull(bltInPackage);
+
+            string expectedDownloadPath = "download/" + bltInPackage.Name + "/" + bltInPackage.VersionName;
+            // Simulate the user downloading the same package from PM
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Callback((Request x) => {
+                Assert.AreEqual(expectedDownloadPath, x.Path);
+            });
+
+            var client = new Dynamo.PackageManager.PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmVm = new PackageManagerClientViewModel(ViewModel, client);
+
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            //
+            // 1. User downloads the exact version of a builtIn package
+            //
+            {
+                var id = "test-123";
+                var deps = new List<Dependency>() { new Dependency() { _id = id, name = bltInPackage.Name } };
+                var depVers = new List<string>() { bltInPackage.VersionName };
+
+                mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+                .Returns(new ResponseWithContentBody<PackageVersion>()
+                {
+                    content = new PackageVersion()
+                    {
+                        version = bltInPackage.VersionName,
+                        engine_version = bltInPackage.EngineVersion,
+                        name = bltInPackage.Name,
+                        id = id,
+                        full_dependency_ids = deps,
+                        full_dependency_versions = depVers
+                    },
+                    success = true
+                });
+
+                // Set built in package as unloaded
+                bltInPackage.LoadState.SetAsUnloaded();
+
+                var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(bltInPackage.Name, VersionUtilities.PartialParse(bltInPackage.VersionName));
+                pmVm.DownloadAndInstallPackage(pkgInfo);
+
+                // Users should get 1 warning :
+                // 1. To confirm that they want to download the specified package.
+                dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
+                dlgMock.ResetCalls();
+            }
+        }
+            #endregion
+
+            #region PackageManagerSearchView
+
+            [Test]
         public void CanOpenPackageSearchDialogAndWindowIsOwned()
         {
             ViewModel.OnRequestPackageManagerSearchDialog(null, null);

@@ -9,6 +9,23 @@
     <!-- overflow-x setting is to disable unnecessary horizontal scroll bar -->
     <!-- input::-ms-clear setting is to disable unnecessary close button of search bar -->
     <style>
+
+        html {
+            font-size: 14px !important;
+        }
+
+        @media (min-resolution: 120dpi) {
+            html {
+                font-size: 18px !important;
+            }
+        }
+
+        @media (min-resolution: 170dpi) {
+            html {
+                font-size: 21px !important;
+            }
+        }
+
         body {
             padding: 0;
             margin: 0;
@@ -32,7 +49,6 @@
             scrollbar-arrow-color: #353535;
             scrollbar-shadow-color: #202020;
             scrollbar-width: thin;
-            font-size: 12px;
         }
 
         input::-ms-clear {
@@ -80,14 +96,15 @@
             padding-top: 0.5rem;
         }
 
-        .SearchFilterPanel label.Category > *{
+        .SearchFilterPanel label.Category > * {
             margin-top: 0.15rem;
+            vertical-align: top !important;
         }
     </style>
 
 </head>
 
-<body>
+<body onresize="bodyResizeEvent()">
     <!-- Placeholders must exist before all other scripts that try to access them -->
     <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
     <!-- The main library view component -->
@@ -167,8 +184,6 @@
             libController.setLayoutSpecsJson(JSON.parse(layoutSpec) , append);
             libController.refreshLibraryView(); // Refresh library view.
 
-            adaptDPI();
-
             //update image src properties after dom is updated.
             setTimeout(function () {
                 replaceImages();
@@ -231,35 +246,6 @@
 
         //Update the view with contents the first time.
         window.external.notify("requestUpdateLibrary");
-
-        function getDPIScale() {
-            var dpi = 96.0;
-            if (window.screen.deviceXDPI != undefined) {
-                dpi = window.screen.deviceXDPI;
-            }
-            else {
-                var tmpNode = document.createElement("DIV");
-                tmpNode.style.cssText = "width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden";
-                document.body.appendChild(tmpNode);
-                dpi = parseInt(tmpNode.offsetWidth);
-                tmpNode.parentNode.removeChild(tmpNode);   
-            }
-
-            return dpi / 96.0;
-        }
-
-        function adaptDPI() {
-            var dpiScale = getDPIScale();
-
-            var libraryHeader = document.getElementsByClassName("LibraryHeader")[0];
-            libraryHeader.style.zoom = dpiScale;
-            
-            var widthPercentage = (100.0 / dpiScale).toString() + '%';
-            libraryHeader.style.width = widthPercentage;
-
-            var libraryItemsContainer = document.getElementsByClassName("LibraryItemContainer")[0];
-            libraryItemsContainer.style.zoom = dpiScale;
-        }
 
         //This will find a specific div in the html and then it will apply the glow animation on it
         function highlightLibraryItem(itemName, enableHighlight) {
@@ -381,6 +367,37 @@
             }          
         }
 
+        //get information about the current position of a specific div element, if the WebBrowser is resized the values will change
+        function getDocumentClientRect(divElement) {
+            var targetDiv = findPackageDiv(divElement);
+            if (targetDiv == null) return;
+            var rect = targetDiv.parentNode.getBoundingClientRect();
+            var clientRectDiv = {
+                "width": rect.width,
+                "height": rect.height,
+                "top": rect.top,
+                "bottom": rect.bottom
+            }
+            var documentSize = {
+                "width": document.body.clientWidth,
+                "height": document.body.clientHeight
+            }
+            var locationInfo = {
+                "document": documentSize,
+                "client": clientRectDiv
+            }     
+            return JSON.stringify(locationInfo);
+        }
+
+        //scroll down until the bottom of the page so the AddOns always be visible
+        function scrollToBottom() {
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        //This method will be executed when the WebBrowser change its size, so we can update the Popup vertical location that is over the library
+        function bodyResizeEvent() {
+            window.external.notify(JSON.stringify({ "func": "ResizedEvent", "data": "" }));
+        }
     </script>
 
 </body>
