@@ -67,7 +67,7 @@
                                       HorizontalAlignment="Right"
                                       VerticalAlignment="Center"
                                       Data="M0,0 L4.5,4.5 L9,0"
-                                      Stroke="#6AC0E7"
+                                      Stroke="{StaticResource Blue300Brush}"
                                       Fill="Transparent"
                                       StrokeEndLineCap="Round"
                                       StrokeStartLineCap="Round"
