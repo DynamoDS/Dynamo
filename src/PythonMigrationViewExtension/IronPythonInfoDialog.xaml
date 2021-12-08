@@ -71,7 +71,10 @@
                             </ListBox.CommandBindings>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Margin="0,2" ToolTip="{x:Static w:Resources.PackagedCustomNodesTooltip}">
+                                    <Grid Margin="0,2">
+                                        <Grid.ToolTip>
+                                            <ToolTip Content="{x:Static w:Resources.PackagedCustomNodesTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                        </Grid.ToolTip>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="100" />
                                             <ColumnDefinition Width="*" />
@@ -91,7 +94,10 @@
                             </ListBox.CommandBindings>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Margin="0,2" ToolTip="{x:Static w:Resources.UserDefinitionCustomNodesTooltip}">
+                                    <Grid Margin="0,2">
+                                        <Grid.ToolTip>
+                                            <ToolTip Content="{x:Static w:Resources.UserDefinitionCustomNodesTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                        </Grid.ToolTip>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
