@@ -382,6 +382,20 @@
 						"ElementName": "NextButton",
 						"Action": "execute",
 						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
 					}
 				]
 			},
@@ -424,6 +438,21 @@
 						"Action": "execute",
 						"UpdatePlacementTarget": true
 					},					
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
+					},
 					{
 						"Sequence": 1,
 						"ControlType": "button",
@@ -486,6 +515,20 @@
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
 					}
 				]
 			},
@@ -521,6 +564,20 @@
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
 					}
 				]
 			},
@@ -543,6 +600,21 @@
 						"ExecuteCleanUpForward": true,
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					}
 				],
@@ -616,6 +688,20 @@
 						"ExecuteCleanUpForward": true,
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					}
 				]
