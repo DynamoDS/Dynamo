@@ -57,7 +57,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-                <Border Background="{StaticResource WorkspaceBackgroundBrush}"
+                <Border Background="{StaticResource ExtensionBackgroundColor}"
                     Padding="0"
                     CornerRadius="8,8,0,0">
                 <Grid>
