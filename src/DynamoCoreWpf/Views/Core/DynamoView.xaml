@@ -184,7 +184,7 @@
           PreviewMouseLeftButtonUp="Window_PreviewMouseLeftButtonUp">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="45px" />
+            <RowDefinition Height="37px" />
             <RowDefinition Height="40px" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
