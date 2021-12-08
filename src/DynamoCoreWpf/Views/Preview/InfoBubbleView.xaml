@@ -412,7 +412,7 @@
                                                                                 DockPanel.Dock="Right"
                                                                                 Style="{StaticResource DismissButtonStyle}">
                                                                             <Button.ToolTip>
-                                                                                <ToolTip Content="{x:Static p:Resources.NodeInfoDismissButtonToolTip}" Style="{StaticResource ToolTipSelfWrapping}" />
+                                                                                <ToolTip Content="{x:Static p:Resources.NodeInfoDismissButtonToolTip}" Style="{StaticResource GenericToolTipLight}" />
                                                                             </Button.ToolTip>
                                                                         </Button>
                                                                     </Grid>
@@ -483,7 +483,7 @@
                                                                                 DockPanel.Dock="Right"
                                                                                 Style="{StaticResource DismissButtonStyle}">
                                                                             <Button.ToolTip>
-                                                                                <ToolTip Content="{x:Static p:Resources.NodeWarningDismissButtonToolTip}" Style="{StaticResource ToolTipSelfWrapping}" />
+                                                                                <ToolTip Content="{x:Static p:Resources.NodeWarningDismissButtonToolTip}" Style="{StaticResource GenericToolTipLight}" />
                                                                             </Button.ToolTip>
                                                                         </Button>
                                                                     </Grid>

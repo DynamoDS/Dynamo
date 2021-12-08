@@ -58,8 +58,10 @@
                       ItemsSource="{Binding SelectedFromConversionSource}"
                       SelectedItem="{Binding SelectedFromConversion, Mode=TwoWay}"
                       Style="{StaticResource RefreshComboBox}"
-                      ToolTip="{Binding SelectionFromBoxToolTip}"
                       ToolTipService.ShowOnDisabled="True">
+                <ComboBox.ToolTip>
+                    <ToolTip Content="{Binding SelectionFromBoxToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                </ComboBox.ToolTip>
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Converter={StaticResource UnitToTextConverter}}" />
