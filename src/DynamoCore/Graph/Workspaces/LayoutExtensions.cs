@@ -155,6 +155,15 @@ namespace Dynamo.Graph.Workspaces
 
             foreach (NoteModel note in workspace.Notes)
             {
+                // If the note is pinned to a node we dont want to
+                // modify its posistion as it is tied to the node.
+                if (note.PinnedNode != null)
+                {
+                    var graphNode = combinedGraph.FindNode(note.PinnedNode.GUID);
+                    graphNode.LinkNote(note, note.Width, note.Height);
+                    continue;
+                }
+
                 AnnotationModel group = workspace.Annotations.Where(
                     g => g.Nodes.Contains(note)).ToList().FirstOrDefault();
 
@@ -471,6 +480,7 @@ namespace Dynamo.Graph.Workspaces
 
                     foreach (NoteModel note in n.LinkedNotes)
                     {
+                        if (note.PinnedNode != null) continue;
                         if (note.IsSelected || DynamoSelection.Instance.Selection.Count == 0)
                         {
                             note.X += deltaX;
@@ -500,6 +510,7 @@ namespace Dynamo.Graph.Workspaces
                     double noteOffset = -n.NotesHeight;
                     foreach (NoteModel note in n.LinkedNotes)
                     {
+                        if (note.PinnedNode != null) continue;
                         if (note.IsSelected || DynamoSelection.Instance.Selection.Count == 0)
                         {
                             note.X = node.X;
@@ -558,6 +569,7 @@ namespace Dynamo.Graph.Workspaces
                     double noteOffset = -n.NotesHeight;
                     foreach (NoteModel note in n.LinkedNotes)
                     {
+                        if (note.PinnedNode != null) continue;
                         if (note.IsSelected || DynamoSelection.Instance.Selection.Count == 0)
                         {
                             note.X = node.X;
