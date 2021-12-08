@@ -26,6 +26,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
     {
         #region Private Fields
         private static string WindowNamePopup = "PopupWindow";
+        private static readonly string NextButton = "NextButton";
         private static string calculateLibraryFuncName = "CalculateLibraryItemLocation";
         private static string libraryScrollToBottomFuncName = "LibraryScrollToBottom";
         #endregion
@@ -235,6 +236,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
                
 
             stepUIPopup.IsOpen = true;
+
+            if (Guide.FindChild((this.StepUIPopup as PopupWindow).mainPopupGrid, NextButton) is Button nextbuttonFound)
+            {
+                nextbuttonFound.Focus();
+            }
         }
 
         /// <summary>
