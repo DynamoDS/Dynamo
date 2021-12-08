@@ -72,8 +72,96 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <Style TargetType="ToolTip">
+                <Style.Resources>
+                    <Style TargetType="ContentPresenter">
+                        <Style.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="Wrap" />
+                            </Style>
+                        </Style.Resources>
+                    </Style>
+                </Style.Resources>
+                <Setter Property="MaxWidth" Value="300" />
+            </Style>
+            <DataTemplate x:Key="PackagesHeader">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontSize="14" Grid.Column="0"
+                   FontWeight="Medium"
+                   Text="{Binding}" />
+                    <Image Grid.Column="1" Margin="10,0,0,0" Width="14" Height="14" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" VerticalAlignment="Center">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="ToolTip" Value="{x:Static w:Resources.PackagesToolTip}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="LocalDefinitionsHeader">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontSize="14" Grid.Column="0"
+                   FontWeight="Medium"
+                   Text="{Binding}" />
+                    <Image Grid.Column="1" Margin="10,0,0,0" Width="14" Height="14" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" VerticalAlignment="Center">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="ToolTip" Value="{x:Static w:Resources.LocalDefinitionsToolTip}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="ExternalFilesHeader">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontSize="14" Grid.Column="0"
+                   FontWeight="Medium"
+                   Text="{Binding}" />
+                    <Image Grid.Column="1" Margin="10,0,0,0" Width="14" Height="14" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" VerticalAlignment="Center">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="ToolTip" Value="{x:Static w:Resources.ExternalFilesToolTip}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Grid>
+            </DataTemplate>
+            <Style x:Key="PackagesExpanderStyle" TargetType="Expander" BasedOn="{StaticResource WorkspaceReferencesExpanderStyle}">
+                <Setter Property="HeaderTemplate" Value="{StaticResource PackagesHeader}" />
+            </Style>
+            <Style x:Key="LocalDefinitionsExpanderStyle" TargetType="Expander" BasedOn="{StaticResource WorkspaceReferencesExpanderStyle}">
+                <Setter Property="HeaderTemplate" Value="{StaticResource LocalDefinitionsHeader}" />
+            </Style>
+            <Style x:Key="ExternalFilesExpanderStyle" TargetType="Expander" BasedOn="{StaticResource WorkspaceReferencesExpanderStyle}">
+                <Setter Property="HeaderTemplate" Value="{StaticResource ExternalFilesHeader}" />
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
+
     <Grid Background= "#353535">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -86,7 +174,7 @@
         <!-- Packages information-->
         <Expander x:Name="Packages"
                   Grid.Row="0"  
-                  Style="{StaticResource WorkspaceReferencesExpanderStyle}"
+                  Style="{StaticResource PackagesExpanderStyle}"
                   Header="{x:Static w:Resources.PackageHeaderText}">
             <DataGrid 
                 Name="PackageDependencyTable" 
@@ -203,7 +291,7 @@
         <!-- Local definitions information-->
         <Expander x:Name="LocalDefinitions"
                   Grid.Row="1"  
-                  Style="{StaticResource WorkspaceReferencesExpanderStyle}"
+                  Style="{StaticResource LocalDefinitionsExpanderStyle}"
                   Header="{x:Static w:Resources.LocalDefinitionsHeaderText}">
             <DataGrid
                 Name="LocalDefinitionsTable"
@@ -290,7 +378,7 @@
         <!-- External Files information-->
         <Expander x:Name="ExternalFiles"
                   Grid.Row="2"  
-                  Style="{StaticResource WorkspaceReferencesExpanderStyle}"
+                  Style="{StaticResource ExternalFilesExpanderStyle}"
                   Header="{x:Static w:Resources.ExternalFilesHeaderText}">
             <DataGrid
                 Name="ExternalFilesTable"
