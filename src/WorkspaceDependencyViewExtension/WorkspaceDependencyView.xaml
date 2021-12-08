@@ -93,7 +93,7 @@
                     <TextBlock Grid.Column="0" FontSize="14" FontWeight="Medium" Text="{Binding}" />
                     <Image Grid.Column="1" Margin="10,0,0,0" Width="14" Height="14" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" VerticalAlignment="Center">
                         <Image.ToolTip>
-                            <ToolTip Content="{x:Static w:Resources.PackagesToolTip}"/>
+                            <ToolTip Content="{x:Static w:Resources.PackagesToolTip}" Style="{StaticResource GenericToolTipLight}"/>
                         </Image.ToolTip>
                     </Image>
                 </Grid>
@@ -107,7 +107,7 @@
                     <TextBlock Grid.Column="0" FontSize="14" FontWeight="Medium" Text="{Binding}" />
                     <Image Grid.Column="1" Margin="10,0,0,0" Width="14" Height="14" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" VerticalAlignment="Center">
                         <Image.ToolTip>
-                            <ToolTip Content="{x:Static w:Resources.LocalDefinitionsToolTip}"/>
+                            <ToolTip Content="{x:Static w:Resources.LocalDefinitionsToolTip}" Style="{StaticResource GenericToolTipLight}"/>
                         </Image.ToolTip>
                     </Image>
                 </Grid>
@@ -121,7 +121,7 @@
                     <TextBlock Grid.Column="0" FontSize="14" FontWeight="Medium" Text="{Binding}" />
                     <Image Grid.Column="1" Margin="10,0,0,0" Width="14" Height="14" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" VerticalAlignment="Center">
                         <Image.ToolTip>
-                            <ToolTip Content="{x:Static w:Resources.ExternalFilesToolTip}"/>
+                            <ToolTip Content="{x:Static w:Resources.ExternalFilesToolTip}" Style="{StaticResource GenericToolTipLight}"/>
                         </Image.ToolTip>
                     </Image>
                 </Grid>
