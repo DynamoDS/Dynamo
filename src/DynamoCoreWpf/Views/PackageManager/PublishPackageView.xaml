@@ -705,6 +705,7 @@
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
                         <DataGridTemplateColumn MinWidth="90"
+                                                Width="*"
                                                 Header="Target Path"
                                                 HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
                                                 IsReadOnly="True">
