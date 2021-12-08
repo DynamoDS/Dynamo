@@ -28,7 +28,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static GuidesManager CurrentExecutingGuidesManager;
         
         private static ExitGuide exitGuide;
-        private const string AutodeskSamplePackage = "Sample View Extension";
+        private const string AutodeskSamplePackage = "Dynamo Samples";
         private static PackageManagerSearchViewModel viewModel;
         private static PackageDownloadHandle packageDownloadHandle;
 
@@ -117,8 +117,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
             else
             {
-                //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
-                Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+                //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously (just if the flow if FORWARD from Step6 to Step7)
+                if (uiAutomationData.ExecuteCleanUpForward && currentFlow == GuideFlow.FORWARD)
+                    Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
             }
         }
 
