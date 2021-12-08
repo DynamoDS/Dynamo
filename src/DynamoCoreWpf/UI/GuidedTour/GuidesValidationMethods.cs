@@ -31,6 +31,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private const string AutodeskSamplePackage = "Dynamo Samples";
         private static PackageManagerSearchViewModel viewModel;
         private static PackageDownloadHandle packageDownloadHandle;
+        private static Button CloseButtonSearchPackages;
 
         private static Action<object, System.ComponentModel.PropertyChangedEventArgs> searchPackagesPropertyChanged;
         private static bool searchPackagesLoaded;
@@ -94,6 +95,39 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
                 Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+            }
+        }
+
+        /// <summary>
+        /// This method will be executed when packages search window is opened, so it can identify the close button of the window
+        /// </summary>
+        /// <param name="stepInfo"></param>
+        /// <param name="uiAutomationData"></param>
+        /// <param name="enableFunction"></param>
+        /// <param name="currentFlow"></param>
+        internal static void ExecuteClosePackagesSearch(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            if (enableFunction)
+            {
+                CurrentExecutingStep = stepInfo;
+
+                if (stepInfo.ExitGuide != null)
+                    exitGuide = stepInfo.ExitGuide;
+
+                Window ownedWindow = Guide.FindWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+
+                foreach (var handler in uiAutomationData.AutomaticHandlers)
+                {
+                    if (ownedWindow == null) return;
+
+                    CloseButtonSearchPackages = Guide.FindChild(ownedWindow, handler.HandlerElement) as Button;
+                    CloseButtonSearchPackages.Click += CloseButton_Click;
+                }
+            }
+            else
+            {
+                if(CloseButtonSearchPackages != null)
+                    CloseButtonSearchPackages.Click -= CloseButton_Click;
             }
         }
 
@@ -175,7 +209,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             var eventHandlerMethod = validationMethods.GetType().GetMethod(methodname, BindingFlags.NonPublic | BindingFlags.Instance);           
 
             Delegate del = Delegate.CreateDelegate(eventInfo.EventHandlerType, validationMethods, eventHandlerMethod);
-
+            
             if (addEvent)
                 eventInfo.AddEventHandler(element, del);
             else
@@ -206,7 +240,22 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        internal void CloseButton_Click(object sender, RoutedEventArgs e)
+        internal void DeclineButton_Click(object sender, RoutedEventArgs e)
+        {
+            CloseTour();
+        }
+
+        /// <summary>
+        /// This method will be executed when the close Button is clicked in the packages search window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        internal static void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            CloseTour();
+        }
+
+        private static void CloseTour()
         {
             CurrentExecutingGuide.HideCurrentStep(CurrentExecutingStep.Sequence, GuideFlow.FORWARD);
             CurrentExecutingGuidesManager.CreateExitModal(exitGuide);
