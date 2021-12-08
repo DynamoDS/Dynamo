@@ -181,6 +181,12 @@ namespace Dynamo.PackageManager
         /// </summary>
         public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
 
+        private string copyrightHolder = "";
+        public string CopyrightHolder { get { return copyrightHolder; } set { copyrightHolder = value; RaisePropertyChanged("CopyrightHolder"); } }
+
+        private string copyrightYear = "";
+        public string CopyrightYear { get { return copyrightYear; } set { copyrightYear = value; RaisePropertyChanged("CopyrightYear"); } }
+
         internal bool BuiltInPackage
         {
             get { return RootDirectory.StartsWith(PathManager.BuiltinPackagesDirectory); }
@@ -283,6 +289,8 @@ namespace Dynamo.PackageManager
                     SiteUrl = body.site_url,
                     RepositoryUrl = body.repository_url,
                     HostDependencies = body.host_dependencies,
+                    CopyrightHolder = body.copyright_holder,
+                    CopyrightYear = body.copyright_year,
                     Header = body
                 };
                 

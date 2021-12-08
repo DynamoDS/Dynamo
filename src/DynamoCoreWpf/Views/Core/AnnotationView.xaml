@@ -11,6 +11,7 @@
              xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:nodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore"
              mc:Ignorable="d"
              Height="Auto"
              Width="Auto"
@@ -196,7 +197,28 @@
                                                       HorizontalAlignment="Left">
                                     </ContentPresenter>
 
-                                    <!--Expander button-->
+                                    <!--  Warning/Error Icon  -->
+                                    <Image Grid.Column="0"
+                                           Width="16px"
+                                           Height="16px"
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Right"
+                                           Margin="0,0,2.5,2.5">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AnnotationModel.GroupState}" Value="{x:Static nodes:ElementState.Warning}">
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/warning.png"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding AnnotationModel.GroupState}" Value="{x:Static nodes:ElementState.Error}">
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/error.png"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+
+                                           <!--Expander button-->
                                     <ToggleButton OverridesDefaultStyle="True"
                                                   Grid.Column="1"
                                                   Margin="0,0,0,2.5"
@@ -251,120 +273,6 @@
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
             <ContextMenu Background="#666666" Style="{StaticResource ContextMenuStyle}">
-                <ContextMenu.Resources>
-                    <ResourceDictionary>
-                        <Style TargetType="{x:Type MenuItem}">
-                            <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
-                            <Setter Property="Width" Value="200" />
-                            <Setter Property="Padding" Value="20,0,20,0" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type MenuItem}">
-                                        <DockPanel x:Name="dockPanel"
-                                                   HorizontalAlignment="Stretch"
-                                                   Background="Transparent"
-                                                   SnapsToDevicePixels="true">
-                                            <Label x:Name="checkBox"
-                                                   Margin="2,0,-20,0"
-                                                   HorizontalAlignment="Left"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalContentAlignment="Center"
-                                                   VerticalContentAlignment="Center"
-                                                   Content="✓"
-                                                   DockPanel.Dock="Left"
-                                                   FontSize="9px"
-                                                   Foreground="White"
-                                                   Visibility="Collapsed" />
-                                            <ContentPresenter x:Name="ContentPresenter"
-                                                              Margin="{TemplateBinding Padding}"
-                                                              VerticalAlignment="Center"
-                                                              ContentSource="Header"
-                                                              DockPanel.Dock="Left"
-                                                              RecognizesAccessKey="True"
-                                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                              TextBlock.Foreground="{StaticResource NodeContextMenuForeground}" />
-                                            <Label x:Name="subMenuArrow"
-                                                   Margin="0,0,15,7"
-                                                   Padding="0"
-                                                   VerticalAlignment="Center"
-                                                   Content="&gt;"
-                                                   DockPanel.Dock="Right"
-                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                   FontSize="13px"
-                                                   Foreground="{StaticResource Blue300Brush}">
-                                                <Label.RenderTransform>
-                                                    <ScaleTransform ScaleX="1" ScaleY="1.5" />
-                                                </Label.RenderTransform>
-                                                <Label.Style>
-                                                    <Style TargetType="{x:Type Label}">
-                                                        <Setter Property="Visibility" Value="Hidden" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Label.Style>
-                                            </Label>
-                                            <Popup x:Name="PART_Popup"
-                                                   AllowsTransparency="true"
-                                                   Focusable="false"
-                                                   HorizontalOffset="0"
-                                                   IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                                   Placement="Right"
-                                                   VerticalOffset="-2">
-                                                <Border Background="{TemplateBinding Background}"
-                                                        BorderBrush="Transparent"
-                                                        BorderThickness="0">
-                                                    <ScrollViewer x:Name="SubMenuScrollViewer"
-                                                                  CanContentScroll="true"
-                                                                  Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
-                                                                                                                TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                                        <Grid RenderOptions.ClearTypeHint="Enabled">
-                                                            <ItemsPresenter x:Name="ItemsPresenter"
-                                                                            Margin="2"
-                                                                            Grid.IsSharedSizeScope="true"
-                                                                            KeyboardNavigation.DirectionalNavigation="Cycle"
-                                                                            KeyboardNavigation.TabNavigation="Cycle"
-                                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                                        </Grid>
-                                                    </ScrollViewer>
-                                                </Border>
-                                            </Popup>
-                                        </DockPanel>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
-                                                <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="False">
-                                                <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
-                                            </Trigger>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                        <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
-                            <Setter Property="OverridesDefaultStyle" Value="true" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type Separator}">
-                                        <Border Height="1"
-                                                Margin="20,8,20,8"
-                                                Background="{StaticResource NodeContextMenuSeparatorColor}" />
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ResourceDictionary>
-                </ContextMenu.Resources>
                 <MenuItem Name="DeleteAnnotation"
                           Click="OnDeleteAnnotation"
                           Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}" />
@@ -430,6 +338,7 @@
                 </MenuItem>
                 <ListBox ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
                          SelectionChanged="OnNodeColorSelectionChanged"
+                         Height="Auto"
                          Style="{StaticResource ColorSelectorListBox}">
                     <ListBox.Items>
                         <Rectangle Fill="#d4b6db" />

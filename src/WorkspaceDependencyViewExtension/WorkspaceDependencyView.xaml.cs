@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Web;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -15,7 +15,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using DynamoUtilities;
-using Dynamo.Logging;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -299,7 +298,7 @@ namespace Dynamo.WorkspaceDependency
             {
                 var info = ((PackageDependencyRow)((Button)sender).DataContext).DependencyInfo;
                 UpdateWorkspaceToUseInstalledPackage(info);
-                Analytics.TrackEvent(Actions.KeepOldPackage, Categories.WorkspaceReferencesOperations, info.Name);
+                Analytics.TrackEvent(Actions.KeepOld, Categories.WorkspaceReferencesOperations, info.Name);
             }
             catch (Exception ex)
             {

@@ -19,6 +19,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
             <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
@@ -103,7 +104,10 @@
             </Grid.ColumnDefinitions>
             
             <Grid Grid.Row="1" Grid.Column="0"
-                  Width="20" Margin="-35,0,0,0" ToolTip="{x:Static p:Resources.CreateMember}">
+                  Width="20" Margin="-35,0,0,0">
+                <Grid.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.CreateMember}" Style="{StaticResource GenericToolTipLight}"/>
+                </Grid.ToolTip>
                 <Rectangle Fill="Transparent" />
                 <fa:ImageAwesome Icon="plus"
                                  Foreground="{StaticResource CreateMembersColor}"
@@ -136,7 +140,10 @@
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </Border.Visibility>
 
-                <Grid  Width="12" Margin="-40,0,0,0" ToolTip="{x:Static p:Resources.ActionMember}">
+                <Grid  Width="12" Margin="-40,0,0,0">
+                    <Grid.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.ActionMember}" Style="{StaticResource GenericToolTipLight}"/>
+                    </Grid.ToolTip>
                     <Rectangle Fill="Transparent" />
                     <fa:ImageAwesome Icon="LightningBolt"
                                      Foreground="{StaticResource ActionMembersColor}"
@@ -175,7 +182,10 @@
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </Border.Visibility>
 
-                <Grid  Width="12" Margin="-40,0,0,0" ToolTip="{x:Static p:Resources.QueryMember}">
+                <Grid  Width="12" Margin="-40,0,0,0">
+                    <Grid.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.QueryMember}" Style="{StaticResource GenericToolTipLight}"/>
+                    </Grid.ToolTip>
                     <Rectangle Fill="Transparent" />
                     <fa:ImageAwesome Icon="Question"
                                      Foreground="{StaticResource QueryMembersColor}"

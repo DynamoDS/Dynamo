@@ -18,6 +18,7 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
+using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -74,7 +75,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             {
                 return;
             }
-         
+
             try
             {
                 //a simple refresh of the libary is requested from js context.
@@ -127,6 +128,15 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                     controller.browser.
                      InvokeScript("completeSearch", results);
                     searchReader.Dispose();
+                }
+                //When the html <div> that contains the sample package is clicked then we will be moved to the next Step in the Guide
+                else if (funcName == "NextStep")
+                {
+                    controller.MoveToNextStep();
+                }
+                else if (funcName == "ResizedEvent")
+                {
+                    controller.UpdatePopupLocation();
                 }
             }
             catch (Exception e)
@@ -375,13 +385,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
             LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel, this, this.customization);
-
-            browser.DpiChanged += Browser_DpiChanged;
-        }
-
-        private void Browser_DpiChanged(object sender, DpiChangedEventArgs e)
-        {
-            browser.InvokeScript("adaptDPI");
         }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
@@ -396,6 +399,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             if (browser != null)
             {
                 browser.InvalidateVisual();
+                UpdatePopupLocation();
             }
         }
 
@@ -564,6 +568,20 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         }
 
         /// <summary>
+        /// This method will execute the action of moving the Guide to the next Step (it is triggered when a specific html div that contains the package is clicked).
+        /// </summary>
+        internal void MoveToNextStep()
+        {
+            GuideFlowEvents.OnGuidedTourNext();
+        }
+
+        //This method will be called when the Library was resized and the current Popup location needs to be updated
+        internal void UpdatePopupLocation()
+        {
+            GuideFlowEvents.OnUpdatePopupLocation();
+        }
+
+        /// <summary>
         /// Convenience method for logging to Dynamo Console.
         /// </summary>
         /// <param name="meessage"></param>
@@ -594,7 +612,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             {
                 browser.SizeChanged -= Browser_SizeChanged;
                 browser.Loaded -= Browser_Loaded;
-                browser.DpiChanged -= Browser_DpiChanged;
                 browser.Dispose();
                 browser = null;
             }

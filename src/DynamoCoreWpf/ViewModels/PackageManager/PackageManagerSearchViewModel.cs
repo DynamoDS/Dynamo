@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.ViewModels;
@@ -87,7 +88,7 @@ namespace Dynamo.PackageManager
             /// Constructor
             /// </summary>
             /// <param name="filterName">Filter name, same as host name</param>
-            /// <param name="pmSearchViewModel">a reference of the PackageManagerSearchViewModel</param>
+            /// <param name="packageManagerSearchViewModel">a reference of the PackageManagerSearchViewModel</param>
             public FilterEntry(string filterName, PackageManagerSearchViewModel packageManagerSearchViewModel)
             {
                 FilterName = filterName;
@@ -121,6 +122,11 @@ namespace Dynamo.PackageManager
                 {
                     pmSearchViewModel.SelectedHosts.Remove(obj as string);
                 }
+                // Send filter event with what host filter user using
+                Dynamo.Logging.Analytics.TrackEvent(
+                    Actions.Filter,
+                    Categories.PackageManagerOperations,
+                    string.Join(",", pmSearchViewModel.SelectedHosts));
                 pmSearchViewModel.SearchAndUpdateResults();
                 return;
             }

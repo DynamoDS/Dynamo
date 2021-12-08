@@ -11,7 +11,9 @@ using Dynamo.PackageManager.ViewModels;
 using Dynamo.ViewModels;
 using static Dynamo.PackageManager.PackageManagerSearchViewModel;
 using static Dynamo.Wpf.UI.GuidedTour.Guide;
-using Res = Dynamo.Wpf.Properties.Resources;
+using Dynamo.Wpf.Views.GuidedTour;
+using Dynamo.Utilities;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -26,7 +28,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal static GuidesManager CurrentExecutingGuidesManager;
         
         private static ExitGuide exitGuide;
-        private const string AutodeskSamplePackage = "Sample View Extension";
+        private const string AutodeskSamplePackage = "Dynamo Samples";
         private static PackageManagerSearchViewModel viewModel;
         private static PackageDownloadHandle packageDownloadHandle;
 
@@ -115,8 +117,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
             else
             {
-                //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously
-                Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
+                //Tries to close the TermsOfUseView or the PackageManagerSearchView if they were opened previously (just if the flow if FORWARD from Step6 to Step7)
+                if (uiAutomationData.ExecuteCleanUpForward && currentFlow == GuideFlow.FORWARD)
+                    Guide.CloseWindowOwned(stepInfo.HostPopupInfo.WindowName, stepInfo.MainWindow as Window);
             }
         }
 
@@ -171,7 +174,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             Delegate del = Delegate.CreateDelegate(eventInfo.EventHandlerType, validationMethods, eventHandlerMethod);
 
-            if(addEvent)
+            if (addEvent)
                 eventInfo.AddEventHandler(element, del);
             else
                 eventInfo.RemoveEventHandler(element, del);
@@ -329,6 +332,50 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
+        /// This method will subscribe the Next button from the Step8 Popup for clicking the Package already installed (then it will be expanded).
+        /// </summary>
+        /// <param name="stepInfo">Information about the Step</param>
+        /// <param name="uiAutomationData">Specific UI Automation step that is being executed</param>
+        /// <param name="enableFunction">it says if the functionality should be enabled or disabled</param>
+        /// <param name="currentFlow">The current flow of the Guide can be FORWARD or BACKWARD</param>
+        internal static void SubscribeNextButtonClickEvent(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+            //if there is not handler then the function should return
+            if (uiAutomationData.AutomaticHandlers == null || uiAutomationData.AutomaticHandlers.Count == 0) return;
+            //Due that only one handler was configured we get the first one
+            var automaticHandler = uiAutomationData.AutomaticHandlers.FirstOrDefault();
+            //Find the NextButton inside the Popup
+            var nextbuttonFound = Guide.FindChild((CurrentExecutingStep.StepUIPopup as PopupWindow).mainPopupGrid, automaticHandler.HandlerElement) as Button;
+            if (nextbuttonFound == null) return;
+            //Add or Remove the handler assigned to the Button.Click
+            ManageEventHandler(nextbuttonFound, automaticHandler.HandlerElementEvent, automaticHandler.ExecuteMethod, enableFunction);
+            
+        }
+
+        /// <summary>
+        /// This handler will be executed when clicking the next button in the Step 8 Popup so it will be expanding the package content in the LibraryView
+        /// </summary>
+        /// <param name="sender">Next Button</param>
+        /// <param name="e">Event Arguments</param>
+        internal void ExecuteAutomaticPackage_Click(object sender, RoutedEventArgs e)
+        {
+            CollapseExpandPackage(CurrentExecutingStep);
+        }
+
+        /// <summary>
+        /// This method will call the collapseExpandPackage javascript method with reflection, so the package expander in LibraryView will be clicked
+        /// </summary>
+        internal static void CollapseExpandPackage(Step stepInfo)
+        {
+            CurrentExecutingStep = stepInfo;
+            var firstUIAutomation = stepInfo.UIAutomation.FirstOrDefault();
+            if (firstUIAutomation == null) return;
+            object[] parametersInvokeScript = new object[] { firstUIAutomation.JSFunctionName, new object[] { firstUIAutomation.JSParameters.FirstOrDefault() } };
+            ResourceUtilities.ExecuteJSFunction(stepInfo.MainWindow, stepInfo.HostPopupInfo, parametersInvokeScript);
+        }
+
+        /// <summary>
         /// When the "Search for a Package" MenuItem is clicked this method will be executed moving to the next Step
         /// </summary>
         /// <param name="sender">MenuItem</param>
@@ -432,6 +479,43 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     return;
                 dynamoView.CloseExtensionTab(closeButton, null);
             }
+        }
+
+        /// <summary>
+        /// This method will calculate the Popup location based in a item from the Library
+        /// </summary>
+        internal static void CalculateLibraryItemLocation(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+            if (uiAutomationData == null) return;
+            var jsFunctionName = uiAutomationData.JSFunctionName;
+            object[] jsParameters = new object[] { uiAutomationData.JSParameters[0] };
+            //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
+            object[] parametersInvokeScript = new object[] { jsFunctionName, jsParameters };
+            //Execute the JS function with the provided parameters
+            var returnedObject = ResourceUtilities.ExecuteJSFunction(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo, parametersInvokeScript);
+            if (returnedObject == null) return;
+            //Due that the returned object is a json then we get the values from the json
+            JObject json = JObject.Parse(returnedObject.ToString());
+            double top = Convert.ToDouble(json["client"]["top"].ToString());
+            double bottom = Convert.ToDouble(json["client"]["bottom"].ToString());
+            //We calculate the Vertical location taking the average position "(top + bottom) / 2" and the height of the popup
+            double verticalPosition = (top + bottom) / 2 - CurrentExecutingStep.Height / 2;
+            CurrentExecutingStep.UpdatePopupVerticalPlacement(verticalPosition);
+        }
+
+        /// <summary>
+        /// This method will call a js function that will scroll down until the bottom of the page
+        /// </summary>
+        internal static void LibraryScrollToBottom(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        {
+            CurrentExecutingStep = stepInfo;
+            if (uiAutomationData == null) return;
+            string jsFunctionName = uiAutomationData.JSFunctionName;
+            //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
+            object[] parametersInvokeScript = new object[] { jsFunctionName, new object[] { } };
+            //Execute the JS function with the provided parameters
+            ResourceUtilities.ExecuteJSFunction(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo, parametersInvokeScript);
         }
     }
 }

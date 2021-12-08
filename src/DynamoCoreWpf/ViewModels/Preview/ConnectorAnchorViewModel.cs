@@ -11,6 +11,7 @@ using System;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Graph;
+using Dynamo.Logging;
 
 namespace Dynamo.ViewModels
 {
@@ -222,6 +223,11 @@ namespace Dynamo.ViewModels
             ViewModel.DiscardAllConnectorPinModels(AllDeletedModels);
             List<ModelBase> AllCreatedModels = PlaceWatchNode(ViewModel.ConnectorModel, pinLocations, AllDeletedModels);
 
+            // Log analytics of creation of watch node
+            Logging.Analytics.TrackEvent(
+                Actions.Create,
+                Categories.ConnectorOperations,
+                "Watch Node");
             RecordUndoModels(DynamoModel.CurrentWorkspace, AllCreatedModels, AllDeletedModels);
         }
 
@@ -248,6 +254,9 @@ namespace Dynamo.ViewModels
         private void PinConnectorCommandExecute(object parameters)
         {
             ViewModel.PinConnectorCommand.Execute(null);
+            Logging.Analytics.TrackEvent(
+                    Actions.Pin,
+                    Categories.ConnectorOperations);
         }
 
         private void InitCommands()
@@ -266,7 +275,7 @@ namespace Dynamo.ViewModels
         /// Constructor
         /// </summary>
         /// <param name="connectorViewModel"></param>
-        /// <param name="dynamoModel"></param>
+        /// <param name="dynamoViewModel"></param>
         /// <param name="tooltipText"></param>
         public ConnectorAnchorViewModel(ConnectorViewModel connectorViewModel,
            DynamoViewModel dynamoViewModel,

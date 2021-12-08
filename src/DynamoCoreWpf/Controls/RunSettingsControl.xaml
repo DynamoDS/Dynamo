@@ -113,9 +113,11 @@
                     <DataTemplate DataType="{x:Type viewModels:RunTypeItem}">
                         <Label Content="{Binding Name}"
                                IsEnabled="{Binding Enabled}"
-                               ToolTip="{Binding ToolTipText}"
                                ToolTipService.ShowOnDisabled="True"
                                FontStyle="Italic">
+                            <Label.ToolTip>
+                                <ToolTip Content="{Binding ToolTipText}" Style="{StaticResource GenericToolTipLight}"/>
+                            </Label.ToolTip>
                             <Label.Style>
                                 <Style TargetType="Label">
                                     <Style.Triggers>
@@ -154,23 +156,32 @@
                     Content="{x:Static p:Resources.DynamoViewRunButton}"
                     Focusable="False"
                     IsEnabled="{Binding Path=RunButtonEnabled}"
-                    ToolTip="{Binding RunButtonToolTip}"
                     ToolTipService.ShowOnDisabled="True"
                     Visibility="{Binding RunButtonVisibility}"
                     Style="{StaticResource RunButtonStyle}">
+                <Button.ToolTip>
+                    <ToolTip Content="{Binding RunButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                </Button.ToolTip>
             </Button>
 
             <TextBox
                 Name="RunPeriodTextBox"
-                Width="80"
+                MinWidth="80"
+                MaxWidth="120"
                 Margin="2.5,0,0,0"
+                Padding="3,0,10,0"
                 VerticalContentAlignment="Center"
                 FontSize="14px"
                 Foreground="{StaticResource DynamoStandardLabelTextBrush}"
                 KeyDown="UIElement_OnKeyDown"
+                TextWrapping="NoWrap"
                 Style="{DynamicResource ResourceKey=SDarkTextBox}"
                 Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, Mode=TwoWay}"
-                Visibility="{Binding RunPeriodInputVisibility}" />
+                Visibility="{Binding RunPeriodInputVisibility}">
+                <TextBox.ToolTip>
+                    <ToolTip Style="{StaticResource GenericToolTipLight}" Content="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}}"/>
+                </TextBox.ToolTip>
+            </TextBox>
 
             <CheckBox
                 Name="debugCheckBox"
