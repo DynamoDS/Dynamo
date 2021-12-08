@@ -379,6 +379,7 @@
 						"Name": "ExecutePackageSearch",
 						"ExecuteCleanUpForward": false,
 						"ExecuteCleanUpBackward": true,
+						"ElementName": "NextButton",
 						"Action": "execute",
 						"UpdatePlacementTarget": true
 					}
@@ -422,30 +423,16 @@
 						"ElementName": "NextButton",
 						"Action": "execute",
 						"UpdatePlacementTarget": true
-					},
+					},					
 					{
 						"Sequence": 1,
-						"ControlType": "function",
-						"Name": "ExecuteTermsOfServiceFlow",
-						"Action": "execute",
-						"AutomaticHandlers": [
-							{
-								"HandlerElement": "closeButton",
-								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "CloseButton_Click"
-							}
-						],
-						"UpdatePlacementTarget": true
-					},
-					{
-						"Sequence": 2,
 						"ControlType": "button",
 						"WindowName": "PopupWindow",
 						"Name": "NextButton",
 						"Action": "disable"
 					},
 					{
-						"Sequence": 3,
+						"Sequence": 2,
 						"ControlType": "function",
 						"Name": "EnableNextButton",
 						"ElementName": "NextButton",
