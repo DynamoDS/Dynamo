@@ -62,7 +62,8 @@
                        MaxHeight="900"
                        Margin="-10,-900,0,8"
                        HorizontalAlignment="Left"
-                       LastChildFill="False">
+                       LastChildFill="False"
+                       Visibility="{Binding DoesNodeDisplayMessages, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                 <!--  Little Chevron Icon  -->
                 <Path Name="ChevronIcon"

@@ -757,8 +757,8 @@
                                                         <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
                                                     <ScrollViewer Grid.Column="0"
-                                                                  Margin="0,0,0,0"
-                                                                  HorizontalScrollBarVisibility="Hidden"
+                                                                  Margin="0,0,150,0"
+                                                                  HorizontalScrollBarVisibility="Auto"
                                                                   VerticalScrollBarVisibility="Disabled">
                                                         <TabPanel x:Name="HeaderPanel"
                                                                   IsItemsHost="True"
@@ -1025,6 +1025,8 @@
                         </Style>
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="MaxWidth"
+                                    Value="{Binding Source={x:Static configuration:Configurations.TabDefaultWidth}}" />
+                            <Setter Property="MinWidth"
                                     Value="{Binding Source={x:Static configuration:Configurations.TabDefaultWidth}}" />
                             <Setter Property="Width">
                                 <Setter.Value>

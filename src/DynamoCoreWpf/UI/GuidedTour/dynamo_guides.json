@@ -340,7 +340,12 @@
 							{
 								"HandlerElement": "DeclineTermsOfUseButton",
 								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "DeclineButton_Click"
+								"ExecuteMethod": "CloseButton_Click"
+							},
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
 							}
 						],
 						"UpdatePlacementTarget": true
@@ -380,6 +385,20 @@
 						"ExecuteCleanUpForward": false,
 						"ExecuteCleanUpBackward": true,
 						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					}
 				]
@@ -421,6 +440,20 @@
 						"ExecuteCleanUpBackward": false,
 						"ElementName": "NextButton",
 						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					},
 					{
@@ -485,6 +518,20 @@
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
 					}
 				]
 			},
@@ -520,6 +567,20 @@
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
 						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
 					}
 				]
 			},
@@ -542,6 +603,21 @@
 						"ExecuteCleanUpForward": true,
 						"ExecuteCleanUpBackward": false,
 						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
 						"UpdatePlacementTarget": true
 					}
 				],
@@ -625,7 +701,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "bottom_left",
 				"Width": 480,
-				"Height": 230,
+				"Height": 250,
 				"ShowLibrary": true,
 				"StepContent": {
 					"Title": "PackagesGuideNavigatePackagesTitle",
@@ -635,7 +711,7 @@
 					"PopupPlacement": "right",
 					"HostUIElementString": "sidebarGrid",
 					"WindowName": "LibraryView",
-					"VerticalPopupOffset": 600,
+					"VerticalPopupOffset": -70,
 					"HorizontalPopupOffset": -30,
 					"HighlightRectArea": {
 						"HighlightColor": "#EF9362",
@@ -677,6 +753,30 @@
 						"JSFunctionName": "subscribePackageClickedEvent",
 						"JSParameters": [ "Autodesk Sample" ],
 						"Action": "execute"
+					},
+					{
+						"Sequence": 4,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "getDocumentClientRect",
+						"JSParameters": [ "Autodesk Sample" ],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 5,
+						"ControlType": "function",
+						"Name": "LibraryScrollToBottom",
+						"JSFunctionName": "scrollToBottom",
+						"JSParameters": [],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 6,
+						"ControlType": "function",
+						"Name": "CalculateLibraryItemLocation",
+						"JSFunctionName": "getDocumentClientRect",
+						"JSParameters": [ "Autodesk Sample" ],
+						"Action": "execute"
 					}
 				]
 			},
@@ -686,19 +786,44 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 260,
+				"Height": 490,
 				"ShowLibrary": true,
 				"StepContent": {
-					"Title": "PackagesGuideUsePackageTitle",
-					"FormattedText": "PackagesGuideUsePackageText"
+					"Title": "PackagesGuidePackagesNodeTitle",
+					"FormattedText": "PackagesGuideInstalledPackageText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "right",
+					"PopupPlacement": "relative",
+					"DynamicHostWindow": true,
 					"HostUIElementString": "sidebarGrid",
 					"WindowName": "LibraryView",
-					"VerticalPopupOffset": 400,
-					"HorizontalPopupOffset": 0
-				}
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 300,
+					"HtmlPage": {
+						"FileName": "nodePackage.html",
+						"Resources": {
+							"#PackageNodes": "PackageNodes.gif"
+						}
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 0,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "setOverlay",
+						"JSParameters": [],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 1,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Revit" ]
+					}
+				]
 			},
 			{
 				"Sequence": 10,
@@ -719,8 +844,7 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "center",
 					"HostUIElementString": "WorkspaceTabs",
-					"VerticalPopupOffset": 0,
-					"HorizontalPopupOffset": 0
+					"VerticalPopupOffset": 0			
 				}
 			}
 		]
