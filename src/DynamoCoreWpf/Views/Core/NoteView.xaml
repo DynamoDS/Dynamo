@@ -71,8 +71,11 @@
                 <MenuItem Name="pinToNode"
                           Header="{x:Static p:Resources.ContextPinToNode}" 
                           Command="{Binding Path=PinToNodeCommand}"
-                          ToolTip="Select a node to pin to this note" ToolTipService.ShowOnDisabled="True"/>
-
+                          ToolTipService.ShowOnDisabled="True">
+                    <MenuItem.ToolTip>
+                        <ToolTip Content="Select a node to pin to this note" Style="{StaticResource GenericToolTipLight}"/>
+                    </MenuItem.ToolTip>
+                </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
         <Canvas Background="{x:Null}">

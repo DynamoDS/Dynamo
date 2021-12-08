@@ -170,8 +170,10 @@
                         BorderBrush="Transparent"
                         Command="{Binding OpenDocumentationBrowserCommand}"
                         Grid.Column="1"
-                        Style="{StaticResource SomeButtonStyle}"
-                        ToolTip="{x:Static props:Resources.GraphTypeHelpTooltip }">
+                        Style="{StaticResource SomeButtonStyle}">
+                    <Button.ToolTip>
+                        <ToolTip Content="{x:Static props:Resources.GraphTypeHelpTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                    </Button.ToolTip>
                     <fa:ImageAwesome Icon="InfoCircle"
                                      Foreground="#808080"
                                      Width="20"
