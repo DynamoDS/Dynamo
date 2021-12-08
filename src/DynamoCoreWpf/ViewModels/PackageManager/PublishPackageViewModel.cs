@@ -771,17 +771,17 @@ namespace Dynamo.PackageManager
         private void ClearAllEntries()
         {
             // this function clears all the entries of the publish package dialog
-            this.Name = "";
-            this.RepositoryUrl = "";
-            this.SiteUrl = "";
-            this.License = "";
-            this.Keywords = "";
-            this.Description = "";
-            this.Group = "";
+            this.Name = string.Empty;
+            this.RepositoryUrl = string.Empty;
+            this.SiteUrl = string.Empty;
+            this.License = string.Empty;
+            this.Keywords = string.Empty;
+            this.Description = string.Empty;
+            this.Group = string.Empty;
             this.MajorVersion = "0";
             this.MinorVersion = "0";
             this.BuildVersion = "0";
-            this.ErrorString = "";
+            this.ErrorString = string.Empty;
             this.Uploading = false;
             this.UploadHandle = null;
             this.IsNewVersion = false;
@@ -793,8 +793,8 @@ namespace Dynamo.PackageManager
             this.Assemblies = new List<PackageAssembly>();
             this.SelectedHosts = new List<String>();
             this.SelectedHostsString = string.Empty;
-            this.copyrightHolder = "";
-            this.copyrightYear = "";
+            this.copyrightHolder = string.Empty;
+            this.copyrightYear = string.Empty;
         }
 
         private void ClearPackageContents()
