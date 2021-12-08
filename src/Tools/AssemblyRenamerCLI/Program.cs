@@ -33,7 +33,7 @@ namespace AssemblyRenamerCLI
                      {
                          var executingPath = Assembly.GetExecutingAssembly().Location;
                          var ad = AssemblyDefinition.ReadAssembly(o.InputAssembly);
-                         var replacementData = parseReplaceText(o.TextToReplace, o.ReplacementText);
+                         var replacementData = ParseReplaceText(o.TextToReplace, o.ReplacementText);
                          Console.WriteLine("starting name replacement");
                          foreach(var data in replacementData)
                          {
@@ -79,7 +79,7 @@ namespace AssemblyRenamerCLI
             }
         }
 
-        private static List<Tuple<string,string>> parseReplaceText(string textToReplace,string replacementText)
+        private static List<Tuple<string,string>> ParseReplaceText(string textToReplace,string replacementText)
         {
             var textCollection = textToReplace.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
             var replacementCollection = replacementText.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
