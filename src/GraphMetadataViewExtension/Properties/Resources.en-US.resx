@@ -117,6 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CustomPropertyControl_CustomPropertyDefault" xml:space="preserve">
+    <value>Custom Property</value>
+  </data>
+  <data name="GraphMetaData_AuthorName" xml:space="preserve">
+    <value>Author Name</value>
+  </data>
+  <data name="GraphMetaData_CustomProperties" xml:space="preserve">
+    <value>Custom Properties</value>
+  </data>
+  <data name="GraphMetaData_Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="GraphMetaData_GraphType" xml:space="preserve">
+    <value>Graph Type</value>
+    <comment>Same label as found in LintingViewExtension</comment>
+  </data>
+  <data name="GraphMetaData_Image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="GraphMetaData_LearnMoreURL" xml:space="preserve">
+    <value>Learn More URL</value>
+  </data>
   <data name="ImageSelector_Message_DefaultFeedback" xml:space="preserve">
     <value>Drag and Drop or Select image</value>
   </data>

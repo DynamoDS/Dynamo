@@ -61,6 +61,24 @@ namespace Dynamo.LintingViewExtension.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Graph Issues.
+        /// </summary>
+        public static string GraphIssues {
+            get {
+                return ResourceManager.GetString("GraphIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph Type.
+        /// </summary>
+        public static string GraphType {
+            get {
+                return ResourceManager.GetString("GraphType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to What is a Graph Type?.
         /// </summary>
         public static string GraphTypeHelpTooltip {
@@ -75,6 +93,15 @@ namespace Dynamo.LintingViewExtension.Properties {
         public static string MenuItemText {
             get {
                 return ResourceManager.GetString("MenuItemText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Issues.
+        /// </summary>
+        public static string NodeIssues {
+            get {
+                return ResourceManager.GetString("NodeIssues", resourceCulture);
             }
         }
         
