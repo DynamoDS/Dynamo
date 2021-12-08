@@ -695,18 +695,18 @@
                                                 MaxWidth="85"
                                                 Binding="{Binding Path=IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                 ElementStyle="{StaticResource CheckBoxStyle}"
-                                                Header="Node Library"
+                                                Header="{x:Static p:Resources.PublishPackageViewNodeLibrary}"
                                                 HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                                 IsReadOnly="False"
                                                 IsThreeState="False" />
                         <DataGridTextColumn MinWidth="50"
                                             Binding="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}"
-                                            Header="Name"
+                                            Header="{x:Static p:Resources.PublishPackageViewPackageName}"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
                         <DataGridTemplateColumn MinWidth="90"
                                                 Width="*"
-                                                Header="Target Path"
+                                                Header="{x:Static p:Resources.PublishPackageViewFilePath}"
                                                 HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
                                                 IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
