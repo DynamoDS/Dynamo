@@ -26,7 +26,7 @@
             <!--  TopLevelHeader  -->
             <ControlTemplate x:Key="{x:Static MenuItem.TopLevelHeaderTemplateKey}" TargetType="MenuItem">
                 <Border Name="Border"
-                        Height="45px"
+                        Height="35px"
                         Padding="17,0"
                         Background="#3C3C3C">
                     <Grid>
@@ -36,6 +36,7 @@
                         </Grid.ColumnDefinitions>
                         <ContentPresenter Name="Content"
                                           Grid.Column="0"
+                                          Margin="0,3,0,0"
                                           VerticalAlignment="Center"
                                           ContentSource="Header"
                                           RecognizesAccessKey="True"
@@ -43,6 +44,7 @@
                                           TextBlock.FontSize="14px" />
                         <Path Name="DownArrow"
                               Grid.Column="1"
+                              Margin="0,3,0,0"
                               Width="10px"
                               Height="10px"
                               HorizontalAlignment="Right"
