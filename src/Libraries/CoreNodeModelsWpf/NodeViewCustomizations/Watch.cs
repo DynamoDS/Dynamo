@@ -41,7 +41,7 @@ namespace CoreNodeModelsWpf.Nodes
 
             var watchTree = new WatchTree();
             watchTree.BorderThickness = new Thickness(1, 1, 1, 1);
-            watchTree.BorderBrush = new SolidColorBrush(Color.FromRgb(161, 161, 161));
+            watchTree.BorderBrush = new SolidColorBrush(Color.FromRgb(220,220,220));
 
             watchTree.SetWatchNodeProperties();
 
