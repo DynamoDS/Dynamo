@@ -74,6 +74,15 @@ namespace Dynamo.Wpf.UI.GuidedTour
             GuideFlowEvents.GuidedTourNextStep -= GuideFlowEvents_GuidedTourNextStep;
             GuideFlowEvents.GuidedTourPrevStep -= GuideFlowEvents_GuidedTourPrevStep;
             GuideFlowEvents.UpdatePopupLocation -= GuideFlowEvents_UpdatePopupLocation;
+            GuideFlowEvents.UpdateLibraryInteractions -= GuideFlowEvents_UpdateLibraryInteractions;
+        }
+
+        /// <summary>
+        /// This method handler will be executed when a package is installed in the LibraryView so the Popup over the library will be updated
+        /// </summary>
+        private void GuideFlowEvents_UpdateLibraryInteractions()
+        {
+            CurrentStep.UpdateLibraryInteractions();
         }
 
         /// <summary>
@@ -84,6 +93,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             GuideFlowEvents.GuidedTourNextStep += GuideFlowEvents_GuidedTourNextStep;
             GuideFlowEvents.GuidedTourPrevStep += GuideFlowEvents_GuidedTourPrevStep;
             GuideFlowEvents.UpdatePopupLocation += GuideFlowEvents_UpdatePopupLocation;
+            GuideFlowEvents.UpdateLibraryInteractions += GuideFlowEvents_UpdateLibraryInteractions;
         }
 
         /// <summary>
