@@ -34,8 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Greg, Version=2.1.8012.24290, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\src\packages\Greg.2.1.8012.24290\lib\net48\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=2.1.8012.31283, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\src\packages\Greg.2.1.8012.31283\lib\net48\Greg.dll</HintPath>
     </Reference>
     <Reference Include="Moq, Version=4.2.1507.118, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\..\..\src\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
