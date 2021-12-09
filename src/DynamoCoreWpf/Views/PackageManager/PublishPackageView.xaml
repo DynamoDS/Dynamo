@@ -694,23 +694,18 @@
                                                 MaxWidth="85"
                                                 Binding="{Binding Path=IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                 ElementStyle="{StaticResource CheckBoxStyle}"
-                                                Header="Node Library"
+                                                Header="{x:Static p:Resources.PublishPackageViewNodeLibrary}"
                                                 HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                                 IsReadOnly="False"
                                                 IsThreeState="False" />
                         <DataGridTextColumn MinWidth="50"
                                             Binding="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}"
-                                            Header="Name"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                            IsReadOnly="True" />
-                        <DataGridTextColumn Width="*"
-                                            MinWidth="66"
-                                            Binding="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"
-                                            Header="File Path"
+                                            Header="{x:Static p:Resources.PublishPackageViewPackageName}"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
                         <DataGridTemplateColumn MinWidth="90"
-                                                Header="Target Path"
+                                                Width="*"
+                                                Header="{x:Static p:Resources.PublishPackageViewFilePath}"
                                                 HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
                                                 IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
@@ -737,11 +732,11 @@
                                                 </ControlTemplate>
                                             </Button.Template>
                                         </Button>
-                                        <TextBlock Margin="0,0,0,0"
-                                                   Text="{Binding Path=TargetPath}"
+                                        <TextBlock Margin="0"
+                                                   Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"
                                                    TextTrimming="CharacterEllipsis">
                                             <TextBlock.ToolTip>
-                                                <ToolTip Content="{Binding FileInfo.Directory}" Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                                <ToolTip Content="{Binding FilePath}" Style="{StaticResource GenericToolTipLight}"/>
                                             </TextBlock.ToolTip>
                                         </TextBlock>
                                     </DockPanel>
