@@ -149,7 +149,7 @@ namespace Dynamo.PackageManager.Tests
 
             packagesLoaded = false;
             // This function is called upon addition of new package paths in the UI.
-            loader.LoadCustomNodesAndPackages(new List<string>(), CurrentDynamoModel.CustomNodeManager);
+            loader.LoadNewCustomNodesAndPackages(new List<string>(), CurrentDynamoModel.CustomNodeManager);
             Assert.AreEqual(19, loader.LocalPackages.Count());
 
             // Assert packages are not reloaded if there are no new package paths.
@@ -197,7 +197,7 @@ namespace Dynamo.PackageManager.Tests
             settings.CustomPackageFolders = new List<string> { PackagesDirectory, BuiltInPackagesTestDir };
             var newPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
             // This function is called upon addition of new package paths in the UI.
-            loader.LoadCustomNodesAndPackages(newPaths, CurrentDynamoModel.CustomNodeManager);
+            loader.LoadNewCustomNodesAndPackages(newPaths, CurrentDynamoModel.CustomNodeManager);
             Assert.AreEqual(20, loader.LocalPackages.Count());
 
             // Assert packages are reloaded if there are new package paths.
@@ -239,7 +239,7 @@ namespace Dynamo.PackageManager.Tests
             settings.CustomPackageFolders = new List<string> { PackagesDirectory, BuiltInPackagesTestDir };
             var newPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
             // This function is called upon addition of new package paths in the UI.
-            loader.LoadCustomNodesAndPackages(newPaths, CurrentDynamoModel.CustomNodeManager);
+            loader.LoadNewCustomNodesAndPackages(newPaths, CurrentDynamoModel.CustomNodeManager);
             Assert.AreEqual(4, loader.LocalPackages.Count());
 
             Assert.IsTrue(loader.LocalPackages.Count(x => x.Name == "SignedPackage") == 2);

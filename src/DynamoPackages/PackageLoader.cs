@@ -375,14 +375,17 @@ namespace Dynamo.PackageManager
                 }
             }
         }
+
         /// <summary>
-        /// This method is called when custom nodes and packages need to be reloaded if there are new package paths.
+        /// Helper function to load new custom nodes and packages.
         /// </summary>
-        /// <param name="newPaths"></param>
+        /// <param name="preferences">Can be a temporary local preferences object.</param>
         /// <param name="customNodeManager"></param>
-        internal void LoadCustomNodesAndPackages(IEnumerable<string> newPaths, CustomNodeManager customNodeManager)
+        /// <param name="newPaths">New package paths to load custom nodes and packages from.</param>
+        /// <param name="packageDirectoriesToScan">Scan new paths if this is null.</param>
+        private void LoadCustomNodesAndPackagesHelper(IPreferences preferences, 
+            CustomNodeManager customNodeManager, IEnumerable<string> newPaths, IEnumerable<string> packageDirectoriesToScan = null)
         {
-            var preferences = (pathManager as PathManager).Preferences;
             foreach (var path in preferences.CustomPackageFolders)
             {
                 // Append the definitions subdirectory for custom nodes.
@@ -391,13 +394,17 @@ namespace Dynamo.PackageManager
 
                 customNodeManager.AddUninitializedCustomNodesInPath(dir, false, false);
             }
-
-            foreach (var path in newPaths)
+            var paths = packageDirectoriesToScan ?? newPaths;
+            foreach (var path in paths)
             {
-                var packageDirectory = pathManager.PackagesDirectories.FirstOrDefault(x => x.StartsWith(path));
-                if (packageDirectory != null)
+                if (DynamoModel.IsDisabledPath(path, preferences))
                 {
-                    ScanPackageDirectories(packageDirectory, preferences);
+                    Log(string.Format(Resources.PackagesDirectorySkipped, path));
+                    continue;
+                }
+                else
+                {
+                    ScanPackageDirectories(path, preferences);
                 }
             }
 
@@ -422,9 +429,36 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// To load custom nodes and packages from temporary custom paths,
-        /// initialize a local PreferenceSettings object and add the paths to its CustomPackageFolders property,
-        /// then initialize LoadPackageParams with this preferences object and use as input to this method.
+        /// This method is used when custom nodes and packages need to be loaded from new package paths 
+        /// that have been added to preference settings.
+        /// </summary>
+        /// <param name="newPaths">New package paths to load custom nodes and packages from.</param>
+        /// <param name="customNodeManager"></param>
+        internal void LoadNewCustomNodesAndPackages(IEnumerable<string> newPaths, CustomNodeManager customNodeManager)
+        {
+            if(newPaths == null || !newPaths.Any()) return;
+
+            var preferences = (pathManager as PathManager).Preferences;
+            var packageDirsToScan = new List<string>();
+
+            foreach (var path in newPaths)
+            {
+                var packageDirectory = pathManager.PackagesDirectories.FirstOrDefault(x => x.StartsWith(path));
+                if (packageDirectory != null)
+                {
+                    packageDirsToScan.Add(packageDirectory);
+                }
+            }
+            LoadCustomNodesAndPackagesHelper(preferences, customNodeManager, newPaths, packageDirsToScan);
+
+        }
+
+        /// <summary>
+        /// LoadCustomNodesAndPackages can be used to load custom nodes and packages
+        /// from temporary paths that do not need to be added to preference settings. 
+        /// To load from temporary custom paths, initialize a local PreferenceSettings object 
+        /// and add the paths to its CustomPackageFolders property, then initialize a new 
+        /// LoadPackageParams with this preferences object and use as input to this method.
         /// To load from custom paths that need to be persisted to the preferences, 
         /// initialize a LoadPackageParams from an existing preferences object.
         /// </summary>
@@ -432,37 +466,8 @@ namespace Dynamo.PackageManager
         /// <param name="customNodeManager"></param>
         public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
-            foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
-            {
-                customNodeManager.AddUninitializedCustomNodesInPath(path, false, false);
-                if (!pathManager.PackagesDirectories.Contains(path))
-                {
-                    if (DynamoModel.IsDisabledPath(path, loadPackageParams.Preferences))
-                    {
-                        Log(string.Format(Resources.PackagesDirectorySkipped, path));
-                        continue;
-                    }
-                    else
-                    {
-                        ScanPackageDirectories(path, loadPackageParams.Preferences);
-                    }
-                }
-            }
-            if (pathManager != null)
-            {
-                foreach (var pkg in LocalPackages)
-                {
-                    if (Directory.Exists(pkg.BinaryDirectory))
-                    {
-                        pathManager.AddResolutionPath(pkg.BinaryDirectory);
-                    }
-                }
-            }
-
-            if (LocalPackages.Any())
-            {
-                LoadPackages(LocalPackages);
-            }
+            var preferences = loadPackageParams.Preferences;
+            LoadCustomNodesAndPackagesHelper(preferences, customNodeManager, preferences.CustomPackageFolders);
         }
 
         private void ScanAllPackageDirectories(IPreferences preferences)
