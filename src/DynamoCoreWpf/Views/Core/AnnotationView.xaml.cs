@@ -318,6 +318,7 @@ namespace Dynamo.Nodes
         {
             if (ViewModel != null)
             {
+                DynamoSelection.Instance.ClearSelection();
                 ViewModel.SelectAll();
                 ViewModel.WorkspaceViewModel.DynamoViewModel.GraphAutoLayoutCommand.Execute(null);
             }
