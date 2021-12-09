@@ -26,12 +26,7 @@ namespace Dynamo.PackageManager.UI
         /// The file path of this item (if any), regardless of which constructor was used.
         /// </summary>
         public string FilePath { get; }
-
-        /// <summary>
-        /// The target path of this item, regardless of which constructor was used.
-        /// </summary>
-        public string TargetPath { get; }
-
+        
         public PackageItemRootViewModel(CustomNodeDefinition def)
         {
             this.Height = 32;
@@ -39,7 +34,6 @@ namespace Dynamo.PackageManager.UI
             this.Definition = def;
             this.DisplayName = def.DisplayName;
             this.FilePath = String.Empty;
-            this.TargetPath = String.Empty;
             this.BuildDependencies(new HashSet<object>());
         }
 
@@ -50,7 +44,6 @@ namespace Dynamo.PackageManager.UI
             this.Assembly = assembly;
             this.DisplayName = assembly.Name;
             this.FilePath = assembly.Assembly.Location;
-            this.TargetPath = assembly.Assembly.Location;
             this.BuildDependencies(new HashSet<object>());
         }
 
@@ -61,7 +54,6 @@ namespace Dynamo.PackageManager.UI
             this.FileInfo = fileInfo;
             this.DisplayName = fileInfo.Name;
             this.FilePath = fileInfo.FullName;
-            this.TargetPath = fileInfo.FullName;
             this.BuildDependencies(new HashSet<object>());
         }
     }

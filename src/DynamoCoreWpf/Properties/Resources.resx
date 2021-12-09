@@ -1540,6 +1540,9 @@ If the toggle is off custom packages that are not already loaded will load once 
   <data name="PublishPackageViewPackageName" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="PublishPackageViewFilePath" xml:space="preserve">
+    <value>File Path</value>
+  </data>
   <data name="PublishPackageViewPackageVersion" xml:space="preserve">
     <value>Version (Major Minor Build)</value>
   </data>
@@ -1585,6 +1588,9 @@ If the toggle is off custom packages that are not already loaded will load once 
   </data>
   <data name="PublishPackageViewRemoveItemToolTip" xml:space="preserve">
     <value>Removes this item from the package contents list.</value>
+  </data>
+  <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
+    <value>Node Library</value>
   </data>
   <data name="ShowClassicNodeLibrary" xml:space="preserve">
     <value>Show Classic Node Library</value>
