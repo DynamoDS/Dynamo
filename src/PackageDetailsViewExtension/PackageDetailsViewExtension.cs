@@ -32,9 +32,15 @@ namespace Dynamo.PackageDetails
             PackageManagerClientViewModel = dynamoViewModel.PackageManagerClientViewModel;
         }
 
-        internal void OnViewExtensionOpenWithParameterRequest(string extensionName, object obj)
+        internal void OnViewExtensionOpenWithParameterRequest(string extensionIdentification, object obj)
         {
-            if (extensionName != Name || !(obj is PackageManagerSearchElement pmSearchElement)) return;
+            // If the target view extension is not the current one, skip
+            if (!System.Guid.TryParse(extensionIdentification, out _) ||
+                !extensionIdentification.Equals(Name) ||
+                !(obj is PackageManagerSearchElement pmSearchElement))
+            {
+                return;
+            }
             OpenPackageDetails(pmSearchElement);
         }
         
