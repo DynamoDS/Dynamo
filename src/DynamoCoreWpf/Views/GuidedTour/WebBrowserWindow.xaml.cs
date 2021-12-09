@@ -29,6 +29,8 @@ namespace Dynamo.Wpf.Views.GuidedTour
         private const string mainFontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
         //Assembly path to the Resources folder
         private const string resourcesPath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources";
+        //Enconding to be defined in the page
+        private const string encondingTag = "<meta charset='UTF-8'>";
 
         public WebBrowserWindow(PopupWindowViewModel viewModel, HostControlInfo hInfo)
         {
@@ -61,8 +63,14 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
             bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage.Resources);
             bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", mainFontStylePath);
+            bodyHtmlPage = SetEnconding(bodyHtmlPage);
 
             webBrowser.NavigateToString(bodyHtmlPage);
+        }
+
+        private string SetEnconding(string bodyHtmlPage)
+        {
+            return bodyHtmlPage.Replace("<head>", "<head>"+ encondingTag);
         }
 
         /// <summary>
