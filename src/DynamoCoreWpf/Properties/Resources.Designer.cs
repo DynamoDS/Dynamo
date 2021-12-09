@@ -5290,7 +5290,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("PackagesGuideNavigatePackagesTitle", resourceCulture);
             }
         }
-        
+                    
         /// <summary>
         ///   Looks up a localized string similar to \nYou can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar..
         /// </summary>
