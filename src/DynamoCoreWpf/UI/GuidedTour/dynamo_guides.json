@@ -340,12 +340,7 @@
 							{
 								"HandlerElement": "DeclineTermsOfUseButton",
 								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "CloseButton_Click"
-							},
-							{
-								"HandlerElement": "closeButton",
-								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "CloseButton_Click"
+								"ExecuteMethod": "DeclineButton_Click"
 							}
 						],
 						"UpdatePlacementTarget": true
@@ -456,21 +451,7 @@
 							}
 						],
 						"UpdatePlacementTarget": true
-					},
-					{
-						"Sequence": 2,
-						"ControlType": "function",
-						"Name": "ExecuteTermsOfServiceFlow",
-						"Action": "execute",
-						"AutomaticHandlers": [
-							{
-								"HandlerElement": "closeButton",
-								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "CloseButton_Click"
-							}
-						],
-						"UpdatePlacementTarget": true
-					},					
+					},				
 					{
 						"Sequence": 1,
 						"ControlType": "button",
@@ -586,20 +567,6 @@
 					{
 						"Sequence": 2,
 						"ControlType": "function",
-						"Name": "ExecuteTermsOfServiceFlow",
-						"Action": "execute",
-						"AutomaticHandlers": [
-							{
-								"HandlerElement": "closeButton",
-								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "CloseButton_Click"
-							}
-						],
-						"UpdatePlacementTarget": true
-					},
-					{
-						"Sequence": 2,
-						"ControlType": "function",
 						"Name": "ExecuteClosePackagesSearch",
 						"Action": "execute",
 						"AutomaticHandlers": [
@@ -638,21 +605,6 @@
 						"Sequence": 2,
 						"ControlType": "function",
 						"Name": "ExecuteClosePackagesSearch",
-						"Action": "execute",
-						"AutomaticHandlers": [
-							{
-								"HandlerElement": "closeButton",
-								"HandlerElementEvent": "Click",
-								"ExecuteMethod": "CloseButton_Click"
-							}
-						],
-						"UpdatePlacementTarget": true
-					},
-
-					{
-						"Sequence": 2,
-						"ControlType": "function",
-						"Name": "ExecuteTermsOfServiceFlow",
 						"Action": "execute",
 						"AutomaticHandlers": [
 							{

@@ -240,7 +240,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        internal void CloseButton_Click(object sender, RoutedEventArgs e)
+        internal void DeclineButton_Click(object sender, RoutedEventArgs e)
         {
             CloseTour();
         }
