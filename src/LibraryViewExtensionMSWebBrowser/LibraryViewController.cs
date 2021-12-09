@@ -426,7 +426,13 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             dynamoWindow.Dispatcher.BeginInvoke(new Action(() =>
             {
                 CloseTooltip(closeImmediately);
-            }));
+                //The packages installed are shown at this moment then we need to update the Popup location and the interactions with the Library
+                if (GuideFlowEvents.IsAnyGuideActive)
+                {
+                    GuideFlowEvents.OnUpdatePopupLocation();
+                    GuideFlowEvents.OnUpdateLibraryInteractions();
+                }                  
+            }));         
         }
 
         private FloatingLibraryTooltipPopup CreateTooltipControl()
