@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Dynamo.Graph.Nodes;
 
@@ -46,16 +47,15 @@ namespace DSCore
         /// <search>getnumber,tonumber,strtonumber,numberinstring,string2number,stringtonumber,int,double,cast</search> 
         public static string GetNumber(string @string)
         {
-            string str = string.Empty;
-            if (string.IsNullOrEmpty(@string)) return str;
-            List<double> result = new List<double>();
+            StringBuilder sb = new StringBuilder();
+            if (string.IsNullOrEmpty(@string)) return sb.ToString();
             for (int i = 0; i < @string.Length; i++)
             {
                 if (char.IsDigit(@string[i]))
-                    str += @string[i];
+                    sb.Append(@string[i]);
             }
 
-            return str;
+            return sb.ToString();
         }
         /// <summary>
         ///     Concatenates multiple strings into a single string.
