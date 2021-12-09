@@ -231,7 +231,7 @@
                                 <Rectangle x:Name="Corner"
                                            Grid.Row="1"
                                            Grid.Column="1"
-                                           Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                                           Fill="#3C3C3C" />
                                 <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
                                                         Grid.Row="0"
                                                         Grid.Column="0"
@@ -244,9 +244,8 @@
                                 <ScrollBar x:Name="PART_VerticalScrollBar"
                                            Grid.Row="0"
                                            Grid.Column="1"
-                                           Background="Transparent"
                                            HorizontalAlignment="Left"
-                                           Margin="-4,6,0,6"
+                                           Margin="-3,0,0,2"
                                            AutomationProperties.AutomationId="VerticalScrollBar"
                                            Cursor="Arrow"
                                            Maximum="{TemplateBinding ScrollableHeight}"
@@ -257,9 +256,7 @@
                                 <ScrollBar x:Name="PART_HorizontalScrollBar"
                                            Grid.Row="1"
                                            Grid.Column="0"
-                                           Grid.ColumnSpan="2"
-                                           Background="#3C3C3C"
-                                           Margin="0,-6,0,-5"
+                                           Margin="2,-5,0,-3"
                                            AutomationProperties.AutomationId="HorizontalScrollBar"
                                            Cursor="Arrow"
                                            Maximum="{TemplateBinding ScrollableWidth}"
@@ -380,36 +377,41 @@
                 CornerRadius="0,0,2,2"
                 BorderThickness="0">
 
-            <Grid Name="ListLevelsDisplay" Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="27" />
-                    
-                </Grid.RowDefinitions>
+            <DockPanel Name="ListLevelsDisplay" Height="27px">
+
+                <!--  A draggable control to resize the Watch window  -->
+                <Thumb Name="resizeThumb"
+                       DockPanel.Dock="Right"
+                       Margin="1,3,5,3"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Cursor="SizeNWSE"
+                       DragDelta="ThumbResizeThumbOnDragDeltaHandler"
+                       Visibility="Hidden">
+                    <Thumb.Template>
+                        <ControlTemplate>
+                            <Polygon Fill="#AFAFAF" Points="0,8 8,8 8,0" />
+                        </ControlTemplate>
+                    </Thumb.Template>
+                </Thumb>
 
                 <!--  Shows counts of all items in List  -->
-
                 <TextBlock Name="ListItems"
-                           Grid.Row="0"
-                           Grid.Column="2"
-                           Margin="0,0,13,2"
+                           DockPanel.Dock="Right"
+                           Margin="-10,0,0,2"
                            FontFamily="{StaticResource SourceCodePro}"
                            Foreground="#D3D3D3"
                            VerticalAlignment="Center"
                            Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                    {<Run Foreground="#F48686" Text="{Binding NumberOfItems}" />}</TextBlock>
+                    {<Run Foreground="{StaticResource Blue300Brush}" Text="{Binding NumberOfItems}" />}</TextBlock>
 
                 <!--  Shows list@level labels in List  -->
-
                 <ListView Name="listLevelsView"
-                          Grid.Row="0"
-                          Grid.Column="0"
+                          DockPanel.Dock="Left"
                           Margin="13,0,0,3"
                           VerticalAlignment="Center"
+                          ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           Background="Transparent"
                           BorderThickness="0"
                           Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
@@ -451,22 +453,7 @@
                     </ListView.ItemTemplate>
                 </ListView>
 
-                <Thumb Name="resizeThumb"
-                       Grid.Row="1"
-                       Grid.Column="2"
-                       Margin="3"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center"
-                       Cursor="SizeNWSE"
-                       DragDelta="ThumbResizeThumbOnDragDeltaHandler"
-                       Visibility="Hidden">
-                    <Thumb.Template>
-                        <ControlTemplate>
-                            <Polygon Fill="#AFAFAF" Points="0,8 8,8 8,0" />
-                        </ControlTemplate>
-                    </Thumb.Template>
-                </Thumb>
-            </Grid>
+            </DockPanel>
         </Border>
     </Grid>
 </UserControl>
