@@ -185,6 +185,7 @@ namespace Dynamo.ViewModels
         public void UpdateSizeFromView(double w, double h)
         {
             this._model.SetSize(w,h);
+            MoveNoteAbovePinnedNode();
         }
 
         private bool CanSelect(object parameter)
