@@ -5,6 +5,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
     public delegate void GuidedTourNextEventHandler();
     public delegate void GuidedTourPrevEventHandler();
     public delegate void UpdatePopupLocationEventHandler();
+    public delegate void UpdateLibraryInteractionsEventHandler();
     public delegate void GuidedTourStartEventHandler(GuidedTourStateEventArgs args);
     public delegate void GuidedTourFinishEventHandler(GuidedTourStateEventArgs args);
 
@@ -56,14 +57,22 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public static event UpdatePopupLocationEventHandler UpdatePopupLocation;
         public static void OnUpdatePopupLocation()
         {
-            if (GuidedTourFinish != null)
+            if (UpdatePopupLocation != null)
                 UpdatePopupLocation();
+        }
+
+        //Event that will be raised when we want to update the Library interactions of Popups like event subscriptions and highlighted elements
+        public static event UpdateLibraryInteractionsEventHandler UpdateLibraryInteractions;
+        public static void OnUpdateLibraryInteractions()
+        { 
+            if (UpdateLibraryInteractions != null)
+                UpdateLibraryInteractions();
         }
 
         /// <summary>
         /// This property will returm if the a guide is being executed or not. 
         /// </summary>
-        internal static bool IsAnyGuideActive
+        public static bool IsAnyGuideActive
         {
             get { return isAnyGuideActive; }
             private set { isAnyGuideActive = value; }
