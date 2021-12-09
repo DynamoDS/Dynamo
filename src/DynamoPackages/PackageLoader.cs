@@ -380,7 +380,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="newPaths"></param>
         /// <param name="customNodeManager"></param>
-        public void LoadCustomNodesAndPackages(IEnumerable<string> newPaths, CustomNodeManager customNodeManager)
+        internal void LoadCustomNodesAndPackages(IEnumerable<string> newPaths, CustomNodeManager customNodeManager)
         {
             var preferences = (pathManager as PathManager).Preferences;
             foreach (var path in preferences.CustomPackageFolders)
@@ -421,19 +421,46 @@ namespace Dynamo.PackageManager
             }
         }
 
-        [Obsolete("Do not use. This method is deprecated and will be removed in Dynamo 3.0. Use LoadCustomNodesAndPackages(IEnumerable<string> newPaths, IPreferences preferences, CustomNodeManager customNodeManager) instead.")]
         /// <summary>
-        /// This method is called when custom nodes and packages need to be reloaded if there are new package paths.
+        /// If only custom nodes and packages from temporary custom paths, need to be loaded,
+        /// initialize a local PreferenceSettings object and add the temporary path(s) to its CustomPackageFolders property,
+        /// then initialize LoadPackageParams with this PreferenceSettings and use as input to this method.
         /// </summary>
-        /// <param name="loadPackageParams"></param>
+        /// <param name="loadPackageParams">LoadPackageParams initialized with local PreferenceSettings object containing custom package path.</param>
         /// <param name="customNodeManager"></param>
         public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
             foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
             {
                 customNodeManager.AddUninitializedCustomNodesInPath(path, false, false);
+                if (!pathManager.PackagesDirectories.Contains(path))
+                {
+                    if (DynamoModel.IsDisabledPath(path, loadPackageParams.Preferences))
+                    {
+                        Log(string.Format(Resources.PackagesDirectorySkipped, path));
+                        continue;
+                    }
+                    else
+                    {
+                        ScanPackageDirectories(path, loadPackageParams.Preferences);
+                    }
+                }
             }
-            LoadAll(loadPackageParams);
+            if (pathManager != null)
+            {
+                foreach (var pkg in LocalPackages)
+                {
+                    if (Directory.Exists(pkg.BinaryDirectory))
+                    {
+                        pathManager.AddResolutionPath(pkg.BinaryDirectory);
+                    }
+                }
+            }
+
+            if (LocalPackages.Any())
+            {
+                LoadPackages(LocalPackages);
+            }
         }
 
         private void ScanAllPackageDirectories(IPreferences preferences)
