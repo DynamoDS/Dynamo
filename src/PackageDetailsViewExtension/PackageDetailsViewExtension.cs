@@ -34,14 +34,18 @@ namespace Dynamo.PackageDetails
 
         internal void OnViewExtensionOpenWithParameterRequest(string extensionIdentification, object obj)
         {
-            // If the target view extension is not the current one, skip
-            if (!System.Guid.TryParse(extensionIdentification, out _) ||
-                !extensionIdentification.Equals(Name) ||
-                !(obj is PackageManagerSearchElement pmSearchElement))
+            // If param type does not match return
+            if (!(obj is PackageManagerSearchElement pmSearchElement)) return;
+
+            // Make sure the target view extension is the current one
+            // Either view extension Guid match or name match
+            // String comparison of Guid is simplified check, if desired, we can update to use Guid check
+            if (UniqueId.ToString().Equals(extensionIdentification) ||
+                extensionIdentification.Equals(Name))
             {
-                return;
+                OpenPackageDetails(pmSearchElement);
             }
-            OpenPackageDetails(pmSearchElement);
+            return;
         }
         
         internal void OpenPackageDetails(PackageManagerSearchElement packageManagerSearchElement)
