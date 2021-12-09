@@ -3028,4 +3028,7 @@ To install the latest version of a package, click Install. \n
   <data name="WorkspaceTabTooltipHeaderUnsaved" xml:space="preserve">
     <value>Unsaved</value>
   </data>
+  <data name="PackagesGuidePackagesNodeTitle" xml:space="preserve">
+    <value>Use package nodes</value>
+  </data>
 </root>
