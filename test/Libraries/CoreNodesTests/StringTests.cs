@@ -19,8 +19,6 @@ namespace DSCoreNodesTests
         [Category("UnitTests")]
         public static void GetNumber()
         {
-            Assert.AreEqual("10", String.GetNumber("name 10 myname"));
-            Assert.AreEqual("100", String.GetNumber("name 10.0 my name"));
             Assert.AreEqual("01 Level 200", String.GetNumber("01200"));
         }
 
