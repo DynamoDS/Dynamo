@@ -7201,6 +7201,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start Tour.
+        /// </summary>
+        public static string StartTourButtonText {
+            get {
+                return ResourceManager.GetString("StartTourButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit....
         /// </summary>
         public static string StringInputNodeEditMenu {

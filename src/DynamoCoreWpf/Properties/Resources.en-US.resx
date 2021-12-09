@@ -3028,4 +3028,7 @@ To install the latest version of a package, click Install. \n
   <data name="WorkspaceTabTooltipHeaderUnsaved" xml:space="preserve">
     <value>Unsaved</value>
   </data>
+  <data name="StartTourButtonText" xml:space="preserve">
+    <value>Start Tour</value>
+  </data>
 </root>
