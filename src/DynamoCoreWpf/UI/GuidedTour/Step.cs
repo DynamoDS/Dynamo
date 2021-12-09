@@ -29,6 +29,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private static readonly string NextButton = "NextButton";
         private static string calculateLibraryFuncName = "CalculateLibraryItemLocation";
         private static string libraryScrollToBottomFuncName = "LibraryScrollToBottom";
+        private static string subscribePackageClickedFuncName = "subscribePackageClickedEvent";
         #endregion
         #region Events
         //This event will be raised when a popup (Step) is closed by the user pressing the close button (PopupWindow.xaml).
@@ -233,6 +234,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                                       select automation).FirstOrDefault();
                 GuidesValidationMethods.CalculateLibraryItemLocation(this, automationStep, true, Guide.GuideFlow.CURRENT);
             }
+   
 
             stepUIPopup.IsOpen = true;
 
@@ -407,6 +409,20 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (automationCalculateStep == null) return;
                 GuidesValidationMethods.CalculateLibraryItemLocation(this, automationCalculateStep, true, Guide.GuideFlow.CURRENT);
             }
+        }
+
+        /// <summary>
+        /// This method will update the interactions of the Popup with the Library like the highligthed items or the event subscriptions
+        /// </summary>
+        internal void UpdateLibraryInteractions()
+        {
+            var automationSubscribePackage = (from automation in UIAutomation
+                                              where automation.JSFunctionName.Equals(subscribePackageClickedFuncName)
+                                              select automation).FirstOrDefault();
+            if (automationSubscribePackage == null) return;
+            ExecuteUIAutomationStep(automationSubscribePackage, true, Guide.GuideFlow.FORWARD);
+
+            SetHighlightSection(true);
         }
 
       
