@@ -422,9 +422,11 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// If only custom nodes and packages from temporary custom paths, need to be loaded,
-        /// initialize a local PreferenceSettings object and add the temporary path(s) to its CustomPackageFolders property,
-        /// then initialize LoadPackageParams with this PreferenceSettings and use as input to this method.
+        /// To load custom nodes and packages from temporary custom paths,
+        /// initialize a local PreferenceSettings object and add the paths to its CustomPackageFolders property,
+        /// then initialize LoadPackageParams with this preferences object and use as input to this method.
+        /// To load from custom paths that need to be persisted to the preferences, 
+        /// initialize a LoadPackageParams from an existing preferences object.
         /// </summary>
         /// <param name="loadPackageParams">LoadPackageParams initialized with local PreferenceSettings object containing custom package path.</param>
         /// <param name="customNodeManager"></param>
