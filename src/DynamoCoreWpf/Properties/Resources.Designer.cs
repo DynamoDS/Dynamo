@@ -6337,6 +6337,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File Path.
+        /// </summary>
+        public static string PublishPackageViewFilePath {
+            get {
+                return ResourceManager.GetString("PublishPackageViewFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to License (optional).
         /// </summary>
         public static string PublishPackageViewLicense {
@@ -6378,6 +6387,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewMarkdownFilesDirectoryToolTip {
             get {
                 return ResourceManager.GetString("PublishPackageViewMarkdownFilesDirectoryToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Library.
+        /// </summary>
+        public static string PublishPackageViewNodeLibrary {
+            get {
+                return ResourceManager.GetString("PublishPackageViewNodeLibrary", resourceCulture);
             }
         }
         
