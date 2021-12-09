@@ -39,6 +39,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]
 [assembly: InternalsVisibleTo("LintingViewExtension")]
 [assembly: InternalsVisibleTo("GenerativeDesign.Dynamo.ViewExtension")]
+[assembly: InternalsVisibleTo("GenerativeDesign.Dynamo.PackAndGo")]
 [assembly: InternalsVisibleTo("DynamoPlayerExtension")]
 [assembly: InternalsVisibleTo("DSCPython")]
 [assembly: InternalsVisibleTo("DynamoPythonTests")]
