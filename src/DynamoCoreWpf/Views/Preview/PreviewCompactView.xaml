@@ -26,7 +26,7 @@
         <TextBlock Name="Items" Grid.Column="2" Margin="0,3,0,7" Foreground="{StaticResource PrimaryCharcoal200Brush}"
                    FontFamily="{StaticResource SourceCodePro}"
                    Visibility="{Binding ShowNumberOfItems, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-            {<Run Foreground="#F48686" Text="{Binding NumberOfItems}" />}
+            {<Run Foreground="{StaticResource Blue300Brush}" Text="{Binding NumberOfItems}" />}
         </TextBlock>
 
         <Image x:Name="ExpandIcon" Grid.Column="3" VerticalAlignment="Bottom" Height="6" Width="6" Margin="0,5,5,5"
