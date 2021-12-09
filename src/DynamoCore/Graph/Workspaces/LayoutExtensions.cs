@@ -153,14 +153,18 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
-            foreach (NoteModel note in workspace.Notes)
+            var sortedNotes = workspace.Notes.OrderBy(x => x.PinnedNode is null);
+            foreach (NoteModel note in sortedNotes)
             {
                 // If the note is pinned to a node we dont want to
                 // modify its posistion as it is tied to the node.
                 if (note.PinnedNode != null)
                 {
+                    // We add this note to the LinkedNotes on the 
+                    // pinned node. 
                     var graphNode = combinedGraph.FindNode(note.PinnedNode.GUID);
-                    graphNode.LinkNote(note, note.Width, note.Height);
+                    var height = note.PinnedNode.Rect.Top - note.Rect.Top;
+                    graphNode.LinkNote(note, note.Width, height);
                     continue;
                 }
 
