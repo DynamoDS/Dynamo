@@ -31,7 +31,6 @@
     <ItemGroup>
       <ExtendedLibraries Include="$(ProjectDir)ExtendedLibraries\*.ds" />
     </ItemGroup>
-      <Message Importance="high" Text="Copying DS files to $(OutputPath)"/>
       <Copy SourceFiles="@(ExtendedLibraries)" DestinationFolder="$(OutputPath)" />
   </Target>
 </Project>
