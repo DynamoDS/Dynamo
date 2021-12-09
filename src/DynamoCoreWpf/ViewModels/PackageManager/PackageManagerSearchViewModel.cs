@@ -521,7 +521,7 @@ namespace Dynamo.PackageManager
 
             PackageManagerClientViewModel
                 .DynamoViewModel
-                .OnViewExtensionOpenWithParameterRequest("Package Details", packageManagerSearchElement);
+                .OnViewExtensionOpenWithParameterRequest("C71CA1B9-BF9F-425A-A12C-53DF56770406", packageManagerSearchElement);
         }
 
         /// <summary>

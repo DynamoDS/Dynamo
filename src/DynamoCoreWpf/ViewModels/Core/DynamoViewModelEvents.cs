@@ -191,9 +191,9 @@ namespace Dynamo.ViewModels
         /// Event raised when there's a request to open the view extension in the side panel.
         /// </summary>
         internal event Action<string, object> ViewExtensionOpenWithParameterRequest;
-        internal void OnViewExtensionOpenWithParameterRequest(string extensionName, object obj)
+        internal void OnViewExtensionOpenWithParameterRequest(string extensionIdentification, object obj)
         {
-            ViewExtensionOpenWithParameterRequest?.Invoke(extensionName, obj);
+            ViewExtensionOpenWithParameterRequest?.Invoke(extensionIdentification, obj);
         }
     }
 }
