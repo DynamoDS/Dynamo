@@ -379,12 +379,11 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Helper function to load new custom nodes and packages.
         /// </summary>
+        /// <param name="newPaths">New package paths to load custom nodes and packages from.</param>
         /// <param name="preferences">Can be a temporary local preferences object.</param>
         /// <param name="customNodeManager"></param>
-        /// <param name="newPaths">New package paths to load custom nodes and packages from.</param>
-        /// <param name="packageDirectoriesToScan">Scan new paths if this is null.</param>
-        private void LoadCustomNodesAndPackagesHelper(IPreferences preferences, 
-            CustomNodeManager customNodeManager, IEnumerable<string> newPaths, IEnumerable<string> packageDirectoriesToScan = null)
+        private void LoadCustomNodesAndPackagesHelper(IEnumerable<string> newPaths, IPreferences preferences, 
+            CustomNodeManager customNodeManager)
         {
             foreach (var path in preferences.CustomPackageFolders)
             {
@@ -394,8 +393,7 @@ namespace Dynamo.PackageManager
 
                 customNodeManager.AddUninitializedCustomNodesInPath(dir, false, false);
             }
-            var paths = packageDirectoriesToScan ?? newPaths;
-            foreach (var path in paths)
+            foreach (var path in newPaths)
             {
                 if (DynamoModel.IsDisabledPath(path, preferences))
                 {
@@ -449,7 +447,7 @@ namespace Dynamo.PackageManager
                     packageDirsToScan.Add(packageDirectory);
                 }
             }
-            LoadCustomNodesAndPackagesHelper(preferences, customNodeManager, newPaths, packageDirsToScan);
+            LoadCustomNodesAndPackagesHelper(packageDirsToScan, preferences, customNodeManager);
 
         }
 
@@ -467,7 +465,7 @@ namespace Dynamo.PackageManager
         public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
             var preferences = loadPackageParams.Preferences;
-            LoadCustomNodesAndPackagesHelper(preferences, customNodeManager, preferences.CustomPackageFolders);
+            LoadCustomNodesAndPackagesHelper(preferences.CustomPackageFolders, preferences, customNodeManager);
         }
 
         private void ScanAllPackageDirectories(IPreferences preferences)
