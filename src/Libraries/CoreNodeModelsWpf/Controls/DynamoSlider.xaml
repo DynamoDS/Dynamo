@@ -302,7 +302,7 @@
                 Opacity="1"
                 Text="{Binding ValueText, Mode=OneWay}">
                 <nodes1:DynamoTextBox.ToolTip>
-                    <ToolTip Style="{StaticResource GenericToolTipLight}" Content="{Binding RelativeSource={RelativeSource AncestorType=TextBox}, Path=Text}"/>
+                    <ToolTip Style="{StaticResource GenericToolTipLight}" Content="{Binding ValueText, UpdateSourceTrigger=PropertyChanged}"/>
                 </nodes1:DynamoTextBox.ToolTip>
             </nodes1:DynamoTextBox>
 
