@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.PythonServices.EventHandlers;
-using PythonNodeModels;
 
 namespace PythonNodeModels
 {
@@ -16,6 +15,7 @@ namespace PythonNodeModels
     /// <summary>
     /// Enum of possible values of python engine versions.
     /// </summary>
+    [Obsolete]
     public enum PythonEngineVersion
     {
         Unspecified,
@@ -81,8 +81,6 @@ namespace Dynamo.PythonServices
             get;
         }
 
-        internal PythonEngineVersion Version => Enum.TryParse(Name, out PythonEngineVersion version) ? version : PythonEngineVersion.Unspecified;
-
         /// <summary>
         /// Add an event handler before the Python evaluation begins
         /// </summary>
@@ -136,6 +134,16 @@ namespace Dynamo.PythonServices
 
         #region Constant strings
         // TODO: The following fields might be removed after dynamic loading applied
+        /// <summary>
+        /// Default Engine name
+        /// </summary>
+        internal static readonly string IronPython2EngineName = "IronPython2";
+
+        /// <summary>
+        /// Default Engine name
+        /// </summary>
+        internal static readonly string CPython3EngineName = "CPython3";
+
         internal static string PythonEvaluatorSingletonInstance = "Instance";
 
         internal static string IronPythonEvaluatorClass = "IronPythonEvaluator";
@@ -171,11 +179,6 @@ namespace Dynamo.PythonServices
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(AssemblyLoadEventHandler);
         }
 
-        private PythonEngine GetEngine(PythonEngineVersion version)
-        {
-            return GetEngine(version.ToString());
-        }
-
         private PythonEngine GetEngine(string version)
         {
             return AvailableEngines.FirstOrDefault(x => x.Name == version);
@@ -184,22 +187,16 @@ namespace Dynamo.PythonServices
         /// <summary>
         /// The shared logic for Python node evaluation
         /// </summary>
-        /// <param name="engine"></param>
+        /// <param name="engineVersion"></param>
         /// <param name="evaluatorClass"></param>
         /// <param name="evaluationMethod"></param>
-        internal void GetEvaluatorInfo(PythonEngineVersion engine, out string evaluatorClass, out string evaluationMethod)
+        internal void GetEvaluatorInfo(string engineVersion, out string evaluatorClass, out string evaluationMethod)
         {
-            // Provide evaluator info when the selected engine is loaded
-            if (engine == PythonEngineVersion.IronPython2 && GetEngine(PythonEngineVersion.IronPython2) != null)
+            var engine = GetEngine(engineVersion);
+            if (engine != null)
             {
-                evaluatorClass = IronPythonEvaluatorClass;
-                evaluationMethod = IronPythonEvaluationMethod;
-                return;
-            }
-            if (engine == PythonEngineVersion.CPython3 && GetEngine(PythonEngineVersion.CPython3) != null)
-            {
-                evaluatorClass = CPythonEvaluatorClass;
-                evaluationMethod = CPythonEvaluationMethod;
+                evaluatorClass = engine.GetType().Name;
+                evaluationMethod = nameof(engine.Evaluate);
                 return;
             }
 

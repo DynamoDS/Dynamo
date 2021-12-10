@@ -183,7 +183,7 @@ namespace DSCPython
             Dynamo.Models.DynamoModel.RequestPythonReset += RequestPythonResetHandler;
         }
 
-        public override string Name => PythonNodeModels.PythonEngineVersion.CPython3.ToString();
+        public override string Name => "CPython3";
 
         internal static void RequestPythonResetHandler(string pythonEngine)
         {

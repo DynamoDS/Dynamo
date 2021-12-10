@@ -5,6 +5,7 @@ using Dynamo;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.PythonServices;
 using NUnit.Framework;
 using PythonNodeModels;
 
@@ -125,10 +126,10 @@ Python Script: considering contextlib
 Python Script: considering importlib.util";
             var pythonNode = new PythonNode();
             CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(pythonNode);
-            pythonNode.Engine = PythonEngineVersion.CPython3;
+            pythonNode.EngineName = PythonEngineManager.CPython3EngineName;
           
             RunCurrentModel();
-            CurrentDynamoModel.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
+            CurrentDynamoModel.OnRequestPythonReset(PythonEngineManager.CPython3EngineName);
             foreach(var line in expectedOutput.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 StringAssert.Contains(line, CurrentDynamoModel.Logger.LogText);

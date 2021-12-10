@@ -83,6 +83,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Python.cs" />
     <Compile Include="Quadtree.cs" />
     <Compile Include="Sorting.cs" />
     <Compile Include="String.cs" />

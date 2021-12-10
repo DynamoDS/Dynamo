@@ -2,6 +2,7 @@
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.PackageManager;
+using Dynamo.PythonServices;
 using Greg.Responses;
 using PythonNodeModels;
 
@@ -153,8 +154,8 @@ namespace Dynamo.PackageDetails
             {
                 foreach (string stringValue in PackageVersion.host_dependencies)
                 {
-                    if (stringValue == PythonEngineVersion.IronPython2.ToString() ||
-                        stringValue == PythonEngineVersion.CPython3.ToString())
+                    if (stringValue == PythonEngineManager.IronPython2EngineName ||
+                        stringValue == PythonEngineManager.CPython3EngineName)
                     {
                         pythonEngineVersions.Add(stringValue);
                     }
