@@ -1576,7 +1576,7 @@ namespace Dynamo.PackageManager
                 Package.License = string.IsNullOrEmpty(License) ? defaultLicense : License;
                 Package.SiteUrl = SiteUrl;
                 Package.RepositoryUrl = RepositoryUrl;
-                Package.CopyrightHolder = string.IsNullOrEmpty(CopyrightHolder) ? dynamoViewModel.Model.AuthenticationManager.Username : CopyrightHolder;
+                Package.CopyrightHolder = string.IsNullOrEmpty(CopyrightHolder) ? dynamoViewModel.Model.AuthenticationManager?.Username : CopyrightHolder;
                 Package.CopyrightYear = string.IsNullOrEmpty(CopyrightYear) ? DateTime.Now.Year.ToString() : copyrightYear;
 
                 AppendPackageContents();
