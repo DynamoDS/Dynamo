@@ -216,7 +216,7 @@ namespace Dynamo.GraphMetadata
 
         private void AddCustomPropertyExecute(object obj)
         {
-            var propName = $"Custom Property {CustomProperties.Count + 1}";
+            var propName = Properties.Resources.CustomPropertyControl_CustomPropertyDefault + " " + (CustomProperties.Count + 1);
             AddCustomProperty(propName, string.Empty);
         }
 

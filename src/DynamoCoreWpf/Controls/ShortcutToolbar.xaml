@@ -28,7 +28,7 @@
             </ResourceDictionary>
         </Border.Resources>
 
-        <Border Margin="11 0 0 0"
+        <Border Margin="11 4 0 0"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center">
             <Grid Name="ShortcutToolbarGrid">
@@ -36,9 +36,11 @@
                               ItemsSource="{Binding ElementName='MenuUserControl', Path=ShortcutBarItems}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button ToolTip="{Binding ShortcutToolTip}"
-                                    Command="{Binding ShortcutCommand}"
+                            <Button Command="{Binding ShortcutCommand}"
                                     CommandParameter="{Binding ShortcutCommandParameter}">
+                                <Button.ToolTip>
+                                    <ToolTip Content="{Binding ShortcutToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                                </Button.ToolTip>
                                 <Button.Resources>
                                     <Image x:Key="Normal"
                                            Width="16"
@@ -86,9 +88,11 @@
                               ItemsSource="{Binding ElementName='MenuUserControl', Path=ShortcutBarRightSideItems}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button ToolTip="{Binding ShortcutToolTip}"
-                                    Command="{Binding ShortcutCommand}"
+                            <Button Command="{Binding ShortcutCommand}"
                                     CommandParameter="{Binding ShortcutCommandParameter}">
+                                <Button.ToolTip>
+                                    <ToolTip Content="{Binding ShortcutToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                                </Button.ToolTip>
                                 <Button.Resources>
                                     <Image x:Key="Normal"
                                            Width="16"
@@ -159,16 +163,20 @@
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.ShortcutExportWorkspace}"
                                   Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
-                                  ToolTip="{x:Static p:Resources.DynamoViewToolbarExportButtonTooltip}"
                                   Name="saveImage">
+                            <MenuItem.ToolTip>
+                                <ToolTip Content="{x:Static p:Resources.DynamoViewToolbarExportButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            </MenuItem.ToolTip>
                         </MenuItem>
 
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.ShortcutExportBackground3DPreview}"
                                   Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
                                   CommandParameter="{x:Static p:Resources.ScreenShotFrom3DParameter}"
-                                  ToolTip="{x:Static p:Resources.DynamoViewToolbarExport3DButtonTooltip}"
                                   Name="save3DImage">
+                            <MenuItem.ToolTip>
+                                <ToolTip Content="{x:Static p:Resources.DynamoViewToolbarExport3DButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            </MenuItem.ToolTip>
                         </MenuItem>
                     </MenuItem>
                 </Menu>

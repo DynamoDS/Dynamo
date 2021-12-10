@@ -810,4 +810,25 @@ This package has not been loaded because another conflicting package was loaded 
   <data name="NodeUnhandledMsg" xml:space="preserve">
     <value>Unhandled 'DummyNode.NodeNature' value: {0}</value>
   </data>
+  <data name="CoreLibraryLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+This assembly is likely blocked. Try restarting Dynamo after unblocking this assembly and all other core assemblies that might be blocked. If you are running a downloaded DynamoSandbox build that is extracted from a .zip file, try using 7zip to extract the Dynamo binaries and try again.</value>
+  </data>
+  <data name="LibraryLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+This assembly is likely blocked. Try importing it again after unblocking the assembly.</value>
+  </data>
+  <data name="PackageLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+This package likely contains an assembly that is blocked. You will need to load the package again after unblocking the assembly. Restart Dynamo to reload the package.</value>
+  </data>
+  <data name="CoreLibraryLoadFailureMessageBoxTitle" xml:space="preserve">
+    <value>Core library load failure</value>
+  </data>
+  <data name="LibraryLoadFailureMessageBoxTitle" xml:space="preserve">
+    <value>Library load failure</value>
+  </data>
 </root>

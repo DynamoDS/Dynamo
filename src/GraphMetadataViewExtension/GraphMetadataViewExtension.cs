@@ -24,9 +24,7 @@ namespace Dynamo.GraphMetadata
 
         public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
-
-            this.viewLoadedParamsReference = viewLoadedParams;
+            this.viewLoadedParamsReference = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
             this.viewModel = new GraphMetadataViewModel(viewLoadedParams, this);
             this.graphMetadataView = new GraphMetadataView();
             graphMetadataView.DataContext = viewModel;

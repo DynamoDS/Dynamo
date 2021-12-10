@@ -12,15 +12,18 @@
             src: url(data:font/woff;charset=utf-8;base64,#fontStyle);
         }
 
-        span {
-            height: 0.875rem;
-            width: 0.875rem;
-            display: inline-block;
+        img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            height: auto;
         }
 
-        .successIcon {
-            background: url(data:image/png;base64,#successIcon) no-repeat;
-            background-size: contain;
+        span {
+            height: 1rem;
+            width: 1rem;
+            display: inline-block;
         }
 
         body {
@@ -36,14 +39,13 @@
     </style>
 </head>
 <body>
+    <img src="data:image/gif;base64,#PackageNodes"/>
+
     <div>
-        Package installations are typically quick, depending on their size and other factors.
+        To learn how to use nodes in a package, hover over a node to see a description.
     </div>
     <div>
-        To install the latest version of a package, click Install.
-    </div>
-    <div>
-        <span class='successIcon'></span> The sample Autodesk package is already installed on your computer.
+        To add a node to the workspace, click its name in the list.
     </div>
 </body>
 

@@ -134,6 +134,10 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 {
                     controller.MoveToNextStep();
                 }
+                else if (funcName == "ResizedEvent")
+                {
+                    controller.UpdatePopupLocation();
+                }
             }
             catch (Exception e)
             {
@@ -381,13 +385,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
             LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel, this, this.customization);
-
-            browser.DpiChanged += Browser_DpiChanged;
-        }
-
-        private void Browser_DpiChanged(object sender, DpiChangedEventArgs e)
-        {
-            browser.InvokeScript("adaptDPI");
         }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
@@ -402,6 +399,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             if (browser != null)
             {
                 browser.InvalidateVisual();
+                UpdatePopupLocation();
             }
         }
 
@@ -428,7 +426,13 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             dynamoWindow.Dispatcher.BeginInvoke(new Action(() =>
             {
                 CloseTooltip(closeImmediately);
-            }));
+                //The packages installed are shown at this moment then we need to update the Popup location and the interactions with the Library
+                if (GuideFlowEvents.IsAnyGuideActive)
+                {
+                    GuideFlowEvents.OnUpdatePopupLocation();
+                    GuideFlowEvents.OnUpdateLibraryInteractions();
+                }                  
+            }));         
         }
 
         private FloatingLibraryTooltipPopup CreateTooltipControl()
@@ -577,6 +581,12 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             GuideFlowEvents.OnGuidedTourNext();
         }
 
+        //This method will be called when the Library was resized and the current Popup location needs to be updated
+        internal void UpdatePopupLocation()
+        {
+            GuideFlowEvents.OnUpdatePopupLocation();
+        }
+
         /// <summary>
         /// Convenience method for logging to Dynamo Console.
         /// </summary>
@@ -608,7 +618,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             {
                 browser.SizeChanged -= Browser_SizeChanged;
                 browser.Loaded -= Browser_Loaded;
-                browser.DpiChanged -= Browser_DpiChanged;
                 browser.Dispose();
                 browser = null;
             }

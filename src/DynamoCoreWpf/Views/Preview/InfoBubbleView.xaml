@@ -62,7 +62,8 @@
                        MaxHeight="900"
                        Margin="-10,-900,0,8"
                        HorizontalAlignment="Left"
-                       LastChildFill="False">
+                       LastChildFill="False"
+                       Visibility="{Binding DoesNodeDisplayMessages, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                 <!--  Little Chevron Icon  -->
                 <Path Name="ChevronIcon"
@@ -411,7 +412,7 @@
                                                                                 DockPanel.Dock="Right"
                                                                                 Style="{StaticResource DismissButtonStyle}">
                                                                             <Button.ToolTip>
-                                                                                <ToolTip Content="{x:Static p:Resources.NodeInfoDismissButtonToolTip}" Style="{StaticResource ToolTipSelfWrapping}" />
+                                                                                <ToolTip Content="{x:Static p:Resources.NodeInfoDismissButtonToolTip}" Style="{StaticResource GenericToolTipLight}" />
                                                                             </Button.ToolTip>
                                                                         </Button>
                                                                     </Grid>
@@ -482,7 +483,7 @@
                                                                                 DockPanel.Dock="Right"
                                                                                 Style="{StaticResource DismissButtonStyle}">
                                                                             <Button.ToolTip>
-                                                                                <ToolTip Content="{x:Static p:Resources.NodeWarningDismissButtonToolTip}" Style="{StaticResource ToolTipSelfWrapping}" />
+                                                                                <ToolTip Content="{x:Static p:Resources.NodeWarningDismissButtonToolTip}" Style="{StaticResource GenericToolTipLight}" />
                                                                             </Button.ToolTip>
                                                                         </Button>
                                                                     </Grid>

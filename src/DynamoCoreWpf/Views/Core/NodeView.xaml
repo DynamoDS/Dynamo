@@ -2,11 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
-             xmlns:controls="clr-namespace:Dynamo.Views"
-             xmlns:controls1="clr-namespace:Dynamo.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             xmlns:ui="clr-namespace:Dynamo.UI"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -136,7 +134,7 @@
                                                    Focusable="false"
                                                    HorizontalOffset="0"
                                                    IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                                   Placement="Left"
+                                                   Placement="Right"
                                                    VerticalOffset="-2">
                                                 <Border Background="{TemplateBinding Background}"
                                                         BorderBrush="Transparent"
@@ -354,7 +352,7 @@
                                        FontFamily="{StaticResource ArtifaktElementRegular}"
                                        FontSize="14"
                                        FontWeight="Medium"
-                                       Text="{Binding Path=OriginalName, UpdateSourceTrigger=PropertyChanged, StringFormat='Renamed from {0}'}"
+                                       Text="{Binding Path=OriginalName, UpdateSourceTrigger=PropertyChanged, StringFormat={x:Static p:Resources.NodeTooltipRenamed}}"
                                        TextAlignment="Center"
                                        TextWrapping="Wrap" />
                         </Grid>
@@ -435,9 +433,12 @@
                    FontSize="10px"
                    Foreground="{StaticResource NodeLacingGlyphBackground}"
                    Style="{StaticResource SZoomFadeLabel}"
-                   ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
                    ToolTipService.ShowDuration="30000"
-                   Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}" />
+                   Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
+                <Label.ToolTip>
+                    <ToolTip Content="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}" Style="{StaticResource GenericToolTipLight}"/>
+                </Label.ToolTip>
+            </Label>
             <Grid Name="AlertsGlyph"
                   Width="Auto"
                   Height="16">
@@ -469,8 +470,10 @@
                 </Grid.Style>
             </Grid>
             <Button x:Name="OptionsButton"
-                    Click="DisplayNodeContextMenu"
-                    ToolTip="{x:Static p:Resources.ContextMenu}">
+                    Click="DisplayNodeContextMenu">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.ContextMenu}" Style="{StaticResource GenericToolTipLight}"/>
+                </Button.ToolTip>
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Template">

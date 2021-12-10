@@ -38,6 +38,11 @@ namespace Dynamo.PackageManager
         private readonly DynamoViewModel dynamoViewModel;
 
         /// <summary>
+        /// Default license type for each package, no need to localize
+        /// </summary>
+        private readonly string defaultLicense = "MIT";
+
+        /// <summary>
         /// reference of DynamoViewModel
         /// </summary>
         public DynamoViewModel DynamoViewModel
@@ -330,12 +335,11 @@ namespace Dynamo.PackageManager
             }
         }
 
-
+        private string _license;
         /// <summary>
-        /// License property </summary>
-        /// <value>
-        /// The license for the package </value>
-        private string _license = "";
+        /// License property
+        /// </summary>
+        /// <value> The license for the package </value>
         public string License
         {
             get { return _license; }
@@ -344,7 +348,7 @@ namespace Dynamo.PackageManager
                 if (_license != value)
                 {
                     _license = value;
-                    RaisePropertyChanged("License");
+                    RaisePropertyChanged(nameof(License));
                 }
             }
         }
@@ -771,17 +775,17 @@ namespace Dynamo.PackageManager
         private void ClearAllEntries()
         {
             // this function clears all the entries of the publish package dialog
-            this.Name = "";
-            this.RepositoryUrl = "";
-            this.SiteUrl = "";
-            this.License = "";
-            this.Keywords = "";
-            this.Description = "";
-            this.Group = "";
+            this.Name = string.Empty;
+            this.RepositoryUrl = string.Empty;
+            this.SiteUrl = string.Empty;
+            this.License = string.Empty;
+            this.Keywords = string.Empty;
+            this.Description = string.Empty;
+            this.Group = string.Empty;
             this.MajorVersion = "0";
             this.MinorVersion = "0";
             this.BuildVersion = "0";
-            this.ErrorString = "";
+            this.ErrorString = string.Empty;
             this.Uploading = false;
             this.UploadHandle = null;
             this.IsNewVersion = false;
@@ -793,6 +797,8 @@ namespace Dynamo.PackageManager
             this.Assemblies = new List<PackageAssembly>();
             this.SelectedHosts = new List<String>();
             this.SelectedHostsString = string.Empty;
+            this.copyrightHolder = string.Empty;
+            this.copyrightYear = string.Empty;
         }
 
         private void ClearPackageContents()
@@ -841,7 +847,9 @@ namespace Dynamo.PackageManager
                 SiteUrl = l.SiteUrl ?? "",
                 Package = l,
                 License = l.License,
-                SelectedHosts = l.HostDependencies as List<string>
+                SelectedHosts = l.HostDependencies as List<string>,
+                CopyrightHolder = l.CopyrightHolder,
+                CopyrightYear = l.CopyrightYear
             };
 
             // add additional files
@@ -1346,8 +1354,7 @@ namespace Dynamo.PackageManager
                     }
                 }
 
-                CustomNodeDefinition funcDef;
-                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, DynamoModel.IsTestMode, out funcDef)
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, DynamoModel.IsTestMode, out CustomNodeDefinition funcDef)
                     && CustomNodeDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
                 {
                     CustomNodeDefinitions.Add(funcDef);
@@ -1375,11 +1382,9 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                Assembly assem;
-
                 // we're not sure if this is a managed assembly or not
                 // we try to load it, if it fails - we add it as an additional file
-                var result = PackageLoader.TryLoadFrom(filename, out assem);
+                var result = PackageLoader.TryLoadFrom(filename, out Assembly assem);
                 if (result)
                 {
                     var assemName = assem.GetName().Name;
@@ -1417,7 +1422,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Delegate used to submit the element</summary>
+        /// Delegate used to submit the publish online request</summary>
         private void Submit()
         {
             var files = BuildPackage();
@@ -1568,9 +1573,11 @@ namespace Dynamo.PackageManager
                 Package.Description = Description;
                 Package.Group = Group;
                 Package.Keywords = KeywordList;
-                Package.License = License;
+                Package.License = string.IsNullOrEmpty(License) ? defaultLicense : License;
                 Package.SiteUrl = SiteUrl;
-                Package.RepositoryUrl = RepositoryUrl;                
+                Package.RepositoryUrl = RepositoryUrl;
+                Package.CopyrightHolder = string.IsNullOrEmpty(CopyrightHolder) ? dynamoViewModel.Model.AuthenticationManager?.Username : CopyrightHolder;
+                Package.CopyrightYear = string.IsNullOrEmpty(CopyrightYear) ? DateTime.Now.Year.ToString() : copyrightYear;
 
                 AppendPackageContents();
 
@@ -1579,13 +1586,13 @@ namespace Dynamo.PackageManager
 
                 Package.HostDependencies = Enumerable.Empty<string>();
                 Package.HostDependencies = SelectedHosts;
-                foreach (var py in GetPythonDependency()) 
+                foreach (string py in GetPythonDependency()) 
                 {
                     if (!Package.HostDependencies.Contains(py)) 
                     {
                         Package.HostDependencies = Package.HostDependencies.Concat(new[] { py });
                     }
-                }                                
+                }
 
                 var files = GetAllFiles().ToList();
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();

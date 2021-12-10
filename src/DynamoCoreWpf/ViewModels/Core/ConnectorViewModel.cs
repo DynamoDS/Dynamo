@@ -1043,8 +1043,7 @@ namespace Dynamo.ViewModels
         /// <param name="e"></param>
         private void HandleConnectorPinViewModelRemove(object sender, EventArgs e)
         {
-            var viewModelSender = sender as ConnectorPinViewModel;
-            if (viewModelSender is null) return;
+            if (!(sender is ConnectorPinViewModel viewModelSender)) return;
 
             workspaceViewModel.Model.RecordAndDeleteModels(
                 new List<ModelBase>() { viewModelSender.Model });

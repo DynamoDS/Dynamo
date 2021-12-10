@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:Dynamo.GraphMetadata.Controls"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:converters="clr-namespace:Dynamo.GraphMetadata.Converters"
+             xmlns:properties="clr-namespace:Dynamo.GraphMetadata.Properties"
              xmlns:vr="clr-namespace:Dynamo.GraphMetadata.ValidationRules"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
@@ -140,25 +141,25 @@
         <StackPanel Orientation="Vertical"
                     Grid.Row="0" KeyDown="StackPanel_KeyDown">
 
-            <HeaderedContentControl Header="Description">
+            <HeaderedContentControl Header="{x:Static properties:Resources.GraphMetaData_Description}">
                 <TextBox Text="{Binding GraphDescription, Mode=TwoWay, FallbackValue='Graph Description'}"
                          Style="{StaticResource TextBoxStyle}"
                          TextWrapping="WrapWithOverflow" />
             </HeaderedContentControl>
 
-            <HeaderedContentControl Header="Image">
+            <HeaderedContentControl Header="{x:Static properties:Resources.GraphMetaData_Image}">
                 <controls:ImageSelector MaxHeight="150"
                                         MinHeight="100"
                                         Image="{Binding Thumbnail, Mode=TwoWay}"/>
             </HeaderedContentControl>
 
-            <HeaderedContentControl Header="Author Name">
+            <HeaderedContentControl Header="{x:Static properties:Resources.GraphMetaData_AuthorName}">
                 <TextBox Text="{Binding GraphAuthor, Mode=TwoWay}"
                          Style="{StaticResource TextBoxStyle}"
                          TextWrapping="WrapWithOverflow"/>
             </HeaderedContentControl>
 
-            <HeaderedContentControl Header="Learn more URL">
+            <HeaderedContentControl Header="{x:Static properties:Resources.GraphMetaData_LearnMoreURL}">
                 <TextBox Validation.ErrorTemplate="{StaticResource ResourceKey=textboxErrorTemplate}"
                          Name="UriTextBox"
                          TextWrapping="WrapWithOverflow"
@@ -211,7 +212,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <HeaderedContentControl Grid.Row="0" Grid.Column="0" Header="Graph Type">
+            <HeaderedContentControl Grid.Row="0" Grid.Column="0" Header="{x:Static properties:Resources.GraphMetaData_GraphType}">
                 <TextBlock Text="{Binding CurrentLinter.Name, Mode=OneWay, FallbackValue='Current Linter'}" />
             </HeaderedContentControl>
             <Button Grid.Row="0"
@@ -244,7 +245,7 @@
                     <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
-                           Text="Custom Properties"
+                           Text="{x:Static properties:Resources.GraphMetaData_CustomProperties}"
                            Style="{StaticResource headerStyle}" />
                 <Button Grid.Column="1"
                         Command="{Binding AddCustomPropertyCommand}">

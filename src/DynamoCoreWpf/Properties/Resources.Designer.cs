@@ -3862,8 +3862,8 @@ namespace Dynamo.Wpf.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
-        ///        
-        ///Do you wish to restart {2} to first uninstall {1}, then download {0} again?.
+        ///
+        ///Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again..
         /// </summary>
         public static string MessageSamePackageDiffVersInLocalPackages {
             get {
@@ -4248,6 +4248,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeTooltipOriginalName {
             get {
                 return ResourceManager.GetString("NodeTooltipOriginalName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Renamed from {0}.
+        /// </summary>
+        public static string NodeTooltipRenamed {
+            get {
+                return ResourceManager.GetString("NodeTooltipRenamed", resourceCulture);
             }
         }
         
@@ -5281,7 +5290,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("PackagesGuideNavigatePackagesTitle", resourceCulture);
             }
         }
-        
+                    
         /// <summary>
         ///   Looks up a localized string similar to \nYou can find packages whose title, author, or keywords contain the search phrase. To filter and sort the results, use the and icons next to the search bar..
         /// </summary>
@@ -6319,6 +6328,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File Path.
+        /// </summary>
+        public static string PublishPackageViewFilePath {
+            get {
+                return ResourceManager.GetString("PublishPackageViewFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to License (optional).
         /// </summary>
         public static string PublishPackageViewLicense {
@@ -6360,6 +6378,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewMarkdownFilesDirectoryToolTip {
             get {
                 return ResourceManager.GetString("PublishPackageViewMarkdownFilesDirectoryToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Library.
+        /// </summary>
+        public static string PublishPackageViewNodeLibrary {
+            get {
+                return ResourceManager.GetString("PublishPackageViewNodeLibrary", resourceCulture);
             }
         }
         
@@ -7237,11 +7264,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Uninstall loaded package.
+        /// </summary>
+        public static string UninstallLoadedPackage {
+            get {
+                return ResourceManager.GetString("UninstallLoadedPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uninstall loaded packages.
         /// </summary>
-        public static string UninstallLoaded {
+        public static string UninstallLoadedPackages {
             get {
-                return ResourceManager.GetString("UninstallLoaded", resourceCulture);
+                return ResourceManager.GetString("UninstallLoadedPackages", resourceCulture);
             }
         }
         
@@ -7642,6 +7678,15 @@ namespace Dynamo.Wpf.Properties {
         public static string WorkspaceTabSavingUnnecessary {
             get {
                 return ResourceManager.GetString("WorkspaceTabSavingUnnecessary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsaved.
+        /// </summary>
+        public static string WorkspaceTabTooltipHeaderUnsaved {
+            get {
+                return ResourceManager.GetString("WorkspaceTabTooltipHeaderUnsaved", resourceCulture);
             }
         }
         
