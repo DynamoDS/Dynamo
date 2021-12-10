@@ -845,7 +845,7 @@ namespace Dynamo.PackageManager
                 License = l.License,
                 SelectedHosts = l.HostDependencies as List<string>,
                 CopyrightHolder = l.CopyrightHolder,
-                CopyrightYear = l.CopyrightYear ?? "2021"
+                CopyrightYear = l.CopyrightYear
             };
 
             // add additional files
