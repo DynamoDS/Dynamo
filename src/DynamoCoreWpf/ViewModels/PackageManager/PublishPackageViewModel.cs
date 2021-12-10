@@ -38,6 +38,11 @@ namespace Dynamo.PackageManager
         private readonly DynamoViewModel dynamoViewModel;
 
         /// <summary>
+        /// Default license type for each package, no need to localize
+        /// </summary>
+        private readonly string defaultLicense = "MIT";
+
+        /// <summary>
         /// reference of DynamoViewModel
         /// </summary>
         public DynamoViewModel DynamoViewModel
@@ -330,12 +335,11 @@ namespace Dynamo.PackageManager
             }
         }
 
-
+        private string _license;
         /// <summary>
-        /// License property </summary>
-        /// <value>
-        /// The license for the package </value>
-        private string _license = "";
+        /// License property
+        /// </summary>
+        /// <value> The license for the package </value>
         public string License
         {
             get { return _license; }
@@ -344,7 +348,7 @@ namespace Dynamo.PackageManager
                 if (_license != value)
                 {
                     _license = value;
-                    RaisePropertyChanged("License");
+                    RaisePropertyChanged(nameof(License));
                 }
             }
         }
@@ -1350,8 +1354,7 @@ namespace Dynamo.PackageManager
                     }
                 }
 
-                CustomNodeDefinition funcDef;
-                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, DynamoModel.IsTestMode, out funcDef)
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, DynamoModel.IsTestMode, out CustomNodeDefinition funcDef)
                     && CustomNodeDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
                 {
                     CustomNodeDefinitions.Add(funcDef);
@@ -1379,11 +1382,9 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                Assembly assem;
-
                 // we're not sure if this is a managed assembly or not
                 // we try to load it, if it fails - we add it as an additional file
-                var result = PackageLoader.TryLoadFrom(filename, out assem);
+                var result = PackageLoader.TryLoadFrom(filename, out Assembly assem);
                 if (result)
                 {
                     var assemName = assem.GetName().Name;
@@ -1421,7 +1422,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Delegate used to submit the element</summary>
+        /// Delegate used to submit the publish online request</summary>
         private void Submit()
         {
             var files = BuildPackage();
@@ -1572,11 +1573,11 @@ namespace Dynamo.PackageManager
                 Package.Description = Description;
                 Package.Group = Group;
                 Package.Keywords = KeywordList;
-                Package.License = License;
+                Package.License = string.IsNullOrEmpty(License) ? defaultLicense : License;
                 Package.SiteUrl = SiteUrl;
                 Package.RepositoryUrl = RepositoryUrl;
-                Package.CopyrightHolder = CopyrightHolder;
-                Package.CopyrightYear = CopyrightYear;
+                Package.CopyrightHolder = string.IsNullOrEmpty(CopyrightHolder) ? dynamoViewModel.Model.AuthenticationManager?.Username : CopyrightHolder;
+                Package.CopyrightYear = string.IsNullOrEmpty(CopyrightYear) ? DateTime.Now.Year.ToString() : copyrightYear;
 
                 AppendPackageContents();
 
