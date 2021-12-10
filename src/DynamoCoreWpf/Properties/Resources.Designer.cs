@@ -5328,6 +5328,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search results.
+        /// </summary>
+        public static string PackagesGuideSearchResultsTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideSearchResultsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Learn more about packages in the #online help=https://dynamobim.org/issues/extend-dynamo-with-packages.
         /// </summary>
         public static string PackagesGuideSurveyText {
@@ -7251,6 +7260,15 @@ namespace Dynamo.Wpf.Properties {
         public static string TooltipCurrentIndex {
             get {
                 return ResourceManager.GetString("TooltipCurrentIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to of.
+        /// </summary>
+        public static string TourLabelProgressText {
+            get {
+                return ResourceManager.GetString("TourLabelProgressText", resourceCulture);
             }
         }
         

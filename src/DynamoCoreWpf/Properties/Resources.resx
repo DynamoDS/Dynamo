@@ -3009,4 +3009,10 @@ To install the latest version of a package, click Install. \n
   <data name="WorkspaceTabTooltipHeaderUnsaved" xml:space="preserve">
     <value>Unsaved</value>
   </data>
+  <data name="TourLabelProgressText" xml:space="preserve">
+    <value>of</value>
+  </data>
+  <data name="PackagesGuideSearchResultsTitle" xml:space="preserve">
+    <value>Search results</value>
+  </data>
 </root>
