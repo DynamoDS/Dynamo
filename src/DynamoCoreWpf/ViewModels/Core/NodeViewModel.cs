@@ -664,6 +664,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Used as a flag to indicate to associated connectors what ZIndex to be drawn at.
         /// </summary>
+        [JsonIgnore]
         public bool NodeInCollapsedGroup
         {
             get => nodeInCollapsedGroup;
