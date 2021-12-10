@@ -388,11 +388,11 @@ namespace Dynamo.ViewModels
         }
         private bool OneConnectingNodeInCollapsedGroup(NodeViewModel firstNode, NodeViewModel lastNode)
         {
-            return firstNode.NodeInCollapsedGroup || lastNode.NodeInCollapsedGroup;
+            return firstNode.IsNodeInCollapsedGroup || lastNode.IsNodeInCollapsedGroup;
         }
         private bool ConnectingNodesBothInCollapsedGroup(NodeViewModel firstNode, NodeViewModel lastNode)
         {
-            return firstNode.NodeInCollapsedGroup && lastNode.NodeInCollapsedGroup;
+            return firstNode.IsNodeInCollapsedGroup && lastNode.IsNodeInCollapsedGroup;
         }
 
         /// <summary>

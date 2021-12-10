@@ -808,7 +808,7 @@ namespace Dynamo.ViewModels
 
                 viewModel.IsCollapsed = true;
                 if (viewModel is NodeViewModel nodeViewModel)
-                    nodeViewModel.NodeInCollapsedGroup = true;
+                    nodeViewModel.IsNodeInCollapsedGroup = true;
             }
 
             if (!collapseConnectors) return;

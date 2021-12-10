@@ -59,7 +59,7 @@ namespace Dynamo.ViewModels
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
         private bool isRenamed = false;
-        private bool nodeInCollapsedGroup = false;
+        private bool isNodeInCollapsedGroup = false;
         #endregion
 
         #region public members
@@ -665,13 +665,13 @@ namespace Dynamo.ViewModels
         /// Used as a flag to indicate to associated connectors what ZIndex to be drawn at.
         /// </summary>
         [JsonIgnore]
-        public bool NodeInCollapsedGroup
+        public bool IsNodeInCollapsedGroup
         {
-            get => nodeInCollapsedGroup;
+            get => isNodeInCollapsedGroup;
             set
             {
-                nodeInCollapsedGroup = value;
-                RaisePropertyChanged(nameof(NodeInCollapsedGroup));
+                isNodeInCollapsedGroup = value;
+                RaisePropertyChanged(nameof(IsNodeInCollapsedGroup));
             }
         }
 
