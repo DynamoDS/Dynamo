@@ -48,6 +48,7 @@ namespace Dynamo.ViewModels
         private double dotTop;
         private double dotLeft;
         private double endDotSize = 6;
+        private double zIndex = 3;
 
         private Point curvePoint1;
         private Point curvePoint2;
@@ -176,6 +177,7 @@ namespace Dynamo.ViewModels
                 isCollapsed = value;
                 RaisePropertyChanged(nameof(IsCollapsed));
                 SetCollapseOfPins(IsCollapsed);
+                RaisePropertyChanged(nameof(ZIndex));
             }
         }
 
@@ -345,7 +347,50 @@ namespace Dynamo.ViewModels
         // and they will have a ZIndex of 2
         public double ZIndex
         {
-            get { return 3; }
+            get 
+            {
+                zIndex = SetZIndex();
+                return zIndex;
+            }
+
+            protected set
+            {
+                zIndex = value;
+                RaisePropertyChanged(nameof(ZIndex));
+            }
+         
+        }
+
+        private int SetZIndex()
+        {
+            var firstNode = this.Nodevm;
+            var lastNode = this.NodeEnd;
+
+            int index = firstNode is null || lastNode is null ? 1 : 3;
+
+            //reduce ZIndex if one of associated nodes is collapsed
+            if (OneConnectingNodeInCollapsedGroup(firstNode, lastNode) && !ConnectingNodesBothInCollapsedGroup(firstNode, lastNode))
+            {
+                var lowestIndex = new int[] { this.Nodevm.ZIndex, this.NodeEnd.ZIndex }
+                .OrderBy(x => x)
+                .FirstOrDefault();
+
+                //if ZIndex above that of groups, set to be less than that of groups
+                if (index > 2)
+                {
+                    index = 1;
+                }
+            }
+
+            return index;
+        }
+        private bool OneConnectingNodeInCollapsedGroup(NodeViewModel firstNode, NodeViewModel lastNode)
+        {
+            return firstNode.NodeInCollapsedGroup || lastNode.NodeInCollapsedGroup;
+        }
+        private bool ConnectingNodesBothInCollapsedGroup(NodeViewModel firstNode, NodeViewModel lastNode)
+        {
+            return firstNode.NodeInCollapsedGroup && lastNode.NodeInCollapsedGroup;
         }
 
         /// <summary>
@@ -432,6 +477,14 @@ namespace Dynamo.ViewModels
             get
             {
                 return workspaceViewModel.Nodes.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
+            }
+        }
+
+        public NodeViewModel NodeEnd
+        {
+            get
+            {
+                return workspaceViewModel.Nodes.FirstOrDefault(x => x.NodeLogic.GUID == model.End.Owner.GUID);
             }
         }
 
@@ -870,6 +923,7 @@ namespace Dynamo.ViewModels
             MouseHoverOn = false;
             activeStartPort = port;
 
+            ZIndex = SetZIndex();
             Redraw(port.Center);
 
             InitializeCommands();
@@ -898,6 +952,7 @@ namespace Dynamo.ViewModels
             model = connectorModel;
             IsHidden = model.IsHidden;
             MouseHoverOn = false;
+            ZIndex = SetZIndex();
 
             model.PropertyChanged += HandleConnectorPropertyChanged;
             model.ConnectorPinModels.CollectionChanged += ConnectorPinModelCollectionChanged;
@@ -1266,6 +1321,8 @@ namespace Dynamo.ViewModels
             {
                 this.Redraw(this.ConnectorModel.End.Center);
             }
+
+            RaisePropertyChanged(nameof(ZIndex));
         }
 
         /// <summary>
