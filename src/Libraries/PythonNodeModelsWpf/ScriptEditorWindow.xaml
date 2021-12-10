@@ -56,7 +56,6 @@
                 <Setter Property="Foreground"
                         Value="#bbbbbb" />
             </Style>
-            <pw:SelectedPythonEngineToMigrationConverter x:Key="SelectedPythonEngineToMigrationConverter" />
         </ResourceDictionary>
 
     </Window.Resources>
@@ -113,7 +112,7 @@
                     Click="OnMigrationAssistantClicked"
                     ToolTipService.ShowOnDisabled="True"
                     ToolTipService.IsEnabled="True"
-                    IsEnabled="{Binding SelectedItem, ElementName=EngineSelectorComboBox, Converter={StaticResource SelectedPythonEngineToMigrationConverter}}">
+                    IsEnabled="True">
                 <Button.ToolTip>
                     <ToolTip Content="{x:Static p:Resources.PythonScriptEditorMigrationAssistantButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
                 </Button.ToolTip>

@@ -800,9 +800,7 @@
                                                VerticalAlignment="Center"
                                                Style="{StaticResource ToggleInfoStyle}">
                                             <Image.ToolTip>
-                                                <ToolTip Style="{StaticResource GenericToolTipLight}">
-                                                    <TextBlock Text="{x:Static p:Resources.DisableBuiltInPackageToggleInfo}" TextWrapping="Wrap" Width="300"/>
-                                                </ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.DisableBuiltInPackageToggleInfo}" Style="{StaticResource GenericToolTipLight}"/>
                                             </Image.ToolTip>
                                         </Image>
 
@@ -827,9 +825,7 @@
                                                VerticalAlignment="Center"
                                                Style="{StaticResource ToggleInfoStyle}">
                                             <Image.ToolTip>
-                                                <ToolTip Style="{StaticResource GenericToolTipLight}">
-                                                    <TextBlock Text="{x:Static p:Resources.DisableCustomPackageToggleInfo}" TextWrapping="Wrap" Width="300"/>
-                                                </ToolTip> 
+                                                <ToolTip Content="{x:Static p:Resources.DisableCustomPackageToggleInfo}" Style="{StaticResource GenericToolTipLight}"/>
                                             </Image.ToolTip>
                                         </Image>
                                     </StackPanel>
