@@ -349,8 +349,7 @@ namespace Dynamo.ViewModels
         {
             get 
             {
-                zIndex = SetZIndex();
-                return zIndex;
+                return SetZIndex();
             }
 
             protected set
