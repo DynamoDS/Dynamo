@@ -31,7 +31,7 @@ namespace Dynamo.Tests
             CurrentDynamoModel.ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, false));
             node = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<PythonNode>();
             AssertPreviewValue(node.AstIdentifierGuid, 0);
-            Assert.AreEqual(PythonEngineManager.CPython3EngineName, node.Engine);
+            Assert.AreEqual(PythonEngineManager.CPython3EngineName, node.EngineName);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace Dynamo.Tests
             CurrentDynamoModel.ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, false));
             node = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<PythonNode>();
             AssertPreviewValue(node.AstIdentifierGuid, 0);
-            Assert.AreEqual(PythonEngineManager.IronPython2EngineName, node.Engine);
+            Assert.AreEqual(PythonEngineManager.IronPython2EngineName, node.EngineName);
         }
     }
 }
