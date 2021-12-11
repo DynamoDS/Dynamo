@@ -11,11 +11,10 @@ using Dynamo.PythonServices.EventHandlers;
 
 namespace PythonNodeModels
 {
-    /// TODO: Remove when dynamic loading logic is there then we no longer need a hard copy of the options
     /// <summary>
     /// Enum of possible values of python engine versions.
     /// </summary>
-    [Obsolete]
+    [Obsolete("This Enum will be remove in Dynamo 3.0")]
     public enum PythonEngineVersion
     {
         Unspecified,
@@ -133,16 +132,16 @@ namespace Dynamo.PythonServices
         public ObservableCollection<PythonEngine> AvailableEngines;
 
         #region Constant strings
-        // TODO: The following fields might be removed after dynamic loading applied
+        
         /// <summary>
-        /// Default Engine name
-        /// </summary>
-        internal static readonly string IronPython2EngineName = "IronPython2";
-
-        /// <summary>
-        /// Default Engine name
+        /// CPython Engine name
         /// </summary>
         internal static readonly string CPython3EngineName = "CPython3";
+
+        /// <summary>
+        /// IronPython2 Engine name
+        /// </summary>
+        internal static readonly string IronPython2EngineName = "IronPython2";
 
         internal static string PythonEvaluatorSingletonInstance = "Instance";
 
@@ -172,11 +171,17 @@ namespace Dynamo.PythonServices
         {
             AvailableEngines = new ObservableCollection<PythonEngine>();
 
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            LoadPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
+                FirstOrDefault(a => a != null && a.GetName().Name == CPythonAssemblyName));
+
+            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) =>
             {
-                ScanPythonEngine(assembly);
-            }
-            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(AssemblyLoadEventHandler);
+                if (args.LoadedAssembly != null && 
+                    args.LoadedAssembly.GetName().Name == CPythonAssemblyName)
+                {
+                    Instance.LoadPythonEngine(args.LoadedAssembly);
+                }
+            });
         }
 
         private PythonEngine GetEngine(string version)
@@ -184,47 +189,18 @@ namespace Dynamo.PythonServices
             return AvailableEngines.FirstOrDefault(x => x.Name == version);
         }
 
-        /// <summary>
-        /// The shared logic for Python node evaluation
-        /// </summary>
-        /// <param name="engineVersion"></param>
-        /// <param name="evaluatorClass"></param>
-        /// <param name="evaluationMethod"></param>
-        internal void GetEvaluatorInfo(string engineVersion, out string evaluatorClass, out string evaluationMethod)
+        internal void LoadPythonEngine(IEnumerable<Assembly> assemblies)
         {
-            var engine = GetEngine(engineVersion);
-            if (engine != null)
+            foreach (var a in assemblies)
             {
-                evaluatorClass = engine.GetType().Name;
-                evaluationMethod = nameof(engine.Evaluate);
-                return;
+                LoadPythonEngine(a);
             }
-
-            // Throwing at the compilation stage is handled as a non-retryable error by the Dynamo engine.
-            // Instead, we want to produce an error at the evaluation stage, so we can eventually recover.
-            // We handle this by providing a dummy Python evaluator that will evaluate to an error message.
-            evaluatorClass = DummyEvaluatorClass;
-            evaluationMethod = DummyEvaluatorMethod;
         }
 
-        private void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args)
-        {
-            Instance.ScanPythonEngine(args.LoadedAssembly);
-        }
-
-        private void ScanPythonEngine(Assembly assembly)
+        private void LoadPythonEngine(Assembly assembly)
         {
             if (assembly == null)
             {
-                return;
-            }
-
-            var assemblyName = assembly.GetName().Name;
-            if (assemblyName != IronPythonAssemblyName && assemblyName != CPythonAssemblyName)
-            {
-                // Remove this condition once Python engines are truly dynamic (VM execution and UI)
-                // Until then, check for specific assemblies to prevent any performance degradation
-                // TODO: Check performance of Dynamo load time after removing this condition.
                 return;
             }
 

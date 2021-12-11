@@ -288,6 +288,7 @@ namespace Dynamo.PackageManager
                 package.SetAsLoaded();
                 PackgeLoaded?.Invoke(package);
                 PackagesLoaded?.Invoke(loadedAssemblies);
+                PythonServices.PythonEngineManager.Instance.LoadPythonEngine(loadedAssemblies);
             }
             catch (CustomNodePackageLoadException e)
             {
