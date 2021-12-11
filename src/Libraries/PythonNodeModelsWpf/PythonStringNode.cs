@@ -29,9 +29,6 @@ namespace PythonNodeModelsWpf
             pythonStringNodeView = nodeView;
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
-            var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
-            nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
-
             pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
 
