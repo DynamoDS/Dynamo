@@ -271,7 +271,7 @@ namespace Dynamo.Wpf.Views
 
         private void ReloadCPython_Click(object sender, RoutedEventArgs e)
         {
-            dynViewModel.Model.OnRequestPythonReset("CPython3");
+            dynViewModel.Model.OnRequestPythonReset(PythonServices.PythonEngineManager.CPython3EngineName);
         }
 
         private void InstalledPackagesExpander_OnExpanded(object sender, RoutedEventArgs e)

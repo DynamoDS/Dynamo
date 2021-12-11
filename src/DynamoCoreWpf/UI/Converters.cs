@@ -154,7 +154,7 @@ namespace Dynamo.Controls
     /// <summary>
     /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
     /// </summary>
-    [Obsolete()]
+    [Obsolete("This class will be removed in Dynamo 3.0")]
     public class EmptyDepStringToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,

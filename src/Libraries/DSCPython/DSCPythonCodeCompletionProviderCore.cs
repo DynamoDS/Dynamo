@@ -300,7 +300,7 @@ clr.setPreload(True)
         /// <returns></returns>
         public override bool IsSupportedEngine(string engineName)
         {
-            if (engineName == "CPython3")
+            if (engineName == PythonEngineManager.CPython3EngineName)
             {
                 return true;
             }
