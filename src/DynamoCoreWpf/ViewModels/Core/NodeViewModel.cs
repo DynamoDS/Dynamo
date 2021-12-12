@@ -1015,6 +1015,8 @@ namespace Dynamo.ViewModels
                     break;
                 case "State":
                     RaisePropertyChanged("State");
+                    RaisePropertyChanged(nameof(NodeWarningBarVisible));
+                    WarningBarColor = GetWarningColor();
                     break;
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
@@ -1026,8 +1028,7 @@ namespace Dynamo.ViewModels
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
                     RaisePropertyChanged(nameof(NodeWarningBarVisible));
-                    if (ErrorBubble != null) return;
-                    WarningBarColor = GetWarningColor(InfoBubbleViewModel.Style.None);
+                    WarningBarColor = GetWarningColor();
                     break;
                 case "Width":
                     RaisePropertyChanged("Width");
@@ -1111,30 +1112,21 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="style"></param>
         /// <returns></returns>
-        internal SolidColorBrush GetWarningColor(InfoBubbleViewModel.Style style)
+        internal SolidColorBrush GetWarningColor()
         {
-            switch (style)
+            if (nodeLogic.IsInErrorState)
             {
-                case InfoBubbleViewModel.Style.None:
-                    if (IsVisible == false)
-                    {
-                        return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
-                    }
-                    break;
-                case InfoBubbleViewModel.Style.Warning:
-                case InfoBubbleViewModel.Style.WarningCondensed:
-                    return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeWarningColor"];
-                case InfoBubbleViewModel.Style.Error:
-                case InfoBubbleViewModel.Style.ErrorCondensed:
-                    return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeErrorColor"];
-                case InfoBubbleViewModel.Style.Info:
-                    return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInfoColor"];
+                return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeErrorColor"];
             }
 
-            return null;
+            if (NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning)
+            {
+                return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeWarningColor"];
+            }
+
+            return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
         }
 
-        
         /// <summary>
         /// Disposes the ErrorBubble when it's no longer needed.
         /// </summary>
@@ -1190,13 +1182,13 @@ namespace Dynamo.ViewModels
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
                     ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                    WarningBarColor = GetWarningColor(ErrorBubble.InfoBubbleStyle);
+                    WarningBarColor = GetWarningColor();
                 });
             }
             else
             {
                 ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                WarningBarColor = GetWarningColor(ErrorBubble.InfoBubbleStyle);
+                WarningBarColor = GetWarningColor();
             }
             
             ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
