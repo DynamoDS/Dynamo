@@ -37,7 +37,7 @@ namespace PythonNodeModels
 
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        [DefaultValue(nameof(PythonEngineManager.IronPython2EngineName))]
+        [DefaultValue("IronPython2")]
         
         /// <summary>
         /// Return the user selected python engine enum.
