@@ -1106,6 +1106,14 @@ namespace Dynamo.ViewModels
             ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeMessages_CollectionChanged;
         }
 
+        // These colors are duplicated from the DynamoColorsAndBrushesDictionary as it is not assumed that the xaml will be loaded before setting the color
+        // SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeErrorColor"];
+        private static SolidColorBrush errorColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#EB5555"));
+        // SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeWarningColor"];
+        private static SolidColorBrush warningColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FAA21B"));
+        // SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
+        private static SolidColorBrush noPreviewColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
+
         /// <summary>
         /// Sets the color of the warning bar, which informs the user that the node is in
         /// either an error or a warning state.
@@ -1116,15 +1124,15 @@ namespace Dynamo.ViewModels
         {
             if (nodeLogic.IsInErrorState)
             {
-                return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeErrorColor"];
+                return errorColor;
             }
 
             if (NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning)
             {
-                return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeWarningColor"];
+                return warningColor;
             }
 
-            return (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
+            return noPreviewColor;
         }
 
         /// <summary>
