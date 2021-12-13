@@ -1015,7 +1015,6 @@ namespace Dynamo.ViewModels
                     break;
                 case "State":
                     RaisePropertyChanged("State");
-                    RaisePropertyChanged(nameof(NodeWarningBarVisible));
                     WarningBarColor = GetWarningColor();
                     break;
                 case "ArgumentLacing":
@@ -1027,7 +1026,6 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
-                    RaisePropertyChanged(nameof(NodeWarningBarVisible));
                     WarningBarColor = GetWarningColor();
                     break;
                 case "Width":
@@ -1067,6 +1065,21 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Respond to property changes on the error bubble.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void ErroBubble_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(ErrorBubble.DoesNodeDisplayMessages):
+                    WarningBarColor = GetWarningColor();
+                    break;
+            }
+        }
+
+        /// <summary>
         /// Updates the width of the node's Warning/Error bubbles, in case the width of the node changes.
         /// </summary>
         private void UpdateErrorBubbleWidth()
@@ -1087,6 +1100,7 @@ namespace Dynamo.ViewModels
             ErrorBubble.NodeInfoToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateOverlays;
+            ErrorBubble.PropertyChanged += ErroBubble_PropertyChanged;
             
             if (DynamoViewModel.UIDispatcher != null)
             {
@@ -1129,6 +1143,12 @@ namespace Dynamo.ViewModels
 
             if (NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning)
             {
+                //Handle the case where the user has dismissed the warning and no warnings are showing.
+                if (ErrorBubble != null && !ErrorBubble.DoesNodeDisplayMessages)
+                {
+                    return noPreviewColor;
+                }
+
                 return warningColor;
             }
 
@@ -1154,6 +1174,7 @@ namespace Dynamo.ViewModels
             ErrorBubble.NodeInfoToDisplay.CollectionChanged -= UpdateOverlays;
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged -= UpdateOverlays;
             ErrorBubble.NodeErrorsToDisplay.CollectionChanged -= UpdateOverlays;
+            ErrorBubble.PropertyChanged -= ErroBubble_PropertyChanged;
 
             ErrorBubble.Dispose();
         }
