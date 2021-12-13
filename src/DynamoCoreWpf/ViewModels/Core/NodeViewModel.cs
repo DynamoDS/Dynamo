@@ -1016,6 +1016,7 @@ namespace Dynamo.ViewModels
                 case "State":
                     RaisePropertyChanged("State");
                     WarningBarColor = GetWarningColor();
+                    RaisePropertyChanged(nameof(NodeWarningBarVisible));
                     break;
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
@@ -1027,6 +1028,7 @@ namespace Dynamo.ViewModels
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
                     WarningBarColor = GetWarningColor();
+                    RaisePropertyChanged(nameof(NodeWarningBarVisible));
                     break;
                 case "Width":
                     RaisePropertyChanged("Width");
@@ -1075,6 +1077,7 @@ namespace Dynamo.ViewModels
             {
                 case nameof(ErrorBubble.DoesNodeDisplayMessages):
                     WarningBarColor = GetWarningColor();
+                    RaisePropertyChanged(nameof(NodeWarningBarVisible));
                     break;
             }
         }
