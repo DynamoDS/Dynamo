@@ -184,7 +184,7 @@
           PreviewMouseLeftButtonUp="Window_PreviewMouseLeftButtonUp">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="45px" />
+            <RowDefinition Height="37px" />
             <RowDefinition Height="40px" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -298,9 +298,12 @@
                                   Name="ToggleIsAnalyticsReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialogTooltip}"
-                                  Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
-                        <Separator />
+                                  Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
+                            <MenuItem.ToolTip>
+                                <ToolTip Content="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialogTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            </MenuItem.ToolTip>
+                        </MenuItem>
+                            <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuPreferences}"
                                   Click="OnPreferencesWindowClick"
                                   Name="preferencesOption"/>
@@ -831,7 +834,7 @@
                                                                                        Focusable="False"
                                                                                        HorizontalOffset="-2"
                                                                                        IsOpen="{TemplateBinding IsSubmenuOpen}"
-                                                                                       Placement="Left"
+                                                                                       Placement="Right"
                                                                                        PopupAnimation="Fade">
                                                                                     <Border Name="SubmenuBorder"
                                                                                             Margin="0 0 5 5"
@@ -1449,7 +1452,7 @@
                       Grid.ColumnSpan="5">
 
             <ScrollViewer.ContextMenu>
-                <ContextMenu>
+                <ContextMenu Style="{StaticResource ContextMenuStyle}">
                     <MenuItem Header="{x:Static p:Resources.DynamoViewContextMenuClearLog}"
                               Command="{Binding ClearLogCommand}" />
                 </ContextMenu>

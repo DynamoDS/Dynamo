@@ -1772,34 +1772,6 @@
     </Style>
 
     <!--  Generic Dynamo ToolTip  -->
-    <Style x:Key="GenericToolTipDark" TargetType="ToolTip">
-        <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Setter Property="MaxWidth" Value="300" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ToolTip">
-                    <Border Padding="10,8"
-                            Background="{StaticResource DarkMidGreyBrush}"
-                            CornerRadius="2">
-                        <ContentPresenter />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Resources>
-            <Style TargetType="ContentPresenter">
-                <Style.Resources>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="TextWrapping" Value="Wrap" />
-                        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-                        <Setter Property="FontSize" Value="12px" />
-                        <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal100Brush}" />
-                    </Style>
-                </Style.Resources>
-            </Style>
-        </Style.Resources>
-    </Style>
-
     <Style x:Key="GenericToolTipLight" TargetType="ToolTip">
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="MaxWidth" Value="300" />
@@ -2970,35 +2942,11 @@
         </Setter>
     </Style>
 
-    <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}">
-        <Setter Property="Placement" Value="MousePoint" />
-        <Setter Property="Foreground" Value="{StaticResource NodeContextMenuForeground}" />
-        <Setter Property="FontSize" Value="13px" />
-        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-        <Setter Property="FontWeight" Value="Medium" />
-        <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="OverridesDefaultStyle" Value="True" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ContextMenu}">
-                    <Border x:Name="Border"
-                            Background="{TemplateBinding Background}"
-                            BorderThickness="0px">
-                        <StackPanel Margin="0,10"
-                                    ClipToBounds="True"
-                                    IsItemsHost="True"
-                                    Orientation="Vertical" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <Style x:Key="ContextMenuItemStyle" TargetType="{x:Type MenuItem}">
         <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
-        <Setter Property="Height" Value="30" />
+        <Setter Property="Height" Value="Auto" />
         <Setter Property="Width" Value="240" />
-        <Setter Property="Padding" Value="15,0,0,0" />
+        <Setter Property="Padding" Value="20,0,0,0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type MenuItem}">
@@ -3007,7 +2955,7 @@
                                Background="Transparent"
                                SnapsToDevicePixels="true">
                         <Label x:Name="checkBox"
-                               Margin="10,0,-10,0"
+                               Margin="0,0,-20,0"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
                                HorizontalContentAlignment="Center"
@@ -3053,7 +3001,7 @@
                                Focusable="false"
                                HorizontalOffset="0"
                                IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                               Placement="Left"
+                               Placement="Right"
                                VerticalOffset="-2">
                             <Border Background="{TemplateBinding Background}"
                                     BorderBrush="Transparent"
@@ -3105,6 +3053,41 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}">
+        <Setter Property="Placement" Value="MousePoint" />
+        <Setter Property="Foreground" Value="{StaticResource NodeContextMenuForeground}" />
+        <Setter Property="FontSize" Value="13px" />
+        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0px">
+                        <StackPanel IsItemsHost="True"
+                                    Margin="0,10"
+                                    ClipToBounds="True"
+                                    Orientation="Vertical" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Resources>
+            <!--  Separator  -->
+            <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}"
+                   BasedOn="{StaticResource ContextMenuSeparatorStyle}"
+                   TargetType="Separator" />
+
+            <!--  MenuItem Style  -->
+            <Style x:Key="{x:Type MenuItem}"
+                   BasedOn="{StaticResource ContextMenuItemStyle}"
+                   TargetType="MenuItem" />
+        </Style.Resources>
     </Style>
 
     <Style x:Key="MenuExpanderStyle" TargetType="Expander">
@@ -3161,7 +3144,6 @@
     <Style x:Key="WorkspaceReferencesExpanderStyle" TargetType="Expander">
         <Setter Property="Background" Value="{StaticResource SecondaryGray}" />
         <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}" />
-        <Setter Property="HeaderTemplate" Value="{StaticResource expanderHeader}" />
         <Setter Property="Template">
             <Setter.Value>
                 <!--  Control template for expander  -->
@@ -3660,8 +3642,10 @@
 
                         <!--  This is the Canvas for the exclamation mark appearing when the Style that the user is trying to insert already exists  -->
                         <Canvas Grid.Column="1"
-                                ToolTip="{x:Static p:Resources.PreferencesViewStyleWarning}"
                                 Visibility="{Binding Path=IsWarningEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Canvas.ToolTip>
+                                <ToolTip Content="{x:Static p:Resources.PreferencesViewStyleWarning}" Style="{StaticResource GenericToolTipLight}"/>
+                            </Canvas.ToolTip>
                             <Polygon Points="10,5 18,20 2,20">
                                 <Polygon.Fill>
                                     <SolidColorBrush Color="{StaticResource YellowOrange500}" />
@@ -3902,23 +3886,6 @@
 
     <SolidColorBrush x:Key="CheckMarkBackColor" Color="#87B340" />
     
-    <!-- Style for a self-wrapping ToolTip -->
-    <Style x:Key="ToolTipSelfWrapping" TargetType="ToolTip">
-        <Style.Resources>
-            <Style TargetType="ContentPresenter">
-                <Style.Resources>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="TextWrapping"
-                                Value="Wrap" />
-                    </Style>
-                </Style.Resources>
-            </Style>
-        </Style.Resources>
-        <Setter Property="MaxWidth"
-                Value="300" />
-    </Style>
-
-
     <!--  Style for the buttons in a Tooltip part of the Dynamo Guided Tours  -->
     <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Width" Value="5" />

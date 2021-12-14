@@ -134,6 +134,10 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 {
                     controller.MoveToNextStep();
                 }
+                else if (funcName == "ResizedEvent")
+                {
+                    controller.UpdatePopupLocation();
+                }
             }
             catch (Exception e)
             {
@@ -395,6 +399,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             if (browser != null)
             {
                 browser.InvalidateVisual();
+                UpdatePopupLocation();
             }
         }
 
@@ -421,7 +426,13 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             dynamoWindow.Dispatcher.BeginInvoke(new Action(() =>
             {
                 CloseTooltip(closeImmediately);
-            }));
+                //The packages installed are shown at this moment then we need to update the Popup location and the interactions with the Library
+                if (GuideFlowEvents.IsAnyGuideActive)
+                {
+                    GuideFlowEvents.OnUpdatePopupLocation();
+                    GuideFlowEvents.OnUpdateLibraryInteractions();
+                }                  
+            }));         
         }
 
         private FloatingLibraryTooltipPopup CreateTooltipControl()
@@ -568,6 +579,12 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         internal void MoveToNextStep()
         {
             GuideFlowEvents.OnGuidedTourNext();
+        }
+
+        //This method will be called when the Library was resized and the current Popup location needs to be updated
+        internal void UpdatePopupLocation()
+        {
+            GuideFlowEvents.OnUpdatePopupLocation();
         }
 
         /// <summary>

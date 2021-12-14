@@ -47,9 +47,9 @@
     <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=2.1.7972.24350, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Greg, Version=2.1.8012.31283, Culture=neutral, processorArchitecture=MSIL">
       <Private>True</Private>
-      <HintPath>..\packages\Greg.2.1.7972.24350\lib\net48\Greg.dll</HintPath>
+      <HintPath>..\packages\Greg.2.1.8012.31283\lib\net48\Greg.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit, Version=2.17.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.2.17.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>
@@ -1442,6 +1442,8 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\PackageNodes.gif" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\installedPackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\successIcon.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\filterIcon.png" />

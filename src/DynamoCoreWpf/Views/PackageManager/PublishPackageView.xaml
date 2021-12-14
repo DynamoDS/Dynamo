@@ -162,35 +162,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style TargetType="{x:Type ToolTip}">
-                <Setter Property="OverridesDefaultStyle" Value="true" />
-                <Setter Property="Placement" Value="Bottom" />
-                <Setter Property="Foreground" Value="#333333" />
-                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-                <Setter Property="FontSize" Value="12px" />
-                <Setter Property="MaxWidth" Value="400" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ToolTip}">
-                            <Border Margin="10,5"
-                                    Padding="10"
-                                    Background="#EEEEEE"
-                                    CornerRadius="4">
-                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Top" />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Resources>
-                    <Style TargetType="ContentPresenter">
-                        <Style.Resources>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="TextWrapping" Value="Wrap" />
-                            </Style>
-                        </Style.Resources>
-                    </Style>
-                </Style.Resources>
-            </Style>
+            
             <!--  DataGrid  -->
             <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
                 <Setter Property="Padding" Value="6,0" />
@@ -207,8 +179,11 @@
                                                   TextElement.FontSize="10px"
                                                   TextElement.FontWeight="Regular"
                                                   TextElement.Foreground="Blue"
-                                                  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}"
-                                                  ToolTipService.ShowDuration="30000" />
+                                                  ToolTipService.ShowDuration="30000">
+                                    <ContentPresenter.ToolTip>
+                                        <ToolTip Content="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}" Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                    </ContentPresenter.ToolTip>
+                                </ContentPresenter>
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
@@ -437,8 +412,11 @@
                     <!--  Name  -->
                     <TextBlock Name="packageNameLabel"
                                Style="{StaticResource LabelStyle}"
-                               Text="{x:Static p:Resources.PublishPackageViewPackageName}"
-                               ToolTip="{x:Static p:Resources.PublishPackageViewPackageNameTooltip}" />
+                               Text="{x:Static p:Resources.PublishPackageViewPackageName}">
+                        <TextBlock.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageNameTooltip}" Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                        </TextBlock.ToolTip>
+                    </TextBlock>
                     <TextBox Name="packageNameInput"
                              Style="{StaticResource InputStyle}"
                              Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}"
@@ -448,8 +426,11 @@
                     <!--  Description  -->
                     <TextBlock Name="descriptionLabel"
                                Style="{StaticResource LabelStyle}"
-                               Text="{x:Static p:Resources.PublishPackageViewPackageDescription}"
-                               ToolTip="{x:Static p:Resources.PublishPackageViewPackageDescriptionTooltip}" />
+                               Text="{x:Static p:Resources.PublishPackageViewPackageDescription}">
+                        <TextBlock.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageDescriptionTooltip}" Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                        </TextBlock.ToolTip>
+                    </TextBlock>
                     <TextBox Name="descriptionInput"
                              MinHeight="81px"
                              Style="{StaticResource InputStyle}"
@@ -459,8 +440,11 @@
                     <!--  Version  -->
                     <TextBlock Name="versionLabel"
                                Style="{StaticResource LabelStyle}"
-                               Text="{x:Static p:Resources.PublishPackageViewPackageVersion}"
-                               ToolTip="{x:Static p:Resources.PublishPackageViewPackageVersionTooltip}" />
+                               Text="{x:Static p:Resources.PublishPackageViewPackageVersion}">
+                        <TextBlock.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageVersionTooltip}" Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                        </TextBlock.ToolTip>
+                    </TextBlock>
                     <StackPanel Margin="0,0,0,12" Orientation="Horizontal">
                         <TextBox Name="versionMajorInput"
                                  Margin="0,0,6,0"
@@ -486,8 +470,11 @@
                     <TextBlock Name="hostLabel"
                                Margin="0,0,0,10"
                                Style="{StaticResource LabelStyle}"
-                               Text="{x:Static p:Resources.PublishPackageViewPackageHostDependency}"
-                               ToolTip="{x:Static p:Resources.PublishPackageViewPackageHostDependencyTooltip}" />
+                               Text="{x:Static p:Resources.PublishPackageViewPackageHostDependency}">
+                        <TextBlock.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageHostDependencyTooltip}" Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                        </TextBlock.ToolTip>
+                    </TextBlock>
                     <ComboBox Margin="0,0,0,20"
                               IsEditable="False"
                               ItemsSource="{Binding KnownHosts}"
@@ -553,8 +540,11 @@
                     <!--  Group  -->
                     <TextBlock Name="groupLabel"
                                Style="{StaticResource LabelStyle}"
-                               Text="{x:Static p:Resources.PublishPackageViewPackageGroup}"
-                               ToolTip="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}" />
+                               Text="{x:Static p:Resources.PublishPackageViewPackageGroup}">
+                        <TextBlock.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}" Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                        </TextBlock.ToolTip>
+                    </TextBlock>
                     <TextBox Name="groupInput"
                              Style="{StaticResource InputStyle}"
                              Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -563,8 +553,11 @@
                     <!--  Keywords  -->
                     <TextBlock Name="keywordsLabel"
                                Style="{StaticResource LabelStyle}"
-                               Text="{x:Static p:Resources.PublishPackageViewPackageKeywords}"
-                               ToolTip="{x:Static p:Resources.PublishPackageViewPackageKeywordsTooltip}" />
+                               Text="{x:Static p:Resources.PublishPackageViewPackageKeywords}">
+                        <TextBlock.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageKeywordsTooltip}" Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                        </TextBlock.ToolTip>
+                    </TextBlock>
                     <TextBox Name="keywordsInput"
                              Style="{StaticResource InputStyle}"
                              Text="{Binding Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -627,7 +620,7 @@
                             <TextBlock Name="copyrightHolderSubLabel"
                                        Style="{StaticResource SubLabelStyle}"
                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightHolderSubLabel}" />
-                            <TextBox Name="copyrightHolderInput"
+                            <TextBox Name="CopyrightHolder"
                                      Style="{StaticResource InputStyle}"
                                      Text="{Binding CopyrightHolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewCopyrightHolderWatermark}" />
@@ -639,7 +632,7 @@
                             <TextBlock Name="copyrightYearSubLabel"
                                        Style="{StaticResource SubLabelStyle}"
                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightYearSubLabel}" />
-                            <TextBox Name="copyrightYearInput"
+                            <TextBox Name="CopyrightYear"
                                      Margin="0,0,0,-20"
                                      Style="{StaticResource InputStyle}"
                                      Text="{Binding CopyrightYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -666,15 +659,21 @@
                     <Button Command="{Binding Path=SelectDirectoryAndAddFilesRecursivelyCommand}"
                             Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButton}"
                             DockPanel.Dock="Right"
-                            Style="{StaticResource TextButtonStyle}"
-                            ToolTip="{x:Static p:Resources.PublishPackageViewAddDirectoryButtonTooltip}" />
+                            Style="{StaticResource TextButtonStyle}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButtonTooltip}" Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                        </Button.ToolTip>
+                    </Button>
 
-                    <!--  Add Files  -->
+                        <!--  Add Files  -->
                     <Button Command="{Binding Path=ShowAddFileDialogAndAddCommand}"
                             Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"
                             DockPanel.Dock="Right"
-                            Style="{StaticResource TextButtonStyle}"
-                            ToolTip="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}" />
+                            Style="{StaticResource TextButtonStyle}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}" Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                        </Button.ToolTip>
+                    </Button>
 
                     <!--  Package Contents Label  -->
                     <TextBlock DockPanel.Dock="Left"
@@ -695,23 +694,18 @@
                                                 MaxWidth="85"
                                                 Binding="{Binding Path=IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                 ElementStyle="{StaticResource CheckBoxStyle}"
-                                                Header="Node Library"
+                                                Header="{x:Static p:Resources.PublishPackageViewNodeLibrary}"
                                                 HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                                 IsReadOnly="False"
                                                 IsThreeState="False" />
                         <DataGridTextColumn MinWidth="50"
                                             Binding="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}"
-                                            Header="Name"
-                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                            IsReadOnly="True" />
-                        <DataGridTextColumn Width="*"
-                                            MinWidth="66"
-                                            Binding="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"
-                                            Header="File Path"
+                                            Header="{x:Static p:Resources.PublishPackageViewPackageName}"
                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
                                             IsReadOnly="True" />
                         <DataGridTemplateColumn MinWidth="90"
-                                                Header="Target Path"
+                                                Width="*"
+                                                Header="{x:Static p:Resources.PublishPackageViewFilePath}"
                                                 HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
                                                 IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
@@ -724,8 +718,10 @@
                                                 Command="{Binding ElementName=PublishInfoControl, Path=DataContext.RemoveItemCommand}"
                                                 CommandParameter="{Binding}"
                                                 Cursor="Hand"
-                                                DockPanel.Dock="Right"
-                                                ToolTip="{x:Static p:Resources.PublishPackageViewRemoveItemToolTip}">
+                                                DockPanel.Dock="Right">
+                                            <Button.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewRemoveItemToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Button.ToolTip>
                                             <Button.Template>
                                                 <ControlTemplate>
                                                     <Rectangle Width="16" Height="16">
@@ -736,10 +732,13 @@
                                                 </ControlTemplate>
                                             </Button.Template>
                                         </Button>
-                                        <TextBlock Margin="0,0,0,0"
-                                                   Text="{Binding Path=TargetPath}"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   ToolTip="{Binding TargetPath}" />
+                                        <TextBlock Margin="0"
+                                                   Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"
+                                                   TextTrimming="CharacterEllipsis">
+                                            <TextBlock.ToolTip>
+                                                <ToolTip Content="{Binding FilePath}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
                                     </DockPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -753,7 +752,10 @@
                             VerticalAlignment="Top">
 
                     <!--  Markdown Files Directory  -->
-                    <DockPanel ToolTip="{x:Static p:Resources.PreferencesViewMarkdownDirectoryTooltip}">
+                    <DockPanel>
+                        <DockPanel.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PreferencesViewMarkdownDirectoryTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </DockPanel.ToolTip>
                         <TextBlock Style="{StaticResource LabelStyle}" Text="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectory}" />
                         <Image Width="16px"
                                Height="16px"
@@ -765,8 +767,11 @@
                                 Content="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButton}"
                                 DockPanel.Dock="Right"
                                 IsEnabled="{Binding Path=MarkdownFilesDirectory, Converter={StaticResource EmptyStringToFalseConverter}}"
-                                Style="{StaticResource TextButtonStyle}"
-                                ToolTip="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButtonToolTip}" />
+                                Style="{StaticResource TextButtonStyle}">
+                            <Button.ToolTip>
+                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewResetMarkdownDirectoryButtonToolTip}" Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                            </Button.ToolTip>
+                        </Button>
                     </DockPanel>
                     <Grid Margin="0,0,0,10" Background="#353535">
                         <Grid.ColumnDefinitions>
@@ -793,8 +798,10 @@
                                 Command="{Binding SelectMarkdownDirectoryCommand}"
                                 Cursor="Hand"
                                 DockPanel.Dock="Right"
-                                IsHitTestVisible="True"
-                                ToolTip="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectoryToolTip}">
+                                IsHitTestVisible="True">
+                            <Button.ToolTip>
+                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewMarkdownFilesDirectoryToolTip}" Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                            </Button.ToolTip>
                             <Button.Template>
                                 <ControlTemplate>
                                     <Rectangle Width="16" Height="16">
@@ -856,8 +863,11 @@
                        FontFamily="{StaticResource ArtifaktElementRegular}"
                        Style="{StaticResource LabelStyle}"
                        Text="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
-                       TextTrimming="CharacterEllipsis"
-                       ToolTip="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}" />
+                       TextTrimming="CharacterEllipsis">
+                <TextBlock.ToolTip>
+                    <ToolTip Content="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource GenericToolTipLight}"/>
+                </TextBlock.ToolTip>
+            </TextBlock>
         </DockPanel>
     </Grid>
 </Window>

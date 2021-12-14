@@ -237,7 +237,7 @@ namespace Dynamo.Wpf.Extensions
 
         /// <summary>
         /// Event raised when a component inside Dynamo raises a request to open a view extension
-        /// while being passed a parameter object.
+        /// providing extension name or GUID while being passed a parameter object.
         /// </summary>
         public event Action<string, object> ViewExtensionOpenRequestWithParameter
         {

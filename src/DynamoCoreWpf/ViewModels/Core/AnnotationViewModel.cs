@@ -27,7 +27,7 @@ namespace Dynamo.ViewModels
         // vertical offset accounts for the port margins
         private const int verticalOffset = 20;
         private const int portVerticalMidPoint = 17;
-
+        
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
         #region Properties
@@ -404,7 +404,7 @@ namespace Dynamo.ViewModels
                 DynamoSelection.Instance.Selection.Count >= 0 && 
                 IsExpanded;
         }
-
+         
         private void AddToGroup(object obj)
         {
             if (annotationModel.IsSelected)
@@ -807,6 +807,8 @@ namespace Dynamo.ViewModels
                 }
 
                 viewModel.IsCollapsed = true;
+                if (viewModel is NodeViewModel nodeViewModel)
+                    nodeViewModel.IsNodeInCollapsedGroup = true;
             }
 
             if (!collapseConnectors) return;
@@ -858,13 +860,15 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            UpdateConnectorsAndPortsOnShowContents();
+
             foreach (var viewModel in ViewModelBases)
             {
                 if (viewModel is AnnotationViewModel annotationViewModel)
                 {
                     if(annotationViewModel.Nodes.Any())
                     {
-                        UpdateConnectorsAndPortsOnShowContents(annotationViewModel.Nodes);
+                        UpdateConnectorsAndPortsOnShowContents(annotationViewModel);
                     }
                     // If there is a group in this group
                     // we expand that and all of its content.
@@ -875,24 +879,33 @@ namespace Dynamo.ViewModels
                 viewModel.IsCollapsed = false;
             }
 
-            UpdateConnectorsAndPortsOnShowContents(Nodes);
             UpdateProxyPortsPosition();
 
             Analytics.TrackEvent(Actions.Expanded, Categories.GroupOperations);
         }
 
-        private void UpdateConnectorsAndPortsOnShowContents(IEnumerable<ModelBase> nodes)
+        private void UpdateConnectorsAndPortsOnShowContents(AnnotationViewModel annotationViewModel = null)
         {
-            foreach (var nodeModel in nodes.OfType<NodeModel>())
+            var usableAnnotationViewModel = annotationViewModel == null
+                ? (AnnotationViewModel) this
+                : annotationViewModel;
+
+            bool isExpanded = usableAnnotationViewModel.IsExpanded;
+
+            var revNodes = usableAnnotationViewModel.Nodes
+                .OfType<NodeModel>();
+
+            foreach (var nodeModel in revNodes.OfType<NodeModel>())
             {
                 var connectorGuids = nodeModel.AllConnectors
                     .Select(x => x.GUID);
 
                 var connectorViewModels = WorkspaceViewModel.Connectors
-                    .Where(x => connectorGuids.Contains(x.ConnectorModel.GUID))
+                    .Where(x => connectorGuids.Contains(x.ConnectorModel.GUID)
+                    && isExpanded)
                     .ToList();
 
-                connectorViewModels.ForEach(x => x.IsCollapsed = false);
+                connectorViewModels.ForEach(x => x.IsCollapsed = false );
 
                 // Set IsProxyPort back to false when the group is expanded.
                 nodeModel.InPorts.ToList().ForEach(x => x.IsProxyPort = false);
@@ -1026,6 +1039,7 @@ namespace Dynamo.ViewModels
             var removedFromGroup = GroupIdToCutGeometry.Keys
                 .ToList()
                 .Except(allGroupedGroups.Select(x => x.GUID.ToString()));
+            
             foreach (var key in removedFromGroup)
             {
                 RemoveKeyFromCutGeometryDictionary(key);
@@ -1111,11 +1125,12 @@ namespace Dynamo.ViewModels
         {
             return WorkspaceViewModel.Model.Annotations.ContainsModel(this.annotationModel);
         }
-
+        
         public override void Dispose()
         {
             annotationModel.PropertyChanged -= model_PropertyChanged;
             annotationModel.RemovedFromGroup -= OnModelRemovedFromGroup;
+            
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
         }

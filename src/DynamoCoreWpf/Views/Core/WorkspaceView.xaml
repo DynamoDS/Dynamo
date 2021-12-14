@@ -222,8 +222,10 @@
                                   Height="30"
                                   Margin="4,4,0,4"
                                   StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-states.png"
-                                  CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-check.png"
-                                  ToolTip="{x:Static p:Resources.InCanvasGeomButtonToolTip}">
+                                  CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-check.png">
+                    <ui:ImageCheckBox.ToolTip>
+                        <ToolTip Width="200" Content="{x:Static p:Resources.InCanvasGeomButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                    </ui:ImageCheckBox.ToolTip>
                     <ui:ImageCheckBox.IsChecked>
                         <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
@@ -233,8 +235,10 @@
                                   Height="30"
                                   Margin="0,4,0,4"
                                   StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-states.png"
-                                  CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-check.png"
-                                  ToolTip="{x:Static p:Resources.InCanvasNodeButtonToolTip}">
+                                  CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-check.png">
+                    <ui:ImageCheckBox.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.InCanvasNodeButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                    </ui:ImageCheckBox.ToolTip>
                     <ui:ImageCheckBox.IsChecked>
                         <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
@@ -246,8 +250,10 @@
             <ui:ImageButton Width="30"
                             Height="28"
                             HorizontalAlignment="Right"
-                            StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-fit-view-states.png"
-                            ToolTip="{x:Static p:Resources.InCanvasFitViewButtonToolTip}">
+                            StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-fit-view-states.png">
+                <ui:ImageButton.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.InCanvasFitViewButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                </ui:ImageButton.ToolTip>
                 <ui:ImageButton.Command>
                     <Binding Path="DataContext.FitViewCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
@@ -257,8 +263,10 @@
             <ui:ImageRepeatButton Width="30"
                                   Height="24"
                                   HorizontalAlignment="Right"
-                                  StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-zoom-in-states.png"
-                                  ToolTip="{x:Static p:Resources.InCanvasZoomInButtonToolTip}">
+                                  StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-zoom-in-states.png">
+                <ui:ImageRepeatButton.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.InCanvasZoomInButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                </ui:ImageRepeatButton.ToolTip>
                 <ui:ImageRepeatButton.Command>
                     <Binding Path="DataContext.ZoomInCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
@@ -268,8 +276,10 @@
             <ui:ImageRepeatButton Width="30"
                                   Height="28"
                                   HorizontalAlignment="Right"
-                                  StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-zoom-out-states.png"
-                                  ToolTip="{x:Static p:Resources.InCanvasZoomOutButtonToolTip}">
+                                  StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-zoom-out-states.png">
+                <ui:ImageRepeatButton.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.InCanvasZoomOutButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                </ui:ImageRepeatButton.ToolTip>
                 <ui:ImageRepeatButton.Command>
                     <Binding Path="DataContext.ZoomOutCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
@@ -280,8 +290,10 @@
                               Height="30"
                               HorizontalAlignment="Right"
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-pan-states.png"
-                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-pan-check.png"
-                              ToolTip="{x:Static p:Resources.InCanvasPanButtonToolTip}">
+                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-pan-check.png">
+                <ui:ImageCheckBox.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.InCanvasPanButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                </ui:ImageCheckBox.ToolTip>
                 <ui:ImageCheckBox.Command>
                     <Binding Path="DataContext.BackgroundPreviewViewModel.TogglePanCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
@@ -296,8 +308,10 @@
                               Height="30"
                               HorizontalAlignment="Right"
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-orbit-states.png"
-                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-orbit-check.png"
-                              ToolTip="{x:Static p:Resources.InCanvasOrbitButtonToolTip}">
+                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-orbit-check.png">
+                <ui:ImageCheckBox.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.InCanvasOrbitButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                </ui:ImageCheckBox.ToolTip>
                 <ui:ImageCheckBox.Command>
                     <Binding Path="DataContext.BackgroundPreviewViewModel.ToggleOrbitCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
@@ -467,7 +481,7 @@
                                            Focusable="false"
                                            HorizontalOffset="-1"
                                            IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                           Placement="Left"
+                                           Placement="Right"
                                            VerticalOffset="-2">
                                         <Border Background="{TemplateBinding Background}"
                                                 BorderBrush="Transparent"

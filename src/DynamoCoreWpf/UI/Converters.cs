@@ -542,16 +542,17 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is string && !string.IsNullOrEmpty(value as string))
+            if (value is string @string && !string.IsNullOrEmpty(value as string))
             {
                 // Convert to path, get file name. If read-only file, append [Read-Only].
-                if (DynamoUtilities.PathHelper.IsReadOnlyPath((string)value))
-                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName((string)value);
+                if (DynamoUtilities.PathHelper.IsReadOnlyPath(@string))
+                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName(@string);
                 else
-                    return Path.GetFileName((string)value);
+                    return Path.GetFileName(@string);
             }
 
-            return "Unsaved";
+            // If failing to get file name, return default string
+            return Wpf.Properties.Resources.WorkspaceTabTooltipHeaderUnsaved;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -3088,7 +3089,7 @@ namespace Dynamo.Controls
             {
                 return "Transparent";
             }
-            return "#aaaaaa";
+            return "#DCDCDC";
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

@@ -31,8 +31,10 @@
                  FontSize="16px"
                  Foreground="#EEEEEE"
                  Style="{StaticResource SZoomFadeTextBox}"
-                 Text="{Binding Value, Mode=TwoWay, Converter={StaticResource StringToDateTimeConverter}}"
-                 ToolTip="{x:Static p:CoreNodeModelWpfResources.DateTimeInputToolTip}" />
-
+                 Text="{Binding Value, Mode=TwoWay, Converter={StaticResource StringToDateTimeConverter}}">
+            <TextBox.ToolTip>
+                <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.DateTimeInputToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+            </TextBox.ToolTip>
+        </TextBox>
     </Grid>
 </UserControl>
