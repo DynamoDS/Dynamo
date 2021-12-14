@@ -541,12 +541,12 @@
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
                 Margin="-8"
-                Background="{Binding NodeOverlayColor, UpdateSourceTrigger=PropertyChanged}"
+                Background="{StaticResource NodeFrozenOverlayColor}"
                 Canvas.ZIndex="7"
                 CornerRadius="8,8,0,0"
                 IsHitTestVisible="False"
                 Opacity="0.5"
-                Visibility="{Binding Path=NodeOverlayVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  Displays when the node is selected  -->
         <Border Name="selectionBorder"
