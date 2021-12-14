@@ -1074,7 +1074,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void ErroBubble_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void ErrorBubble_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -1106,7 +1106,7 @@ namespace Dynamo.ViewModels
             ErrorBubble.NodeInfoToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateOverlays;
-            ErrorBubble.PropertyChanged += ErroBubble_PropertyChanged;
+            ErrorBubble.PropertyChanged += ErrorBubble_PropertyChanged;
             
             if (DynamoViewModel.UIDispatcher != null)
             {
@@ -1180,7 +1180,7 @@ namespace Dynamo.ViewModels
             ErrorBubble.NodeInfoToDisplay.CollectionChanged -= UpdateOverlays;
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged -= UpdateOverlays;
             ErrorBubble.NodeErrorsToDisplay.CollectionChanged -= UpdateOverlays;
-            ErrorBubble.PropertyChanged -= ErroBubble_PropertyChanged;
+            ErrorBubble.PropertyChanged -= ErrorBubble_PropertyChanged;
 
             ErrorBubble.Dispose();
         }
