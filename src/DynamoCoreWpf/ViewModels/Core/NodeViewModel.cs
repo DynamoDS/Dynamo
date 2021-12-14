@@ -377,8 +377,11 @@ namespace Dynamo.ViewModels
             get => warningBarColor;
             internal set
             {
-                warningBarColor = value;
-                RaisePropertyChanged(nameof(WarningBarColor));
+                if (warningBarColor != value)
+                {
+                    warningBarColor = value;
+                    RaisePropertyChanged(nameof(WarningBarColor));
+                }
             }
         }
 
