@@ -272,6 +272,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.EvaluationStarted -= hwm_EvaluationStarted;
             hwm.EvaluationCompleted -= hwm_EvaluationCompleted;
             hwm.SetNodeDeltaState -= hwm_SetNodeDeltaState;
+            hwm.DispatchedToUI -= Hwm_DispatchedToUI;
             RunSettingsViewModel.PropertyChanged -= RunSettingsViewModel_PropertyChanged;
             RunSettingsViewModel.Dispose();
             RunSettingsViewModel = null;
