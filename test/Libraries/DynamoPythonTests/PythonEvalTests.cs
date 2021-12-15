@@ -158,11 +158,11 @@ print 'hello'
                 count = count + 1;
                 if (count == 1)
                 {
-                    Assert.AreEqual(Dynamo.PythonServices.EvaluationState.Success, state);
+                    Assert.AreEqual(DSCPython.EvaluationState.Success, state);
                 }
                 else if (count == 2)
                 {
-                    Assert.AreEqual(Dynamo.PythonServices.EvaluationState.Failed, state);
+                    Assert.AreEqual(DSCPython.EvaluationState.Failed, state);
                 }
             };
 
