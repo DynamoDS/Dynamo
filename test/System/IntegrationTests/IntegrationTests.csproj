@@ -157,6 +157,7 @@
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ED-1067-4B2C-8737-3839A6143EB2}</Project>
       <Name>DynamoCoreTests</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Engine\FFITarget\FFITarget.csproj">
       <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
