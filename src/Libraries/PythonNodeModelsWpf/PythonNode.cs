@@ -46,8 +46,13 @@ namespace PythonNodeModelsWpf
 
             learnMoreItem.Click += OpenPythonLearningMaterial;
 
-            foreach (var engine in PythonEngineManager.Instance.AvailableEngines)
-                AddPythonEngine2MenuItems(engine);
+            var availableEngineNames = PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name).ToList();
+            // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
+            if (!availableEngineNames.Contains(nodeModel.EngineName))
+            {
+                availableEngineNames.Add(nodeModel.EngineName);
+            }
+            availableEngineNames.ForEach(x => AddPythonEngine2MenuItems(x));
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
@@ -173,7 +178,7 @@ namespace PythonNodeModelsWpf
             {
                 foreach (var item in e.NewItems)
                 {
-                    AddPythonEngine2MenuItems(item as PythonEngine);
+                    AddPythonEngine2MenuItems((item as PythonEngine).Name);
                 }   
             }
         }
@@ -181,15 +186,15 @@ namespace PythonNodeModelsWpf
         /// <summary>
         /// Adds python engine to MenuItems
         /// </summary>
-        private void AddPythonEngine2MenuItems(PythonEngine engine)
+        private void AddPythonEngine2MenuItems(string engineName)
         {
-            var pythonEngineItem = new MenuItem { Header = engine.Name, IsCheckable = false };
+            var pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
             pythonEngineItem.Click += UpdateEngine;
             pythonEngineItem.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonNodeModel.EngineName))
             {
                 Source = pythonNodeModel,
                 Converter = new CompareToParameterConverter(),
-                ConverterParameter = engine.Name
+                ConverterParameter = engineName
             });
             pythonEngineVersionMenu.Items.Add(pythonEngineItem);
         }
