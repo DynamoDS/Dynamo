@@ -546,10 +546,8 @@ namespace DynamoCoreWpfTests
         public void CanChangePythonEngineFromContextMenuOnPythonFromStringNode()
         {
             // Arrange
-            // Setup the python3 debug mode, otherwise we wont be able to get the engine version selector 
-            // from the nodes context menu
-            var expectedEngineVersionOnOpen = PythonEngineManager.CPython3EngineName;
-            var expectedEngineVersionAfterChange = PythonEngineManager.IronPython2EngineName;
+            var expectedEngineVersionOnOpen = PythonEngineManager.IronPython2EngineName;
+            var expectedEngineVersionAfterChange = PythonEngineManager.CPython3EngineName;
 
             Open(@"core\python\pythonFromString.dyn");
 
@@ -567,28 +565,28 @@ namespace DynamoCoreWpfTests
             var engineMenuItems = editMenuItem.Items;
             var ironPython2MenuItem = engineMenuItems
                 .OfType<MenuItem>()
-                .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo);
+                .First(x => x.Header.ToString() == PythonEngineManager.IronPython2EngineName);
             var cPython3MenuItem = engineMenuItems
                 .OfType<MenuItem>()
-                .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
+                .First(x => x.Header.ToString() == PythonEngineManager.CPython3EngineName);
 
             // Act
-            ironPython2MenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            cPython3MenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             var engineVersionAfterChange = nodeModel.EngineName;
 
             // Assert
             Assert.AreEqual(expectedEngineVersionOnOpen, engineVersionOnOpen);
             CollectionAssert.AreEqual(expectedEngineMenuItems, engineMenuItems.Cast<MenuItem>().Select(x => x.Header));
             Assert.AreEqual(expectedEngineVersionAfterChange, engineVersionAfterChange);
-            Assert.AreEqual(true, ironPython2MenuItem.IsChecked);
-            Assert.AreEqual(false, cPython3MenuItem.IsChecked);
-
-            // Act
-            nodeModel.EngineName = PythonEngineManager.CPython3EngineName;
-
-            // Assert
             Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
             Assert.AreEqual(true, cPython3MenuItem.IsChecked);
+
+            // Act
+            nodeModel.EngineName = PythonEngineManager.IronPython2EngineName;
+
+            // Assert
+            Assert.AreEqual(true, ironPython2MenuItem.IsChecked);
+            Assert.AreEqual(false, cPython3MenuItem.IsChecked);
             DispatcherUtil.DoEvents();
         }
 
