@@ -19,7 +19,7 @@ namespace DSCoreNodesTests
         [Category("UnitTests")]
         public static void GetNumber()
         {
-            Assert.AreEqual("01 Level 200", String.GetNumber("01200"));
+            Assert.AreEqual("01200", String.GetNumber("01 Level 200"));
         }
 
         [Test]
