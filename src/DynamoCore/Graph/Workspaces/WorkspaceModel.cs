@@ -565,6 +565,18 @@ namespace Dynamo.Graph.Workspaces
         {
             hasNodeInSyncWithDefinition = false;
         }
+        public void DispatchOnUIThread(Action a, bool blocking = false)
+        {
+            OnDispatchedToUI(this, new UIDispatcherEventArgs(a,blocking));
+        }
+
+        private void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
+        {
+            if (DispatchedToUI != null)
+                DispatchedToUI(sender, e);
+        }
+
+        internal event DispatchedToUIThreadHandler DispatchedToUI;
 
         #endregion
 

@@ -139,14 +139,18 @@ namespace Dynamo.Scheduler
                         executedNodes.Add(node);
                     }
                 }
-
-                foreach (var node in executedNodes)
+                //dispatch actions that will need to execute on UI thread as a single call.
+                TargetedWorkspace.DispatchOnUIThread(new Action(() =>
                 {
-                    node.WasInvolvedInExecution = true;
-                    node.WasRenderPackageUpdatedAfterExecution = false;
-                    if (node.State == ElementState.Warning)
-                        node.ClearErrorsAndWarnings();
-                }
+                    foreach (var node in executedNodes)
+                    {
+                        node.WasInvolvedInExecution = true;
+                        node.WasRenderPackageUpdatedAfterExecution = false;
+                        if (node.State == ElementState.Warning)
+                            node.ClearErrorsAndWarnings();
+                    }
+                }));
+              
 
                 engineController.RemoveRecordedAstGuidsForSession(graphSyncData.SessionID);
             }

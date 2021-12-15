@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -69,9 +70,35 @@ namespace Dynamo.Wpf.ViewModels.Core
             var hwm = (HomeWorkspaceModel)Model;
             hwm.EvaluationStarted += hwm_EvaluationStarted;
             hwm.EvaluationCompleted += hwm_EvaluationCompleted;
-            hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
+            hwm.SetNodeDeltaState += hwm_SetNodeDeltaState;
+            hwm.DispatchedToUI += Hwm_DispatchedToUI;
 
             dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
+        }
+
+        private void Hwm_DispatchedToUI(object sender, UIDispatcherEventArgs e)
+        {
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                if (e.Blocking)
+                {
+                    DynamoViewModel.UIDispatcher.Invoke(e.ActionToDispatch);
+                }
+                else
+                {
+                    DynamoViewModel.UIDispatcher.BeginInvoke(e.ActionToDispatch);
+                }
+
+            }
+            else
+            {
+                if (e.Blocking)
+                {
+                    e.ActionToDispatch.Invoke();
+                }
+                e.ActionToDispatch.BeginInvoke(e.ActionToDispatch.EndInvoke,null);
+            }
+
         }
 
         void Model_ShutdownStarted(DynamoModel model)

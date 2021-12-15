@@ -2764,10 +2764,19 @@ namespace Dynamo.Graph.Nodes
         {
             ActionToDispatch = a;
         }
+        public UIDispatcherEventArgs(Action a, bool blocking)
+        {
+            ActionToDispatch = a;
+            Blocking = blocking;
+        }
 
         /// <summary>
         /// Action to call on UI thread.
         /// </summary>
         public Action ActionToDispatch { get; set; }
+        /// <summary>
+        /// Controls If this action is called synchronously or asynchronously 
+        /// </summary>
+        public bool Blocking { get; set; }
     }
 }

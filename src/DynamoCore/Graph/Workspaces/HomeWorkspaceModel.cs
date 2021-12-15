@@ -744,15 +744,19 @@ namespace Dynamo.Graph.Workspaces
             }
 
             var workspace = updateTask.TargetedWorkspace;
-            foreach (var message in messages)
-            {
-                var guid = message.Key;
-                var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
-                if (node == null)
-                    continue;
+            //wrap all calls that will result in dispatch calls into a single call.
+            DispatchOnUIThread(new Action(()=>{
+                foreach (var message in messages)
+                {
+                    var guid = message.Key;
+                    var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                    if (node == null)
+                        continue;
 
-                node.Warning(message.Value); // Update node warning message.
-            }
+                    node.Warning(message.Value); // Update node warning message.
+                }
+            }));
+           
 
             // Notify listeners (optional) of completion.
             RunSettings.RunEnabled = true; // Re-enable 'Run' button.
