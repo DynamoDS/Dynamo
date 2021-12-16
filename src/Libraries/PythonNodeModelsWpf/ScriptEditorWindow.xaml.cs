@@ -34,10 +34,7 @@ namespace PythonNodeModelsWpf
         private bool nodeWasModified = false;
         private string originalScript;
 
-        public string CachedEngineName { get; set; }
-
-        [Obsolete()]
-        public PythonEngineVersion CachedEngined { get; set; }
+        public string CachedEngine { get; set; }
 
         /// <summary>
         /// Available Python engines.
@@ -114,8 +111,8 @@ namespace PythonNodeModelsWpf
 
             editText.Text = propValue;
             originalScript = propValue;
-            CachedEngineName = nodeModel.EngineName;
-            EngineSelectorComboBox.SelectedItem = CachedEngineName;
+            CachedEngine = nodeModel.EngineName;
+            EngineSelectorComboBox.SelectedItem = CachedEngine;
         }
         #region Autocomplete Event Handlers
 
@@ -194,9 +191,9 @@ namespace PythonNodeModelsWpf
         {
             originalScript = e.OldCode;
             editText.Text = e.NewCode;
-            if (CachedEngineName != PythonEngineManager.CPython3EngineName)
+            if (CachedEngine != PythonEngineManager.CPython3EngineName)
             {
-                CachedEngineName = PythonEngineManager.CPython3EngineName;
+                CachedEngine = PythonEngineManager.CPython3EngineName;
                 EngineSelectorComboBox.SelectedItem = PythonEngineManager.CPython3EngineName;
             }
         }
@@ -204,7 +201,7 @@ namespace PythonNodeModelsWpf
         private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
             originalScript = editText.Text;
-            nodeModel.EngineName = CachedEngineName;
+            nodeModel.EngineName = CachedEngine;
             UpdateScript(editText.Text);
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Save,
@@ -216,8 +213,8 @@ namespace PythonNodeModelsWpf
             if (nodeWasModified)
             {
                 editText.Text = originalScript;
-                CachedEngineName = nodeModel.EngineName;
-                EngineSelectorComboBox.SelectedItem = CachedEngineName;
+                CachedEngine = nodeModel.EngineName;
+                EngineSelectorComboBox.SelectedItem = CachedEngine;
                 UpdateScript(originalScript);
             }
         }
@@ -264,16 +261,16 @@ namespace PythonNodeModelsWpf
 
         private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (CachedEngineName != nodeModel.EngineName)
+            if (CachedEngine != nodeModel.EngineName)
             {
                 nodeWasModified = true;
                 // Cover what switch did user make. Only track when the new engine option is different with the previous one.
                 Analytics.TrackEvent(
-                    Dynamo.Logging.Actions.Switch,
-                    Dynamo.Logging.Categories.PythonOperations,
-                    CachedEngineName.ToString());
+                    Actions.Switch,
+                    Categories.PythonOperations,
+                    CachedEngine);
             }
-            editText.Options.ConvertTabsToSpaces = CachedEngineName != PythonEngineManager.IronPython2EngineName;
+            editText.Options.ConvertTabsToSpaces = CachedEngine != PythonEngineManager.IronPython2EngineName;
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)

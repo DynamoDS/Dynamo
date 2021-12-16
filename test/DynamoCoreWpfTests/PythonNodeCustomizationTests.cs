@@ -103,7 +103,7 @@ namespace DynamoCoreWpfTests
             
             //Assert that selecting an engine from drop-down without saving won't update the engine.
             Assert.AreEqual(nodeModel.EngineName, engineBeforeChange);
-            Assert.AreEqual(scriptWindow.CachedEngineName, engineAfterChange);
+            Assert.AreEqual(scriptWindow.CachedEngine, engineAfterChange);
 
             //Clicking save button to actually update the engine.
             var saveButton = scriptWindow.FindName("SaveScriptChangesButton") as Button;
