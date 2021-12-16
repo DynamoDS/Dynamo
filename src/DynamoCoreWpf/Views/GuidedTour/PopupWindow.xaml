@@ -112,8 +112,8 @@
                                Style="{StaticResource PoupTitleLabelStyle}"
                                />
                         <Button Name="CloseButton"
-                                Height="15"  
-                                Width="15"
+                                Height="12.8"  
+                                Width="12.8"
                                 Grid.Column="1"
                                 Style="{StaticResource PopupCloseButtonStyle}"
                                 Click="CloseButton_Click">
