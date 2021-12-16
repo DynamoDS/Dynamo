@@ -299,9 +299,6 @@ namespace Dynamo.Graph.Workspaces
                         HasUnsavedChanges = true;
                     }
                 }
-
-                RequestRun();
-
             } // Conclude the deletion.
         }
 
