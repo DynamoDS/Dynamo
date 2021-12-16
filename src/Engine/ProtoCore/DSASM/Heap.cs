@@ -660,7 +660,6 @@ namespace ProtoCore.DSASM
             if (disposeProcedureNode != null && isDSObject)
             {
                 // TODO Jun/Jiong: Use build pointer utilities 
-                exe.rmem.Push(StackValue.BuildArrayDimension(0));
                 exe.rmem.Push(StackValue.BuildPointer(svPtr.Pointer, svPtr.metaData));
                 exe.rmem.Push(StackValue.BuildInt(1));
 
