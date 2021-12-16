@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -19,6 +20,8 @@ namespace Dynamo.Wpf.Views.GuidedTour
         private bool isClosingTour;
 
         private const string packagesTourName = "packages";
+        //Field that indicates wheter popups are left-aligned or right-aligned
+        private const string menuDropAligment = "_menuDropAlignment";
 
         internal WebBrowserWindow webBrowserWindow;
 
@@ -55,7 +58,19 @@ namespace Dynamo.Wpf.Views.GuidedTour
             Opened += PopupWindow_Opened;
             Closed += PopupWindow_Closed;
 
-            isClosingTour = false;
+            isClosingTour = false; 
+            
+            EnsureStandardPopupAlignment();
+        }
+
+        private void EnsureStandardPopupAlignment()
+        {
+            var menuDropAlignmentField = typeof(SystemParameters).GetField(menuDropAligment, BindingFlags.NonPublic | BindingFlags.Static);
+            if (SystemParameters.MenuDropAlignment && menuDropAlignmentField != null)
+            {
+                //Sets field to false and ignores the alignment
+                menuDropAlignmentField.SetValue(null, false);
+            }
         }
 
         private void PopupWindow_Closed(object sender, EventArgs e)
