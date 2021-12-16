@@ -96,7 +96,10 @@ namespace Dynamo.Wpf.ViewModels.Core
                 {
                     e.ActionToDispatch.Invoke();
                 }
-                e.ActionToDispatch.BeginInvoke(e.ActionToDispatch.EndInvoke,null);
+                else
+                {
+                    e.ActionToDispatch.BeginInvoke(e.ActionToDispatch.EndInvoke, null);
+                }
             }
 
         }

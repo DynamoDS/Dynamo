@@ -565,7 +565,14 @@ namespace Dynamo.Graph.Workspaces
         {
             hasNodeInSyncWithDefinition = false;
         }
-        public void DispatchOnUIThread(Action a, bool blocking = false)
+
+        /// <summary>
+        /// Dispatches an action onto the UI thread. If there are no handlers for the underlying event
+        /// action is executed directly.
+        /// </summary>
+        /// <param name="a">the Action to execute</param>
+        /// <param name="blocking">If this action should run synchronously.</param>
+        internal void DispatchOnUIThread(Action a, bool blocking = false)
         {
             OnDispatchedToUI(this, new UIDispatcherEventArgs(a,blocking));
         }
