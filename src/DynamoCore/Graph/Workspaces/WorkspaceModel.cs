@@ -573,7 +573,21 @@ namespace Dynamo.Graph.Workspaces
         private void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
         {
             if (DispatchedToUI != null)
+            {
                 DispatchedToUI(sender, e);
+            }
+            //there is likely no UI - just invoke the action.
+            else
+            {
+                if (e.Blocking){
+                    e.ActionToDispatch.Invoke();
+                }
+                else
+                {
+                    e.ActionToDispatch.BeginInvoke(e.ActionToDispatch.EndInvoke, null);
+                }
+                
+            }
         }
 
         internal event DispatchedToUIThreadHandler DispatchedToUI;
