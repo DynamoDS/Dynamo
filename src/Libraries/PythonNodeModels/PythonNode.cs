@@ -58,7 +58,7 @@ namespace PythonNodeModels
             set
             {
                 engine = value.ToString();
-                RaisePropertyChanged(nameof(EngineName));
+                RaisePropertyChanged(nameof(Engine));
             }
         }
 

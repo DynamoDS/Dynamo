@@ -334,7 +334,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void OpenPythonLearningMaterial_PythonNodeFromStringValidationTest()
         {
-            Open(@"core\python\pythonFromString.dyn");
+            Open(@"core\python\pyFromString_UnsavedEngine.dyn");
 
             var nodeView = NodeViewWithGuid("bad59bc8-9b49-47b6-99ee-34fa8dca91ae");
             var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeBase;
@@ -549,7 +549,7 @@ namespace DynamoCoreWpfTests
             var expectedEngineVersionOnOpen = PythonEngineManager.IronPython2EngineName;
             var expectedEngineVersionAfterChange = PythonEngineManager.CPython3EngineName;
 
-            Open(@"core\python\pythonFromString.dyn");
+            Open(@"core\python\pyFromString_UnsavedEngine.dyn");
 
             var nodeView = NodeViewWithGuid(new Guid("bad59bc89b4947b699ee34fa8dca91ae").ToString("D"));
             var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeModels.PythonStringNode;

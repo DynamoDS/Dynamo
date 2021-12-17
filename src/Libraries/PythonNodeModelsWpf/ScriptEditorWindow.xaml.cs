@@ -39,16 +39,7 @@ namespace PythonNodeModelsWpf
         /// <summary>
         /// Available Python engines.
         /// </summary>
-        [Obsolete()]
-        public ObservableCollection<PythonEngineVersion> AvailableEnginesd
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Available Python engines.
-        /// </summary>
-        public ObservableCollection<string> AvailableEngineNames
+        public ObservableCollection<string> AvailableEngines
         {
             get; private set;
         }
@@ -100,11 +91,11 @@ namespace PythonNodeModelsWpf
             editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
 
-            AvailableEngineNames = new ObservableCollection<string>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name));
+            AvailableEngines = new ObservableCollection<string>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name));
             // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
-            if (!AvailableEngineNames.Contains(nodeModel.EngineName))
+            if (!AvailableEngines.Contains(nodeModel.EngineName))
             {
-                AvailableEngineNames.Add(nodeModel.EngineName);
+                AvailableEngines.Add(nodeModel.EngineName);
             }
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += UpdateAvailableEngines;
@@ -122,9 +113,9 @@ namespace PythonNodeModelsWpf
             {
                 foreach (var item in e.NewItems)
                 {
-                    if (!AvailableEngineNames.Contains((string)item))
+                    if (!AvailableEngines.Contains((string)item))
                     {
-                        AvailableEngineNames.Add((string)item);
+                        AvailableEngines.Add((string)item);
                     }
                 }
             }
