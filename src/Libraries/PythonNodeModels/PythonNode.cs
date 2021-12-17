@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using System.Xml.Serialization;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Graph;
@@ -39,7 +40,9 @@ namespace PythonNodeModels
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         // Set the default EngineName value to IronPython2 so that older graphs can show the migration warnings.
         [DefaultValue("IronPython2")]
-        
+
+        // When removing this property also replace the serialized property in EngineName
+        // (i.e remove XmlIgnore and add [JsonProperty("Engine", DefaultValueHandling = DefaultValueHandling.Populate)]
         /// <summary>
         /// Return the user selected python engine enum.
         /// </summary>
@@ -59,11 +62,11 @@ namespace PythonNodeModels
             set
             {
                 engine = value.ToString();
-                RaisePropertyChanged(nameof(Engine));
+                RaisePropertyChanged(nameof(EngineName));
             }
         }
 
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        [XmlIgnore]
         // Set the default EngineName value to IronPython2 so that older graphs can show the migration warnings.
         [DefaultValue("IronPython2")]
         /// <summary>
