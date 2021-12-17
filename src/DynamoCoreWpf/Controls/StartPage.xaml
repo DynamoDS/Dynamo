@@ -153,20 +153,7 @@
                           Background="White"
                           HorizontalAlignment="Stretch">
 
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"></ColumnDefinition>
-                            <ColumnDefinition Width="1*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-
                         <Label Grid.Column="0"
-                           Name ="openAll"
-                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                           Margin="0,0,0,0"
-                           HorizontalAlignment="Left"
-                           Style="{StaticResource StartPageLabel}"
-                           Content="{x:Static p:Resources.StartPageOpenAll}"
-                           MouseLeftButtonUp="OpenAllFilesOnCrash" />
-                        <Label Grid.Column="1"
                            Name ="backupLocation"
                            FontFamily="{StaticResource ArtifaktElementRegular}"
                            Margin="0,0,0,0"

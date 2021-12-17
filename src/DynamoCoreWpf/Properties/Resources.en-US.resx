@@ -1959,9 +1959,6 @@ Want to publish a different package?</value>
     <value>New</value>
     <comment>Start page | New </comment>
   </data>
-  <data name="StartPageOpenAll" xml:space="preserve">
-    <value>Open all</value>
-  </data>
   <data name="StartPageOpenFile" xml:space="preserve">
     <value>Open</value>
     <comment>Start page | Open files</comment>
