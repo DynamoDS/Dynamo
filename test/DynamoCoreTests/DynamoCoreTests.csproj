@@ -109,6 +109,7 @@
     <Compile Include="Core\AssemblyLoadedEventArgsTests.cs" />
     <Compile Include="Core\NotificationObjectTests.cs" />
     <Compile Include="Core\CrashPromptArgsTests.cs" />
+    <Compile Include="Crypto\DynamoCyptoTests.cs" />
     <Compile Include="DefaultPythonEngineTests.cs" />
     <Compile Include="DelayedGraphExecutionTests.cs" />
     <Compile Include="DSCoreDataTests.cs" />
@@ -260,6 +261,10 @@
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\DynamoCrypto\DynamoCrypto.csproj">
+      <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
+      <Name>DynamoCrypto</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
       <Name>DynamoPackages</Name>
@@ -346,7 +351,13 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Crypto\AnAlteredSignature.sig" />
+    <None Include="Crypto\AnImportantFile.sig" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Crypto\AnAlteredFile.txt" />
+    <Content Include="Crypto\AnImportantFile.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
