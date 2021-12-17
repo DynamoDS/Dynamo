@@ -4067,7 +4067,7 @@
     <Style x:Key="PoupTitleLabelStyle" TargetType="{x:Type Label}">
         <Setter Property="FontFamily" Value="Artifakt Element" />
         <Setter Property="FontSize" Value="20" />
-        <Setter Property="MinHeight" Value="50" />
+        <Setter Property="Height" Value="34" />
         <Setter Property="Foreground" Value="#535353" />
     </Style>
 
@@ -4090,7 +4090,7 @@
     <Style x:Key="SurveyTitleLabelStyle" TargetType="{x:Type Label}">
         <Setter Property="FontFamily" Value="Artifakt Element" />
         <Setter Property="FontSize" Value="20" />
-        <Setter Property="MinHeight" Value="50" />
+        <Setter Property="Height" Value="34" />
         <Setter Property="Foreground" Value="#3C3C3C" />
     </Style>
 
