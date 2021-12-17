@@ -8,8 +8,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Wpf</RootNamespace>
     <AssemblyName>CoreNodeModelsWpf</AssemblyName>
-    <OutputPath>$(OutputPath)\nodes\</OutputPath>
-    <DocumentationFile>$(OutputPath)\nodes\CoreNodeModelsWpf.XML</DocumentationFile>
+    <OutputPath>$(OutputPath)\nodes</OutputPath>
+    <DocumentationFile>$(OutputPath)\CoreNodeModelsWpf.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Practices.Prism">

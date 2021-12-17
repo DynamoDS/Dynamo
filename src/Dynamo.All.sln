@@ -3,61 +3,61 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoSandbox", "DynamoSandbox\DynamoSandbox.csproj", "{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoSandbox", "DynamoSandbox\DynamoSandbox.csproj", "{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{A6533823-A64A-441C-B7A2-7B2772F87002}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoAssociative", "Engine\ProtoAssociative\ProtoAssociative.csproj", "{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoAssociative", "Engine\ProtoAssociative\ProtoAssociative.csproj", "{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoCore", "Engine\ProtoCore\ProtoCore.csproj", "{7A9E0314-966F-4584-BAA3-7339CBB849D1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoImperative", "Engine\ProtoImperative\ProtoImperative.csproj", "{0D3D43DC-BD7E-46F0-93F7-1C6A6CC79948}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoImperative", "Engine\ProtoImperative\ProtoImperative.csproj", "{0D3D43DC-BD7E-46F0-93F7-1C6A6CC79948}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoScript", "Engine\ProtoScript\ProtoScript.csproj", "{A4794476-7D0E-41C0-AD83-4AB929C0A46C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoScript", "Engine\ProtoScript\ProtoScript.csproj", "{A4794476-7D0E-41C0-AD83-4AB929C0A46C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{FA7BE306-A3B0-45FA-9D87-0C69E6932C13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodes", "Libraries\CoreNodes\CoreNodes.csproj", "{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreNodes", "Libraries\CoreNodes\CoreNodes.csproj", "{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodeModels", "Libraries\CoreNodeModels\CoreNodeModels.csproj", "{D8262D40-4880-41E4-91E4-AF8F480C8637}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreNodeModels", "Libraries\CoreNodeModels\CoreNodeModels.csproj", "{D8262D40-4880-41E4-91E4-AF8F480C8637}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2} = {C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodeModelsWpf", "Libraries\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj", "{F5932F7D-8E34-4787-80B8-E7F9D996EDFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreNodeModelsWpf", "Libraries\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj", "{F5932F7D-8E34-4787-80B8-E7F9D996EDFF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2} = {C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arduino", "Libraries\DynamoArduino\Arduino.csproj", "{9589D7A5-12BE-446B-BBFF-B8C4951EDB13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arduino", "Libraries\DynamoArduino\Arduino.csproj", "{9589D7A5-12BE-446B-BBFF-B8C4951EDB13}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch3DNodeModelsWpf", "Libraries\Watch3DNodeModelsWpf\Watch3DNodeModelsWpf.csproj", "{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watch3DNodeModelsWpf", "Libraries\Watch3DNodeModelsWpf\Watch3DNodeModelsWpf.csproj", "{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonNodeModelsWpf", "Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj", "{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PythonNodeModelsWpf", "Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj", "{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoServices", "NodeServices\DynamoServices.csproj", "{EF879A10-041D-4C68-83E7-3192685F1BAE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUtilities", "DynamoUtilities\DynamoUtilities.csproj", "{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoUtilities", "DynamoUtilities\DynamoUtilities.csproj", "{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
@@ -101,26 +101,26 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "..\test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoTestConsoleRunner", "..\test\Engine\ProtoTestConsoleRunner\ProtoTestConsoleRunner.csproj", "{672BF8EC-1116-49F6-B253-DFCE5CF7D4C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Units", "Libraries\DynamoUnits\Units.csproj", "{6E0A079E-85F1-45A1-AD5B-9855E4344809}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Units", "Libraries\DynamoUnits\Units.csproj", "{6E0A079E-85F1-45A1-AD5B-9855E4344809}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSOffice", "Libraries\DSOffice\DSOffice.csproj", "{9B4FDC96-E2F9-4B8F-894A-4294405D50E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSOffice", "Libraries\DSOffice\DSOffice.csproj", "{9B4FDC96-E2F9-4B8F-894A-4294405D50E7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations", "Migrations\Migrations.csproj", "{06B9E5B0-7C50-4351-9D88-E159DC25755F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migrations", "Migrations\Migrations.csproj", "{06B9E5B0-7C50-4351-9D88-E159DC25755F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoMSOfficeTests", "..\test\Libraries\DynamoMSOfficeTests\DynamoMSOfficeTests.csproj", "{269039F1-126A-46CF-8BEA-257587EDCA6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tessellation", "Libraries\Tesellation\Tessellation.csproj", "{D6279651-D099-4F8D-A319-5BF12ED9F269}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tessellation", "Libraries\Tesellation\Tessellation.csproj", "{D6279651-D099-4F8D-A319-5BF12ED9F269}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitsUI", "Libraries\UnitsUI\UnitsUI.csproj", "{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitsUI", "Libraries\UnitsUI\UnitsUI.csproj", "{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphLayout", "Engine\GraphLayout\GraphLayout.csproj", "{C2595B04-856D-40AE-8B99-4804C7A70708}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -131,7 +131,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUtilitiesTests", "..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkflowTests", "..\test\Libraries\WorkflowTests\WorkflowTests.csproj", "{CEA31792-BA09-431B-8ECE-E2F0354B2150}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VMDataBridge", "Libraries\VMDataBridge\VMDataBridge.csproj", "{CCB6E56B-2DA1-4EBA-A1F9-E8510E129D12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMDataBridge", "Libraries\VMDataBridge\VMDataBridge.csproj", "{CCB6E56B-2DA1-4EBA-A1F9-E8510E129D12}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
@@ -140,7 +140,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{D114C59C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignDynamo", "Tools\SignDynamo\SignDynamo.csproj", "{A84E15A2-6735-4575-A1DA-7C64AF7582B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCrypto", "DynamoCrypto\DynamoCrypto.csproj", "{96643E77-C786-498C-AAA9-80E449854CE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCrypto", "DynamoCrypto\DynamoCrypto.csproj", "{96643E77-C786-498C-AAA9-80E449854CE9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
@@ -154,9 +154,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitUtility", "Tools\NUnit
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyInfoGenerator", "AssemblySharedInfoGenerator\AssemblyInfoGenerator.csproj", "{133FC760-5699-46D9-BEA6-E816B5F01016}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyInfoGenerator", "AssemblySharedInfoGenerator\AssemblyInfoGenerator.csproj", "{133FC760-5699-46D9-BEA6-E816B5F01016}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analysis", "Libraries\Analysis\Analysis.csproj", "{76686ED6-E759-4772-81C2-768740BE13FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analysis", "Libraries\Analysis\Analysis.csproj", "{76686ED6-E759-4772-81C2-768740BE13FA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
@@ -169,37 +169,37 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUINodes", "..\test\Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemTestServices", "..\test\Libraries\SystemTestServices\SystemTestServices.csproj", "{89563CD0-509B-40A5-8728-9D3EC6FE8410}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreWpf", "DynamoCoreWpf\DynamoCoreWpf.csproj", "{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCoreWpf", "DynamoCoreWpf\DynamoCoreWpf.csproj", "{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoServicesTests", "..\test\Libraries\NodeServicesTest\DynamoServicesTests.csproj", "{3E4278F7-60EC-491C-8094-B525C36A51A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlDocumentationsUtility", "Tools\XmlDocumentationsUtility\XmlDocumentationsUtility.csproj", "{4CAB9005-0001-4B03-BBA0-57070ED105F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoConversions", "Libraries\DynamoConversions\DynamoConversions.csproj", "{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoConversions", "Libraries\DynamoConversions\DynamoConversions.csproj", "{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoShapeManager", "Tools\DynamoShapeManager\DynamoShapeManager.csproj", "{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoInstallDetective", "Tools\DynamoInstallDetective\DynamoInstallDetective.csproj", "{98692887-B389-4F73-A71A-9FC516738DAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryUI", "Libraries\GeometryUI\GeometryUI.csproj", "{E674F1A1-BE83-475A-9CC9-F55CADBEC448}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryUI", "Libraries\GeometryUI\GeometryUI.csproj", "{E674F1A1-BE83-475A-9CC9-F55CADBEC448}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryUIWpf", "Libraries\GeometryUIWpf\GeometryUIWpf.csproj", "{C068DE76-0651-4F6C-8807-B90EF749D104}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryUIWpf", "Libraries\GeometryUIWpf\GeometryUIWpf.csproj", "{C068DE76-0651-4F6C-8807-B90EF749D104}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageManagerTests", "..\test\Libraries\PackageManagerTests\PackageManagerTests.csproj", "{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineTests", "..\test\Libraries\CommandLineTests\CommandLineTests.csproj", "{3E84B41E-F229-4BF7-8A0F-3D65BA2D00D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCLI", "DynamoCLI\DynamoCLI.csproj", "{5F9AE581-6781-4A4C-A262-1B06CD27208B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCLI", "DynamoCLI\DynamoCLI.csproj", "{5F9AE581-6781-4A4C-A262-1B06CD27208B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoApplications", "DynamoApplications\DynamoApplications.csproj", "{AA782772-FE61-4226-BAA4-EB529FA1646B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoApplications", "DynamoApplications\DynamoApplications.csproj", "{AA782772-FE61-4226-BAA4-EB529FA1646B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackages", "DynamoPackages\DynamoPackages.csproj", "{47533B7C-0E1A-44A4-8511-B438645F052A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonNodeModels", "Libraries\PythonNodeModels\PythonNodeModels.csproj", "{8872CA17-C10D-43B9-8393-5C5A57065EB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PythonNodeModels", "Libraries\PythonNodeModels\PythonNodeModels.csproj", "{8872CA17-C10D-43B9-8393-5C5A57065EB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfVisualizationTests", "VisualizationTests\WpfVisualizationTests.csproj", "{C4964946-B367-44EE-9ED2-451FF2A83D32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch3DNodeModels", "Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj", "{31183026-DE70-49CB-BC7C-0DFD0A088F62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watch3DNodeModels", "Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj", "{31183026-DE70-49CB-BC7C-0DFD0A088F62}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoManipulation", "DynamoManipulation\DynamoManipulation.csproj", "{33F88E8C-CC3C-4237-8AA9-CC891EFCABFA}"
 EndProject
@@ -207,39 +207,39 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Notificati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryViewExtension", "LibraryViewExtension\LibraryViewExtension.csproj", "{8EACBFD1-1CD4-4519-A5FC-215D40A67204}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryColor", "Libraries\GeometryColor\GeometryColor.csproj", "{A50C198C-DA6E-4081-BC53-0F44D287F207}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryColor", "Libraries\GeometryColor\GeometryColor.csproj", "{A50C198C-DA6E-4081-BC53-0F44D287F207}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryColorTests", "..\test\Libraries\GeometryColorTests\GeometryColorTests.csproj", "{F8D2E3E5-4505-4463-9367-2EB2629D7DCD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewExtensionLibraryTests", "..\test\ViewExtensionLibraryTests\ViewExtensionLibraryTests.csproj", "{AE7F2579-104A-4AF4-AA7B-614AE9E79279}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignScriptBuiltin", "Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj", "{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesignScriptBuiltin", "Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj", "{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackagesWPF", "DynamoPackagesWPF\DynamoPackagesWPF.csproj", "{47D2166C-5261-4093-9660-E72B7035E666}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoWPFCLI", "DynamoWPFCLI\DynamoWPFCLI.csproj", "{F7FD9395-35D5-474D-8AD1-9904817E70D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoWPFCLI", "DynamoWPFCLI\DynamoWPFCLI.csproj", "{F7FD9395-35D5-474D-8AD1-9904817E70D3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{88D45B00-E564-41DB-B57C-9509646CAA49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkspaceDependencyViewExtension", "WorkspaceDependencyViewExtension\WorkspaceDependencyViewExtension.csproj", "{5E76AAB3-6302-473E-9655-081B53FB1419}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkspaceDependencyViewExtension", "WorkspaceDependencyViewExtension\WorkspaceDependencyViewExtension.csproj", "{5E76AAB3-6302-473E-9655-081B53FB1419}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentationBrowserViewExtension", "DocumentationBrowserViewExtension\DocumentationBrowserViewExtension.csproj", "{BE6D0644-05AF-4580-8597-B95920CE923F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentationBrowserViewExtension", "DocumentationBrowserViewExtension\DocumentationBrowserViewExtension.csproj", "{BE6D0644-05AF-4580-8597-B95920CE923F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCPython", "Libraries\DSCPython\DSCPython.csproj", "{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSCPython", "Libraries\DSCPython\DSCPython.csproj", "{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryViewExtensionMSWebBrowser", "LibraryViewExtensionMSWebBrowser\LibraryViewExtensionMSWebBrowser.csproj", "{1A5DC90A-477E-4D4A-87BD-0BFB01F056CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryViewExtensionMSWebBrowser", "LibraryViewExtensionMSWebBrowser\LibraryViewExtensionMSWebBrowser.csproj", "{1A5DC90A-477E-4D4A-87BD-0BFB01F056CE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonExtension", "IronPythonExtension\IronPythonExtension.csproj", "{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonMigrationViewExtension", "PythonMigrationViewExtension\PythonMigrationViewExtension.csproj", "{10AF430D-0D3A-49CE-A63D-848912959745}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PythonMigrationViewExtension", "PythonMigrationViewExtension\PythonMigrationViewExtension.csproj", "{10AF430D-0D3A-49CE-A63D-848912959745}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeAutoCompleteViewExtension", "NodeAutoCompleteViewExtension\NodeAutoCompleteViewExtension.csproj", "{51511AFD-F326-4995-8E27-5D711419EF6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NodeAutoCompleteViewExtension", "NodeAutoCompleteViewExtension\NodeAutoCompleteViewExtension.csproj", "{51511AFD-F326-4995-8E27-5D711419EF6F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Md2Html", "Tools\Md2Html\Md2Html.csproj", "{0893F745-CB1A-427A-8E87-CA927273039A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphMetadataViewExtension", "GraphMetadataViewExtension\GraphMetadataViewExtension.csproj", "{A42563F1-2B8B-4C4D-BFAD-2CA981524E00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LintingViewExtension", "LintingViewExtension\LintingViewExtension.csproj", "{C86F9058-229D-40A9-95D5-D6F081AA9230}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LintingViewExtension", "LintingViewExtension\LintingViewExtension.csproj", "{C86F9058-229D-40A9-95D5-D6F081AA9230}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeDocumentationMarkdownGenerator", "Tools\NodeDocumentationMarkdownGenerator\NodeDocumentationMarkdownGenerator.csproj", "{0DD3E4ED-66AA-47FC-9EB9-2A0E6A0EA01B}"
 EndProject
@@ -249,7 +249,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeDocumentationMarkdownGe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonTests", "..\test\Libraries\IronPythonTests\IronPythonTests.csproj", "{E6DF2FBD-7D4D-4465-94DC-D576D737E985}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageDetailsViewExtension", "PackageDetailsViewExtension\PackageDetailsViewExtension.csproj", "{12FB4DA4-7E9C-4C2E-91CD-1D0B523A9535}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageDetailsViewExtension", "PackageDetailsViewExtension\PackageDetailsViewExtension.csproj", "{12FB4DA4-7E9C-4C2E-91CD-1D0B523A9535}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyRenamerCLI", "Tools\AssemblyRenamerCLI\AssemblyRenamerCLI.csproj", "{F382C3F8-C55C-4350-800A-3D13A94F8E13}"
 EndProject
@@ -269,8 +269,8 @@ Global
 		{7858FA8C-475F-4B8E-B468-1F8200778CF8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7858FA8C-475F-4B8E-B468-1F8200778CF8}.Release|x64.ActiveCfg = Release|x64
 		{7858FA8C-475F-4B8E-B468-1F8200778CF8}.Release|x64.Build.0 = Release|x64
-		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Debug|Any CPU.Build.0 = Debug|x64
+		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Debug|x64.ActiveCfg = Debug|x64
 		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Debug|x64.Build.0 = Debug|x64
 		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Release|Any CPU.ActiveCfg = Release|x64
