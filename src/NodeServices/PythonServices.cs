@@ -171,6 +171,8 @@ namespace Dynamo.PythonServices
         {
             AvailableEngines = new ObservableCollection<PythonEngine>();
 
+            // We check only for the default python engine because it is the only one loaded by static references.
+            // Other engines can only be loaded through package manager
             LoadPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
                 FirstOrDefault(a => a != null && a.GetName().Name == CPythonAssemblyName));
 

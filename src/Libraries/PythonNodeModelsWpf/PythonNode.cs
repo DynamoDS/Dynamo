@@ -52,7 +52,7 @@ namespace PythonNodeModelsWpf
             {
                 availableEngineNames.Add(nodeModel.EngineName);
             }
-            availableEngineNames.ForEach(x => AddPythonEngine2MenuItems(x));
+            availableEngineNames.ForEach(x => AddPythonEngineToMenuItems(x));
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEnginesChanged;
 
@@ -178,7 +178,7 @@ namespace PythonNodeModelsWpf
             {
                 foreach (var item in e.NewItems)
                 {
-                    AddPythonEngine2MenuItems((item as PythonEngine).Name);
+                    AddPythonEngineToMenuItems((item as PythonEngine).Name);
                 }   
             }
         }
@@ -186,7 +186,7 @@ namespace PythonNodeModelsWpf
         /// <summary>
         /// Adds python engine to MenuItems
         /// </summary>
-        private void AddPythonEngine2MenuItems(string engineName)
+        private void AddPythonEngineToMenuItems(string engineName)
         {
             var pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
             pythonEngineItem.Click += UpdateEngine;

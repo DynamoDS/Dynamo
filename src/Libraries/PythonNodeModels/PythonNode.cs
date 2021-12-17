@@ -37,6 +37,7 @@ namespace PythonNodeModels
 
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        // Set the default EngineName value to IronPython2 so that older graphs can show the migration warnings.
         [DefaultValue("IronPython2")]
         
         /// <summary>
@@ -62,7 +63,9 @@ namespace PythonNodeModels
             }
         }
 
-
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        // Set the default EngineName value to IronPython2 so that older graphs can show the migration warnings.
+        [DefaultValue("IronPython2")]
         /// <summary>
         /// Return the user selected python engine enum.
         /// </summary>
