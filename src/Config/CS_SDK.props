@@ -15,6 +15,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <UICulture>en-US</UICulture>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <NoWarn>MSB3539</NoWarn>
      <!--This is used to set the framework version for icon resource dll generation (lookup of system.drawing.dll)-->
     <ResourceGeneration_FrameworkVersion>v4.8</ResourceGeneration_FrameworkVersion>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
@@ -36,7 +37,7 @@
     <None Remove="obj\**" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+    <Compile Condition="'$(ProjectName)'!='AssemblyInfoGenerator'" Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
   </ItemGroup>
