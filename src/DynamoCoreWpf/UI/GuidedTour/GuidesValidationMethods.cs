@@ -357,6 +357,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     searchPackagesLoaded = true;
 
                     EnableNextButton(null, uiAutomationData, true, GuideFlow.FORWARD);
+                    packageManagerViewModel.DisableSearchTextBox();
 
                     //Unsubscribe from the PropertyChanged event otherwise it will enter everytime the SearchTextBox is updated
                     packageManagerViewModel.PropertyChanged -= searchPackagesPropertyChanged.Invoke;
