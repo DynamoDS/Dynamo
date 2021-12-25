@@ -27,6 +27,17 @@ namespace DSOffice
 
     internal static class ExcelInterop
     {
+        [DllImport("oleaut32.dll", PreserveSig = false)]
+        static extern void GetActiveObject(
+            ref Guid rclsid,
+            IntPtr pvReserved,
+            [MarshalAs(UnmanagedType.IUnknown)] out Object ppunk);
+
+        [DllImport("ole32.dll")]
+        static extern int CLSIDFromProgID(
+            [MarshalAs(UnmanagedType.LPWStr)] string lpszProgID,
+            out Guid pclsid);
+
         private static Microsoft.Office.Interop.Excel.Application _app;
         public static Microsoft.Office.Interop.Excel.Application App
         {
@@ -61,7 +72,13 @@ namespace DSOffice
 
             try
             {
-                excel = (Microsoft.Office.Interop.Excel.Application)Marshal.GetActiveObject("Excel.Application");
+                Guid clsid;
+                CLSIDFromProgID("Excel.Application", out clsid);
+
+                object obj;
+                GetActiveObject(ref clsid, IntPtr.Zero, out obj);
+
+                excel = obj as Microsoft.Office.Interop.Excel.Application;
             }
             catch (COMException e)
             {
@@ -540,8 +557,8 @@ namespace DSOffice
             if (rangeData == null)
                 return this;
 
-            var c1 = (Range)ws.Cells[startRow + 1, startColumn + 1];
-            var c2 = (Range)ws.Cells[startRow + numRows, startColumn + numColumns];
+            var c1 = (Microsoft.Office.Interop.Excel.Range)ws.Cells[startRow + 1, startColumn + 1];
+            var c2 = (Microsoft.Office.Interop.Excel.Range)ws.Cells[startRow + numRows, startColumn + numColumns];
             var range = ws.Range[c1, c2];
             if(writeAsString)
                 range.NumberFormat = "@";

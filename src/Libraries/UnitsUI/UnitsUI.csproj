@@ -8,6 +8,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnitsUI</RootNamespace>
     <AssemblyName>UnitsUI</AssemblyName>
+	<TargetFramework>net6.0-windows</TargetFramework>
+	<UseWPF>true</UseWPF>
+	<UseWindowsForms>true</UseWindowsForms>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
@@ -64,12 +67,6 @@
       <Name>VMDataBridge</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Controls\DynamoUnitConverterControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <Target Name="GenerateFiles"  AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get System.Drawing.dll -->

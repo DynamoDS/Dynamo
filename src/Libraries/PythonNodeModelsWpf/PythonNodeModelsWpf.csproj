@@ -9,6 +9,10 @@
     <RootNamespace>PythonNodeModelsWpf</RootNamespace>
     <AssemblyName>PythonNodeModelsWpf</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
+    <TargetFramework>net6.0-windows</TargetFramework>
+	<UseWPF>true</UseWPF>
+	<UseWindowsForms>true</UseWindowsForms>
+    <OutputPath>$(OutputPath)\nodes</OutputPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
  	<ReferenceCopyLocalPaths>
@@ -63,16 +67,6 @@
     <EmbeddedResource Include="Resources\ICSharpCode.PythonBinding.Resources.Python.xshd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Controls\EngineLabel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ScriptEditorWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\class.png" />

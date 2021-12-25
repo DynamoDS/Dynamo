@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml;
 using Dynamo.Graph.Workspaces;

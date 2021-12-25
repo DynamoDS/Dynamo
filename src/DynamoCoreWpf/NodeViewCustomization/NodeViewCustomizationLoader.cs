@@ -5,6 +5,7 @@ using System.Reflection;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Properties;
+using TypeExtensions = Dynamo.Utilities.TypeExtensions;
 
 namespace Dynamo.Wpf
 {

@@ -218,7 +218,7 @@ namespace Dynamo.Models
                 var customizerType = Type.GetType("Dynamo.Wpf.INodeViewCustomization`1,DynamoCoreWpf");
                 if (customizerType != null)
                 {
-                    output = assem.GetTypes().Where(t => !t.IsAbstract && TypeExtensions.ImplementsGeneric(customizerType, t));
+                    output = assem.GetTypes().Where(t => !t.IsAbstract && Utilities.TypeExtensions.ImplementsGeneric(customizerType, t));
                     return output;
                 }
             }

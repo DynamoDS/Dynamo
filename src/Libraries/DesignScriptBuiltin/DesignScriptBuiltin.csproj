@@ -8,10 +8,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Builtin</RootNamespace>
     <AssemblyName>DesignScriptBuiltin</AssemblyName>
+	<TargetFramework>netstandard2.1</TargetFramework>
     <DocumentationFile>$(OutputPath)\$(UICulture)\DesignScriptBuiltin.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Collections.Immutable" Version="1.4.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
+    <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
@@ -19,17 +22,4 @@
       <Name>DynamoServices</Name>
     </ProjectReference>
   </ItemGroup>
-  <Target Name="GenerateFiles" AfterTargets="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
-    <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
-    <!-- Get assembly -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
-      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
-    </GetAssemblyIdentity>
-    <!-- Generate customization dll -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DesignScriptBuiltinImages.resx" OutputResources="$(ProjectDir)DesignScriptBuiltinImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DesignScriptBuiltinImages.resources" OutputAssembly="$(OutDir)DesignScriptBuiltin.customization.dll" Version="%(AssemblyInfo.Version)" />
-  </Target>
 </Project>
