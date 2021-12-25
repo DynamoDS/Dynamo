@@ -10,8 +10,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Nodes</RootNamespace>
     <AssemblyName>DynamoArduino</AssemblyName>
+	<TargetFramework>net6.0-windows</TargetFramework>
+	<UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
     <DocumentationFile>$(OutputPath)\$(UICulture)\DynamoArduino.XML</DocumentationFile>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="6.0.0" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationFramework" />

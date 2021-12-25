@@ -74,10 +74,7 @@ namespace DynamoUtilities
             {
                 var writeAllow = false;
                 var writeDeny = false;
-                var accessControlList = Directory.GetAccessControl(folderPath);
-                if (accessControlList == null)
-                    return false;
-                var accessRules = accessControlList.GetAccessRules(true, true,
+                var accessRules = new FileSecurity(folderPath, AccessControlSections.All).GetAccessRules(true, true,
                                             typeof(System.Security.Principal.SecurityIdentifier));
                 if (accessRules == null)
                     return false;

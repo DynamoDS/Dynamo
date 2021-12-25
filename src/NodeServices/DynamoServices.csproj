@@ -10,6 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoServices</RootNamespace>
     <AssemblyName>DynamoServices</AssemblyName>
+	<TargetFramework>netstandard2.1</TargetFramework>
     <DocumentationFile>$(OutputPath)\DynamoServices.XML</DocumentationFile>
   </PropertyGroup>
 </Project>

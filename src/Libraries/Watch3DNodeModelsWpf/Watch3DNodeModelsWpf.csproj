@@ -10,6 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Watch3DNodeModelsWpf</RootNamespace>
     <AssemblyName>Watch3DNodeModelsWpf</AssemblyName>
+	<TargetFramework>net6.0-windows</TargetFramework>
+	<UseWPF>true</UseWPF>
+	<UseWindowsForms>true</UseWindowsForms>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
   </PropertyGroup>
   <ItemDefinitionGroup>

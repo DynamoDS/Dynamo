@@ -11,6 +11,9 @@
     <RootNamespace>Dynamo.DynamoSandbox</RootNamespace>
     <AssemblyName>DynamoSandbox</AssemblyName>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+	<TargetFramework>net6.0-windows</TargetFramework>
+	<UseWPF>true</UseWPF>
+	<UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>logo_square_32x32.ico</ApplicationIcon>
@@ -65,11 +68,5 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="logo_square_32x32.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="SettingsMigrationWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
 </Project>

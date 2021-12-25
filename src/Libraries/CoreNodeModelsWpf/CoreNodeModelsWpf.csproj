@@ -9,6 +9,10 @@
     <RootNamespace>Dynamo.Wpf</RootNamespace>
     <AssemblyName>CoreNodeModelsWpf</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
+    <TargetFramework>net6.0-windows</TargetFramework>
+	<UseWPF>true</UseWPF>
+	<UseWindowsForms>true</UseWindowsForms>
+    <OutputPath>$(OutputPath)\nodes</OutputPath>
     <DocumentationFile>$(OutputPath)\CoreNodeModelsWpf.XML</DocumentationFile>
   </PropertyGroup>
   <ItemDefinitionGroup>
