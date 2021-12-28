@@ -5,7 +5,6 @@
   <PropertyGroup>
     <ProjectGuid>{4CAB9005-0001-4B03-BBA0-57070ED105F1}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XmlDocumentationsUtility</RootNamespace>
     <AssemblyName>XmlDocumentationsUtility</AssemblyName>
     <PublishUrl>publish\</PublishUrl>
@@ -34,6 +33,11 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\ProtoAssociative\ProtoAssociative.csproj">
@@ -66,6 +70,7 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
+  <Target Name="CopyFiles" AfterTargets="Build">
     <ItemGroup>
       <ProtoGeometryFiles Include="$(SolutionDir)..\bin\AnyCPU\$(ConfigurationName)\ProtoGeometry.*" />
       <ProtoInterfaceFiles Include="$(SolutionDir)..\bin\AnyCPU\$(ConfigurationName)\ProtoInterface.*" />

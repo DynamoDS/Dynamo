@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DynamoCLI": {
+      "commandName": "Project",
+      "commandLineArgs": "-o basic.dyn"
+    }
+  }
+}

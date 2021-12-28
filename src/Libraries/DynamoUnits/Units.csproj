@@ -10,6 +10,7 @@
     <RootNamespace>DynamoUnits</RootNamespace>
     <AssemblyName>DynamoUnits</AssemblyName>
     <DocumentationFile>$(OutputPath)\DynamoUnits.xml</DocumentationFile>
+	<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Configuration" />

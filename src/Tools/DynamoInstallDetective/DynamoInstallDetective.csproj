@@ -11,5 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
 	<Reference Include="System.Configuration" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>InstallUpdate</RootNamespace>
     <AssemblyName>InstallUpdate</AssemblyName>
+    <TargetFramework>net6.0-windows</TargetFramework>
+	<UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCrypto\DynamoCrypto.csproj">

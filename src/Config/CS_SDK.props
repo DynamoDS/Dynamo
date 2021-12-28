@@ -6,6 +6,7 @@
     <TargetFramework>net48</TargetFramework>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <FileAlignment>512</FileAlignment>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> 
     <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\AnyCPU\$(Configuration)</OutputPath>
@@ -25,6 +26,9 @@
   <PropertyGroup Condition=" '$(TargetFramework)' == '' ">
 		<TargetFramework>netstandard2.1</TargetFramework>
 	</PropertyGroup>
+  <PropertyGroup Condition=" '$(MyRuntimeIdentifier)' == '' ">
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>

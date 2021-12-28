@@ -8,13 +8,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoCLI</RootNamespace>
     <AssemblyName>DynamoCLI</AssemblyName>
+	<TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoApplications\DynamoApplications.csproj">
       <Project>{aa782772-fe61-4226-baa4-eb529fa1646b}</Project>
