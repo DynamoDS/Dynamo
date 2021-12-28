@@ -9,6 +9,8 @@
     <RootNamespace>PythonNodeModels</RootNamespace>
     <AssemblyName>PythonNodeModels</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
+    <OutputPath>$(OutputPath)\nodes</OutputPath>
+	<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ReferenceCopyLocalPaths>

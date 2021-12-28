@@ -11,6 +11,7 @@
     <RootNamespace>DSCore</RootNamespace>
     <AssemblyName>DSCoreNodes</AssemblyName>
     <DocumentationFile>($OutputPath)\$(UICulture)\DSCoreNodes.xml</DocumentationFile>
+	<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
