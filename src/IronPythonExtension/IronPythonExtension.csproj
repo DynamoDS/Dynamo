@@ -29,7 +29,7 @@
   <ItemGroup>
     <Content Include="IronPythonExtension_ExtensionDefinition.xml" />
   </ItemGroup>
-  <Target Name="AfterBuild" AfterTargets="Build">
+  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="IronPythonExtension_ExtensionDefinition.xml" />
     </ItemGroup>

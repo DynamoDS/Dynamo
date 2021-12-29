@@ -59,7 +59,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Docs\LinterViewHelpDoc.html" />
   </ItemGroup>
-  <Target Name="AfterBuild" AfterTargets="Build">
+  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="Linter_ViewExtensionDefinition.xml" />
     </ItemGroup>

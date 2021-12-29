@@ -41,7 +41,7 @@
   <ItemGroup>
     <Content Include="PackageManagerExtension_ExtensionDefinition.xml" />
   </ItemGroup>
-  <Target Name="AfterBuild" AfterTargets="Build">
+  <Target Name="GenerateExtension" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="PackageManagerExtension_ExtensionDefinition.xml" />
     </ItemGroup>

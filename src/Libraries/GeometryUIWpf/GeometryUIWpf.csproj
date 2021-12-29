@@ -10,6 +10,12 @@
     <AssemblyName>GeometryUIWpf</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
   </PropertyGroup>
+  <ItemDefinitionGroup>
+	<ReferenceCopyLocalPaths>
+		<!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
+		<DestinationSubDirectory>..\</DestinationSubDirectory>
+	</ReferenceCopyLocalPaths>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

@@ -93,7 +93,7 @@
   <ItemGroup>
     <EmbeddedResource Include="MigrationAssistant\reindent.py" />
   </ItemGroup>
-  <Target Name="AfterBuild" AfterTargets="Build">
+  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="PythonMigration_ViewExtensionDefinition.xml" />
       <PythonFixers Include="$(SolutionDir)PythonMigrationViewExtension\MigrationAssistant\python_migration_fixers\*" />

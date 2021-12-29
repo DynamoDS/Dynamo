@@ -51,7 +51,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <Target Name="AfterBuild" AfterTargets="Build">
+  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="WorkspaceDependency_ViewExtensionDefinition.xml" />
     </ItemGroup>

@@ -11,6 +11,12 @@
     <OutputPath>$(OutputPath)\nodes</OutputPath>
     <DocumentationFile>$(OutputPath)\CoreNodeModelsWpf.XML</DocumentationFile>
   </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ReferenceCopyLocalPaths>
+      <!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
+      <DestinationSubDirectory>..\</DestinationSubDirectory>
+    </ReferenceCopyLocalPaths>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>

@@ -11,6 +11,12 @@
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
     <DocumentationFile>$(OutputPath)\CoreNodeModels.XML</DocumentationFile>
   </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ReferenceCopyLocalPaths>
+	  <!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
+	  <DestinationSubDirectory>..\</DestinationSubDirectory>
+    </ReferenceCopyLocalPaths>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <None Remove="CoreNodeModelsImages.resources" />
   </ItemGroup>

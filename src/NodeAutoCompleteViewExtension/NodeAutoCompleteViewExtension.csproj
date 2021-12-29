@@ -30,7 +30,7 @@
   <ItemGroup>
     <Content Include="NodeAutoComplete_ViewExtensionDefinition.xml" />
   </ItemGroup>
-  <Target Name="AfterBuild" AfterTargets="Build">
+  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="NodeAutoComplete_ViewExtensionDefinition.xml" />
     </ItemGroup>

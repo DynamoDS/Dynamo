@@ -159,7 +159,7 @@
     <Copy SourceFiles="@(LegacyBinariesToEn-USFolder)" DestinationFolder="$(OutputPath)\en-US\" />
     <Copy SourceFiles="@(LegacyBinariesToNodesFolder)" DestinationFolder="$(OutputPath)\nodes\" />
   </Target>
-  <Target Name="AfterBuild" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
+  <Target Name="AfterBuildOps" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
     <ItemGroup>
       <ASMLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
       <ExternProtoGeometry Include="$(SolutionDir)..\extern\ProtoGeometry\*" />

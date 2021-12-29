@@ -5,7 +5,9 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
     <TargetFramework>net48</TargetFramework>
     <FileAlignment>512</FileAlignment>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> 
     <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\AnyCPU\$(Configuration)</OutputPath>
     <BaseIntermediateOutputPath>$(OutputPath)\int\</BaseIntermediateOutputPath>
     <NunitPath Condition=" '$(NunitPath)' == '' ">$(SolutionDir)..\extern\NUnit</NunitPath>
@@ -41,4 +43,9 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
   </ItemGroup>
+<ItemDefinitionGroup>
+  <ProjectReference>
+     <Private>False</Private>
+  </ProjectReference>
+</ItemDefinitionGroup>
 </Project>

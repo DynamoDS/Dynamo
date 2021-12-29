@@ -12,6 +12,12 @@
     <AssemblyName>Watch3DNodeModelsWpf</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
   </PropertyGroup>
+  <ItemDefinitionGroup>
+	<ReferenceCopyLocalPaths>
+		<!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
+		<DestinationSubDirectory>..\</DestinationSubDirectory>
+	</ReferenceCopyLocalPaths>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="Cyotek.Drawing.BitmapFont, Version=1.0.0.0, Culture=neutral, PublicKeyToken=58daa28b0b2de221, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Cyotek.Drawing.BitmapFont.2.0.0\lib\net48\Cyotek.Drawing.BitmapFont.dll</HintPath>

@@ -48,8 +48,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="web\library\layoutSpecs.json" />
+	<EmbeddedResource Include="web\library\library.html" />
+	<EmbeddedResource Include="web\library\librarie.min.js" />
   </ItemGroup>
   <ItemGroup>
+	  
     <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\ArtifaktElement-Bold.woff">
       <Link>web\library\resources\ArtifaktElement-Bold.woff</Link>
     </EmbeddedResource>
@@ -264,7 +267,7 @@
     <Content Include="Library_ViewExtensionDefinition.xml" />
   </ItemGroup>
   <!-- Copy the library view extension manifest file to the default folder for Dynamo-->
-  <Target Name="AfterBuild" AfterTargets="Build">
+  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="Library_ViewExtensionDefinition.xml" />
     </ItemGroup>

@@ -53,7 +53,7 @@
   <ItemGroup>
     <Resource Include="Resources\link_48px.png" />
   </ItemGroup>
-  <Target Name="AfterBuild" AfterTargets="Build">
+  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="GraphMetadata_ViewExtensionDefinition.xml" />
     </ItemGroup>

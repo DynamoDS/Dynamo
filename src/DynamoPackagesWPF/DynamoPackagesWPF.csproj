@@ -26,7 +26,7 @@
   <ItemGroup>
     <Content Include="PackageManagerViewExtension_ViewExtensionDefinition.xml" />
   </ItemGroup>
-  <Target Name="AfterBuild" AfterTargets="Build">
+  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ViewExtensionDefinition Include="PackageManagerViewExtension_ViewExtensionDefinition.xml" />
     </ItemGroup>

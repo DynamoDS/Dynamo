@@ -1512,7 +1512,7 @@
     <Resource Include="UI\Images\icon-dictionary-small.png" />
   </ItemGroup>
   <ItemGroup />
-  <Target Name="AfterBuild" AfterTargets="Build">
+  <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
   </Target>
 </Project>
