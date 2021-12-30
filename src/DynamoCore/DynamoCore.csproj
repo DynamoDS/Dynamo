@@ -114,7 +114,7 @@
       </PropertyGroup>
     </Otherwise>
   </Choose>
-  <Target Name="BeforeBuild" BeforeTargets="Build">
+  <Target Name="BeforeBuildOps" BeforeTargets="Build">
     <PropertyGroup>
       <LibGProtoGeometryLibGLocale>$(SolutionDir)\packages\DynamoVisualProgramming.LibG_228_0_0*\tools\net48\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
