@@ -308,9 +308,9 @@
         }
 
         //This will find the <div> that contains the package information
-        function findPackageDiv(packageName) {
+        function findPackageDiv(packageName, libraryClassName) {
             var found_div = null;
-            var libraryItemsText = document.getElementsByClassName("LibraryItemText");
+            var libraryItemsText = document.getElementsByClassName(libraryClassName);
             for (var i = 0; i < libraryItemsText.length; i++) {
                 if (libraryItemsText[i].textContent.toLowerCase() == packageName.toLowerCase()) {
                     found_div = libraryItemsText[i];
@@ -321,13 +321,13 @@
         }
 
         //This will execute a click over a specific <div> that contains the package content
-        function collapseExpandPackage(packageName) {
-            var found_div = findPackageDiv(packageName);
+        function collapseExpandPackage(packageName, libraryClassName) {
+            var found_div = findPackageDiv(packageName, libraryClassName);
             if (found_div == null) {
                 return;
             }
             var containerCatDiv = found_div.parentNode.parentNode;
-            var itemBodyContainer = containerCatDiv.getElementsByClassName("LibraryItemText")[0];
+            var itemBodyContainer = containerCatDiv.getElementsByClassName(libraryClassName)[0];
             itemBodyContainer.click();
         }
 

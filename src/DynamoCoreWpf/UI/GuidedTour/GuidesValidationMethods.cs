@@ -357,6 +357,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     searchPackagesLoaded = true;
 
                     EnableNextButton(null, uiAutomationData, true, GuideFlow.FORWARD);
+                    packageManagerViewModel.DisableSearchTextBox();
 
                     //Unsubscribe from the PropertyChanged event otherwise it will enter everytime the SearchTextBox is updated
                     packageManagerViewModel.PropertyChanged -= searchPackagesPropertyChanged.Invoke;
@@ -438,7 +439,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             CurrentExecutingStep = stepInfo;
             var firstUIAutomation = stepInfo.UIAutomation.FirstOrDefault();
-            if (firstUIAutomation == null) return;
+            if (firstUIAutomation == null || firstUIAutomation.JSParameters.Count == 0) return;
             object[] parametersInvokeScript = new object[] { firstUIAutomation.JSFunctionName, new object[] { firstUIAutomation.JSParameters.FirstOrDefault() } };
             ResourceUtilities.ExecuteJSFunction(stepInfo.MainWindow, stepInfo.HostPopupInfo, parametersInvokeScript);
         }
