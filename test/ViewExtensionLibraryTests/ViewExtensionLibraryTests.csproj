@@ -1,13 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
-    <Import Project="..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props" Condition="Exists('..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props')" />
-    <Import Project="..\..\src\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props" Condition="Exists('..\..\src\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props')" />
-    <Import Project="..\..\src\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props" Condition="Exists('..\..\src\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props')" />
-    <Import Project="..\..\src\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props" Condition="Exists('..\..\src\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props')" />
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-    <Import Project="..\..\src\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets" Condition="Exists('..\..\src\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets')" />
-    <Import Project="..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets" Condition="Exists('..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets')" />
   </ImportGroup>
   <PropertyGroup>
     <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
@@ -18,28 +11,16 @@
     <AssemblyName>ViewExtensionLibraryTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CefSharp">
-      <HintPath>..\..\src\packages\CefSharp.Common.49.0.1\CefSharp\x64\CefSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="CefSharp.Core">
-      <HintPath>..\..\src\packages\CefSharp.Common.49.0.1\CefSharp\x64\CefSharp.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+	<PackageRefence Include="cef.redist.x64" Version="3.3325.1758" />
+	<PackageRefence Include="cef.redist.x86" Version="3.3325.1758" />
+	<PackageRefence Include="CefSharp.Common" Version="65.0.1" />
+	<PackageRefence Include="CefSharp.Wpf" Version="65.0.1" />
+	<PackageRefence Include="Moq" Version="4.2.1507.118" />
+	<PackageRefence Include="Newtonsoft.Json" Version="8.0.3" />
+	<PackageRefence Include="NUnit" Version="2.6.3" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="Moq">
-      <HintPath>..\..\src\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\src\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -101,15 +82,4 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\src\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\src\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props'))" />
-    <Error Condition="!Exists('..\..\src\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\src\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props'))" />
-    <Error Condition="!Exists('..\..\src\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\src\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props'))" />
-    <Error Condition="!Exists('..\..\src\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\src\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets'))" />
-    <Error Condition="!Exists('..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props'))" />
-    <Error Condition="!Exists('..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets'))" />
-  </Target>
 </Project>
