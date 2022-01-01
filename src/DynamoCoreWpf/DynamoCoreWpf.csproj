@@ -557,7 +557,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
     <None Include="UI\Fonts\Autodesk\Artifakt-Element-Bold.otf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
