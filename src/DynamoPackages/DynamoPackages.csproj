@@ -11,16 +11,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Configuration" />
-    <Reference Include="Greg, Version=2.1.8012.31283, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.2.1.8012.31283\lib\net48\Greg.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="RestSharp, Version=106.12.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.106.12.0\lib\net452\RestSharp.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
@@ -40,6 +30,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="PackageManagerExtension_ExtensionDefinition.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Greg" Version="2.1.8012.31283" />
+    <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+    <PackageReference Include="RestSharp" Version="106.12.0" />
   </ItemGroup>
   <Target Name="GenerateExtension" AfterTargets="Build">
     <ItemGroup>

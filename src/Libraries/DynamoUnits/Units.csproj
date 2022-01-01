@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
-    <Import Project="..\..\packages\ForgeUnits.NET.3.2.2\build\ForgeUnits.NET.targets" Condition="Exists('..\..\packages\ForgeUnits.NET.3.2.2\build\ForgeUnits.NET.targets')" />
+    <Import Project="$(PkgForgeUnits_NET)\build\ForgeUnits.NET.targets" Condition="Exists('$(PkgForgeUnits_NET)\build\ForgeUnits.NET.targets')" />
   </ImportGroup>
   <PropertyGroup>
     <ProjectGuid>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</ProjectGuid>
@@ -13,9 +13,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Configuration" />
-    <Reference Include="ForgeUnitsCLR, Version=3.2.2.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\ForgeUnits.NET.3.2.2\lib\net48\ForgeUnitsCLR.dll</HintPath>
-    </Reference>
+	<PackageReference Include="ForgeUnits.NET" Version="3.2.2" GeneratePathProperty="true" />
+	<PackageReference Include="ForgeUnits.Schemas" Version="1.0.0" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DynamoUnits_DynamoCustomization.xml" />
@@ -61,7 +60,7 @@
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoUnitsImages.resx" OutputResources="$(ProjectDir)DynamoUnitsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoUnitsImages.resources" OutputAssembly="$(OutDir)DynamoUnits.customization.dll" Version="%(AssemblyInfo.Version)" />
     <ItemGroup>
-      <UnitSchemas Include="..\..\packages\ForgeUnits.Schemas.1.0.0\Content\unit\**\*.*" />
+      <UnitSchemas Include="$(PkgForgeUnits_Schemas)\Content\unit\**\*.*" />
     </ItemGroup>
     <Copy SourceFiles="@(UnitSchemas)" DestinationFolder="$(OutDir)unit\%(RecursiveDir)" />
   </Target>

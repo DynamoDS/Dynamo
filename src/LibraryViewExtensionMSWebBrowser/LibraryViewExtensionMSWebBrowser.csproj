@@ -14,9 +14,7 @@
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
+	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Windows.Forms" />
@@ -52,7 +50,6 @@
 	<EmbeddedResource Include="web\library\librarie.min.js" />
   </ItemGroup>
   <ItemGroup>
-	  
     <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\ArtifaktElement-Bold.woff">
       <Link>web\library\resources\ArtifaktElement-Bold.woff</Link>
     </EmbeddedResource>

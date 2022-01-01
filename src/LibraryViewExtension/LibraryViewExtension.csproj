@@ -1,12 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
-  <Import Project="..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props" Condition="Exists('..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props')" />
-  <Import Project="..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props')" />
-  <Import Project="..\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props" Condition="Exists('..\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props')" />
-  <Import Project="..\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props" Condition="Exists('..\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
 	<CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
     <ProjectGuid>{8EACBFD1-1CD4-4519-A5FC-215D40A67204}</ProjectGuid>
@@ -19,41 +14,21 @@
     <Compile Remove="Handlers\GetPackageResourceHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
-      <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
-      <Name>DynamoCoreWpf</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
-      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
-      <Name>DynamoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
+	<PackageReference Include="cef.redist.x64" Version="3.3325.1758">
+	  <GeneratePathProperty>True</GeneratePathProperty>
+	</PackageReference>
+	<PackageReference Include="cef.redist.x86" Version="3.3325.1758">
+	  <GeneratePathProperty>True</GeneratePathProperty>
+	</PackageReference>
+	<PackageReference Include="CefSharp.Common" Version="65.0.1">
+	  <GeneratePathProperty>True</GeneratePathProperty>
+	</PackageReference>
+	<PackageReference Include="CefSharp.Wpf" Version="65.0.1">
+	  <GeneratePathProperty>True</GeneratePathProperty>
+	</PackageReference>
+	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+	<ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj" />
+	<ProjectReference Include="..\DynamoCore\DynamoCore.csproj" />
     <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
       <Name>DynamoPackages</Name>
@@ -62,11 +37,6 @@
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
-      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
-      <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
@@ -160,6 +130,15 @@
     <EmbeddedResource Include="web\library\resources\search-icon-clear.svg" />
     <EmbeddedResource Include="web\library\resources\search-icon.svg" />
   </ItemGroup>
+  <ItemGroup>
+	<Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="Library_ViewExtensionDefinition.xml" />
@@ -170,13 +149,11 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props'))" />
-    <Error Condition="!Exists('..\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets'))" />
+    <Error Condition="!Exists('$(Pkgcef_redist_x64)\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '$(Pkgcef_redist_x64)\build\cef.redist.x64.props'))" />
+    <Error Condition="!Exists('$(Pkgcef_redist_x86)\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '$(Pkgcef_redist_x86)\build\cef.redist.x86.props'))" />
+    <Error Condition="!Exists('$(PkgCefSharp_Common)\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '$(PkgCefSharp_Common)\build\CefSharp.Common.props'))" />
+    <Error Condition="!Exists('$(PkgCefSharp_Common)\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(PkgCefSharp_Common)\build\CefSharp.Common.targets'))" />
+    <Error Condition="!Exists('$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.props')" Text="$([System.String]::Format('$(ErrorText)', '$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.props'))" />
+    <Error Condition="!Exists('$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.targets'))" />
   </Target>
-  <Import Project="..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets')" />
-  <Import Project="..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets" Condition="Exists('..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets')" />
 </Project>

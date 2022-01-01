@@ -21,6 +21,11 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+	<PackageReference Include="DynamoVisualProgramming.LibG_227_0_0" Version="2.13.0.6926" GeneratePathProperty="true" />
+	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.6925" GeneratePathProperty="true" />
+	<PackageReference Include="Greg" Version="2.1.8012.31283" />
+	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+	<PackageReference Include="RestSharp" Version="106.12.0" />
     <Reference Include="Analytics.Net.ADP, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Analytics.NET\Analytics.Net.ADP.dll</HintPath>
@@ -31,20 +36,7 @@
     <Reference Include="Analytics.NET.Google">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=2.1.8012.31283, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.2.1.8012.31283\lib\net48\Greg.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ProtoGeometry, Version=2.13.0.6925, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_228_0_0.2.13.0.6925\lib\net48\ProtoGeometry.dll</HintPath>
-    </Reference>
-    <Reference Include="RestSharp, Version=106.12.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.106.12.0\lib\net452\RestSharp.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
@@ -116,14 +108,14 @@
   </Choose>
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
     <PropertyGroup>
-      <LibGProtoGeometryLibGLocale>$(SolutionDir)\packages\DynamoVisualProgramming.LibG_228_0_0*\tools\net48\libg_locale</LibGProtoGeometryLibGLocale>
+      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>
-      <LibGInterface Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_228_0_0*\tools\net48\LibG.Interface.dll" />
-      <LibGProtoGeometryXml Include="$(solutiondir)\packages\dynamovisualprogramming.libg_228_0_0*\lib\net48\protogeometry.xml" />
-      <LibGProtoGeometryUICulture Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_228_0_0*\tools\net48\$(UICulture)\*" />
-      <LibG227 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\LibG_227_0_0\*" />
-      <LibG228 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_228_0_0*\tools\net48\LibG_228_0_0\*" />
+      <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\tools\net48\LibG.Interface.dll" />
+      <LibGProtoGeometryXml Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\lib\net48\protogeometry.xml" />
+      <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\$(UICulture)\*" />
+      <LibG227 Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\tools\net48\LibG_227_0_0\*" />
+      <LibG228 Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\LibG_228_0_0\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
