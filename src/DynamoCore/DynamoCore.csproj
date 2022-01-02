@@ -107,17 +107,13 @@
     </Otherwise>
   </Choose>
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
-    <ItemGroup>
-      <TestA Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\lib\net48\*" />
-    </ItemGroup>
-	<Message Importance="high" Text="MsgTestA $(TestA)"></Message>
     <Exec Condition=" '$(OS)' == 'Unix'" Command="ls $(PkgDynamoVisualProgramming_LibG_228_0_0)\lib\net48" />
     <PropertyGroup>
       <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>
       <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\LibG.Interface.dll" />
-      <LibGProtoGeometryXml Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\lib\net48\ProtoGeometry.xml" />
+      <LibGProtoGeometryXml Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\lib\net48\ProtoGeometry.XML" />
       <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\$(UICulture)\*" />
       <LibG227 Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\tools\net48\LibG_227_0_0\*" />
       <LibG228 Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\LibG_228_0_0\*" />
