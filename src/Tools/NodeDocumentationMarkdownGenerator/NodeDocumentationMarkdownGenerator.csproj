@@ -7,6 +7,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>NodeDocumentationMarkdownGenerator</RootNamespace>
     <AssemblyName>NodeDocumentationMarkdownGenerator</AssemblyName>
+	<OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
   <PackageReference Include="CommandLineParser" Version="2.8.0" />

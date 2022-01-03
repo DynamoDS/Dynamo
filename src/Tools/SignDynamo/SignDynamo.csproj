@@ -8,6 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SignDynamo</RootNamespace>
     <AssemblyName>SignDynamo</AssemblyName>
+	<OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
 	<PackageReference Include="NDesk.Options" Version="0.2.1" />
