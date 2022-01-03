@@ -9,7 +9,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> 
     <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\AnyCPU\$(Configuration)</OutputPath>
-    <BaseIntermediateOutputPath>$(OutputPath)\int\</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath>int\</BaseIntermediateOutputPath>
     <NunitPath Condition=" '$(NunitPath)' == '' ">$(SolutionDir)..\extern\NUnit</NunitPath>
     <SharpDXDirectXVersion>DirectX11</SharpDXDirectXVersion>
     <ErrorReport>prompt</ErrorReport>
@@ -43,9 +43,14 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
   </ItemGroup>
-<ItemDefinitionGroup>
-  <ProjectReference>
-     <Private>False</Private>
-  </ProjectReference>
-</ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <ProjectReference>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <Target Name="CleanIntermediaryFiles" AfterTargets="Clean">
+     <Message Importance="high" Text="running CleanIntermediaryFiles" />
+     <RemoveDir Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> <!-- int -->
+     <RemoveDir Directories="$(ProjectDir)obj" /> <!-- obj -->
+  </Target>
 </Project>
