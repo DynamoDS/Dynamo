@@ -107,7 +107,6 @@
     </Otherwise>
   </Choose>
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
-    <Exec Condition=" '$(OS)' == 'Unix'" Command="ls $(PkgDynamoVisualProgramming_LibG_228_0_0)\lib\net48" />
     <PropertyGroup>
       <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\net48\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
