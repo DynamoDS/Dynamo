@@ -12,7 +12,9 @@
   </PropertyGroup>
   <ItemGroup>
 	<PackageReference Include="DocumentFormat.OpenXml" Version="2.12.3" />
-	<PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1000" />
+	<PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1000">
+	  <ExcludeAssets>runtime</ExcludeAssets>
+	</PackageReference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>

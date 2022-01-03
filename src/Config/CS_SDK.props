@@ -50,7 +50,6 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <Target Name="CleanIntermediaryFiles" AfterTargets="Clean">
-     <Message Importance="high" Text="running CleanIntermediaryFiles" />
      <RemoveDir Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> <!-- int -->
      <RemoveDir Directories="$(ProjectDir)obj" /> <!-- obj -->
   </Target>
