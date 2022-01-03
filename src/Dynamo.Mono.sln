@@ -6,18 +6,12 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoConversions", "Libraries\DynamoConversions\DynamoConversions.csproj", "{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{A6533823-A64A-441C-B7A2-7B2772F87002}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoAssociative", "Engine\ProtoAssociative\ProtoAssociative.csproj", "{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoCore", "Engine\ProtoCore\ProtoCore.csproj", "{7A9E0314-966F-4584-BAA3-7339CBB849D1}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoImperative", "Engine\ProtoImperative\ProtoImperative.csproj", "{0D3D43DC-BD7E-46F0-93F7-1C6A6CC79948}"
 EndProject
@@ -26,9 +20,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{FA7BE306-A3B0-45FA-9D87-0C69E6932C13}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreNodes", "Libraries\CoreNodes\CoreNodes.csproj", "{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreNodeModels", "Libraries\CoreNodeModels\CoreNodeModels.csproj", "{D8262D40-4880-41E4-91E4-AF8F480C8637}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -36,14 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreNodeModels", "Libraries
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoServices", "NodeServices\DynamoServices.csproj", "{EF879A10-041D-4C68-83E7-3192685F1BAE}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoUtilities", "DynamoUtilities\DynamoUtilities.csproj", "{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F4D44BC0-32CF-4E58-AD2A-F19CE1450B00}"
 EndProject
@@ -58,61 +43,32 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{0E492D35-2310-4849-9694-A2A53C09F21B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSIronPython", "Libraries\DSIronPython\DSIronPython.csproj", "{9EEF4F42-6B3B-4358-9A8A-C2701539A822}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFITarget", "..\test\Engine\FFITarget\FFITarget.csproj", "{C70FE632-5500-4C57-B3D6-9B5574137551}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "System", "System", "{88A44558-9148-4F1C-876B-46472793F3D6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Units", "Libraries\DynamoUnits\Units.csproj", "{6E0A079E-85F1-45A1-AD5B-9855E4344809}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migrations", "Migrations\Migrations.csproj", "{06B9E5B0-7C50-4351-9D88-E159DC25755F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tessellation", "Libraries\Tesellation\Tessellation.csproj", "{D6279651-D099-4F8D-A319-5BF12ED9F269}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphLayout", "Engine\GraphLayout\GraphLayout.csproj", "{C2595B04-856D-40AE-8B99-4804C7A70708}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMDataBridge", "Libraries\VMDataBridge\VMDataBridge.csproj", "{CCB6E56B-2DA1-4EBA-A1F9-E8510E129D12}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{D114C59C-CF66-4CC2-980F-9301FB4EA4E1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignDynamo", "Tools\SignDynamo\SignDynamo.csproj", "{A84E15A2-6735-4575-A1DA-7C64AF7582B1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCrypto", "DynamoCrypto\DynamoCrypto.csproj", "{96643E77-C786-498C-AAA9-80E449854CE9}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstallUpdate", "Tools\InstallUpdate\InstallUpdate.csproj", "{0ED387BC-17B5-49B7-9C1D-BF58A4A5CC4D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitUtility", "Tools\NUnitUtility\NUnitUtility.csproj", "{D0DC5724-DE00-4201-A659-A9A6CF81290D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyInfoGenerator", "AssemblySharedInfoGenerator\AssemblyInfoGenerator.csproj", "{133FC760-5699-46D9-BEA6-E816B5F01016}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analysis", "Libraries\Analysis\Analysis.csproj", "{76686ED6-E759-4772-81C2-768740BE13FA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnalysisTests", "..\test\Libraries\AnalysisTests\AnalysisTests.csproj", "{4A707244-154B-428F-B589-D65361F24401}"
 EndProject
@@ -144,6 +100,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSCPython", "Libraries\DSCPython\DSCPython.csproj", "{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Md2Html", "Tools\Md2Html\Md2Html.csproj", "{0893F745-CB1A-427A-8E87-CA927273039A}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AssemblySharedInfoGenerator", "AssemblySharedInfoGenerator\AssemblySharedInfoGenerator.shproj", "{26923A73-D370-43CB-AA1C-F84629CA8D94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -333,14 +291,6 @@ Global
 		{D0DC5724-DE00-4201-A659-A9A6CF81290D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D0DC5724-DE00-4201-A659-A9A6CF81290D}.Release|x64.ActiveCfg = Release|Any CPU
 		{D0DC5724-DE00-4201-A659-A9A6CF81290D}.Release|x64.Build.0 = Release|Any CPU
-		{133FC760-5699-46D9-BEA6-E816B5F01016}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{133FC760-5699-46D9-BEA6-E816B5F01016}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{133FC760-5699-46D9-BEA6-E816B5F01016}.Debug|x64.ActiveCfg = Debug|x64
-		{133FC760-5699-46D9-BEA6-E816B5F01016}.Debug|x64.Build.0 = Debug|x64
-		{133FC760-5699-46D9-BEA6-E816B5F01016}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{133FC760-5699-46D9-BEA6-E816B5F01016}.Release|Any CPU.Build.0 = Release|Any CPU
-		{133FC760-5699-46D9-BEA6-E816B5F01016}.Release|x64.ActiveCfg = Release|x64
-		{133FC760-5699-46D9-BEA6-E816B5F01016}.Release|x64.Build.0 = Release|x64
 		{76686ED6-E759-4772-81C2-768740BE13FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{76686ED6-E759-4772-81C2-768740BE13FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76686ED6-E759-4772-81C2-768740BE13FA}.Debug|x64.ActiveCfg = Debug|x64
