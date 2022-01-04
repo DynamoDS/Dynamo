@@ -8,8 +8,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PythonNodeModelsWpf</RootNamespace>
     <AssemblyName>PythonNodeModelsWpf</AssemblyName>
-    <OutputPath>$(OutputPath)\nodes</OutputPath>
+    <OutputPath>$(OutputPath)\nodes\</OutputPath>
   </PropertyGroup>
+  <ItemDefinitionGroup>
+ 	<ReferenceCopyLocalPaths>
+		<!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
+		<DestinationSubDirectory>..\</DestinationSubDirectory>
+	</ReferenceCopyLocalPaths>
+  </ItemDefinitionGroup>
   <ItemGroup>
 	<PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
 	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />

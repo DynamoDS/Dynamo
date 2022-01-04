@@ -8,8 +8,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Migrations</RootNamespace>
     <AssemblyName>Migrations</AssemblyName>
-    <OutputPath>$(OutputPath)\nodes</OutputPath>
+    <OutputPath>$(OutputPath)\nodes\</OutputPath>
   </PropertyGroup>
+  <ItemDefinitionGroup>
+	<ReferenceCopyLocalPaths>
+	  <!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
+	  <DestinationSubDirectory>..\</DestinationSubDirectory>
+	</ReferenceCopyLocalPaths>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <Compile Remove="RevitNodes\New Node Samples\**" />
     <EmbeddedResource Remove="RevitNodes\New Node Samples\**" />

@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Wpf</RootNamespace>
     <AssemblyName>CoreNodeModelsWpf</AssemblyName>
-    <OutputPath>$(OutputPath)\nodes</OutputPath>
+    <OutputPath>$(OutputPath)\nodes\</OutputPath>
     <DocumentationFile>$(OutputPath)\CoreNodeModelsWpf.XML</DocumentationFile>
   </PropertyGroup>
   <ItemDefinitionGroup>
