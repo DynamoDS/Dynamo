@@ -8,7 +8,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TestUINodes</RootNamespace>
     <AssemblyName>TestUINodes</AssemblyName>
+	<OutputPath>$(OutputPath)\nodes\</OutputPath>
   </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ReferenceCopyLocalPaths>
+      <!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
+      <DestinationSubDirectory>..\</DestinationSubDirectory>
+	</ReferenceCopyLocalPaths>
+  </ItemDefinitionGroup>
   <ItemGroup>
 	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
     <Reference Include="System" />
