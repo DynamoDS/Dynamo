@@ -3294,4 +3294,48 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+    /// Converts a PointColletion to a Geometry so the points can be drawn using a Path
+    /// </summary>
+    [ValueConversion(typeof(PointCollection), typeof(Geometry))]
+    public class PointsToPathConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null)
+                return null;
+
+            if (value.GetType() != typeof(PointCollection))
+                return null;
+
+            PointCollection points = (value as PointCollection);
+            if (points.Count > 0)
+            {
+                Point start = points[0];
+                List<LineSegment> segments = new List<LineSegment>();
+                for (int i = 1; i < points.Count; i++)
+                {
+                    segments.Add(new LineSegment(points[i], true));
+                }
+                PathFigure figure = new PathFigure(start, segments, false);
+                PathGeometry geometry = new PathGeometry();
+                geometry.Figures.Add(figure);
+                return geometry;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
 }

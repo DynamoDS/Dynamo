@@ -4075,7 +4075,7 @@
         <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}" />
     </Style>
 
-    <Style x:Key="PoupPolygonPointerStyle" TargetType="{x:Type Polygon}">
+    <Style x:Key="PoupPathPointerStyle" TargetType="{x:Type Path}">
         <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}" />
     </Style>
 
