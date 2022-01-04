@@ -610,6 +610,7 @@ namespace Dynamo.PackageManager
         }
 
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
+        public event EventHandler<PackagePathEventArgs> RequestDisableTextSearch;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
         {
             if (RequestShowFileDialog != null)
@@ -979,6 +980,17 @@ namespace Dynamo.PackageManager
                 return;
 
             SearchResults[SelectedIndex].Model.Execute();
+        }
+
+        /// <summary>
+        /// Once the sample package is filled in the textbox search we rise the event to the view to disable the actions to change it , filter and sort it.
+        /// </summary>
+        public void DisableSearchTextBox()
+        {
+            if (RequestDisableTextSearch != null)
+            {
+                RequestDisableTextSearch(null, null);
+            }
         }
     }
 }
