@@ -10,12 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoUtilities</RootNamespace>
     <AssemblyName>DynamoUtilities</AssemblyName>
-	<TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
 	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
-    <Reference Include="System.Configuration" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
