@@ -39,7 +39,12 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Condition="'$(ProjectName)'!='AssemblyInfoGenerator'" Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
   </ItemGroup>
