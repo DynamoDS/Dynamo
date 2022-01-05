@@ -6,7 +6,6 @@
     <TargetFramework>net48</TargetFramework>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <FileAlignment>512</FileAlignment>
-    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> 
     <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\AnyCPU\$(Configuration)</OutputPath>
