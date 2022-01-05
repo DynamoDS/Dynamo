@@ -467,7 +467,7 @@ namespace Dynamo.ViewModels
                         var groupViewModel = ViewModelBases.OfType<AnnotationViewModel>()
                             .Where(x => x.AnnotationModel.GUID == model.GUID)
                             .FirstOrDefault();
-                        groupViewModel.RaisePropertyChanged(nameof(ZIndex));
+
                         groupViewModel.AddToGroupCommand.RaiseCanExecuteChanged();
                         groupViewModel.AddGroupToGroupCommand.RaiseCanExecuteChanged();
                         groupViewModel.RemoveGroupFromGroupCommand.RaiseCanExecuteChanged();
@@ -488,6 +488,7 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynamoModel.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
+            RaisePropertyChanged(nameof(ZIndex));
             Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Group");
         }
 
@@ -508,6 +509,7 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel = workspaceViewModel;
             model.PropertyChanged += model_PropertyChanged;
             model.RemovedFromGroup += OnModelRemovedFromGroup;
+            model.AddedToGroup += OnModelAddedToGroup;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
             //https://jira.autodesk.com/browse/QNTM-3770
@@ -1012,6 +1014,12 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged(nameof(ZIndex));
         }
 
+        private void OnModelAddedToGroup(object sender, EventArgs e)
+        {
+            Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Group");
+            RaisePropertyChanged(nameof(ZIndex));
+        }
+
         private void UpdateAllGroupedGroups()
         {
             ViewModelBases
@@ -1117,6 +1125,7 @@ namespace Dynamo.ViewModels
         {
             annotationModel.PropertyChanged -= model_PropertyChanged;
             annotationModel.RemovedFromGroup -= OnModelRemovedFromGroup;
+            annotationModel.AddedToGroup -= OnModelAddedToGroup;
             
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
