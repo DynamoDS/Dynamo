@@ -9,6 +9,7 @@ namespace DynamoCrypto
     class DynamoCyptoTests
     {
         [Test]
+        [Category("Failure")]
         public void VerificationFailsForAlteredFile()
         {
             var asm = Assembly.GetExecutingAssembly().Location;
@@ -27,6 +28,7 @@ namespace DynamoCrypto
         }
 
         [Test]
+        [Category("Failure")]
         public void VerificationFailsForAlteredSignature()
         {
             var asm = Assembly.GetExecutingAssembly().Location;
@@ -45,6 +47,7 @@ namespace DynamoCrypto
         }
 
         [Test]
+        [Category("Failure")]
         public void VertificationSucceedsIfAllIsGood()
         {
             var asm = Assembly.GetExecutingAssembly().Location;
