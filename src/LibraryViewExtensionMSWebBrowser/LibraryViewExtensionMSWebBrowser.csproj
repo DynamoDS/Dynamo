@@ -264,7 +264,6 @@
   </ItemGroup>
   <!-- Copy the library view extension manifest file to the default folder for Dynamo-->
   <Target Name="AfterBuildOps" AfterTargets="Build">
-  <Target Name="CopyFiles" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="Library_ViewExtensionDefinition.xml" />
     </ItemGroup>

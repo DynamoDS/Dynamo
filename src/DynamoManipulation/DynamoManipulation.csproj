@@ -59,7 +59,6 @@
     </PackageReference>
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
-  <Target Name="AfterBuild" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="DynamoManipulationExtension_ViewExtensionDefinition.xml" />
     </ItemGroup>

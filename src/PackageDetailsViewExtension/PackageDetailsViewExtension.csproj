@@ -58,7 +58,6 @@
     </Page>
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
-  <Target Name="AfterBuild" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="PackageDetails_ViewExtensionDefinition.xml" />
     </ItemGroup>
