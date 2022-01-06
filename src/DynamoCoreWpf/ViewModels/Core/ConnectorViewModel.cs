@@ -48,6 +48,7 @@ namespace Dynamo.ViewModels
         private double dotTop;
         private double dotLeft;
         private double endDotSize = 6;
+        private int zIndex = 2;
 
         private Point curvePoint1;
         private Point curvePoint2;
@@ -345,9 +346,6 @@ namespace Dynamo.ViewModels
         // and they will have a ZIndex of 2
         public double ZIndex
         {
-<<<<<<< Updated upstream
-            get { return 3; }
-=======
             get 
             {
                 return SetZIndex();
