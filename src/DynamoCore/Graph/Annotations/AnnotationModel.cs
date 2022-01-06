@@ -174,6 +174,20 @@ namespace Dynamo.Graph.Annotations
             get { return nodes; }
             set
             {
+                // Unsubscribe all content in group before
+                // overwriting with the new content.
+                // If we dont do this we end up with
+                // lots of memory leaks that eventually will
+                // lead to a stackoverflow exception
+                if (nodes != null && nodes.Any())
+                {
+                    foreach (var model in nodes)
+                    {
+                        model.PropertyChanged -= model_PropertyChanged;
+                        model.Disposed -= model_Disposed;
+                    }
+                }
+
                 // First remove all pins from the input
                 var valuesWithoutPins = value
                     .Where(x => !(x is ConnectorPinModel));
@@ -545,6 +559,16 @@ namespace Dynamo.Graph.Annotations
         }
 
         /// <summary>
+        /// Fired when this group is added to another group
+        /// </summary>
+        internal event EventHandler AddedToGroup;
+
+        private void OnAddedToGroup()
+        {
+            AddedToGroup?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
         /// Group the Models based on Height and Width
         /// </summary>
         /// <returns> the width and height of the last model </returns>
@@ -676,6 +700,7 @@ namespace Dynamo.Graph.Annotations
             if (!CheckModelIsInsideGroup(model, checkOverlap)) return;
             list.Add(model);
             this.Nodes = list;
+            if (model is AnnotationModel annotationModel) annotationModel.OnAddedToGroup();
             this.UpdateBoundaryFromSelection();
             UpdateErrorAndWarningIconVisibility();
         }
