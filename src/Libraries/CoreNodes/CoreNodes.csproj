@@ -13,6 +13,9 @@
     <DocumentationFile>($OutputPath)\$(UICulture)\DSCoreNodes.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="GeometryColor.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
 	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.6925" />
 	<PackageReference Include="ncalc" Version="1.3.8" />
