@@ -8,12 +8,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Builtin</RootNamespace>
     <AssemblyName>DesignScriptBuiltin</AssemblyName>
-	<TargetFramework>netstandard2.1</TargetFramework>
     <DocumentationFile>$(OutputPath)\$(UICulture)\DesignScriptBuiltin.xml</DocumentationFile>
 	<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Collections.Immutable" Version="1.4.0" />
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
     <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
   </ItemGroup>

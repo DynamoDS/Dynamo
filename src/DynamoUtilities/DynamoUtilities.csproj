@@ -11,11 +11,15 @@
     <RootNamespace>DynamoUtilities</RootNamespace>
     <AssemblyName>DynamoUtilities</AssemblyName>
   </PropertyGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net4.8' ">
+	<Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
+	<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+	<PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
+  </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
-    <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	<PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
   </ItemGroup>
 </Project>

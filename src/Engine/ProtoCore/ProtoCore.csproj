@@ -19,7 +19,7 @@
     <ProjectReference Include="..\..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj" />
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net4.8' ">
 	<Reference Include="Microsoft.CSharp" />
 	<Reference Include="System.Runtime.Serialization.Formatters.Soap" />
   </ItemGroup>
@@ -27,10 +27,10 @@
     <Compile Remove="LexUtils.cs" />
     <Compile Remove="Parser/AssociativeGraph.cs" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
 	<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 	<PackageReference Include="System.CodeDom" Version="6.0.0" />
-    <PackageReference Include="SoapFormatter" Version="1.0.11" />
+	<PackageReference Include="SoapFormatter" Version="1.0.11" />
   </ItemGroup>
   <Target Name="CopyDSFiles" AfterTargets="Build">
     <ItemGroup>
