@@ -48,7 +48,7 @@ namespace Dynamo.ViewModels
         private double dotTop;
         private double dotLeft;
         private double endDotSize = 6;
-        private int zIndex = 2;
+        private double zIndex = 3;
 
         private Point curvePoint1;
         private Point curvePoint2;
@@ -177,6 +177,7 @@ namespace Dynamo.ViewModels
                 isCollapsed = value;
                 RaisePropertyChanged(nameof(IsCollapsed));
                 SetCollapseOfPins(IsCollapsed);
+                RaisePropertyChanged(nameof(ZIndex));
             }
         }
 
@@ -394,7 +395,6 @@ namespace Dynamo.ViewModels
         private bool ConnectingNodesBothInCollapsedGroup(NodeViewModel firstNode, NodeViewModel lastNode)
         {
             return firstNode.IsNodeInCollapsedGroup && lastNode.IsNodeInCollapsedGroup;
->>>>>>> Stashed changes
         }
 
         /// <summary>
@@ -481,6 +481,14 @@ namespace Dynamo.ViewModels
             get
             {
                 return workspaceViewModel.Nodes.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
+            }
+        }
+
+        public NodeViewModel NodeEnd
+        {
+            get
+            {
+                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.End.Owner.GUID);
             }
         }
 
@@ -918,6 +926,7 @@ namespace Dynamo.ViewModels
             IsConnecting = true;
             MouseHoverOn = false;
             activeStartPort = port;
+            ZIndex = SetZIndex();
 
             Redraw(port.Center);
 
@@ -947,6 +956,7 @@ namespace Dynamo.ViewModels
             model = connectorModel;
             IsHidden = model.IsHidden;
             MouseHoverOn = false;
+            ZIndex = SetZIndex();
 
             model.PropertyChanged += HandleConnectorPropertyChanged;
             model.ConnectorPinModels.CollectionChanged += ConnectorPinModelCollectionChanged;
@@ -1332,6 +1342,8 @@ namespace Dynamo.ViewModels
             {
                 this.Redraw(this.ConnectorModel.End.Center);
             }
+
+            RaisePropertyChanged(nameof(ZIndex));
         }
 
         /// <summary>
