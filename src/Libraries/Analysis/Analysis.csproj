@@ -41,11 +41,11 @@
       <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     </GetReferenceAssemblyPaths>
     <!-- Get assembly -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+    <GetAssemblyIdentity AssemblyFiles="$(OutputPath)$(AssemblyName).dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)AnalysisImages.resx" OutputResources="$(ProjectDir)AnalysisImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)AnalysisImages.resources" OutputAssembly="$(OutDir)Analysis.customization.dll" Version="%(AssemblyInfo.Version)" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)AnalysisImages.resources" OutputAssembly="$(OutputPath)Analysis.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

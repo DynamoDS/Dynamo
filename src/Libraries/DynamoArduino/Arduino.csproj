@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Nodes</RootNamespace>
     <AssemblyName>DynamoArduino</AssemblyName>
-	<TargetFramework>net6.0-windows</TargetFramework>
+	<TargetFrameworks>net48;net5.0-windows</TargetFrameworks>
 	<UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <DocumentationFile>$(OutputPath)\$(UICulture)\DynamoArduino.XML</DocumentationFile>
