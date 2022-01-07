@@ -50,7 +50,9 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <Target Name="CleanIntermediaryFiles" AfterTargets="Clean">
-     <RemoveDir Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> <!-- int -->
+     <RemoveDir Directories="$(ProjectDir)$(BaseIntermediateOutputPath)\$(TargetFramework.ToLowerInvariant())" /> <!-- int -->
+  </Target>
+  <Target Name="CleanObjFiles" AfterTargets="Clean" Condition="Exists('$(ProjectDir)\obj\Debug\Package\PackageTmp\web.config')">
      <RemoveDir Directories="$(ProjectDir)obj" /> <!-- obj -->
   </Target>
 </Project>

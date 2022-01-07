@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GeometryUIWpf</RootNamespace>
     <AssemblyName>GeometryUIWpf</AssemblyName>
-	<TargetFramework>net6.0-windows</TargetFramework>
+	<TargetFrameworks>net48;net5.0-windows</TargetFrameworks>
 	<UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
@@ -69,11 +69,11 @@
       <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     </GetReferenceAssemblyPaths>
     <!-- Get ProtoGeometry -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)..\ProtoGeometry.dll">
+    <GetAssemblyIdentity AssemblyFiles="$(OutputPath)..\ProtoGeometry.dll">
       <Output TaskParameter="Assemblies" ItemName="ProtoGeometryInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll for ProtoGeometry -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)ProtoGeometryImages.resx" OutputResources="$(ProjectDir)ProtoGeometryImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)ProtoGeometryImages.resources" OutputAssembly="$(OutDir)..\ProtoGeometry.customization.dll" Version="%(ProtoGeometryInfo.Version)" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)ProtoGeometryImages.resources" OutputAssembly="$(OutputPath)..\ProtoGeometry.customization.dll" Version="%(ProtoGeometryInfo.Version)" />
   </Target>
 </Project>

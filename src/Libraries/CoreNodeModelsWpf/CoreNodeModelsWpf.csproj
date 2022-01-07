@@ -9,7 +9,7 @@
     <RootNamespace>Dynamo.Wpf</RootNamespace>
     <AssemblyName>CoreNodeModelsWpf</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFrameworks>net48;net5.0-windows</TargetFrameworks>
 	<UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>
     <OutputPath>$(OutputPath)\nodes</OutputPath>
@@ -89,13 +89,7 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Page Include="**\*.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-	<Target Name="AfterBuildOps" BeforeTargets="MarkupCompilePass1">
-		<Message Importance="high" Text="Test $(PkgExtended_Wpf_Toolkit)"/>
-	</Target>
+  <Target Name="AfterBuildOps" BeforeTargets="MarkupCompilePass1">
+	<Message Importance="high" Text="Test $(PkgExtended_Wpf_Toolkit)" />
+  </Target>
 </Project>

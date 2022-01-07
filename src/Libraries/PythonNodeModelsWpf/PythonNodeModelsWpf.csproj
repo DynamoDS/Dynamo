@@ -9,7 +9,7 @@
     <RootNamespace>PythonNodeModelsWpf</RootNamespace>
     <AssemblyName>PythonNodeModelsWpf</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFrameworks>net48;net5.0-windows</TargetFrameworks>
 	<UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>
     <OutputPath>$(OutputPath)\nodes</OutputPath>

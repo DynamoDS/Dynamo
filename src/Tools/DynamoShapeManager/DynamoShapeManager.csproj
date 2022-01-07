@@ -10,7 +10,7 @@
     <AssemblyName>DynamoShapeManager</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-	<Reference Include="System.Configuration" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+	<Reference Condition="'$(TargetFramework)' == 'net48' " Include="System.Configuration" />
+    <PackageReference Condition="'$(TargetFramework)' == 'netstandard2.0' " Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
   </ItemGroup>
 </Project>

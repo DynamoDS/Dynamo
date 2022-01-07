@@ -45,11 +45,11 @@
       <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     </GetReferenceAssemblyPaths>
     <!-- Get assembly -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+    <GetAssemblyIdentity AssemblyFiles="$(OutputPath)$(AssemblyName).dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)Resources\GeometryColor.resx" OutputResources="$(ProjectDir)Resources\GeometryColorImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)Resources\GeometryColorImages.resources" OutputAssembly="$(OutDir)GeometryColor.customization.dll" Version="%(AssemblyInfo.Version)" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)Resources\GeometryColorImages.resources" OutputAssembly="$(OutputPath)GeometryColor.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>
