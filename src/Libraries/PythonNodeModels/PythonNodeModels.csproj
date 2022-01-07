@@ -9,7 +9,6 @@
     <RootNamespace>PythonNodeModels</RootNamespace>
     <AssemblyName>PythonNodeModels</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
-    <OutputPath>$(OutputPath)\nodes</OutputPath>
 	<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <ItemDefinitionGroup>
@@ -19,7 +18,7 @@
 	</ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
   <ItemGroup>
-	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
@@ -47,11 +46,11 @@
       <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     </GetReferenceAssemblyPaths>
     <!-- Get assembly -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+    <GetAssemblyIdentity AssemblyFiles="$(OutputPath)$(AssemblyName).dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)PythonNodeModelsImages.resx" OutputResources="$(ProjectDir)PythonNodeModelsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)PythonNodeModelsImages.resources" OutputAssembly="$(OutDir)PythonNodeModels.customization.dll" Version="%(AssemblyInfo.Version)" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)PythonNodeModelsImages.resources" OutputAssembly="$(OutputPath)PythonNodeModels.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

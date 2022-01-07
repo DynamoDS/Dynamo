@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
-    <Import Project="$(PkgForgeUnits_NET)\build\ForgeUnits.NET.targets" Condition="Exists('$(PkgForgeUnits_NET)\build\ForgeUnits.NET.targets')" />
   </ImportGroup>
   <PropertyGroup>
     <ProjectGuid>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</ProjectGuid>
@@ -12,19 +11,28 @@
     <DocumentationFile>$(OutputPath)\DynamoUnits.xml</DocumentationFile>
 	<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' ">
+    <Compile Remove="Quantity.cs" />
+    <Compile Remove="Symbol.cs" />
+    <Compile Remove="Unit.cs" />
+    <Compile Remove="Utilities.cs" />
+  </ItemGroup>
   <ItemGroup>
-    <Reference Include="System.Configuration" />
-	<PackageReference Include="ForgeUnits.NET" Version="3.2.2" GeneratePathProperty="true" />
+	<None Include="Quantity.cs" />
+	<None Include="Symbol.cs" />
+	<None Include="Unit.cs" />
+	<None Include="Utilities.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Condition="'$(TargetFramework)' == 'net48' " Include="System.Configuration" />
+    <PackageReference Include="ForgeUnits.NET" Version="3.2.2" GeneratePathProperty="true" />
 	<PackageReference Include="ForgeUnits.Schemas" Version="1.0.0" GeneratePathProperty="true" />
-    <Reference Include="ForgeUnitsCLR, Version=3.2.2.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\ForgeUnits.NET.3.2.2\lib\net48\ForgeUnitsCLR.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="DynamoUnits_DynamoCustomization.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+    <PackageReference Condition="'$(TargetFramework)' == 'netstandard2.0' " Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
     <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
@@ -34,24 +42,6 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <Choose>
-    <!-- Visual Studio 2010: Select FSchemeInterop.dll -->
-    <When Condition=" '$(VisualStudioVersion)'=='10.0' ">
-      <ItemGroup>
-        <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
-        </Reference>
-        <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
-          <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
-          <Name>FSchemeInterop</Name>
-        </ProjectReference>
-      </ItemGroup>
-    </When>
-    <!-- Visual Studio 2012: Select FSchemeInterop2012.csproj -->
-    <When Condition=" '$(VisualStudioVersion)'=='11.0' " />
-    <When Condition=" '$(VisualStudioVersion)'=='11.0' " />
-  </Choose>
   <Target Name="CopyFiles" BeforeTargets="Build">
     <Copy SourceFiles="$(ProjectDir)DynamoUnits_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
@@ -61,15 +51,15 @@
       <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     </GetReferenceAssemblyPaths>
     <!-- Get assembly -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+    <GetAssemblyIdentity AssemblyFiles="$(OutputPath)$(AssemblyName).dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoUnitsImages.resx" OutputResources="$(ProjectDir)DynamoUnitsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoUnitsImages.resources" OutputAssembly="$(OutDir)DynamoUnits.customization.dll" Version="%(AssemblyInfo.Version)" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoUnitsImages.resources" OutputAssembly="$(OutputPath)DynamoUnits.customization.dll" Version="%(AssemblyInfo.Version)" />
     <ItemGroup>
       <UnitSchemas Include="$(PkgForgeUnits_Schemas)\Content\unit\**\*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(UnitSchemas)" DestinationFolder="$(OutDir)unit\%(RecursiveDir)" />
+    <Copy SourceFiles="@(UnitSchemas)" DestinationFolder="$(OutputPath)unit\%(RecursiveDir)" />
   </Target>
 </Project>

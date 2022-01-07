@@ -19,18 +19,25 @@
     <ProjectReference Include="..\..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj" />
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net4.8' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
 	<Reference Include="Microsoft.CSharp" />
 	<Reference Include="System.Runtime.Serialization.Formatters.Soap" />
   </ItemGroup>
   <ItemGroup>
+	<None Include="FFI\FFICppFunction.cs" />
+	<None Include="FFI\PInvokeFFI.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Condition=" '$(TargetFramework)' == 'netstandard2.0' " Remove="FFI\FFICppFunction.cs" />
+    <Compile Condition=" '$(TargetFramework)' == 'netstandard2.0' " Remove="FFI\PInvokeFFI.cs" />
     <Compile Remove="LexUtils.cs" />
     <Compile Remove="Parser/AssociativeGraph.cs" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
 	<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 	<PackageReference Include="System.CodeDom" Version="6.0.0" />
 	<PackageReference Include="SoapFormatter" Version="1.0.11" />
+	<PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
   </ItemGroup>
   <Target Name="CopyDSFiles" AfterTargets="Build">
     <ItemGroup>
@@ -39,3 +46,4 @@
       <Copy SourceFiles="@(ExtendedLibraries)" DestinationFolder="$(OutputPath)" />
   </Target>
 </Project>
+ 

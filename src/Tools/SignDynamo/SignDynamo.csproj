@@ -12,7 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
 	<PackageReference Include="NDesk.Options" Version="0.2.1" />
-  </PropertyGroup>
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="NDesk.Options, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>

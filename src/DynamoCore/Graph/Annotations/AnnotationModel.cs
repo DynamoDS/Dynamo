@@ -178,11 +178,14 @@ namespace Dynamo.Graph.Annotations
                 var valuesWithoutPins = value
                     .Where(x => !(x is ConnectorPinModel));
 
+                nodes = new HashSet<ModelBase>();
                 // then recalculate which pins belongs to the
                 // group and add them to the nodes collection
                 var pinModels = GetPinsFromNodes(value.OfType<NodeModel>());
-                nodes = valuesWithoutPins.Concat(pinModels)
-                    .ToHashSet<ModelBase>();
+                foreach(var x in valuesWithoutPins.Concat(pinModels))
+                {
+                    nodes.Add(x);
+                }
 
                 if (nodes != null && nodes.Any())
                 {

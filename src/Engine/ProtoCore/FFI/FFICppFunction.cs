@@ -162,7 +162,7 @@ namespace ProtoCore.Lang
                 CharSet.Ansi);
 
             methodBuilder.SetImplementationFlags(methodBuilder.GetMethodImplementationFlags() | MethodImplAttributes.PreserveSig);
-            MethodInfo methodInfo = typeBuilder.CreateType().GetMethod(Name);
+            MethodInfo methodInfo = typeBuilder.CreateTypeInfo().GetMethod(Name);
             MethodGroup.Add(fullname, methodInfo);
             return methodInfo;
         }
