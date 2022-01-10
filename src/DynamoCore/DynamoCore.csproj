@@ -21,7 +21,9 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="DynamoVisualProgramming.LibG_227_0_0" Version="2.13.0.6926" GeneratePathProperty="true" />
+	<PackageReference Include="DynamoVisualProgramming.LibG_227_0_0" Version="2.13.0.6926" GeneratePathProperty="true">
+		<PrivateAssets>all</PrivateAssets>
+	</PackageReference>
 	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.6925" GeneratePathProperty="true" />
 	<PackageReference Include="Greg" Version="2.1.8012.31283" />
 	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
