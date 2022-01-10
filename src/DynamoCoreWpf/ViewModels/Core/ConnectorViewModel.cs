@@ -480,7 +480,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return workspaceViewModel.Nodes.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
+                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
             }
         }
 
@@ -977,8 +977,16 @@ namespace Dynamo.ViewModels
             connectorModel.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
 
             workspaceViewModel.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
-            Nodevm.PropertyChanged += nodeViewModel_PropertyChanged;
-            NodeEnd.PropertyChanged += nodeEndViewModel_PropertyChanged;
+            if (Nodevm != null)
+            {
+                Nodevm.PropertyChanged += nodeViewModel_PropertyChanged;
+            }
+
+            if (NodeEnd != null)
+            {
+                NodeEnd.PropertyChanged += nodeEndViewModel_PropertyChanged;
+            }
+            
             Redraw();
             InitializeCommands();
 
@@ -1127,9 +1135,15 @@ namespace Dynamo.ViewModels
 
             workspaceViewModel.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
             workspaceViewModel.DynamoViewModel.Model.PreferenceSettings.PropertyChanged -= DynamoViewModel_PropertyChanged;
-            Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
-            NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
-            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;         
+            if (Nodevm != null)
+            {
+                Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
+            }
+            if (NodeEnd != null)
+            {
+                NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
+            }
+            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
 
             foreach (var pin in ConnectorPinViewCollection.ToList())
             {
