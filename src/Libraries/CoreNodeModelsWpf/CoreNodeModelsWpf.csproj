@@ -37,13 +37,9 @@
     <Reference Include="WindowsBase" />
 	<PackageReference Include="Extended.Wpf.Toolkit" version="3.0.0">
 	  <GeneratePathProperty>true</GeneratePathProperty>
-	  <IncludeAssets>None</IncludeAssets>
-	  <PrivateAssets>None</PrivateAssets>
+	  <!--Exclude copying the dll because we will handle it in the BinaryCompatibilityOps target -->
+	  <ExcludeAssets>runtime</ExcludeAssets>
 	</PackageReference>
-	<Reference Include="Xceed.Wpf.Toolkit, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-		<HintPath>$(PkgExtended_Wpf_Toolkit)\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
-		<Private>True</Private>
-	</Reference>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
@@ -91,7 +87,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-	<Target Name="AfterBuildOps" BeforeTargets="MarkupCompilePass1">
-		<Message Importance="high" Text="Test $(PkgExtended_Wpf_Toolkit)"/>
-	</Target>
+  <Target Name="BinaryCompatibilityOps" BeforeTargets="Build">
+	  <Copy SourceFiles="$(PkgExtended_Wpf_Toolkit)\lib\net40\Xceed.Wpf.Toolkit.dll" DestinationFolder="$(OutputPath)" />
+  </Target>
 </Project>
