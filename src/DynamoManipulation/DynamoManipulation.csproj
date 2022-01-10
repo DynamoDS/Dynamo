@@ -50,11 +50,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0">
-      <Version>2.13.0.6925</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+	  <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.6925" />
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>

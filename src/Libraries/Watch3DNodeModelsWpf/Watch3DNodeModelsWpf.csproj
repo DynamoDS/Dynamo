@@ -30,26 +30,12 @@
 	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-	<Reference Include="SharpDX.D3DCompiler">
-		<HintPath>$(SharpDXPackageBinDir)\SharpDX.D3DCompiler.dll</HintPath>
-		<Private>False</Private>
-	</Reference>
-	<Reference Include="SharpDX.Direct2D1">
-		<HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct2D1.dll</HintPath>
-		<Private>False</Private>
-	</Reference>
 	<Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="SharpDX.Toolkit">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Toolkit.Graphics">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Graphics.dll</HintPath>
-    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />

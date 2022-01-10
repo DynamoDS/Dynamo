@@ -47,11 +47,11 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemDefinitionGroup>
-  <Target Name="CleanIntermediaryFolder" Condition="Exists('$(ProjectDir)$(BaseIntermediateOutputPath)')" AfterTargets="Clean">
-     <RemoveDir Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> <!-- int -->
+  <Target Name="CleanIntermediaryFolder" Condition="Exists('$(ProjectDir)$(BaseIntermediateOutputPath)')" AfterTargets="Clean" BeforeTargets="Build" >
+     <RemoveDir ContinueOnError="WarnAndContinue" Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> <!-- int -->
   </Target>
-  <Target Name="CleanObjFolder" Condition="Exists('$(ProjectDir)obj')" AfterTargets="Clean">
-	 <RemoveDir Directories="$(ProjectDir)obj" />
+  <Target Name="CleanObjFolder" Condition="Exists('$(ProjectDir)obj')" AfterTargets="Clean" BeforeTargets="Build">
+	 <RemoveDir ContinueOnError="WarnAndContinue" Directories="$(ProjectDir)obj" />
 	 <!-- obj -->
   </Target>
 </Project>
