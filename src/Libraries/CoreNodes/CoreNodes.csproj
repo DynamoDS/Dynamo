@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DSCore</RootNamespace>
     <AssemblyName>DSCoreNodes</AssemblyName>
-    <DocumentationFile>($OutputPath)\$(UICulture)\DSCoreNodes.xml</DocumentationFile>
+    <DocumentationFile>$(OutputPath)\$(UICulture)\DSCoreNodes.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="GeometryColor.cs" />
