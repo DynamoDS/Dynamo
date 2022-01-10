@@ -480,7 +480,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeModel.GUID == model.Start.Owner.GUID);
+                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
             }
         }
 
@@ -488,7 +488,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeModel.GUID == model.End.Owner.GUID);
+                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.End.Owner.GUID);
             }
         }
 
