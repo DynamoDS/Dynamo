@@ -1143,6 +1143,7 @@ namespace Dynamo.ViewModels
             {
                 NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
             }
+            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
 
             foreach (var pin in ConnectorPinViewCollection.ToList())
             {
