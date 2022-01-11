@@ -61,6 +61,15 @@ namespace Dynamo.LintingViewExtension.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Graph Status.
+        /// </summary>
+        public static string ExtensionName {
+            get {
+                return ResourceManager.GetString("ExtensionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Graph Issues.
         /// </summary>
         public static string GraphIssues {
