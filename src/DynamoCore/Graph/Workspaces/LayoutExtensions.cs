@@ -183,6 +183,7 @@ namespace Dynamo.Graph.Workspaces
                     // We add this note to the LinkedNotes on the 
                     // pinned node. 
                     var graphNode = combinedGraph.FindNode(note.PinnedNode.GUID);
+                    if (graphNode is null) continue;
                     var height = note.PinnedNode.Rect.Top - note.Rect.Top;
                     graphNode.LinkNote(note, note.Width, height);
                     continue;
@@ -519,6 +520,8 @@ namespace Dynamo.Graph.Workspaces
                             note.ReportPosition();
                         }
                     }
+
+                    group.ReportPosition();
                 }
             }
 
