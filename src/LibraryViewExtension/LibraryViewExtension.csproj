@@ -9,7 +9,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.LibraryUI</RootNamespace>
     <AssemblyName>LibraryViewExtension</AssemblyName>
-	<TargetFrameworkVersion>4.5.1</TargetFrameworkVersion>
 	<OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
