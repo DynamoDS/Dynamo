@@ -138,7 +138,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
-	  <Message Importance="high" Text="Test $(TargetFrameworkVersion)" />
     <ItemGroup>
       <ExtensionDefinition Include="Library_ViewExtensionDefinition.xml" />
     </ItemGroup>

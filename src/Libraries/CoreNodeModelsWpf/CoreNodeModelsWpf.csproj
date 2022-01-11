@@ -91,7 +91,4 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-	<Target Name="AfterBuildOps" BeforeTargets="MarkupCompilePass1">
-		<Message Importance="high" Text="Test $(PkgExtended_Wpf_Toolkit)"/>
-	</Target>
 </Project>
