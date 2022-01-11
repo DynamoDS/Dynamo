@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config/CS_SDK.props" />
+    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
     <ProjectGuid>{BE6D0644-05AF-4580-8597-B95920CE923F}</ProjectGuid>
