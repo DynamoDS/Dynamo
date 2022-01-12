@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -172,23 +173,16 @@ namespace Dynamo.Graph.Workspaces
         internal class DelayedGraphExecution : IDisposable
         {
             private readonly WorkspaceModel workspace;
-            private static readonly object stateMutex = new object();
 
             public DelayedGraphExecution(WorkspaceModel wModel)
             {
                 workspace = wModel;
-                lock (stateMutex)
-                {
-                    workspace.delayGraphExecutionCounter++;
-                }
+                Interlocked.Increment(ref workspace.delayGraphExecutionCounter);
             }
 
             public virtual void Dispose()
             {
-                lock (stateMutex)
-                {
-                    workspace.delayGraphExecutionCounter--;
-                }
+                Interlocked.Decrement(ref workspace.delayGraphExecutionCounter);
                 workspace.RequestRun();
             }
         }
@@ -250,6 +244,7 @@ namespace Dynamo.Graph.Workspaces
 
         /// <summary>
         /// Whether or not to delay graph execution.
+        /// 64-bit read operations are already atomic so no need to lock here
         /// </summary>
         internal protected bool DelayGraphExecution => delayGraphExecutionCounter > 0;
 

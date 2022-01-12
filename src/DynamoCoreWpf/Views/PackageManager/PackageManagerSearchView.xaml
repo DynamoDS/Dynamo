@@ -334,7 +334,7 @@
                                Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" />
 
                     <!--  'X' button to reset search query text  -->
-                    <Button Margin="10"
+                    <Button Name="clearSearchTextBox" Margin="10"
                             HorizontalAlignment="Right"
                             Command="{Binding ClearSearchTextBoxCommand}"
                             Cursor="Hand"

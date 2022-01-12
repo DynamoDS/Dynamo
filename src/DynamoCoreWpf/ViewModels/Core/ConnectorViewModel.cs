@@ -48,6 +48,7 @@ namespace Dynamo.ViewModels
         private double dotTop;
         private double dotLeft;
         private double endDotSize = 6;
+        private double zIndex = 3;
 
         private Point curvePoint1;
         private Point curvePoint2;
@@ -176,6 +177,7 @@ namespace Dynamo.ViewModels
                 isCollapsed = value;
                 RaisePropertyChanged(nameof(IsCollapsed));
                 SetCollapseOfPins(IsCollapsed);
+                RaisePropertyChanged(nameof(ZIndex));
             }
         }
 
@@ -345,7 +347,54 @@ namespace Dynamo.ViewModels
         // and they will have a ZIndex of 2
         public double ZIndex
         {
-            get { return 3; }
+            get 
+            {
+                return SetZIndex();
+            }
+
+            protected set
+            {
+                zIndex = value;
+                RaisePropertyChanged(nameof(ZIndex));
+            }
+         
+        }
+
+        private int SetZIndex()
+        {
+            if (isConnecting)
+                return (int)zIndex;
+
+            var firstNode = this.Nodevm;
+            var lastNode = this.NodeEnd;
+
+            int index = firstNode is null || lastNode is null ? 1 : 3;
+
+            //reduce ZIndex if one of associated nodes is collapsed
+            bool oneNodeInCollapsedGroup = OneConnectingNodeInCollapsedGroup(firstNode, lastNode);
+            bool bothNodesInCollapsedGroup = ConnectingNodesBothInCollapsedGroup(firstNode, lastNode);
+            if (oneNodeInCollapsedGroup && !bothNodesInCollapsedGroup)
+            {
+                var lowestIndex = new int[] { this.Nodevm.ZIndex, this.NodeEnd.ZIndex }
+                .OrderBy(x => x)
+                .FirstOrDefault();
+
+                //if ZIndex above that of groups, set to be less than that of groups
+                if (index > 2)
+                {
+                    index = 1;
+                }
+            }
+
+            return index;
+        }
+        private bool OneConnectingNodeInCollapsedGroup(NodeViewModel firstNode, NodeViewModel lastNode)
+        {
+            return firstNode.IsNodeInCollapsedGroup || lastNode.IsNodeInCollapsedGroup;
+        }
+        private bool ConnectingNodesBothInCollapsedGroup(NodeViewModel firstNode, NodeViewModel lastNode)
+        {
+            return firstNode.IsNodeInCollapsedGroup && lastNode.IsNodeInCollapsedGroup;
         }
 
         /// <summary>
@@ -431,7 +480,15 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return workspaceViewModel.Nodes.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
+                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
+            }
+        }
+
+        public NodeViewModel NodeEnd
+        {
+            get
+            {
+                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.End.Owner.GUID);
             }
         }
 
@@ -869,6 +926,7 @@ namespace Dynamo.ViewModels
             IsConnecting = true;
             MouseHoverOn = false;
             activeStartPort = port;
+            ZIndex = SetZIndex();
 
             Redraw(port.Center);
 
@@ -898,6 +956,7 @@ namespace Dynamo.ViewModels
             model = connectorModel;
             IsHidden = model.IsHidden;
             MouseHoverOn = false;
+            ZIndex = SetZIndex();
 
             model.PropertyChanged += HandleConnectorPropertyChanged;
             model.ConnectorPinModels.CollectionChanged += ConnectorPinModelCollectionChanged;
@@ -918,7 +977,16 @@ namespace Dynamo.ViewModels
             connectorModel.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
 
             workspaceViewModel.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
-            Nodevm.PropertyChanged += nodeViewModel_PropertyChanged;
+            if (Nodevm != null)
+            {
+                Nodevm.PropertyChanged += nodeViewModel_PropertyChanged;
+            }
+
+            if (NodeEnd != null)
+            {
+                NodeEnd.PropertyChanged += nodeEndViewModel_PropertyChanged;
+            }
+            
             Redraw();
             InitializeCommands();
 
@@ -1067,8 +1135,15 @@ namespace Dynamo.ViewModels
 
             workspaceViewModel.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
             workspaceViewModel.DynamoViewModel.Model.PreferenceSettings.PropertyChanged -= DynamoViewModel_PropertyChanged;
-            Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
-            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;         
+            if (Nodevm != null)
+            {
+                Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
+            }
+            if (NodeEnd != null)
+            {
+                NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
+            }
+            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
 
             foreach (var pin in ConnectorPinViewCollection.ToList())
             {
@@ -1100,6 +1175,21 @@ namespace Dynamo.ViewModels
                 case nameof(NodeViewModel.IsFrozen):
                     RaisePropertyChanged(nameof(IsFrozen));
                     break;
+                case nameof(NodeViewModel.IsNodeInCollapsedGroup):
+                    RaisePropertyChanged(nameof(ZIndex));
+                    break;
+                default: break;
+            }
+        }
+
+        private void nodeEndViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(NodeViewModel.IsNodeInCollapsedGroup):
+                    RaisePropertyChanged(nameof(ZIndex));
+                    break;
+                default: break;
             }
         }
 
@@ -1266,6 +1356,8 @@ namespace Dynamo.ViewModels
             {
                 this.Redraw(this.ConnectorModel.End.Center);
             }
+
+            RaisePropertyChanged(nameof(ZIndex));
         }
 
         /// <summary>
