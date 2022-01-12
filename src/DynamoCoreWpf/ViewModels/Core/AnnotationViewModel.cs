@@ -879,6 +879,11 @@ namespace Dynamo.ViewModels
                 }
 
                 viewModel.IsCollapsed = false;
+
+                if (viewModel is NodeViewModel nodeViewModel)
+                {
+                    nodeViewModel.IsNodeInCollapsedGroup = false;
+                }
             }
 
             UpdateConnectorsAndPortsOnShowContents(Nodes);
