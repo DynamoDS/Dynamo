@@ -311,6 +311,7 @@ namespace Dynamo.Graph.Workspaces
             if (!isGroupLayout)
             {
                 // Add all selected items to the undo recorder
+                undoItems.AddRange(workspace.Annotations);
                 undoItems.AddRange(workspace.Connectors.SelectMany(conn => conn.ConnectorPinModels));
                 undoItems.AddRange(workspace.Nodes);
                 undoItems.AddRange(workspace.Notes);
