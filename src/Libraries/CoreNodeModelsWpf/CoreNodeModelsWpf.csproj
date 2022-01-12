@@ -37,8 +37,8 @@
     <Reference Include="WindowsBase" />
 	<PackageReference Include="Extended.Wpf.Toolkit" version="3.0.0">
 	  <GeneratePathProperty>true</GeneratePathProperty>
-	  <IncludeAssets>None</IncludeAssets>
-	  <PrivateAssets>None</PrivateAssets>
+    <!--Exclude copying the dll because we will handle it in the BinaryCompatibilityOps target -->
+    <ExcludeAssets>runtime</ExcludeAssets>
 	</PackageReference>
 	<Reference Include="Xceed.Wpf.Toolkit, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
 		<HintPath>$(PkgExtended_Wpf_Toolkit)\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
@@ -91,4 +91,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <Target Name="BinaryCompatibilityOps" BeforeTargets="Build">
+    <Copy SourceFiles="$(PkgExtended_Wpf_Toolkit)\lib\net40\Xceed.Wpf.Toolkit.dll" DestinationFolder="$(OutputPath)" />
+  </Target>
 </Project>
