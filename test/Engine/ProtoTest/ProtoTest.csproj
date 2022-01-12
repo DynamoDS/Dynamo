@@ -21,7 +21,7 @@
     <None Remove="ComponentTest\**" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="NUnit" Version="2.6.3" />
+	  <PackageReference Include="NUnit" Version="2.6.3" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />

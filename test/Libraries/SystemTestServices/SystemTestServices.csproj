@@ -14,7 +14,7 @@
       <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
-	<PackageReference Include="NUnit" Version="2.6.3" />
+	  <PackageReference Include="NUnit" Version="2.6.3" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />

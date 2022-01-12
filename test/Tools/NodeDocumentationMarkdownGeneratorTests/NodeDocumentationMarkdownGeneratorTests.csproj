@@ -10,7 +10,7 @@
     <AssemblyName>NodeDocumentationMarkdownGeneratorTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="NUnit" Version="2.6.3" />
+	  <PackageReference Include="NUnit" Version="2.6.3" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -25,6 +25,7 @@
       <Project>{0dd3e4ed-66aa-47fc-9eb9-2a0e6a0ea01b}</Project>
       <Name>NodeDocumentationMarkdownGenerator</Name>
       <Private>False</Private>
+      <ExcludeAssets>all</ExcludeAssets>
     </ProjectReference>
   </ItemGroup>
 </Project>

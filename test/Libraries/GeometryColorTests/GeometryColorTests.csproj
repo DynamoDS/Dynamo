@@ -10,8 +10,8 @@
     <AssemblyName>DisplayTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="NUnit" Version="2.6.3" />
-	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.6925" />
+	  <PackageReference Include="NUnit" Version="2.6.3" />
+	  <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.6925" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />

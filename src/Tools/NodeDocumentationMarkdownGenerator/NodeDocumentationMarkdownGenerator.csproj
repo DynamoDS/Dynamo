@@ -7,21 +7,22 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>NodeDocumentationMarkdownGenerator</RootNamespace>
     <AssemblyName>NodeDocumentationMarkdownGenerator</AssemblyName>
-	<OutputPath>bin\$(Configuration)\</OutputPath>
+	  <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
   </PropertyGroup>
   <ItemGroup>
-  <PackageReference Include="CommandLineParser" Version="2.8.0" />
-  <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.6925" developmentDependency="true" />
-  <PackageReference Include="Greg" Version="2.1.8012.31283" />
-  <PackageReference Include="Magick.NET.Core" Version="7.0.1" />
-  <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.24.1" />
-  <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
-  <PackageReference Include="RestSharp" Version="106.12.0" />
-  <PackageReference Include="System.Buffers" Version="4.5.1" />
-  <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
-  <PackageReference Include="System.Memory" Version="4.5.4" />
-  <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-  <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.3" />
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.6925" />
+    <PackageReference Include="Greg" Version="2.1.8012.31283" />
+    <PackageReference Include="Magick.NET.Core" Version="7.0.1" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.24.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+    <PackageReference Include="RestSharp" Version="106.12.0" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.3" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />

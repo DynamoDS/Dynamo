@@ -19,8 +19,8 @@
     <Compile Remove="DebugService.cs" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
-	<PackageReference Include="NUnit" Version="2.6.3" />
+	  <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+	  <PackageReference Include="NUnit" Version="2.6.3" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />

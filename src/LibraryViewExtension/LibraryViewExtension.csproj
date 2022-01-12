@@ -128,7 +128,7 @@
     <EmbeddedResource Include="web\library\resources\search-icon.svg" />
   </ItemGroup>
   <ItemGroup>
-	<Reference Include="Microsoft.Practices.Prism">
+	  <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />

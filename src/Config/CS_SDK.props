@@ -16,6 +16,8 @@
     <Prefer32Bit>false</Prefer32Bit>
     <UICulture>en-US</UICulture>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <TestProjectDefaults Condition="$(MSBuildProjectDirectory.Contains('test'))">true</TestProjectDefaults>
+    <TestProjectDefaults Condition=" '$(TestProjectDefaults)' == '' ">false</TestProjectDefaults>
     <NoWarn>MSB3539</NoWarn><!--The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
      <!--This is used to set the framework version for icon resource dll generation (lookup of system.drawing.dll)-->
     <ResourceGeneration_FrameworkVersion>v4.8</ResourceGeneration_FrameworkVersion>
@@ -45,8 +47,18 @@
   </ItemGroup>
   <ItemDefinitionGroup>
     <ProjectReference>
-      <Private>False</Private>
+      <Private>false</Private>
     </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
+    <ProjectReference>
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
+    <PackageReference>
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
   </ItemDefinitionGroup>
   <Target Name="CleanIntermediaryFolder" Condition="Exists('$(ProjectDir)$(BaseIntermediateOutputPath)')" BeforeTargets="Clean" >
      <RemoveDir ContinueOnError="WarnAndContinue" Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> <!-- int -->

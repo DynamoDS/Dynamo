@@ -22,7 +22,7 @@
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="DynamoVisualProgramming.LibG_227_0_0" Version="2.13.0.6926" GeneratePathProperty="true">
-		<PrivateAssets>all</PrivateAssets>
+		<ExcludeAssets>all</ExcludeAssets>
 	</PackageReference>
 	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.6925" GeneratePathProperty="true" />
 	<PackageReference Include="Greg" Version="2.1.8012.31283" />
@@ -101,11 +101,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\Resources.en-US.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.en-US.resx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
