@@ -36,6 +36,7 @@
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="obj\**" />
     <None Remove="obj\**" />
+    <None Remove="*.resources" />
   </ItemGroup>
   <ItemGroup>
     <Compile Condition="'$(ProjectName)'!='AssemblyInfoGenerator'" Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
