@@ -280,7 +280,7 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("RunButtonToolTip");
                     if (Application.Current != null)
                     {
-                        Application.Current.Dispatcher.Invoke(new Action(() =>
+                        Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
                             dynamoViewModel.ShowOpenDialogAndOpenResultCommand.RaiseCanExecuteChanged();
                             dynamoViewModel.NewHomeWorkspaceCommand.RaiseCanExecuteChanged();

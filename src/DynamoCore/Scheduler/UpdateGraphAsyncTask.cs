@@ -149,7 +149,7 @@ namespace Dynamo.Scheduler
                         if (node.State == ElementState.Warning)
                             node.ClearErrorsAndWarnings();
                     }
-                }),true);
+                }),false);
               
 
                 engineController.RemoveRecordedAstGuidsForSession(graphSyncData.SessionID);

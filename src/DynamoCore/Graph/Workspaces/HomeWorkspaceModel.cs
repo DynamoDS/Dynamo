@@ -755,7 +755,7 @@ namespace Dynamo.Graph.Workspaces
 
                     node.Warning(message.Value); // Update node warning message.
                 }
-            }),true);
+            }),false);
            
 
             // Notify listeners (optional) of completion.
