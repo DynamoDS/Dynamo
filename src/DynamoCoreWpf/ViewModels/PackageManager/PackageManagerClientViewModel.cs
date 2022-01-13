@@ -187,6 +187,8 @@ namespace Dynamo.ViewModels
 
         #region Properties/Fields
 
+        public PackageManagerSearchView Owner { get; set; }
+
         ObservableCollection<PackageUploadHandle> _uploads = new ObservableCollection<PackageUploadHandle>();
         public ObservableCollection<PackageUploadHandle> Uploads
         {
@@ -675,7 +677,7 @@ namespace Dynamo.ViewModels
                 String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
                 String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, installPath);
 
-            var result = MessageBoxService.Show(msg,
+            var result = MessageBoxService.Show(Owner,msg,
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
 

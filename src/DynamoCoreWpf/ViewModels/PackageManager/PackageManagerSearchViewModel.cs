@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
+using Dynamo.PackageManager.UI;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.ViewModels;
@@ -133,6 +134,7 @@ namespace Dynamo.PackageManager
         }
 
         #region Properties & Fields
+
 
         // The results of the last synchronization with the package manager server
         public List<PackageManagerSearchElement> LastSync { get; set; }
