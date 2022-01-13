@@ -794,7 +794,7 @@ namespace Dynamo.ViewModels
                 // if any do, notify user and allow cancellation
                 if (containsBinariesOrPythonScripts)
                 {
-                    var res = MessageBoxService.Show(Resources.MessagePackageContainPythonScript,
+                    var res = MessageBoxService.Show(Owner,Resources.MessagePackageContainPythonScript,
                         Resources.PackageDownloadMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
