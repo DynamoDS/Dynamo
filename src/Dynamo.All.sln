@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30011.22
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 EndProject
@@ -45,31 +45,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F4D44BC0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{0355EB79-6961-4B8A-8F66-035D4EC0C9FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoTest", "..\test\Engine\ProtoTest\ProtoTest.csproj", "{6E1177DB-5E4F-4E2E-82E7-902437E56AED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoTest", "..\test\Engine\ProtoTest\ProtoTest.csproj", "{6E1177DB-5E4F-4E2E-82E7-902437E56AED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoTestFx", "..\test\Engine\ProtoTestFx\ProtoTestFx.csproj", "{2235F7CA-AB25-4177-92BC-4B574D2D5DF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoTestFx", "..\test\Engine\ProtoTestFx\ProtoTestFx.csproj", "{2235F7CA-AB25-4177-92BC-4B574D2D5DF6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{24A1EF6B-5A24-4536-B8BD-C879ABA26389}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{0E492D35-2310-4849-9694-A2A53C09F21B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodesTests", "..\test\Libraries\CoreNodesTests\CoreNodesTests.csproj", "{09EC17AF-24D2-4542-A913-0C27AE345C18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreNodesTests", "..\test\Libraries\CoreNodesTests\CoreNodesTests.csproj", "{09EC17AF-24D2-4542-A913-0C27AE345C18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreTests", "..\test\DynamoCoreTests\DynamoCoreTests.csproj", "{472084ED-1067-4B2C-8737-3839A6143EB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCoreTests", "..\test\DynamoCoreTests\DynamoCoreTests.csproj", "{472084ED-1067-4B2C-8737-3839A6143EB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreWpfTests", "..\test\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj", "{7DD8077A-201E-4C56-96C5-3C901A51BDF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCoreWpfTests", "..\test\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj", "{7DD8077A-201E-4C56-96C5-3C901A51BDF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPythonTests", "..\test\Libraries\DynamoPythonTests\DynamoPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoPythonTests", "..\test\Libraries\DynamoPythonTests\DynamoPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSIronPython", "Libraries\DSIronPython\DSIronPython.csproj", "{9EEF4F42-6B3B-4358-9A8A-C2701539A822}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFITarget", "..\test\Engine\FFITarget\FFITarget.csproj", "{C70FE632-5500-4C57-B3D6-9B5574137551}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFITarget", "..\test\Engine\FFITarget\FFITarget.csproj", "{C70FE632-5500-4C57-B3D6-9B5574137551}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "System", "System", "{88A44558-9148-4F1C-876B-46472793F3D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "..\test\System\IntegrationTests\IntegrationTests.csproj", "{1254D922-643B-4F0B-82BD-E9E02399B040}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "..\test\System\IntegrationTests\IntegrationTests.csproj", "{1254D922-643B-4F0B-82BD-E9E02399B040}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoTestConsoleRunner", "..\test\Engine\ProtoTestConsoleRunner\ProtoTestConsoleRunner.csproj", "{672BF8EC-1116-49F6-B253-DFCE5CF7D4C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoTestConsoleRunner", "..\test\Engine\ProtoTestConsoleRunner\ProtoTestConsoleRunner.csproj", "{672BF8EC-1116-49F6-B253-DFCE5CF7D4C9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Units", "Libraries\DynamoUnits\Units.csproj", "{6E0A079E-85F1-45A1-AD5B-9855E4344809}"
 EndProject
@@ -77,7 +77,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSOffice", "Libraries\DSOff
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migrations", "Migrations\Migrations.csproj", "{06B9E5B0-7C50-4351-9D88-E159DC25755F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoMSOfficeTests", "..\test\Libraries\DynamoMSOfficeTests\DynamoMSOfficeTests.csproj", "{269039F1-126A-46CF-8BEA-257587EDCA6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoMSOfficeTests", "..\test\Libraries\DynamoMSOfficeTests\DynamoMSOfficeTests.csproj", "{269039F1-126A-46CF-8BEA-257587EDCA6B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tessellation", "Libraries\Tesellation\Tessellation.csproj", "{D6279651-D099-4F8D-A319-5BF12ED9F269}"
 EndProject
@@ -85,9 +85,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitsUI", "Libraries\UnitsU
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphLayout", "Engine\GraphLayout\GraphLayout.csproj", "{C2595B04-856D-40AE-8B99-4804C7A70708}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUtilitiesTests", "..\test\Libraries\DynamoUtilitiesTests\DynamoUtilitiesTests.csproj", "{AB735028-22B0-4083-9CC5-805C582818EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoUtilitiesTests", "..\test\Libraries\DynamoUtilitiesTests\DynamoUtilitiesTests.csproj", "{AB735028-22B0-4083-9CC5-805C582818EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkflowTests", "..\test\Libraries\WorkflowTests\WorkflowTests.csproj", "{CEA31792-BA09-431B-8ECE-E2F0354B2150}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkflowTests", "..\test\Libraries\WorkflowTests\WorkflowTests.csproj", "{CEA31792-BA09-431B-8ECE-E2F0354B2150}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMDataBridge", "Libraries\VMDataBridge\VMDataBridge.csproj", "{CCB6E56B-2DA1-4EBA-A1F9-E8510E129D12}"
 EndProject
@@ -99,23 +99,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCrypto", "DynamoCrypt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstallUpdate", "Tools\InstallUpdate\InstallUpdate.csproj", "{0ED387BC-17B5-49B7-9C1D-BF58A4A5CC4D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBridgeTests", "..\test\Libraries\DataBridgeTests\DataBridgeTests.csproj", "{F0AF3C6E-0E59-4511-A057-79970EA9DC34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataBridgeTests", "..\test\Libraries\DataBridgeTests\DataBridgeTests.csproj", "{F0AF3C6E-0E59-4511-A057-79970EA9DC34}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitUtility", "Tools\NUnitUtility\NUnitUtility.csproj", "{D0DC5724-DE00-4201-A659-A9A6CF81290D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analysis", "Libraries\Analysis\Analysis.csproj", "{76686ED6-E759-4772-81C2-768740BE13FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalysisTests", "..\test\Libraries\AnalysisTests\AnalysisTests.csproj", "{4A707244-154B-428F-B589-D65361F24401}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnalysisTests", "..\test\Libraries\AnalysisTests\AnalysisTests.csproj", "{4A707244-154B-428F-B589-D65361F24401}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServices", "..\test\Libraries\TestServices\TestServices.csproj", "{6CD0F0CF-8199-49F9-B0EA-0B9598B44419}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestServices", "..\test\Libraries\TestServices\TestServices.csproj", "{6CD0F0CF-8199-49F9-B0EA-0B9598B44419}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUINodes", "..\test\TestUINodes\TestUINodes.csproj", "{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUINodes", "..\test\TestUINodes\TestUINodes.csproj", "{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemTestServices", "..\test\Libraries\SystemTestServices\SystemTestServices.csproj", "{89563CD0-509B-40A5-8728-9D3EC6FE8410}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SystemTestServices", "..\test\Libraries\SystemTestServices\SystemTestServices.csproj", "{89563CD0-509B-40A5-8728-9D3EC6FE8410}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCoreWpf", "DynamoCoreWpf\DynamoCoreWpf.csproj", "{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoServicesTests", "..\test\Libraries\NodeServicesTest\DynamoServicesTests.csproj", "{3E4278F7-60EC-491C-8094-B525C36A51A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoServicesTests", "..\test\Libraries\NodeServicesTest\DynamoServicesTests.csproj", "{3E4278F7-60EC-491C-8094-B525C36A51A7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XmlDocumentationsUtility", "Tools\XmlDocumentationsUtility\XmlDocumentationsUtility.csproj", "{4CAB9005-0001-4B03-BBA0-57070ED105F1}"
 EndProject
@@ -129,9 +129,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryUI", "Libraries\Geo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryUIWpf", "Libraries\GeometryUIWpf\GeometryUIWpf.csproj", "{C068DE76-0651-4F6C-8807-B90EF749D104}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageManagerTests", "..\test\Libraries\PackageManagerTests\PackageManagerTests.csproj", "{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageManagerTests", "..\test\Libraries\PackageManagerTests\PackageManagerTests.csproj", "{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineTests", "..\test\Libraries\CommandLineTests\CommandLineTests.csproj", "{3E84B41E-F229-4BF7-8A0F-3D65BA2D00D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandLineTests", "..\test\Libraries\CommandLineTests\CommandLineTests.csproj", "{3E84B41E-F229-4BF7-8A0F-3D65BA2D00D1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCLI", "DynamoCLI\DynamoCLI.csproj", "{5F9AE581-6781-4A4C-A262-1B06CD27208B}"
 EndProject
@@ -141,7 +141,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoPackages", "DynamoPac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PythonNodeModels", "Libraries\PythonNodeModels\PythonNodeModels.csproj", "{8872CA17-C10D-43B9-8393-5C5A57065EB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfVisualizationTests", "VisualizationTests\WpfVisualizationTests.csproj", "{C4964946-B367-44EE-9ED2-451FF2A83D32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfVisualizationTests", "VisualizationTests\WpfVisualizationTests.csproj", "{C4964946-B367-44EE-9ED2-451FF2A83D32}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watch3DNodeModels", "Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj", "{31183026-DE70-49CB-BC7C-0DFD0A088F62}"
 EndProject
@@ -153,9 +153,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryViewExtension", "Lib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryColor", "Libraries\GeometryColor\GeometryColor.csproj", "{A50C198C-DA6E-4081-BC53-0F44D287F207}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryColorTests", "..\test\Libraries\GeometryColorTests\GeometryColorTests.csproj", "{F8D2E3E5-4505-4463-9367-2EB2629D7DCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryColorTests", "..\test\Libraries\GeometryColorTests\GeometryColorTests.csproj", "{F8D2E3E5-4505-4463-9367-2EB2629D7DCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewExtensionLibraryTests", "..\test\ViewExtensionLibraryTests\ViewExtensionLibraryTests.csproj", "{AE7F2579-104A-4AF4-AA7B-614AE9E79279}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewExtensionLibraryTests", "..\test\ViewExtensionLibraryTests\ViewExtensionLibraryTests.csproj", "{AE7F2579-104A-4AF4-AA7B-614AE9E79279}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesignScriptBuiltin", "Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj", "{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}"
 EndProject
@@ -189,9 +189,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NodeDocumentationMarkdownGe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{C963F7A9-E210-41E0-80D5-E5A95C048ED2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeDocumentationMarkdownGeneratorTests", "..\test\Tools\NodeDocumentationMarkdownGeneratorTests\NodeDocumentationMarkdownGeneratorTests.csproj", "{4C2AEACC-617D-4B90-ADCD-FE294A43A68F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NodeDocumentationMarkdownGeneratorTests", "..\test\Tools\NodeDocumentationMarkdownGeneratorTests\NodeDocumentationMarkdownGeneratorTests.csproj", "{4C2AEACC-617D-4B90-ADCD-FE294A43A68F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonTests", "..\test\Libraries\IronPythonTests\IronPythonTests.csproj", "{E6DF2FBD-7D4D-4465-94DC-D576D737E985}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IronPythonTests", "..\test\Libraries\IronPythonTests\IronPythonTests.csproj", "{E6DF2FBD-7D4D-4465-94DC-D576D737E985}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageDetailsViewExtension", "PackageDetailsViewExtension\PackageDetailsViewExtension.csproj", "{12FB4DA4-7E9C-4C2E-91CD-1D0B523A9535}"
 EndProject
@@ -219,8 +219,8 @@ Global
 		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Debug|x64.ActiveCfg = Debug|x64
 		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Debug|x64.Build.0 = Debug|x64
-		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Release|Any CPU.ActiveCfg = Release|x64
-		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Release|Any CPU.Build.0 = Release|x64
+		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Release|x64.ActiveCfg = Release|x64
 		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Release|x64.Build.0 = Release|x64
 		{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

@@ -10,9 +10,8 @@
     <AssemblyName>PythonMigrationViewExtension</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="DiffPlex" Version="1.6.3" />
-	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
-	<PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
+    <PackageReference Include="DiffPlex" Version="1.6.3" CopyMetaData="true"/>
+	  <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <Reference Include="PresentationCore">
       <Private>False</Private>
     </Reference>
