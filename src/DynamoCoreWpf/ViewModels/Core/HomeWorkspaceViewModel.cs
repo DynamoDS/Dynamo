@@ -188,13 +188,13 @@ namespace Dynamo.Wpf.ViewModels.Core
                 }
             }
 
-            void UpdateNodeInfoBubbleContent(EvaluationCompletedEventArgs e)
+            void UpdateNodeInfoBubbleContent(EvaluationCompletedEventArgs evalargs)
             {
                 if (e.MessageKeys == null)
                 {
                     return;
                 }
-                foreach (var messageID in e.MessageKeys)
+                foreach (var messageID in evalargs.MessageKeys)
                 { //TODO pass guid direct?
                     var node = this.Nodes.FirstOrDefault(n => n.Id == Guid.Parse(messageID));
                     if (node == null)
