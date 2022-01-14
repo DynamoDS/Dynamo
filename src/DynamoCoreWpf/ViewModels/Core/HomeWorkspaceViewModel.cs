@@ -150,21 +150,18 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
-            //now that execution is complete, we need to 
-            DynamoViewModel.UIDispatcher.BeginInvoke(new Action(() =>
-            {   if(e.MessageKeys == null)
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.BeginInvoke(new Action(() =>
                 {
-                    return;
-                }
-                foreach (var messageID in e.MessageKeys)
-                {//TODO pass guid direct?
-                    var node = this.Nodes.FirstOrDefault(n => n.Id == Guid.Parse(messageID));
-                    if (node == null)
-                        continue;
-
-                    node.UpdateBubbleContent();
-                }
-            }));
+                    UpdateNodeInfoBubbleContent(e);
+                }));
+            }
+            else
+            {
+                //just call it directly 
+                UpdateNodeInfoBubbleContent(e);
+            }
         
             bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
 
@@ -188,6 +185,22 @@ namespace Dynamo.Wpf.ViewModels.Core
                 else
                 {
                     SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage);
+                }
+            }
+
+            void UpdateNodeInfoBubbleContent(EvaluationCompletedEventArgs e)
+            {
+                if (e.MessageKeys == null)
+                {
+                    return;
+                }
+                foreach (var messageID in e.MessageKeys)
+                { //TODO pass guid direct?
+                    var node = this.Nodes.FirstOrDefault(n => n.Id == Guid.Parse(messageID));
+                    if (node == null)
+                        continue;
+
+                    node.UpdateBubbleContent();
                 }
             }
         }
