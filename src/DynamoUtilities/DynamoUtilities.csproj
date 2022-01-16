@@ -12,7 +12,7 @@
     <AssemblyName>DynamoUtilities</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
+	<PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
 	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
     <Reference Include="System.Configuration" />
   </ItemGroup>
