@@ -8,7 +8,7 @@
     <RootNamespace>Md2Html</RootNamespace>
     <AssemblyName>Md2Html</AssemblyName>
     <SharedOutputPath>$(OutputPath)\Md2Html\</SharedOutputPath>
-	<OutputPath>bin\AnyCPU\$(Configuration)\</OutputPath>
+	  <OutputPath>bin\AnyCPU\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

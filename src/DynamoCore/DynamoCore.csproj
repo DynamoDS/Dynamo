@@ -9,7 +9,7 @@
     <RootNamespace>Dynamo</RootNamespace>
     <AssemblyName>DynamoCore</AssemblyName>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <DocumentationFile>$(OutputPath)\$(UICulture)\DynamoCore.XML</DocumentationFile>
+    <DocumentationFile>$(OutputPath)\DynamoCore.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
     <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
