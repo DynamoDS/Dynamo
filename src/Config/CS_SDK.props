@@ -77,11 +77,11 @@
     </PropertyGroup>
     <ItemGroup Condition="$(Local_CopyXML) == 'true' or $(Local_CopyMetaData) == 'true'">
       <MyReferences Include="@(ReferencePath->WithMetadataValue( 'NuGetPackageId', $(Local_NuGetPackageId) ))" />
-      <XMLContent Include="%(MyReferences.RelativeDir)%(MyReferences.FileName).xml" Condition="%(MyReferences.FileName) == '$(Local_NuGetPackageId.ToLower())'" />
+      <XMLContent Include="%(MyReferences.RelativeDir)%(MyReferences.FileName).xml" Condition="$([System.String]::Copy('%(MyReferences.FullPath)').ToLower().Contains('$(Local_NuGetPackageId.ToLower())'))" />
     </ItemGroup>
     <ItemGroup Condition="$(Local_CopyPDB) == 'true' or $(Local_CopyMetaData) == 'true'">
       <MyReferences Include="@(ReferencePath->WithMetadataValue( 'NuGetPackageId', $(Local_NuGetPackageId) ))" />
-      <PDBContent Include="%(MyReferences.RelativeDir)%(MyReferences.FileName).pdb" Condition="%(MyReferences.FileName) == '$(Local_NuGetPackageId.ToLower())'" />
+      <PDBContent Include="%(MyReferences.RelativeDir)%(MyReferences.FileName).pdb" Condition="$([System.String]::Copy('%(MyReferences.FullPath)').ToLower().Contains('$(Local_NuGetPackageId.ToLower())'))" />
     </ItemGroup>
     <Copy SourceFiles="@(XMLContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)" Condition="Exists('%(FullPath)')" />
     <Copy SourceFiles="@(PDBContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)" Condition="Exists('%(FullPath)')" />
