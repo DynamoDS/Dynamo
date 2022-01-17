@@ -67,12 +67,13 @@
 	 <RemoveDir ContinueOnError="WarnAndContinue" Directories="$(ProjectDir)obj" />
 	 <!-- obj -->
   </Target>
-  <Target Name="CopyPackageMetaData" AfterTargets="Build" Outputs="%(PackageReference.Identity)" >
+  <Target Name="CopyPackageData" AfterTargets="Build" Outputs="%(PackageReference.Identity)" >
     <PropertyGroup>
       <Local_CopyMetaData>%(PackageReference.CopyMetaData)</Local_CopyMetaData>
       <Local_CopyXML>%(PackageReference.CopyXML)</Local_CopyXML>
       <Local_CopyPDB>%(PackageReference.CopyPDB)</Local_CopyPDB>
       <Local_NuGetPackageId>%(PackageReference.Identity)</Local_NuGetPackageId>
+      <Local_CopyToSubdirectory>%(PackageReference.CopyDllToSubdirectory)</Local_CopyToSubdirectory>
       <PackagesOutputSubdirectory>%(ReferenceCopyLocalPaths.DestinationSubDirectory)</PackagesOutputSubdirectory>
     </PropertyGroup>
     <ItemGroup Condition="$(Local_CopyXML) == 'true' or $(Local_CopyMetaData) == 'true'">
@@ -83,7 +84,12 @@
       <MyReferences Include="@(ReferencePath->WithMetadataValue( 'NuGetPackageId', $(Local_NuGetPackageId) ))" />
       <PDBContent Include="%(MyReferences.RelativeDir)%(MyReferences.FileName).pdb" Condition="$([System.String]::Copy('%(MyReferences.FullPath)').ToLower().Contains('$(Local_NuGetPackageId.ToLower())'))" />
     </ItemGroup>
+    <ItemGroup Condition="$(Local_CopyToSubdirectory) != ''">
+      <MyReferences Include="@(ReferencePath->WithMetadataValue( 'NuGetPackageId', $(Local_NuGetPackageId) ))" />
+      <DLLContent Include="%(MyReferences.FullPath)" Condition="$([System.String]::Copy('%(MyReferences.FullPath)').ToLower().Contains('$(Local_NuGetPackageId.ToLower())'))" />
+    </ItemGroup>
     <Copy SourceFiles="@(XMLContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)" Condition="Exists('%(FullPath)')" />
     <Copy SourceFiles="@(PDBContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)" Condition="Exists('%(FullPath)')" />
+    <Copy SourceFiles="@(DLLContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)$(Local_CopyToSubdirectory)" Condition="Exists('%(FullPath)')" />
   </Target>
 </Project>
