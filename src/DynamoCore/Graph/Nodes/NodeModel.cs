@@ -68,7 +68,11 @@ namespace Dynamo.Graph.Nodes
 
         private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
         private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
-
+        /// <summary>
+        /// Can be used to suppress some property notifications related to node warnings/state. This is useful
+        /// to defer UI updates for better performance. //TODO should this be generic for all nodemodel props?
+        /// </summary>
+        internal bool SuppressStatePropertyNotifications { get; set; } = false;
         #endregion
 
         internal const double HeaderHeight = 46;
@@ -333,7 +337,10 @@ namespace Dynamo.Graph.Nodes
                 if (state == value) return;
 
                 state = value;
-                RaisePropertyChanged("State");
+                if (!SuppressStatePropertyNotifications)
+                {
+                    RaisePropertyChanged("State");
+                }
             }
         }
 
@@ -365,7 +372,10 @@ namespace Dynamo.Graph.Nodes
             set
             {
                 toolTipText = value;
-                RaisePropertyChanged("ToolTipText");
+                if (!SuppressStatePropertyNotifications)
+                {
+                    RaisePropertyChanged("ToolTipText");
+                }
             }
         }
 
