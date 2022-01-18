@@ -145,11 +145,7 @@ namespace Dynamo.Scheduler
                     node.WasInvolvedInExecution = true;
                     node.WasRenderPackageUpdatedAfterExecution = false;
                     if (node.State == ElementState.Warning)
-                    {
-                        node.SuppressStatePropertyNotifications = true;
                         node.ClearErrorsAndWarnings();
-                        node.SuppressStatePropertyNotifications = false;
-                    }
                 }
 
                 engineController.RemoveRecordedAstGuidsForSession(graphSyncData.SessionID);
