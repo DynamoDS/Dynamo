@@ -17,6 +17,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         double PointerTooltipOverlap = 5;
         double PointerVerticalOffset;
         double PointerHorizontalOffset;
+        enum SHADOW_DIRECTION { LEFT = 180, RIGHT = 0, BOTTOM = 270, TOP = 90};
 
         /// <summary>
         /// The Tooltip constructor
@@ -71,6 +72,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 pointX3 = 0;
                 pointY3 = PointerHeight / 2 + PointerVerticalOffset;
+                //Left Shadow
+                ShadowTooltipDirection = (double)SHADOW_DIRECTION.LEFT;
 
             }
             else if (direction == PointerDirection.BOTTOM_LEFT)
@@ -83,6 +86,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 pointX3 = 0;
                 pointY3 = Height - PointerHeight / 2 - PointerVerticalOffset;
+                //Left Shadow
+                ShadowTooltipDirection = (double)SHADOW_DIRECTION.LEFT;
             }
             else if (direction == PointerDirection.TOP_RIGHT)
             {
@@ -94,6 +99,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 pointX3 = realWidth;
                 pointY3 = PointerHeight / 2 + PointerVerticalOffset;
+                //Right Shadow
+                ShadowTooltipDirection = (double)SHADOW_DIRECTION.RIGHT;
 
             }
             else if (direction == PointerDirection.BOTTOM_RIGHT)
@@ -106,6 +113,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 pointX3 = realWidth;
                 pointY3 = Height - PointerHeight / 2 - PointerVerticalOffset;
+                //Right Shadow
+                ShadowTooltipDirection = (double)SHADOW_DIRECTION.RIGHT;
             }
             else if (direction == PointerDirection.BOTTOM_DOWN)
             {
@@ -117,6 +126,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                 pointX3 = PointerDownWidth / 2 + PointerHorizontalOffset;
                 pointY3 = realHeight - PointerHeight;
+                //Bottom Shadow
+                ShadowTooltipDirection = (double)SHADOW_DIRECTION.BOTTOM;
             }
 
             TooltipPointerPoints = new PointCollection(new[] { new Point(pointX1, pointY1),

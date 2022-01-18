@@ -3774,7 +3774,7 @@
         </Style.Triggers>
     </Style>
 
-    <!--  This Style will be used for Note Text block (used when Note is not on edit mode)  -->
+    <!--  This Style will be used for Note Text block (used when Note is on edit mode)  -->
     <Style x:Key="NoteTextBoxStyle" TargetType="TextBox">
         <Setter Property="FontFamily" Value="Trebuchet" />
         <Setter Property="FontSize" Value="12" />
@@ -3784,7 +3784,7 @@
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
-    <!--  This Style will be used for Note Text block (used when Note is on edit mode)  -->
+    <!--  This Style will be used for Note Text block (used when Note is not on edit mode)  -->
     <Style x:Key="NoteTextBlockStyle" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Trebuchet" />
         <Setter Property="FontSize" Value="12" />
@@ -4075,7 +4075,7 @@
         <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}" />
     </Style>
 
-    <Style x:Key="PoupPolygonPointerStyle" TargetType="{x:Type Polygon}">
+    <Style x:Key="PoupPathPointerStyle" TargetType="{x:Type Path}">
         <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}" />
     </Style>
 

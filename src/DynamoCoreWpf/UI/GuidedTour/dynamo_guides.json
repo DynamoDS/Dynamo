@@ -382,6 +382,7 @@
 						"Name": "ExecutePackageSearch",
 						"ExecuteCleanUpForward": false,
 						"ExecuteCleanUpBackward": true,
+						"ElementName": "NextButton",
 						"Action": "execute",
 						"UpdatePlacementTarget": true
 					},
@@ -741,7 +742,7 @@
 						"Name": "SubscribeNextButtonClickEvent",
 						"Action": "execute",
 						"JSFunctionName": "collapseExpandPackage",
-						"JSParameters": [ "SampleLibraryUI" ],
+						"JSParameters": [ "SampleLibraryUI", "LibraryItemText" ],
 						"AutomaticHandlers": [
 							{
 								"HandlerElement": "NextButton",
@@ -798,7 +799,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 490,
+				"Height": 400,
 				"ShowLibrary": true,
 				"StepContent": {
 					"Title": "PackagesGuidePackagesNodeTitle",
@@ -809,8 +810,8 @@
 					"DynamicHostWindow": true,
 					"HostUIElementString": "sidebarGrid",
 					"WindowName": "LibraryView",
-					"VerticalPopupOffset": 300,
-					"HorizontalPopupOffset": 300,
+					"VerticalPopupOffset": 450,
+					"HorizontalPopupOffset": 320,
 					"HtmlPage": {
 						"FileName": "nodePackage.html",
 						"Resources": {
@@ -833,7 +834,23 @@
 						"Name": "InvokeJSFunction",
 						"Action": "execute",
 						"JSFunctionName": "collapseExpandPackage",
-						"JSParameters": [ "Revit" ]
+						"JSParameters": [ "SampleLibraryUI", "LibraryItemText" ]
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Examples", "LibraryItemGroupText" ]
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "LibraryScrollToBottom",
+						"JSFunctionName": "scrollToBottom",
+						"JSParameters": [],
+						"Action": "execute"
 					}
 				]
 			},
@@ -856,7 +873,7 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "center",
 					"HostUIElementString": "WorkspaceTabs",
-					"VerticalPopupOffset": 0			
+					"VerticalPopupOffset": 0
 				}
 			}
 		]

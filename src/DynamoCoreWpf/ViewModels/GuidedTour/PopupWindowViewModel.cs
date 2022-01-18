@@ -42,6 +42,21 @@ namespace Dynamo.Wpf.ViewModels.GuidedTour
         }
 
         /// <summary>
+        /// This will contains the shadow direction in degrees that will be shown in the pointer
+        /// </summary>
+        public double ShadowTooltipDirection
+        { 
+            get
+            {
+                return Step.ShadowTooltipDirection;
+            }
+            set
+            {
+                Step.ShadowTooltipDirection = value;
+            } 
+        }
+
+        /// <summary>
         /// Due that some popups doesn't need the pointer then this property hides or show the pointer
         /// </summary>
         public bool ShowPopupPointer 

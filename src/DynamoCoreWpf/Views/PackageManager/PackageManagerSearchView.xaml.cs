@@ -30,7 +30,16 @@ namespace Dynamo.PackageManager.UI
             InitializeComponent();
             ViewModel.RegisterTransientHandlers();
             ViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+            ViewModel.RequestDisableTextSearch += ViewModel_RequestDisableTextSearch;
             Logging.Analytics.TrackScreenView("PackageManager");
+        }
+
+        private void ViewModel_RequestDisableTextSearch(object sender, PackagePathEventArgs e)
+        {
+            this.searchTextBox.IsEnabled = false;
+            this.clearSearchTextBox.IsEnabled = false;
+            this.filterResultsButton.IsEnabled = false;
+            this.sortResultsButton.IsEnabled = false;
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -38,6 +47,7 @@ namespace Dynamo.PackageManager.UI
             var viewModel = DataContext as PackageManagerSearchViewModel;
 
             ViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
+            ViewModel.RequestDisableTextSearch -= ViewModel_RequestDisableTextSearch;
             viewModel.UnregisterTransientHandlers();
             
             // Clears the search text so that the 'Please Wait' prompt appears next time this dialog is opened.
