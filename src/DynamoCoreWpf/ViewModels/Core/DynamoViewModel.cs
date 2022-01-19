@@ -2065,7 +2065,8 @@ namespace Dynamo.ViewModels
             if (args.ClickedButtonId == (int)DynamoModel.ButtonId.Cancel ||
                 args.ClickedButtonId == 0)
             {
-                OnViewExtensionOpenRequest("Graph Status");
+                //Open Graph Status view extension
+                OnViewExtensionOpenRequest("3467481b-d20d-4918-a454-bf19fc5c25d7");
                 return false;
             }
 
