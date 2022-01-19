@@ -164,6 +164,57 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(true, ViewModel.CanUngroupModel(null));
         }
 
+
+        [Test]
+        [Category("DynamoUI")]
+        public void CanUngroupNodeFromAGroupIfGroupContainsNote()
+        {
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
+
+            //Select the node for group
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            //Create a Group around that node
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
+
+            //Check if the group is created
+            Assert.IsNotNull(annotation);
+
+            //Clear the selection
+            DynamoSelection.Instance.ClearSelection();
+
+            //create a note.
+            ViewModel.AddNoteCommand.Execute(null);
+            var note = ViewModel.Model.CurrentWorkspace.Notes.FirstOrDefault();
+            Assert.IsNotNull(note);
+
+            //Select the note 
+            DynamoSelection.Instance.Selection.Add(note);
+            DynamoSelection.Instance.Selection.Add(annotation);
+
+            ViewModel.AddModelsToGroupModelCommand.Execute(null);
+
+            //Clear the selection
+            DynamoSelection.Instance.ClearSelection();
+            //Select the node 
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            Assert.AreEqual(2, annotation.Nodes.Count());
+            //remove it
+            Assert.DoesNotThrow(() =>
+            {
+                ViewModel.UngroupModelCommand.Execute(null);
+              
+            });
+            Assert.AreEqual(1, annotation.Nodes.Count());
+        }
+
         [Test]
         [Category("DynamoUI")]
         public void CanUngroupNodeWhichIsNotInAGroup()

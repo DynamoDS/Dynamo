@@ -1286,7 +1286,7 @@ namespace Dynamo.ViewModels
                     if (modelb is NodeModel node)
                     {
                         var pinnedNotes = CurrentSpaceViewModel.Notes
-                            .Where(x => x.PinnedNode.NodeModel == node)
+                            .Where(x => x.PinnedNode?.NodeModel == node)
                             .Select(x => x.Model.GUID);
 
                         if (pinnedNotes.Any())
