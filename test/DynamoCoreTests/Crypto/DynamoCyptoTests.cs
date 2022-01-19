@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
-
 using NUnit.Framework;
 
 namespace DynamoCrypto
@@ -10,16 +9,17 @@ namespace DynamoCrypto
     class DynamoCyptoTests
     {
         [Test]
+        [Category("Failure")]
         public void VerificationFailsForAlteredFile()
         {
             var asm = Assembly.GetExecutingAssembly().Location;
             var asmDir = Path.GetDirectoryName(asm);
             var testFile =
                 Path.GetFullPath(
-                    Path.Combine(asmDir, @"..\..\..\src\DynamoCrypto\AnAlteredFile.txt"));
+                    Path.Combine(asmDir, @"..\..\..\test\DynamoCoreTests\Crypto\AnAlteredFile.txt"));
             var sigFile =
                 Path.GetFullPath(
-                    Path.Combine(asmDir, @"..\..\..\src\DynamoCrypto\AnImportantFile.sig"));
+                    Path.Combine(asmDir, @"..\..\..\test\DynamoCoreTests\Crypto\AnImportantFile.sig"));
 
             var pubKey = AssertCertAndPublicKey();
 
@@ -28,16 +28,17 @@ namespace DynamoCrypto
         }
 
         [Test]
+        [Category("Failure")]
         public void VerificationFailsForAlteredSignature()
         {
             var asm = Assembly.GetExecutingAssembly().Location;
             var asmDir = Path.GetDirectoryName(asm);
             var testFile =
                 Path.GetFullPath(
-                    Path.Combine(asmDir, @"..\..\..\src\DynamoCrypto\AnImportantFile.txt"));
+                    Path.Combine(asmDir, @"..\..\..\test\DynamoCoreTests\Crypto\AnImportantFile.txt"));
             var sigFile =
                 Path.GetFullPath(
-                    Path.Combine(asmDir, @"..\..\..\src\DynamoCrypto\AnAlteredSignature.sig"));
+                    Path.Combine(asmDir, @"..\..\..\test\DynamoCoreTests\Crypto\AnAlteredSignature.sig"));
 
             var pubKey = AssertCertAndPublicKey();
 
@@ -46,16 +47,17 @@ namespace DynamoCrypto
         }
 
         [Test]
+        [Category("Failure")]
         public void VertificationSucceedsIfAllIsGood()
         {
             var asm = Assembly.GetExecutingAssembly().Location;
             var asmDir = Path.GetDirectoryName(asm);
             var testFile =
                 Path.GetFullPath(
-                    Path.Combine(asmDir, @"..\..\..\src\DynamoCrypto\AnImportantFile.txt"));
+                    Path.Combine(asmDir, @"..\..\..\test\DynamoCoreTests\Crypto\AnImportantFile.txt"));
             var sigFile =
                 Path.GetFullPath(
-                    Path.Combine(asmDir, @"..\..\..\src\DynamoCrypto\AnImportantFile.sig"));
+                    Path.Combine(asmDir, @"..\..\..\test\DynamoCoreTests\Crypto\AnImportantFile.sig"));
 
             var pubKey = AssertCertAndPublicKey();
 
