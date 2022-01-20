@@ -234,6 +234,15 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to More Information.
+        /// </summary>
+        public static string MoreInformationButton {
+            get {
+                return ResourceManager.GetString("MoreInformationButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Packaged.
         /// </summary>
         public static string PackagedCustomNodesHeader {
