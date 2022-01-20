@@ -198,7 +198,7 @@
                                             HorizontalAlignment="Right"
                                             Background="{StaticResource PreferencesWindowButtonColor}"
                                             Foreground="{StaticResource DefaultFontColorBrush}"
-                                            Width="46"
+                                            Width="Auto"
                                             Click="OKButton_Click" />
                                 </Grid>
                             </Grid>
