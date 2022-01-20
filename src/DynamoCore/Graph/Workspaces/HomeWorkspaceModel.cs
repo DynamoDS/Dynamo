@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
@@ -16,6 +17,7 @@ using Dynamo.Graph.Presets;
 using Dynamo.Linting;
 using Dynamo.Models;
 using Dynamo.Scheduler;
+using DynamoUtilities;
 using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.Namespace;
@@ -900,6 +902,8 @@ namespace Dynamo.Graph.Workspaces
                 OnSetNodeDeltaState(deltaComputeStateArgs);               
             }            
         }
+
+
        
         #endregion
 
@@ -987,6 +991,64 @@ namespace Dynamo.Graph.Workspaces
             // TODO: Figure out how to add extension version when creating new ExtensionData 
             var extensionData = new ExtensionData(uniqueId, name, version, data);
             ExtensionData.Add(extensionData);
+        }
+        /// <summary>
+        /// Computes the external file references if the Workspace Model is a HomeWorkspaceModel.
+        /// </summary>
+        /// <returns></returns>
+        internal List<INodeLibraryDependencyInfo> GetExternalFiles()
+        {
+            var externalFiles = new Dictionary<object, DependencyInfo>();
+
+            // If an execution is in progress we'll have to wait for it to be done before we can gather the
+            // external file references as this implementation relies on the output values of each node.
+            //instead just bail to avoid blocking the UI.
+            //TODO Don't really like this solution, this bool only reflects the state of this graph, not the liverunner or engine.
+            if (!executingTask)
+            {
+                foreach (var node in Nodes)
+                {
+                    externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
+
+                    // Check for the file path string value at each of the output ports of all nodes in the workspace. 
+                    foreach (var port in node.OutPorts)
+                    {
+                        var id = node.GetAstIdentifierForOutputIndex(port.Index).Name;
+                        var mirror = EngineController.GetMirror(id);
+                        var data = mirror?.GetData().Data;
+
+                        if (data is string dataString && dataString.Contains(@"\"))
+                        {
+                            // Check if the value exists on disk
+                            PathHelper.FileInfoAtPath(dataString, out bool fileExists, out string fileSize);
+                            if (fileExists)
+                            {
+                                var externalFilePath = Path.GetFullPath(dataString);
+                                var externalFileName = Path.GetFileName(dataString);
+
+                                if (!externalFiles.ContainsKey(externalFilePath))
+                                {
+                                    externalFiles[externalFilePath] = new DependencyInfo(externalFileName, dataString, ReferenceType.External);
+                                }
+
+                                externalFiles[externalFilePath].AddDependent(node.GUID);
+                                externalFiles[externalFilePath].Size = fileSize;
+                            }
+                            // Read the serialized value for that node.
+                            else if (serializedDependencyInfo != null && dataString.Contains(serializedDependencyInfo.Name))
+                            {
+                                if (!externalFiles.ContainsKey(serializedDependencyInfo.Name))
+                                {
+                                    externalFiles[serializedDependencyInfo.Name] = new DependencyInfo(serializedDependencyInfo.Name, ReferenceType.External);
+                                }
+                                externalFiles[serializedDependencyInfo.Name].AddDependent(node.GUID);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return externalFiles.Values.ToList<INodeLibraryDependencyInfo>();
         }
     }
 }

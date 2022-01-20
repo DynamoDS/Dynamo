@@ -798,7 +798,11 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                return GetExternalFiles();
+                 if(this is HomeWorkspaceModel hwm)
+                {
+                    return hwm.GetExternalFiles();
+                }
+                return new List<INodeLibraryDependencyInfo>();
             }
             set
             {
@@ -817,62 +821,9 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private List<INodeLibraryDependencyInfo> GetExternalFiles()
-        {
-            var externalFiles = new Dictionary<object, DependencyInfo>();
-
-            // Computes the external file references if the Workspace Model is a HomeWorkspaceModel.
-            // The workspace should be executed for the external references to be computed because the node output port values are needed.
-            if (this is HomeWorkspaceModel homeWorkspaceModel)
-            {
-                foreach (var node in nodes)
-                {
-                    externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
-
-                    // Check for the file path string value at each of the output ports of all nodes in the workspace. 
-                    foreach (var port in node.OutPorts)
-                    {
-                        var id = node.GetAstIdentifierForOutputIndex(port.Index).Name;
-                        var mirror = homeWorkspaceModel.EngineController.GetMirror(id);
-                        var data = mirror?.GetData().Data;
-
-                        if (data is string dataString && dataString.Contains(@"\"))
-                        {
-                            // Check if the value exists on disk
-                            PathHelper.FileInfoAtPath(dataString, out bool fileExists, out string fileSize);
-                            if (fileExists)
-                            {
-                                var externalFilePath = Path.GetFullPath(dataString);
-                                var externalFileName = Path.GetFileName(dataString);
-
-                                if (!externalFiles.ContainsKey(externalFilePath))
-                                {
-                                    externalFiles[externalFilePath] = new DependencyInfo(externalFileName, dataString, ReferenceType.External);
-                                }
-
-                                externalFiles[externalFilePath].AddDependent(node.GUID);
-                                externalFiles[externalFilePath].Size = fileSize;
-                            }
-                            // Read the serialized value for that node.
-                            else if (serializedDependencyInfo != null && dataString.Contains(serializedDependencyInfo.Name))
-                            {
-                                if (!externalFiles.ContainsKey(serializedDependencyInfo.Name))
-                                {
-                                    externalFiles[serializedDependencyInfo.Name] = new DependencyInfo(serializedDependencyInfo.Name, ReferenceType.External);
-                                }
-                                externalFiles[serializedDependencyInfo.Name].AddDependent(node.GUID);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return externalFiles.Values.ToList<INodeLibraryDependencyInfo>();
-        }
-
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
         private Dictionary<Guid, DependencyInfo> localDefinitionsDictionary = new Dictionary<Guid, DependencyInfo>();
-        private Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
+        internal Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
 
 
         /// <summary>
