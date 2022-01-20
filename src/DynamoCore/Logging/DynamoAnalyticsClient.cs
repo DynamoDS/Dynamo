@@ -12,7 +12,6 @@ namespace Dynamo.Logging
 {
     class DynamoAnalyticsSession : IAnalyticsSession
     {
-        private Heartbeat heartbeat;
         private UsageLog logger;
 
         public DynamoAnalyticsSession()
@@ -25,8 +24,6 @@ namespace Dynamo.Logging
         {
             StabilityCookie.Startup();
 
-            heartbeat = Heartbeat.GetInstance(model);
-
             logger = new UsageLog("Dynamo", UserId, SessionId);
         }
 
@@ -37,10 +34,6 @@ namespace Dynamo.Logging
                 StabilityCookie.WriteCrashingShutdown();
             else
                 StabilityCookie.WriteCleanShutdown();
-
-            if (null != heartbeat)
-                Heartbeat.DestroyInstance();
-            heartbeat = null;
 
             if (null != logger)
                 logger.Dispose();

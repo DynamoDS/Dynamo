@@ -59,15 +59,6 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Record that the system has been up for the the length of the time in the timespan
-        /// </summary>
-        /// <param name="timespan"></param>
-        public static void WriteUptimeBeat(TimeSpan timespan)
-        {
-            Registry.SetValue(REG_KEY, UPTIME_NAME, ((long)timespan.TotalMilliseconds).ToString());
-        }
-
-        /// <summary>
         /// Start up and report the status of the last shutdown
         /// </summary>
         public static void Startup()
