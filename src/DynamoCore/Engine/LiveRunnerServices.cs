@@ -156,5 +156,12 @@ namespace Dynamo.Engine
         { 
             liveRunner.ResetVMAndResyncGraph(libraries);
         }
+        internal void RunActionIfNotBusy(Action action)
+        {
+            if (liveRunner is LiveRunner lv)
+            {
+                lv.RunIfNotBusy(action);
+            }
+        }
     }
 }

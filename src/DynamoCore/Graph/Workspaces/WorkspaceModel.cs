@@ -825,46 +825,51 @@ namespace Dynamo.Graph.Workspaces
             // The workspace should be executed for the external references to be computed because the node output port values are needed.
             if (this is HomeWorkspaceModel homeWorkspaceModel)
             {
-                foreach (var node in nodes)
+                homeWorkspaceModel.EngineController.RunActionIfLiveRunnerNotBusy(() =>
                 {
-                    externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
-
-                    // Check for the file path string value at each of the output ports of all nodes in the workspace. 
-                    foreach (var port in node.OutPorts)
+                    this.Log("!!!!!!!!!computing external deps");
+                    foreach (var node in nodes)
                     {
-                        var id = node.GetAstIdentifierForOutputIndex(port.Index).Name;
-                        var mirror = homeWorkspaceModel.EngineController.GetMirror(id);
-                        var data = mirror?.GetData().Data;
+                        externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
 
-                        if (data is string dataString && dataString.Contains(@"\"))
+                        // Check for the file path string value at each of the output ports of all nodes in the workspace. 
+                        foreach (var port in node.OutPorts)
                         {
-                            // Check if the value exists on disk
-                            PathHelper.FileInfoAtPath(dataString, out bool fileExists, out string fileSize);
-                            if (fileExists)
-                            {
-                                var externalFilePath = Path.GetFullPath(dataString);
-                                var externalFileName = Path.GetFileName(dataString);
+                            var id = node.GetAstIdentifierForOutputIndex(port.Index).Name;
+                            var mirror = homeWorkspaceModel.EngineController.GetMirror(id);
+                            var data = mirror?.GetData().Data;
 
-                                if (!externalFiles.ContainsKey(externalFilePath))
-                                {
-                                    externalFiles[externalFilePath] = new DependencyInfo(externalFileName, dataString, ReferenceType.External);
-                                }
-
-                                externalFiles[externalFilePath].AddDependent(node.GUID);
-                                externalFiles[externalFilePath].Size = fileSize;
-                            }
-                            // Read the serialized value for that node.
-                            else if (serializedDependencyInfo != null && dataString.Contains(serializedDependencyInfo.Name))
+                            if (data is string dataString && dataString.Contains(@"\"))
                             {
-                                if (!externalFiles.ContainsKey(serializedDependencyInfo.Name))
+                                // Check if the value exists on disk
+                                PathHelper.FileInfoAtPath(dataString, out bool fileExists, out string fileSize);
+                                if (fileExists)
                                 {
-                                    externalFiles[serializedDependencyInfo.Name] = new DependencyInfo(serializedDependencyInfo.Name, ReferenceType.External);
+                                    var externalFilePath = Path.GetFullPath(dataString);
+                                    var externalFileName = Path.GetFileName(dataString);
+
+                                    if (!externalFiles.ContainsKey(externalFilePath))
+                                    {
+                                        externalFiles[externalFilePath] = new DependencyInfo(externalFileName, dataString, ReferenceType.External);
+                                    }
+
+                                    externalFiles[externalFilePath].AddDependent(node.GUID);
+                                    externalFiles[externalFilePath].Size = fileSize;
                                 }
-                                externalFiles[serializedDependencyInfo.Name].AddDependent(node.GUID);
+                                // Read the serialized value for that node.
+                                else if (serializedDependencyInfo != null && dataString.Contains(serializedDependencyInfo.Name))
+                                {
+                                    if (!externalFiles.ContainsKey(serializedDependencyInfo.Name))
+                                    {
+                                        externalFiles[serializedDependencyInfo.Name] = new DependencyInfo(serializedDependencyInfo.Name, ReferenceType.External);
+                                    }
+                                    externalFiles[serializedDependencyInfo.Name].AddDependent(node.GUID);
+                                }
                             }
                         }
                     }
-                }
+                });
+               
             }
 
             return externalFiles.Values.ToList<INodeLibraryDependencyInfo>();

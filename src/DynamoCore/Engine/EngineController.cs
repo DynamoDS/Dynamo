@@ -577,6 +577,17 @@ namespace Dynamo.Engine
                 syncDataManager.DeleteNodes(iNode.GUID);
             }
         }
+        /// <summary>
+        /// Use to run an action from a non scheduler thread. The action will only
+        /// be run if the liverunner is not busy (ie there is not already a lock on the liverunner mutex).
+        /// This is useful for running actions that require engine reflection but where it is more important to avoid
+        /// thread contention.
+        /// </summary>
+        /// <param name="action"></param>
+        internal void RunActionIfLiveRunnerNotBusy(Action action)
+        {
+            liveRunnerServices.RunActionIfNotBusy(action);
+        }
 
 
 
