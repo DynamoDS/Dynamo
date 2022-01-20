@@ -681,6 +681,7 @@ namespace Dynamo.Graph.Annotations
             RaisePropertyChanged("FontSize");
             RaisePropertyChanged("AnnotationText");
             RaisePropertyChanged("Nodes");
+            this.ReportPosition();
         }
 
         /// <summary>
