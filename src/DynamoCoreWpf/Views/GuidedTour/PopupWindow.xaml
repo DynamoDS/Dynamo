@@ -7,6 +7,7 @@
         xmlns:localui="clr-namespace:Dynamo.Wpf.UI.GuidedTour"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+       xmlns:controls="clr-namespace:Dynamo.Controls"
         mc:Ignorable="d"
         PopupAnimation="Fade"
         AllowsTransparency="True"
@@ -23,6 +24,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <controls:PointsToPathConverter x:Key="PointsToPathConverter"/>
         </ResourceDictionary>
     </Popup.Resources>
 
@@ -61,19 +63,19 @@
             </Path.Effect>
         </Path>
 
-        <!--This Polygon will draw on the Canvas the pointer (a triangle) that will be available only for tooltips but for the Welcome popup will be hidden-->
-        <Polygon x:Name="TooltipPointer"
-                 Visibility="{Binding ShowPopupPointer, Converter={StaticResource BooleanToVisibilityConverter}}"
-                 Points="{Binding TooltipPointerPoints}" 
-                 Style="{StaticResource PoupPolygonPointerStyle}">
-            <Polygon.BitmapEffect>
-                <!--This effect will show a 4px shadow of 20% of tranparency with a angle of 315 grades by default-->
-                <DropShadowBitmapEffect Color="Black" 
-                                        Direction="135" 
-                                        ShadowDepth="4" 
-                                        Opacity="0.2" />
-            </Polygon.BitmapEffect>
-        </Polygon>
+        <!--This Path will draw on the Canvas the pointer (a triangle) that will be available only for tooltips but for the Welcome popup will be hidden-->
+        <Path  x:Name="TooltipPointer"
+               Visibility="{Binding ShowPopupPointer, Converter={StaticResource BooleanToVisibilityConverter}}"
+               Data="{Binding Path=TooltipPointerPoints, Converter={StaticResource PointsToPathConverter}}"
+               Style="{StaticResource PoupPathPointerStyle}">
+            <Path.Effect>
+                <DropShadowEffect Opacity="0.2" 
+                                  Color="Black"
+                                  ShadowDepth="4"
+                                  BlurRadius="4"
+                                  Direction="{Binding Path=ShadowTooltipDirection}"/>
+            </Path.Effect>
+        </Path>
 
         <Grid  x:Name="mainPopupGrid"
                Width="{Binding Width}"
@@ -112,8 +114,8 @@
                                Style="{StaticResource PoupTitleLabelStyle}"
                                />
                         <Button Name="CloseButton"
-                                Height="15"  
-                                Width="15"
+                                Height="12.8"  
+                                Width="12.8"
                                 Grid.Column="1"
                                 Style="{StaticResource PopupCloseButtonStyle}"
                                 Click="CloseButton_Click">

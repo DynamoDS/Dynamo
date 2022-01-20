@@ -120,6 +120,9 @@
   <data name="CustomPropertyControl_CustomPropertyDefault" xml:space="preserve">
     <value>Custom Property</value>
   </data>
+  <data name="ExtensionName" xml:space="preserve">
+    <value>Properties</value>
+  </data>
   <data name="GraphMetaData_AuthorName" xml:space="preserve">
     <value>Author Name</value>
   </data>

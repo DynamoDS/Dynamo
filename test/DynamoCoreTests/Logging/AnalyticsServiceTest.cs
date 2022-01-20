@@ -85,58 +85,6 @@ namespace Dynamo.Tests.Loggings
 
     public class DynamoAnalyticsDisableTest
     {
-
-        private Assembly handler(object sender, ResolveEventArgs args)
-        {
-            var currentAssembly = Assembly.GetExecutingAssembly();
-            var directory = new DirectoryInfo(currentAssembly.Location);
-            var packagesFolder = Path.Combine(directory.Parent.Parent.Parent.Parent.FullName, "src", "packages");
-            var pkgConfigFile = Path.Combine(directory.Parent.Parent.Parent.Parent.FullName, "test", currentAssembly.GetName().Name, "packages.config");
-            string targetSubfolder = Path.Combine("lib", "netstandard2.0");
-
-            var document = XDocument.Load(pkgConfigFile);
-            var xElements = document.Root.DescendantNodes().Select(x => x as XElement).ToList();
-
-            List<(string id, string version)> packages = new List<(string id, string version)>();
-            foreach (var package in xElements)
-            {
-                packages.Add((package.Attribute("id").Value, package.Attribute("version").Value));
-            }
-
-            foreach (var dep in packages)
-            {
-                if (!args.Name.Contains(dep.id))
-                {
-                    continue;
-                }
-                var dllName = dep.id + ".dll";
-                var packageName = dep.id + "." + dep.version;
-                var searchPath = Path.Combine(packagesFolder, packageName, targetSubfolder, dllName);
-                try
-                {
-                    return Assembly.LoadFrom(searchPath);
-                }
-                catch
-                {
-                    return null;
-                }
-            }
-
-            return null;
-        }
-
-        [SetUp]
-        public void Setup()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve += handler;
-        }
-
-        [TearDown]
-        public void Cleanup()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve -= handler;
-        }
-
         [Test]
         public void DisableAnalytics()
         {

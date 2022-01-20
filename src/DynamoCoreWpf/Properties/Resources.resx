@@ -787,9 +787,6 @@
   <data name="StartPageBackupLocation" xml:space="preserve">
     <value>Backup location</value>
   </data>
-  <data name="StartPageOpenAll" xml:space="preserve">
-    <value>Open all</value>
-  </data>
   <data name="StartPageDiscussionForum" xml:space="preserve">
     <value>Discussion forum</value>
   </data>

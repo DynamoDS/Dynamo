@@ -15,7 +15,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -131,6 +130,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This will contains the 3 points needed for drawing the Tooltip pointer direction
         /// </summary>
         public PointCollection TooltipPointerPoints { get; set; }
+
+        /// <summary>
+        /// This will contains the shadow direction in degrees that will be shown in the pointer
+        /// </summary>
+        public double ShadowTooltipDirection { get; set; }
 
         /// <summary>
         /// This property holds the DynamoViewModel that will be used when executing PreValidation functions
@@ -454,6 +458,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="enableUIAutomation">Enable/Disable the automation action for a specific UIElement</param>
         private void ExecuteUIAutomationStep(StepUIAutomation uiAutomationData, bool enableUIAutomation, Guide.GuideFlow currentFlow)
         {
+            var popupBorderName = "SubmenuBorder";
             //This section will search the UIElement dynamically in the Dynamo VisualTree in which an automation action will be executed
             UIElement automationUIElement = Guide.FindChild(MainWindow, uiAutomationData.Name);
             if (automationUIElement != null)
@@ -474,6 +479,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
                             menuEntry.IsSubmenuOpen = enableUIAutomation;
                             menuEntry.StaysOpenOnClick = enableUIAutomation;
                             break;                    
+                    }
+                    //Means that the Popup location needs to be updated after the MenuItem is opened
+                    if(uiAutomationData.UpdatePlacementTarget)
+                    {
+                        //We need to find the border inside the MenuItem.Popup so we can get its Width (this template is defined in MenuStyleDictionary.xaml)
+                        var menuPopupBorder = menuEntry.Template.FindName(popupBorderName, menuEntry) as Border;
+                        if (menuPopupBorder == null) return;
+
+                        //We need to do this substraction so the Step Popup wil be located at the end of the MenuItem Popup.
+                        stepUIPopup.HorizontalOffset = (menuPopupBorder.ActualWidth - menuEntry.ActualWidth) + HostPopupInfo.HorizontalPopupOffSet;
+                        UpdatePopupLocationInvoke(stepUIPopup);
                     }
                     break;
                 //In this case the UI Automation will be done using a Function located in the static class GuidesValidationMethods

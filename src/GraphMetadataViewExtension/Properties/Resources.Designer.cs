@@ -70,6 +70,15 @@ namespace Dynamo.GraphMetadata.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Properties.
+        /// </summary>
+        public static string ExtensionName {
+            get {
+                return ResourceManager.GetString("ExtensionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Author Name.
         /// </summary>
         public static string GraphMetaData_AuthorName {

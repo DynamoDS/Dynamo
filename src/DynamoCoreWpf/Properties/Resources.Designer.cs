@@ -7111,15 +7111,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open all.
-        /// </summary>
-        public static string StartPageOpenAll {
-            get {
-                return ResourceManager.GetString("StartPageOpenAll", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
         public static string StartPageOpenFile {
