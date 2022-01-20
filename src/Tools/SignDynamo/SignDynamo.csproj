@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\DynamoCrypto\DynamoCrypto.csproj">
       <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
       <Name>DynamoCrypto</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
 </Project>
