@@ -1018,7 +1018,7 @@ namespace Dynamo.Controls
         {
             var workspace = this.ChildOfType<WorkspaceView>();
             if (workspace != null)
-                workspace.HidePopUp();
+                workspace.HideAllPopUp();
         }
 
         private void TrackStartupAnalytics()
