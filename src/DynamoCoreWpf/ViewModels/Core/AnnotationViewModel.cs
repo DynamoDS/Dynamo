@@ -1004,7 +1004,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(ModelAreaRect));
                     RaisePropertyChanged(nameof(Width));
                     break;
-                case nameof(ModelBase.Position):
+                case nameof(AnnotationModel.Position):
                     RaisePropertyChanged(nameof(ModelAreaRect));
                     RaisePropertyChanged(nameof(AnnotationModel.Position));
                     UpdateProxyPortsPosition();
