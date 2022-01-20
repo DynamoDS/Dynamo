@@ -133,6 +133,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public PointCollection TooltipPointerPoints { get; set; }
 
         /// <summary>
+        /// This will contains the shadow direction in degrees that will be shown in the pointer
+        /// </summary>
+        public double ShadowTooltipDirection { get; set; }
+
+        /// <summary>
         /// This property holds the DynamoViewModel that will be used when executing PreValidation functions
         /// </summary>
         internal DynamoViewModel DynamoViewModelStep { get; set; }

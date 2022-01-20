@@ -458,7 +458,6 @@
                             </TextBlock>
                             <TextBox Name="GroupTextBox"
                                      Grid.Column="0"
-                                     MaxLength="30"
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationText,Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBox'}"
                                      TextWrapping="WrapWithOverflow"
@@ -489,7 +488,6 @@
                                        Visibility="Visible">
                             </TextBlock>
                             <TextBox Name="GroupDescriptionTextBox"
-                                     MaxLength="280"
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
                                      TextWrapping="Wrap"

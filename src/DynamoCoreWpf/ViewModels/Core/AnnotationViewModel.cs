@@ -625,8 +625,12 @@ namespace Dynamo.ViewModels
             if (ownerNodes != null)
             {
                 return ownerNodes.SelectMany(x => x.InPorts
-                        .Where(p => !p.IsConnected || !p.Connectors.Any(c => ownerNodes.Contains(c.Start.Owner)))
-                    ) ;
+                        .Where(p => !p.IsConnected ||
+                                    !p.Connectors.Any(c => ownerNodes.Contains(c.Start.Owner)) ||
+                                    // If the port is connected to any of the groups outports
+                                    // we need to return it as well
+                                    p.Connectors.Any(c => outPorts.Select(m => m.PortModel).Contains(c.Start)))
+                        );
             }
 
             // If this group does contain any AnnotationModels
@@ -634,7 +638,11 @@ namespace Dynamo.ViewModels
             // not belong to a group.
             return Nodes.OfType<NodeModel>()
                 .SelectMany(x => x.InPorts
-                    .Where(p => !p.IsConnected || !p.Connectors.Any(c => Nodes.Contains(c.Start.Owner)))
+                    .Where(p => !p.IsConnected || 
+                                !p.Connectors.Any(c => Nodes.Contains(c.Start.Owner)) ||
+                                // If the port is connected to any of the groups outports
+                                // we need to return it as well
+                                p.Connectors.Any(c => outPorts.Select(m => m.PortModel).Contains(c.Start)))
                 );
         }
 
@@ -647,7 +655,11 @@ namespace Dynamo.ViewModels
             {
                 return ownerNodes
                     .SelectMany(x => x.OutPorts
-                        .Where(p => !p.IsConnected || !p.Connectors.Any(c => ownerNodes.Contains(c.End.Owner)))
+                        .Where(p => !p.IsConnected ||
+                                    !p.Connectors.Any(c => ownerNodes.Contains(c.End.Owner)) ||
+                                    // If the port is connected to any of the groups inports
+                                    // we need to return it as well
+                                    p.Connectors.Any(c => inPorts.Select(m => m.PortModel).Contains(c.End)))
                     );
             }
 
@@ -656,7 +668,11 @@ namespace Dynamo.ViewModels
             // not belong to a group.
             return Nodes.OfType<NodeModel>()
                 .SelectMany(x => x.OutPorts
-                    .Where(p => !p.IsConnected || !p.Connectors.Any(c => Nodes.Contains(c.End.Owner)))
+                    .Where(p => !p.IsConnected || 
+                                !p.Connectors.Any(c => Nodes.Contains(c.End.Owner)) ||
+                                // If the port is connected to any of the groups inports
+                                // we need to return it as well
+                                p.Connectors.Any(c => inPorts.Select(m => m.PortModel).Contains(c.End)))
                 );
         }
 
