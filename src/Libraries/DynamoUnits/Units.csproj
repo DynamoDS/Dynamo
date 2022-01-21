@@ -36,6 +36,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>..\..\..\bin\AnyCPU\Release\DynamoUnits.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ForgeUnitsCLR, Version=3.2.2.0, Culture=neutral, processorArchitecture=AMD64">
