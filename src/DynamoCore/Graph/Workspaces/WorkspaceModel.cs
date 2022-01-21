@@ -827,7 +827,7 @@ namespace Dynamo.Graph.Workspaces
             {
                 homeWorkspaceModel.EngineController.RunActionIfLiveRunnerNotBusy(() =>
                 {
-                    this.Log("!!!!!!!!!computing external deps");
+                    Log("Computing External File References");
                     foreach (var node in nodes)
                     {
                         externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
