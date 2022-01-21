@@ -822,7 +822,7 @@ namespace Dynamo.Graph.Workspaces
         /// Computes the external file references if the Workspace Model is a HomeWorkspaceModel and graph is not running.
         /// </summary>
         /// <returns></returns>
-        internal List<INodeLibraryDependencyInfo> GetExternalFiles()
+        private List<INodeLibraryDependencyInfo> GetExternalFiles()
         {
             var externalFiles = new Dictionary<object, DependencyInfo>();
 
