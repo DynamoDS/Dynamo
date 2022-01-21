@@ -1053,6 +1053,21 @@ namespace Dynamo.ViewModels
                 if (this.currentState != State.None)
                     throw new InvalidOperationException();
 
+                // add shift click removal of group node or note belongs to
+                if (Keyboard.IsKeyDown(Key.LeftShift) && !DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any())
+                {
+                    foreach (var model in DynamoSelection.Instance.Selection.OfType<ModelBase>())
+                    {
+                        var parentGroup = owningWorkspace.Annotations
+                            .Where(x => x.AnnotationModel.ContainsModel(model))
+                            .FirstOrDefault();
+                        if (parentGroup != null)
+                        {
+                            owningWorkspace.DynamoViewModel.UngroupModelCommand.Execute(null);
+                        }
+                    }
+                }
+
                 SetCurrentState(State.DragSetup);
             }
 
