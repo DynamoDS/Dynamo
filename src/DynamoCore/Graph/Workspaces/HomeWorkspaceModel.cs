@@ -1003,8 +1003,7 @@ namespace Dynamo.Graph.Workspaces
             // If an execution is in progress we'll have to wait for it to be done before we can gather the
             // external file references as this implementation relies on the output values of each node.
             //instead just bail to avoid blocking the UI.
-            //TODO Don't really like this solution, this bool only reflects the state of this graph, not the liverunner or engine.
-            if (!executingTask)
+            if (RunSettings.RunEnabled)
             {
                 foreach (var node in Nodes)
                 {
