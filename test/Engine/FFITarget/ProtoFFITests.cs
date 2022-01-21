@@ -1030,5 +1030,16 @@ namespace FFITarget
             public double Y { get; set; }
             public double Z { get; set; }
         }
+
+        public class Circle
+        {
+            public static Circle ByPointRadius(Point pt, double rad)
+            {
+                return new Circle { Center = pt, Radius = rad };
+            }
+
+            public Point Center { get; set; }
+            public double Radius { get; set; }
+        }
     }
 }

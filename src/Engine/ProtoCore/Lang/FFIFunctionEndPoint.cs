@@ -109,14 +109,14 @@ namespace ProtoCore.Lang
                         stackFrame.ThisPtr = formalParameters[thisPtrIndex];
                     }
 
-                // Comment Jun: Execute() can handle a null this pointer. 
-                // But since we don't even need to to reach there if we don't have a valid this pointer, then just return null
-                if (formalParameters[thisPtrIndex].IsNull)
-                {
-                    runtimeCore.RuntimeStatus.LogWarning(
-                        Runtime.WarningID.DereferencingNonPointer, Resources.kDereferencingNonPointer);
-                    return StackValue.Null;
-                }
+                    // Comment Jun: Execute() can handle a null this pointer. 
+                    // But since we don't even need to to reach there if we don't have a valid this pointer, then just return null
+                    if (formalParameters[thisPtrIndex].IsNull)
+                    {
+                        runtimeCore.RuntimeStatus.LogWarning(
+                            Runtime.WarningID.DereferencingNonPointer, Resources.kDereferencingNonPointer);
+                        return StackValue.Null;
+                    }
 
                     // These are the op types allowed. 
                     Validity.Assert(formalParameters[thisPtrIndex].IsPointer ||

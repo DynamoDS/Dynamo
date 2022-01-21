@@ -12,6 +12,7 @@ using ProtoCore.Utils;
 using ProtoFFI;
 using Dynamo.Utilities;
 using System.IO;
+using System.Collections;
 
 namespace ProtoScript.Runners
 {
@@ -1557,6 +1558,13 @@ namespace ProtoScript.Runners
                 // Prior to execution, apply state modifications to the VM given the delta AST's
                 bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
                 changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
+
+                ///////////////////////////////////////////////////
+                Dictionary<string, IList> input = new Dictionary<string, IList>();
+                var codeGenIL = new EmitMSIL.CodeGenIL(input, @"D:\GitHub\Dynamo\src\Engine\EmitMSIL\bin\Debug\opCodes.txt");
+                codeGenIL.Emit(finalDeltaAstList);
+
+                ///////////////////////////////////////////////////
 
                 if (finalDeltaAstList.Any() || anyForcedExecutedNodes)
                 {

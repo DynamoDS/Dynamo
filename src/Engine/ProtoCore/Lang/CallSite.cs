@@ -1489,7 +1489,7 @@ namespace ProtoCore
 
             #endregion
 
-            partialReplicationGuides = PerformRepGuideDemotion(arguments, partialReplicationGuides, runtimeCore);
+            partialReplicationGuides = PerformRepGuideDemotion(arguments, partialReplicationGuides);
 
             //Replication Control is an ordered list of the elements that we have to replicate over
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
@@ -2026,7 +2026,8 @@ namespace ProtoCore
         /// <param name="partialReplicationGuides"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        private static List<List<ReplicationGuide>> PerformRepGuideDemotion(List<StackValue> arguments, List<List<ReplicationGuide>> providedReplicationGuides, RuntimeCore runtimeCore)
+        private static List<List<ReplicationGuide>> PerformRepGuideDemotion(List<StackValue> arguments, 
+            List<List<ReplicationGuide>> providedReplicationGuides)
         {
             if (providedReplicationGuides.Count == 0)
                 return providedReplicationGuides;

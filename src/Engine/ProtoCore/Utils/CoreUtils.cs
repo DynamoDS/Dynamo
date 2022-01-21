@@ -604,6 +604,47 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
+        /// Given a function call AST, returns the parameter types and return type of the function.
+        /// This currently does a basic match of function name and number of parameters. It needs 
+        /// to be enhanced to include parameter type checks.
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="ast"></param>
+        /// <param name="argTypes"></param>
+        /// <returns></returns>
+        public static System.Type GetFunctionSignatureFromAST(Core core, AssociativeNode ast, out List<System.Type> argTypes)
+        {
+            argTypes = new List<System.Type>();
+            ProcedureNode procNode = null;
+            string className = string.Empty;
+            if(ast is IdentifierListNode iln)
+            {
+                className = GetIdentifierExceptMethodName(iln);
+                var classNode = core.ClassTable.ClassNodes.FirstOrDefault(cn => cn.Name == className);
+                if (iln.RightNode is FunctionCallNode fcn)
+                {
+                    procNode = classNode.ProcTable.GetFunctionsByNameAndArgumentNumber(fcn.Function.Name, fcn.FormalArguments.Count).FirstOrDefault();
+                }
+            }
+            if (procNode == null) return null;
+
+            var modules = ProtoFFI.DLLFFIHandler.Modules.Values.OfType<ProtoFFI.CLRDLLModule>();
+            var assemblies = modules.Select(m => m.Module.Assembly);
+            foreach(var asm in assemblies)
+            {
+                var method = asm.GetType(className).GetMethods(System.Reflection.BindingFlags.Public).Where(
+                    m => m.Name == procNode.Name && m.GetParameters().Length == procNode.ArgumentInfos.Count).FirstOrDefault();
+
+                if (method != null)
+                {
+                    argTypes = method.GetParameters().Select(p => p.ParameterType).ToList();
+                    return method.ReturnType;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Inspects the input identifier list to match all class names with the class used in it
         /// </summary>
         /// <param name="classTable"></param>
