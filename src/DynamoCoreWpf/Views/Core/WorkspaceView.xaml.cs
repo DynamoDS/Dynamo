@@ -255,14 +255,22 @@ namespace Dynamo.Views
         }
 
         /// <summary>
-        /// Hides Context Menu as well as InCanvasControl (Right Click PopUp)
+        /// Hides all popups in the view, the amount of popup hidden will be different depending on
+        /// if the hide view command is triggered on node level or workspace level
         /// </summary>
-        public void HideAllPopUp()
+        public void HideAllPopUp(object sender)
         {
+            // First make sure workspace level popups are hidden
             if (InCanvasSearchBar.IsOpen || ContextMenuPopup.IsOpen)
             {
                 ShowHideContextMenu(ShowHideFlags.Hide);
                 ShowHideInCanvasControl(ShowHideFlags.Hide);
+            }
+            // If triggered on node level, make sure node popups are also hidden
+            if(sender is NodeView && (PortContextMenu.IsOpen || NodeAutoCompleteSearchBar.IsOpen) )
+            {
+                ShowHidePopup(ShowHideFlags.Hide, PortContextMenu);
+                ShowHidePopup(ShowHideFlags.Hide, NodeAutoCompleteSearchBar);
             }
         }
 
