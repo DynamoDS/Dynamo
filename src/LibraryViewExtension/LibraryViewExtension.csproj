@@ -1,119 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props" Condition="Exists('..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props')" />
-  <Import Project="..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props')" />
-  <Import Project="..\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props" Condition="Exists('..\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props')" />
-  <Import Project="..\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props" Condition="Exists('..\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props')" />
-  <Import Project="$(SolutionDir)/Config/CS.props" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
+  </ImportGroup>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+	<CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
     <ProjectGuid>{8EACBFD1-1CD4-4519-A5FC-215D40A67204}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.LibraryUI</RootNamespace>
     <AssemblyName>LibraryViewExtension</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
-    <OutputPath>bin\Debug\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <OutputPath>bin\Release\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PlatformTarget>x64</PlatformTarget>
+	<OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
+    <Compile Remove="Handlers\GetPackageResourceHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EventObserver.cs" />
-    <Compile Include="Handlers\IconResourceProvider.cs" />
-    <Compile Include="Handlers\IconUrl.cs" />
-    <Compile Include="Handlers\LayoutSpecProvider.cs" />
-    <Compile Include="Handlers\NodeItemDataProvider.cs" />
-    <Compile Include="Handlers\ResourceHandlerFactory.cs" />
-    <Compile Include="Handlers\ResourceProvider.cs" />
-    <Compile Include="Handlers\DllResourceProvider.cs" />
-    <Compile Include="Handlers\SearchResultDataProvider.cs" />
-    <Compile Include="LibraryViewController.cs" />
-    <Compile Include="LibraryViewCustomization.cs" />
-    <Compile Include="LibraryViewExtension.cs" />
-    <Compile Include="LibraryViewToolTip.cs" />
-    <Compile Include="Properties\Resources.en-US.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.en-US.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModels\DetailsViewModel.cs" />
-    <Compile Include="Views\DetailsView.xaml.cs">
-      <DependentUpon>DetailsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\LibraryView.xaml.cs">
-      <DependentUpon>LibraryView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModels\LibraryViewModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>Properties\AssemblySharedInfo.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
-      <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
-      <Name>DynamoCoreWpf</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
-      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
-      <Name>DynamoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
+	<PackageReference Include="cef.redist.x64" Version="3.3325.1758" />
+	<PackageReference Include="cef.redist.x86" Version="3.3325.1758" />
+	<PackageReference Include="CefSharp.Common" Version="65.0.1">
+	  <GeneratePathProperty>true</GeneratePathProperty>
+	</PackageReference>
+	<PackageReference Include="CefSharp.Wpf" Version="65.0.1">
+	  <GeneratePathProperty>true</GeneratePathProperty>
+	</PackageReference>
+	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+	<ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj" />
+	<ProjectReference Include="..\DynamoCore\DynamoCore.csproj" />
     <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
       <Name>DynamoPackages</Name>
@@ -122,11 +34,6 @@
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
-      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
-      <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
@@ -139,16 +46,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.en-US.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="web\library\layoutSpecs.json" />
@@ -220,9 +117,6 @@
     <EmbeddedResource Include="web\library\resources\Tessellation.Voronoi.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Library_ViewExtensionDefinition.xml" />
     <EmbeddedResource Include="web\library\resources\bin.svg" />
     <EmbeddedResource Include="web\library\resources\indent-arrow-category-down.svg" />
@@ -233,31 +127,43 @@
     <EmbeddedResource Include="web\library\resources\search-icon-clear.svg" />
     <EmbeddedResource Include="web\library\resources\search-icon.svg" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <Target Name="AfterBuild">
+  <ItemGroup>
+	  <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Resources.en-US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.en-US.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="Library_ViewExtensionDefinition.xml" />
     </ItemGroup>
     <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\viewExtensions\" />
   </Target>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props'))" />
-    <Error Condition="!Exists('..\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets'))" />
-  </Target>
-  <Import Project="..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.targets')" />
-  <Import Project="..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets" Condition="Exists('..\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.targets')" />
+  <Import Project="$(PkgCefSharp_Common)\build\CefSharp.Common.targets" Condition="Exists('$(PkgCefSharp_Common)\build\CefSharp.Common.targets')" />
+  <Import Project="$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.targets" Condition="Exists('$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.targets')" />
 </Project>
