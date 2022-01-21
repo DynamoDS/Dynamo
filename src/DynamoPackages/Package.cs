@@ -373,7 +373,7 @@ namespace Dynamo.PackageManager
             // In earlier packages, this field could be null, which is correctly handled by IsNodeLibrary
             var nodeLibraries = Header.node_libraries;
             
-            foreach (var assemFile in (new System.IO.DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
+            foreach (var assemFile in new DirectoryInfo(BinaryDirectory).EnumerateFiles("*.dll"))
             {
                 Assembly assem;
                 //TODO when can we make this false. 3.0?

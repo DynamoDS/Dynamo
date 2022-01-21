@@ -7,6 +7,7 @@ using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Events;
 using Dynamo.Logging;
+using Dynamo.PythonServices;
 using Dynamo.PythonServices.EventHandlers;
 using Dynamo.Session;
 using Dynamo.Utilities;
@@ -54,7 +55,7 @@ namespace DSIronPython
         /// </summary>
         public const string packageExtraFolderName = @"extra";
 
-        public override string Name => PythonNodeModels.PythonEngineVersion.IronPython2.ToString();
+        public override string Name => PythonEngineManager.IronPython2EngineName;
 
         /// <summary>
         /// Use Lazy&lt;PythonEngineManager&gt; to make sure the Singleton class is only initialized once

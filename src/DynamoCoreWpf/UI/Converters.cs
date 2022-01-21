@@ -154,23 +154,12 @@ namespace Dynamo.Controls
     /// <summary>
     /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
     /// </summary>
+    [Obsolete("This class will be removed in Dynamo 3.0")]
     public class EmptyDepStringToCollapsedConverter : IValueConverter
     {
-        private readonly string[] PythonEngineList = { PythonEngineVersion.CPython3.ToString(), PythonEngineVersion.IronPython2.ToString() };
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
-            if (value != null)
-            {
-                List<string> depList = (List<string>)value;
-                foreach (var dep in depList)
-                {
-                    if (PythonEngineList.IndexOf(dep) != -1)
-                    {
-                        return Visibility.Visible;
-                    }
-                }
-            }
             return Visibility.Collapsed;
         }
 
