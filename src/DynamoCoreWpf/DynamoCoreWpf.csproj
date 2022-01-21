@@ -1442,6 +1442,12 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\max-default.png" />
+    <Resource Include="UI\Images\min-default.png" />
+    <Resource Include="UI\Images\minimize-hover.png" />
+    <Resource Include="UI\Images\minimize-hover-16px.png" />
+    <Resource Include="UI\Images\minimize-default-16px.png" />
+    <Resource Include="UI\Images\maximize-hover.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\PackageNodes.gif" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\installedPackage.html" />
