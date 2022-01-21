@@ -831,7 +831,7 @@ namespace Dynamo.Graph.Workspaces
             //instead just bail to avoid blocking the UI.
             if (this is HomeWorkspaceModel homeWorkspaceModel && homeWorkspaceModel.RunSettings.RunEnabled)
             {
-                foreach (var node in Nodes)
+                foreach (var node in nodes)
                 {
                     externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
 
