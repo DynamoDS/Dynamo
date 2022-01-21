@@ -267,7 +267,6 @@ limitations under the License.
     <Compile Include="Configuration\PreferenceSettings.cs" />
     <Compile Include="Logging\DynamoLogger.cs" />
     <Compile Include="Core\DynamoSelection.cs" />
-    <Compile Include="Logging\Heartbeat.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Updates\BinaryVersion.cs" />
