@@ -735,6 +735,7 @@ namespace Dynamo.Controls
         private void DisplayNodeContextMenu(object sender, RoutedEventArgs e)
         {
             Guid nodeGuid = ViewModel.NodeModel.GUID;
+            ViewModel.WorkspaceViewModel.HideAllPopupCommand.Execute(sender);
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
