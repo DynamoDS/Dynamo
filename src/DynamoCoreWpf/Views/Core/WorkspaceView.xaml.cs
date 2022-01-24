@@ -124,16 +124,17 @@ namespace Dynamo.Views
         private void RemoveViewModelsubscriptions(WorkspaceViewModel ViewModel)
         {
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
+            ViewModel.RequestHideAllPopup -= HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
             ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
-           
+
             ViewModel.ZoomChanged -= vm_ZoomChanged;
             ViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
             ViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
             ViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
             ViewModel.RequestCenterViewOnElement -= CenterViewOnElement;
-         
+
             ViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
@@ -151,6 +152,7 @@ namespace Dynamo.Views
         private void AttachViewModelsubscriptions(WorkspaceViewModel ViewModel)
         {
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
+            ViewModel.RequestHideAllPopup += HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
             ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -172,7 +174,7 @@ namespace Dynamo.Views
         }
 
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
-        {            
+        {
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
         }
 
@@ -239,7 +241,7 @@ namespace Dynamo.Views
                     // If the dispatcher is not used in this scenario when switching
                     // from inputPort context menu to Output port context menu,
                     // the popup will display before the new content is fully rendered
-                    this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() =>{
+                    this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() => {
                         popup.Child.Visibility = Visibility.Visible;
                         popup.Child.UpdateLayout();
                         popup.IsOpen = displayPopup;
@@ -253,14 +255,22 @@ namespace Dynamo.Views
         }
 
         /// <summary>
-        /// Hides Context Menu as well as InCanvasControl (Right Click PopUp)
+        /// Hides all popups in the view, the amount of popup hidden will be different depending on
+        /// if the hide view command is triggered on node level or workspace level
         /// </summary>
-        public void HidePopUp()
+        public void HideAllPopUp(object sender)
         {
+            // First make sure workspace level popups are hidden
             if (InCanvasSearchBar.IsOpen || ContextMenuPopup.IsOpen)
             {
                 ShowHideContextMenu(ShowHideFlags.Hide);
                 ShowHideInCanvasControl(ShowHideFlags.Hide);
+            }
+            // If triggered on node level, make sure node popups are also hidden
+            if(sender is NodeView && (PortContextMenu.IsOpen || NodeAutoCompleteSearchBar.IsOpen) )
+            {
+                ShowHidePopup(ShowHideFlags.Hide, PortContextMenu);
+                ShowHidePopup(ShowHideFlags.Hide, NodeAutoCompleteSearchBar);
             }
         }
 

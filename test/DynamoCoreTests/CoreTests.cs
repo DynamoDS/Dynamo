@@ -431,7 +431,8 @@ namespace Dynamo.Tests
             CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(addNode);
 
             var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, addNode.GUID, "Code", "");
-            Assert.Throws<InvalidOperationException>(() => CurrentDynamoModel.ExecuteCommand(command));
+            Assert.Throws<InvalidOperationException>(() => CurrentDynamoModel.CurrentWorkspace.UpdateModelValue(command.ModelGuids,
+                    command.Name, command.Value));
         }
 
         [Test]
@@ -439,7 +440,8 @@ namespace Dynamo.Tests
         public void UpdateModelValue_EmptyList_ThrowsException()
         {
             var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, new Guid[] { }, "", "");
-            Assert.Throws<ArgumentNullException>(() => CurrentDynamoModel.ExecuteCommand(command));
+            Assert.Throws<ArgumentNullException>(() => CurrentDynamoModel.CurrentWorkspace.UpdateModelValue(command.ModelGuids,
+                    command.Name, command.Value));
         }
 
         [Test]
