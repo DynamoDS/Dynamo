@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -812,6 +813,43 @@ namespace DynamoCoreWpfTests
                 Assert.AreEqual(InfoBubbleViewModel.Direction.Bottom, infoBubble.ConnectingDirection);
                 Assert.IsNull(infoBubble.DocumentationLink);
             }
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void GraphErrorPerformance()
+        {
+            double timeLimit = 1000;//ms
+            double range = 70;
+
+            //open file in manual
+            OpenDynamoDefinition(Path.Combine(GetTestDirectory(ExecutingDirectory), @"UI/errorbubbleperf.dyn"));
+            //start stop watch
+            var stopwatch = new Stopwatch();
+            stopwatch.Restart();
+            //run
+            RunCurrentModel();
+            //check time is < x by some fuzz factor.
+            stopwatch.Stop();
+          
+            Assert.IsTrue(Math.Abs(stopwatch.ElapsedMilliseconds - timeLimit) < range / 100 * timeLimit,
+                $"run time should be within a range of +/- {range}% of {timeLimit}ms but we got {stopwatch.ElapsedMilliseconds}ms");
+            //verify run produced 100 errors
+            var warnings = Model.CurrentWorkspace.Nodes.Where(x => x.State == ElementState.Warning);
+            Assert.AreEqual(64, warnings.Count());
+            //modify input
+            var cbn = Model.CurrentWorkspace.Nodes.Where(x => x.Name == "inputnode").FirstOrDefault() as CodeBlockNodeModel;
+            cbn.SetCodeContent("2;",new ProtoCore.Namespace.ElementResolver());
+            stopwatch.Restart();
+            RunCurrentModel();
+            //check time is <x by fuzz factor
+            stopwatch.Stop();
+            Assert.IsTrue(Math.Abs(stopwatch.ElapsedMilliseconds - timeLimit) < range / 100 * timeLimit,
+                  $"run time should be within a range of +/- {range}% of {timeLimit}ms but we got {stopwatch.ElapsedMilliseconds}ms");
+            //check run produced 0 errors.
+            warnings = Model.CurrentWorkspace.Nodes.Where(x => x.State == ElementState.Warning);
+            Assert.AreEqual(0, warnings.Count());
+
         }
 
         [Test, Ignore]
