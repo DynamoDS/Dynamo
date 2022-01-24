@@ -819,7 +819,8 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void GraphErrorPerformance()
         {
-            double timeLimit = 1000;//ms
+            double timeLimit = 5000;//ms
+            double timeLimit2 = 2000;//ms
             double range = 70;
 
             //open file in manual
@@ -829,9 +830,10 @@ namespace DynamoCoreWpfTests
             stopwatch.Restart();
             //run
             RunCurrentModel();
+            DispatcherUtil.DoEvents();
             //check time is < x by some fuzz factor.
             stopwatch.Stop();
-          
+            Console.WriteLine(stopwatch.ElapsedMilliseconds);
             Assert.IsTrue(Math.Abs(stopwatch.ElapsedMilliseconds - timeLimit) < range / 100 * timeLimit,
                 $"run time should be within a range of +/- {range}% of {timeLimit}ms but we got {stopwatch.ElapsedMilliseconds}ms");
             //verify run produced 100 errors
@@ -842,10 +844,12 @@ namespace DynamoCoreWpfTests
             cbn.SetCodeContent("2;",new ProtoCore.Namespace.ElementResolver());
             stopwatch.Restart();
             RunCurrentModel();
+            DispatcherUtil.DoEvents();
             //check time is <x by fuzz factor
             stopwatch.Stop();
-            Assert.IsTrue(Math.Abs(stopwatch.ElapsedMilliseconds - timeLimit) < range / 100 * timeLimit,
-                  $"run time should be within a range of +/- {range}% of {timeLimit}ms but we got {stopwatch.ElapsedMilliseconds}ms");
+            Console.WriteLine(stopwatch.ElapsedMilliseconds);
+            Assert.IsTrue(Math.Abs(stopwatch.ElapsedMilliseconds - timeLimit2) < range / 100 * timeLimit2,
+                  $"run time should be within a range of +/- {range}% of {timeLimit2}ms but we got {stopwatch.ElapsedMilliseconds}ms");
             //check run produced 0 errors.
             warnings = Model.CurrentWorkspace.Nodes.Where(x => x.State == ElementState.Warning);
             Assert.AreEqual(0, warnings.Count());
