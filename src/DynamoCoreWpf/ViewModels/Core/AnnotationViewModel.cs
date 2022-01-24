@@ -696,7 +696,12 @@ namespace Dynamo.ViewModels
             {
                 case PortType.Input:
                     return new Point2D(Left, y);
-                case PortType.Output:         
+                case PortType.Output:
+                    if (portModel.Owner is CodeBlockNodeModel)
+                    {
+                        // Special case because code block outputs are smaller than regular outputs.
+                        return new Point2D(Left + Width, y + 6);
+                    }
                     return new Point2D(Left + Width, y);
             }
             return new Point2D();
