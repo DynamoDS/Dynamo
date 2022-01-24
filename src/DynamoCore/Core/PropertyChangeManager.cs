@@ -24,7 +24,7 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="props"></param>
         /// <returns></returns>
-        public PropertyChangeManager SetPropsToSuppress(IEnumerable<string> props)
+        public PropertyChangeManager SetPropsToSuppress(params string[] props)
         {
             PropertyNames = props;
             return this;
