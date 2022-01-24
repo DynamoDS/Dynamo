@@ -183,12 +183,12 @@ namespace DSCPython
             Dynamo.Models.DynamoModel.RequestPythonReset += RequestPythonResetHandler;
         }
 
-        public override string Name => PythonNodeModels.PythonEngineVersion.CPython3.ToString();
+        public override string Name => Dynamo.PythonServices.PythonEngineManager.CPython3EngineName;
 
         internal static void RequestPythonResetHandler(string pythonEngine)
         {
             //check if python engine request is for this engine, and engine is currently started
-            if (PythonEngine.IsInitialized && pythonEngine == "CPython3")
+            if (PythonEngine.IsInitialized && pythonEngine == Instance.Name)
             {
                 DynamoLogger?.Log("attempting reload of cpython3 modules", LogLevel.Console);
                 using (Py.GIL())

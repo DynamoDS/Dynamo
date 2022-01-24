@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Logging;
+using Dynamo.PythonServices;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using PythonNodeModels;
 
@@ -85,7 +86,7 @@ namespace Dynamo.Python
         /// </summary>
         public IronPythonCompletionProvider(string dynamoCoreDir)
         {
-            var versionName = Enum.GetName(typeof(PythonEngineVersion), PythonEngineVersion.IronPython2);
+            var versionName = PythonEngineManager.IronPython2EngineName;
             var matchingCore = SharedCompletionProvider.FindMatchingCodeCompletionCore(versionName, this.AsLogger());
             if (matchingCore != null)
             {

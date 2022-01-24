@@ -211,7 +211,8 @@ namespace Dynamo.GraphMetadata
 
         private void OpenGraphStatusExecute(object obj)
         {
-            viewLoadedParams.OpenViewExtension("Graph Status");
+            //Open Graph Status view extension            
+            viewLoadedParams.OpenViewExtension("3467481b-d20d-4918-a454-bf19fc5c25d7");
         }
 
         private void AddCustomPropertyExecute(object obj)

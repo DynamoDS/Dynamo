@@ -142,17 +142,17 @@ namespace Dynamo.Graph.Workspaces
                 this.WidthAdjustment == other.WidthAdjustment &&
                 this.HeightAdjustment == other.HeightAdjustment;
 
-                //TODO try to get rid of these if possible
-                //needs investigation if we are okay letting them get 
-                //calculated at runtime. currently checking them will fail as we do
-                //not deserialize them.
+            //TODO try to get rid of these if possible
+            //needs investigation if we are okay letting them get 
+            //calculated at runtime. currently checking them will fail as we do
+            //not deserialize them.
 
-                //tolerantDoubleCompare(this.Left, other.Left) &&
-                //tolerantDoubleCompare(this.Top, other.Top) &&
-                //tolerantDoubleCompare(this.InitialTop, other.InitialTop);
-                //this.Width == other.Width &&
-                //this.Height == other.Height &&
-                //this.TextBlockHeight == other.TextBlockHeight;
+            //tolerantDoubleCompare(this.Left, other.Left) &&
+            //tolerantDoubleCompare(this.Top, other.Top) &&
+            //tolerantDoubleCompare(this.InitialTop, other.InitialTop);
+            //this.Width == other.Width &&
+            //this.Height == other.Height &&
+            //this.TextBlockHeight == other.TextBlockHeight;
         }
     }
 
@@ -487,7 +487,7 @@ namespace Dynamo.Graph.Workspaces
         public event Action<ConnectorModel> ConnectorDeleted;
         protected virtual void OnConnectorDeleted(ConnectorModel obj)
         {
-           
+
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
             //Check if the workspace is loaded, i.e all the nodes are
@@ -574,7 +574,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     A set of input parameter states, this can be used to set the graph to a serialized state.
         /// </summary>
-        public IEnumerable<PresetModel> Presets { get { return presets;} }
+        public IEnumerable<PresetModel> Presets { get { return presets; } }
 
         /// <summary>
         ///     The date of the last save.
@@ -595,7 +595,8 @@ namespace Dynamo.Graph.Workspaces
         /// <returns> a list of workspace IDs in GUID form</returns>
         public HashSet<Guid> Dependencies
         {
-            get {
+            get
+            {
                 dependencies.Clear();
                 //if the workspace is a main workspace then find all functions and their dependencies
                 if (this is HomeWorkspaceModel)
@@ -673,7 +674,7 @@ namespace Dynamo.Graph.Workspaces
                                 }
                                 // If incorrect version of package is installed and not marked for uninstall,
                                 // set the state. Otherwise, keep the RequiresRestart state away from overwritten.
-                                else if(packageDependencies[saved].State != PackageDependencyState.RequiresRestart)
+                                else if (packageDependencies[saved].State != PackageDependencyState.RequiresRestart)
                                 {
                                     packageDependencies[saved].State = PackageDependencyState.IncorrectVersion;
                                 }
@@ -723,12 +724,12 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-               var nodeLocalDefinitions = new Dictionary<object, DependencyInfo>();
+                var nodeLocalDefinitions = new Dictionary<object, DependencyInfo>();
 
                 foreach (var node in Nodes)
                 {
                     var collected = GetNodePackage(node);
-                    
+
                     if (!nodePackageDictionary.ContainsKey(node.GUID) && collected == null)
                     {
                         string localDefinitionName;
@@ -817,13 +818,18 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// Computes the external file references if the Workspace Model is a HomeWorkspaceModel and graph is not running.
+        /// </summary>
+        /// <returns></returns>
         private List<INodeLibraryDependencyInfo> GetExternalFiles()
         {
             var externalFiles = new Dictionary<object, DependencyInfo>();
 
-            // Computes the external file references if the Workspace Model is a HomeWorkspaceModel.
-            // The workspace should be executed for the external references to be computed because the node output port values are needed.
-            if (this is HomeWorkspaceModel homeWorkspaceModel)
+            // If an execution is in progress we'll have to wait for it to be done before we can gather the
+            // external file references as this implementation relies on the output values of each node.
+            //instead just bail to avoid blocking the UI.
+            if (this is HomeWorkspaceModel homeWorkspaceModel && homeWorkspaceModel.RunSettings.RunEnabled)
             {
                 foreach (var node in nodes)
                 {
@@ -906,9 +912,9 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public bool HasUnsavedChanges
         {
-            get 
+            get
             {
-                if(!string.IsNullOrEmpty(this.FileName)) // if there is a filename
+                if (!string.IsNullOrEmpty(this.FileName)) // if there is a filename
                 {
                     if (!File.Exists(this.FileName)) // but the filename is invalid
                     {
@@ -930,7 +936,7 @@ namespace Dynamo.Graph.Workspaces
         /// Returns if current workspace is readonly.
         /// </summary>
         public bool IsReadOnly
-        {   
+        {
             //if the workspace contains xmlDummyNodes it's effectively a readonly graph.
             get { return isReadOnly || this.containsXmlDummyNodes() || this.containsInvalidInputSymbols(); }
             set
@@ -970,7 +976,7 @@ namespace Dynamo.Graph.Workspaces
             {
                 nodes.Add(node);
             }
-            
+
             OnNodeAdded(node);
         }
 
@@ -1100,7 +1106,7 @@ namespace Dynamo.Graph.Workspaces
                 RaisePropertyChanged("Y");
             }
         }
-        
+
         /// <summary>
         ///     Get or set the zoom value of the workspace.
         /// </summary>
@@ -1378,7 +1384,7 @@ namespace Dynamo.Graph.Workspaces
 
             ClearUndoRecorder();
             ResetWorkspace();
-            
+
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;
@@ -1464,7 +1470,7 @@ namespace Dynamo.Graph.Workspaces
         {
             node.Modified += NodeModified;
             node.ConnectorAdded += OnConnectorAdded;
-            node.UpdateASTCollection +=OnToggleNodeFreeze;
+            node.UpdateASTCollection += OnToggleNodeFreeze;
 
             var functionNode = node as Function;
             if (functionNode != null)
@@ -1617,8 +1623,8 @@ namespace Dynamo.Graph.Workspaces
 
         internal AnnotationModel AddAnnotation(string text, Guid id)
         {
-            var selectedNodes = this.Nodes == null ? null:this.Nodes.Where(s => s.IsSelected);
-            var selectedNotes = this.Notes == null ? null: this.Notes.Where(s => s.IsSelected);
+            var selectedNodes = this.Nodes == null ? null : this.Nodes.Where(s => s.IsSelected);
+            var selectedNotes = this.Notes == null ? null : this.Notes.Where(s => s.IsSelected);
 
             if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
             {
@@ -1642,10 +1648,10 @@ namespace Dynamo.Graph.Workspaces
         }
 
         private AnnotationModel CreateAndSubcribeAnnotationModel(
-            IEnumerable<NodeModel> nodes, 
-            IEnumerable<NoteModel> notes, 
-            Guid id, 
-            string titel, 
+            IEnumerable<NodeModel> nodes,
+            IEnumerable<NoteModel> notes,
+            Guid id,
+            string titel,
             string description = "")
         {
             var annotationModel = new AnnotationModel(nodes, notes)
@@ -1715,7 +1721,7 @@ namespace Dynamo.Graph.Workspaces
             foreach (var group in this.Annotations)
             {
                 var groupModels = group.Nodes;
-                
+
                 //Selected models minus the ones in the current annotation
                 var modelsExceptGroup = selectedModels.Except(groupModels).ToList();
 
@@ -1758,7 +1764,7 @@ namespace Dynamo.Graph.Workspaces
             return
                 Nodes.Where(
                     node =>
-                       !node.InPorts.Any()||node.InPorts.All(port => !port.Connectors.Any()));
+                       !node.InPorts.Any() || node.InPorts.All(port => !port.Connectors.Any()));
         }
 
         /// <summary>
@@ -1803,7 +1809,7 @@ namespace Dynamo.Graph.Workspaces
         /// <returns></returns>
         internal bool containsXmlDummyNodes()
         {
-            return this.Nodes.OfType<DummyNode>().Where(node => node.OriginalNodeContent is XmlElement).Count()> 0;
+            return this.Nodes.OfType<DummyNode>().Where(node => node.OriginalNodeContent is XmlElement).Count() > 0;
         }
 
         /// <summary>
@@ -2237,11 +2243,11 @@ namespace Dynamo.Graph.Workspaces
         public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo)
         {
             if (workspaceViewInfo == null)
-              return;
+                return;
 
             X = workspaceViewInfo.X;
             Y = workspaceViewInfo.Y;
-            Zoom = workspaceViewInfo.Zoom; 
+            Zoom = workspaceViewInfo.Zoom;
 
             OnCurrentOffsetChanged(
                 this,
@@ -2278,7 +2284,7 @@ namespace Dynamo.Graph.Workspaces
         private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews)
         {
             if (nodeViews == null)
-              return;
+                return;
 
             foreach (ExtraNodeViewInfo nodeViewInfo in nodeViews)
             {
@@ -2301,9 +2307,9 @@ namespace Dynamo.Graph.Workspaces
                     nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.ShowGeometry.ToString()));
                 }
                 else
-                {   
-                    this.Log(string.Format("This graph has a nodeview with id:{0} and name:{1}, but does not contain a matching nodeModel", 
-                        guidValue.ToString(),nodeViewInfo.Name)
+                {
+                    this.Log(string.Format("This graph has a nodeview with id:{0} and name:{1}, but does not contain a matching nodeModel",
+                        guidValue.ToString(), nodeViewInfo.Name)
                         , WarningLevel.Moderate);
                 }
             }
@@ -2312,7 +2318,7 @@ namespace Dynamo.Graph.Workspaces
         private void LoadLegacyNotes(IEnumerable<ExtraNoteViewInfo> noteViews)
         {
             if (noteViews == null)
-              return;
+                return;
 
             foreach (ExtraNoteViewInfo noteViewInfo in noteViews)
             {
@@ -2333,7 +2339,7 @@ namespace Dynamo.Graph.Workspaces
         private void LoadNotesFromAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
         {
             if (annotationViews == null)
-              return;
+                return;
 
             foreach (ExtraAnnotationViewInfo annotationViewInfo in annotationViews)
             {
@@ -2351,9 +2357,9 @@ namespace Dynamo.Graph.Workspaces
                     FirstOrDefault(x => x.GUID.ToString("N") == annotationViewInfo.PinnedNode);
 
                 var noteModel = new NoteModel(
-                    annotationViewInfo.Left, 
-                    annotationViewInfo.Top, 
-                    text, 
+                    annotationViewInfo.Left,
+                    annotationViewInfo.Top,
+                    text,
                     annotationGuidValue,
                     pinnedNode);
 
@@ -2368,14 +2374,14 @@ namespace Dynamo.Graph.Workspaces
 
         private void LoadConnectorPins(IEnumerable<ExtraConnectorPinInfo> pinInfo)
         {
-            if (pinInfo == null) {return;}
+            if (pinInfo == null) { return; }
 
             foreach (ExtraConnectorPinInfo pinViewInfo in pinInfo)
             {
                 var connectorGuid = IdToGuidConverter(pinViewInfo.ConnectorGuid);
 
                 var matchingConnector = Connectors.FirstOrDefault(x => x.GUID == connectorGuid);
-                if (matchingConnector is null) {return;}
+                if (matchingConnector is null) { return; }
 
                 matchingConnector.AddPin(pinViewInfo.Left, pinViewInfo.Top);
             }
@@ -2392,7 +2398,7 @@ namespace Dynamo.Graph.Workspaces
                 // Before creating this group we need to create
                 // any group belonging to this group.
                 if (annotationViewInfo.HasNestedGroups &&
-                    !annotationQueue.All(x=>x.HasNestedGroups))
+                    !annotationQueue.All(x => x.HasNestedGroups))
                 {
                     annotationQueue.Enqueue(annotationViewInfo);
                     continue;
@@ -2494,7 +2500,7 @@ namespace Dynamo.Graph.Workspaces
 
             return deterministicGuid;
         }
-        
+
         /// <summary>
         ///     Returns a DelayedGraphExecution object.
         /// </summary>

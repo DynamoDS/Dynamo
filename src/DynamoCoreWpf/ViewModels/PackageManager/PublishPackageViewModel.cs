@@ -1124,9 +1124,8 @@ namespace Dynamo.PackageManager
             var pythonEngineDirectDep = workspaces
                 .SelectMany(x => x.Nodes)
                 .Where(x => x is PythonNode)
-                .Select(x => ((PythonNode)x).Engine)
-                .Distinct()
-                .Select(x => x.ToString());
+                .Select(x => ((PythonNode)x).EngineName)
+                .Distinct();
 
             return pythonEngineDirectDep.Union(allDepPackagesPythonEngine).ToList();
 

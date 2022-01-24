@@ -11,7 +11,6 @@
   "Nodes": [
     {
       "ConcreteType": "PythonNodeModels.PythonStringNode, PythonNodeModels",
-      "Engine": "CPython3",
       "VariableInputPorts": true,
       "NodeType": "ExtensionNode",
       "Id": "bad59bc89b4947b699ee34fa8dca91ae",

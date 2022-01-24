@@ -906,7 +906,7 @@ namespace Dynamo.ViewModels
 
             foreach (var n in childlessModels)
             {
-                if (IsInRegion(region, n, fullyEnclosed))
+                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed)
                 {
                     selection.AddUnique(n);
                 }
@@ -918,7 +918,7 @@ namespace Dynamo.ViewModels
 
             foreach (var n in Model.Annotations)
             {
-                if (IsInRegion(region, n, fullyEnclosed))
+                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed)
                 {
                     selection.AddUnique(n);
                     // if annotation is selected its children should be added to selection too
