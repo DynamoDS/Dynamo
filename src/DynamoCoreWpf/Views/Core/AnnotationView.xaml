@@ -724,7 +724,6 @@
                               Grid.Row="0"
                               Canvas.ZIndex="20"
                               HorizontalContentAlignment="Left"
-                              Style="{StaticResource InOutPortControlStyle}"
                               ItemsSource="{Binding Path=InPorts}"
                               Margin="-25,10">
                 </ItemsControl>
@@ -735,7 +734,6 @@
                               Grid.Row="0"
                               Canvas.ZIndex="20"
                               HorizontalContentAlignment="Right"
-                              Style="{StaticResource InOutPortControlStyle}"
                               ItemsSource="{Binding Path=OutPorts}"
                               Margin="-25,10">
                 </ItemsControl>
