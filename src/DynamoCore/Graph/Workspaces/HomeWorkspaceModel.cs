@@ -744,15 +744,17 @@ namespace Dynamo.Graph.Workspaces
             }
 
             var workspace = updateTask.TargetedWorkspace;
+            var propsToSuppress =new string[] { nameof(NodeModel.ToolTipText), nameof(NodeModel.State) };
             foreach (var message in messages)
             {
                 var guid = message.Key;
                 var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node == null)
                     continue;
-                node.SuppressStatePropertyNotifications = true;
-                node.Warning(message.Value); // Update node warning message.
-                node.SuppressStatePropertyNotifications = false;
+                using (node.PropertyChangeManager.SetPropsToSuppress(propsToSuppress))
+                {
+                    node.Warning(message.Value); // Update node warning message.
+                }
             }
 
             // Notify listeners (optional) of completion.
@@ -768,8 +770,8 @@ namespace Dynamo.Graph.Workspaces
             // Dispatch the failure message display for execution on UI thread.
             // 
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
-                ? new EvaluationCompletedEventArgs(true,messages.Keys.Select(x=>x.ToString()),null)
-                : new EvaluationCompletedEventArgs(true, messages.Keys.Select(x => x.ToString()), task.Exception);
+                ? new EvaluationCompletedEventArgs(true,messages.Keys,null)
+                : new EvaluationCompletedEventArgs(true, messages.Keys, task.Exception);
 
             EvaluationCount ++;
 

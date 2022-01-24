@@ -139,16 +139,17 @@ namespace Dynamo.Scheduler
                         executedNodes.Add(node);
                     }
                 }
-
+                var propsToSuppress = new string[] { nameof(NodeModel.ToolTipText), nameof(NodeModel.State) };
                 foreach (var node in executedNodes)
                 {
                     node.WasInvolvedInExecution = true;
                     node.WasRenderPackageUpdatedAfterExecution = false;
                     if (node.State == ElementState.Warning)
                     {
-                        node.SuppressStatePropertyNotifications = true;
-                        node.ClearErrorsAndWarnings();
-                        node.SuppressStatePropertyNotifications = false;
+                        using (node.PropertyChangeManager.SetPropsToSuppress(propsToSuppress))
+                        {
+                            node.ClearErrorsAndWarnings();
+                        }
                     }
                 }
 

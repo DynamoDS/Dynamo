@@ -195,11 +195,10 @@ namespace Dynamo.Wpf.ViewModels.Core
                     return;
                 }
                 foreach (var messageID in evalargs.MessageKeys)
-                { //TODO pass guid direct?
-                    var node = this.Nodes.FirstOrDefault(n => n.Id == Guid.Parse(messageID));
+                { 
+                    var node = this.Nodes.FirstOrDefault(n => n.Id == messageID);
                     if (node == null)
                         continue;
-
                     node.UpdateBubbleContent();
                 }
             }
