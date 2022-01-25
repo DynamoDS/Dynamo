@@ -150,6 +150,19 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.BeginInvoke(new Action(() =>
+                {
+                    UpdateNodeInfoBubbleContent(e);
+                }));
+            }
+            else
+            {
+                //just call it directly 
+                UpdateNodeInfoBubbleContent(e);
+            }
+        
             bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
 
             if (!hasWarnings)
@@ -172,6 +185,21 @@ namespace Dynamo.Wpf.ViewModels.Core
                 else
                 {
                     SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage);
+                }
+            }
+
+            void UpdateNodeInfoBubbleContent(EvaluationCompletedEventArgs evalargs)
+            {
+                if (e.MessageKeys == null)
+                {
+                    return;
+                }
+                foreach (var messageID in evalargs.MessageKeys)
+                { 
+                    var node = this.Nodes.FirstOrDefault(n => n.Id == messageID);
+                    if (node == null)
+                        continue;
+                    node.UpdateBubbleContent();
                 }
             }
         }
