@@ -815,47 +815,6 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test]
-        [Category("DynamoUI")]
-        public void GraphErrorPerformance()
-        {
-            double timeLimit = 5000;//ms
-            double timeLimit2 = 2000;//ms
-            double range = 70;
-
-            //open file in manual
-            OpenDynamoDefinition(Path.Combine(GetTestDirectory(ExecutingDirectory), @"UI/errorbubbleperf.dyn"));
-            //start stop watch
-            var stopwatch = new Stopwatch();
-            stopwatch.Restart();
-            //run
-            RunCurrentModel();
-            DispatcherUtil.DoEvents();
-            //check time is < x by some fuzz factor.
-            stopwatch.Stop();
-            Console.WriteLine(stopwatch.ElapsedMilliseconds);
-            Assert.IsTrue(Math.Abs(stopwatch.ElapsedMilliseconds - timeLimit) < range / 100 * timeLimit,
-                $"run time should be within a range of +/- {range}% of {timeLimit}ms but we got {stopwatch.ElapsedMilliseconds}ms");
-            //verify run produced 100 errors
-            var warnings = Model.CurrentWorkspace.Nodes.Where(x => x.State == ElementState.Warning);
-            Assert.AreEqual(64, warnings.Count());
-            //modify input
-            var cbn = Model.CurrentWorkspace.Nodes.Where(x => x.Name == "inputnode").FirstOrDefault() as CodeBlockNodeModel;
-            cbn.SetCodeContent("2;",new ProtoCore.Namespace.ElementResolver());
-            stopwatch.Restart();
-            RunCurrentModel();
-            DispatcherUtil.DoEvents();
-            //check time is <x by fuzz factor
-            stopwatch.Stop();
-            Console.WriteLine(stopwatch.ElapsedMilliseconds);
-            Assert.IsTrue(Math.Abs(stopwatch.ElapsedMilliseconds - timeLimit2) < range / 100 * timeLimit2,
-                  $"run time should be within a range of +/- {range}% of {timeLimit2}ms but we got {stopwatch.ElapsedMilliseconds}ms");
-            //check run produced 0 errors.
-            warnings = Model.CurrentWorkspace.Nodes.Where(x => x.State == ElementState.Warning);
-            Assert.AreEqual(0, warnings.Count());
-
-        }
-
         [Test, Ignore]
         // Opacity is no longer affecting the visibility of infobubble. This requires opacity of UIElement
         // This test is no longer feasible. Keeping it for future reference
