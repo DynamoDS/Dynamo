@@ -488,10 +488,12 @@ namespace Dynamo.PackageManager
             return Directory.EnumerateFiles(RootDirectory, "*", SearchOption.AllDirectories).Any(s => s == path);
         }
 
+        // Checks if the package is used in the Dynamo model.
+        // The check does not take into account the package load state.
         internal bool InUse(DynamoModel dynamoModel)
         {
             return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || 
-                IsCustomNodeFromPackageInUse(dynamoModel)) && LoadState.State == PackageLoadState.StateTypes.Loaded;
+                IsCustomNodeFromPackageInUse(dynamoModel));
         }
 
         private bool IsCustomNodeFromPackageInUse(DynamoModel dynamoModel)
