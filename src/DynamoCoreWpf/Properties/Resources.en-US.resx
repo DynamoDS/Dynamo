@@ -3034,4 +3034,7 @@ To install the latest version of a package, click Install. \n
   <data name="ContextUnpinFromNode" xml:space="preserve">
     <value>Unpin from node</value>
   </data>
+  <data name="UnpinNodeTooltip" xml:space="preserve">
+    <value>Unpin this note from the node</value>
+  </data>
 </root>

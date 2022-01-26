@@ -81,7 +81,7 @@
                           Command="{Binding Path=UnpinFromNodeCommand}"
                           ToolTipService.ShowOnDisabled="True">
                     <MenuItem.ToolTip>
-                        <ToolTip Content="Unpin this note from the node" Style="{StaticResource GenericToolTipLight}"/>
+                        <ToolTip Content="{x:Static p:Resources.UnpinNodeTooltip}" Style="{StaticResource GenericToolTipLight}"/>
                     </MenuItem.ToolTip>
                 </MenuItem>
             </ContextMenu>

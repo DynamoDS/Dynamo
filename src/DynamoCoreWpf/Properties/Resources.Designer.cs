@@ -7561,6 +7561,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unpin this note from the node.
+        /// </summary>
+        public static string UnpinNodeTooltip {
+            get {
+                return ResourceManager.GetString("UnpinNodeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An update is available for Dynamo.
         ///Installing the latest update requires Dynamo and any host applications to close.
         ///Do you want to install the latest Dynamo update?.
