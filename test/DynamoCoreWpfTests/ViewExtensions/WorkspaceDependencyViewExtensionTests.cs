@@ -342,5 +342,21 @@ namespace DynamoCoreWpfTests
                 Assert.Contains(dependencyInfo.Name, dependenciesList);
             }
         }
+        [Test]
+        public void GetExternalFilesShouldBailIfGraphExecuting()
+        {
+            DynamoModel.IsTestMode = false;
+
+            // Open test file to verify the external file references are not computed when RunEnabled is false. 
+            var examplePath = Path.Combine(@"core\ExternalReferencesTest.dyn");
+            Open(examplePath);
+            (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunEnabled = false;
+            var results = Model.CurrentWorkspace.ExternalFiles;
+            Assert.AreEqual(0, results.Count());
+            (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunEnabled = true;
+            results = Model.CurrentWorkspace.ExternalFiles;
+            Assert.AreEqual(2, results.Count());
+
+        }
     }
 }
