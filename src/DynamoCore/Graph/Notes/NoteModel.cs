@@ -11,6 +11,14 @@ namespace Dynamo.Graph.Notes
     /// </summary>
     public class NoteModel : ModelBase
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        public event Action<ModelBase> UndoRequest;
+
+        private bool createdPinNode;
+        public bool CreatedPinNode { get => createdPinNode; set => createdPinNode = value; }
+
         private string text;
 
         /// <summary>
@@ -40,10 +48,12 @@ namespace Dynamo.Graph.Notes
             get { return pinnedNode; }
             set
             {
+                CreatedPinNode = true;
                 pinnedNode = value;               
                 RaisePropertyChanged(nameof(PinnedNode));
             }
         }
+
 
         /// <summary>
         /// Creates NoteModel.
@@ -102,6 +112,7 @@ namespace Dynamo.Graph.Notes
             helper.SetAttribute("text", Text);
             helper.SetAttribute("x", X);
             helper.SetAttribute("y", Y);
+            helper.SetAttribute("createdPinNode", createdPinNode);
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -111,10 +122,16 @@ namespace Dynamo.Graph.Notes
             Text = helper.ReadString("text", "New Note");
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
+            createdPinNode = helper.ReadBoolean("createdPinNode");
 
             // Notify listeners that the position of the note has changed, 
             // then parent group will also redraw itself.
             ReportPosition();
+            if(createdPinNode && UndoRequest != null)
+            {
+                createdPinNode = false;
+                UndoRequest(this);
+            }   
         }
 
         #endregion
