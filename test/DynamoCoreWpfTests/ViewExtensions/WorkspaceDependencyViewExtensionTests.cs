@@ -347,7 +347,7 @@ namespace DynamoCoreWpfTests
         {
             DynamoModel.IsTestMode = false;
 
-            // Open test file to verify the external file references. 
+            // Open test file to verify the external file references are not computed when RunEnabled is false. 
             var examplePath = Path.Combine(@"core\ExternalReferencesTest.dyn");
             Open(examplePath);
             (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunEnabled = false;
