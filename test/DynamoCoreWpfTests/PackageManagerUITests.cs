@@ -1235,11 +1235,81 @@ namespace DynamoCoreWpfTests
                 dlgMock.ResetCalls();
             }
         }
-            #endregion
 
-            #region PackageManagerSearchView
+        [Test]
+        [Description("User tries to download packages might conflict with an existing package in error state")]
+        public void PackageManagerErrorStatePackages()
+        {
+            var pathMgr = ViewModel.Model.PathManager;
+            var pkgLoader = GetPackageLoader();
 
-            [Test]
+            // Load a package
+            var packageLocation = Path.Combine(BuiltinPackagesTestDir, "SignedPackage2");
+            pkgLoader.ScanPackageDirectory(packageLocation);
+            var pkg = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
+            Assert.IsNotNull(pkg);
+
+            pkgLoader.LoadPackages(new List<Package>() { pkg });
+
+            pkg.LoadState.SetAsError("Test error");
+
+            // Simulate the user downloading the same package from PM
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Throws(new Exception("Failed to get your package!"));
+
+            var client = new Dynamo.PackageManager.PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmVm = new PackageManagerClientViewModel(ViewModel, client);
+
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.Is<string>(x => x.Contains("conflicts with a different version")), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<string[]>(),It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.Cancel);
+             dlgMock.Setup(m => m.Show(It.Is<string>(x => x.Contains("Are you sure you want to install")), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            //
+            // 1. User downloads a diff version of a loaded package in error state
+            //
+            {
+                var bltinpackagesPkgVers = VersionUtilities.PartialParse(pkg.VersionName);
+                var newPkgVers = new Version(bltinpackagesPkgVers.Major + 1, bltinpackagesPkgVers.Minor, bltinpackagesPkgVers.Build).ToString();
+
+                var id = "test-123";
+                var deps = new List<Dependency>() { new Dependency() { _id = id, name = pkg.Name } };
+                var depVers = new List<string>() { newPkgVers };
+
+                mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+                .Returns(new ResponseWithContentBody<PackageVersion>()
+                {
+                    content = new PackageVersion()
+                    {
+                        version = newPkgVers,
+                        engine_version = pkg.EngineVersion,
+                        name = pkg.Name,
+                        id = id,
+                        full_dependency_ids = deps,
+                        full_dependency_versions = depVers
+                    },
+                    success = true
+                });
+
+                var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(pkg.Name, VersionUtilities.PartialParse(pkg.VersionName));
+                pmVm.DownloadAndInstallPackage(pkgInfo);
+
+                // Users should get 1 warnings :
+                // 1. To confirm that they want to download the specified package.
+                // 2. That a package with the same name and version already exists.
+                dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
+                dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<string[]>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
+                dlgMock.ResetCalls();
+            }
+        }
+        #endregion
+
+        #region PackageManagerSearchView
+
+        [Test]
         public void CanOpenPackageSearchDialogAndWindowIsOwned()
         {
             ViewModel.OnRequestPackageManagerSearchDialog(null, null);
