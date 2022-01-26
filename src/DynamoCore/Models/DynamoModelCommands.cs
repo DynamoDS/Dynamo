@@ -597,11 +597,14 @@ namespace Dynamo.Models
             WorkspaceModel targetWorkspace = CurrentWorkspace;
             if (!command.WorkspaceGuid.Equals(Guid.Empty))
                 targetWorkspace = Workspaces.FirstOrDefault(w => w.Guid.Equals(command.WorkspaceGuid));
-
-            if (targetWorkspace != null)
+            try
             {
-                targetWorkspace.UpdateModelValue(command.ModelGuids,
+                targetWorkspace?.UpdateModelValue(command.ModelGuids,
                     command.Name, command.Value);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
             }
         }
 

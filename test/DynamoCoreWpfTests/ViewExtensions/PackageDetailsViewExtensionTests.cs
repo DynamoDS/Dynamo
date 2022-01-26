@@ -2,6 +2,7 @@
 using System.Linq;
 using Dynamo.PackageDetails;
 using Dynamo.PackageManager;
+using Dynamo.PythonServices;
 using Greg.Responses;
 using NUnit.Framework;
 using PythonNodeModels;
@@ -94,12 +95,12 @@ namespace DynamoCoreWpfTests
             };
             PackageVersion packageVersionWithPython2Dependency = new PackageVersion
             {
-                host_dependencies = new List<string> {PythonEngineVersion.IronPython2.ToString()},
+                host_dependencies = new List<string> { PythonEngineManager.IronPython2EngineName },
                 full_dependency_ids = new List<Dependency>()
             };
             PackageVersion packageVersionWithPython3Dependency = new PackageVersion
             {
-                host_dependencies = new List<string> {PythonEngineVersion.CPython3.ToString()},
+                host_dependencies = new List<string> { PythonEngineManager.CPython3EngineName },
                 full_dependency_ids = new List<Dependency>()
             };
             PackageVersion packageVersionWithHostDependency = new PackageVersion
@@ -153,11 +154,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailItemNoDependencies.PythonVersion);
 
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailWithPython2Dependency.Hosts);
-            Assert.AreEqual(PythonEngineVersion.IronPython2.ToString(),
+            Assert.AreEqual(PythonEngineManager.IronPython2EngineName,
                 packageDetailWithPython2Dependency.PythonVersion);
 
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailWithPython3Dependency.Hosts);
-            Assert.AreEqual(PythonEngineVersion.CPython3.ToString(), packageDetailWithPython3Dependency.PythonVersion);
+            Assert.AreEqual(PythonEngineManager.CPython3EngineName, packageDetailWithPython3Dependency.PythonVersion);
 
             Assert.AreEqual(hostName1, packageDetailWithHostDependency.Hosts);
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailWithHostDependency.PythonVersion);

@@ -25,6 +25,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ResourceDictionary Source="Styles/DynamoModern.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!--Base style for title bar buttons-->
             <Style x:Key="CaptionButtonStyle"
@@ -62,39 +63,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
-            <!--Minimize-->
-            <Style x:Key="MinimizeButtonStyle"
-                   TargetType="Button"
-                   BasedOn="{StaticResource CaptionButtonStyle}">
-                <Setter Property="Content"
-                        Value="&#xE949;" />
-            </Style>
-
-            <!--Maximize-->
-            <Style x:Key="MaximizeButtonStyle"
-                   TargetType="Button"
-                   BasedOn="{StaticResource CaptionButtonStyle}">
-                <Setter Property="Content"
-                        Value="&#xE739;" />
-            </Style>
-
-            <!--Restore-->
-            <Style x:Key="RestoreButtonStyle"
-                   TargetType="Button"
-                   BasedOn="{StaticResource CaptionButtonStyle}">
-                <Setter Property="Content"
-                        Value="&#xE923;" />
-            </Style>
-
-            <!--Close-->
-            <Style x:Key="CloseButtonStyle"
-                   TargetType="Button"
-                   BasedOn="{StaticResource CaptionButtonStyle}">
-                <Setter Property="Content"
-                        Value="&#xE106;" />
-            </Style>
-
+            
             <!--Notification Toast-->
             <DataTemplate x:Key="NotificationToast"
                           DataType="{x:Type notifications:NotificationMessage}">
@@ -198,7 +167,7 @@
                                             HorizontalAlignment="Right"
                                             Background="{StaticResource PreferencesWindowButtonColor}"
                                             Foreground="{StaticResource DefaultFontColorBrush}"
-                                            Width="46"
+                                            Width="Auto"
                                             Click="OKButton_Click" />
                                 </Grid>
                             </Grid>
@@ -249,24 +218,29 @@
                                FontSize="20"
                                Margin="20 16 0 16" />
                 </StackPanel>
-                
+
                 <!--Caption buttons-->
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right">
                     <Button Style="{StaticResource MinimizeButtonStyle}"
+                            Margin="0,0,25,0"
                             WindowChrome.IsHitTestVisibleInChrome="True"
                             Command="{x:Static SystemCommands.MinimizeWindowCommand}" />
                     <Button x:Name="RestoreButton"
                             Visibility="Collapsed"
-                            Style="{StaticResource RestoreButtonStyle}"
+                            Margin="0,0,25,0"
+                            Style="{DynamicResource RestoreButtonStyle}"
                             Command="{x:Static SystemCommands.RestoreWindowCommand}"
                             WindowChrome.IsHitTestVisibleInChrome="True"/>
+
                     <Button x:Name="MaximizeButton"
                             Visibility="Visible"
-                            Style="{StaticResource MaximizeButtonStyle}"
+                            Margin="0,0,25,0"
+                            Style="{DynamicResource MaximizeButtonStyle}"
                             Command="{x:Static SystemCommands.MaximizeWindowCommand}"
                             WindowChrome.IsHitTestVisibleInChrome="True" />
-                    <Button Style="{StaticResource CloseButtonStyle}"
+                    <Button Style="{DynamicResource CloseButtonStyle}"
+                            Margin="0,0,20,0"
                             WindowChrome.IsHitTestVisibleInChrome="True"
                             Command="{x:Static SystemCommands.CloseWindowCommand}" />
                 </StackPanel>

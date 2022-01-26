@@ -33,3 +33,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
 [assembly: InternalsVisibleTo("DynamoPackages")]
 [assembly: InternalsVisibleTo("DynamoSandbox")]
+[assembly: InternalsVisibleTo("PackageDetailsViewExtension")]
+[assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("DSCoreNodes")]

@@ -300,7 +300,7 @@ namespace DSIronPython
         /// <returns></returns>
         public override bool IsSupportedEngine(string engineName)
         {
-           if (engineName == "IronPython2")
+           if (engineName == PythonEngineManager.IronPython2EngineName)
             {
                 return true;
             }

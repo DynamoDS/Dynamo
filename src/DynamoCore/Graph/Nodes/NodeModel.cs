@@ -68,7 +68,6 @@ namespace Dynamo.Graph.Nodes
 
         private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
         private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
-
         #endregion
 
         internal const double HeaderHeight = 46;
