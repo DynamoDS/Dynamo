@@ -420,9 +420,9 @@ namespace Dynamo.ViewModels
 
                 if (pkg != null)
                 {
-                    var m = MessageBox.Show(String.Format(Resources.MessageSubmitSameNamePackage, 
-                            DynamoViewModel.BrandingResourceProvider.ProductName,pkg.Name),
-                            Resources.PackageWarningMessageBoxTitle, 
+                    var m = Dynamo.Wpf.Utilities.MessageBoxService.Show(String.Format(Resources.MessageSubmitSameNamePackage,
+                            DynamoViewModel.BrandingResourceProvider.ProductName, pkg.Name),
+                            Resources.PackageWarningMessageBoxTitle,
                             MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                     if (m == MessageBoxResult.Yes)
