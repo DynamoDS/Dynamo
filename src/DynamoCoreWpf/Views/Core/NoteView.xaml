@@ -76,6 +76,14 @@
                         <ToolTip Content="Select a node to pin to this note" Style="{StaticResource GenericToolTipLight}"/>
                     </MenuItem.ToolTip>
                 </MenuItem>
+                <MenuItem Name="UnpinToNode"
+                          Header="{x:Static p:Resources.ContextUnpinFromNode}" 
+                          Command="{Binding Path=UnpinFromNodeCommand}"
+                          ToolTipService.ShowOnDisabled="True">
+                    <MenuItem.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.UnpinNodeTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                    </MenuItem.ToolTip>
+                </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
         <Canvas Background="{x:Null}">
