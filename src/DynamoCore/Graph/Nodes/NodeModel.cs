@@ -2545,7 +2545,15 @@ namespace Dynamo.Graph.Nodes
             };
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);
-            if (!task.Initialize(initParams)) return false;
+            try
+            {
+                if (!task.Initialize(initParams)) return false;
+            }
+            catch (ArgumentNullException e)
+            {
+                Log(e.ToString());
+                return false;
+            }
 
             task.Completed += OnRenderPackageUpdateCompleted;
             scheduler.ScheduleForExecution(task);
