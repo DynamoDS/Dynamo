@@ -920,7 +920,7 @@ foo3];
             thisTest.Verify("c1", false);
             thisTest.Verify("d", true);
             thisTest.Verify("e", true);
-            thisTest.Verify("e1", null);
+            thisTest.Verify("e1", false);
         }
 
         [Test]
@@ -1021,7 +1021,7 @@ foo3];
                 }";
             thisTest.RunScriptSource(code);
             //Assert.Fail("1467231 - Sprint 26 - Rev 3393 null to bool conversion should not be allowed ");
-            thisTest.Verify("a", null);
+            thisTest.Verify("a", false);
         }
 
         [Test]
@@ -1105,7 +1105,7 @@ foo3];
                     return a;
                 }";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("a", null);
+            thisTest.Verify("a", false);
         }
 
         [Test]
@@ -1123,7 +1123,7 @@ foo3];
                 return [a, c];}"; //expected :true, received : null
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            thisTest.Verify("c", null);
+            thisTest.Verify("c", false);
         }
 
         [Test]
@@ -1192,7 +1192,7 @@ foo3];
             thisTest.Verify("c", null);
             thisTest.Verify("d", null);
             thisTest.Verify("e", null);
-            thisTest.Verify("f", null);
+            thisTest.Verify("f", false);
             thisTest.Verify("g", null);
         }
 
@@ -1242,7 +1242,7 @@ t = [Imperative]{return foo(1.5);}";
             thisTest.Verify("c", new object[] { "a", "b", "c" });
             thisTest.Verify("d", new object[] { 'c', 'd', 'e' });
             thisTest.Verify("e1", new object[] { 0, 0, 0 });
-            thisTest.Verify("f", new object[] { true, false, null });
+            thisTest.Verify("f", new object[] { true, false, false });
             thisTest.Verify("g", new object[] { null, null, null });
         }
 
