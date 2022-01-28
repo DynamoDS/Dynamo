@@ -799,6 +799,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unpin from node.
+        /// </summary>
+        public static string ContextUnpinFromNode {
+            get {
+                return ResourceManager.GetString("ContextUnpinFromNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Continue.
         /// </summary>
         public static string ContinueButton {
@@ -7548,6 +7557,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UnloadFailureMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UnloadFailureMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unpin this note from the node.
+        /// </summary>
+        public static string UnpinNodeTooltip {
+            get {
+                return ResourceManager.GetString("UnpinNodeTooltip", resourceCulture);
             }
         }
         

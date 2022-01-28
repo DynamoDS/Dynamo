@@ -420,9 +420,9 @@ namespace Dynamo.ViewModels
 
                 if (pkg != null)
                 {
-                    var m = MessageBox.Show(String.Format(Resources.MessageSubmitSameNamePackage, 
-                            DynamoViewModel.BrandingResourceProvider.ProductName,pkg.Name),
-                            Resources.PackageWarningMessageBoxTitle, 
+                    var m = Dynamo.Wpf.Utilities.MessageBoxService.Show(String.Format(Resources.MessageSubmitSameNamePackage,
+                            DynamoViewModel.BrandingResourceProvider.ProductName, pkg.Name),
+                            Resources.PackageWarningMessageBoxTitle,
                             MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                     if (m == MessageBoxResult.Yes)
@@ -503,7 +503,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="package">package version being downloaded</param>
         /// <param name="duplicatePackage">local package found to be duplicate of one being downloaded</param>
-        /// <param name="conflicts">List of packages that are in conflict with the dependencies of the package version to be downloaded (does not include the main package)</param>
+        /// <param name="dependencyConflicts">List of packages that are in conflict with the dependencies of the package version to be downloaded (does not include the main package)</param>
         /// <returns>True if the User opted to continue with the download operation. False otherwise</returns>
         private bool WarnAboutDuplicatePackageConflicts(PackageVersion package, 
                                                         Package duplicatePackage, 

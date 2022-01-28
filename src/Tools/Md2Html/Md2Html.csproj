@@ -22,7 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HtmlSanitizer">
-      <Version>5.0.355</Version>
+      <Version>5.0.372</Version>
     </PackageReference>
     <PackageReference Include="ILMerge">
       <Version>3.0.41</Version>
