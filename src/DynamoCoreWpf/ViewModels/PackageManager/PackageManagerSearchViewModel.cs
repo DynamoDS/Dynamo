@@ -867,8 +867,8 @@ namespace Dynamo.PackageManager
             if (SelectedHosts.Count == 0) return list;
             IEnumerable<PackageManagerSearchElementViewModel> filteredList = null;
 
-            filteredList = (filteredList ?? Enumerable.Empty<PackageManagerSearchElementViewModel>()).Union(
-                list.Where(x => x.Model.Hosts != null && SelectedHosts.Intersect(x.Model.Hosts).Count() == SelectedHosts.Count()) ?? Enumerable.Empty<PackageManagerSearchElementViewModel>());
+            filteredList = filteredList ??
+                           list.Where(x => x.Model.Hosts != null && SelectedHosts.Intersect(x.Model.Hosts).Count() == SelectedHosts.Count()) ?? Enumerable.Empty<PackageManagerSearchElementViewModel>();
 
             return filteredList;
         }
