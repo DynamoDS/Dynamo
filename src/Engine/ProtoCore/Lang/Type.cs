@@ -417,7 +417,9 @@ namespace ProtoCore
                 return array.CopyArray(newTargetType, runtimeCore);
             }
 
-            if (!sv.IsArray && !sv.IsNull &&
+            // Null can be converted to Boolean so we will allow it in the case of indexable types
+            bool nullAsBool = sv.IsNull && (targetType.UID == (int)PrimitiveType.Bool);
+            if (!sv.IsArray && (!sv.IsNull || nullAsBool) &&
                 targetType.IsIndexable &&
                 targetType.rank != DSASM.Constants.kArbitraryRank)
             {

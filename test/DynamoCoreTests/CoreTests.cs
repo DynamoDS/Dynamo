@@ -1222,5 +1222,23 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, portCountAfterAdd);
             Assert.AreEqual(2, portCountAfterRemove);
         }
+
+        [Test]
+        public void TestBooleanCoercion()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\BooleanCoercion.dyn");
+            OpenModel(openPath);
+            RunCurrentModel();
+
+            var node = GetModel().CurrentWorkspace.NodeFromWorkspace("265a1b106dac45c79df90ceb419c0e65");
+            Assert.IsNotNull(node);
+            var val = node.AstIdentifierBase;
+            AssertValue(val, false);
+
+            node = GetModel().CurrentWorkspace.NodeFromWorkspace("13d48579c53e4e71898b68625f50a8c9");
+            Assert.IsNotNull(node);
+            val = node.GetAstIdentifierForOutputIndex(0).Value;
+            AssertValue(val, false);
+        }
     }
 }
