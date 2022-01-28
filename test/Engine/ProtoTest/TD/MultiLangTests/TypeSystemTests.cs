@@ -1772,7 +1772,7 @@ import(""FFITarget.dll"");
             thisTest.Verify("d", new object[] { true });
             thisTest.Verify("e", new object[] { true });
             thisTest.Verify("f", new object[] { true });
-            thisTest.Verify("g", false);
+            thisTest.Verify("g", new object[] { false });
         }
 
         [Test]
@@ -2577,7 +2577,7 @@ import(""FFITarget.dll"");
             thisTest.Verify("c", new object[] { true });
             thisTest.Verify("d", new object[] { true });
             thisTest.Verify("e", new object[] { false });
-            thisTest.Verify("f", false);
+            thisTest.Verify("f", new object[] { false });
         }
 
         [Test]
@@ -2803,7 +2803,7 @@ import(""FFITarget.dll"");
             thisTest.Verify("b", null);
             thisTest.Verify("c", null);
             thisTest.Verify("d", null);
-            thisTest.Verify("e", false);
+            thisTest.Verify("e", new object[] { false });
             thisTest.Verify("g", null);
         }
 
@@ -4142,7 +4142,7 @@ import(""FFITarget.dll"");
             TestFrameWork.Verify(mirror, "e", new object[] { new object[] { true } });
             TestFrameWork.Verify(mirror, "f1", new object[] { new object[] { true } });
             TestFrameWork.Verify(mirror, "h", new object[] { new object[] { true } });
-            TestFrameWork.Verify(mirror, "i", new object[] { false });
+            TestFrameWork.Verify(mirror, "i", new object[] { new object[] { false } });
         }
 
         [Test]
