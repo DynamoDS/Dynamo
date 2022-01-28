@@ -1655,7 +1655,7 @@ i=[Imperative]
                         d = foo([ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) ]);
                         e = foo([ false,true ]);
                         f = foo([ null, null ]);
-                        return [a,a1,b,c,d,e,e1];
+                        return [a,a1,b,c,d,e,f];
                     }";
             string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
@@ -1666,7 +1666,7 @@ i=[Imperative]
             thisTest.Verify("c", new object[] { true, false });
             thisTest.Verify("d", new object[] { true, true });
             thisTest.Verify("e", new object[] { false, true });
-            thisTest.Verify("e1", null);
+            thisTest.Verify("e1", new object[] { false, false });
         }
 
         [Test]

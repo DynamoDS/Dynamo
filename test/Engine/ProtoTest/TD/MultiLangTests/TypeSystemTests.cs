@@ -3022,7 +3022,7 @@ import(""FFITarget.dll"");
             thisTest.Verify("v", new object[] { true });
             thisTest.Verify("w", new object[] { true });
             thisTest.Verify("x", new object[] { true });
-            thisTest.Verify("z", false);
+            thisTest.Verify("z", new object[] { false });
         }
 
         [Test]
@@ -3788,7 +3788,7 @@ import(""FFITarget.dll"");
             thisTest.Verify("d", new object[] { true, new object[] { true } });
             thisTest.Verify("e", new object[] { true, new object[] { true } });
             thisTest.Verify("f", new object[] { true, new object[] { true } });
-            thisTest.Verify("g", null);
+            thisTest.Verify("g", new object[] { false, new object[] { false } });
         }
 
 
