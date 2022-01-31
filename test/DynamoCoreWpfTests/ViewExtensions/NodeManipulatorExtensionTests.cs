@@ -60,5 +60,26 @@ namespace DynamoCoreWpfTests.ViewExtensions
             Assert.AreEqual(ElementState.PersistentWarning, pntNode.State);
             Assert.AreEqual("TestPersistentWarning", pntNode.ToolTipText);
         }
+
+        [Test]
+        public void NodeManipulatorUnselectedNodeTest()
+        {
+            RaiseLoadedEvent(this.View);
+
+            var pntNode = new DSFunction(Model.LibraryServices.GetFunctionDescriptor("Autodesk.DesignScript.Geometry.Point.ByCoordinates"));
+            Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(pntNode, 0, 0, true, false));
+
+            pntNode.IsSelected = false;
+
+            var dme = View.viewExtensionManager.ViewExtensions.OfType<DynamoManipulationExtension>().FirstOrDefault();
+            var manipulator = new MousePointManipulator(pntNode, dme);
+            Assert.IsNotNull(manipulator);
+
+            var manipulatorType = typeof(MousePointManipulator);
+            var method = manipulatorType.GetMethod("UpdatePosition", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            Assert.IsNotNull(method);
+
+            method.Invoke(manipulator, new object[] { });
+        }
     }
 }

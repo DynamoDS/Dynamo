@@ -162,6 +162,12 @@ namespace Dynamo.ViewModels
             RequestShowInCanvasSearch?.Invoke(flag);
         }
 
+        internal event Action<object> RequestHideAllPopup;
+        private void OnRequestHideAllPopup(object param)
+        {
+            RequestHideAllPopup?.Invoke(param);
+        }
+
         internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
         internal event Action<ShowHideFlags, PortViewModel> RequestPortContextMenu;
 

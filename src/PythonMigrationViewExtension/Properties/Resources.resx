@@ -209,4 +209,7 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="UserDefinitionsHeader" xml:space="preserve">
     <value>Definitions</value>
   </data>
+  <data name="MoreInformationButton" xml:space="preserve">
+    <value>More Information</value>
+  </data>
 </root>

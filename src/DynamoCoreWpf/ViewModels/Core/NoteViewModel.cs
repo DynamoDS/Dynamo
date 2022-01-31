@@ -217,6 +217,7 @@ namespace Dynamo.ViewModels
                 case nameof(NoteModel.PinnedNode):
                     RaisePropertyChanged(nameof(this.PinnedNode));
                     PinToNodeCommand.RaiseCanExecuteChanged();
+                    UnpinFromNodeCommand.RaiseCanExecuteChanged();
                     break;
 
             }
@@ -310,7 +311,6 @@ namespace Dynamo.ViewModels
 
             WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
             WorkspaceViewModel.HasUnsavedChanges = true;
-
         }
 
         private bool CanPinToNode(object parameters)
@@ -341,6 +341,36 @@ namespace Dynamo.ViewModels
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// This method will be executed for validate if the "Unpin from node" option should be shown or not in the context menu (when clicking right over the note)
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        private bool CanUnpinFromNode(object parameters)
+        {
+
+            var nodeSelection = DynamoSelection.Instance.Selection
+                    .OfType<NodeModel>();
+
+            var noteSelection = DynamoSelection.Instance.Selection
+                    .OfType<NoteModel>();
+
+            if (nodeSelection == null || noteSelection == null ||
+                nodeSelection.Count() != 1 || noteSelection.Count() != 1)
+                return false;
+
+            var nodeToPin = nodeSelection.FirstOrDefault();
+
+            var nodeAlreadyPinned = WorkspaceViewModel.Notes
+                .Where(n => n.PinnedNode != null)
+                .Any(n => n.PinnedNode.NodeModel.GUID == nodeToPin.GUID);
+
+            if (nodeAlreadyPinned == true)
+                return true;
+
+            return false;
         }
 
         private void UnpinFromNode(object parameters)

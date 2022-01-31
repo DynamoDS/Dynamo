@@ -143,6 +143,10 @@ namespace Dynamo.Models
         {
             get { return !error.HasValue(); }
         }
+        /// <summary>
+        /// IDs for messages generated during a run. These are node guids.
+        /// </summary>
+        internal IEnumerable<Guid> MessageKeys { get; private set; }
 
         /// <summary>
         /// Exception thrown during graph evaluation.
@@ -171,6 +175,11 @@ namespace Dynamo.Models
             EvaluationTookPlace = evaluationTookPlace;
 
             error = errorMsg != null ? Option.Some(errorMsg) : Option.None<Exception>();
+        }
+        internal EvaluationCompletedEventArgs(bool evaluationTookPlace, IEnumerable<Guid> messageKeys, Exception errorMsg = null)
+            :this(evaluationTookPlace,errorMsg)
+        {
+            MessageKeys = messageKeys;
         }
     }
 

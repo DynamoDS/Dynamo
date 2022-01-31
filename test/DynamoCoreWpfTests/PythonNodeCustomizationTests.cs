@@ -696,9 +696,9 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(pynode.EngineName, PythonEngineManager.IronPython2EngineName);
 
             Assert.AreEqual(pynode.State, Dynamo.Graph.Nodes.ElementState.Warning);
-
+            DispatcherUtil.DoEvents();
             var nodeView = NodeViewWithGuid(nodeModel.GUID.ToString());
-  
+            
             Assert.IsNotNull(nodeView);
             Assert.IsNotNull(nodeView.ViewModel.ErrorBubble);
 

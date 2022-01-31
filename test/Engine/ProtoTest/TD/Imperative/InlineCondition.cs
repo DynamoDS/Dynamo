@@ -253,7 +253,7 @@ i = [Imperative]
 	x1 = a > b ? c : d;
 	x2 = a <= b ? c : d;
 	
-	x3 = f == g ? h : i;
+	x3 = f == g ? i : h;
 	x4 = f != g ? h : i;
     x5 = f != g ? h : h.IntVal;	
 	

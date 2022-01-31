@@ -1013,7 +1013,7 @@ namespace ProtoCore.DSASM
                     return BuildBoolean(opdata != 0);
 
                 case AddressType.Null:
-                    return StackValue.Null; 
+                    return BuildBoolean(false); 
 
                 case AddressType.Double:
                     bool b = !Double.IsNaN(DoubleValue) && !DoubleValue.Equals(0.0);

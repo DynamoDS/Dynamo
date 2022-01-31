@@ -4523,6 +4523,20 @@ namespace ProtoCore.DSASM
                 {
                     pc += 1;
                 }
+                else if (opdata1.IsString)
+                {
+                    Validity.Assert(runtimeCore != null && runtimeCore.Heap != null);
+
+                    var dsString = runtimeCore.Heap.ToHeapObject<DSString>(opdata1);
+                    if (string.IsNullOrEmpty(dsString.Value))
+                    {
+                        pc = instruction.op1.LabelIndex;
+                    }
+                    else
+                    {
+                        pc += 1;
+                    }
+                }
                 else if (0 == opdata1.RawData)
                 {
                     pc = instruction.op1.LabelIndex;
