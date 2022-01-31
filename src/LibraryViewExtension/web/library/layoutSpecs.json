@@ -1264,6 +1264,9 @@
                   "path": "DSCoreNodes.DSCore.String.ToNumber"
                 },
                 {
+                  "path": "DSCoreNodes.DSCore.String.GetNumber"
+                },
+                {
                   "path": "DSCoreNodes.DSCore.String.ChangeCase"
                 }
               ],

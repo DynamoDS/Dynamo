@@ -57,7 +57,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Border Background="{StaticResource autocompletionWindow}"
+                <Border Background="{StaticResource ExtensionBackgroundColor}"
                     Padding="0"
                     CornerRadius="8,8,0,0">
                 <Grid>
@@ -75,8 +75,7 @@
                                TextAlignment="Center"
                                FontSize="14">
                         </TextBlock>
-                        <Button Name="InfoButton" Click="OnMoreInfoClicked" Margin="50,7,5,7" BorderThickness="0"  Background="{StaticResource autocompletionWindow}">
-                        <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Image Width="14" Height="14" MouseDown="OnMoreInfoClicked" Margin="40,5,10,5" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <Image.Style>
                                 <Style TargetType="{x:Type Image}">
                                     <Style.Triggers>
@@ -84,15 +83,13 @@
                                             <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" />
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" />
+                                            <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/info_2.png" />
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
                             </Image.Style>
                         </Image>
-                        </Button>
-                        <Button Name="CloseButton" Margin="0,7,5,7" Height="14" Width="14" BorderThickness="0" Click="CloseAutocompletionWindow" Background="{StaticResource autocompletionWindow}">
-                                <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Image Width="14" Height="14" Margin="0,5,10,5" MouseDown="CloseAutocompletionWindow" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Image.Style>
                                     <Style TargetType="{x:Type Image}">
                                         <Style.Triggers>
@@ -100,13 +97,12 @@
                                                 <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png" />
+                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/close_blue.png" />
                                             </Trigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Image.Style>
-                            </Image>
-                        </Button>
+                        </Image>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -197,7 +193,6 @@
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
                                    HorizontalAlignment="Center"
                                    Height="18"
-                                   Margin="6,2,0,0"
                                    Text="{x:Static resx:Resources.AutocompleteSearchTextBlockText}" />
 
                     </StackPanel>

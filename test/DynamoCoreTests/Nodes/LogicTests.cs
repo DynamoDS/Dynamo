@@ -379,5 +379,33 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void testVariableInput_OrAnd_Lacing()
+        {
+
+            string testFilePath = Path.Combine(logicTestFolder, "testVariableInputOrAndNodes.dyn");
+
+            RunModel(testFilePath);
+            // Or node
+            AssertPreviewValue("335560d5-034e-49e5-b2bb-8b2cc0ef6cf7",
+                new[] { new[] { true, true }, new[] { true, false } });
+            // And node
+            AssertPreviewValue("a610eb8b-577a-40cd-875f-903404db7bc1",
+                new[] { new[] { true, false }, new[] { false, false } });
+
+        }
+
+        [Test]
+        public void testVariableInput_OrAnd_ListAtLevel()
+        {
+
+            string testFilePath = Path.Combine(logicTestFolder, "testVariableInputOrAndNodesL@L.dyn");
+
+            RunModel(testFilePath);
+            // Or node
+            AssertPreviewValue("335560d5-034e-49e5-b2bb-8b2cc0ef6cf7",
+                new[] { new[] { new[] { true, true }, new[] { true, false } } });
+
+        }
     }
 }

@@ -154,23 +154,12 @@ namespace Dynamo.Controls
     /// <summary>
     /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
     /// </summary>
+    [Obsolete("This class will be removed in Dynamo 3.0")]
     public class EmptyDepStringToCollapsedConverter : IValueConverter
     {
-        private readonly string[] PythonEngineList = { PythonEngineVersion.CPython3.ToString(), PythonEngineVersion.IronPython2.ToString() };
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
-            if (value != null)
-            {
-                List<string> depList = (List<string>)value;
-                foreach (var dep in depList)
-                {
-                    if (PythonEngineList.IndexOf(dep) != -1)
-                    {
-                        return Visibility.Visible;
-                    }
-                }
-            }
             return Visibility.Collapsed;
         }
 
@@ -542,16 +531,17 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is string && !string.IsNullOrEmpty(value as string))
+            if (value is string @string && !string.IsNullOrEmpty(value as string))
             {
                 // Convert to path, get file name. If read-only file, append [Read-Only].
-                if (DynamoUtilities.PathHelper.IsReadOnlyPath((string)value))
-                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName((string)value);
+                if (DynamoUtilities.PathHelper.IsReadOnlyPath(@string))
+                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName(@string);
                 else
-                    return Path.GetFileName((string)value);
+                    return Path.GetFileName(@string);
             }
 
-            return "Unsaved";
+            // If failing to get file name, return default string
+            return Wpf.Properties.Resources.WorkspaceTabTooltipHeaderUnsaved;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -3088,7 +3078,7 @@ namespace Dynamo.Controls
             {
                 return "Transparent";
             }
-            return "#aaaaaa";
+            return "#DCDCDC";
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -3292,5 +3282,49 @@ namespace Dynamo.Controls
         {
             throw new NotImplementedException();
         }
+    }
+
+    /// <summary>
+    /// Converts a PointColletion to a Geometry so the points can be drawn using a Path
+    /// </summary>
+    [ValueConversion(typeof(PointCollection), typeof(Geometry))]
+    public class PointsToPathConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null)
+                return null;
+
+            if (value.GetType() != typeof(PointCollection))
+                return null;
+
+            PointCollection points = (value as PointCollection);
+            if (points.Count > 0)
+            {
+                Point start = points[0];
+                List<LineSegment> segments = new List<LineSegment>();
+                for (int i = 1; i < points.Count; i++)
+                {
+                    segments.Add(new LineSegment(points[i], true));
+                }
+                PathFigure figure = new PathFigure(start, segments, false);
+                PathGeometry geometry = new PathGeometry();
+                geometry.Figures.Add(figure);
+                return geometry;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
     }
 }

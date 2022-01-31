@@ -838,7 +838,9 @@ namespace Dynamo.ViewModels
                     // the nested group and the parent group, as the mouse coursor will be inside
                     // both of there rects. In these cases we want to get group that is nested
                     // inside the parent group.
-                    var dropGroup = dropGroups.FirstOrDefault(x => !x.AnnotationModel.HasNestedGroups) ?? dropGroups.FirstOrDefault();
+                    var dropGroup = dropGroups
+                        .FirstOrDefault(x => !x.AnnotationModel.HasNestedGroups) ?? dropGroups.FirstOrDefault();
+
 
                     // If the dropGroup is null or any of the selected items is already in the dropGroup,
                     // we disable the drop border by setting NodeHoveringState to false
@@ -881,6 +883,15 @@ namespace Dynamo.ViewModels
                             .ToList()
                             .ForEach(x => x.NodeHoveringState = false);
 
+                        // If the dropGroup belongs to another group
+                        // we need to check if the parent group is collapsed
+                        // if it is we dont want to be able to add new
+                        // models to the drop group.
+                        var parentGroup = owningWorkspace.Annotations
+                            .Where(x => x.AnnotationModel.ContainsModel(dropGroup.AnnotationModel))
+                            .FirstOrDefault();
+                        if (parentGroup != null && !parentGroup.IsExpanded) return false;
+                        
                         dropGroup.NodeHoveringState = true;
                     }
 

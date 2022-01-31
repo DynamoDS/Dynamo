@@ -10,6 +10,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using Dynamo.Controls;
+using Dynamo.UI.Views;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views.GuidedTour;
 using Newtonsoft.Json;
@@ -23,6 +25,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
     {
         #region Private Fields
         private static string WindowNamePopup = "PopupWindow";
+        private static readonly string NextButton = "NextButton";
+        private static string calculateLibraryFuncName = "CalculateLibraryItemLocation";
+        private static string libraryScrollToBottomFuncName = "LibraryScrollToBottom";
+        private static string subscribePackageClickedFuncName = "subscribePackageClickedEvent";
         #endregion
         #region Events
         //This event will be raised when a popup (Step) is closed by the user pressing the close button (PopupWindow.xaml).
@@ -126,6 +132,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public PointCollection TooltipPointerPoints { get; set; }
 
         /// <summary>
+        /// This will contains the shadow direction in degrees that will be shown in the pointer
+        /// </summary>
+        public double ShadowTooltipDirection { get; set; }
+
+        /// <summary>
         /// This property holds the DynamoViewModel that will be used when executing PreValidation functions
         /// </summary>
         internal DynamoViewModel DynamoViewModelStep { get; set; }
@@ -146,6 +157,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
         internal UIElement MainWindow { get; set; }
 
         internal string GuideName { get; set; }
+
+        /// <summary>
+        /// This will give access to the Popup instance so we can find UIElements on it.
+        /// </summary>
+        internal Popup StepUIPopup 
+        {
+            get
+            {
+                return stepUIPopup;
+            }
+        }
 
         #endregion
 
@@ -209,7 +231,24 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //After UI Automation and calculate the target we need to highlight the element (otherwise probably won't exist)
             SetHighlightSection(true);
 
+            if (HostPopupInfo.WindowName != null  && HostPopupInfo.WindowName.Equals(nameof(LibraryView)))
+            {
+                var automationStep = (from automation in UIAutomation
+                                      where automation.Name.Equals(calculateLibraryFuncName)
+                                      select automation).FirstOrDefault();
+                GuidesValidationMethods.CalculateLibraryItemLocation(this, automationStep, true, Guide.GuideFlow.CURRENT);
+            }
+   
+
             stepUIPopup.IsOpen = true;
+
+            if (this.StepUIPopup is PopupWindow popupWindow)
+            {
+                if (Guide.FindChild((popupWindow).mainPopupGrid, NextButton) is Button nextbuttonFound)
+                {
+                    nextbuttonFound.Focus();
+                }
+            }
         }
 
         /// <summary>
@@ -354,7 +393,55 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 UpdatePopupLocationInvoke(stepUiPopupWindow?.webBrowserWindow);
             }
         }
-        
+
+        /// <summary>
+        /// Update the Location of Popups only when they are located over the Library (HostPopupInfo.WindowName = LibraryView)
+        /// </summary>
+        public void UpdateLibraryPopupsLocation()
+        {
+            if (HostPopupInfo.WindowName != null && HostPopupInfo.WindowName.Equals(nameof(LibraryView)))
+            {
+                var automationScrollDownStep = (from automation in UIAutomation
+                                      where automation.Name.Equals(libraryScrollToBottomFuncName)
+                                      select automation).FirstOrDefault();
+                if (automationScrollDownStep == null) return;
+                GuidesValidationMethods.LibraryScrollToBottom(this, automationScrollDownStep, true, Guide.GuideFlow.CURRENT);
+
+                var automationCalculateStep = (from automation in UIAutomation
+                                      where automation.Name.Equals(calculateLibraryFuncName)
+                                      select automation).FirstOrDefault();
+                if (automationCalculateStep == null) return;
+                GuidesValidationMethods.CalculateLibraryItemLocation(this, automationCalculateStep, true, Guide.GuideFlow.CURRENT);
+            }
+        }
+
+        /// <summary>
+        /// This method will update the interactions of the Popup with the Library like the highligthed items or the event subscriptions
+        /// </summary>
+        internal void UpdateLibraryInteractions()
+        {
+            var automationSubscribePackage = (from automation in UIAutomation
+                                              where automation.JSFunctionName.Equals(subscribePackageClickedFuncName)
+                                              select automation).FirstOrDefault();
+            if (automationSubscribePackage == null) return;
+            ExecuteUIAutomationStep(automationSubscribePackage, true, Guide.GuideFlow.FORWARD);
+
+            SetHighlightSection(true);
+        }
+
+      
+
+        /// <summary>
+        /// This method will update the Popup vertical location
+        /// </summary>
+        /// <param name="verticalPosition"></param>
+        internal void UpdatePopupVerticalPlacement(double verticalPosition)
+        {
+            stepUIPopup.VerticalOffset = verticalPosition + HostPopupInfo.VerticalPopupOffSet;
+            UpdatePopupLocationInvoke(stepUIPopup);
+        }
+
+
         private void UpdatePopupLocationInvoke(Popup popUp)
         {
             if(popUp != null && popUp.IsOpen)
@@ -371,6 +458,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="enableUIAutomation">Enable/Disable the automation action for a specific UIElement</param>
         private void ExecuteUIAutomationStep(StepUIAutomation uiAutomationData, bool enableUIAutomation, Guide.GuideFlow currentFlow)
         {
+            var popupBorderName = "SubmenuBorder";
             //This section will search the UIElement dynamically in the Dynamo VisualTree in which an automation action will be executed
             UIElement automationUIElement = Guide.FindChild(MainWindow, uiAutomationData.Name);
             if (automationUIElement != null)
@@ -391,6 +479,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
                             menuEntry.IsSubmenuOpen = enableUIAutomation;
                             menuEntry.StaysOpenOnClick = enableUIAutomation;
                             break;                    
+                    }
+                    //Means that the Popup location needs to be updated after the MenuItem is opened
+                    if(uiAutomationData.UpdatePlacementTarget)
+                    {
+                        //We need to find the border inside the MenuItem.Popup so we can get its Width (this template is defined in MenuStyleDictionary.xaml)
+                        var menuPopupBorder = menuEntry.Template.FindName(popupBorderName, menuEntry) as Border;
+                        if (menuPopupBorder == null) return;
+
+                        //We need to do this substraction so the Step Popup wil be located at the end of the MenuItem Popup.
+                        stepUIPopup.HorizontalOffset = (menuPopupBorder.ActualWidth - menuEntry.ActualWidth) + HostPopupInfo.HorizontalPopupOffSet;
+                        UpdatePopupLocationInvoke(stepUIPopup);
                     }
                     break;
                 //In this case the UI Automation will be done using a Function located in the static class GuidesValidationMethods
@@ -425,6 +524,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
                                 break;
                         }                      
                     }
+                    break;
+                case StepUIAutomation.UIControlType.JSFUNCTION:
+                    if (string.IsNullOrEmpty(uiAutomationData.JSFunctionName)) return;
+                    //We need to create a new list for the parameters due that we will be adding the enableUIAutomation boolean value
+                    var parametersJSFunction = new List<object>(uiAutomationData.JSParameters);
+                    parametersJSFunction.Add(enableUIAutomation);
+                    //Create the array for the parameters that will be sent to the JS Function
+                    object[] jsParameters = parametersJSFunction.ToArray();                 
+                    //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
+                    object[] parametersInvokeScript = new object[] { uiAutomationData.JSFunctionName, jsParameters };
+                    //Execute the JS function with the provided parameters
+                    ResourceUtilities.ExecuteJSFunction(MainWindow, HostPopupInfo, parametersInvokeScript);
                     break;
             }
         }
@@ -553,6 +664,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     StepGuideBackground.GuideHighlightRectangle.Stroke = brush;
                 }
             }
+            //This case is for when the item to be highlighted is inside the LibraryView (WebBrowser component) 
+            else if (HostPopupInfo.HighlightRectArea.UIElementTypeString.Equals(typeof(WebBrowser).Name))
+            {
+                //We need to access the WebBrowser instance and call a js function to highlight the html div border of the item
+                HighlightLibraryItem(bVisible);
+            }
             //If the UIElementTypeString is not a MenuItem and also not a DynamoView we need to find the Window in the OwnedWindows and search the element inside it
             else
             {
@@ -623,6 +740,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if(menuItemHighlightRect != null)
                     subItemsGrid.Children.Remove(menuItemHighlightRect);
             }
+        }
+
+        /// <summary>
+        /// This method will execute a js function for highlighting a item (<div></div>) in the WebBrowser instance located inside the LibraryView using reflection
+        /// </summary>
+        /// <param name="visible">enable or disable the highlight in a specific Library item</param>
+        internal void HighlightLibraryItem(bool visible)
+        {
+            const string jsMethodName = "highlightLibraryItem";
+            object[] parametersInvokeScript = new object[] { jsMethodName, new object[] { HostPopupInfo.HighlightRectArea.WindowElementNameString, visible } };
+            ResourceUtilities.ExecuteJSFunction(MainWindow, HostPopupInfo, parametersInvokeScript);
         }
 
         /// <summary>

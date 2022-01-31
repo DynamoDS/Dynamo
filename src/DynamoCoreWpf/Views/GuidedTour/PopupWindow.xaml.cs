@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
-using System.Windows.Interop;
+using System.Windows.Input;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 
@@ -20,6 +20,8 @@ namespace Dynamo.Wpf.Views.GuidedTour
         private bool isClosingTour;
 
         private const string packagesTourName = "packages";
+        //Field that indicates wheter popups are left-aligned or right-aligned
+        private const string menuDropAligment = "_menuDropAlignment";
 
         internal WebBrowserWindow webBrowserWindow;
 
@@ -56,7 +58,19 @@ namespace Dynamo.Wpf.Views.GuidedTour
             Opened += PopupWindow_Opened;
             Closed += PopupWindow_Closed;
 
-            isClosingTour = false;
+            isClosingTour = false; 
+            
+            EnsureStandardPopupAlignment();
+        }
+
+        private void EnsureStandardPopupAlignment()
+        {
+            var menuDropAlignmentField = typeof(SystemParameters).GetField(menuDropAligment, BindingFlags.NonPublic | BindingFlags.Static);
+            if (SystemParameters.MenuDropAlignment && menuDropAlignmentField != null)
+            {
+                //Sets field to false and ignores the alignment
+                menuDropAlignmentField.SetValue(null, false);
+            }
         }
 
         private void PopupWindow_Closed(object sender, EventArgs e)
@@ -84,7 +98,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
         private void StartTourButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            GuideFlowEvents.OnGuidedTourNext(popupViewModel.Step.Sequence);            
+            GuideFlowEvents.OnGuidedTourNext();
         }
 
         private void CloseButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -103,12 +117,25 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
-            GuideFlowEvents.OnGuidedTourNext(popupViewModel.Step.Sequence);            
+            GuideFlowEvents.OnGuidedTourNext();
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            GuideFlowEvents.OnGuidedTourPrev(popupViewModel.Step.Sequence);           
+            GuideFlowEvents.OnGuidedTourPrev();
+        }
+
+        private void Popup_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Left:
+                    GuideFlowEvents.OnGuidedTourPrev();
+                    break;
+                case Key.Right:
+                    GuideFlowEvents.OnGuidedTourNext();
+                    break;
+            }
         }
     }
 }

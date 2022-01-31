@@ -128,6 +128,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal void UpdateGuideStepsLocation()
         {
+            //If there is no guide being executed then we shouldn't do anything
+            if (!GuideFlowEvents.IsAnyGuideActive) return;
+
             if (currentGuide != null)
             {
                 currentGuide.CurrentStep.UpdateLocation();
@@ -183,7 +186,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             currentGuide = (from guide in Guides where guide.Name.Equals(args.GuideName) select guide).FirstOrDefault();
 
             //Check if it's packages guide to open the exit modal 
-            if (args.GuideName == "Packages")
+            if (args.GuideName == "Packages" && currentGuide.CurrentStep.StepType != Step.StepTypes.SURVEY)
             {
                 guideBackgroundElement.ClearHighlightSection();
                 guideBackgroundElement.ClearCutOffSection();

@@ -245,7 +245,7 @@ namespace Dynamo.PackageManager
             // Prevent loading packages that have been specifically marked as unloaded
             if (package.LoadState.State == PackageLoadState.StateTypes.Unloaded) return;
 
-            List<Assembly> loadedAssemblies = new List<Assembly>();
+            List<Assembly> loadedNodeLibs = new List<Assembly>();
             try
             {
                 // load node libraries
@@ -256,7 +256,7 @@ namespace Dynamo.PackageManager
                         try
                         {
                             OnRequestLoadNodeLibrary(assem.Assembly);
-                            loadedAssemblies.Add(assem.Assembly);
+                            loadedNodeLibs.Add(assem.Assembly);
                         }
                         catch (LibraryLoadFailedException ex)
                         {
@@ -287,7 +287,10 @@ namespace Dynamo.PackageManager
 
                 package.SetAsLoaded();
                 PackgeLoaded?.Invoke(package);
-                PackagesLoaded?.Invoke(loadedAssemblies);
+                PackagesLoaded?.Invoke(loadedNodeLibs);
+
+                PythonServices.PythonEngineManager.Instance.
+                    LoadPythonEngine(package.LoadedAssemblies.Select(x => x.Assembly));
             }
             catch (CustomNodePackageLoadException e)
             {
@@ -299,6 +302,11 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
+                if (e is DynamoServices.AssemblyBlockedException)
+                {
+                    var failureMessage = string.Format(Properties.Resources.PackageLoadFailureForBlockedAssembly, e.Message);
+                    DynamoServices.LoadLibraryEvents.OnLoadLibraryFailure(failureMessage, Properties.Resources.LibraryLoadFailureMessageBoxTitle);
+                }
                 package.LoadState.SetAsError(e.Message);
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
@@ -370,13 +378,15 @@ namespace Dynamo.PackageManager
                 }
             }
         }
+
         /// <summary>
-        /// This method is called when custom nodes and packages need to be reloaded if there are new package paths.
+        /// Helper function to load new custom nodes and packages.
         /// </summary>
-        /// <param name="newPaths"></param>
-        /// <param name="preferences"></param>
+        /// <param name="newPaths">New package paths to load custom nodes and packages from.</param>
+        /// <param name="preferences">Can be a temporary local preferences object.</param>
         /// <param name="customNodeManager"></param>
-        public void LoadCustomNodesAndPackages(IEnumerable<string> newPaths, IPreferences preferences, CustomNodeManager customNodeManager)
+        private void LoadCustomNodesAndPackagesHelper(IEnumerable<string> newPaths, IPreferences preferences, 
+            CustomNodeManager customNodeManager)
         {
             foreach (var path in preferences.CustomPackageFolders)
             {
@@ -386,13 +396,16 @@ namespace Dynamo.PackageManager
 
                 customNodeManager.AddUninitializedCustomNodesInPath(dir, false, false);
             }
-
             foreach (var path in newPaths)
             {
-                var packageDirectory = pathManager.PackagesDirectories.FirstOrDefault(x => x.StartsWith(path));
-                if (packageDirectory != null)
+                if (DynamoModel.IsDisabledPath(path, preferences))
                 {
-                    ScanPackageDirectories(packageDirectory, preferences);
+                    Log(string.Format(Resources.PackagesDirectorySkipped, path));
+                    continue;
+                }
+                else
+                {
+                    ScanPackageDirectories(path, preferences);
                 }
             }
 
@@ -416,19 +429,46 @@ namespace Dynamo.PackageManager
             }
         }
 
-        [Obsolete("Do not use. This method is deprecated and will be removed in Dynamo 3.0. Use LoadCustomNodesAndPackages(IEnumerable<string> newPaths, IPreferences preferences, CustomNodeManager customNodeManager) instead.")]
         /// <summary>
-        /// This method is called when custom nodes and packages need to be reloaded if there are new package paths.
+        /// This method is used when custom nodes and packages need to be loaded from new package paths 
+        /// that have been added to preference settings.
         /// </summary>
-        /// <param name="loadPackageParams"></param>
+        /// <param name="newPaths">New package paths to load custom nodes and packages from.</param>
+        /// <param name="customNodeManager"></param>
+        internal void LoadNewCustomNodesAndPackages(IEnumerable<string> newPaths, CustomNodeManager customNodeManager)
+        {
+            if(newPaths == null || !newPaths.Any()) return;
+
+            var preferences = (pathManager as PathManager).Preferences;
+            var packageDirsToScan = new List<string>();
+
+            foreach (var path in newPaths)
+            {
+                var packageDirectory = pathManager.PackagesDirectories.FirstOrDefault(x => x.StartsWith(path));
+                if (packageDirectory != null)
+                {
+                    packageDirsToScan.Add(packageDirectory);
+                }
+            }
+            LoadCustomNodesAndPackagesHelper(packageDirsToScan, preferences, customNodeManager);
+
+        }
+
+        /// <summary>
+        /// LoadCustomNodesAndPackages can be used to load custom nodes and packages
+        /// from temporary paths that do not need to be added to preference settings. 
+        /// To load from temporary custom paths, initialize a local PreferenceSettings object 
+        /// and add the paths to its CustomPackageFolders property, then initialize a new 
+        /// LoadPackageParams with this preferences object and use as input to this method.
+        /// To load from custom paths that need to be persisted to the preferences, 
+        /// initialize a LoadPackageParams from an existing preferences object.
+        /// </summary>
+        /// <param name="loadPackageParams">LoadPackageParams initialized with local PreferenceSettings object containing custom package path.</param>
         /// <param name="customNodeManager"></param>
         public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
-            foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
-            {
-                customNodeManager.AddUninitializedCustomNodesInPath(path, false, false);
-            }
-            LoadAll(loadPackageParams);
+            var preferences = loadPackageParams.Preferences;
+            LoadCustomNodesAndPackagesHelper(preferences.CustomPackageFolders, preferences, customNodeManager);
         }
 
         private void ScanAllPackageDirectories(IPreferences preferences)
@@ -708,6 +748,16 @@ namespace Dynamo.PackageManager
             {
                 assem = Assembly.LoadFrom(filename);
                 return true;
+            }
+            catch (FileLoadException e)
+            {
+                // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
+                if (e.HResult == unchecked((int)0x80131515))
+                {
+                    throw new DynamoServices.AssemblyBlockedException(e.Message);
+                }
+                assem = null;
+                return false;
             }
             catch (BadImageFormatException)
             {

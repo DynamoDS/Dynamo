@@ -706,7 +706,7 @@ namespace Dynamo.ViewModels
             var options = new ObservableCollection<string> { Res.DefaultPythonEngineNone };
             foreach (var item in PythonEngineManager.Instance.AvailableEngines)
             {
-                options.Add(item.Version.ToString());
+                options.Add(item.Name);
             }
             PythonEnginesList = options;
         }
