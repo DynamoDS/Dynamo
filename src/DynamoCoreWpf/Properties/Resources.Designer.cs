@@ -5263,6 +5263,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Install a package.
+        /// </summary>
+        public static string PackagesGuideInstallAPackageTitle {
+            get {
+                return ResourceManager.GetString("PackagesGuideInstallAPackageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package installations are typically quick, depending on their size and other factors. \n
         ///To install the latest version of a package, click Install. \n
         ///%./UI/Images/alert.png% The sample Autodesk package is already installed on your computer..
