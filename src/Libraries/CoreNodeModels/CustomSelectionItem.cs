@@ -25,21 +25,24 @@ namespace CoreNodeModels
     /// <summary>
     /// Represents an item and in the custom dropdown menu
     /// </summary>
-    public class CustomSelectionItemViewModel : INotifyPropertyChanged, IDataErrorInfo
+    public class CustomSelectionItemViewModel : INotifyPropertyChanged
     {
         private readonly CustomSelectionItem customSelectionItem;
+
+        internal Func<CustomSelectionItem, bool> IsUnique { get; set; }
+        internal Action ItemChanged { get; set; }
+        internal Action<CustomSelectionItemViewModel> RemoveRequested { get; set; }
 
         /// <summary>
         /// Event raised when a property is changed
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        #region Properties
-
-        internal Func<CustomSelectionItem, bool> IsUnique { get; set; }
-        internal Action ItemChanged { get; set; }
-        internal Action<CustomSelectionItemViewModel> RemoveRequested { get; set; }
-
+        /// <summary>
+        /// Command for removing the menu item
+        /// </summary>
+        [JsonIgnore]
+        public ICommand RemoveCommand { get; private set; }
 
         /// <summary>
         /// Then name of the menu item
@@ -97,76 +100,28 @@ namespace CoreNodeModels
             }
         }
 
-        #endregion
-
-        #region IDataErrorInfo
-
-        [JsonIgnore]
-        public string Error
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
-
-        [JsonIgnore]
-        public string this[string columnName]
-        {
-            get
-            {
-                if (columnName.Equals("Name"))
-                {
-                    if (string.IsNullOrWhiteSpace(Name))
-                        return "Name cannot be empty";
-                    else if (IsUnique != null && !IsUnique(customSelectionItem))
-                        return "Name must be unique";
-                }
-
-                return string.Empty;
-            }
-        }
-
-        #endregion
-
-        #region Commands
 
         /// <summary>
-        /// Command for removing the menu item
+        /// Construct a new custom dropdown menu item with a given name and value
         /// </summary>
-        [JsonIgnore]
-        public ICommand RemoveCommand { get; private set; }
-
-        #endregion
-
-        #region Public logic
-
-
-        /// <summary>
-        /// Construct a new custom dropdown menu item
-        /// </summary>
-        public CustomSelectionItemViewModel()
-        {
-            customSelectionItem = new CustomSelectionItem();
-            RemoveCommand = new RelayCommand(RemoveCommandExecute);
-        }
-
+        /// <param name="customSelectionItem"></param>
+        /// <exception cref="ArgumentException"></exception>
         public CustomSelectionItemViewModel(CustomSelectionItem customSelectionItem)
         {
             if (customSelectionItem == null)
                 throw new ArgumentException("enumItem cannot be null");
 
             this.customSelectionItem = customSelectionItem;
-            RemoveCommand = new RelayCommand(RemoveCommandExecute);
+            RemoveCommand = new RemoveMenuItemCommand(RemoveMenuItem);
         }
 
-        public void RemoveCommandExecute(object param)
+        private void RemoveMenuItem(object param)
         {
             if (RemoveRequested != null)
                 RemoveRequested(this);
         }
 
-        public void Validate()
+        internal void Validate()
         {
             OnPropertyChanged("Name");
         }
@@ -177,6 +132,19 @@ namespace CoreNodeModels
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        #endregion
+
+        class RemoveMenuItemCommand : ICommand
+        {
+            private readonly Action<object> execute;
+            public event EventHandler CanExecuteChanged;
+
+            public RemoveMenuItemCommand(Action<object> execute)
+            {
+                this.execute = execute;
+            }
+
+            public bool CanExecute(object parameter) => true;
+            public void Execute(object parameter) => execute(parameter);
+        }
     }
 }
