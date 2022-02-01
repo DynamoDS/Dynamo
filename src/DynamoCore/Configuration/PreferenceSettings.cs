@@ -447,6 +447,12 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool ShowRunPreview { get; set; }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<StyleItem> StyleItemsList { get; set; }
+
         /// <summary>
         /// Limits the size of the tags used by the SearchDictionary
         /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value 
@@ -526,7 +532,7 @@ namespace Dynamo.Configuration
             EnableNodeAutoComplete = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
-
+            StyleItemsList = new List<StyleItem>();
         }
 
         /// <summary>
