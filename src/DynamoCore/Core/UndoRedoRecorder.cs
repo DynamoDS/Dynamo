@@ -389,9 +389,14 @@ namespace Dynamo.Core
                         ModelBase toBeUpdated = undoClient.GetModelForElement(element);
                         if (toBeUpdated != null)
                         {
-
                             RecordActionInternal(newGroup, toBeUpdated, modelActionType);
                             undoClient.ReloadModel(element);
+
+                            if(toBeUpdated is Graph.Notes.NoteModel)
+                            {
+                                var noteModel = (Graph.Notes.NoteModel)toBeUpdated;
+                                noteModel.TryToSubscribeUndoNote();
+                            }
                         }
                         break;
 

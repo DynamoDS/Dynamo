@@ -12,12 +12,14 @@ namespace Dynamo.Graph.Notes
     public class NoteModel : ModelBase
     {
         /// <summary>
-        /// 
+        /// This action is triggered when undo command is pressed and a node is pinned
         /// </summary>
-        public event Action<ModelBase> UndoRequest;
+        internal event Action<ModelBase> UndoRequest;
 
-        private bool createdPinNode;
-        public bool CreatedPinNode { get => createdPinNode; set => createdPinNode = value; }
+        /// <summary>
+        /// Checks if the node has just been pinned
+        /// </summary>
+        internal bool CreatedPinNode { get; set; }
 
         private string text;
 
@@ -99,6 +101,7 @@ namespace Dynamo.Graph.Notes
                 return base.UpdateValueCore(updateValueParams);
             
             Text = value;
+
             return true;
         }        
         #endregion
@@ -112,7 +115,7 @@ namespace Dynamo.Graph.Notes
             helper.SetAttribute("text", Text);
             helper.SetAttribute("x", X);
             helper.SetAttribute("y", Y);
-            helper.SetAttribute("createdPinNode", createdPinNode);
+            helper.SetAttribute("createdPinNode", CreatedPinNode);
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -122,16 +125,23 @@ namespace Dynamo.Graph.Notes
             Text = helper.ReadString("text", "New Note");
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
-            createdPinNode = helper.ReadBoolean("createdPinNode");
+            CreatedPinNode = helper.ReadBoolean("createdPinNode");
 
             // Notify listeners that the position of the note has changed, 
             // then parent group will also redraw itself.
             ReportPosition();
-            if(createdPinNode && UndoRequest != null)
+        }
+
+        /// <summary>
+        /// Verify if the current user action is to pin a node so the 'unpin' method can be called to undo the action
+        /// </summary>
+        internal void TryToSubscribeUndoNote()
+        {
+            if (CreatedPinNode && UndoRequest != null)
             {
-                createdPinNode = false;
+                CreatedPinNode = false;
                 UndoRequest(this);
-            }   
+            }
         }
 
         #endregion
