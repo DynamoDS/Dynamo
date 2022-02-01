@@ -12,6 +12,11 @@ namespace CoreNodeModelsWpf.Nodes
     /// </summary>
     public class CustomSelectionNodeModelNodeViewCustomization : INodeViewCustomization<CustomSelectionNodeModel>
     {
+        /// <summary>
+        /// Customize the visual appearance of the custom dropdown node
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="nodeView"></param>
         public void CustomizeView(CustomSelectionNodeModel model, NodeView nodeView)
         {
             nodeView.inputGrid.Children.Add(
@@ -21,15 +26,12 @@ namespace CoreNodeModelsWpf.Nodes
                 });
         }
 
+
+        /// <summary>
+        /// This method does not do anything for now
+        /// </summary>
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            // cleanup
         }
     }
 }

@@ -6,38 +6,44 @@ using Newtonsoft.Json;
 namespace CoreNodeModels
 {
     /// <summary>
-    /// Represents an Enum item
+    /// The name and value of an item in the custom dropdown menu
     /// </summary>
     public class CustomSelectionItem
     {
+        /// <summary>
+        /// The name of the dropdown item
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// The value stored in the dropdown menu item
+        /// </summary>
         public string Value { get; set; }
-
-        public CustomSelectionItem()
-        {
-
-        }
     }
 
 
+    /// <summary>
+    /// Represents an item and in the custom dropdown menu
+    /// </summary>
     public class CustomSelectionItemViewModel : INotifyPropertyChanged, IDataErrorInfo
     {
         private readonly CustomSelectionItem customSelectionItem;
 
+        /// <summary>
+        /// Event raised when a property is changed
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         #region Properties
 
-        [JsonIgnore]
-        public Func<CustomSelectionItem, bool> IsUnique { get; set; }
+        internal Func<CustomSelectionItem, bool> IsUnique { get; set; }
+        internal Action ItemChanged { get; set; }
+        internal Action<CustomSelectionItemViewModel> RemoveRequested { get; set; }
 
-        [JsonIgnore]
-        public Action ItemChanged { get; set; }
 
-        [JsonIgnore]
-        public Action<CustomSelectionItemViewModel> RemoveRequested { get; set; }
-
+        /// <summary>
+        /// Then name of the menu item
+        /// </summary>
         public string Name
         {
             get
@@ -56,6 +62,10 @@ namespace CoreNodeModels
             }
         }
 
+
+        /// <summary>
+        /// The value stored in the menu item
+        /// </summary>
         public string Value
         {
             get
@@ -73,7 +83,7 @@ namespace CoreNodeModels
         }
 
         [JsonIgnore]
-        public bool IsValid
+        internal bool IsValid
         {
             get
             {
@@ -121,6 +131,9 @@ namespace CoreNodeModels
 
         #region Commands
 
+        /// <summary>
+        /// Command for removing the menu item
+        /// </summary>
         [JsonIgnore]
         public ICommand RemoveCommand { get; private set; }
 
@@ -128,6 +141,10 @@ namespace CoreNodeModels
 
         #region Public logic
 
+
+        /// <summary>
+        /// Construct a new custom dropdown menu item
+        /// </summary>
         public CustomSelectionItemViewModel()
         {
             customSelectionItem = new CustomSelectionItem();

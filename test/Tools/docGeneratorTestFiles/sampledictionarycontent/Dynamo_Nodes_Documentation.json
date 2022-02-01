@@ -2997,7 +2997,7 @@
     "imageFile": ["Custom Dropdown"],
     "dynFile": ["Custom Dropdown"],
     "folderPath": "Input/Basic/Action",
-    "inDepth": "This node allows you to pre-define a dropdown menu with with an arbitrary number of custom items. Each item consists of a label and a value. The label is always a string, while the value can be integer, number of string"
+    "inDepth": "This node allows you to pre-define a dropdown menu with with an arbitrary number of custom items. Each item consists of a label and a value. The label is always a string, while the value can be integer, number or string"
 }, {
     "Name": "String",
     "imageFile": ["String"],

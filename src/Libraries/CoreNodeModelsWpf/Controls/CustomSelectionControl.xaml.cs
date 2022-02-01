@@ -13,7 +13,10 @@ namespace CoreNodeModelsWpf.Controls
     /// </summary>
     public partial class CustomSelectionControl : UserControl
     {
-        public CustomSelectionControl()
+        /// <summary>
+        /// Create the control for the custom dropdown menu and editor
+        /// </summary>
+        public  CustomSelectionControl()
         {
             InitializeComponent();
         }
@@ -51,7 +54,7 @@ namespace CoreNodeModelsWpf.Controls
         }
 
 
-        public static void CollectChildrenOfType<T>(DependencyObject dependencyObj, List<T> children) where T : DependencyObject
+        private static void CollectChildrenOfType<T>(DependencyObject dependencyObj, List<T> children) where T : DependencyObject
         {
             if (dependencyObj == null)
                 return;

@@ -9,13 +9,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Xml;
-using CoreNodeModels;
-using CoreNodeModels.Properties;
 
 
 namespace CoreNodeModels.Input
 {
-    [NodeName("Custom Dropdown")]
+    /// <summary>
+    /// This node allow the user to create a dropdown menu with an with an arbitrary number of customization items
+    /// </summary>
+    [NodeName("Custom Dropdown Menu")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("CustomSelectionNodeDescription", typeof(Properties.Resources))]
     [NodeSearchTags("CustomSelectionSearchTags", typeof(Properties.Resources))]
@@ -25,16 +26,12 @@ namespace CoreNodeModels.Input
     [IsDesignScriptCompatible]
     public class CustomSelectionNodeModel : DSDropDownBase
         {
-            #region Private members
-
             private ObservableCollection<CustomSelectionItemViewModel> enumItems = new ObservableCollection<CustomSelectionItemViewModel>();
             private CustomSelectionItemViewModel selectedEnumItem;
 
-            #endregion
-
-            #region Properties
-
-
+            /// <summary>
+            /// All menu items
+            /// </summary>
             public ObservableCollection<CustomSelectionItemViewModel> EnumItems
             {
                 get { return enumItems; }
@@ -51,6 +48,9 @@ namespace CoreNodeModels.Input
                 }
             }
 
+            /// <summary>
+            /// The menu items with valid names and values
+            /// </summary>
             [JsonIgnore]
             public ObservableCollection<CustomSelectionItemViewModel> ValidEnumItems
             {
@@ -60,6 +60,10 @@ namespace CoreNodeModels.Input
                 }
             }
 
+
+            /// <summary>
+            /// the currently selected menu item
+            /// </summary>
             public CustomSelectionItemViewModel SelectedItem
             {
                 get { return selectedEnumItem; }
@@ -72,17 +76,18 @@ namespace CoreNodeModels.Input
                 }
             }
 
-            #endregion
 
-            #region Commands
-
-            [JsonIgnore]
+            /// <summary>
+            /// Command for adding a new menu item
+            /// </summary>
+            [IsVisibleInDynamoLibrary(false)]
             public ICommand AddCommand { get; private set; }
 
-            #endregion
 
-            #region Constructors
 
+            /// <summary>
+            /// Construct a new Custom Dropdown Menu node
+            /// </summary>
             public CustomSelectionNodeModel() : base("Value")
             {
                 RegisterAllPorts();
@@ -98,14 +103,14 @@ namespace CoreNodeModels.Input
 
                 SelectedItem = ValidEnumItems.FirstOrDefault();
 
-                AddCommand = new RelayCommand(AddCommandExecute);
+                AddCommand = new AddMenuItemCommand(AddMenuItem);
             }
 
 
             [JsonConstructor]
-            CustomSelectionNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base("Value", inPorts, outPorts)
+            private CustomSelectionNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base("Value", inPorts, outPorts)
             {
-                AddCommand = new RelayCommand(AddCommandExecute);
+                AddCommand = new AddMenuItemCommand(AddMenuItem);
                 enumItems.CollectionChanged += EnumItems_CollectionChanged;
             }
 
@@ -116,10 +121,12 @@ namespace CoreNodeModels.Input
                 OnNodeModified();
             }
 
-            #endregion
 
-            #region Public methods
-
+            /// <summary>
+            /// Build the AST for this node
+            /// </summary>
+            /// <param name="inputAstNodes"></param>
+            /// <returns></returns>
             [IsVisibleInDynamoLibrary(false)]
             public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
             {
@@ -129,8 +136,19 @@ namespace CoreNodeModels.Input
                 return new List<AssociativeNode> { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), associativeNode) };
             }
 
+            /// <summary>
+            /// Log an exception
+            /// </summary>
+            /// <param name="ex"></param>
             [IsVisibleInDynamoLibrary(false)]
-            public void AddCommandExecute(object param)
+            public void Log(Exception ex)
+            {
+                base.Log(ex.Message, Dynamo.Logging.WarningLevel.Error);
+                base.Log(ex.StackTrace, Dynamo.Logging.WarningLevel.Error);
+            }
+
+
+            private void AddMenuItem(object param)
             {
                 var newItem = new CustomSelectionItemViewModel(new CustomSelectionItem());
                 InitEnumItem(newItem);
@@ -138,19 +156,13 @@ namespace CoreNodeModels.Input
                 EnumItems.Add(newItem);
             }
 
-            [IsVisibleInDynamoLibrary(false)]
+
             private bool IsUnique(CustomSelectionItem item)
             {
                 var items = EnumItems.Where(x => x.Name == item.Name);
                 return items.Count() <= 1;
             }
 
-            [IsVisibleInDynamoLibrary(false)]
-            public void Log(Exception ex)
-            {
-                base.Log(ex.Message, Dynamo.Logging.WarningLevel.Error);
-                base.Log(ex.StackTrace, Dynamo.Logging.WarningLevel.Error);
-            }
 
             private void EnumItem_ItemChanged()
             {
@@ -162,12 +174,14 @@ namespace CoreNodeModels.Input
                 OnNodeModified();
             }
 
+
             private void EnumItem_RemoveRequested(CustomSelectionItemViewModel item)
             {
                 EnumItems.Remove(item);
                 RaisePropertyChanged("ValidEnumItems");
                 RaisePropertyChanged("SelectedItem");
             }
+
 
             private object GetSelectedValue()
             {
@@ -286,6 +300,19 @@ namespace CoreNodeModels.Input
                 }
             }
 
-            #endregion
+
+            class AddMenuItemCommand : ICommand
+            {
+                private readonly Action<object> execute;
+                public event EventHandler CanExecuteChanged;
+
+                public AddMenuItemCommand(Action<object> execute)
+                {
+                    this.execute = execute;
+                }
+
+                public bool CanExecute(object parameter) => true;
+                public void Execute(object parameter) => execute(parameter);
+            }
         }
 }
