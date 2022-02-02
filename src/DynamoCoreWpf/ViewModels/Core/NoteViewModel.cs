@@ -350,24 +350,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         private bool CanUnpinFromNode(object parameters)
         {
-
-            var nodeSelection = DynamoSelection.Instance.Selection
-                    .OfType<NodeModel>();
-
-            var noteSelection = DynamoSelection.Instance.Selection
-                    .OfType<NoteModel>();
-
-            if (nodeSelection == null || noteSelection == null ||
-                nodeSelection.Count() != 1 || noteSelection.Count() != 1)
-                return false;
-
-            var nodeToPin = nodeSelection.FirstOrDefault();
-
-            var nodeAlreadyPinned = WorkspaceViewModel.Notes
-                .Where(n => n.PinnedNode != null)
-                .Any(n => n.PinnedNode.NodeModel.GUID == nodeToPin.GUID);
-
-            if (nodeAlreadyPinned == true)
+            if (PinnedNode != null)
                 return true;
 
             return false;
