@@ -34,7 +34,7 @@ namespace CoreNodeModels.Input
             /// </summary>
             public ObservableCollection<CustomSelectionItemViewModel> EnumItems
             {
-                get { return enumItems; }
+                get => enumItems;
                 set
                 {
                     enumItems = value;
@@ -44,7 +44,7 @@ namespace CoreNodeModels.Input
 
                     PopulateItems();
 
-                    RaisePropertyChanged("EnumItems");
+                    RaisePropertyChanged(nameof(EnumItems));
                 }
             }
 
@@ -53,12 +53,7 @@ namespace CoreNodeModels.Input
             /// </summary>
             [JsonIgnore]
             public ObservableCollection<CustomSelectionItemViewModel> ValidEnumItems
-            {
-                get
-                {
-                    return new ObservableCollection<CustomSelectionItemViewModel>(EnumItems.Where(item => item.IsValid));
-                }
-            }
+                => new ObservableCollection<CustomSelectionItemViewModel>(EnumItems.Where(item => item.IsValid));
 
 
             /// <summary>
@@ -66,11 +61,11 @@ namespace CoreNodeModels.Input
             /// </summary>
             public CustomSelectionItemViewModel SelectedItem
             {
-                get { return selectedEnumItem; }
+                get => selectedEnumItem;
                 set
                 {
                     selectedEnumItem = value == null ? null : ValidEnumItems.FirstOrDefault(item => item.Name == value.Name);
-                    RaisePropertyChanged("SelectedItem");
+                    RaisePropertyChanged(nameof(SelectedItem));
 
                     OnNodeModified();
                 }
@@ -117,7 +112,7 @@ namespace CoreNodeModels.Input
 
             private void EnumItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
             {
-                RaisePropertyChanged("ValidEnumItems");
+                RaisePropertyChanged(nameof(ValidEnumItems));
                 OnNodeModified();
             }
 
@@ -130,8 +125,8 @@ namespace CoreNodeModels.Input
             [IsVisibleInDynamoLibrary(false)]
             public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
             {
-                var value = GetSelectedValue();
-                var associativeNode = AstFactory.BuildPrimitiveNodeFromObject(value);
+                object value = GetSelectedValue();
+                AssociativeNode associativeNode = AstFactory.BuildPrimitiveNodeFromObject(value);
 
                 return new List<AssociativeNode> { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), associativeNode) };
             }
@@ -159,14 +154,14 @@ namespace CoreNodeModels.Input
 
             private bool IsUnique(CustomSelectionItem item)
             {
-                var items = EnumItems.Where(x => x.Name == item.Name);
+                IEnumerable<CustomSelectionItemViewModel> items = EnumItems.Where(x => x.Name == item.Name);
                 return items.Count() <= 1;
             }
 
 
             private void EnumItem_ItemChanged()
             {
-                RaisePropertyChanged("ValidEnumItems");
+                RaisePropertyChanged(nameof(ValidEnumItems));
 
                 foreach (var item in EnumItems)
                     item.Validate();
@@ -178,8 +173,8 @@ namespace CoreNodeModels.Input
             private void EnumItem_RemoveRequested(CustomSelectionItemViewModel item)
             {
                 EnumItems.Remove(item);
-                RaisePropertyChanged("ValidEnumItems");
-                RaisePropertyChanged("SelectedItem");
+                RaisePropertyChanged(nameof(ValidEnumItems));
+                RaisePropertyChanged(nameof(SelectedItem));
             }
 
 
@@ -219,13 +214,13 @@ namespace CoreNodeModels.Input
                 var xmlDocument = element.OwnerDocument;
                 var enumItemsNode = xmlDocument.CreateElement("CustomeSelectionItem");
 
-                foreach (var item in EnumItems)
+                foreach (CustomSelectionItemViewModel item in EnumItems)
                 {
                     if (item.IsValid)
                     {
                         var itemNode = xmlDocument.CreateElement("CustomeSelectionItem");
                         itemNode.SetAttribute("Name", item.Name);
-                        itemNode.SetAttribute("Value", item.Value == null ? null : item.Value.ToString());
+                        itemNode.SetAttribute("Value", item.Value?.ToString());
 
                         enumItemsNode.AppendChild(itemNode);
                     }

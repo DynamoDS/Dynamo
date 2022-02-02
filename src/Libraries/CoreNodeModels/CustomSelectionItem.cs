@@ -49,16 +49,13 @@ namespace CoreNodeModels
         /// </summary>
         public string Name
         {
-            get
-            {
-                return customSelectionItem.Name;
-            }
+            get => customSelectionItem.Name;
             set
             {
                 customSelectionItem.Name = value;
 
-                OnPropertyChanged("Name");
-                OnPropertyChanged("IsValid");
+                OnPropertyChanged(nameof(Name));
+                OnPropertyChanged(nameof(IsValid));
 
                 if (ItemChanged != null)
                     ItemChanged();
@@ -71,14 +68,11 @@ namespace CoreNodeModels
         /// </summary>
         public string Value
         {
-            get
-            {
-                return customSelectionItem.Value;
-            }
+            get => customSelectionItem.Value;
             set
             {
                 customSelectionItem.Value = value;
-                OnPropertyChanged("Value");
+                OnPropertyChanged(nameof(Value));
 
                 if (ItemChanged != null)
                     ItemChanged();
@@ -123,10 +117,10 @@ namespace CoreNodeModels
 
         internal void Validate()
         {
-            OnPropertyChanged("Name");
+            OnPropertyChanged(nameof(Name));
         }
 
-        protected void OnPropertyChanged(string propertyName)
+        private void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
