@@ -115,7 +115,7 @@ namespace Dynamo.Graph.Notes
             helper.SetAttribute("text", Text);
             helper.SetAttribute("x", X);
             helper.SetAttribute("y", Y);
-            helper.SetAttribute("createdPinNode", CreatedPinNode);
+            helper.SetAttribute("CreatedPinNode", CreatedPinNode);
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -125,7 +125,9 @@ namespace Dynamo.Graph.Notes
             Text = helper.ReadString("text", "New Note");
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
-            CreatedPinNode = helper.ReadBoolean("createdPinNode");
+
+            if (helper.HasAttribute("CreatedPinNode"))
+                CreatedPinNode = helper.HasAttribute("CreatedPinNode");
 
             // Notify listeners that the position of the note has changed, 
             // then parent group will also redraw itself.

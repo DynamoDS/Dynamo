@@ -307,6 +307,7 @@ namespace Dynamo.ViewModels
             Model.PinnedNode = nodeToPin;
             Model.UndoRequest += UnpinFromNode;
 
+            MoveNoteAbovePinnedNode();
             SubscribeToPinnedNode();
 
             WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
