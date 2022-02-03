@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Dynamo Core Sample",
   "Name": "Core_AttractorPoint",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -16,7 +16,8 @@
       "MinimumValue": -10.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "A slider that produces numeric values."
+      "Description": "A slider that produces numeric values.",
+      "SelectedIndex": 0
     },
     {
       "Id": "84fb372afa224d3b8888e794becddcc2",
@@ -27,7 +28,8 @@
       "MinimumValue": -10.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "A slider that produces numeric values."
+      "Description": "A slider that produces numeric values.",
+      "SelectedIndex": 0
     }
   ],
   "Outputs": [],
@@ -178,7 +180,7 @@
         {
           "Id": "360bea6af96d41fcb8a1429a3c5b7d13",
           "Name": "startPoint",
-          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disabled)",
+          "Description": "Start point of cylinder\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -187,7 +189,7 @@
         {
           "Id": "bab3798020b8452a8e9d32d67eeb1963",
           "Name": "endPoint",
-          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 1) (disabled)",
+          "Description": "End point of cylinder\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 1) (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -196,7 +198,7 @@
         {
           "Id": "96641193e66b4c5a96bd9af88a2619ac",
           "Name": "radius",
-          "Description": "double\nDefault value : 1",
+          "Description": "Radius of cylinder\n\ndouble\nDefault value : 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -207,7 +209,7 @@
         {
           "Id": "6478b0d1e71b494ba1641345430edaf2",
           "Name": "Cylinder",
-          "Description": "Cylinder",
+          "Description": "Cylinder created by points and radius",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -256,7 +258,7 @@
         {
           "Id": "b7ad3534b86b401d8606de4562c246fb",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -265,7 +267,7 @@
         {
           "Id": "cfebb0de7eea44c386481d62df2d5d53",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -274,7 +276,7 @@
         {
           "Id": "e70be9bacf4743f6bf7e9d8fd5885a69",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -285,7 +287,7 @@
         {
           "Id": "d991a0aad79b4a31add0d287b5fd14bc",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -304,7 +306,7 @@
         {
           "Id": "74fe5be701b048ec8214652c2ef8d5e4",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -313,7 +315,7 @@
         {
           "Id": "0957266ecba34f10a2691f471bf71bc9",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -322,7 +324,7 @@
         {
           "Id": "bc9046306b164bd4a3506509d8e95712",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -333,7 +335,7 @@
         {
           "Id": "e6c3b2d61e2d4a5294a265efea8f40f4",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -360,8 +362,8 @@
         },
         {
           "Id": "8b58f6cf3a344a16a85c39a585e007ad",
-          "Name": "amt",
-          "Description": "Layers of nesting to remove.\n\nint\nDefault value : -1",
+          "Name": "amount",
+          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -371,8 +373,8 @@
       "Outputs": [
         {
           "Id": "fabfd1c4b6bc4179812aff842eb2dcd2",
-          "Name": "var[]..[]",
-          "Description": "var[]..[]",
+          "Name": "list",
+          "Description": "Flattened list by amount",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -380,7 +382,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amt: int = -1): var[]..[]"
+      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -459,7 +461,7 @@
         {
           "Id": "db695a2c68bb4d78a2cd13bab0412c51",
           "Name": "Vector",
-          "Description": "Vector",
+          "Description": "Vector created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -494,97 +496,132 @@
     {
       "Start": "99ddeaf3fc2f436297b281bb211e3309",
       "End": "b7ad3534b86b401d8606de4562c246fb",
-      "Id": "4357e74a9f0449dd919bbcdb89036c99"
+      "Id": "4357e74a9f0449dd919bbcdb89036c99",
+      "IsHidden": "False"
     },
     {
       "Start": "99ddeaf3fc2f436297b281bb211e3309",
       "End": "cfebb0de7eea44c386481d62df2d5d53",
-      "Id": "ff4f278e27ae43de95153205acb8b0e6"
+      "Id": "ff4f278e27ae43de95153205acb8b0e6",
+      "IsHidden": "False"
     },
     {
       "Start": "976c20bfb21240c0a23cf75d3724161c",
       "End": "74fe5be701b048ec8214652c2ef8d5e4",
-      "Id": "d1becb1589ae4fc2a2b8748f1a142e92"
+      "Id": "d1becb1589ae4fc2a2b8748f1a142e92",
+      "IsHidden": "False"
     },
     {
       "Start": "8fa8ad6a3e7a4faa8fd38ae0a3018554",
       "End": "0957266ecba34f10a2691f471bf71bc9",
-      "Id": "d97eee645c9f44d99bf0cd283b4e8024"
+      "Id": "d97eee645c9f44d99bf0cd283b4e8024",
+      "IsHidden": "False"
     },
     {
       "Start": "296024bd17d9490e873bb2f70b83fb03",
       "End": "c888f558619840fab071d96d904051bb",
-      "Id": "6193be379091451488367ba93add6b03"
+      "Id": "6193be379091451488367ba93add6b03",
+      "IsHidden": "False"
     },
     {
       "Start": "296024bd17d9490e873bb2f70b83fb03",
       "End": "27ef049b5bda456e965debc16e27073c",
-      "Id": "f8987c426e58442c8f684fb3c109a6ee"
+      "Id": "f8987c426e58442c8f684fb3c109a6ee",
+      "IsHidden": "False"
     },
     {
       "Start": "02b6a7651c2545249102463924cca2a7",
       "End": "96641193e66b4c5a96bd9af88a2619ac",
-      "Id": "b403f320a0794b4682ead4c7a6931a23"
+      "Id": "b403f320a0794b4682ead4c7a6931a23",
+      "IsHidden": "False"
     },
     {
       "Start": "a30a7a5317bc4e388b8c53fef37a540e",
       "End": "e12f0d89e2e04a0c9011e8ce3cc53ed2",
-      "Id": "4d0af012974343798844aa26a47d98c6"
+      "Id": "4d0af012974343798844aa26a47d98c6",
+      "IsHidden": "False"
     },
     {
       "Start": "d991a0aad79b4a31add0d287b5fd14bc",
       "End": "a55cd520878b405f8c948c5ef1c479f5",
-      "Id": "978e2414f7c24c7589e98033edf6ab44"
+      "Id": "978e2414f7c24c7589e98033edf6ab44",
+      "IsHidden": "False"
     },
     {
       "Start": "e6c3b2d61e2d4a5294a265efea8f40f4",
       "End": "c78044fd1e8b4cd9b5fc6adb0f3f1eba",
-      "Id": "7c48053990f84bfa9b45364c6e3f2904"
+      "Id": "7c48053990f84bfa9b45364c6e3f2904",
+      "IsHidden": "False"
     },
     {
       "Start": "fabfd1c4b6bc4179812aff842eb2dcd2",
       "End": "29f9027a11d442daacbc1e15da6b0e4f",
-      "Id": "8792825373c245cca9d14ccfcede72c7"
+      "Id": "8792825373c245cca9d14ccfcede72c7",
+      "IsHidden": "False"
     },
     {
       "Start": "fabfd1c4b6bc4179812aff842eb2dcd2",
       "End": "360bea6af96d41fcb8a1429a3c5b7d13",
-      "Id": "1b998f3b468849669ceb99437dd64623"
+      "Id": "1b998f3b468849669ceb99437dd64623",
+      "IsHidden": "False"
     },
     {
       "Start": "fabfd1c4b6bc4179812aff842eb2dcd2",
       "End": "491fd601954044df9ed8d5e3656c03e1",
-      "Id": "191258662c084ab3b0c1feee972f275a"
+      "Id": "191258662c084ab3b0c1feee972f275a",
+      "IsHidden": "False"
     },
     {
       "Start": "911707da773040d1bf99ba5ef1a0eb27",
       "End": "bab3798020b8452a8e9d32d67eeb1963",
-      "Id": "92080b26e80a43bcbc0115bd27c1b097"
+      "Id": "92080b26e80a43bcbc0115bd27c1b097",
+      "IsHidden": "False"
     },
     {
       "Start": "db695a2c68bb4d78a2cd13bab0412c51",
       "End": "9dd32f907e674cc4be48dfe3d66fde78",
-      "Id": "217693387820415e8a6858f01cc3f58b"
+      "Id": "217693387820415e8a6858f01cc3f58b",
+      "IsHidden": "False"
     },
     {
       "Start": "ae79e0fbf17c4be5bdbf32d340837074",
       "End": "a585e4588bd44070890c663e4946555e",
-      "Id": "05f1c90aaee345e7b20cfedd8dd68824"
+      "Id": "05f1c90aaee345e7b20cfedd8dd68824",
+      "IsHidden": "False"
     },
     {
       "Start": "ae79e0fbf17c4be5bdbf32d340837074",
       "End": "8aaf4408e6104c00be0e2b03737ace96",
-      "Id": "0b44e23535af4cb3a702afa5bbe529c3"
+      "Id": "0b44e23535af4cb3a702afa5bbe529c3",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2821",
+      "Version": "2.13.0.3265",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -600,6 +637,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -618,8 +656,8 @@
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2030.73123184866,
-        "Y": 1135.76379458565
+        "X": 2017.2501990199178,
+        "Y": 1129.0232781712791
       },
       {
         "ShowGeometry": true,
@@ -628,8 +666,8 @@
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2031.67771968067,
-        "Y": 1209.82686895366
+        "X": 2015.9498480471377,
+        "Y": 1265.9978390734168
       },
       {
         "ShowGeometry": true,
@@ -638,8 +676,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2955.98929738001,
-        "Y": 1085.5216663381
+        "X": 2936.1753339670172,
+        "Y": 1097.4100443858958
       },
       {
         "ShowGeometry": true,
@@ -668,8 +706,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3299.65733355256,
-        "Y": 1285.23650666788
+        "X": 3307.5829189177575,
+        "Y": 1324.8644334938658
       },
       {
         "ShowGeometry": true,
@@ -688,8 +726,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2377.95534361404,
-        "Y": 1151.51909603367
+        "X": 2382.4490212236205,
+        "Y": 1131.2975467905574
       },
       {
         "ShowGeometry": true,
@@ -708,8 +746,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3953.0556412283,
-        "Y": 1172.46221176766
+        "X": 4083.827799754054,
+        "Y": 1184.3505898154556
       },
       {
         "ShowGeometry": true,
@@ -728,7 +766,7 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3666.18669476085,
+        "X": 3563.1540850132865,
         "Y": 1240.05904891606
       }
     ],
@@ -736,119 +774,172 @@
       {
         "Id": "1eb1d7edc7434b71a4f36f8d66546588",
         "Title": "Attractor Point.  Move the input sliders to adjust the location of this point.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2379.17863966676,
-        "Top": 1089.36871025171,
+        "HasNestedGroups": false,
+        "Left": 2345.4490212236205,
+        "Top": 1066.2975467905574,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "3f00be88170f4ebeb81a011c32ed2acb"
       },
       {
         "Id": "e3548b26a97e403188c6f7db718ab671",
         "Title": "Grid of points.\r\nTo make, pass a series of numbers into at least two ports.  Change the lacing behavior of the node to \"Cross product\"",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2366.8357425704,
-        "Top": 743.398665157907,
+        "HasNestedGroups": false,
+        "Left": 2332.67715574377,
+        "Top": 736.57899335569,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "f3292f8a210f42a8b1e2b3ee374027fe"
       },
       {
         "Id": "4c0c97961c39401eb7f8d7f9a5bf7927",
         "Title": "Flatten the list because the hierarchy of rows and columns is not needed.  Compare the input to this node with the output.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2701.87520055328,
-        "Top": 756.17329914003,
+        "HasNestedGroups": false,
+        "Left": 2635.9278705941,
+        "Top": 751.596815977517,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "0de075f36c864193b4792397c3bc988a"
       },
       {
         "Id": "c79861822a114a16ab89634c987ae322",
         "Title": "Formula adjusts the amount of variation between the radii of the cylinders.  Try using a different formula.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 3294.20212054939,
-        "Top": 970.847207877916,
+        "HasNestedGroups": false,
+        "Left": 3232.57176854913,
+        "Top": 964.65634372243994,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "89a6dea19e7f45c6bd41ab9599418d4f"
       },
       {
         "Id": "2ba419ce99d74a6da36c08342267c77f",
         "Title": "Finds the distance between the attractor point and the base point of the cylinders",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2956.58779730304,
-        "Top": 1028.40369005274,
+        "HasNestedGroups": false,
+        "Left": 2906.6753339670172,
+        "Top": 1032.4100443858958,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "8163332d21ec42579a5a0b69462db44f"
       },
       {
         "Id": "32822c06629f4bb9ab2c5fce632a2a48",
         "Title": "Formula to make the height of the cylinders react to the location of the attractor point.  Can be different from the formula controlling the radii.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 3299.06804042228,
-        "Top": 1209.26120770249,
+        "HasNestedGroups": false,
+        "Left": 3235.0829189177575,
+        "Top": 1245.8644334938658,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "14f9df697ef34e31808b016d3bc301bb"
       },
       {
         "Id": "d8efd16ccf5d48cdbdd240857da8aa2b",
         "Title": "Add this new z-value (height) to the original grid points to get the top points for the cylinders.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 3952.35880712648,
-        "Top": 1115.26330003908,
+        "HasNestedGroups": false,
+        "Left": 4057.3277997540536,
+        "Top": 1119.3505898154556,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "6f34eb4442e141f18ed89682850e940a"
       },
       {
         "Id": "2ef1ab4280ba48d49ab7e979709474b2",
         "Title": "Range syntax: 1 to 50, skipping by 5's",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2121.77639995249,
-        "Top": 790.018384998056,
+        "HasNestedGroups": false,
+        "Left": 2088.37470588,
+        "Top": 784.676641352278,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "d0036752d64445119937c17b4f152313"
       },
       {
         "Id": "a2483042d8c0405eb25c7e09b897f170",
         "Title": "ATTRACTOR POINT\r\nScripting 101.\r\n\r\nAn attractor point is a quick way to make variation across a field of objects.  It works by creating a grid of objects that have some parameter determined by the distance between the object and a point that moves around.\r\n\r\nTo visualize what's going on, move the two sliders that control the location of the attractor point.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 2119.85078232844,
         "Top": 522.446952190065,
         "Width": 0.0,
@@ -860,8 +951,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": -827.96147956119989,
-    "Y": -150.93420633805,
-    "Zoom": 0.608136350193896
+    "X": -1081.3694487190876,
+    "Y": -121.01434897795957,
+    "Zoom": 0.54410659705387165
   }
 }

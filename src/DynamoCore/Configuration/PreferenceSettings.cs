@@ -74,9 +74,10 @@ namespace Dynamo.Configuration
         /// Indicates whether ADP analytics reporting is approved or not.
         /// </summary>
         [XmlIgnore]
+        [Obsolete("Setter is obsolete - ADP consent should not be set directly, it should be set using the consent dialog.")]
         public bool IsADPAnalyticsReportingApproved { 
             get { return Logging.AnalyticsService.IsADPOptedIn; }
-            set { Logging.AnalyticsService.IsADPOptedIn = value; } 
+            set { throw new Exception("do not use"); } 
         }
         #endregion
 
@@ -460,6 +461,22 @@ namespace Dynamo.Configuration
         { 
             get { return NodeSearchTagSizeLimitValue; } 
             set { NodeSearchTagSizeLimitValue = value; } 
+        }
+
+        /// <summary>
+        /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
+        /// This static property is not serialized and is assigned IronPythonResolveTargetVersion's value 
+        /// if found at deserialize time.
+        /// </summary>
+        internal static Version IronPythonResolveVersion = new Version(2, 4, 0);
+
+        /// <summary>
+        /// The Version of the IronPython package that Dynamo will download when it is found as missing in graphs.
+        /// </summary>
+        public string IronPythonResolveTargetVersion
+        {
+            get { return IronPythonResolveVersion.ToString(); }
+            set { IronPythonResolveVersion = Version.TryParse(value, out Version newVal) ? newVal : IronPythonResolveVersion; }
         }
         #endregion
 

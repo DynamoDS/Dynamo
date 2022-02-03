@@ -37,7 +37,6 @@ using Dynamo.Selection;
 using Dynamo.Updates;
 using Dynamo.Utilities;
 using DynamoServices;
-using DynamoUnits;
 using Greg;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -47,6 +46,7 @@ using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
+using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Models
@@ -376,7 +376,6 @@ namespace Dynamo.Models
         public AuthenticationManager AuthenticationManager { get; set; }
 
         internal static string DefaultPythonEngine { get; private set; }
-        private bool disableADP;
         #endregion
 
         #region initialization and disposal
@@ -507,9 +506,11 @@ namespace Dynamo.Models
             /// Default Python script engine
             /// </summary>
             public string DefaultPythonEngine { get; set; }
+
             /// <summary>
             /// Disables ADP for the entire process for the lifetime of the process.
             /// </summary>
+            [Obsolete("This property is no longer used and will be removed in Dynamo 3.0 - please use Dynamo.Logging.Analytics.DisableAnalytics instead.")]
             public bool DisableADP { get; set; }
 
             /// <summary>
@@ -559,8 +560,6 @@ namespace Dynamo.Models
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
                 // TODO: This fact should probably be revisited in 3.0.
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
-                disableADP = defaultStartConfig.DisableADP;
-
             }
 
             ClipBoard = new ObservableCollection<ModelBase>();
@@ -644,18 +643,10 @@ namespace Dynamo.Models
                 // Do nothing for now
             }
 
-            // these configuration options are incompatible, one requires loading ADP binaries
-            // the other depends on not loading those same binaries.
-
-            if (areAnalyticsDisabledFromConfig && disableADP)
-            {
-                throw new ConfigurationErrorsException("Incompatible configuration: could not start Dynamo with both [Analytics disabled] and [ADP disabled] config options enabled");
-            }
-
             // If user skipped analytics from assembly config, do not try to launch the analytics client
-            if (!areAnalyticsDisabledFromConfig)
+            if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
             {
-                InitializeAnalyticsService();
+                AnalyticsService.Start(this, IsHeadless, IsTestMode);
             }
 
             if (!IsTestMode && PreferenceSettings.IsFirstRun)
@@ -1133,6 +1124,7 @@ namespace Dynamo.Models
                         long end = e.Task.ExecutionEndTime.TickCount;
                         var executionTimeSpan = new TimeSpan(end - start);
 
+                        //don't attempt to send these events unless GA is active or ADP will actually record these events.
                         if (Logging.Analytics.ReportingAnalytics)
                         {
                             if (updateTask.ModifiedNodes != null && updateTask.ModifiedNodes.Any())
@@ -1469,11 +1461,6 @@ namespace Dynamo.Models
             }
         }
 
-        private void InitializeAnalyticsService()
-        {
-            AnalyticsService.Start(this, disableADP, IsHeadless, IsTestMode);
-        }
-
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)
         {
             if (preferences != null) // If there is preference settings provided...
@@ -1500,7 +1487,7 @@ namespace Dynamo.Models
 
         private static void InitializePreferences(IPreferences preferences)
         {
-            BaseUnit.NumberFormat = preferences.NumberFormat;
+            DynamoUnits.Display.PrecisionFormat = preferences.NumberFormat;
 
             var settings = preferences as PreferenceSettings;
             if (settings != null)
@@ -1521,7 +1508,7 @@ namespace Dynamo.Models
             switch (e.PropertyName)
             {
                 case "NumberFormat":
-                    BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
+                    DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
                     break;
             }
         }
@@ -2122,7 +2109,10 @@ namespace Dynamo.Models
                 return;
 
             //Check for empty group
-            var annotations = Workspaces.SelectMany(ws => ws.Annotations);
+            var annotations = Workspaces
+                .SelectMany(ws => ws.Annotations)
+                .OrderBy(x => x.HasNestedGroups);
+
             foreach (var annotation in annotations)
             {
                 //record the annotation before the models in it are deleted.
@@ -2131,7 +2121,8 @@ namespace Dynamo.Models
                     //If there is only one model, then deleting that model should delete the group. In that case, do not record
                     //the group for modification. Until we have one model in a group, group should be recorded for modification
                     //otherwise, undo operation cannot get the group back.
-                    if (annotation.Nodes.Count() > 1 && annotation.Nodes.Where(x => x.GUID == model.GUID).Any())
+                    if (annotation.Nodes.Count() > 1 && 
+                        annotation.Nodes.Where(x => x.GUID == model.GUID).Any())
                     {
                         CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                     }
@@ -2205,14 +2196,13 @@ namespace Dynamo.Models
         {
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
             var selectedGroups = workspaceAnnotations
-                .Where(x => x.IsSelected);
+                .Where(x => x.IsSelected && x.IsExpanded);
 
             // If multiple groups are selected, chances are that we
             // have a group that contains a nested group.
             // If this is the case we want to make sure that we add the
             // node to the parent folder.
-            var selectedGroup = selectedGroups.Count() > 1 ?
-                selectedGroups.FirstOrDefault(x => x.HasNestedGroups) :
+            var selectedGroup = selectedGroups.FirstOrDefault(x => x.HasNestedGroups) ??
                 selectedGroups.FirstOrDefault();
 
             if (selectedGroup != null)

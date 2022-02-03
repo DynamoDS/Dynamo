@@ -84,6 +84,10 @@ namespace Dynamo.Graph.Connectors
         {
             ConnectorPinModels.Add(connectorPinModel);
         }
+        internal void RemovePin(ConnectorPinModel connectorPinModel)
+        {
+            ConnectorPinModels.Remove(connectorPinModel);
+        }
 
         /// <summary>
         /// ID of the Connector, which is unique within the graph.

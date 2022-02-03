@@ -431,7 +431,7 @@ namespace DynamoCoreWpfTests
         public void GetResourceNameWithCultureNameReturnsSameAsInputWhenCultureIsNull()
         {
             var name = "MyPage.html";
-            var result = DocumentationBrowserViewModel.GetResourceNameWithCultureName(name, null);
+            var result = ResourceUtilities.GetResourceNameWithCultureName(name, null);
             Assert.AreEqual(name, result);
         }
 
@@ -439,7 +439,7 @@ namespace DynamoCoreWpfTests
         public void GetResourceNameWithCultureNameReturnsSameAsInputWhenItDoesNotHaveAnExtension()
         {
             var name = "NotAPage";
-            var result = DocumentationBrowserViewModel.GetResourceNameWithCultureName(name, CultureInfo.GetCultureInfo("en-US"));
+            var result = ResourceUtilities.GetResourceNameWithCultureName(name, CultureInfo.GetCultureInfo("en-US"));
             Assert.AreEqual(name, result);
         }
 
@@ -447,7 +447,7 @@ namespace DynamoCoreWpfTests
         public void GetResourceNameWithCultureNameWorksWithValidCultureAndInputName()
         {
             var name = "MyPage.html";
-            var result = DocumentationBrowserViewModel.GetResourceNameWithCultureName(name, CultureInfo.GetCultureInfo("en-US"));
+            var result = ResourceUtilities.GetResourceNameWithCultureName(name, CultureInfo.GetCultureInfo("en-US"));
             Assert.AreEqual("MyPage.en-US.html", result);
         }
 
@@ -680,11 +680,11 @@ namespace DynamoCoreWpfTests
             // get menu items that match the extension's menu item
             return loadedParams.dynamoMenu.Items
                 .Cast<MenuItem>()
-                .Where(x => ((string)x.Header).Contains("Extensions"))
+                .Where(x => (x.Header as string).Contains("E_xtensions"))
                 .Select(x => x.Items)
                 .FirstOrDefault()
                 .Cast<MenuItem>()
-                .Where(x => ((string)x.Header).Equals("Show Documentation Browser"))
+                .Where(x => (x.Header as string).Equals("Show _Documentation Browser"))
                 .ToList();
         }
 
