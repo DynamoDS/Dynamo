@@ -176,8 +176,6 @@ namespace Dynamo.Wpf.Views
             if (string.IsNullOrEmpty(newItem.GroupName))
                 newItem.GroupName = "Input";
 
-           
-
             //if the validation returns false it means that the new style that will be added doesn't exists
             if (viewModel.ValidateExistingStyle(newItem) == false)
             {

@@ -509,6 +509,41 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(WithoutRenderPrecision.RenderPrecision, 128);
         }
 
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void PreferenceSetting_GroupStyles()
+        {
+            // Test that thte group style list is being initialized empty                       
+            Assert.NotNull(ViewModel.PreferenceSettings.StyleItemsList);
+            Assert.AreEqual(0, ViewModel.PreferenceSettings.StyleItemsList.Count);
+
+            // Test serialization of RenderPrecision 
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "userPreference.xml");
+
+            PreferenceSettings initalSetting = new PreferenceSettings();
+            PreferenceSettings resultSetting;
+
+            initalSetting.StyleItemsList.Add(new Dynamo.Configuration.StyleItem { 
+                HexColorString = "000000",
+                GroupName = "GroupName"
+            });
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(1, initalSetting.StyleItemsList.Count);
+            Assert.AreEqual(resultSetting.StyleItemsList[0].GroupName, initalSetting.StyleItemsList[0].GroupName);
+            Assert.AreEqual(resultSetting.StyleItemsList[0].HexColorString, initalSetting.StyleItemsList[0].HexColorString);
+
+            // Test loading old settings file without render precision attribute
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-OneGroupStyle.xml");
+            PreferenceSettings OneGroupStyle = PreferenceSettings.Load(filePath);
+            Assert.AreEqual(1, OneGroupStyle.StyleItemsList.Count);
+            Assert.AreEqual(OneGroupStyle.StyleItemsList[0].GroupName, initalSetting.StyleItemsList[0].GroupName);
+            Assert.AreEqual(OneGroupStyle.StyleItemsList[0].HexColorString, initalSetting.StyleItemsList[0].HexColorString);
+        }
+
         [Test]
         [Category("DynamoUI")]
         public void PreferenceSetting_NotAgreeAnalyticsSharing()

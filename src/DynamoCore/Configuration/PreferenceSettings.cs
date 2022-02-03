@@ -604,7 +604,9 @@ namespace Dynamo.Configuration
                     fs.Close(); // Release file lock
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex) 
+            { 
+            }
 
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
