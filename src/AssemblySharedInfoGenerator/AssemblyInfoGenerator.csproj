@@ -14,13 +14,14 @@
     <RootNamespace>AssemblyInfoGenerator</RootNamespace>
     <AssemblyName>AssemblyInfoGenerator</AssemblyName>
     <OutputPath>bin\$(Configuration)\</OutputPath>
+    <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="AssemblySharedInfo.cs">
+    <None Include="AssemblySharedInfo.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblySharedInfo.tt</DependentUpon>
-    </Compile>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="AssemblySharedInfo.tt">
