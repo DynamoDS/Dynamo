@@ -809,6 +809,11 @@ namespace Dynamo.ViewModels
             PropertyChanged += Model_PropertyChanged;
         }
 
+        /// <summary>
+        /// This method loads the group styles defined by the user and stored in the xml file
+        /// </summary>
+        /// <param name="styleItemsList"></param>
+        /// <returns></returns>
         private ObservableCollection<StyleItem> LoadStyles(IEnumerable<Configuration.StyleItem> styleItemsList)
         {
             ObservableCollection<StyleItem> styles = new ObservableCollection<StyleItem>();

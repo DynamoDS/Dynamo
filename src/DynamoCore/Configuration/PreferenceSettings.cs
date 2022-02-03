@@ -449,7 +449,7 @@ namespace Dynamo.Configuration
 
 
         /// <summary>
-        /// 
+        /// Stores the group styles added in the preference settings
         /// </summary>
         public List<StyleItem> StyleItemsList { get; set; }
 
@@ -604,10 +604,7 @@ namespace Dynamo.Configuration
                     fs.Close(); // Release file lock
                 }
             }
-            catch (Exception ex) 
-            { 
-            }
-
+            catch (Exception) { }
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
 
