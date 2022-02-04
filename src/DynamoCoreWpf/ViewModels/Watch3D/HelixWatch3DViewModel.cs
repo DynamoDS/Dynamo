@@ -187,9 +187,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         internal const double DefaultFarClipDistance = 100000;
 
         //see https://docs.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-output-merger-stage-depth-bias
-        private const int DepthBiasVertexColors = 10;
-        private const int DepthBiasNormalMesh = 100;
-        private const int DepthBiasSelectedMesh = 0;
+        private const int DepthBiasSelectedOffset = 100;
+        private const int DepthBiasPoint = 0;
+        private const int DepthBiasLine = 200;
+        private const int DepthBiasMesh = 400;
+
         internal static BoundingBox DefaultBounds = new BoundingBox(new Vector3(-25f, -25f, -25f), new Vector3(25f,25f,25f));
 
         private ObservableElement3DCollection sceneItems;
@@ -1162,26 +1164,35 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private static void SetDepthBiasBasedOnSelection(bool isSelected, IEnumerable<Element3D> element3Ds)
         {
-            //selected should be lowest depth
-            var newDepth = DepthBiasSelectedMesh;
             foreach (var element in element3Ds)
             {
-                if (element is DynamoGeometryModel3D geom)
+                //selected should be lowest depth
+                var stdbias = 0;
+                var newDepth = 0;
+                switch (element)
                 {
-                    
-                    if (!isSelected)
-                    {
-                        //reset depth to default
-                        if (geom.RequiresPerVertexColoration)
-                        {
-                            newDepth = DepthBiasVertexColors;
-                        }
-                        else
-                        {
-                            newDepth = DepthBiasNormalMesh;
-                        }
-                    }
-
+                    case DynamoGeometryModel3D t1:
+                        stdbias = DepthBiasMesh;
+                        break;
+                    case DynamoLineGeometryModel3D t1:
+                        stdbias = DepthBiasLine;
+                        break;
+                    case DynamoPointGeometryModel3D t1:
+                        stdbias = DepthBiasPoint;
+                        break;
+                    // if this is an unknown type, don't modify depth bias.
+                    default:
+                        return;
+                }
+                //selected bias
+                newDepth = stdbias - DepthBiasSelectedOffset;
+                if (!isSelected)
+                {
+                    //reset depth to default for geom type.
+                    newDepth = stdbias;
+                }
+                if (element is GeometryModel3D geom)
+                {
                     geom.DepthBias = newDepth;
                 }
             }
@@ -2177,7 +2188,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Material = WhiteMaterial,
                 IsHitTestVisible = isHitTestVisible,
                 RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
-                DepthBias = rp.RequiresPerVertexColoration ? DepthBiasVertexColors : DepthBiasNormalMesh
+                DepthBias = DepthBiasMesh
             };
 
             if (colors != null)
@@ -2220,7 +2231,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Color = Colors.White,
                 Thickness = thickness,
                 IsHitTestVisible = isHitTestVisible,
-                IsSelected = rp.IsSelected
+                IsSelected = rp.IsSelected,
+                DepthBias=DepthBiasLine,
             };
             return lineGeometry3D;
         }
@@ -2235,7 +2247,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Figure = PointFigure.Ellipse,
                 Size = defaultPointSize,
                 IsHitTestVisible = true,
-                IsSelected = rp.IsSelected
+                IsSelected = rp.IsSelected,
+                DepthBias = DepthBiasPoint,
             };
             return pointGeometry3D;
         }
