@@ -35,8 +35,6 @@ namespace Dynamo.Logging
         // The name of the key must include a valid root.
         private const string REG_KEY = "HKEY_CURRENT_USER\\Software\\DynamoStability";
         private const string SHUTDOWN_TYPE_NAME = "CleanShutdown";
-        private const string UPTIME_NAME = "UptimeMS";
-
         private const string CLEAN_SHUTDOWN_VALUE = "clean";
         private const string CRASHING_SHUTDOWN_VALUE = "crashing";
         private const string ASSUMING_CRASHING_SHUTDOWN_VALUE = "assumingCrashing";
@@ -56,15 +54,6 @@ namespace Dynamo.Logging
         public static void WriteCrashingShutdown()
         {
             Registry.SetValue(REG_KEY, SHUTDOWN_TYPE_NAME, CRASHING_SHUTDOWN_VALUE);
-        }
-
-        /// <summary>
-        /// Record that the system has been up for the the length of the time in the timespan
-        /// </summary>
-        /// <param name="timespan"></param>
-        public static void WriteUptimeBeat(TimeSpan timespan)
-        {
-            Registry.SetValue(REG_KEY, UPTIME_NAME, ((long)timespan.TotalMilliseconds).ToString());
         }
 
         /// <summary>

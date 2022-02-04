@@ -23,7 +23,8 @@ namespace Dynamo.Manipulation
 
         private TranslationGizmo gizmo;
 
-        private Dictionary<int, Tuple<Vector, NodeModel>> indexedAxisNodePairs;
+        //Holds manipulator axis and input node pair for each input port.
+        private Dictionary<int, Tuple<Vector, NodeModel>> indexedAxisNodePairs = new Dictionary<int, Tuple<Vector, NodeModel>>();
 
         internal MousePointManipulator(DSFunction node, DynamoManipulationExtension manipulatorContext)
             : base(node, manipulatorContext)
@@ -36,8 +37,8 @@ namespace Dynamo.Manipulation
         {
             //Default axes
             var axes = new Vector[] { Vector.XAxis(), Vector.YAxis(), Vector.ZAxis() };
-            //Holds manipulator axis and input node pair for each input port.
-            indexedAxisNodePairs = new Dictionary<int, Tuple<Vector, NodeModel>>(3);
+
+            indexedAxisNodePairs.Clear();
 
             for (int i = 0; i < 3; i++)
             {

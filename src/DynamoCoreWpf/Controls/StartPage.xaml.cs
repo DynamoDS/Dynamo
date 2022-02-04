@@ -445,12 +445,14 @@ namespace Dynamo.UI.Controls
     {
         private DynamoViewModel dynamoViewModel;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public StartPageView()
         {
             InitializeComponent();
             if (StabilityUtils.IsLastShutdownClean)
             {
-                openAll.Visibility = Visibility.Collapsed;
                 backupFilesList.Visibility = Visibility.Collapsed;
             }
 
@@ -529,16 +531,6 @@ namespace Dynamo.UI.Controls
             var startPageViewModel = this.DataContext as StartPageViewModel;
             Process.Start("explorer.exe", "/select," 
                 + startPageViewModel.SampleFolderPath);
-        }
-
-        private void OpenAllFilesOnCrash(object sender, MouseButtonEventArgs e)
-        {
-            var dvm = dynamoViewModel;
-            foreach (var filePath in dvm.Model.PreferenceSettings.BackupFiles)
-            {
-                if (dvm.OpenCommand.CanExecute(filePath))
-                    dvm.OpenCommand.Execute(filePath);
-            }
         }
 
         private void ShowBackupFilesInFolder(object sender, MouseButtonEventArgs e)

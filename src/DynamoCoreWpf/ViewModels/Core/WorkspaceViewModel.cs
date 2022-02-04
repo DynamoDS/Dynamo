@@ -162,11 +162,23 @@ namespace Dynamo.ViewModels
             RequestShowInCanvasSearch?.Invoke(flag);
         }
 
+        internal event Action<object> RequestHideAllPopup;
+        private void OnRequestHideAllPopup(object param)
+        {
+            RequestHideAllPopup?.Invoke(param);
+        }
+
         internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
+        internal event Action<ShowHideFlags, PortViewModel> RequestPortContextMenu;
 
         internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag)
         {
             RequestNodeAutoCompleteSearch?.Invoke(flag);
+        }
+
+        internal void OnRequestPortContextMenu(ShowHideFlags flag, PortViewModel viewModel)
+        {
+            RequestPortContextMenu?.Invoke(flag, viewModel);
         }
 
         #endregion
@@ -415,6 +427,8 @@ namespace Dynamo.ViewModels
 
         [JsonIgnore]
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
+
+        
 
         #endregion
 
@@ -756,8 +770,7 @@ namespace Dynamo.ViewModels
                 Nodes.Add(nodeViewModel);
             }
             Errors.Add(nodeViewModel.ErrorBubble);
-            nodeViewModel.UpdateBubbleContent();
-
+            
             PostNodeChangeActions();
         }
 
@@ -854,6 +867,7 @@ namespace Dynamo.ViewModels
             DynamoSelection.Instance.ClearSelection();
             Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
             Notes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.Model));
+            Annotations.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.AnnotationModel));
         }
 
         internal bool CanSelectAll(object parameter)
@@ -898,7 +912,7 @@ namespace Dynamo.ViewModels
 
             foreach (var n in childlessModels)
             {
-                if (IsInRegion(region, n, fullyEnclosed))
+                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed)
                 {
                     selection.AddUnique(n);
                 }
@@ -910,7 +924,7 @@ namespace Dynamo.ViewModels
 
             foreach (var n in Model.Annotations)
             {
-                if (IsInRegion(region, n, fullyEnclosed))
+                if (IsInRegion(region, n, fullyEnclosed) && !IsCollapsed)
                 {
                     selection.AddUnique(n);
                     // if annotation is selected its children should be added to selection too
@@ -1512,6 +1526,7 @@ namespace Dynamo.ViewModels
             return foundModels;
         }
 
+        
     }
 
     public class ViewModelEventArgs : EventArgs

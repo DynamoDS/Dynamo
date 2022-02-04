@@ -11,6 +11,7 @@
              xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:nodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore"
              mc:Ignorable="d"
              Height="Auto"
              Width="Auto"
@@ -27,7 +28,6 @@
         <CornerRadius x:Key="ExpanderCornerRadius"
                       TopLeft="10"
                       TopRight="10" />
-
         <Style x:Key="ColorSelectorListBox"
                TargetType="ListBox">
             <Setter Property="SnapsToDevicePixels"
@@ -47,7 +47,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBox">
-                        <Grid Margin="4,8,4,8">
+                        <Grid Margin="0,9,4,8">
                             <ScrollViewer Margin="0"
                                           Focusable="false">
                                 <WrapPanel IsItemsHost="True" />
@@ -71,7 +71,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
-                        <Grid Margin="3,4,3,4"
+                        <Grid Margin="0,0,4,5"
                               SnapsToDevicePixels="true">
                             <Grid.Background>
                                 <SolidColorBrush Color="Transparent" />
@@ -197,7 +197,28 @@
                                                       HorizontalAlignment="Left">
                                     </ContentPresenter>
 
-                                    <!--Expander button-->
+                                    <!--  Warning/Error Icon  -->
+                                    <Image Grid.Column="0"
+                                           Width="16px"
+                                           Height="16px"
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Right"
+                                           Margin="0,0,2.5,2.5">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AnnotationModel.GroupState}" Value="{x:Static nodes:ElementState.Warning}">
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/warning.png"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding AnnotationModel.GroupState}" Value="{x:Static nodes:ElementState.Error}">
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/error.png"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+
+                                           <!--Expander button-->
                                     <ToggleButton OverridesDefaultStyle="True"
                                                   Grid.Column="1"
                                                   Margin="0,0,0,2.5"
@@ -251,74 +272,74 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
-            <ContextMenu>
-                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}"
-                           Name="DeleteAnnotation"
-                           Click="OnDeleteAnnotation" />
-                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
-                           Name="UngroupAnnotation"
-                           Click="OnUngroupAnnotation" />
-                <MenuItem Header="{x:Static p:Resources.ContextUnGroupFromSelection}"
-                          Name="unGroup_cm"
-                          Command="{Binding Path=RemoveGroupFromGroupCommand}" />
-                <MenuItem Header="{x:Static p:Resources.GroupContextMenuAddGroupToGroup}"
-                          Name="AddGroupToGroup"
-                          Command="{Binding AddGroupToGroupCommand}" />
-                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuGraphLayout}"
-                           Name="GraphLayoutAnnotation"
-                           Click="OnGraphLayoutAnnotation" />
-                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuFont}"
-                           Name="ChangeSize">
-                    <MenuItem Header="14"
-                              Name="FontSize0"
+            <ContextMenu Background="#666666" Style="{StaticResource ContextMenuStyle}">
+                <MenuItem Name="DeleteAnnotation"
+                          Click="OnDeleteAnnotation"
+                          Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}" />
+                <MenuItem Name="UngroupAnnotation"
+                          Click="OnUngroupAnnotation"
+                          Header="{x:Static p:Resources.GroupContextMenuUngroup}" />
+                <MenuItem Name="unGroup_cm"
+                          Command="{Binding Path=RemoveGroupFromGroupCommand}"
+                          Header="{x:Static p:Resources.ContextUnGroupFromSelection}" />
+                <MenuItem Name="AddGroupToGroup"
+                          Command="{Binding AddGroupToGroupCommand}"
+                          Header="{x:Static p:Resources.GroupContextMenuAddGroupToGroup}" />
+                <MenuItem Name="GraphLayoutAnnotation"
+                          Click="OnGraphLayoutAnnotation"
+                          Header="{x:Static p:Resources.GroupContextMenuGraphLayout}" />
+                <MenuItem Name="ChangeSize" Header="{x:Static p:Resources.GroupContextMenuFont}">
+                    <MenuItem Name="FontSize0"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="14"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=14}"></MenuItem>
-                    <MenuItem Header="18"
-                              Name="FontSize1"
+                              Header="14"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=14}" />
+                    <MenuItem Name="FontSize1"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="18"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=18}"></MenuItem>
-                    <MenuItem Header="24"
-                              Name="FontSize2"
+                              Header="18"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=18}" />
+                    <MenuItem Name="FontSize2"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="24"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=24}"></MenuItem>
-                    <MenuItem Header="30"
-                              Name="FontSize3"
+                              Header="24"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=24}" />
+                    <MenuItem Name="FontSize3"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="30"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=30}"></MenuItem>
-                    <MenuItem Header="36"
-                              Name="FontSize4"
+                              Header="30"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=30}" />
+                    <MenuItem Name="FontSize4"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="36"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=36}"></MenuItem>
-                    <MenuItem Header="48"
-                              Name="FontSize5"
+                              Header="36"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=36}" />
+                    <MenuItem Name="FontSize5"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="48"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=48}"></MenuItem>
-                    <MenuItem Header="60"
-                              Name="FontSize6"
+                              Header="48"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=48}" />
+                    <MenuItem Name="FontSize6"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="60"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=60}"></MenuItem>
-                    <MenuItem Header="72"
-                              Name="FontSize7"
+                              Header="60"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=60}" />
+                    <MenuItem Name="FontSize7"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="72"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=72}"></MenuItem>
-                    <MenuItem Header="96"
-                              Name="FontSize8"
+                              Header="72"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=72}" />
+                    <MenuItem Name="FontSize8"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="96"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=96}"></MenuItem>
+                              Header="96"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=96}" />
 
                 </MenuItem>
-                <ListBox Style="{StaticResource ColorSelectorListBox}"
-                         ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
-                         SelectionChanged="OnNodeColorSelectionChanged">
+                <ListBox ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
+                         SelectionChanged="OnNodeColorSelectionChanged"
+                         Height="Auto"
+                         Style="{StaticResource ColorSelectorListBox}">
                     <ListBox.Items>
                         <Rectangle Fill="#d4b6db" />
                         <Rectangle Fill="#ffb8d8" />
@@ -348,6 +369,7 @@
                 CornerRadius="{StaticResource ExpanderCornerRadius}"
                 IsHitTestVisible="False"
                 Canvas.ZIndex="41"
+                Visibility="{Binding Nodes, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"
                 Margin="-1">
             <Border.BorderBrush>
                 <SolidColorBrush Color="{Binding Background}" />
@@ -436,7 +458,6 @@
                             </TextBlock>
                             <TextBox Name="GroupTextBox"
                                      Grid.Column="0"
-                                     MaxLength="30"
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationText,Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBox'}"
                                      TextWrapping="WrapWithOverflow"
@@ -467,7 +488,6 @@
                                        Visibility="Visible">
                             </TextBlock>
                             <TextBox Name="GroupDescriptionTextBox"
-                                     MaxLength="280"
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
                                      TextWrapping="Wrap"
@@ -670,7 +690,6 @@
                 </Thumb>
             </Grid>
         </Expander>
-
         <!--
         The CollapsedAnnotationRectangle is visible whenever the expander is collapsed. In this state the
         expander header is still visible but will hide the group description text. This border has 3 children
@@ -705,9 +724,8 @@
                               Grid.Row="0"
                               Canvas.ZIndex="20"
                               HorizontalContentAlignment="Left"
-                              Style="{StaticResource InOutPortControlStyle}"
                               ItemsSource="{Binding Path=InPorts}"
-                              Margin="0,10">
+                              Margin="-25,10">
                 </ItemsControl>
 
                 <!--OUTPUT PORTS-->
@@ -716,9 +734,8 @@
                               Grid.Row="0"
                               Canvas.ZIndex="20"
                               HorizontalContentAlignment="Right"
-                              Style="{StaticResource InOutPortControlStyle}"
                               ItemsSource="{Binding Path=OutPorts}"
-                              Margin="0,10">
+                              Margin="-25,10">
                 </ItemsControl>
 
                 <Grid x:Name="GroupContent"

@@ -545,6 +545,17 @@ namespace Dynamo.Models
                 return;
 
             var modelsToGroup = command.ModelGuids.Select(guid => CurrentWorkspace.GetModelInternal(guid)).ToList();
+            if (modelsToGroup.OfType<NodeModel>().Any())
+            {
+                var nodeModels = modelsToGroup.OfType<NodeModel>();
+                var pinnedNotes = CurrentWorkspace.Notes
+                    .Where(x => x.PinnedNode != null && nodeModels.Contains(x.PinnedNode));
+
+                if (pinnedNotes.Any())
+                {
+                    modelsToGroup.AddRange(pinnedNotes);
+                }
+            }
 
             AddToGroup(modelsToGroup);
         }
@@ -586,11 +597,14 @@ namespace Dynamo.Models
             WorkspaceModel targetWorkspace = CurrentWorkspace;
             if (!command.WorkspaceGuid.Equals(Guid.Empty))
                 targetWorkspace = Workspaces.FirstOrDefault(w => w.Guid.Equals(command.WorkspaceGuid));
-
-            if (targetWorkspace != null)
+            try
             {
-                targetWorkspace.UpdateModelValue(command.ModelGuids,
+                targetWorkspace?.UpdateModelValue(command.ModelGuids,
                     command.Name, command.Value);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
             }
         }
 

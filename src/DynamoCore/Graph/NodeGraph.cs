@@ -92,7 +92,7 @@ namespace Dynamo.Graph
             int endIndex = helper.ReadInteger("end_index");
             bool isHidden = helper.HasAttribute(nameof(ConnectorModel.IsHidden)) ?
                 helper.ReadBoolean(nameof(ConnectorModel.IsHidden)) :
-                true;
+                false;
 
             //find the elements to connect
             NodeModel start;

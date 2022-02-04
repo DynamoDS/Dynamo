@@ -5,8 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Input;
+using System.Windows.Media;
 using Dynamo.Controls;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
@@ -371,6 +374,42 @@ namespace DynamoCoreWpfTests
         {
             //get the name,this will sometimes cause another propertyChanged event
              var temp = (sender as NodeViewModel).Name;
+        }
+
+
+        /// <summary>
+        /// Tests the GetWarningColor method to ensure that the node's WarningBar displays
+        /// the proper colors when a node is displaying Info/Warning/Error messages.
+        /// </summary>
+        [Test]
+        public void WarningColorReflectsElementState()
+        {
+            // Arrange
+            Open(@"UI\NodeWarningBarColorTest.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeViewNoWarningBar = NodeViewWithGuid(Guid.Parse("0ebe50b82c0946e089d99d5aa82bcf9a").ToString());
+            NodeView nodeViewNoWarningNoPreview = NodeViewWithGuid(Guid.Parse("d27869a007c848e59c9b337342c6e238").ToString());
+            NodeView nodeViewWarningBarWarning = NodeViewWithGuid(Guid.Parse("6bb495c40b88459f9118f0b447d6ddae").ToString());
+            NodeView nodeViewWarningBarError = NodeViewWithGuid(Guid.Parse("90007f8f5665438da11b53ccc2707ac2").ToString());
+
+            SolidColorBrush noPreviewBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#BBBBBB"));
+            SolidColorBrush warningBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FAA21B"));
+            SolidColorBrush errorBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EB5555"));
+
+            Assert.AreEqual(nodeViewNoWarningBar.ViewModel.IsVisible, true);
+            Assert.AreEqual(nodeViewNoWarningBar.ViewModel.GetWarningColor().ToString(), noPreviewBrush.ToString());
+            Assert.AreEqual(nodeViewNoWarningNoPreview.ViewModel.IsVisible, false);
+            Assert.AreEqual(nodeViewNoWarningNoPreview.ViewModel.GetWarningColor().ToString(), noPreviewBrush.ToString());
+            Assert.AreEqual(nodeViewWarningBarWarning.ViewModel.GetWarningColor().ToString(), warningBrush.ToString());
+            Assert.AreEqual(nodeViewWarningBarError.ViewModel.GetWarningColor().ToString(), errorBrush.ToString());
+
+            var guid = System.Guid.Parse("90007f8f5665438da11b53ccc2707ac2");
+            Model.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
+                Model.CurrentWorkspace.Guid, guid, "Code", "5.6"));
+            
+            Assert.AreEqual(nodeViewWarningBarError.ViewModel.IsVisible, false);
+            Assert.AreEqual(nodeViewWarningBarError.ViewModel.GetWarningColor().ToString(), noPreviewBrush.ToString());
         }
     }
 }

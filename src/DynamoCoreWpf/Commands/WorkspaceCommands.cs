@@ -26,6 +26,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand showHideAllGeometryPreviewCommand;
         private DelegateCommand showInCanvasSearchCommand;
         private DelegateCommand pasteCommand;
+        private DelegateCommand hideAllPopupCommand;
 
         #endregion
 
@@ -212,6 +213,21 @@ namespace Dynamo.ViewModels
                     showInCanvasSearchCommand = new DelegateCommand(OnRequestShowInCanvasSearch);
 
                 return showInCanvasSearchCommand;
+            }
+        }
+
+        /// <summary>
+        /// View Command to hide all popup in special cases
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand HideAllPopupCommand
+        {
+            get
+            {
+                if (hideAllPopupCommand == null)
+                    hideAllPopupCommand = new DelegateCommand(OnRequestHideAllPopup);
+
+                return hideAllPopupCommand;
             }
         }
         #endregion

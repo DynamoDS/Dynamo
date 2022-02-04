@@ -1528,6 +1528,25 @@ namespace ProtoCore
             return ret;
         }
 
+        //Pre-initialize array for repeated calls.  The StackValue is inserted vs making a new array for every call.
+        private static List<StackValue> disposeArguments = new List<StackValue>() { StackValue.Null };
+        //Cache final function endpoint for repeated calls;
+        private FunctionEndPoint finalFep;
+
+        internal StackValue DispatchDispose(StackValue stackValue, RuntimeCore runtimeCore)
+        {
+            //Cache finalFep for CallSite.  Note there is always only one dispose endpoint returned.
+            if (finalFep == null)
+            {
+                var funcGroup = FirstFunctionGroupInInheritanceChain(runtimeCore, classScope);
+                finalFep = funcGroup.FunctionEndPoints[0];
+            }
+            
+            disposeArguments[0] = stackValue;
+
+            //EXECUTE
+            return finalFep.Execute(null, disposeArguments, null, runtimeCore);
+        }
 
         private StackValue Execute(
             List<FunctionEndPoint> functionEndPoints,
