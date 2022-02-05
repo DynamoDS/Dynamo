@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -9,6 +11,7 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Tests;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -159,6 +162,57 @@ namespace DynamoCoreWpfTests
           
             //Check whether group can be created
             Assert.AreEqual(true, ViewModel.CanUngroupModel(null));
+        }
+
+
+        [Test]
+        [Category("DynamoUI")]
+        public void CanUngroupNodeFromAGroupIfGroupContainsNote()
+        {
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
+
+            //Select the node for group
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            //Create a Group around that node
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
+
+            //Check if the group is created
+            Assert.IsNotNull(annotation);
+
+            //Clear the selection
+            DynamoSelection.Instance.ClearSelection();
+
+            //create a note.
+            ViewModel.AddNoteCommand.Execute(null);
+            var note = ViewModel.Model.CurrentWorkspace.Notes.FirstOrDefault();
+            Assert.IsNotNull(note);
+
+            //Select the note 
+            DynamoSelection.Instance.Selection.Add(note);
+            DynamoSelection.Instance.Selection.Add(annotation);
+
+            ViewModel.AddModelsToGroupModelCommand.Execute(null);
+
+            //Clear the selection
+            DynamoSelection.Instance.ClearSelection();
+            //Select the node 
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            Assert.AreEqual(2, annotation.Nodes.Count());
+            //remove it
+            Assert.DoesNotThrow(() =>
+            {
+                ViewModel.UngroupModelCommand.Execute(null);
+              
+            });
+            Assert.AreEqual(1, annotation.Nodes.Count());
         }
 
         [Test]
@@ -931,6 +985,62 @@ namespace DynamoCoreWpfTests
             Assert.That(groupNodesCollapsedStatusAfter.All(x => x == true));
         }
 
+        /// <summary>
+        /// Expands parent group, child group is expanded already, so wire coming out of nested group node should be hidden == false.
+        /// </summary>
+        [Test]
+        public void NestedCollapsedGroupWiresDisplayCorrectlyWhenParentGroupExpands()
+        {
+            //Arrange
+            var outerGroupName = "OuterGroupCollapsed";
+            var innerGroupName = "InnerGroupExpanded";
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var outerGroup = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == outerGroupName);
+            var innerGroup = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == innerGroupName);
+
+            var innerGroupWiresBefore = innerGroup.Nodes.OfType<NodeModel>()
+              .SelectMany(x => x.OutPorts.SelectMany(c => c.Connectors));
+
+            // Act
+            outerGroup.IsExpanded = true;
+
+            var innerGroupWiresAfter = innerGroup.Nodes.OfType<NodeModel>()
+                .SelectMany(x => x.OutPorts.SelectMany(c => c.Connectors));
+
+            // Assert
+            CollectionAssert.AreEquivalent(innerGroupWiresBefore, innerGroupWiresAfter);
+            Assert.That(innerGroupWiresAfter.All(x => !x.IsHidden));
+        }
+
+        /// <summary>
+        /// Expands parent group, child group is collapsed, but wire coming out of proxy port for nested group should still be hidden == false.
+        /// </summary>
+        [Test]
+        public void NestedExpandedGroupWiresDisplayCorrectlyWhenParentGroupExpands()
+        {
+            //Arrange
+            var outerGroupName = "OuterGroupCollapsed2";
+            var innerGroupName = "InnerGroupCollapsed";
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var outerGroup = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == outerGroupName);
+            var innerGroup = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == innerGroupName);
+
+            var innerGroupWiresBefore = innerGroup.Nodes.OfType<NodeModel>()
+                .SelectMany(x => x.OutPorts.SelectMany(c => c.Connectors));
+
+            // Act
+            outerGroup.IsExpanded = true;
+
+            var innerGroupWiresAfter = innerGroup.Nodes.OfType<NodeModel>()
+                .SelectMany(x => x.OutPorts.SelectMany(c => c.Connectors));
+
+            // Assert
+            CollectionAssert.AreEquivalent(innerGroupWiresBefore, innerGroupWiresAfter);
+            Assert.That(innerGroupWiresAfter.All(x => !x.IsHidden));
+        }
+
 
         [Test]
         public void ChangingIsExpandedMarksGraphAsModified()
@@ -1025,6 +1135,136 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.That(annotation.Nodes.OfType<ConnectorPinModel>().Any());
+        }
+
+        [Test]
+        public void NodesCantBeAddedToCollapsedGroups()
+        {
+            // Arrange
+            var groupName = "CollapsedGroup";
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var groupViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == groupName);
+            var groupModel = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.GUID == groupViewModel.AnnotationModel.GUID);
+
+            // Act
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+
+            //verify the node was created
+            Assert.That(ViewModel.Model.CurrentWorkspace.Nodes.Contains(addNode));
+
+            var addNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
+                .FirstOrDefault(x => x.Id == addNode.GUID);
+
+            DynamoSelection.Instance.Selection.Clear();
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(groupModel);
+
+            // Assert
+            Assert.IsFalse(addNodeViewModel.AddToGroupCommand.CanExecute(null));
+        }
+
+        /// <summary>
+        /// Tests that a collapsed group with a node containing a warning will display a warning icon in its header.
+        /// </summary>
+        [Test]
+        [Category("DynamoUI")]
+        public void CollapsedGroupDisplaysWarningIfNodeInWarningState()
+        {
+            // Adding a dummy node to the workspace
+            var dummyNode = new DummyNode();
+            DynamoModel model = GetModel();
+            model.ExecuteCommand(new DynamoModel.CreateNodeCommand(dummyNode, 0, 0, true, true));
+
+            NodeViewModel dummyNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
+                .FirstOrDefault(x => x.NodeModel.GUID == dummyNode.GUID);
+            
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(dummyNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
+
+            //Select the node for group
+            DynamoSelection.Instance.Selection.Add(dummyNode);
+
+            //Create a Group around that node
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
+            var annotationViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
+
+            //Check if the group is created
+            Assert.IsNotNull(annotation);
+
+            //Clear the selection
+            DynamoSelection.Instance.ClearSelection();
+
+            // Collapses the group
+            annotationViewModel.IsExpanded = false;
+
+            NodeModel dummyNodeModel = dummyNodeViewModel.NodeModel;
+
+            var topLeft = new Point(dummyNodeViewModel.X, dummyNodeViewModel.Y);
+            var botRight = new Point(dummyNodeViewModel.X + dummyNodeModel.Width, dummyNodeViewModel.Y + dummyNodeModel.Height);
+
+            if (dummyNodeViewModel.ErrorBubble == null)
+            {
+                dummyNodeViewModel.ErrorBubble = new InfoBubbleViewModel(ViewModel);
+            }
+
+            InfoBubbleViewModel infoBubbleViewModel = dummyNodeViewModel.ErrorBubble;
+
+            // The collection of messages the node receives
+            ObservableCollection<InfoBubbleDataPacket> nodeMessages = infoBubbleViewModel.NodeMessages;
+            nodeMessages.Add(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Warning, topLeft, botRight, "Warning", InfoBubbleViewModel.Direction.Top));
+
+            Assert.AreEqual(ElementState.Warning, annotationViewModel.AnnotationModel.GroupState);
+        }
+
+        [Test]
+        public void CollapsedGroupsUnhidesContentBeforeBeingUngrouped()
+        {
+            // Arrange
+            var groupName = "CollapsedGroup";
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var groupViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == groupName);
+            var groupModel = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.GUID == groupViewModel.AnnotationModel.GUID);
+
+            var groupIsExpandedBefore = groupViewModel.IsExpanded;
+            var collapsedStateBefore = groupViewModel.ViewModelBases
+                .Select(x => x.IsCollapsed)
+                .ToList();
+
+            // Act
+            DynamoSelection.Instance.Selection.Clear();
+            DynamoSelection.Instance.Selection.Add(groupModel);
+
+            ViewModel.UngroupAnnotationCommand.Execute(null);
+
+            var collapsedStateAfter = groupViewModel.ViewModelBases.Select(x => x.IsCollapsed);
+
+            // Assert
+            Assert.IsFalse(groupIsExpandedBefore);
+            Assert.That(collapsedStateBefore.All(x => x is true));
+            Assert.That(collapsedStateAfter.All(x => x is false));
+        }
+
+        [Test]
+        public void SelectAllCommandSelectGroupTest()
+        {
+            // Arrange
+            var groupName = "CollapsedGroup";
+
+            // Graph contains collapsed group as well as nodes, notes, connector pins outside of group
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+            var groupViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == groupName);
+            var groupModel = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.GUID == groupViewModel.AnnotationModel.GUID);
+
+            // Assert that select all command should include target group
+            ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
+            Assert.IsTrue(DynamoSelection.Instance.Selection.Contains(groupModel));
         }
 
         #endregion

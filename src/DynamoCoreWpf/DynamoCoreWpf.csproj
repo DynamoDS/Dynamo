@@ -1,121 +1,55 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)/Config/CS.props" />
-    <Import Project="$(SolutionDir)/Config/Cleanup.targets" />
+    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Wpf</RootNamespace>
     <AssemblyName>DynamoCoreWpf</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>..\..\bin\AnyCPU\Debug\DynamoCoreWpf.XML</DocumentationFile>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>$(OutputPath)\DynamoCoreWpf.XML</DocumentationFile>
+    <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Cyotek.Drawing.BitmapFont, Version=1.0.0.0, Culture=neutral, PublicKeyToken=58daa28b0b2de221, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cyotek.Drawing.BitmapFont.2.0.0\lib\net48\Cyotek.Drawing.BitmapFont.dll</HintPath>
-    </Reference>
-    <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
-      <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
-    </Reference>
-    <Reference Include="Greg, Version=2.0.7843.19074, Culture=neutral, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Greg.2.0.7843.19074\lib\net48\Greg.dll</HintPath>
-    </Reference>
-    <Reference Include="HelixToolkit, Version=2.17.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.2.17.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>
-    </Reference>
-    <Reference Include="HelixToolkit.Wpf, Version=2.17.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.Wpf.2.17.0\lib\net45\HelixToolkit.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2.17.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.Wpf.SharpDX.2.17.0\lib\net45\HelixToolkit.Wpf.SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.AvalonEdit, Version=4.3.1.9429, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
-      <HintPath>..\packages\AvalonEdit.4.3.1.9430\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+	<PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.13.0.6925" />
+	<PackageReference Include="Greg" Version="2.1.8012.31283" />
+	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
+	<PackageReference Include="RestSharp" Version="106.12.0" />
+	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" CopyXML="true"/>
+	<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
+	<PackageReference Include="HelixToolkit" Version="2.17.0" />
+	<PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
+	<PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
+	<PackageReference Include="SharpDX" Version="4.2.0" />
+	<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" >
+	  <IncludeAssets>none</IncludeAssets>
+	</PackageReference>
+	<PackageReference Include="SharpDX.Direct2D1" Version="4.2.0">
+	  <IncludeAssets>none</IncludeAssets>
+	</PackageReference>
+	<PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
+	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
+	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
+	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
+    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoGeometry, Version=2.12.0.6315, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.6315\lib\net48\ProtoGeometry.dll</HintPath>
-    </Reference>
-    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.D3DCompiler">
-      <HintPath>..\packages\SharpDX.D3DCompiler.4.2.0\lib\net45\SharpDX.D3DCompiler.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SharpDX.D3DCompiler, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL" />
-    <Reference Include="SharpDX.Direct2D1">
-      <HintPath>..\packages\SharpDX.Direct2D1.4.2.0\lib\net45\SharpDX.Direct2D1.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SharpDX.Direct2D1, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL" />
-    <Reference Include="SharpDX.Direct3D11, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpDX.Direct3D11.4.2.0\lib\net45\SharpDX.Direct3D11.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Direct3D9, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpDX.Direct3D9.4.2.0\lib\net45\SharpDX.Direct3D9.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.DXGI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpDX.DXGI.4.2.0\lib\net45\SharpDX.DXGI.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Mathematics, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpDX.Mathematics.4.2.0\lib\net45\SharpDX.Mathematics.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\System.Windows.Interactivity\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
@@ -143,6 +77,9 @@
     </Compile>
     <Compile Include="Controls\NotificationsControl.xaml.cs">
       <DependentUpon>NotificationsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\OutPortContextMenu.xaml.cs">
+      <DependentUpon>OutPortContextMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ParentMenuItem.cs" />
     <Compile Include="Controls\RunSettingsControl.xaml.cs">
@@ -175,11 +112,15 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
+    <Compile Include="UI\GuidedTour\CutOffArea.cs" />
+    <Compile Include="UI\GuidedTour\ExitGuide.cs" />
     <Compile Include="UI\GuidedTour\Guide.cs" />
     <Compile Include="UI\GuidedTour\GuideFlowEvents.cs" />
     <Compile Include="UI\GuidedTour\GuidesManager.cs" />
-    <Compile Include="UI\GuidedTour\GuidedTourResources.cs" />
+    <Compile Include="UI\GuidedTour\GuidesValidationMethods.cs" />
+    <Compile Include="UI\GuidedTour\HightlightArea.cs" />
     <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
+    <Compile Include="UI\GuidedTour\PreValidation.cs" />
     <Compile Include="UI\GuidedTour\Step.cs" />
     <Compile Include="UI\GuidedTour\StepUIAutomation.cs" />
     <Compile Include="UI\GuidedTour\Survey.cs" />
@@ -188,6 +129,9 @@
     <Compile Include="UI\MouseBehaviour.cs" />
     <Compile Include="UI\Prompts\DynamoMessageBox.xaml.cs">
       <DependentUpon>DynamoMessageBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InPortContextMenu.xaml.cs">
+      <DependentUpon>InPortContextMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
@@ -223,6 +167,7 @@
     <Compile Include="Utilities\CrashUtilities.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\MessageBoxUtilities.cs" />
+    <Compile Include="Utilities\NodeContextMenuBuilder.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
@@ -304,7 +249,10 @@
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\Core\InPortViewModel.cs" />
+    <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
+    <Compile Include="ViewModels\GuidedTour\ExitGuideWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
     <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
@@ -355,6 +303,9 @@
     </Compile>
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\ExitGuideWindow.xaml.cs">
+      <DependentUpon>ExitGuideWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GuidedTour\WebBrowserWindow.xaml.cs">
       <DependentUpon>WebBrowserWindow.xaml</DependentUpon>
@@ -486,9 +437,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <None Include="UI\Themes\Modern\InPorts.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Themes\Modern\OutPorts.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Page Include="Controls\OutPortContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Prompts\DynamoMessageBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\InPortContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GuidedTour\ExitGuideWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GuidedTour\WebBrowserWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -590,7 +561,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
     <None Include="UI\Fonts\Autodesk\Artifakt-Element-Bold.otf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -637,6 +607,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
+    <Resource Include="UI\Images\caret_up.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
@@ -1061,12 +1033,6 @@
     <Resource Include="UI\Images\StartPage\icon-dictionary.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\tabs_button_hover.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\tabs_button_normal.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Images\task_dialog_crash.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1409,11 +1375,41 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\max-default.png" />
+    <Resource Include="UI\Images\min-default.png" />
+    <Resource Include="UI\Images\minimize-hover.png" />
+    <Resource Include="UI\Images\minimize-hover-16px.png" />
+    <Resource Include="UI\Images\minimize-default-16px.png" />
+    <Resource Include="UI\Images\maximize-hover.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\PackageNodes.gif" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\successIcon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\filterIcon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\sortIcon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\SearchPackages.gif" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\searchPackages.html" />
+    <Resource Include="UI\Images\error-icon.png" />
+    <Resource Include="UI\Images\searchmagnifier.png" />
+    <Resource Include="UI\Images\info-grey.png" />
+    <Resource Include="UI\Images\remove - default.png" />
+    <Resource Include="UI\Images\close_blue.png" />
+    <Resource Include="UI\Images\close_grey.png" />
+    <Resource Include="UI\Images\Folder.png" />
+    <Resource Include="UI\Images\caret_down_grey_48px.png" />
+    <Resource Include="UI\Images\caret_up_grey_48px.png" />
+    <Resource Include="UI\Images\menu_grey_48px.png" />
+    <Resource Include="UI\Images\NodeIcon_placeholder.png" />
+    <Resource Include="UI\Images\custom-node.png" />
+    <Resource Include="UI\Images\image-icon-default.png" />
+    <Resource Include="UI\Images\image-icon.png" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\DynamoPackages_1_1.png" />
+    <Resource Include="UI\Images\default_info_16px.png" />
+    <Resource Include="UI\Images\clock-icon.png" />
+    <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
     <Resource Include="UI\Images\info_2.png" />
     <Resource Include="UI\Images\alert_2.png" />
-    <Resource Include="UI\Images\close_blue.png" />
-    <Resource Include="UI\Images\close_grey.png" />
     <Resource Include="UI\Images\pin_hidden_48_48.png" />
     <Resource Include="UI\Images\pin_hover_48_48.png" />
     <Resource Include="UI\Images\wire_anchor_48_48.png" />
@@ -1445,12 +1441,8 @@
     <Resource Include="UI\Images\pin_selected_48_48.png" />
     <Resource Include="UI\Images\watch_default_48_48.png" />
     <Resource Include="UI\Images\error.png" />
-    <Resource Include="UI\Images\info.png" />
     <Resource Include="UI\Images\warning.png" />
-    <Resource Include="UI\Images\menu_grey_48px.png" />
-    <Resource Include="UI\Images\caret_down_grey_48px.png" />
-    <Resource Include="UI\Images\caret_up_grey_48px.png" />
-    <Resource Include="UI\Images\NodeIcon_placeholder.png" />
+    <Resource Include="UI\Images\info.png" />
     <Resource Include="UI\Images\hidden.png" />
     <Resource Include="UI\Images\default-node-icon.png" />
     <Resource Include="UI\Images\more-vertical.png" />
@@ -1458,7 +1450,6 @@
     <Resource Include="UI\Images\alert.png" />
     <Resource Include="UI\Images\menu_16_16.png" />
     <Resource Include="UI\Images\caret_down.png" />
-    <Resource Include="UI\Images\caret_up.png" />
     <Resource Include="UI\Images\PackageManager\close_16_16.png" />
     <Resource Include="UI\Images\PackageManager\down_16_16.png" />
     <Resource Include="UI\Images\PackageManager\folder_16_16.png" />
@@ -1488,8 +1479,7 @@
     <Resource Include="UI\Images\icon-dictionary-small.png" />
   </ItemGroup>
   <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild">
+  <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
   </Target>
 </Project>

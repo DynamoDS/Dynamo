@@ -37,6 +37,7 @@ namespace Dynamo.ViewModels
         private ConnectorModel model;
         private bool isConnecting = false;
         private bool isCollapsed = false;
+        private bool isHidden = false;
         private bool isTemporarilyVisible = false;
         private string connectorDataToolTip;
         private bool canShowConnectorTooltip = true;
@@ -47,6 +48,7 @@ namespace Dynamo.ViewModels
         private double dotTop;
         private double dotLeft;
         private double endDotSize = 6;
+        private double zIndex = 3;
 
         private Point curvePoint1;
         private Point curvePoint2;
@@ -174,8 +176,25 @@ namespace Dynamo.ViewModels
 
                 isCollapsed = value;
                 RaisePropertyChanged(nameof(IsCollapsed));
-                SetVisibilityOfPins(IsCollapsed);
-                SetPartialVisibilityOfPins(IsCollapsed);
+                SetCollapseOfPins(IsCollapsed);
+                RaisePropertyChanged(nameof(ZIndex));
+            }
+        }
+
+        public bool IsHidden
+        {
+            get => isHidden;
+            set
+            {
+                if (isHidden == value)
+                {
+                    return;
+                }
+
+                isHidden = value;
+                RaisePropertyChanged(nameof(IsHidden));
+                SetVisibilityOfPins(IsHidden);
+                SetPartialVisibilityOfPins(IsHidden);
             }
         }
 
@@ -196,26 +215,31 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void SetVisibilityOfPins(bool isCollapsed)
+        private void SetCollapseOfPins(bool isCollapsed)
         {
             if (ConnectorPinViewCollection is null) { return; }
 
             foreach (var pin in ConnectorPinViewCollection)
             {
-                var visibilityModified = !isCollapsed && BezVisibility ? false : true;
-                //set visible or hidden based on connector
-                pin.IsCollapsed = visibilityModified;
+                pin.IsCollapsed = isCollapsed;
             }
         }
-        private void SetPartialVisibilityOfPins(bool isCollapsed)
+        private void SetVisibilityOfPins(bool isHidden)
         {
             if (ConnectorPinViewCollection is null) { return; }
 
             foreach (var pin in ConnectorPinViewCollection)
             {
-                var partialVisibilityModified = !isCollapsed && BezVisibility ? false : true;
-                //set 'partlyVisible' based on connector (when selected while connector is hidden)
-                pin.IsTemporarilyVisible = partialVisibilityModified;
+                pin.IsHidden = isHidden;
+            }
+        }
+        private void SetPartialVisibilityOfPins(bool isHidden)
+        {
+            if (ConnectorPinViewCollection is null) { return; }
+
+            foreach (var pin in ConnectorPinViewCollection)
+            {
+                pin.IsTemporarilyVisible = isHidden;
             }
         }
 
@@ -323,7 +347,54 @@ namespace Dynamo.ViewModels
         // and they will have a ZIndex of 2
         public double ZIndex
         {
-            get { return 3; }
+            get 
+            {
+                return SetZIndex();
+            }
+
+            protected set
+            {
+                zIndex = value;
+                RaisePropertyChanged(nameof(ZIndex));
+            }
+         
+        }
+
+        private int SetZIndex()
+        {
+            if (isConnecting)
+                return (int)zIndex;
+
+            var firstNode = this.Nodevm;
+            var lastNode = this.NodeEnd;
+
+            int index = firstNode is null || lastNode is null ? 1 : 3;
+
+            //reduce ZIndex if one of associated nodes is collapsed
+            bool oneNodeInCollapsedGroup = OneConnectingNodeInCollapsedGroup(firstNode, lastNode);
+            bool bothNodesInCollapsedGroup = ConnectingNodesBothInCollapsedGroup(firstNode, lastNode);
+            if (oneNodeInCollapsedGroup && !bothNodesInCollapsedGroup)
+            {
+                var lowestIndex = new int[] { this.Nodevm.ZIndex, this.NodeEnd.ZIndex }
+                .OrderBy(x => x)
+                .FirstOrDefault();
+
+                //if ZIndex above that of groups, set to be less than that of groups
+                if (index > 2)
+                {
+                    index = 1;
+                }
+            }
+
+            return index;
+        }
+        private bool OneConnectingNodeInCollapsedGroup(NodeViewModel firstNode, NodeViewModel lastNode)
+        {
+            return firstNode.IsNodeInCollapsedGroup || lastNode.IsNodeInCollapsedGroup;
+        }
+        private bool ConnectingNodesBothInCollapsedGroup(NodeViewModel firstNode, NodeViewModel lastNode)
+        {
+            return firstNode.IsNodeInCollapsedGroup && lastNode.IsNodeInCollapsedGroup;
         }
 
         /// <summary>
@@ -405,47 +476,19 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Returns visible if the connectors is in the current space and the 
-        /// model's current connector type is BEZIER
-        /// </summary>
-        public bool BezVisibility
-        {
-            get
-            {
-                if (workspaceViewModel.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
-                    return true;
-                return false;
-            }
-            set
-            {
-                RaisePropertyChanged(nameof(BezVisibility));
-            }
-        }
-
-        /// <summary>
-        /// Returns visible if the connectors is in the current space and the 
-        /// model's current connector type is POLYLINE
-        /// </summary>
-        public bool PlineVisibility
-        {
-            get
-            {
-                if (workspaceViewModel.DynamoViewModel.ConnectorType == ConnectorType.POLYLINE)
-                    return true;
-                return false;
-            }
-            set
-            {
-                RaisePropertyChanged(nameof(PlineVisibility));
-            }
-        }
-
         public NodeViewModel Nodevm
         {
             get
             {
-                return workspaceViewModel.Nodes.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
+                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
+            }
+        }
+
+        public NodeViewModel NodeEnd
+        {
+            get
+            {
+                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.End.Owner.GUID);
             }
         }
 
@@ -505,7 +548,6 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(AnyPinSelected));
             }
         }
-
         public bool IsFrozen
         {
             get { return model == null ? activeStartPort.Owner.IsFrozen : Nodevm.IsFrozen; }
@@ -585,9 +627,9 @@ namespace Dynamo.ViewModels
                 }
                 isDataFlowCollection = isCollectionofFiveorMore;
             }
-            catch (Exception ex)///the odd case of model.Start.Owner value not being available. 
+            catch (Exception ex)//the odd case of model.Start.Owner value not being available. 
             {
-                string m = ex.Message;
+                _ = ex.Message;
             }
         }
 
@@ -601,7 +643,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Delegate command used to set the visibility of the connector to 'transparent'.
         /// </summary>
-        public DelegateCommand HideConnectorCommand { get; set; }
+        public DelegateCommand ShowhideConnectorCommand { get; set; }
         /// <summary>
         /// Delegate command us to select the nodes connected to this connector.
         /// </summary>
@@ -622,11 +664,6 @@ namespace Dynamo.ViewModels
         /// Delegate command to trigger a construction of a ContextMenu.
         /// </summary>
         public DelegateCommand InstantiateContextMenuCommand { get; set; }
-
-        /// <summary>
-        /// Delegate command run to capture right click of connector.
-        /// </summary>
-        public DelegateCommand ConnectorSelectionCommand { get; set; }
 
         /// <summary>
         /// When mouse hovers over connector, if the data coming through the connector is collection of 5 or more,
@@ -665,7 +702,7 @@ namespace Dynamo.ViewModels
             {
                 CanShowTooltip = CanShowConnectorTooltip,
                 CurrentPosition = MousePosition,
-                IsHalftone = IsCollapsed,
+                IsHalftone = IsHidden,
                 IsDataFlowCollection = IsDataFlowCollection
             };
             ConnectorAnchorViewModel.RequestDispose += DisposeAnchor;
@@ -673,8 +710,8 @@ namespace Dynamo.ViewModels
 
         private void DisposeAnchor(object arg1, EventArgs arg2)
         {
-            ConnectorAnchorViewModel.Dispose();
             ConnectorAnchorViewModel.RequestDispose -= DisposeAnchor;
+            ConnectorAnchorViewModel.Dispose();
             ConnectorAnchorViewModel = null;
         }
 
@@ -683,16 +720,19 @@ namespace Dynamo.ViewModels
             ConnectorContextMenuViewModel = new ConnectorContextMenuViewModel(this)
             {
                 CurrentPosition = MousePosition,
-                IsCollapsed = this.IsCollapsed
+                IsCollapsed = this.IsHidden
             };
+            //Updates PreviewState of connector.
+            PreviewState = PreviewState.Selection;
             ConnectorContextMenuViewModel.RequestDispose += DisposeContextMenu;
         }
 
         private void DisposeContextMenu(object arg1, EventArgs arg2)
         {
+            PreviewState = PreviewState.None;
             ConnectorContextMenuViewModel.RequestDispose -= DisposeContextMenu;
+            ConnectorContextMenuViewModel.Dispose();
             ConnectorContextMenuViewModel = null;
-            ConnectorSelectionCommand.Execute(null);
         }
 
         /// <summary>
@@ -750,6 +790,7 @@ namespace Dynamo.ViewModels
             // The deletion (and accompanying undo/redo actions) get relayed to the WorkspaceModel.
             workspaceViewModel.Model.ClearConnector(ConnectorModel);
             workspaceViewModel.Model.HasUnsavedChanges = true;
+            workspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
         }
         /// <summary>
         /// Toggles wire viz on/off. This can be overwritten when a node is selected in hidden mode.
@@ -762,16 +803,16 @@ namespace Dynamo.ViewModels
             // which case use that parameter it is specifying.
             bool usedFlag = parameter != null?
                 Convert.ToBoolean(parameter):
-                !ConnectorModel.IsCollapsed;
+                !ConnectorModel.IsHidden;
                 
             workspaceViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.UpdateModelValueCommand(System.Guid.Empty, ConnectorModel.GUID,
-                   nameof(ConnectorModel.IsCollapsed), usedFlag.ToString()));
+                   nameof(ConnectorModel.IsHidden), usedFlag.ToString()));
 
             workspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
 
             bool adjacentNodeSelected = model.Start.Owner.IsSelected || model.End.Owner.IsSelected;
-            if (adjacentNodeSelected && ConnectorModel.IsCollapsed)
+            if (adjacentNodeSelected && ConnectorModel.IsHidden)
             {
                 IsTemporarilyDisplayed = true;
             }
@@ -814,8 +855,13 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void InstantiateContextMenuCommandExecute(object parameters)
         {
-            //Updates PreviewState of connector.
-            ConnectorSelectionCommand.Execute(null);
+            if (ConnectorContextMenuViewModel != null)
+            {
+                ConnectorContextMenuViewModel = null;
+                PreviewState = PreviewState.None;
+                return;
+            }
+
             CreateContextMenu();
         }
 
@@ -824,16 +870,13 @@ namespace Dynamo.ViewModels
         /// pins when a WatchNode is placed in the center of a connector.
         /// </summary>
         /// <param name="point"></param>
-        public void PinConnectorPlacementFromWatchNode(ConnectorModel[] connectors, int connectorWireIndex, Point point)
+        public void PinConnectorPlacementFromWatchNode(ConnectorModel[] connectors, int connectorWireIndex, Point point, List<ModelBase> createdModels)
         {
-            var connectorPinModel = new ConnectorPinModel(point.X, point.Y, Guid.NewGuid(), model.GUID);
-            connectors[connectorWireIndex].AddPin(connectorPinModel);
-            workspaceViewModel.Model.RecordCreatedModel(connectorPinModel);
-        }
+            var selectedConnector = connectors[connectorWireIndex];
 
-        public void ConnectorSelectionCommandExecute(object parameter)
-        {
-            PreviewState = PreviewState == PreviewState.Selection ? PreviewState.None : PreviewState.Selection;
+            var connectorPinModel = new ConnectorPinModel(point.X, point.Y, Guid.NewGuid(), selectedConnector.GUID);
+            selectedConnector.AddPin(connectorPinModel);
+            createdModels.Add(connectorPinModel);
         }
 
         private void HandlerRedrawRequest(object sender, EventArgs e)
@@ -843,23 +886,27 @@ namespace Dynamo.ViewModels
 
         private bool CanRunMouseHover(object parameter)
         {
-            return !IsConnecting && BezVisibility;
+            return !IsConnecting;
         }
         private bool CanRunMouseUnhover(object parameter)
         {
             return MouseHoverOn;
         }
 
+        private bool CanInstantiateContextMenu(object parameter)
+        {
+            return !IsConnecting && !ConnectorPinViewCollection.Any(p => p.IsHoveredOver);
+        }
+
         private void InitializeCommands()
         {
             BreakConnectionCommand = new DelegateCommand(BreakConnectionCommandExecute, x => true);
-            HideConnectorCommand = new DelegateCommand(HideConnectorCommandExecute, x => true);
+            ShowhideConnectorCommand = new DelegateCommand(HideConnectorCommandExecute, x => true);
             SelectConnectedCommand = new DelegateCommand(SelectConnectedCommandExecute, x => true);
             MouseHoverCommand = new DelegateCommand(MouseHoverCommandExecute, CanRunMouseHover);
             MouseUnhoverCommand = new DelegateCommand(MouseUnhoverCommandExecute, CanRunMouseUnhover);
             PinConnectorCommand = new DelegateCommand(PinConnectorCommandExecute, x => true);
-            InstantiateContextMenuCommand = new DelegateCommand(InstantiateContextMenuCommandExecute, x => !IsConnecting);
-            ConnectorSelectionCommand = new DelegateCommand(ConnectorSelectionCommandExecute, x => !IsConnecting);
+            InstantiateContextMenuCommand = new DelegateCommand(InstantiateContextMenuCommandExecute, CanInstantiateContextMenu);
         }
 
         #endregion
@@ -875,10 +922,11 @@ namespace Dynamo.ViewModels
             ConnectorPinViewCollection = new ObservableCollection<ConnectorPinViewModel>();
             ConnectorPinViewCollection.CollectionChanged += HandleCollectionChanged;
 
-            IsCollapsed = !workspaceViewModel.DynamoViewModel.IsShowingConnectors;
+            IsHidden = !workspaceViewModel.DynamoViewModel.IsShowingConnectors;
             IsConnecting = true;
             MouseHoverOn = false;
             activeStartPort = port;
+            ZIndex = SetZIndex();
 
             Redraw(port.Center);
 
@@ -906,8 +954,9 @@ namespace Dynamo.ViewModels
         {
             this.workspaceViewModel = workspace;
             model = connectorModel;
-            IsCollapsed = model.IsCollapsed; 
+            IsHidden = model.IsHidden;
             MouseHoverOn = false;
+            ZIndex = SetZIndex();
 
             model.PropertyChanged += HandleConnectorPropertyChanged;
             model.ConnectorPinModels.CollectionChanged += ConnectorPinModelCollectionChanged;
@@ -928,7 +977,16 @@ namespace Dynamo.ViewModels
             connectorModel.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
 
             workspaceViewModel.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
-            Nodevm.PropertyChanged += nodeViewModel_PropertyChanged;
+            if (Nodevm != null)
+            {
+                Nodevm.PropertyChanged += nodeViewModel_PropertyChanged;
+            }
+
+            if (NodeEnd != null)
+            {
+                NodeEnd.PropertyChanged += nodeEndViewModel_PropertyChanged;
+            }
+            
             Redraw();
             InitializeCommands();
 
@@ -940,13 +998,13 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case nameof(ConnectorModel.IsCollapsed):
+                case nameof(ConnectorModel.IsHidden):
                     ConnectorModel connector = sender as ConnectorModel;
                     if (connector is null)
                     {
                         return;
                     }
-                    IsCollapsed = connector.IsCollapsed;
+                    IsHidden = connector.IsHidden;
                     break;
                 default:
                     break;
@@ -1009,7 +1067,7 @@ namespace Dynamo.ViewModels
         {
             var pinViewModel = new ConnectorPinViewModel(this.workspaceViewModel, pinModel)
             {
-                IsCollapsed = IsCollapsed,
+                IsHidden = this.IsHidden,
                 IsTemporarilyVisible = isTemporarilyVisible
             };
             pinViewModel.PropertyChanged += PinViewModelPropertyChanged;
@@ -1032,7 +1090,7 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case nameof(ConnectorPinModel.IsSelected):
+                case nameof(ConnectorPinViewModel.IsSelected):
                     var vm = sender as ConnectorPinViewModel;
                     AnyPinSelected = vm.IsSelected;
                     break;
@@ -1044,7 +1102,7 @@ namespace Dynamo.ViewModels
         private void HandleRequestSelected(object sender, EventArgs e)
         {
             ConnectorPinViewModel pinViewModel = sender as ConnectorPinViewModel;
-            IsTemporarilyDisplayed = pinViewModel.IsSelected && IsCollapsed;
+            IsTemporarilyDisplayed = pinViewModel.IsSelected && IsHidden;
         }
         /// <summary>
         /// Handles ConnectorPin 'Unpin' command.
@@ -1053,8 +1111,7 @@ namespace Dynamo.ViewModels
         /// <param name="e"></param>
         private void HandleConnectorPinViewModelRemove(object sender, EventArgs e)
         {
-            var viewModelSender = sender as ConnectorPinViewModel;
-            if (viewModelSender is null) return;
+            if (!(sender is ConnectorPinViewModel viewModelSender)) return;
 
             workspaceViewModel.Model.RecordAndDeleteModels(
                 new List<ModelBase>() { viewModelSender.Model });
@@ -1078,8 +1135,15 @@ namespace Dynamo.ViewModels
 
             workspaceViewModel.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
             workspaceViewModel.DynamoViewModel.Model.PreferenceSettings.PropertyChanged -= DynamoViewModel_PropertyChanged;
-            Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
-            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;         
+            if (Nodevm != null)
+            {
+                Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
+            }
+            if (NodeEnd != null)
+            {
+                NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
+            }
+            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
 
             foreach (var pin in ConnectorPinViewCollection.ToList())
             {
@@ -1089,6 +1153,15 @@ namespace Dynamo.ViewModels
 
             this.PropertyChanged -= ConnectorViewModelPropertyChanged;
             DiscardAllConnectorPinModels();
+
+            if(ConnectorContextMenuViewModel != null)
+            {
+                ConnectorContextMenuViewModel.Dispose();
+            }
+            if(ConnectorAnchorViewModel != null)
+            {
+                ConnectorAnchorViewModel.Dispose();
+            }
             base.Dispose();
         }
 
@@ -1102,6 +1175,21 @@ namespace Dynamo.ViewModels
                 case nameof(NodeViewModel.IsFrozen):
                     RaisePropertyChanged(nameof(IsFrozen));
                     break;
+                case nameof(NodeViewModel.IsNodeInCollapsedGroup):
+                    RaisePropertyChanged(nameof(ZIndex));
+                    break;
+                default: break;
+            }
+        }
+
+        private void nodeEndViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(NodeViewModel.IsNodeInCollapsedGroup):
+                    RaisePropertyChanged(nameof(ZIndex));
+                    break;
+                default: break;
             }
         }
 
@@ -1118,8 +1206,7 @@ namespace Dynamo.ViewModels
                 case nameof(NodeModel.IsSelected):
                     RaisePropertyChanged(nameof(PreviewState));
                     IsTemporarilyDisplayed = model.Start.Owner.IsSelected 
-                        && IsCollapsed
-                        && BezVisibility ? true : false;
+                        && IsHidden ? true : false;
                     break;
                 case nameof(NodeModel.Position):
                     RaisePropertyChanged(nameof(CurvePoint0));
@@ -1153,8 +1240,7 @@ namespace Dynamo.ViewModels
                 case nameof(NodeModel.IsSelected):
                     RaisePropertyChanged(nameof(PreviewState));
                     IsTemporarilyDisplayed = model.End.Owner.IsSelected 
-                        && IsCollapsed 
-                        && BezVisibility ? true : false;
+                        && IsHidden ? true : false;
                     break;
                 case nameof(NodeModel.Position):
                     RaisePropertyChanged(nameof(CurvePoint0));
@@ -1174,27 +1260,11 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case nameof(ConnectorType):
-                    if (workspaceViewModel.DynamoViewModel.ConnectorType == ConnectorType.BEZIER)
-                    {
-                        BezVisibility = true;
-                        SetVisibilityOfPins(ConnectorModel.IsCollapsed);
-                        PlineVisibility = false;
-                    }
-                    else
-                    {
-                        BezVisibility = false;
-                        SetVisibilityOfPins(ConnectorModel.IsCollapsed);
-                        PlineVisibility = true;
-                    }
-
-                    Redraw();
-                    break;
                 case nameof(DynamoViewModel.IsShowingConnectors):
                     var dynModel = sender as DynamoViewModel;
-                    ConnectorModel.IsCollapsed = !dynModel.IsShowingConnectors;
+                    IsHidden = !dynModel.IsShowingConnectors;
                     bool adjacentNodeSelected = model.Start.Owner.IsSelected || model.End.Owner.IsSelected;
-                    if (adjacentNodeSelected && ConnectorModel.IsCollapsed)
+                    if (adjacentNodeSelected && ConnectorModel.IsHidden)
                     {
                         IsTemporarilyDisplayed = true;
                     }
@@ -1230,15 +1300,23 @@ namespace Dynamo.ViewModels
 
 
         /// <summary>
-        /// Removes all connectorPinViewModels/ connectorPinModels. This occurs during 'dispose'
+        ///  Removes all connectorPinViewModels/ connectorPinModels. This occurs during 'dispose'
         /// operation as well as during the 'PlaceWatchNode', where all previous pins corresponding 
         /// to a connector are cleareed.
         /// </summary>
-        internal void DiscardAllConnectorPinModels()
+        /// <param name="allDeletedModels"> This argument is used when placing a WatchNode from ConnectorAnchorViewModel. A reference
+        /// to all previous pins is required for undo/redo recorder.</param>
+        internal void DiscardAllConnectorPinModels(List<ModelBase> allDeletedModels = null)
         {
             foreach (var pin in ConnectorPinViewCollection)
             {
                 workspaceViewModel.Pins.Remove(pin);
+                ConnectorModel.RemovePin(pin.Model);
+
+                if(allDeletedModels != null)
+                {
+                    allDeletedModels.Add(pin.Model);
+                }
                 pin.Model.Dispose();
                 pin.Dispose();
             }
@@ -1278,6 +1356,8 @@ namespace Dynamo.ViewModels
             {
                 this.Redraw(this.ConnectorModel.End.Center);
             }
+
+            RaisePropertyChanged(nameof(ZIndex));
         }
 
         /// <summary>
@@ -1301,16 +1381,9 @@ namespace Dynamo.ViewModels
 
             var offset = 0.0;
             double distance = 0;
-            if (this.BezVisibility == true)
-            {
-                distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
-                offset = .45 * distance;
-            }
-            else
-            {
-                distance = CurvePoint3.X - CurvePoint0.X;
-                offset = distance / 2;
-            }
+
+            distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
+            offset = .45 * distance;
 
             CurvePoint1 = new Point(CurvePoint0.X + offset, CurvePoint0.Y);
             CurvePoint2 = new Point(p2.X - offset, p2.Y);
@@ -1350,16 +1423,9 @@ namespace Dynamo.ViewModels
         {
             var offset = 0.0;
             double distance = 0;
-            if (this.BezVisibility == true)
-            {
-                distance = Math.Sqrt(Math.Pow(endPt.X - startPt.X, 2) + Math.Pow(endPt.Y - startPt.Y, 2));
-                offset = .45 * distance;
-            }
-            else
-            {
-                distance = endPt.X - startPt.X;
-                offset = distance / 2;
-            }
+
+            distance = Math.Sqrt(Math.Pow(endPt.X - startPt.X, 2) + Math.Pow(endPt.Y - startPt.Y, 2));
+            offset = .45 * distance;
 
             var pt1 = new Point(startPt.X + offset, startPt.Y);
             var pt2 = new Point(endPt.X - offset, endPt.Y);
@@ -1401,16 +1467,9 @@ namespace Dynamo.ViewModels
 
                 var offset = 0.0;
                 double distance = 0;
-                if (this.BezVisibility == true)
-                {
-                    distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
-                    offset = .45 * distance;
-                }
-                else
-                {
-                    distance = CurvePoint3.X - CurvePoint0.X;
-                    offset = distance / 2;
-                }
+
+                distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
+                offset = .45 * distance;
 
                 CurvePoint1 = new Point(CurvePoint0.X + offset, CurvePoint0.Y);
                 CurvePoint2 = new Point(p2.X - offset, p2.Y);
@@ -1430,7 +1489,7 @@ namespace Dynamo.ViewModels
                 int count = 0;
                 foreach (var wirePin in ConnectorPinViewCollection)
                 {
-                    points[count] = new Point(wirePin.Left+ConnectorPinModel.StaticWidth - (wirePin.OneThirdWidth * 0.5), wirePin.Top+ ConnectorPinModel.StaticWidth - (wirePin.OneThirdWidth * 0.5));
+                    points[count] = new Point(wirePin.Left+ConnectorPinModel.StaticWidth - (ConnectorPinViewModel.OneThirdWidth * 0.5), wirePin.Top+ ConnectorPinModel.StaticWidth - (ConnectorPinViewModel.OneThirdWidth * 0.5));
                     count++;
                 }
 

@@ -15,6 +15,7 @@ using DynCmd = Dynamo.Models.DynamoModel;
 using TextBox = System.Windows.Controls.TextBox;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Graph.Annotations;
+using Dynamo.Logging;
 
 namespace Dynamo.Nodes
 {
@@ -31,7 +32,8 @@ namespace Dynamo.Nodes
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.InPortsDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.OutPortsDictionary);
 
             InitializeComponent();
             Unloaded += AnnotationView_Unloaded;
@@ -77,6 +79,8 @@ namespace Dynamo.Nodes
                     SetTextMaxWidth();
                     SetTextHeight();
                 }
+
+                ViewModel.UpdateProxyPortsPosition();
             }
         }
 
@@ -150,7 +154,7 @@ namespace Dynamo.Nodes
             if (ViewModel != null)
             {
                 DynamoSelection.Instance.ClearSelection();
-                System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
+                Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
 
                 // Expand the group before deleting it
                 // otherwise collapsed content will be "lost" 
@@ -162,6 +166,9 @@ namespace Dynamo.Nodes
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
+                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+
+                Analytics.TrackEvent(Actions.Ungroup, Categories.GroupOperations);
             }
         }
 
@@ -297,6 +304,8 @@ namespace Dynamo.Nodes
                 DynamoSelection.Instance.ClearSelection();
                 ViewModel.SelectAll();
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
+
+                Analytics.TrackEvent(Actions.Delete, Categories.GroupOperations);
             }
         }
 
@@ -309,6 +318,7 @@ namespace Dynamo.Nodes
         {
             if (ViewModel != null)
             {
+                DynamoSelection.Instance.ClearSelection();
                 ViewModel.SelectAll();
                 ViewModel.WorkspaceViewModel.DynamoViewModel.GraphAutoLayoutCommand.Execute(null);
             }

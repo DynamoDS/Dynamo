@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Notes;
 using Dynamo.Selection;
 using NUnit.Framework;
 
@@ -589,6 +592,49 @@ namespace Dynamo.Tests
 
             //there should be 2 groups in the workspace
             Assert.AreEqual(model.CurrentWorkspace.Annotations.Count(), 2);         
+        }
+
+
+        [Test]
+        public void TestCopyPasteNestedGroup()
+        {
+            // Arrange
+            var nestedGroupTitle = "Nested Group";
+            var parentGroupNode = new DummyNode();
+            var nestedGroupNode = new DummyNode();
+
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(parentGroupNode, false);
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(nestedGroupNode, false);
+
+            // Created nested group
+            DynamoSelection.Instance.Selection.Add(nestedGroupNode);
+            var nestedGroupId = Guid.NewGuid();
+            var nestedGroup = CurrentDynamoModel.CurrentWorkspace.AddAnnotation(nestedGroupTitle, "A group inside another group", nestedGroupId);
+
+            // Create parent group
+            var parentGroup = new AnnotationModel(
+                new NodeModel[] { parentGroupNode },
+                new NoteModel[] { }, 
+                new AnnotationModel[] { nestedGroup });
+
+            CurrentDynamoModel.CurrentWorkspace.AddAnnotation(parentGroup);
+
+            // Act
+            DynamoSelection.Instance.Selection.Add(nestedGroup);
+            CurrentDynamoModel.Copy();
+            CurrentDynamoModel.Paste();
+
+            var copiedGroups = CurrentDynamoModel.CurrentWorkspace.Annotations
+                .Where(x => x.AnnotationText == nestedGroupTitle);
+
+            var copiedGroup = copiedGroups.Where(x => x.GUID != nestedGroupId);
+
+            // Assert
+            Assert.That(parentGroup.Nodes.Contains(nestedGroup));
+            Assert.That(CurrentDynamoModel.CurrentWorkspace.Annotations.Count() == 3);
+            Assert.That(copiedGroups.Count() == 2);
+            Assert.That(copiedGroup.Count() == 1);
+            Assert.IsFalse(parentGroup.Nodes.Contains(copiedGroup.FirstOrDefault()));
         }
 
         [Test]

@@ -68,7 +68,6 @@ namespace Dynamo.Graph.Nodes
 
         private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
         private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
-
         #endregion
 
         internal const double HeaderHeight = 46;
@@ -145,6 +144,19 @@ namespace Dynamo.Graph.Nodes
         /// Note: This event will only be triggered when profiling is active.
         /// </summary>
         public event Action<NodeModel> NodeExecutionBegin;
+
+        /// <summary>
+        /// Event triggered whenever the node re-executes to clear its warnings and errors.
+        /// </summary>
+        public event Action<NodeModel> NodeMessagesClearing;
+
+        /// <summary>
+        /// Fires on each node that is modified when the graph executes.
+        /// </summary>
+        internal void OnNodeMessagesClearing()
+        {
+            NodeMessagesClearing?.Invoke(this);
+        }
 
         internal void OnNodeExecutionBegin()
         {
@@ -956,6 +968,10 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// A collection of error/warning/info messages, dismissed via a sub-menu in the node Context Menu.
+        [JsonIgnore]
+        public ObservableCollection<string> DismissedAlerts { get; set; } = new ObservableCollection<string>();
+
         #endregion
 
         #region freeze execution
@@ -1581,6 +1597,7 @@ namespace Dynamo.Graph.Nodes
 
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTooltipText();
+            OnNodeMessagesClearing();
         }
 
         /// <summary>
@@ -2528,7 +2545,15 @@ namespace Dynamo.Graph.Nodes
             };
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);
-            if (!task.Initialize(initParams)) return false;
+            try
+            {
+                if (!task.Initialize(initParams)) return false;
+            }
+            catch (ArgumentNullException e)
+            {
+                Log(e.ToString());
+                return false;
+            }
 
             task.Completed += OnRenderPackageUpdateCompleted;
             scheduler.ScheduleForExecution(task);

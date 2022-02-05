@@ -20,7 +20,8 @@ namespace Dynamo.Tests
             var resolutionPaths = new[]
             {
                 // These tests need "CoreNodeModels.dll" under "nodes" folder.
-                Path.Combine(moduleRootFolder, "nodes")
+                Path.Combine(moduleRootFolder, "nodes"),
+                Path.Combine(new DirectoryInfo(assemblyPath).Parent.Parent.Parent.Parent.FullName, "test", "packages")
             };
 
             assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);

@@ -314,6 +314,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "import json\r\n\r\ndataEnteringNode = IN\r\njsonString = IN[0]\r\nuser = IN[1]\r\n\r\njsonObject = json.loads(jsonString)\r\nuserData = []\r\nfor m in jsonObject:\r\n\tif (m[\"name\"] == user):\r\n\t\tuserData = m\r\n\r\n\r\nOUT = userData",
+      "Engine": "CPython3",
       "VariableInputPorts": true,
       "Id": "779061094688496285e56d9a328a5d3a",
       "Inputs": [

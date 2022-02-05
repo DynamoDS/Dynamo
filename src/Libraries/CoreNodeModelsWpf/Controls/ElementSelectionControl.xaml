@@ -28,7 +28,9 @@
                    TextWrapping="Wrap"
                    Grid.Row="1" 
                    Margin="5"
-                   MaxWidth="200" MaxHeight="200">
+                   MaxWidth="200" 
+                   MaxHeight="200"
+                   Foreground="#F5F5F5">
             <TextBlock.ToolTip>
                 <TextBlock Text="{Binding Model.Text}" MaxHeight="200" TextTrimming="WordEllipsis"/>
             </TextBlock.ToolTip>

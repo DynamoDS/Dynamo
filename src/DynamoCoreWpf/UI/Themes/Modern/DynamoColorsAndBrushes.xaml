@@ -24,6 +24,10 @@
     <Color x:Key="Blue300">#6AC0E7</Color>
     <Color x:Key="Blue400">#38ABDF</Color>
     <Color x:Key="DarkBlue200">#BCD3EE</Color>
+    <Color x:Key="DefaultFontColor">#DCDCDC</Color>
+    <Color x:Key="HoverFontColor">#1AFFFFFF</Color>
+    <Color x:Key="PressedFontColor">#2EFFFFFF</Color>
+    <Color x:Key="DisabledFontColor">#66999999</Color>
 
     <!--  Autodesk Colors  -->
     <SolidColorBrush x:Key="PrimaryCharcoal100Brush" Color="{StaticResource PrimaryCharcoal100}" />
@@ -43,6 +47,10 @@
     <SolidColorBrush x:Key="Blue300Brush" Color="{StaticResource Blue300}" />
     <SolidColorBrush x:Key="Blue400Brush" Color="{StaticResource Blue400}" />
     <SolidColorBrush x:Key="DarkBlue200Brush" Color="{StaticResource DarkBlue200}" />
+    <SolidColorBrush x:Key="DefaultFontColorBrush" Color="{StaticResource DefaultFontColor}" />
+    <SolidColorBrush x:Key="HoverFontColorBrush" Color="{StaticResource HoverFontColor}" />
+    <SolidColorBrush x:Key="PressedFontColorBrush" Color="{StaticResource PressedFontColor}" />
+    <SolidColorBrush x:Key="DisabledFontColorBrush" Color="{StaticResource DisabledFontColor}" />
 
     <!--  Workspaces  -->
     <SolidColorBrush x:Key="DynamoWindowBrush" Color="#353535" />
@@ -50,33 +58,38 @@
 
     <Color x:Key="WorkspaceBackgroundHome">#F9F9F9</Color>
     <Color x:Key="WorkspaceBackgroundCustom">#FFFFDC</Color>
-    <SolidColorBrush x:Key="WorkspaceTabHeaderActiveTextBrush" Color="#BBBBBB" />
+    <SolidColorBrush x:Key="WorkspaceTabHeaderActiveTextBrush" Color="#EEEEEE" />
     <SolidColorBrush x:Key="WorkspaceTabHeaderInactiveTextBrush" Color="#777777" />
     <SolidColorBrush x:Key="WorkspaceBackgroundHomeBrush" Color="{StaticResource WorkspaceBackgroundHome}" />
     <SolidColorBrush x:Key="WorkspaceBackgroundCustomBrush" Color="{StaticResource WorkspaceBackgroundCustom}" />
+    <SolidColorBrush x:Key="WorkspaceBackGroundHomeBrush" Color="{StaticResource WorkspaceBackgroundHome}" />
 
-    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedTrue" Color="#353535" />
-    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#232323" />
+    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedTrue" Color="#2A2A2A" />
+    <SolidColorBrush x:Key="WorkspaceTabBorderSelectedFalse" Color="#3C3C3C" />
 
     <!--  Nodes  -->
-    <SolidColorBrush x:Key="NodeFrozenOverlayBackground" Color="#BCD3EE" />
+    <SolidColorBrush x:Key="NodeFrozenOverlayColor" Color="{StaticResource DarkBlue200}" />
+    <SolidColorBrush x:Key="NodeInfoColor" Color="{StaticResource Blue300}" />
+    <SolidColorBrush x:Key="NodeWarningColor" Color="{StaticResource YellowOrange500}" />
+    <SolidColorBrush x:Key="NodeErrorColor" Color="{StaticResource Red500}" />
+    <SolidColorBrush x:Key="NodePreviewColor" Color="#BBBBBB"/>
+
     <SolidColorBrush x:Key="NodeOptionsButtonBackground" Color="#282828" />
-    <SolidColorBrush x:Key="NodeOptionsButtonForeground" Color="{StaticResource Blue300}" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphForeground" Color="#4B4B4B" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphBackground" Color="#EBEBEB" />
     <SolidColorBrush x:Key="NodeLacingGlyphBackground" Color="#EBEBEB" />
-    <SolidColorBrush x:Key="NodePreviewHiddenGlyphBackground" Color="{StaticResource PrimaryCharcoal100}" />
 
     <SolidColorBrush x:Key="NodeContextMenuForeground" Color="{StaticResource PrimaryCharcoal100}" />
     <SolidColorBrush x:Key="NodeContextMenuBackground" Color="{StaticResource MidGrey}" />
-    <SolidColorBrush x:Key="NodeContextMenuForegroundHighlight" Color="#282828" />
     <SolidColorBrush x:Key="NodeContextMenuBackgroundHighlight" Color="#808080" />
     <SolidColorBrush x:Key="NodeContextMenuSeparatorColor" Color="#AFAFAF" />
 
     <!--  Node colors in selected state  -->
     <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
 
-    <SolidColorBrush x:Key="autocompletionWindow" Color="#4192d9" />
+    <!-- Node Autocomplete -->
+    <SolidColorBrush x:Key="autocompletionWindow" Color="#535353" />
+    <SolidColorBrush x:Key="AutocompletionWindowFontColor" Color="#F5F5F5" />
 
     <!--  Update Manager  -->
     <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed" />
@@ -88,12 +101,23 @@
     <Color x:Key="SelectionColor">#009EFF</Color>
     <Color x:Key="MaterialColor">#efede4</Color>
 
-    <!--  Extensions Sidebar  -->
+    <!--  Brushes for Menu  -->
+    <SolidColorBrush x:Key="NormalBorderBrush" Color="#444444" />
+    <SolidColorBrush x:Key="NormalBackgroundBrush" Color="#535353" />
+    <SolidColorBrush x:Key="NormalForegroundBrush" Color="#EEEEEE" />
+    <SolidColorBrush x:Key="ActiveForegroundBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="HighlightedHeaderBrush" Color="#424242" />
+    <SolidColorBrush x:Key="HighlightedBrush" Color="#424242" />
+    <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#949494" />
+
+<!--  Extensions Sidebar  -->
     <SolidColorBrush x:Key="BorderBrushWhite" Color="#FF3F4040" />
     <SolidColorBrush x:Key="FeedbackSectionBackground" Color="#4192D9" />
+    <SolidColorBrush x:Key="ExtensionBackgroundColor" Color="#353535" />
+    <SolidColorBrush x:Key="ExtensionButtonBackgroundColor" Color="#535353" />
 
     <!--  Library background  -->
-    <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#F1F2F2" />
+    <SolidColorBrush x:Key="SearchTextBoxBackground" Color="#444444" />
     <SolidColorBrush x:Key="LibraryCommonBackground" Color="#333333" />
     <SolidColorBrush x:Key="LibraryMemberOnHover" Color="#404040" />
     <SolidColorBrush x:Key="LibraryItemHostBackground" Color="#353535" />
@@ -103,7 +127,7 @@
 
     <!--  Library text colors  -->
     <SolidColorBrush x:Key="MemberButtonText" Color="#aaaaaa" />
-    <SolidColorBrush x:Key="DeafultSearchTextBlockText" Color="#6D6E71" />
+    <SolidColorBrush x:Key="DeafultSearchTextBlockText" Color="#C0C0C0" />
     <SolidColorBrush x:Key="CommonSidebarTextColor" Color="#CCCCCC" />
     <SolidColorBrush x:Key="SearchBoxBackgroundColor" Color="#231F20" />
     <SolidColorBrush x:Key="NestedMemberTextColor" Color="#989898" />
@@ -131,16 +155,7 @@
     <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#c6c6c6" />
 
     <!--  Port color  -->
-    <SolidColorBrush x:Key="PortDefaultBackground" Color="Transparent" />
-    <SolidColorBrush x:Key="PortIsConnectedBackground" Color="#465A63" />
-    <SolidColorBrush x:Key="PortIsNotConnectedBackground" Color="#6B4343" />
     <SolidColorBrush x:Key="PortKeepListStructureBackground" Color="#537E91" />
-
-    <SolidColorBrush x:Key="PortDefaultBorderBrush" Color="{StaticResource PrimaryCharcoal300}" />
-    <SolidColorBrush x:Key="PortIsConnectedBorderBrush" Color="#6AC0E7" />
-    <SolidColorBrush x:Key="PortIsNotConnectedBorderBrush" Color="#F48686" />
-    <SolidColorBrush x:Key="PortKeepListStructureBorderBrush" Color="#6AC0E7" />
-
     <SolidColorBrush x:Key="PortUseLevelsCheckBoxColor" Color="#808080" />
 
     <!--  Connector  -->

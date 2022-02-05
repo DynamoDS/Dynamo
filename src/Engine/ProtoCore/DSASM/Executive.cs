@@ -817,6 +817,32 @@ namespace ProtoCore.DSASM
             return sv;
         }
 
+        // cached values for repeated calls of the same object type and dispose function.
+        private int previousClassIndex;
+        private string previousProcedureName;
+        private CallSite callsite;
+
+        internal StackValue CallDispose(ProcedureNode fNode,
+                                StackValue svThisPtr,
+                                int classIndex)
+        {
+            if (null != Properties.executingGraphNode)
+            {
+                exe.ExecutingGraphnode = Properties.executingGraphNode;
+            }
+
+            if (callsite == null || classIndex != previousClassIndex || previousProcedureName != fNode.Name)
+            {
+                previousClassIndex = classIndex;
+                previousProcedureName = fNode.Name;
+                callsite = new CallSite(classIndex, fNode.Name, exe.FunctionTable, runtimeCore.Options.ExecutionMode);
+            }
+
+            Validity.Assert(null != callsite);
+
+            return callsite.DispatchDispose(svThisPtr, runtimeCore);
+        }
+
         private StackValue CallrForMemberFunction(int blockIndex,
                                                   int classIndex,
                                                   int procIndex,
@@ -850,7 +876,7 @@ namespace ProtoCore.DSASM
             if (!isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray))
             {
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.DereferencingNonPointer,
-                                              Resources.kDeferencingNonPointer);
+                                              Resources.kDereferencingNonPointer);
                 return StackValue.Null;
             }
 
@@ -4496,6 +4522,20 @@ namespace ProtoCore.DSASM
                 if (opdata1.IsPointer)
                 {
                     pc += 1;
+                }
+                else if (opdata1.IsString)
+                {
+                    Validity.Assert(runtimeCore != null && runtimeCore.Heap != null);
+
+                    var dsString = runtimeCore.Heap.ToHeapObject<DSString>(opdata1);
+                    if (string.IsNullOrEmpty(dsString.Value))
+                    {
+                        pc = instruction.op1.LabelIndex;
+                    }
+                    else
+                    {
+                        pc += 1;
+                    }
                 }
                 else if (0 == opdata1.RawData)
                 {

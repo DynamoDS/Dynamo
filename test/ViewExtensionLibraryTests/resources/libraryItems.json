@@ -5233,6 +5233,14 @@
       "keywords": "2number, str2number, strtonumber, string2number, stringtonumber, int, double, cast"
     },
     {
+      "fullyQualifiedName": "DSCore.String.GetNumber",
+      "iconUrl": null,
+      "contextData": "DSCore.String.GetNumber@string",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "getnumber,tonumber,strtonumber,numberinstring,string2number,stringtonumber,int,double,cast"
+    },
+    {
       "fullyQualifiedName": "DSCore.String.Concat",
       "iconUrl": "http://localhost/icons/DSCore.String.Concat.Small?path=DSCoreNodes.dll",
       "contextData": "DSCore.String.Concat@string[]",
