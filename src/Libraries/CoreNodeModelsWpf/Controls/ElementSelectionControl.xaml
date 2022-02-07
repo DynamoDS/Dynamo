@@ -7,75 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200">
     <UserControl.Resources>
-        <ResourceDictionary>
-            <converters:SelectionButtonContentConverter x:Key="SelectionButtonContentConverter" />
-            <Style x:Key="SelectionButtonStyle" TargetType="Button">
-                <Setter Property="HorizontalAlignment" Value="Right" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="Margin" Value="15,0,0,0" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Grid>
-                                <Border x:Name="mouseOverBorder"                                
-                                    Margin="2"
-                                    BorderThickness="2"
-                                    CornerRadius="1"
-                                    Visibility="Hidden">
-                                    <Border.BorderBrush>
-                                        <SolidColorBrush Color="#FFFFFF" Opacity="0.15"/>
-                                    </Border.BorderBrush>
-                                </Border >
-                                <Border x:Name="mousePressedBorder"                                
-                                    Margin="2"
-                                    BorderThickness="2"
-                                    CornerRadius="1"
-                                    Visibility="Hidden">
-                                    <Border.BorderBrush>
-                                        <SolidColorBrush Color="#38ABDF" Opacity="0.35"/>
-                                    </Border.BorderBrush>
-                                </Border >
-                                <Border x:Name="border"
-                                    Margin="4"
-                                    Height="36px"
-                                    Padding="8,0,8,0"
-                                    BorderThickness="1"                                                                                                                             
-                                    Background="{TemplateBinding Background}"
-                                CornerRadius="1">
-                                    <Border.BorderBrush>
-                                        <SolidColorBrush Color="#FFFFFF" Opacity="0.5"/>
-                                    </Border.BorderBrush>
-
-                                    <TextBlock x:Name="textBlock"
-                                       HorizontalAlignment="Center"
-                                       Margin="0,1,0,0"
-                                       VerticalAlignment="Center"
-                                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                                       FontSize="14px"
-                                       Foreground="#FFFFFF"
-                                       Text="{TemplateBinding Content}"                                       
-                                       Opacity="1"/>
-                                </Border>
-                            </Grid>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="mouseOverBorder" Property="Visibility " Value="Visible" />
-                                </Trigger>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="mousePressedBorder" Property="Visibility " Value="Visible" />
-                                </Trigger>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter TargetName="border" Property="Background" Value="#707070" />
-                                    <Setter TargetName="border" Property="BorderBrush" Value="#707070" />
-                                    <Setter TargetName="textBlock" Property="Opacity" Value="0.7" />
-                                    <Setter Property="Cursor" Value="No" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </ResourceDictionary>
+        <converters:SelectionButtonContentConverter x:Key="SelectionButtonContentConverter" />
     </UserControl.Resources>
     
     <Grid>
