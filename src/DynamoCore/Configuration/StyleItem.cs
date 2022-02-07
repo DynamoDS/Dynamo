@@ -11,9 +11,9 @@ namespace Dynamo.Configuration
     /// </summary>
     public class StyleItem
     {
-        /// This property will containt the Group Name of the stored style
+        /// This property will contain the Group Name of the stored style
         public string GroupName { get; set; }
-        /// This property will containt the color in hexadecimal
+        /// This property will contain the color in hexadecimal
         public string HexColorString { get; set; }
     }
 }
