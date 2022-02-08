@@ -1457,7 +1457,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is no version of {0} that accepts argument type(s) ({1})..
+        ///   Looks up a localized string similar to There is no version of {0} that accepts argument type(s) ({1}). href=NonOverloadMethodResolutionError.html.
         /// </summary>
         public static string kMethodResolutionFailureWithTypes {
             get {
