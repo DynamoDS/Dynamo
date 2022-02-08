@@ -376,10 +376,10 @@ namespace Dynamo.Manipulation
         }
 
         /// <summary>
-        /// Retrieves a list of InputNodes that need to be updated. This method is called when MouseUp is triggered.
+        /// Retrieves a list of InputNodes that need to be updated after the manipulator is moved. This method is called when MouseUp is triggered.
         /// </summary>
-        /// <param name="offset">The offset vector with which the manipulator was moved by the user. This param is calculated as the vector between (Origin at MouseUp) and (Origin at MouseDown)</param>
-        /// <returns>A list of InputNodes and the new values that needs to be set to those input nodes</returns>
+        /// <param name="offset">The offset vector with which the manipulator was moved by the user. This param is calculated as the vector between (Origin at MouseDown) and (Origin at MouseUp)</param>
+        /// <returns>A list of InputNodes and the new values that needs to be set to the corresponding input nodes</returns>
         protected virtual List<(NodeModel inputNode, double amount)> InputNodesToUpdateAfterMove(Vector offset)
         {
             return new List<(NodeModel, double)>();
