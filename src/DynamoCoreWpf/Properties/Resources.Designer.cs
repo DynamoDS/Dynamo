@@ -5946,6 +5946,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group Name.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsGroupStyleInput {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsGroupStyleInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Group Styles.
         /// </summary>
         public static string PreferencesViewVisualSettingsGroupStyles {

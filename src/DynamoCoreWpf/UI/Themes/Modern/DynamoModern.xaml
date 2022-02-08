@@ -3773,6 +3773,8 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
+    
 
     <!--  This Style will be used for Note Text block (used when Note is on edit mode)  -->
     <Style x:Key="NoteTextBoxStyle" TargetType="TextBox">
