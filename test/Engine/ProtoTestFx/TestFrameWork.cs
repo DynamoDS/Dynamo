@@ -168,7 +168,7 @@ namespace ProtoTestFx.TD
         public void RunAndVerifyRuntimeWarning(string code, ProtoCore.Runtime.WarningID warningID)
         {
             RunScriptSource(code);
-            Assert.IsTrue(testRuntimeCore.RuntimeStatus.Warnings.Any(w => w.ID == warningID));
+            Assert.IsTrue(testRuntimeCore.RuntimeStatus.WarningEntries.Any(w => w.ID == warningID));
         }
     
         /// <summary>
@@ -783,7 +783,7 @@ namespace ProtoTestFx.TD
 
         public static void VerifyRuntimeWarning(ProtoCore.RuntimeCore runtimeCore, ProtoCore.Runtime.WarningID id)
         {
-            Assert.IsTrue(runtimeCore.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
+            Assert.IsTrue(runtimeCore.RuntimeStatus.WarningEntries.Any(w => w.ID == id), mErrorMessage);
         }
 
         public void VerifyRuntimeWarningCount(int count)

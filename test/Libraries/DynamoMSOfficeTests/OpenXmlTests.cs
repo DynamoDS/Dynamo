@@ -712,7 +712,7 @@ namespace DynamoMSOfficeTests
             ProtoCore.RuntimeCore runtimeCore = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
             Assert.AreEqual(1, runtimeCore.RuntimeStatus.WarningCount);
 
-            ProtoCore.Runtime.WarningEntry warningEntry = runtimeCore.RuntimeStatus.Warnings.ElementAt(0);
+            ProtoCore.Runtime.WarningEntry warningEntry = runtimeCore.RuntimeStatus.WarningEntries.ElementAt(0);
             Assert.AreEqual(ProtoCore.Runtime.WarningID.Default, warningEntry.ID);
 
             Assert.IsTrue(readNode.CachedValue.IsCollection);

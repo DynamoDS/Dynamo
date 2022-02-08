@@ -5427,7 +5427,7 @@ v = foo(t);
             syncData = new GraphSyncData(null, null, modified);
             liveRunner.UpdateGraph(syncData);
             Assert.AreEqual(1, liveRunner.RuntimeCore.RuntimeStatus.WarningCount);
-            Assert.AreEqual(guid2, liveRunner.RuntimeCore.RuntimeStatus.Warnings.First().GraphNodeGuid);
+            Assert.AreEqual(guid2, liveRunner.RuntimeCore.RuntimeStatus.WarningEntries.First().GraphNodeGuid);
         }
 
 

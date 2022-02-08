@@ -1898,7 +1898,7 @@ b = 2.1 % 0;
             thisTest.Verify("a", null);
             thisTest.Verify("b", double.NaN);
 
-            var warnings = thisTest.GetTestRuntimeCore().RuntimeStatus.Warnings;
+            var warnings = thisTest.GetTestRuntimeCore().RuntimeStatus.WarningEntries;
             Assert.IsTrue(warnings.Any(w => w.ID == ProtoCore.Runtime.WarningID.ModuloByZero));
         }
 

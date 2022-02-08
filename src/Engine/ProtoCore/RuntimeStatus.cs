@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.DSASM;
@@ -56,7 +57,7 @@ namespace ProtoCore
     public class RuntimeStatus
     {
         private ProtoCore.RuntimeCore runtimeCore;
-        private List<Runtime.WarningEntry> warnings;
+        private ConcurrentStack<Runtime.WarningEntry> warnings;
 
         public IOutputStream MessageHandler
         {
@@ -70,7 +71,16 @@ namespace ProtoCore
             set;
         }
 
+        [Obsolete("Property will be deprecated in Dynamo 3.0. Please use WarningEntries instead")]
         public IEnumerable<Runtime.WarningEntry> Warnings
+        {
+            get
+            {
+                return warnings.ToList();
+            }
+        }
+
+        public ConcurrentStack<Runtime.WarningEntry> WarningEntries
         {
             get
             {
@@ -88,24 +98,24 @@ namespace ProtoCore
 
         public void ClearWarningForExpression(int expressionID)
         {
-            warnings.RemoveAll(w => w.ExpressionID == expressionID);
+            warnings.TryPopRange(warnings.Where(w => w.ExpressionID == expressionID).ToArray());
         }
 
         public void ClearWarningsForGraph(Guid guid)
         {
-            warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
+            warnings.TryPopRange(warnings.Where(w => w.GraphNodeGuid.Equals(guid)).ToArray());
         }
 
         public void ClearWarningsForAst(int astID)
         {
-            warnings.RemoveAll(w => w.AstID.Equals(astID));
+            warnings.TryPopRange(warnings.Where(w => w.AstID.Equals(astID)).ToArray());
         }
 
         public RuntimeStatus(RuntimeCore runtimeCore,
                              bool warningAsError = false,
                              System.IO.TextWriter writer = null)
         {
-            warnings = new List<Runtime.WarningEntry>();
+            warnings = new ConcurrentStack<Runtime.WarningEntry>();
             this.runtimeCore = runtimeCore;
 
             if (writer != null)
@@ -172,7 +182,7 @@ namespace ProtoCore
                 AstID = executingGraphNode == null ? Constants.kInvalidIndex : executingGraphNode.OriginalAstID,
                 Filename = filename
             };
-            warnings.Add(entry);
+            warnings.Push(entry);
         }
 
         public void LogWarning(Runtime.WarningID ID, string message)
