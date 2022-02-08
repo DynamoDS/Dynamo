@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Windows.Input;
 using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
@@ -18,13 +21,15 @@ namespace Dynamo.Manipulation
 
     public class MousePointManipulator : NodeManipulator
     {
+        private Point originBeforeMove;// Save the origin before the user moves the gizmo
         private Point origin;
         internal override Point Origin { get { return origin; } }
 
         private TranslationGizmo gizmo;
 
-        //Holds manipulator axis and input node pair for each input port.
-        private Dictionary<int, Tuple<Vector, NodeModel>> indexedAxisNodePairs = new Dictionary<int, Tuple<Vector, NodeModel>>();
+        // Holds manipulator axis and input node pair for each input port.
+        // This collection is accessed from multiple threads
+        private ConcurrentDictionary<int, Tuple<Vector, NodeModel>> indexedAxisNodePairs = new ConcurrentDictionary<int, Tuple<Vector, NodeModel>>();
 
         internal MousePointManipulator(DSFunction node, DynamoManipulationExtension manipulatorContext)
             : base(node, manipulatorContext)
@@ -52,7 +57,7 @@ namespace Dynamo.Manipulation
                 //Input can be manipulated but there is not input node yet.
                 if (node == null)
                 {
-                    indexedAxisNodePairs.Add(i, Tuple.Create(axes[i], node));
+                    indexedAxisNodePairs.TryAdd(i, Tuple.Create(axes[i], node));
                     continue;
                 }
 
@@ -74,7 +79,7 @@ namespace Dynamo.Manipulation
                 }
                 if (axis == null) //Didn't find matching node.
                 {
-                    indexedAxisNodePairs.Add(i, Tuple.Create(axes[i], node));
+                    indexedAxisNodePairs.TryAdd(i, Tuple.Create(axes[i], node));
                 }
                 else
                 {
@@ -179,7 +184,21 @@ namespace Dynamo.Manipulation
             var offsetPos = origin.Add(offset);
             origin.Dispose();
             origin = offsetPos;
+        }
 
+        protected override void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+        {
+            base.MouseDown(sender, mouseButtonEventArgs);
+
+            originBeforeMove = Point.ByCoordinates(origin.X, origin.Y, origin.Z);
+        }
+
+        protected override void MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            base.MouseUp(sender, e);
+
+            Debug.Assert(originBeforeMove != null);
+            var offset = Vector.ByTwoPoints(originBeforeMove, origin);
             foreach (var item in indexedAxisNodePairs)
             {
                 // When more than one input is connected to the same slider, this
@@ -190,6 +209,7 @@ namespace Dynamo.Manipulation
 
                     if (Math.Abs(amount) > 0.001)
                     {
+                        // This call can modify the currently iterated collection - indexedAxisNodePairs
                         ModifyInputNode(item.Value.Item2, amount);
                     }
                 }
