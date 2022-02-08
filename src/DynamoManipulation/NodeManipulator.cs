@@ -47,6 +47,7 @@ namespace Dynamo.Manipulation
         private Point originAfterMove;// The manipulator position after the user moves the gizmo
         protected const double gizmoScale = 1.2;
         protected readonly int ROUND_UP_PARAM = 3;
+        protected readonly double MIN_OFFSET_VAL = 0.001;
 
         #region properties
 
@@ -184,8 +185,6 @@ namespace Dynamo.Manipulation
         {
             if (!IsValidNode) return;
 
-            if (!Node.IsSelected) return;
-
             active = UpdatePosition();
             if (Origin != null )
             {
@@ -238,7 +237,7 @@ namespace Dynamo.Manipulation
                 {
                     if (inputNode == null) continue;
 
-                    if (Math.Abs(amount) < 0.001) continue;
+                    if (Math.Abs(amount) < MIN_OFFSET_VAL) continue;
 
                     dynamic uiNode = inputNode;
                     uiNode.Value = Math.Round(amount, ROUND_UP_PARAM);

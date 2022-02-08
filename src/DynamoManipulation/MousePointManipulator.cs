@@ -196,7 +196,7 @@ namespace Dynamo.Manipulation
                 {
                     var amount = offset.Dot(v);
 
-                    if (Math.Abs(amount) > 0.001)
+                    if (Math.Abs(amount) > MIN_OFFSET_VAL)
                     {
                         dynamic uiNode = item.Value.Item2;
                         inputNodes.Add((uiNode, uiNode.Value + amount));
