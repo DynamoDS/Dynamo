@@ -524,7 +524,7 @@ namespace DynamoCoreWpfTests
             PreferenceSettings initalSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
 
-            initalSetting.GroupStyleItemsList.Add(new Dynamo.Configuration.StyleItem { 
+            initalSetting.GroupStyleItemsList.Add(new GroupStyleItem { 
                 HexColorString = "000000",
                 GroupName = "GroupName"
             });
