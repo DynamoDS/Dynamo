@@ -20,9 +20,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" CopyMetaData="true" />
-    <PackageReference Include="HelixToolkit" Version="2.20.1" CopyPDB="true" />
-	  <PackageReference Include="HelixToolkit.Wpf" Version="2.20.1" CopyPDB="true" />
-	  <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.20.1" CopyPDB="true" />
+    <PackageReference Include="HelixToolkit" Version="2.20.2" CopyPDB="true" />
+	  <PackageReference Include="HelixToolkit.Wpf" Version="2.20.2" CopyPDB="true" />
+	  <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.20.2" CopyPDB="true" />
 	  <PackageReference Include="SharpDX" Version="4.2.0" CopyPDB="true" />
 	  <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" CopyPDB="true" />
 	  <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" CopyPDB="true" />
