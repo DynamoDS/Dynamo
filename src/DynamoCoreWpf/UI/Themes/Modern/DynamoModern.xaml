@@ -38,9 +38,11 @@
     <Color x:Key="GlyphMouseOver">sc#1, 0.004391443, 0.002428215, 0.242281124</Color>
 
     <!--  Border colors  -->
+    <Color x:Key="BorderBasicColor">#FFFFFF</Color>
     <Color x:Key="BorderLightColor">#FFCCCCCC</Color>
     <Color x:Key="BorderMediumColor">#FF888888</Color>
     <Color x:Key="BorderDarkColor">#FF444444</Color>
+    <Color x:Key="BorderPressedColor">#38ABDF</Color>
 
     <Color x:Key="PressedBorderLightColor">#FF888888</Color>
     <Color x:Key="PressedBorderDarkColor">#FF444444</Color>
@@ -4151,4 +4153,71 @@
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontFamily" Value="Artifakt Element" />
     </Style>
+    <!--  Style for the Core Node Element Button Selection  -->
+    <Style x:Key="SelectionButtonStyle" TargetType="Button">
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Margin" Value="15,0,0,0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Border x:Name="mouseOverBorder"                                
+                                    Margin="2"
+                                    BorderThickness="2"
+                                    CornerRadius="1"
+                                    Visibility="Hidden">
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="{StaticResource BorderBasicColor}" Opacity="0.15"/>
+                                    </Border.BorderBrush>
+                                </Border >
+                                <Border x:Name="mousePressedBorder"                                
+                                    Margin="2"
+                                    BorderThickness="2"
+                                    CornerRadius="1"
+                                    Visibility="Hidden">
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="{StaticResource BorderPressedColor}" Opacity="0.35"/>
+                                    </Border.BorderBrush>
+                                </Border >
+                                <Border x:Name="border"
+                                    Margin="4"
+                                    Height="36px"
+                                    Padding="8,0,8,0"
+                                    BorderThickness="1"                                                                                                                             
+                                    Background="{TemplateBinding Background}"
+                                CornerRadius="1">
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="{StaticResource BorderBasicColor}" Opacity="0.5"/>
+                                    </Border.BorderBrush>
+
+                                    <TextBlock x:Name="textBlock"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,1,0,0"
+                                       VerticalAlignment="Center"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="14px"
+                                       Foreground="white"
+                                       Text="{TemplateBinding Content}"                                       
+                                       Opacity="1"/>
+                                </Border>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="mouseOverBorder" Property="Visibility" Value="Visible" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="mousePressedBorder" Property="Visibility" Value="Visible" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource SecondaryGray}" />
+                                    <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource SecondaryGray}" />
+                                    <Setter TargetName="textBlock" Property="Opacity" Value="0.7" />
+                                    <Setter Property="Cursor" Value="No" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 </ResourceDictionary>
