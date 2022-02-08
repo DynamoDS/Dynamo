@@ -514,8 +514,8 @@ namespace DynamoCoreWpfTests
         public void PreferenceSetting_GroupStyles()
         {
             // Test that thte group style list is being initialized with an empty list                       
-            Assert.NotNull(ViewModel.PreferenceSettings.StyleItemsList);
-            Assert.AreEqual(0, ViewModel.PreferenceSettings.StyleItemsList.Count);
+            Assert.NotNull(ViewModel.PreferenceSettings.GroupStyleItemsList);
+            Assert.AreEqual(0, ViewModel.PreferenceSettings.GroupStyleItemsList.Count);
 
             // Test serialization of GroupStyles 
             string tempPath = System.IO.Path.GetTempPath();
@@ -524,7 +524,7 @@ namespace DynamoCoreWpfTests
             PreferenceSettings initalSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
 
-            initalSetting.StyleItemsList.Add(new Dynamo.Configuration.StyleItem { 
+            initalSetting.GroupStyleItemsList.Add(new Dynamo.Configuration.StyleItem { 
                 HexColorString = "000000",
                 GroupName = "GroupName"
             });
@@ -533,16 +533,16 @@ namespace DynamoCoreWpfTests
             resultSetting = PreferenceSettings.Load(tempPath);
 
             // Test if the fields are being saved
-            Assert.AreEqual(1, initalSetting.StyleItemsList.Count);
-            Assert.AreEqual(resultSetting.StyleItemsList[0].GroupName, initalSetting.StyleItemsList[0].GroupName);
-            Assert.AreEqual(resultSetting.StyleItemsList[0].HexColorString, initalSetting.StyleItemsList[0].HexColorString);
+            Assert.AreEqual(1, initalSetting.GroupStyleItemsList.Count);
+            Assert.AreEqual(resultSetting.GroupStyleItemsList[0].GroupName, initalSetting.GroupStyleItemsList[0].GroupName);
+            Assert.AreEqual(resultSetting.GroupStyleItemsList[0].HexColorString, initalSetting.GroupStyleItemsList[0].HexColorString);
 
             // Test loading the settings defined in the xml configuration file
             var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-OneGroupStyle.xml");
             PreferenceSettings OneGroupStyle = PreferenceSettings.Load(filePath);
-            Assert.AreEqual(1, OneGroupStyle.StyleItemsList.Count);
-            Assert.AreEqual(OneGroupStyle.StyleItemsList[0].GroupName, initalSetting.StyleItemsList[0].GroupName);
-            Assert.AreEqual(OneGroupStyle.StyleItemsList[0].HexColorString, initalSetting.StyleItemsList[0].HexColorString);
+            Assert.AreEqual(1, OneGroupStyle.GroupStyleItemsList.Count);
+            Assert.AreEqual(OneGroupStyle.GroupStyleItemsList[0].GroupName, initalSetting.GroupStyleItemsList[0].GroupName);
+            Assert.AreEqual(OneGroupStyle.GroupStyleItemsList[0].HexColorString, initalSetting.GroupStyleItemsList[0].HexColorString);
         }
 
         [Test]

@@ -424,7 +424,7 @@ namespace Dynamo.ViewModels
         public void AddStyle(StyleItem style)
         {
             StyleItemsList.Add(style);
-            preferenceSettings.StyleItemsList.Add(new Configuration.StyleItem { HexColorString = style.HexColorString, GroupName = style.GroupName });
+            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { HexColorString = style.HexColorString, GroupName = style.GroupName });
             RaisePropertyChanged(nameof(StyleItemsList));
         }
 
@@ -766,7 +766,7 @@ namespace Dynamo.ViewModels
             //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;
 
-            StyleItemsList = LoadStyles(preferenceSettings.StyleItemsList);
+            StyleItemsList = LoadStyles(preferenceSettings.GroupStyleItemsList);
           
             //When pressing the "Add Style" button some controls will be shown with some values by default so later they can be populated by the user
             AddStyleControl = new StyleItem() { GroupName = "", HexColorString = "#" + GetRandomHexStringColor() };
@@ -1027,8 +1027,8 @@ namespace Dynamo.ViewModels
             StyleItem itemToRemove = (from item in StyleItemsList where item.GroupName.Equals(groupName) select item).FirstOrDefault();
             StyleItemsList.Remove(itemToRemove);
 
-            Configuration.StyleItem itemToRemovePreferences = preferenceSettings.StyleItemsList.FirstOrDefault(x => x.GroupName.Equals(groupName));
-            preferenceSettings.StyleItemsList.Remove(itemToRemovePreferences);
+            GroupStyleItem itemToRemovePreferences = preferenceSettings.GroupStyleItemsList.FirstOrDefault(x => x.GroupName.Equals(groupName));
+            preferenceSettings.GroupStyleItemsList.Remove(itemToRemovePreferences);
             
             UpdateSavedChangesLabel();
         }

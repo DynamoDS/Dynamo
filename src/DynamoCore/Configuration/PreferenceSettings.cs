@@ -451,7 +451,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Stores the group styles added in the preference settings
         /// </summary>
-        public List<StyleItem> StyleItemsList { get; set; }
+        public List<GroupStyleItem> GroupStyleItemsList { get; set; }
 
         /// <summary>
         /// Limits the size of the tags used by the SearchDictionary
@@ -532,7 +532,7 @@ namespace Dynamo.Configuration
             EnableNodeAutoComplete = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
-            StyleItemsList = new List<StyleItem>();
+            GroupStyleItemsList = new List<GroupStyleItem>();
         }
 
         /// <summary>
