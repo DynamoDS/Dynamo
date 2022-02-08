@@ -21,7 +21,6 @@ namespace Dynamo.Manipulation
 
     public class MousePointManipulator : NodeManipulator
     {
-        private Point originBeforeMove;// Save the origin before the user moves the gizmo
         private Point origin;
         internal override Point Origin { get { return origin; } }
 
@@ -186,21 +185,13 @@ namespace Dynamo.Manipulation
             origin = offsetPos;
         }
 
-        protected override void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+        protected override List<(NodeModel inputNode, double amount)> InputNodesToUpdateAfterMove(Vector offset)
         {
-            base.MouseDown(sender, mouseButtonEventArgs);
-
-            originBeforeMove = Point.ByCoordinates(origin.X, origin.Y, origin.Z);
-        }
-
-        protected override void MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            base.MouseUp(sender, e);
-
-            Debug.Assert(originBeforeMove != null);
-            var offset = Vector.ByTwoPoints(originBeforeMove, origin);
+            var inputNodes = new List<(NodeModel, double)>();
             foreach (var item in indexedAxisNodePairs)
             {
+                if (item.Value.Item2 == null) continue;
+
                 // When more than one input is connected to the same slider, this
                 // method will decompose the axis corresponding to each input.
                 using (var v = GetFirstAxisComponent(item.Value.Item1))
@@ -209,11 +200,12 @@ namespace Dynamo.Manipulation
 
                     if (Math.Abs(amount) > 0.001)
                     {
-                        // This call can modify the currently iterated collection - indexedAxisNodePairs
-                        ModifyInputNode(item.Value.Item2, amount);
+                        dynamic uiNode = item.Value.Item2;
+                        inputNodes.Add((uiNode, uiNode.Value + amount));
                     }
                 }
             }
+            return inputNodes;
         }
 
         /// <summary>
@@ -285,22 +277,6 @@ namespace Dynamo.Manipulation
                 return v2.Normalized();
 
             return vector.Normalized();
-        }
-
-        /// <summary>
-        /// Updates input node by specified amount.
-        /// </summary>
-        /// <param name="inputNode">Input node</param>
-        /// <param name="amount">Amount by which it needs to be modified.</param>
-        private static void ModifyInputNode(NodeModel inputNode, double amount)
-        {
-            if (inputNode == null) return;
-
-            if (Math.Abs(amount) < 0.001) return;
-
-            dynamic uiNode = inputNode;
-
-            uiNode.Value = Math.Round(uiNode.Value + amount, 3);
         }
 
         #endregion

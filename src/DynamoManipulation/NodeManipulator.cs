@@ -43,8 +43,10 @@ namespace Dynamo.Manipulation
         private const double NewNodeOffsetY = 50;
         private bool active;
         private string warning = string.Empty;
-
+        private Point originBeforeMove;// The manipulator position before the user moves the gizmo
+        private Point originAfterMove;// The manipulator position after the user moves the gizmo
         protected const double gizmoScale = 1.2;
+        protected readonly int ROUND_UP_PARAM = 3;
 
         #region properties
 
@@ -182,7 +184,14 @@ namespace Dynamo.Manipulation
         {
             if (!IsValidNode) return;
 
+            if (!Node.IsSelected) return;
+
             active = UpdatePosition();
+            if (Origin != null )
+            {
+                originBeforeMove = Point.ByCoordinates(Origin.X, Origin.Y, Origin.Z);
+                originAfterMove = Point.ByCoordinates(Origin.X, Origin.Y, Origin.Z);
+            }
 
             GizmoInAction = null; //Reset Drag.
 
@@ -222,6 +231,20 @@ namespace Dynamo.Manipulation
         {
             GizmoInAction = null;
 
+            if (originBeforeMove != null && originAfterMove != null)
+            {
+                var inputNodesToManipulate = InputNodesToUpdateAfterMove(Vector.ByTwoPoints(originBeforeMove, originAfterMove));
+                foreach (var (inputNode, amount) in inputNodesToManipulate)
+                {
+                    if (inputNode == null) continue;
+
+                    if (Math.Abs(amount) < 0.001) continue;
+
+                    dynamic uiNode = inputNode;
+                    uiNode.Value = Math.Round(amount, ROUND_UP_PARAM);
+                }
+            }
+
             //Update gizmo graphics after every camera view change
             var gizmos = GetGizmos(false);
             foreach (var gizmo in gizmos)
@@ -250,6 +273,13 @@ namespace Dynamo.Manipulation
 
             var offset = GizmoInAction.GetOffset(clickRay.GetOriginPoint(), clickRay.GetDirectionVector());
             if (offset.Length < 0.01) return;
+
+            if (originAfterMove != null)
+            {
+                var offsetPos = originAfterMove.Add(offset);
+                originAfterMove.Dispose();
+                originAfterMove = offsetPos;
+            }
 
             // Update input nodes attached to manipulator node 
             // Doing this triggers a graph update on scheduler thread
@@ -325,6 +355,7 @@ namespace Dynamo.Manipulation
         {
             bool manipulate = false;
             inputNode = null;
+            inputNode = null;
             Tuple<int, NodeModel> val;
             if (Node.InputNodes.TryGetValue(inputPortIndex, out val))
             {
@@ -343,6 +374,16 @@ namespace Dynamo.Manipulation
                 manipulate = true;
             }
             return manipulate;
+        }
+
+        /// <summary>
+        /// Retrieves a list of InputNodes that need to be updated. This method is called when MouseUp is triggered.
+        /// </summary>
+        /// <param name="offset">The offset vector with which the manipulator was moved by the user. This param is calculated as the vector between (Origin at MouseUp) and (Origin at MouseDown)</param>
+        /// <returns>A list of InputNodes and the new values that needs to be set to those input nodes</returns>
+        protected virtual List<(NodeModel inputNode, double amount)> InputNodesToUpdateAfterMove(Vector offset)
+        {
+            return new List<(NodeModel, double)>();
         }
 
         /// <summary>
@@ -556,6 +597,12 @@ namespace Dynamo.Manipulation
             {
                 Node.ClearTransientWarning(warning);
             }
+
+            if (originBeforeMove != null)
+                originBeforeMove.Dispose();
+     
+            if (originAfterMove != null)
+                originAfterMove.Dispose();
 
             DeleteGizmos();
             DetachHandlers();
