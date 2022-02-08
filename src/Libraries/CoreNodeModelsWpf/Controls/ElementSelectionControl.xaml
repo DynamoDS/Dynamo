@@ -18,7 +18,9 @@
         <Button Content="{Binding Model.Selection, Converter={StaticResource SelectionButtonContentConverter}}" 
                 Command="{Binding SelectCommand}"
                 Grid.Row="0" IsEnabled="{Binding Model.CanSelect}"
-                ToolTipService.ShowOnDisabled="True">
+                ToolTipService.ShowOnDisabled="True"
+                Background="#3c3c3c"
+                Style="{StaticResource SelectionButtonStyle}">
             <Button.ToolTip>
                 <TextBlock Text="{Binding Model.SelectionSuggestion}" />
             </Button.ToolTip>
