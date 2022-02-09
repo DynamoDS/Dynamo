@@ -1659,7 +1659,7 @@ namespace ProtoScript.Runners
             // Group all warnings by their expression ids, and only keep the last
             // warning for each expression, and then group by GUID.  
             var warnings = runtimeCore.RuntimeStatus
-                                     .WarningEntries
+                                     .Warnings
                                      .Where(w => !w.GraphNodeGuid.Equals(Guid.Empty))
                                      .OrderBy(w => w.GraphNodeGuid)
                                      .GroupBy(w => w.GraphNodeGuid);

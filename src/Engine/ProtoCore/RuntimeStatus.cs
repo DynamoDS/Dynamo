@@ -72,16 +72,7 @@ namespace ProtoCore
             set;
         }
 
-        [Obsolete("Property will be deprecated in Dynamo 3.0. Please use WarningEntries instead")]
         public IEnumerable<Runtime.WarningEntry> Warnings
-        {
-            get
-            {
-                return warnings.ToList();
-            }
-        }
-
-        public ImmutableList<Runtime.WarningEntry> WarningEntries
         {
             get
             {
