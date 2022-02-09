@@ -354,7 +354,6 @@ namespace Dynamo.Manipulation
         {
             bool manipulate = false;
             inputNode = null;
-            inputNode = null;
             Tuple<int, NodeModel> val;
             if (Node.InputNodes.TryGetValue(inputPortIndex, out val))
             {
