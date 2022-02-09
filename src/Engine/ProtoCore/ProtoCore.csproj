@@ -19,7 +19,7 @@
     <ProjectReference Include="..\..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj" />
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Label="System.Collections.Immutable@portable-net45+win8+wp8+wpa81">
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0">
       <GeneratePathProperty>true</GeneratePathProperty>
       <IncludeAssets>none</IncludeAssets>
