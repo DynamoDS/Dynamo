@@ -7,6 +7,7 @@ using ProtoCore.DSDefinitions;
 using ProtoCore.Properties;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
+using System.Collections.Immutable;
 
 namespace ProtoCore
 {
@@ -57,7 +58,7 @@ namespace ProtoCore
     public class RuntimeStatus
     {
         private ProtoCore.RuntimeCore runtimeCore;
-        private ConcurrentStack<Runtime.WarningEntry> warnings;
+        private ImmutableList<Runtime.WarningEntry> warnings;
 
         public IOutputStream MessageHandler
         {
@@ -80,7 +81,7 @@ namespace ProtoCore
             }
         }
 
-        public ConcurrentStack<Runtime.WarningEntry> WarningEntries
+        public ImmutableList<Runtime.WarningEntry> WarningEntries
         {
             get
             {
@@ -98,24 +99,24 @@ namespace ProtoCore
 
         public void ClearWarningForExpression(int expressionID)
         {
-            warnings.TryPopRange(warnings.Where(w => w.ExpressionID == expressionID).ToArray());
+            warnings.RemoveAll(w => w.ExpressionID == expressionID);
         }
 
         public void ClearWarningsForGraph(Guid guid)
         {
-            warnings.TryPopRange(warnings.Where(w => w.GraphNodeGuid.Equals(guid)).ToArray());
+            warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
         }
 
         public void ClearWarningsForAst(int astID)
         {
-            warnings.TryPopRange(warnings.Where(w => w.AstID.Equals(astID)).ToArray());
+            warnings.RemoveAll(w => w.AstID.Equals(astID));
         }
 
         public RuntimeStatus(RuntimeCore runtimeCore,
                              bool warningAsError = false,
                              System.IO.TextWriter writer = null)
         {
-            warnings = new ConcurrentStack<Runtime.WarningEntry>();
+            warnings = ImmutableList<Runtime.WarningEntry>.Empty;
             this.runtimeCore = runtimeCore;
 
             if (writer != null)
@@ -182,7 +183,7 @@ namespace ProtoCore
                 AstID = executingGraphNode == null ? Constants.kInvalidIndex : executingGraphNode.OriginalAstID,
                 Filename = filename
             };
-            warnings.Push(entry);
+            warnings.Add(entry);
         }
 
         public void LogWarning(Runtime.WarningID ID, string message)
