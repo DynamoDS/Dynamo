@@ -526,7 +526,7 @@ namespace DynamoCoreWpfTests
 
             initalSetting.GroupStyleItemsList.Add(new GroupStyleItem { 
                 HexColorString = "000000",
-                GroupName = "GroupName"
+                Name = "GroupName"
             });
 
             initalSetting.Save(tempPath);
@@ -534,14 +534,14 @@ namespace DynamoCoreWpfTests
 
             // Test if the fields are being saved
             Assert.AreEqual(1, initalSetting.GroupStyleItemsList.Count);
-            Assert.AreEqual(resultSetting.GroupStyleItemsList[0].GroupName, initalSetting.GroupStyleItemsList[0].GroupName);
+            Assert.AreEqual(resultSetting.GroupStyleItemsList[0].Name, initalSetting.GroupStyleItemsList[0].Name);
             Assert.AreEqual(resultSetting.GroupStyleItemsList[0].HexColorString, initalSetting.GroupStyleItemsList[0].HexColorString);
 
             // Test loading the settings defined in the xml configuration file
             var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-OneGroupStyle.xml");
             PreferenceSettings OneGroupStyle = PreferenceSettings.Load(filePath);
             Assert.AreEqual(1, OneGroupStyle.GroupStyleItemsList.Count);
-            Assert.AreEqual(OneGroupStyle.GroupStyleItemsList[0].GroupName, initalSetting.GroupStyleItemsList[0].GroupName);
+            Assert.AreEqual(OneGroupStyle.GroupStyleItemsList[0].Name, initalSetting.GroupStyleItemsList[0].Name);
             Assert.AreEqual(OneGroupStyle.GroupStyleItemsList[0].HexColorString, initalSetting.GroupStyleItemsList[0].HexColorString);
         }
 

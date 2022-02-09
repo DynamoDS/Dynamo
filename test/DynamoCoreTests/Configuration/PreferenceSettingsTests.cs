@@ -103,7 +103,7 @@ namespace Dynamo.Tests.Configuration
             });
             settings.GroupStyleItemsList.Add(new GroupStyleItem 
             {
-                GroupName = "TestGroup", 
+                Name = "TestGroup", 
                 HexColorString = "000000" 
             });
 
@@ -134,7 +134,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(windowSettings.Status, WindowStatus.Maximized);
             Assert.AreEqual(settings.GroupStyleItemsList.Count, 1);
             var styleItemsList = settings.GroupStyleItemsList[0];
-            Assert.AreEqual(styleItemsList.GroupName, "TestGroup");
+            Assert.AreEqual(styleItemsList.Name, "TestGroup");
             Assert.AreEqual(styleItemsList.HexColorString, "000000");
         }
 

@@ -12,7 +12,7 @@ namespace Dynamo.Configuration
     public class StyleItem
     {
         /// This property will contain the Group Name of the stored style
-        public string GroupName { get; set; }
+        public string Name { get; set; }
         /// This property will contain the color in hexadecimal
         public string HexColorString { get; set; }
     }

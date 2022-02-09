@@ -39,12 +39,12 @@
   <DisableCustomPackageLocations>false</DisableCustomPackageLocations>
   <DefaultRunType>Automatic</DefaultRunType>
   <ShowRunPreview>false</ShowRunPreview>
-  <StyleItemsList>
-    <StyleItem>
-      <GroupName>GroupName</GroupName>
+  <GroupStyleItemsList>
+    <GroupStyleItem>
+      <Name>GroupName</Name>
       <HexColorString>000000</HexColorString>
-    </StyleItem>
-  </StyleItemsList>
+    </GroupStyleItem>
+  </GroupStyleItemsList>
   <NodeSearchTagSizeLimit>300</NodeSearchTagSizeLimit>
   <IronPythonResolveTargetVersion>2.4.0</IronPythonResolveTargetVersion>
 </PreferenceSettings>

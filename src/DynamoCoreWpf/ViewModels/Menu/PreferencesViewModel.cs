@@ -424,7 +424,7 @@ namespace Dynamo.ViewModels
         public void AddStyle(StyleItem style)
         {
             StyleItemsList.Add(style);
-            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { HexColorString = style.HexColorString, GroupName = style.GroupName });
+            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { HexColorString = style.HexColorString, Name = style.GroupName });
             RaisePropertyChanged(nameof(StyleItemsList));
         }
 
@@ -819,7 +819,7 @@ namespace Dynamo.ViewModels
             ObservableCollection<StyleItem> styles = new ObservableCollection<StyleItem>();
             foreach (var style in styleItemsList)
             {
-                styles.Add(new StyleItem { GroupName = style.GroupName, HexColorString = style.HexColorString });
+                styles.Add(new StyleItem { GroupName = style.Name, HexColorString = style.HexColorString });
             }
             return styles;
         }
@@ -1027,7 +1027,7 @@ namespace Dynamo.ViewModels
             StyleItem itemToRemove = (from item in StyleItemsList where item.GroupName.Equals(groupName) select item).FirstOrDefault();
             StyleItemsList.Remove(itemToRemove);
 
-            GroupStyleItem itemToRemovePreferences = preferenceSettings.GroupStyleItemsList.FirstOrDefault(x => x.GroupName.Equals(groupName));
+            GroupStyleItem itemToRemovePreferences = preferenceSettings.GroupStyleItemsList.FirstOrDefault(x => x.Name.Equals(groupName));
             preferenceSettings.GroupStyleItemsList.Remove(itemToRemovePreferences);
             
             UpdateSavedChangesLabel();
