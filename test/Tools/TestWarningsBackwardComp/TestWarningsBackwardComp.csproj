@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <ProjectGuid>{9E5251B2-8FB3-48A7-8C90-DA5132016CA9}</ProjectGuid>
+    <RootNamespace>TestWarningsBackwardComp</RootNamespace>
+    <AssemblyName>TestWarningsBackwardComp</AssemblyName>
+    <OutputPath>bin\AnyCPU\$(Configuration)</OutputPath>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>None</DebugType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="test\**" />
+    <EmbeddedResource Remove="test\**" />
+    <None Remove="test\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DynamoVisualProgramming.Core" Version="2.13.0.3485">
+      <IncludeAssets>none</IncludeAssets>
+      <GeneratePathProperty>true</GeneratePathProperty>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ProtoCore">
+      <HintPath>$(PkgDynamoVisualProgramming_Core)\lib\net48\ProtoCore.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>
