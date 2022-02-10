@@ -14,11 +14,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="test\**" />
-    <EmbeddedResource Remove="test\**" />
-    <None Remove="test\**" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.Core" Version="2.13.0.3485">
       <IncludeAssets>none</IncludeAssets>
       <GeneratePathProperty>true</GeneratePathProperty>
