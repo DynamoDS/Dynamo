@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
+		{9E5251B2-8FB3-48A7-8C90-DA5132016CA9} = {9E5251B2-8FB3-48A7-8C90-DA5132016CA9}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoSandbox", "DynamoSandbox\DynamoSandbox.csproj", "{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}"
@@ -67,9 +68,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{0355EB79-6961-4B8A-8F66-035D4EC0C9FE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoTest", "..\test\Engine\ProtoTest\ProtoTest.csproj", "{6E1177DB-5E4F-4E2E-82E7-902437E56AED}"
-	ProjectSection(ProjectDependencies) = postProject
-		{9E5251B2-8FB3-48A7-8C90-DA5132016CA9} = {9E5251B2-8FB3-48A7-8C90-DA5132016CA9}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtoTestFx", "..\test\Engine\ProtoTestFx\ProtoTestFx.csproj", "{2235F7CA-AB25-4177-92BC-4B574D2D5DF6}"
 EndProject

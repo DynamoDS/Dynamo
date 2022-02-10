@@ -30,11 +30,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TestWarningsBackwardComp">
-      <HintPath>..\..\Tools\TestWarningsBackwardComp\bin\AnyCPU\$(Configuration)\TestWarningsBackwardComp.dll</HintPath>
-      <Private>false</Private>
-      <CopyLocal>False</CopyLocal>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">

@@ -1,9 +1,10 @@
 ﻿using System;
+using Dynamo;
 using NUnit.Framework;
 
 namespace ProtoTest
 {
-    class WarningCompatibilityTest : ProtoTestBase
+    class WarningCompatibilityTest : UnitTestBase
     {
         [Test]
         [Description("Tests the backwards compatibility of the RuntimeStatus.Warnings property")]
