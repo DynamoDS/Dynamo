@@ -16,6 +16,11 @@
     <AssemblyOriginatorKeyFile>ProtoTest.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="ComponentTest\**" />
+    <EmbeddedResource Remove="ComponentTest\**" />
+    <None Remove="ComponentTest\**" />
+  </ItemGroup>
+  <ItemGroup>
 	  <PackageReference Include="NUnit" Version="2.6.3" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -28,6 +33,7 @@
     <Reference Include="TestWarningsBackwardComp">
       <HintPath>..\..\Tools\TestWarningsBackwardComp\bin\AnyCPU\$(Configuration)\TestWarningsBackwardComp.dll</HintPath>
       <Private>false</Private>
+      <CopyLocal>False</CopyLocal>
     </Reference>
   </ItemGroup>
   <ItemGroup>
