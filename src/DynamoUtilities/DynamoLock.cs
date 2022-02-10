@@ -14,6 +14,33 @@ namespace DynamoUtilities
             rwlock = new ReaderWriterLockSlim();
         }
 
+        /// <summary>
+        /// Locks for read. Use this API when you need more control of the lock lifetime
+        /// </summary>
+        internal void LockForRead() => rwlock.EnterReadLock();
+        /// <summary>
+        /// Locks for write. Use this API when you need more control of the lock lifetime
+        /// </summary>
+        internal void LockForWrite() => rwlock.EnterWriteLock();
+        /// <summary>
+        /// Locks for upgradeable read. Use this API when you need more control of the lock lifetime
+        /// </summary>
+        internal void LockForUpgreadableRead() => rwlock.EnterUpgradeableReadLock();
+
+        /// <summary>
+        /// Unlocks a read lock. Use this API if you called LockForRead beforehand.
+        /// </summary>
+        internal void UnlockForRead() => rwlock.ExitReadLock();
+        /// <summary>
+        /// Unlocks a write lock. Use this API if you called LockForWrite beforehand.
+        /// </summary>
+        internal void UnlockForWrite() => rwlock.ExitWriteLock();
+        /// <summary>
+        /// Unlocks an upgradeable read lock. Use this API if you called LockForUpgreadableRead beforehand.
+        /// </summary>
+        internal void UnlockForUpgreadableRead() => rwlock.ExitUpgradeableReadLock();
+
+
         public void Dispose()
         {
             try
@@ -22,6 +49,8 @@ namespace DynamoUtilities
                     rwlock.ExitReadLock();
                 if (rwlock.IsWriteLockHeld)
                     rwlock.ExitWriteLock();
+                if (rwlock.IsUpgradeableReadLockHeld)
+                    rwlock.ExitUpgradeableReadLock();
             }
             finally 
             {
@@ -38,7 +67,13 @@ namespace DynamoUtilities
         /// <summary>
         /// Constructs a disposable object that locks for read and releases the lock when Dispose is called.
         /// </summary>
-        /// <returns>New disposable  object</returns>
+        /// <returns>New disposable object</returns>
         internal IDisposable CreateReadLock() => Disposable.Create(() => { rwlock.EnterReadLock(); }, () => { rwlock.ExitReadLock(); });
+
+        /// <summary>
+        /// Constructs a disposable object that locks for read and allows lock for write in the same scope. Releases the lock when Dispose is called.
+        /// </summary>
+        /// <returns>New disposable object</returns>
+        internal IDisposable CreateUpgradeableReadLock() => Disposable.Create(() => { rwlock.EnterUpgradeableReadLock(); }, () => { rwlock.ExitUpgradeableReadLock(); });
     }
 }
