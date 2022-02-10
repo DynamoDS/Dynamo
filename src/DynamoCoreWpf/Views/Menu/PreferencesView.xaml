@@ -573,12 +573,11 @@
                                                           Height="25"
                                                           Width="300"
                                                           Text="{Binding AddStyleControl.GroupName}"
-                                                          Tag="Input"/>
+                                                          Tag="{x:Static p:Resources.PreferencesViewVisualSettingsGroupStyleInput}"/>
                                                 <Grid Grid.Row="1"
                                                       Margin="10,0,10,0"
                                                       Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"></ColumnDefinition>
                                                         <ColumnDefinition Width="*"></ColumnDefinition>
                                                         <ColumnDefinition Width="*"></ColumnDefinition>
                                                     </Grid.ColumnDefinitions>
@@ -596,18 +595,26 @@
                                                                 Content="{Binding Background, ElementName=buttonColorPicker, Converter={StaticResource BrushColorToStringConverter}}"
                                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                                     </StackPanel>
-                                                    <Button x:Name="AddStyle_SaveButton" 
+                                                    <Grid  Grid.Column="1" Margin="20,0,10,0">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Button x:Name="AddStyle_SaveButton" 
                                                             Style="{StaticResource OutlinedButtonStyle}"
-                                                            Grid.Column="1"
+                                                            Grid.Column="0"
+                                                            HorizontalAlignment="Right"
                                                             Click="AddStyle_SaveButton_Click"
                                                             Width="50"
                                                             Height="30">Save</Button>
-                                                    <Button x:Name="AddStyle_CancelButton" 
+                                                        <Button x:Name="AddStyle_CancelButton" 
                                                             Style="{StaticResource OutlinedButtonStyle}"
-                                                            Grid.Column="2"
+                                                            Grid.Column="1"
+                                                            HorizontalAlignment="Right"
                                                             Click="AddStyle_CancelButton_Click"
                                                             Width="50"
                                                             Height="30">Cancel</Button>
+                                                    </Grid>
                                                 </Grid>
                                             </Grid>
                                         </Border>

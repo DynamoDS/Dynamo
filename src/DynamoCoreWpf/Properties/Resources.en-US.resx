@@ -3037,4 +3037,7 @@ To install the latest version of a package, click Install. \n
   <data name="UnpinNodeTooltip" xml:space="preserve">
     <value>Unpin this note from the node</value>
   </data>
+  <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
+    <value>Group Name</value>
+  </data>
 </root>

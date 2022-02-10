@@ -424,6 +424,7 @@ namespace Dynamo.ViewModels
         public void AddStyle(StyleItem style)
         {
             StyleItemsList.Add(style);
+            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { HexColorString = style.HexColorString, Name = style.GroupName });
             RaisePropertyChanged(nameof(StyleItemsList));
         }
 
@@ -765,7 +766,7 @@ namespace Dynamo.ViewModels
             //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;
 
-            StyleItemsList = new ObservableCollection<StyleItem>();
+            StyleItemsList = LoadStyles(preferenceSettings.GroupStyleItemsList);
           
             //When pressing the "Add Style" button some controls will be shown with some values by default so later they can be populated by the user
             AddStyleControl = new StyleItem() { GroupName = "", HexColorString = "#" + GetRandomHexStringColor() };
@@ -806,6 +807,21 @@ namespace Dynamo.ViewModels
             WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
 
             PropertyChanged += Model_PropertyChanged;
+        }
+
+        /// <summary>
+        /// This method loads the group styles defined by the user and stored in the xml file
+        /// </summary>
+        /// <param name="styleItemsList"></param>
+        /// <returns></returns>
+        private ObservableCollection<StyleItem> LoadStyles(IEnumerable<Configuration.StyleItem> styleItemsList)
+        {
+            ObservableCollection<StyleItem> styles = new ObservableCollection<StyleItem>();
+            foreach (var style in styleItemsList)
+            {
+                styles.Add(new StyleItem { GroupName = style.Name, HexColorString = style.HexColorString });
+            }
+            return styles;
         }
 
         /// <summary>
@@ -1010,6 +1026,10 @@ namespace Dynamo.ViewModels
         {
             StyleItem itemToRemove = (from item in StyleItemsList where item.GroupName.Equals(groupName) select item).FirstOrDefault();
             StyleItemsList.Remove(itemToRemove);
+
+            GroupStyleItem itemToRemovePreferences = preferenceSettings.GroupStyleItemsList.FirstOrDefault(x => x.Name.Equals(groupName));
+            preferenceSettings.GroupStyleItemsList.Remove(itemToRemovePreferences);
+            
             UpdateSavedChangesLabel();
         }
 

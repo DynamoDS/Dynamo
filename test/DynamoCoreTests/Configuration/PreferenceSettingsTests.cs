@@ -101,6 +101,11 @@ namespace Dynamo.Tests.Configuration
                     Status = WindowStatus.Maximized
                 }
             });
+            settings.GroupStyleItemsList.Add(new GroupStyleItem 
+            {
+                Name = "TestGroup", 
+                HexColorString = "000000" 
+            });
 
             // Save
             settings.Save(tempPath);
@@ -127,6 +132,10 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(windowSettings.Height, 321);
             Assert.AreEqual(windowSettings.Width, 654);
             Assert.AreEqual(windowSettings.Status, WindowStatus.Maximized);
+            Assert.AreEqual(settings.GroupStyleItemsList.Count, 1);
+            var styleItemsList = settings.GroupStyleItemsList[0];
+            Assert.AreEqual(styleItemsList.Name, "TestGroup");
+            Assert.AreEqual(styleItemsList.HexColorString, "000000");
         }
 
         [Test]
