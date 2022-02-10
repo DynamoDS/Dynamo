@@ -10,9 +10,6 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.Core" Version="2.13.0.3485">
       <IncludeAssets>none</IncludeAssets>
