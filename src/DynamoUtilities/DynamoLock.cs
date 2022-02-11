@@ -25,7 +25,7 @@ namespace DynamoUtilities
         /// <summary>
         /// Locks for upgradeable read. Use this API when you need more control of the lock lifetime
         /// </summary>
-        internal void LockForUpgreadableRead() => rwlock.EnterUpgradeableReadLock();
+        internal void LockForUpgradeableRead() => rwlock.EnterUpgradeableReadLock();
 
         /// <summary>
         /// Unlocks a read lock. Use this API if you called LockForRead beforehand.
@@ -36,9 +36,9 @@ namespace DynamoUtilities
         /// </summary>
         internal void UnlockForWrite() => rwlock.ExitWriteLock();
         /// <summary>
-        /// Unlocks an upgradeable read lock. Use this API if you called LockForUpgreadableRead beforehand.
+        /// Unlocks an upgradeable read lock. Use this API if you called LockForUpgradeableRead beforehand.
         /// </summary>
-        internal void UnlockForUpgreadableRead() => rwlock.ExitUpgradeableReadLock();
+        internal void UnlockForUpgradeableRead() => rwlock.ExitUpgradeableReadLock();
 
 
         public void Dispose()
