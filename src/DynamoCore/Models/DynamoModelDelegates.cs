@@ -40,6 +40,4 @@ namespace Dynamo.Models
     /// <param name="sender">Workspace</param>
     /// <param name="e"><see cref="EventArgs"/></param>
     public delegate void NodeEventHandler(object sender, EventArgs e);
-
-    internal delegate void SettingsMigrationHandler(SettingsMigrationEventArgs args);
 }
