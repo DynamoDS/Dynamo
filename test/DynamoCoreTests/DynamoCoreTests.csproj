@@ -38,10 +38,6 @@
     <Reference Include="System.Web" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="TestWarningsBackwardComp">
-      <HintPath>..\Tools\TestWarningsBackwardComp\bin\AnyCPU\$(Configuration)\TestWarningsBackwardComp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
