@@ -126,6 +126,7 @@ namespace Dynamo.Graph.Notes
             // Notify listeners that the position of the note has changed, 
             // then parent group will also redraw itself.
             ReportPosition();
+            TryToSubscribeUndoNote();
         }
 
         /// <summary>
