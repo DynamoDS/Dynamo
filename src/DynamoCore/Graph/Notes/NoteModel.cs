@@ -16,11 +16,6 @@ namespace Dynamo.Graph.Notes
         /// </summary>
         internal event Action<ModelBase> UndoRequest;
 
-        /// <summary>
-        /// Checks if the node has just been pinned
-        /// </summary>
-        internal bool CreatedPinNode { get; set; }
-
         private string text;
 
         /// <summary>
@@ -50,7 +45,6 @@ namespace Dynamo.Graph.Notes
             get { return pinnedNode; }
             set
             {
-                CreatedPinNode = true;
                 pinnedNode = value;               
                 RaisePropertyChanged(nameof(PinnedNode));
             }
@@ -115,7 +109,7 @@ namespace Dynamo.Graph.Notes
             helper.SetAttribute("text", Text);
             helper.SetAttribute("x", X);
             helper.SetAttribute("y", Y);
-            helper.SetAttribute("CreatedPinNode", CreatedPinNode);
+            helper.SetAttribute("pinnedNode", pinnedNode == null ? Guid.Empty : pinnedNode.GUID);
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -126,8 +120,8 @@ namespace Dynamo.Graph.Notes
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
 
-            if (helper.HasAttribute("CreatedPinNode"))
-                CreatedPinNode = helper.HasAttribute("CreatedPinNode");
+            if(pinnedNode != null)
+                pinnedNode.GUID = helper.ReadGuid("pinnedNode");
 
             // Notify listeners that the position of the note has changed, 
             // then parent group will also redraw itself.
@@ -139,9 +133,8 @@ namespace Dynamo.Graph.Notes
         /// </summary>
         internal void TryToSubscribeUndoNote()
         {
-            if (CreatedPinNode && UndoRequest != null)
+            if (pinnedNode!=null && pinnedNode.GUID == Guid.Empty && UndoRequest != null)
             {
-                CreatedPinNode = false;
                 UndoRequest(this);
             }
         }

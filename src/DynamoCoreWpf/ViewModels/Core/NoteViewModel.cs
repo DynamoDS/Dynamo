@@ -296,6 +296,8 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
+
             var nodeGroup = WorkspaceViewModel.Annotations
                 .FirstOrDefault(x => x.AnnotationModel.ContainsModel(nodeToPin));
 
@@ -310,7 +312,6 @@ namespace Dynamo.ViewModels
             MoveNoteAbovePinnedNode();
             SubscribeToPinnedNode();
 
-            WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
             WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
@@ -437,7 +438,6 @@ namespace Dynamo.ViewModels
             if (e.PropertyName == nameof(ZIndex))
             {
                 MoveNoteAbovePinnedNode();
-                Model.CreatedPinNode = false;
             }
         }
 
