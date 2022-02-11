@@ -4,9 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using DynamoServices;
-using DynamoUtilities;
 using NUnit.Framework;
-using ProtoCore.Runtime;
 
 namespace Dynamo.Tests
 {
