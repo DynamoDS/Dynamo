@@ -101,7 +101,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSCPython", "Libraries\DSCP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Md2Html", "Tools\Md2Html\Md2Html.csproj", "{0893F745-CB1A-427A-8E87-CA927273039A}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AssemblySharedInfoGenerator", "AssemblySharedInfoGenerator\AssemblySharedInfoGenerator.shproj", "{26923A73-D370-43CB-AA1C-F84629CA8D94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyInfoGenerator", "AssemblySharedInfoGenerator\AssemblyInfoGenerator.csproj", "{133FC760-5699-46D9-BEA6-E816B5F01016}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -403,6 +403,14 @@ Global
 		{0893F745-CB1A-427A-8E87-CA927273039A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0893F745-CB1A-427A-8E87-CA927273039A}.Release|x64.ActiveCfg = Release|Any CPU
 		{0893F745-CB1A-427A-8E87-CA927273039A}.Release|x64.Build.0 = Release|Any CPU
+		{133FC760-5699-46D9-BEA6-E816B5F01016}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{133FC760-5699-46D9-BEA6-E816B5F01016}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{133FC760-5699-46D9-BEA6-E816B5F01016}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{133FC760-5699-46D9-BEA6-E816B5F01016}.Debug|x64.Build.0 = Debug|Any CPU
+		{133FC760-5699-46D9-BEA6-E816B5F01016}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{133FC760-5699-46D9-BEA6-E816B5F01016}.Release|Any CPU.Build.0 = Release|Any CPU
+		{133FC760-5699-46D9-BEA6-E816B5F01016}.Release|x64.ActiveCfg = Release|Any CPU
+		{133FC760-5699-46D9-BEA6-E816B5F01016}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

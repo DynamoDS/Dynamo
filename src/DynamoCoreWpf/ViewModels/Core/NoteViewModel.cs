@@ -296,6 +296,8 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
+
             var nodeGroup = WorkspaceViewModel.Annotations
                 .FirstOrDefault(x => x.AnnotationModel.ContainsModel(nodeToPin));
 
@@ -305,11 +307,11 @@ namespace Dynamo.ViewModels
             }
 
             Model.PinnedNode = nodeToPin;
+            Model.UndoRequest += UnpinFromNode;
 
             MoveNoteAbovePinnedNode();
             SubscribeToPinnedNode();
 
-            WorkspaceModel.RecordModelsForModification(new List<ModelBase> { this.Model }, WorkspaceViewModel.Model.UndoRecorder);
             WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
@@ -359,6 +361,8 @@ namespace Dynamo.ViewModels
         private void UnpinFromNode(object parameters)
         {
             UnsuscribeFromPinnedNode();
+            Model.UndoRequest -= UnpinFromNode;
+
             Model.PinnedNode = null;
             WorkspaceViewModel.HasUnsavedChanges = true;
         }
