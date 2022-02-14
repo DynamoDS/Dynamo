@@ -530,6 +530,7 @@ namespace Dynamo.ViewModels
                         MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
                             MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
+                    //TODO add logging.
                     return false;// All conflicts with built-in packages must be first resolved manually before continuing to download.
                 }
 
@@ -609,7 +610,7 @@ namespace Dynamo.ViewModels
                 // Conflicts with builtin packages
                 var message = string.Format(Resources.MessagePackageDepsInBuiltinPackages, packageToDownload,
                         JoinPackageNames(builtinPackages));
-
+                //TODO add logging
                 var dialogResult = MessageBoxService.Show(message,
                     Resources.BuiltInPackageConflictMessageBoxTitle,
                     MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
