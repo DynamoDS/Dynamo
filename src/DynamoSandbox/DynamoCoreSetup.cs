@@ -18,7 +18,6 @@ namespace DynamoSandbox
 {
     class DynamoCoreSetup
     {
-        private SettingsMigrationWindow migrationWindow;
         private DynamoViewModel viewModel = null;
         private readonly string commandFilePath;
         private readonly Stopwatch startupTimer = Stopwatch.StartNew();
@@ -49,7 +48,6 @@ namespace DynamoSandbox
         {
             try
             {
-                DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
                 DynamoModel model;
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
                 model = Dynamo.Applications.StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
@@ -72,7 +70,6 @@ namespace DynamoSandbox
 
                 app.Run(view);
 
-                DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
 
             }
@@ -143,31 +140,7 @@ namespace DynamoSandbox
 
         void OnDynamoViewLoaded(object sender, RoutedEventArgs e)
         {
-            CloseMigrationWindow();
             Analytics.TrackStartupTime("DynamoSandbox", startupTimer.Elapsed);
         }
-
-        private void CloseMigrationWindow()
-        {
-            if (migrationWindow == null)
-                return;
-
-            migrationWindow.Close();
-            migrationWindow = null;
-        }
-
-        private void MigrationStatusDialogRequested(SettingsMigrationEventArgs args)
-        {
-            if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.Begin)
-            {
-                migrationWindow = new SettingsMigrationWindow();
-                migrationWindow.Show();
-            }
-            else if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.End)
-            {
-                CloseMigrationWindow();
-            }
-        }
-
     }
 }

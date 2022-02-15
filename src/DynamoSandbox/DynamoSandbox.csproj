@@ -63,16 +63,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\logo_square_32x32.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="logo_square_32x32.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="SettingsMigrationWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
