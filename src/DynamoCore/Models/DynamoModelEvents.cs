@@ -65,6 +65,13 @@ namespace Dynamo.Models
                 action();
         }
 
+        internal static event SettingsMigrationHandler RequestMigrationStatusDialog;
+        internal static void OnRequestMigrationStatusDialog(SettingsMigrationEventArgs args)
+        {
+            if (RequestMigrationStatusDialog != null)
+                RequestMigrationStatusDialog(args);
+        }
+
         /// <summary>
         /// Occurs when changes in data may affect UI and UI needs to be refreshed
         /// </summary>
