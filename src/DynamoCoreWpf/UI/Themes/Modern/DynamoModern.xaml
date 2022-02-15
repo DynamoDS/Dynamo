@@ -3727,6 +3727,14 @@
         </Style.Triggers>
     </Style>
 
+    <SolidColorBrush x:Key="Button.Outline.MouseOver.Border"
+                     Opacity="0.15"
+                     Color="#FFFFFF" />
+    <SolidColorBrush x:Key="Button.Outline.Pressed.Border"
+                     Opacity="0.35"
+                     Color="#38ABDF" />
+    <SolidColorBrush x:Key="Button.Outline.Default.Border"
+                     Color="Transparent" />
     <!--  This Style will be used for the Buttons that have a border and transparent background like Save and Cancel in the Preferences->Visual Settings tab  -->
     <Style x:Key="OutlinedButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}" />
@@ -3734,33 +3742,26 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="ButtonBorder"
+                            BorderThickness="2"
                             Background="Transparent"
-                            BorderBrush="#E0E0E0"
-                            BorderThickness="0.5"
-                            CornerRadius="4">
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <ContentPresenter />
-                        </TextBlock>
+                            BorderBrush="{StaticResource Button.Outline.Default.Border}"
+                            CornerRadius="2">
+                        <Grid Background="Transparent">
+                            <Rectangle Stroke="#FFFFFF" RadiusX="2" RadiusY="2" Opacity="0.5" StrokeThickness="1"></Rectangle>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ContentPresenter />
+                            </TextBlock>
+                        </Grid>
                     </Border>
                     <!--  According to the Hig Autodesk standards for Outlined buttons some colors/properties will be changed according to the event generated  -->
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Button.Effect">
-                                <Setter.Value>
-                                    <DropShadowEffect BlurRadius="5"
-                                                      Direction="320"
-                                                      Opacity="0.5"
-                                                      ShadowDepth="3"
-                                                      Color="Black" />
-                                </Setter.Value>
-                            </Setter>
-                            <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="1" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource Button.Outline.MouseOver.Border}" />
                             <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2" />
                         </Trigger>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#A2D4EB" />
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource Button.Outline.Pressed.Border}" />
+                            <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

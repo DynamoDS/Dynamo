@@ -613,8 +613,8 @@ namespace Dynamo.ViewModels
                     var element = sender as IInputElement;
                     mouseDownPos = e.GetPosition(element);
 
-                    // We'll see if there is any node being clicked on. If so, 
-                    // then the state machine should initiate a drag operation.
+                    // Check if there is any Dynamo Element (e.g. node, note, group) being clicked on. If so, 
+                    // then the state machine should initiate a drag operation if user keeps dragging the mouse .
                     if (null != GetSelectableFromPoint(mouseDownPos))
                     {
                         InitiateDragSequence();
@@ -1052,6 +1052,22 @@ namespace Dynamo.ViewModels
                 // The state machine must be in idle state.
                 if (this.currentState != State.None)
                     throw new InvalidOperationException();
+
+                // Before setting the drag state,
+                // shift + left click triggers removal of group node or note belongs to
+                if (Keyboard.IsKeyDown(Key.LeftShift) && !DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any())
+                {
+                    foreach (var model in DynamoSelection.Instance.Selection.OfType<ModelBase>())
+                    {
+                        var parentGroup = owningWorkspace.Annotations
+                            .Where(x => x.AnnotationModel.ContainsModel(model))
+                            .FirstOrDefault();
+                        if (parentGroup != null)
+                        {
+                            owningWorkspace.DynamoViewModel.UngroupModelCommand.Execute(null);
+                        }
+                    }
+                }
 
                 SetCurrentState(State.DragSetup);
             }
