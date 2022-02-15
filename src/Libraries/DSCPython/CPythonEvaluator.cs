@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using DSCPython.Encoders;
@@ -70,12 +72,11 @@ namespace DSCPython
 
         public override string ToString()
         {
-            IntPtr gs = PythonEngine.AcquireLock();
             try
             {
                 using (Py.GIL())
                 {
-                    var scope = PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName);
+                    var scope = CPythonEvaluator.GlobalScope;
                     var pyobj = scope.Get(PythonObjectID.ToString());
                     return pyobj.ToString();
                 }
@@ -84,10 +85,6 @@ namespace DSCPython
             {
                 CPythonEvaluator.DynamoLogger?.Log($"error getting string rep of pyobj {this.PythonObjectID} {e.Message}");
                 return this.PythonObjectID.ToString();
-            }
-            finally
-            {
-                PythonEngine.ReleaseLock(gs);
             }
         }
 
@@ -111,22 +108,17 @@ namespace DSCPython
                 return;
             }
 
-            IntPtr gs = PythonEngine.AcquireLock();
             try
             {
                 using (Py.GIL())
                 {
-                    PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName).Remove(PythonObjectID.ToString());
+                    CPythonEvaluator.GlobalScope.Remove(PythonObjectID.ToString());
                     HandleCountMap.Remove(this);
                 }
             }
             catch (Exception e)
             {
                 CPythonEvaluator.DynamoLogger?.Log($"error removing python object from global scope {e.Message}");
-            }
-            finally
-            {
-                PythonEngine.ReleaseLock(gs);
             }
         }
     }
@@ -137,7 +129,7 @@ namespace DSCPython
 
     [SupressImportIntoVM]
     [Obsolete("Deprecated. Please use evaluation handlers from Dynamo.PythonServices instead.")]
-    public delegate void EvaluationEventHandler(EvaluationState state, PyScope scope, string code, IList bindingValues);
+    public delegate void EvaluationEventHandler(EvaluationState state, PyModule scope, string code, IList bindingValues);
 
     /// <summary>
     ///     Evaluates a Python script in the Dynamo context.
@@ -150,7 +142,7 @@ namespace DSCPython
         private const string NodeName = "__dynamonodename__";
         internal static readonly string globalScopeName = "global";
 
-        private static PyScope globalScope;
+        private static PyModule globalScope;
         private static DynamoLogger dynamoLogger;
         internal static DynamoLogger DynamoLogger {
             get
@@ -195,7 +187,7 @@ namespace DSCPython
                 {
                 //the following is inspired by:
                 //https://github.com/ipython/ipython/blob/master/IPython/extensions/autoreload.py
-                    var global = PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName);
+                    var global = GlobalScope;
                     global?.Exec(@"import sys
 import importlib
 import importlib.util
@@ -270,56 +262,52 @@ for modname,mod in sys.modules.copy().items():
                 PythonEngine.BeginAllowThreads();
                 
             }
-                using (Py.GIL())
+
+            using (Py.GIL())
+            {
+                using (PyModule scope = Py.CreateScope())
                 {
-                    if (globalScope == null)
+                    // Reset the 'sys.path' value to the default python paths on node evaluation. 
+                    var pythonNodeSetupCode = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]";
+                    scope.Exec(pythonNodeSetupCode);
+
+                    ProcessAdditionalBindings(scope, bindingNames, bindingValues);
+
+                    int amt = Math.Min(bindingNames.Count, bindingValues.Count);
+
+                    for (int i = 0; i < amt; i++)
                     {
-                        globalScope = CreateGlobalScope();
+                        scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
                     }
 
-                    using (PyScope scope = Py.CreateScope())
+                    try
                     {
-                        // Reset the 'sys.path' value to the default python paths on node evaluation. 
-                        var pythonNodeSetupCode = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]";
-                        scope.Exec(pythonNodeSetupCode);
+                        OnEvaluationBegin(scope, code, bindingValues);
+                        scope.Exec(code);
+                        var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
 
-                        ProcessAdditionalBindings(scope, bindingNames, bindingValues);
-
-                        int amt = Math.Min(bindingNames.Count, bindingValues.Count);
-
-                        for (int i = 0; i < amt; i++)
+                        return OutputMarshaler.Marshal(result);
+                    }
+                    catch (Exception e)
+                    {
+                        evaluationSuccess = false;
+                        var traceBack = GetTraceBack(e);
+                        if (!string.IsNullOrEmpty(traceBack))
                         {
-                            scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
+                            // Throw a new error including trace back info added to the message
+                            throw new InvalidOperationException($"{e.Message} {traceBack}", e);
                         }
-
-                        try
+                        else
                         {
-                            OnEvaluationBegin(scope, code, bindingValues);
-                            scope.Exec(code);
-                            var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
-
-                            return OutputMarshaler.Marshal(result);
+                            throw e;
                         }
-                        catch (Exception e)
-                        {
-                            evaluationSuccess = false;
-                            var traceBack = GetTraceBack(e);
-                            if (!string.IsNullOrEmpty(traceBack))
-                            {
-                                // Throw a new error including trace back info added to the message
-                                throw new InvalidOperationException($"{e.Message} {traceBack}", e);
-                            }
-                            else
-                            {
-                                throw e;
-                            }
-                        }
-                        finally
-                        {
-                            OnEvaluationEnd(evaluationSuccess, scope, code, bindingValues);
-                        }
+                    }
+                    finally
+                    {
+                        OnEvaluationEnd(evaluationSuccess, scope, code, bindingValues);
                     }
                 }
+            }
         }
 
         public static object EvaluatePythonScript(
@@ -336,28 +324,47 @@ for modname,mod in sys.modules.copy().items():
         /// NOTE: Calling SetupPython multiple times will add the install location to the path many times,
         /// potentially causing the environment variable to overflow.
         /// </summary>
+        ///
+        
         private static void InstallPython()
         {
             if (!isPythonInstalled)
             {
-                Python.Included.Installer.SetupPythonSync();
+                // TODO - Move to installer code
+                Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", "python38.dll");
+                Environment.SetEnvironmentVariable("PATH", $"{EmbeddedPythonHome};" + Environment.GetEnvironmentVariable("PATH"));
+                //Python.Included.Installer.SetupPythonSync();
                 isPythonInstalled = true;
             }
         }
 
-        /// <summary>
-        /// Creates and initializes the global Python scope.
-        /// </summary>
-        private static PyScope CreateGlobalScope()
+        private const string EMBEDDED_PYTHON = "python-3.8.10-embed-amd64";
+        private static string INSTALL_PATH { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        private static string EmbeddedPythonHome
         {
-            var scope = Py.CreateScope(globalScopeName);
-            // Allows discoverability of modules by inspecting their attributes
-            scope.Exec(@"
+            get
+            {
+                var install_dir = Path.Combine(INSTALL_PATH, EMBEDDED_PYTHON);
+                return install_dir;
+            }
+        }
+
+        internal static PyModule GlobalScope
+        {
+            get
+            {
+                if (globalScope == null)
+                {
+                    globalScope = Py.CreateScope(globalScopeName);
+                    // Allows discoverability of modules by inspecting their attributes
+                    globalScope.Exec(@"
 import clr
 clr.setPreload(True)
 ");
+                }
 
-            return scope;
+                return globalScope;
+            }
         }
 
         /// <summary>
@@ -367,7 +374,7 @@ clr.setPreload(True)
         /// <param name="scope">Python scope where execution will occur</param>
         /// <param name="bindingNames">List of binding names received for evaluation</param>
         /// <param name="bindingValues">List of binding values received for evaluation</param>
-        private static void ProcessAdditionalBindings(PyScope scope, IList bindingNames, IList bindingValues)
+        private static void ProcessAdditionalBindings(PyModule scope, IList bindingNames, IList bindingValues)
         {
             const string NodeNameInput = "Name";
             string nodeName;
@@ -435,19 +442,9 @@ sys.stdout = DynamoStdOut({0})
         /// <returns>Trace back message</returns>
         private static string GetTraceBack(Exception e)
         {
-            var pythonExc = e as PythonException;
-            if (!(e is PythonException))
-            {
-                return null;
-            }
+            var pe = e as PythonException;
 
-            // Return the value of the trace back field (private)
-            var field = typeof(PythonException).GetField("_tb", BindingFlags.NonPublic | BindingFlags.Instance);
-            if (field == null)
-            {
-                throw new NotSupportedException(Properties.Resources.InternalErrorTraceBackInfo);
-            }
-            return field.GetValue(pythonExc).ToString();
+            return pe?.Format();
         }
 
         #region Marshalling
@@ -487,7 +484,7 @@ sys.stdout = DynamoStdOut({0})
                     inputMarshaler.RegisterMarshaler(
                        delegate (DynamoCPythonHandle handle)
                        {
-                           var scope = PyScopeManager.Global.Get(globalScopeName);
+                           var scope = GlobalScope;
                            return scope.Get(handle.PythonObjectID.ToString());
                        });
                 }
@@ -500,6 +497,7 @@ sys.stdout = DynamoStdOut({0})
         /// </summary>
         [SupressImportIntoVM]
         public static DataMarshaler InputMarshaler => Instance.InputDataMarshaler as DataMarshaler;
+
 
         /// <summary>
         ///     Data Marshaler for all data coming out of a Python node.
@@ -546,7 +544,7 @@ sys.stdout = DynamoStdOut({0})
                                 }
                             }
                             // Other iterables should become lists, except for strings
-                            if (PyIter.IsIterable(pyObj) && !PyString.IsStringType(pyObj))
+                            if (pyObj.IsIterable() && !PyString.IsStringType(pyObj))
                             {
                                 using (var pyList = PyList.AsList(pyObj))
                                 {
@@ -559,15 +557,15 @@ sys.stdout = DynamoStdOut({0})
                                 }
                             }
                             // Special case for big long values: decode them as BigInteger
-                            if (PyLong.IsLongType(pyObj))
+                            if (PyInt.IsIntType(pyObj))
                             {
-                                using (var pyLong = PyLong.AsLong(pyObj))
+                                using (var pyLong = PyInt.AsInt(pyObj))
                                 {
                                     try
                                     {
                                         return pyLong.ToInt64();
                                     }
-                                    catch (PythonException exc) when (exc.Message.StartsWith("OverflowError"))
+                                    catch (PythonException exc) when (exc.Message.StartsWith("int too big to convert"))
                                     {
                                         return pyLong.ToBigInteger();
                                     }
@@ -605,7 +603,7 @@ sys.stdout = DynamoStdOut({0})
 
         private static DynamoCPythonHandle GetDynamoCPythonHandle(PyObject pyObj)
         {
-            var globalScope = PyScopeManager.Global.Get(globalScopeName);
+            var globalScope = GlobalScope;
             globalScope.Set(pyObj.Handle.ToString(), pyObj);
             return new DynamoCPythonHandle(pyObj.Handle);
         }
@@ -655,7 +653,7 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private void OnEvaluationBegin(PyScope scope,
+        private void OnEvaluationBegin(PyModule scope,
                                               string code,
                                               IList bindingValues)
         {
@@ -680,7 +678,7 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="code">The code to that was evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
         private void OnEvaluationEnd(bool isSuccessful,
-                                            PyScope scope,
+                                            PyModule scope,
                                             string code,
                                             IList bindingValues)
         {

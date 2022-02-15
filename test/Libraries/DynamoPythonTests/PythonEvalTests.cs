@@ -128,7 +128,7 @@ namespace DSPythonTests
             catch (Exception exc)
             {
                 // Trace back is expected here. Line is 3 due to the line break from the code variable declaration
-                Assert.AreEqual(@"ZeroDivisionError : division by zero ['  File ""<string>"", line 3, in <module>\n']", exc.Message);
+                Assert.AreEqual("division by zero Traceback (most recent call last):\n  File \"<string>\", line 3, in <module>\nZeroDivisionError: division by zero\n", exc.Message);
             }
 
             code = @"
@@ -144,7 +144,7 @@ print 'hello'
             catch (Exception exc)
             {
                 // Trace back is not available for this call, but we still get a reasonable message back
-                Assert.AreEqual(@"SyntaxError : ('invalid syntax', ('<string>', 3, 7, ""print 'hello'\n""))", exc.Message);
+                Assert.AreEqual("Missing parentheses in call to 'print'. Did you mean print('hello')? (<string>, line 3)    at Python.Runtime.PythonException.ThrowLastAsClrException() in D:\\Git\\pythonnet-github\\src\\runtime\\pythonexception.cs:line 53\r\n   at Python.Runtime.PythonException.ThrowIfIsNull(NewReference& ob) in D:\\Git\\pythonnet-github\\src\\runtime\\pythonexception.cs:line 458\r\n   at Python.Runtime.PyModule.Exec(String code, BorrowedReference _globals, BorrowedReference _locals) in D:\\Git\\pythonnet-github\\src\\runtime\\module.cs:line 303\r\n   at Python.Runtime.PyModule.Exec(String code, PyDict locals) in D:\\Git\\pythonnet-github\\src\\runtime\\module.cs:line 295\r\n   at DSCPython.CPythonEvaluator.Evaluate(String code, IList bindingNames, IList bindingValues) in D:\\Git\\Dynamo\\src\\Libraries\\DSCPython\\CPythonEvaluator.cs:line 286", exc.Message);
             }
         }
 

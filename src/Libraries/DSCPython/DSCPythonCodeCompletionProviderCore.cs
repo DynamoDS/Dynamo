@@ -22,7 +22,7 @@ namespace DSCPython
         /// track of the state of the editor, allowing access to variable types and
         /// imported symbols.
         /// </summary>
-        private PyScope scope;
+        private PyModule scope;
 
         private string uniquePythonScopeName = "uniqueScope";
         private static string globalScopeName = "cPythonCompletionGlobal";
@@ -34,40 +34,40 @@ namespace DSCPython
         /// The scope used by the engine.  This is where all the loaded symbols
         /// are stored.  It's essentially an environment dictionary.
         /// </summary>
-        internal PyScope Scope
+        internal PyModule Scope
         {
-            get { return scope; }
-            set { scope = (PyScope)value; }
-        }
-
-        private static PyScope GlobalScope;
-
-        private PyScope CreateUniquePythonScope()
-        {
-            PyScopeManager.Global.TryGet(uniquePythonScopeName, out PyScope Scope);
-
-            if (Scope == null)
+            get
             {
-                Scope = Py.CreateScope(uniquePythonScopeName);
-                Scope.Exec(@"
+                if (scope == null)
+                {
+                    scope = Py.CreateScope(uniquePythonScopeName);
+                    scope.Exec(@"
 import clr
 import sys
 ");
-            }
+                }
 
-            return Scope;
+                return scope;
+            }
         }
 
-        private static PyScope CreateGlobalScope()
+        private static PyModule globalScope;
+
+        private static PyModule GlobalScope
         {
-            var scope = Py.CreateScope(globalScopeName);
-            // Allows discoverability of modules by inspecting their attributes
-            scope.Exec(@"
+            get
+            {
+                if (globalScope == null)
+                {
+                    globalScope = Py.CreateScope(globalScopeName);
+                    // Allows discoverability of modules by inspecting their attributes
+                    globalScope.Exec(@"
 import clr
 clr.setPreload(True)
 ");
-
-            return scope;
+                }
+                return globalScope;
+            }
         }
 
         private object ExecutePythonScriptCode(string code)
@@ -386,16 +386,6 @@ clr.setPreload(True)
             {
                 using (Py.GIL())
                 {
-                    if (GlobalScope == null)
-                    {
-                        GlobalScope = CreateGlobalScope();
-                    }
-
-                    if (Scope == null)
-                    {
-                        Scope = CreateUniquePythonScope();
-                    }
-
                     var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
                     // Determine if the Revit API is available in the given context
