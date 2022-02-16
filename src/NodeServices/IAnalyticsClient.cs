@@ -357,6 +357,10 @@ namespace Dynamo.Logging
         /// Hide event, e.g when a connection is hidden by user choice
         /// </summary>
         Hide,
+        /// <summary>
+        /// When a package conflict is encountered which involves at least one built-in package.
+        /// </summary>
+        BuiltInPackageConflict, 
     }
 
     /// <summary>

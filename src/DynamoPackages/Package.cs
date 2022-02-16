@@ -83,7 +83,7 @@ namespace Dynamo.PackageManager
 
         internal void SetAsLoaded() { state = StateTypes.Loaded; errorMessage = ""; }
         internal void SetAsError(string msg = "") { state = StateTypes.Error; errorMessage = msg; }
-        internal void SetAsUnloaded() { state = StateTypes.Unloaded; /*TODO logging?*/ errorMessage = ""; }
+        internal void SetAsUnloaded() { state = StateTypes.Unloaded; errorMessage = ""; }
         internal void ResetState() { state = StateTypes.None; }
 
         internal void SetScheduledForDeletion() { scheduledState = ScheduledTypes.ScheduledForDeletion; }
@@ -528,7 +528,7 @@ namespace Dynamo.PackageManager
         {
             if (BuiltInPackage) 
             {
-                //TODO add logging, someone marked built in package for unload.
+                Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name } {versionName} marked to be unloaded");
                 LoadState.SetScheduledForUnload();
             } 
             else
@@ -600,6 +600,8 @@ namespace Dynamo.PackageManager
                 if (BuiltInPackage)
                 {
                     LoadState.SetAsUnloaded();
+                    Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name } {versionName} set unloaded");
+
                     RaisePropertyChanged(nameof(LoadState));
 
                     if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
