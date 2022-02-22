@@ -22,6 +22,7 @@ using Dynamo.Properties;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using ProtoCore;
@@ -1343,6 +1344,33 @@ namespace Dynamo.Graph.Workspaces
             writer.WritePropertyName("Description");
             writer.WriteValue(((TypedParameter)value).Summary);
             writer.WriteEndObject();
+        }
+    }
+
+    internal class SafeStringEnumConverter: StringEnumConverter
+    {
+        public SafeStringEnumConverter(object defaultVal)
+        {
+            DefaultVal = defaultVal;
+        }
+        public SafeStringEnumConverter()
+        {
+            DefaultVal = null;
+        }
+
+        public object DefaultVal { get; }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            try
+            {
+                return base.ReadJson(reader, objectType, existingValue, serializer);
+            }
+            catch(Exception ex)
+            {
+                Console.Write(ex.Message);
+                return DefaultVal != null ? DefaultVal : existingValue;
+            }
         }
     }
 

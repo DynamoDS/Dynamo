@@ -74,7 +74,9 @@ namespace CoreNodeModels
                 {
                     Id = this.GUID,
                     Name = this.Name,
-                    Type = NodeInputTypes.dropdownSelection,
+                    //because selection makes more sense than defaulting to number...
+                    Type = NodeInputTypes.selectionInput,
+                    Type2 = NodeInputTypes2.dropdownSelection,
                     Description = this.Description,
                     Value = this.SelectedString,
                     SelectedIndex = this.SelectedIndex

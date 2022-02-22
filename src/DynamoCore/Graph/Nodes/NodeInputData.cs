@@ -8,8 +8,38 @@ using Newtonsoft.Json.Converters;
 
 namespace Dynamo.Graph.Nodes
 {
-    [JsonConverter(typeof(StringEnumConverter))]
+    /// <summary>
+    /// Possible graph input types. If this member fails to deserialize, it will default to number type (0)
+    /// </summary>
+    [Obsolete("please use NodeInputTypes2 instead, will be removed in 3.x. Will not be updated with new types.")]
+    [JsonConverter(typeof(SafeStringEnumConverter))]
     public enum NodeInputTypes
+    {
+        [EnumMember(Value = "number")]
+        numberInput,
+        [EnumMember(Value = "boolean")]
+        booleanInput,
+        [EnumMember(Value = "string")]
+        stringInput,
+        [EnumMember(Value = "color")]
+        colorInput,
+        [EnumMember(Value = "date")]
+        dateInput,
+        [Obsolete("Do not use, use Type2/NodeInputType2")]
+        [EnumMember(Value = "selection")]
+        selectionInput,
+        [Obsolete("Do not use, use Type2/NodeInputType2")]
+        [EnumMember(Value = "hostSelection")]
+        hostSelection,
+        [Obsolete("Do not use, use Type2/NodeInputType2")]
+        [EnumMember(Value = "dropdownSelection")]
+        dropdownSelection,
+    };
+    /// <summary>
+    /// Possible graph input types. If this member fails to deserialize, it will default to unkown (1000)
+    /// </summary>
+    [JsonConverter(typeof(SafeStringEnumConverter),unknown)]
+    public enum NodeInputTypes2
     {
         [EnumMember(Value = "number")]
         numberInput,
@@ -27,7 +57,10 @@ namespace Dynamo.Graph.Nodes
         [EnumMember(Value = "hostSelection")]
         hostSelection,
         [EnumMember(Value = "dropdownSelection")]
-        dropdownSelection
+        dropdownSelection,
+        //TODO could also just set this to 0 since this is a new enum, and get rid of default deserialization functionality.
+        [EnumMember(Value = "unknown")]
+        unknown = 1000
     };
 
 
@@ -46,10 +79,15 @@ namespace Dynamo.Graph.Nodes
         /// Display name of the input node.
         /// </summary>
         public string Name { get; set; }
+        [Obsolete]
         /// <summary>
         /// The type of input this node is.
         /// </summary>
         public NodeInputTypes Type { get; set; }
+        /// <summary>
+        /// The type of input this node is.
+        /// </summary>
+        public NodeInputTypes2 Type2 { get; set; }
         /// <summary>
         /// The value of the input when the graph was saved.
         /// This should always be a string for all types.
@@ -104,10 +142,34 @@ namespace Dynamo.Graph.Nodes
             { typeof(Int64),NodeInputTypes.numberInput},
             {typeof(float),NodeInputTypes.numberInput},
         };
+        private static Dictionary<Type, NodeInputTypes2> dotNetTypeToNodeInputType2 = new Dictionary<Type, NodeInputTypes2>
+        {
+            {typeof(String),NodeInputTypes2.stringInput},
+            { typeof(Boolean),NodeInputTypes2.booleanInput},
+            { typeof(DateTime),NodeInputTypes2.dateInput},
+            { typeof(double),NodeInputTypes2.numberInput},
+            { typeof(Int32),NodeInputTypes2.numberInput},
+            { typeof(Int64),NodeInputTypes2.numberInput},
+            {typeof(float),NodeInputTypes2.numberInput},
+        };
+
+        [Obsolete]
         public static NodeInputTypes getNodeInputTypeFromType(Type type)
         {
             NodeInputTypes output;
             if (dotNetTypeToNodeInputType.TryGetValue(type, out output))
+            {
+                return output;
+            }
+            else
+            {
+                throw new ArgumentException("could not find an inputType for this type");
+            }
+        }
+        internal static NodeInputTypes2 GetNodeInputType2FromType(Type type)
+        {
+            NodeInputTypes2 output;
+            if (dotNetTypeToNodeInputType2.TryGetValue(type, out output))
             {
                 return output;
             }
@@ -143,6 +205,7 @@ namespace Dynamo.Graph.Nodes
                 this.NumberType == converted.NumberType &&
                 this.StepValue == converted.StepValue &&
                 this.Type == converted.Type &&
+                 this.Type2 == converted.Type2 &&
                 //check if the value is the same or if the value is a number check is it similar
                 ((this.Value == converted.Value) || valNumberComparison || this.Value.ToString() == converted.Value.ToString());
         }

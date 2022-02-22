@@ -51,6 +51,7 @@ namespace CoreNodeModels.Input
                     Id = this.GUID,
                     Name = this.Name,
                     Type = NodeInputData.getNodeInputTypeFromType(typeof(System.Boolean)),
+                    Type2 = NodeInputData.GetNodeInputType2FromType(typeof(System.Boolean)),
                     Description = this.Description,
                     Value = Value.ToString().ToLower(),
                 };

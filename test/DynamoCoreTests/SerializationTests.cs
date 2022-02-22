@@ -772,6 +772,20 @@ namespace Dynamo.Tests
             Assert.AreEqual(node.IsSetAsInput, true);
         }
 
+
+        [Test]
+        public void NodeWithInputTypeFromTheFutureShouldNotBreakFileDeserialization()
+        {
+            //When an input node has a type from the future
+            //isSetAsInput should still be set, and the rest of graph should still deserialize correctly.
+
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\input_type_from_future.dyn");
+            OpenModel(testFile);
+            Assert.AreEqual(9,CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            var selectionNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.ToList().Where(x=>x.GUID == Guid.Parse("da7f5c18d72d4f649602197e0aa0d0fa")).FirstOrDefault();
+            Assert.AreEqual(selectionNode.IsSetAsInput, true);
+        }
+
         [Test]
         public void NodeIsSetAsOutputStateDeserilizationTest()
         {
