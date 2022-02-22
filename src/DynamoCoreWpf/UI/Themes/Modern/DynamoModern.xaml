@@ -4156,9 +4156,9 @@
     </Style>
     <!--  Style for the Core Node Element Button Selection  -->
     <Style x:Key="SelectionButtonStyle" TargetType="Button">
-                <Setter Property="HorizontalAlignment" Value="Right" />
                 <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="Margin" Value="15,0,0,0" />
+                <Setter Property="Height" Value="32" />
+                <Setter Property="Padding" Value="0,0,0,0" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
@@ -4183,7 +4183,6 @@
                                 </Border >
                                 <Border x:Name="border"
                                     Margin="4"
-                                    Height="36px"
                                     Padding="8,0,8,0"
                                     BorderThickness="1"                                                                                                                             
                                     Background="{TemplateBinding Background}"
@@ -4194,10 +4193,9 @@
 
                                     <TextBlock x:Name="textBlock"
                                        HorizontalAlignment="Center"
-                                       Margin="0,1,0,0"
+                                        Padding="0,0,0,0"
                                        VerticalAlignment="Center"
                                        FontFamily="{StaticResource ArtifaktElementRegular}"
-                                       FontSize="14px"
                                        Foreground="white"
                                        Text="{TemplateBinding Content}"                                       
                                        Opacity="1"/>

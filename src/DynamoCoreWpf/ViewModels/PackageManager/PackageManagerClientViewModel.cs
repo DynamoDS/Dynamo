@@ -12,6 +12,7 @@ using System.Windows.Input;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
@@ -530,6 +531,7 @@ namespace Dynamo.ViewModels
                         MessageBoxService.Show(message, Resources.CannotDownloadPackageMessageBoxTitle,
                             MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
+                    Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, packageToDownload);
                     return false;// All conflicts with built-in packages must be first resolved manually before continuing to download.
                 }
 
@@ -609,7 +611,7 @@ namespace Dynamo.ViewModels
                 // Conflicts with builtin packages
                 var message = string.Format(Resources.MessagePackageDepsInBuiltinPackages, packageToDownload,
                         JoinPackageNames(builtinPackages));
-
+                Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, packageToDownload);
                 var dialogResult = MessageBoxService.Show(message,
                     Resources.BuiltInPackageConflictMessageBoxTitle,
                     MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
