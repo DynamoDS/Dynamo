@@ -10,6 +10,7 @@
         Title="{x:Static p:Resources.ExtensionName}"
         Height="450"
         Width="450"
+        MinHeight="300"
         MinWidth="400"
         MaxWidth="450"
         x:Name="notificationsWindow"
