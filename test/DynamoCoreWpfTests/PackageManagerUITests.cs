@@ -255,7 +255,7 @@ namespace DynamoCoreWpfTests
                 // Users should get 2 warnings :
                 // 1. To confirm that they want to download the specified package.
                 // 2. That a package with a different version already exists as part of the BuiltinPackages.
-                dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
+                dlgMock.Verify(x => x.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(2));
                 dlgMock.ResetCalls();
             }
@@ -289,7 +289,7 @@ namespace DynamoCoreWpfTests
 
                 // Users should get 1 warning :
                 // 1. To confirm that they want to download the specified package.
-                dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
+                dlgMock.Verify(x => x.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
                 dlgMock.ResetCalls();
             }
@@ -1300,8 +1300,7 @@ namespace DynamoCoreWpfTests
                 // Users should get 1 warnings :
                 // 1. To confirm that they want to download the specified package.
                 // 2. That a package with the same name and version already exists.
-                dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
-                dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<string[]>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
+                dlgMock.Verify(x => x.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(1));
                 dlgMock.ResetCalls();
             }
         }
