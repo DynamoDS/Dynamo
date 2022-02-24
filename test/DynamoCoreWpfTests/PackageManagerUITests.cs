@@ -1033,7 +1033,7 @@ namespace DynamoCoreWpfTests
                 // Users should get 2 warnings :
                 // 1. To confirm that they want to download the specified package.
                 // 2. That a package with the same name and version already exists as part of the BuiltinPackages.
-                dlgMock.Verify(x => x.Show(string.Format(Dynamo.Wpf.Properties.Resources.MessageFailedToDownloadPackageVersion, version, id),
+                dlgMock.Verify(x => x.Show(It.IsAny<Window>(), string.Format(Dynamo.Wpf.Properties.Resources.MessageFailedToDownloadPackageVersion, version, id),
                             Dynamo.Wpf.Properties.Resources.PackageDownloadErrorMessageBoxTitle,
                             MessageBoxButton.OK, MessageBoxImage.Error), Times.Exactly(1));
             }
