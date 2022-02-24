@@ -774,6 +774,7 @@ namespace Dynamo.ViewModels
             DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
 
+
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -1217,14 +1218,21 @@ namespace Dynamo.ViewModels
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
-                    ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
+                    var messageNode = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+                    if(ErrorBubble.NodeMessages.Count(x=> x.TextMessageExists(content)) == 0)
+                    {
+                        ErrorBubble.NodeMessages.Add(messageNode);
+                    }
                     WarningBarColor = GetWarningColor();
                 });
             }
             else
             {
-                ErrorBubble.NodeMessages.Add(new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection));
-                WarningBarColor = GetWarningColor();
+                var messageNode = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+                if (ErrorBubble.NodeMessages.Count(x => x.TextMessageExists(content)) == 0)
+                {
+                    ErrorBubble.NodeMessages.Add(messageNode);
+                }
             }
             
             ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);

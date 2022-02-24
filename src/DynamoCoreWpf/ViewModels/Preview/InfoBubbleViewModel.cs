@@ -1021,6 +1021,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string LinkText { get; set; }
 
+        internal Guid NodeGUID { get; set; }
+
+        private string TextWithLink;
+
         public InfoBubbleDataPacket(
             InfoBubbleViewModel.Style style,
             Point topLeft,
@@ -1037,12 +1041,19 @@ namespace Dynamo.ViewModels
             MessageNumber = "";
             Message = Text;
             LinkText = "";
+            NodeGUID = new Guid();
+            TextWithLink = text;
         }
 
+        internal bool TextMessageExists(string message)
+        {
+            return TextWithLink.Equals(message);
+        }
 
         //Check if has link
         private static string RemoveLinkFromText(string text)
         {
+            
             // if there is no link, we do nothing
             if (!text.Contains(externalLinkIdentifier)) return text;
 
