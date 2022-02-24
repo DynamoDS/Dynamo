@@ -677,7 +677,7 @@ namespace Dynamo.ViewModels
                 String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
                 String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, installPath);
 
-            var result = MessageBoxService.Show(Owner,msg,
+            var result = MessageBoxService.Show(Owner, msg,
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
@@ -794,7 +794,7 @@ namespace Dynamo.ViewModels
                 // if any do, notify user and allow cancellation
                 if (containsBinariesOrPythonScripts)
                 {
-                    var res = MessageBoxService.Show(Owner,Resources.MessagePackageContainPythonScript,
+                    var res = MessageBoxService.Show(Owner, Resources.MessagePackageContainPythonScript,
                         Resources.PackageDownloadMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
