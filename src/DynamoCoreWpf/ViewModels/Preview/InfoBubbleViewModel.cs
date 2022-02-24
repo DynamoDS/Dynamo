@@ -1021,8 +1021,6 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string LinkText { get; set; }
 
-        internal Guid NodeGUID { get; set; }
-
         private string TextWithLink;
 
         public InfoBubbleDataPacket(
@@ -1041,7 +1039,6 @@ namespace Dynamo.ViewModels
             MessageNumber = "";
             Message = Text;
             LinkText = "";
-            NodeGUID = new Guid();
             TextWithLink = text;
         }
 
