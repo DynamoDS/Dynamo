@@ -8,6 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.PythonMigration</RootNamespace>
     <AssemblyName>PythonMigrationViewExtension</AssemblyName>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DiffPlex" Version="1.6.3" CopyMetaData="true"/>

@@ -9,9 +9,9 @@ namespace DynamoUnits
     /// </summary>
     public class Unit
     {
-        internal readonly ForgeUnitsCLR.Unit forgeUnit;
+        internal readonly Autodesk.ForgeUnits.Unit forgeUnit;
 
-        internal Unit(ForgeUnitsCLR.Unit unit)
+        internal Unit(Autodesk.ForgeUnits.Unit unit)
         {
             this.forgeUnit = unit ?? throw new ArgumentNullException();
         }
@@ -36,7 +36,7 @@ namespace DynamoUnits
         {
             get
             {
-                Dictionary<string, ForgeUnitsCLR.Unit> units = Utilities.ForgeUnitsEngine.getConvertibleUnits(TypeId);
+                Dictionary<string, Autodesk.ForgeUnits.Unit> units = Utilities.ForgeUnitsEngine.getConvertibleUnits(TypeId);
                 return Utilities.ConvertForgeUnitDictionaryToCollection(units);
             }
         }

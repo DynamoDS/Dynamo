@@ -9,9 +9,9 @@ namespace DynamoUnits
     /// </summary>
     public class Quantity
     {
-        internal readonly ForgeUnitsCLR.Quantity forgeQuantity;
+        internal readonly Autodesk.ForgeUnits.Quantity forgeQuantity;
 
-        internal Quantity(ForgeUnitsCLR.Quantity quantity)
+        internal Quantity(Autodesk.ForgeUnits.Quantity quantity)
         {
             this.forgeQuantity = quantity ?? throw new ArgumentNullException();
         }

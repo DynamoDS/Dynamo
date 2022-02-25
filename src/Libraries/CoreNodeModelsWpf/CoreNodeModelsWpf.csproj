@@ -10,6 +10,7 @@
     <AssemblyName>CoreNodeModelsWpf</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
     <DocumentationFile>$(OutputPath)\CoreNodeModelsWpf.XML</DocumentationFile>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ReferenceCopyLocalPaths>

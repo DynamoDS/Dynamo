@@ -9,6 +9,7 @@
     <RootNamespace>PythonNodeModelsWpf</RootNamespace>
     <AssemblyName>PythonNodeModelsWpf</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
   <ItemDefinitionGroup>
  	<ReferenceCopyLocalPaths>

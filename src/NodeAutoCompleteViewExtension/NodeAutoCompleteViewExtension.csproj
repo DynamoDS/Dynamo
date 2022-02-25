@@ -8,6 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.NodeAutoComplete</RootNamespace>
     <AssemblyName>NodeAutoCompleteViewExtension</AssemblyName>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />

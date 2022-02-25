@@ -195,8 +195,7 @@ namespace Dynamo.Graph.Annotations
                 // then recalculate which pins belongs to the
                 // group and add them to the nodes collection
                 var pinModels = GetPinsFromNodes(value.OfType<NodeModel>());
-                nodes = valuesWithoutPins.Concat(pinModels)
-                    .ToHashSet<ModelBase>();
+                nodes = new HashSet<ModelBase>(valuesWithoutPins.Concat(pinModels));
 
                 if (nodes != null && nodes.Any())
                 {

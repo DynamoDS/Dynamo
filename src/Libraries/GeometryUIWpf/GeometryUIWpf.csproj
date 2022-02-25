@@ -9,6 +9,7 @@
     <RootNamespace>GeometryUIWpf</RootNamespace>
     <AssemblyName>GeometryUIWpf</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
   <ItemDefinitionGroup>
 	<ReferenceCopyLocalPaths>

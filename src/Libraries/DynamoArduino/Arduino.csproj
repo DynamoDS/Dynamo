@@ -11,6 +11,7 @@
     <RootNamespace>Dynamo.Nodes</RootNamespace>
     <AssemblyName>DynamoArduino</AssemblyName>
     <DocumentationFile>$(OutputPath)\$(UICulture)\DynamoArduino.XML</DocumentationFile>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="WindowsBase" />

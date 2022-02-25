@@ -22,6 +22,7 @@
       <!--Exclude copying the runtime dlls because we need to keep binary compatibility with Revit for now -->
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <Reference Include="PresentationCore" />
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>

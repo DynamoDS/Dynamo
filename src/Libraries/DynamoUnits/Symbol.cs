@@ -10,10 +10,10 @@ namespace DynamoUnits
     /// </summary>
     public class Symbol
     {
-        internal readonly ForgeUnitsCLR.Symbol forgeSymbol;
-        internal readonly ForgeUnitsCLR.PrefixOrSuffix forgePrefixOrSuffix;
+        internal readonly Autodesk.ForgeUnits.Symbol forgeSymbol;
+        internal readonly Autodesk.ForgeUnits.PrefixOrSuffix forgePrefixOrSuffix;
 
-        internal Symbol(ForgeUnitsCLR.Symbol symbol)
+        internal Symbol(Autodesk.ForgeUnits.Symbol symbol)
         {
             this.forgeSymbol = symbol ?? throw new ArgumentNullException();
             this.forgePrefixOrSuffix = symbol.getPrefixOrSuffix();

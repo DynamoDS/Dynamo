@@ -9,6 +9,7 @@
     <RootNamespace>UnitsUI</RootNamespace>
     <AssemblyName>UnitsUI</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
   <ItemDefinitionGroup>
 	<ReferenceCopyLocalPaths>
