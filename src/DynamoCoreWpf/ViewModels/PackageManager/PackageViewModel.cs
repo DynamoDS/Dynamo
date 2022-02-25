@@ -270,7 +270,7 @@ namespace Dynamo.ViewModels
             if (Model.LoadedAssemblies.Any())
             {
                 var resAssem =
-                    MessageBoxService.Show(string.Format(MessageNeedToRestart,
+                    MessageBoxService.Show(dynamoViewModel.Owner,string.Format(MessageNeedToRestart,
                         dynamoViewModel.BrandingResourceProvider.ProductName),
                         MessageNeedToRestartTitle,
                         MessageBoxButton.OKCancel,
