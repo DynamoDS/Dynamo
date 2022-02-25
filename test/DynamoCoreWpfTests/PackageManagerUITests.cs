@@ -817,7 +817,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, loader.LocalPackages.Count());
 
             var dlgMock = new Mock<MessageBoxService.IMessageBox>();
-            dlgMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
                 .Returns(MessageBoxResult.OK);
             MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
 
