@@ -414,6 +414,7 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Canvas.ZIndex="4"
+                    Style="{StaticResource SZoomFadeOutFrameworkElement}"
                     FlowDirection="LeftToRight"
                     Orientation="Horizontal">
             <Grid x:Name="HiddenEyeGlyph" Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}">
