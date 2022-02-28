@@ -1228,8 +1228,8 @@ namespace ProtoCore.DSASM
                 if (runtimeCore.Options.IsDeltaExecution)
                 {
                     // COmment Jun: start from graphnodes whose update blocks are in the range of the entry point
-                    bool inStartRange = graphNode.updateBlock.startpc >= entrypoint;
-                    if (graphNode.isDirty && inStartRange)
+                    //bool inStartRange = graphNode.updateBlock.startpc >= entrypoint;
+                    if (graphNode.isDirty /*&& inStartRange*/)
                     {
                         pc = graphNode.updateBlock.startpc;
                         graphNode.isDirty = false;
