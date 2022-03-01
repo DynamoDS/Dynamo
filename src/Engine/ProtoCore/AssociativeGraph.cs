@@ -55,9 +55,8 @@ namespace ProtoCore.AssociativeEngine
         }
 
         /// <summary>
-        /// Marks all graphnodes in the scope dirty
+        /// Marks all graphnodes in the scope dirty.
         /// </summary>
-        /// <param name="block"></param>
         /// <param name="graphNodesInScope"></param>
         internal static void MarkAllGraphNodesDirty(List<AssociativeGraph.GraphNode> graphNodesInScope)
         {
