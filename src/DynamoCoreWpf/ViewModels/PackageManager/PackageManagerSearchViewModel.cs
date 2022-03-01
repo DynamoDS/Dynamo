@@ -445,6 +445,8 @@ namespace Dynamo.PackageManager
                 list.Reverse();
             }
 
+            Analytics.TrackEvent(Actions.Sort, Categories.PackageManagerOperations, $"Sort by {this.SortingKey} {SortingDirection}");
+
             // temporarily hide binding
             var temp = this.SearchResults;
             this.SearchResults = null;
@@ -522,6 +524,8 @@ namespace Dynamo.PackageManager
             PackageManagerClientViewModel
                 .DynamoViewModel
                 .OnViewExtensionOpenWithParameterRequest("C71CA1B9-BF9F-425A-A12C-53DF56770406", packageManagerSearchElement);
+
+            Analytics.TrackEvent(Actions.ViewDetails, Categories.PackageManagerOperations, $"View Details of the Package {packageManagerSearchElement.Name}");
         }
 
         /// <summary>

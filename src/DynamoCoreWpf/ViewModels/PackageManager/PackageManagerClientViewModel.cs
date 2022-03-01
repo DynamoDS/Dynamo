@@ -934,6 +934,7 @@ namespace Dynamo.ViewModels
                         }
                     }
                     SetPackageState(packageDownloadHandle, installPath);
+                    Analytics.TrackEvent(Actions.Installed, Categories.PackageManagerOperations, $"Install the Package {packageDownloadHandle.Name}");
                 }
                 catch (Exception e)
                 {
