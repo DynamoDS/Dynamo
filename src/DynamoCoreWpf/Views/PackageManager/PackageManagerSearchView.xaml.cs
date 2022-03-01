@@ -27,6 +27,7 @@ namespace Dynamo.PackageManager.UI
         {
             ViewModel = pm;
             this.DataContext = ViewModel;
+            pm.PackageManagerClientViewModel.Owner = this;
             InitializeComponent();
             ViewModel.RegisterTransientHandlers();
             ViewModel.RequestShowFileDialog += OnRequestShowFileDialog;

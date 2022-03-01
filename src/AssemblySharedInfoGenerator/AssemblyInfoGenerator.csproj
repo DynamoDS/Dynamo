@@ -1,0 +1,39 @@
+<Project>
+  <!-- SDK style projects need to do manual imports of sdk props/targets in order to compile t4 templates on each build -->
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <ProjectGuid>{133FC760-5699-46D9-BEA6-E816B5F01016}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AssemblyInfoGenerator</RootNamespace>
+    <AssemblyName>AssemblyInfoGenerator</AssemblyName>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>None</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Update="AssemblySharedInfo.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AssemblySharedInfo.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="AssemblySharedInfo.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AssemblySharedInfo.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating\Microsoft.TextTemplating.targets')" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating\Microsoft.TextTemplating.targets" />
+  <Target Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating\Microsoft.TextTemplating.targets')" Name="T4TemplateGen" BeforeTargets="Build">
+    <CallTarget Targets="TransformAll" />
+    <Message Importance="high" Text="Running Template Generator for AssemblyInfoProperties" />
+  </Target>
+</Project>

@@ -52,7 +52,7 @@ namespace Dynamo.ViewModels
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
     {
         #region properties
-
+        public Window Owner { get; set; }
         private readonly DynamoModel model;
         private Point transformOrigin;
         private bool showStartPage = false;

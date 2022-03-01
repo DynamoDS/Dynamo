@@ -1211,19 +1211,19 @@ You will get a chance to save your work.</value>
     <value>Installed Packages</value>
   </data>
   <data name="LacingCrossProductToolTip" xml:space="preserve">
-    <value>For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3}.</value>
+    <value>For two lists [a,b,c][1,2,3] returns [a1,a2,a3][b1,b2,b3][c1,c2,c3].</value>
   </data>
   <data name="LacingDisabledToolTip" xml:space="preserve">
     <value>Argument lacing is disabled for this node.</value>
   </data>
   <data name="LacingFirstToolTip" xml:space="preserve">
-    <value>For two lists {a,b,c}{1,2,3} returns {a1}.</value>
+    <value>For two lists [a,b,c][1,2,3] returns {a1}.</value>
   </data>
   <data name="LacingLongestToolTip" xml:space="preserve">
-    <value>For two lists {a,b,c}{1,2} returns {a1,b2,c2}.</value>
+    <value>For two lists [a,b,c][1,2] returns [a1,b2,c2].</value>
   </data>
   <data name="LacingShortestToolTip" xml:space="preserve">
-    <value>For two lists {a,b,c}{1,2} returns {a1,b2}.</value>
+    <value>For two lists [a,b,c][1,2] returns [a1,b2].</value>
   </data>
   <data name="LibraryViewContextMenuEditNode" xml:space="preserve">
     <value>Edit...</value>
@@ -3020,5 +3020,11 @@ To install the latest version of a package, click Install. \n
   </data>
   <data name="UnpinNodeTooltip" xml:space="preserve">
     <value>Unpin this note from the node</value>
+  </data>
+  <data name="PackagesGuideInstallAPackageTitle" xml:space="preserve">
+    <value>Install a package</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
+    <value>Group Name</value>
   </data>
 </root>

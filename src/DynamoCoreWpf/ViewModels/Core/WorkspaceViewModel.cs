@@ -940,8 +940,10 @@ namespace Dynamo.ViewModels
                         selection.AddUnique(m);
                     }
                 }
-                else if (n.IsSelected &&
-                    !Model.Annotations.ContainsModel(n))
+                // only remove current selection if ClearSelectionDisabled flag is false
+                // This prevents group getting removed when user press shift to add more groups
+                else if (n.IsSelected && !Model.Annotations.ContainsModel(n)
+                    && !DynamoSelection.Instance.ClearSelectionDisabled)
                 {
                     selection.Remove(n);
                 }

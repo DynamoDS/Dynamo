@@ -11,6 +11,11 @@ namespace Dynamo.Graph.Notes
     /// </summary>
     public class NoteModel : ModelBase
     {
+        /// <summary>
+        /// This action is triggered when undo command is pressed and a node is pinned
+        /// </summary>
+        internal event Action<ModelBase> UndoRequest;
+
         private string text;
 
         /// <summary>
@@ -44,6 +49,7 @@ namespace Dynamo.Graph.Notes
                 RaisePropertyChanged(nameof(PinnedNode));
             }
         }
+
 
         /// <summary>
         /// Creates NoteModel.
@@ -89,6 +95,7 @@ namespace Dynamo.Graph.Notes
                 return base.UpdateValueCore(updateValueParams);
             
             Text = value;
+
             return true;
         }        
         #endregion
@@ -102,6 +109,7 @@ namespace Dynamo.Graph.Notes
             helper.SetAttribute("text", Text);
             helper.SetAttribute("x", X);
             helper.SetAttribute("y", Y);
+            helper.SetAttribute("pinnedNode", pinnedNode == null ? Guid.Empty : pinnedNode.GUID);
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -112,9 +120,24 @@ namespace Dynamo.Graph.Notes
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
 
+            if(pinnedNode != null)
+                pinnedNode.GUID = helper.ReadGuid("pinnedNode");
+
             // Notify listeners that the position of the note has changed, 
             // then parent group will also redraw itself.
             ReportPosition();
+            TryToSubscribeUndoNote();
+        }
+
+        /// <summary>
+        /// Verify if the current user action is to pin a node so the 'unpin' method can be called to undo the action
+        /// </summary>
+        internal void TryToSubscribeUndoNote()
+        {
+            if (pinnedNode!=null && pinnedNode.GUID == Guid.Empty && UndoRequest != null)
+            {
+                UndoRequest(this);
+            }
         }
 
         #endregion

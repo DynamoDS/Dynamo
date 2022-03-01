@@ -122,6 +122,31 @@ namespace Dynamo.UI.Prompts
             dynamoMessageBox.ShowDialog();
             return dynamoMessageBox.CustomDialogResult;
         }
+        /// <summary>
+        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
+        /// </summary>
+        /// <param name="owner">owner window</param>
+        /// <param name="messageBoxText"></param>
+        /// <param name="caption"></param>
+        /// <param name="button"></param>
+        /// <param name="icon"></param>
+        /// <returns></returns>
+        public static MessageBoxResult Show(Window owner,string messageBoxText, string caption, MessageBoxButton button,
+            MessageBoxImage icon)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon,
+                Owner = owner
+            };
+
+            dynamoMessageBox.ConfigureButtons(button);
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
+        }
 
         /// <summary>
         /// Displays a dialog to the user and returns their choice as a MessageBoxResult.

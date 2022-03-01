@@ -296,6 +296,8 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
+
             var nodeGroup = WorkspaceViewModel.Annotations
                 .FirstOrDefault(x => x.AnnotationModel.ContainsModel(nodeToPin));
 
@@ -305,11 +307,11 @@ namespace Dynamo.ViewModels
             }
 
             Model.PinnedNode = nodeToPin;
+            Model.UndoRequest += UnpinFromNode;
 
             MoveNoteAbovePinnedNode();
             SubscribeToPinnedNode();
 
-            WorkspaceModel.RecordModelsForModification(new List<ModelBase> { this.Model }, WorkspaceViewModel.Model.UndoRecorder);
             WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
@@ -350,24 +352,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         private bool CanUnpinFromNode(object parameters)
         {
-
-            var nodeSelection = DynamoSelection.Instance.Selection
-                    .OfType<NodeModel>();
-
-            var noteSelection = DynamoSelection.Instance.Selection
-                    .OfType<NoteModel>();
-
-            if (nodeSelection == null || noteSelection == null ||
-                nodeSelection.Count() != 1 || noteSelection.Count() != 1)
-                return false;
-
-            var nodeToPin = nodeSelection.FirstOrDefault();
-
-            var nodeAlreadyPinned = WorkspaceViewModel.Notes
-                .Where(n => n.PinnedNode != null)
-                .Any(n => n.PinnedNode.NodeModel.GUID == nodeToPin.GUID);
-
-            if (nodeAlreadyPinned == true)
+            if (PinnedNode != null)
                 return true;
 
             return false;
@@ -376,6 +361,8 @@ namespace Dynamo.ViewModels
         private void UnpinFromNode(object parameters)
         {
             UnsuscribeFromPinnedNode();
+            Model.UndoRequest -= UnpinFromNode;
+
             Model.PinnedNode = null;
             WorkspaceViewModel.HasUnsavedChanges = true;
         }

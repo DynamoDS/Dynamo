@@ -1614,11 +1614,6 @@ namespace Dynamo.ViewModels
             Analytics.TrackEvent(Actions.Freeze, Categories.NodeContextMenuOperations);
         }
 
-        private bool CanToggleIsFrozen(object parameters)
-        {
-            return DynamoSelection.Instance.Selection.Count() == 1;
-        }
-
         private void RaiseFrozenPropertyChanged()
         {
             RaisePropertyChanged("IsFrozen");

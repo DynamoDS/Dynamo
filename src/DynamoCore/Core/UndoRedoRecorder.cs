@@ -389,7 +389,6 @@ namespace Dynamo.Core
                         ModelBase toBeUpdated = undoClient.GetModelForElement(element);
                         if (toBeUpdated != null)
                         {
-
                             RecordActionInternal(newGroup, toBeUpdated, modelActionType);
                             undoClient.ReloadModel(element);
                         }

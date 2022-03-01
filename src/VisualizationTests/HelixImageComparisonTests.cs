@@ -278,6 +278,16 @@ namespace WpfVisualizationTests
             DynamoSelection.Instance.Selection.Add(node1);
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+        [Test]
+        public void ZFightTsplines_Selected()
+        {
+            OpenVisualizationTest(@"imageComparison\tsplineTest_fast.dyn");
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("tspline_select")).FirstOrDefault();
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node1);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
 
         [Test]
         public void RenderCoordinateSystemWithGeometryScaling()
@@ -371,6 +381,26 @@ namespace WpfVisualizationTests
             var node2 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("regularLines")).FirstOrDefault();
             node1.IsFrozen = true;
             node2.IsFrozen = true;
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void PointsZFightOnTsplines_Selected()
+        {
+            OpenVisualizationTest(@"imageComparison\tsplineTest_fast.dyn");
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("points_select")).FirstOrDefault();
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node1);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void CurvesZFightOnTsplines_Selected()
+        {
+            OpenVisualizationTest(@"imageComparison\tsplineTest_fast.dyn");
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("curves_select")).FirstOrDefault();
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node1);
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
