@@ -39,7 +39,27 @@ namespace ProtoCore.AssociativeEngine
         /// </summary>
         /// <param name="block"></param>
         /// <param name="graphNodesInScope"></param>
+        [Obsolete("This method is deprecated and will be removed in a future Dynamo version.")]
         public static void MarkAllGraphNodesDirty(int block, List<AssociativeGraph.GraphNode> graphNodesInScope)
+        {
+            if (graphNodesInScope != null)
+            {
+                foreach (AssociativeGraph.GraphNode gnode in graphNodesInScope)
+                {
+                    if (gnode.languageBlockId == block)
+                    {
+                        gnode.isDirty = true;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Marks all graphnodes in the scope dirty
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="graphNodesInScope"></param>
+        internal static void MarkAllGraphNodesDirty(List<AssociativeGraph.GraphNode> graphNodesInScope)
         {
             if (graphNodesInScope != null)
             {

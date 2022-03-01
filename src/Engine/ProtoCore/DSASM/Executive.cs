@@ -423,7 +423,7 @@ namespace ProtoCore.DSASM
             //  Entering a nested block requires all the nodes of that block to be executed
             if (executingBlock > 0)
             {
-                ProtoCore.AssociativeEngine.Utils.MarkAllGraphNodesDirty(executingBlock, graphNodesInProgramScope);
+                ProtoCore.AssociativeEngine.Utils.MarkAllGraphNodesDirty(graphNodesInProgramScope);
             }
 
             if (fepRun)
