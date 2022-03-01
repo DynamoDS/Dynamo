@@ -1112,8 +1112,7 @@ namespace Dynamo.ViewModels
 
                 // Update the selection box and make it visible 
                 // but with an initial dimension of zero.
-                SelectionBoxUpdateArgs args = null;
-                args = new SelectionBoxUpdateArgs(mouseDownPos.X, mouseDownPos.Y, 0, 0);
+                SelectionBoxUpdateArgs args = new SelectionBoxUpdateArgs(mouseDownPos.X, mouseDownPos.Y, 0, 0);
                 args.SetVisibility(Visibility.Visible);
 
                 this.owningWorkspace.OnRequestSelectionBoxUpdate(this, args);
