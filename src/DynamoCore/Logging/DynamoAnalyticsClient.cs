@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using Analytics.NET.Google;
+using System.Reflection;
 using Analytics.NET.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
@@ -181,12 +181,23 @@ namespace Dynamo.Logging
 
         private void RegisterGATracker(Service service)
         {
-            //Some clients such as Revit may allow start/close Dynamo multiple times
-            //in the same session so register only if the factory is not registered.
-            if (service.GetTrackerFactory(GATrackerFactory.Name) == null)
+            foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
-                service.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+                if (assembly.GetName().Name == "Analytics.NET.Google")
+                {
+                    var GATrackerType = assembly.GetType("GATrackerFactory");
+                    string name = GATrackerType.GetProperty("Name").GetValue(null) as string;
+                    //Some clients such as Revit may allow start/close Dynamo multiple times
+                    //in the same session so register only if the factory is not registered.
+                    if (service.GetTrackerFactory(name) == null)
+                    {
+                        var ctor = GATrackerType.GetConstructor(new[] { typeof(string) });
+                        var instance = ctor.Invoke(new object[] { ANALYTICS_PROPERTY }) as IEventTrackerFactory;
+                        service.Register(instance);
+                        service.AddTrackerFactoryFilter(name, () => ReportingGoogleAnalytics);
+                    }
+                    break;
+                }
             }
         }
 

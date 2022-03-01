@@ -9,6 +9,7 @@
     <RootNamespace>DSOffice</RootNamespace>
     <AssemblyName>DSOffice</AssemblyName>
     <DocumentationFile>$(OutputPath)\$(UICulture)\DSOffice.xml</DocumentationFile>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
 	<PackageReference Include="DocumentFormat.OpenXml" Version="2.12.3" CopyXML="true" />

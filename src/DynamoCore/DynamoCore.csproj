@@ -36,9 +36,6 @@
     <Reference Include="Analytics.NET.Core">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Analytics.NET.Google">
-      <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
