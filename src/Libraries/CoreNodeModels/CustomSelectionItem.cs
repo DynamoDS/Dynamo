@@ -57,8 +57,7 @@ namespace CoreNodeModels
                 OnPropertyChanged(nameof(Name));
                 OnPropertyChanged(nameof(IsValid));
 
-                if (ItemChanged != null)
-                    ItemChanged();
+                ItemChanged?.Invoke();
             }
         }
 
@@ -123,7 +122,9 @@ namespace CoreNodeModels
         private void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
 

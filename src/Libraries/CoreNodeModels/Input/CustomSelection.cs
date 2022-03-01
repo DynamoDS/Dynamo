@@ -26,24 +26,25 @@ namespace CoreNodeModels.Input
     [IsDesignScriptCompatible]
     public class CustomSelectionNodeModel : DSDropDownBase
         {
-            private ObservableCollection<CustomSelectionItemViewModel> enumItems = new ObservableCollection<CustomSelectionItemViewModel>();
-            private CustomSelectionItemViewModel selectedEnumItem;
+            private ObservableCollection<CustomSelectionItemViewModel> items = new ObservableCollection<CustomSelectionItemViewModel>();
+            private CustomSelectionItemViewModel selectedItem;
 
             /// <summary>
             /// All menu items
             /// </summary>
             public ObservableCollection<CustomSelectionItemViewModel> EnumItems
             {
-                get => enumItems;
+                get => items;
                 set
                 {
-                    enumItems = value;
+                    items = value;
 
-                    foreach (var item in enumItems)
-                        InitEnumItem(item);
+                    foreach (var item in items)
+                    {
+                        InitItem(item);
+                    }
 
                     PopulateItems();
-
                     RaisePropertyChanged(nameof(EnumItems));
                 }
             }
@@ -61,10 +62,10 @@ namespace CoreNodeModels.Input
             /// </summary>
             public CustomSelectionItemViewModel SelectedItem
             {
-                get => selectedEnumItem;
+                get => selectedItem;
                 set
                 {
-                    selectedEnumItem = value == null ? null : ValidEnumItems.FirstOrDefault(item => item.Name == value.Name);
+                    selectedItem = value == null ? null : ValidEnumItems.FirstOrDefault(item => item.Name == value.Name);
                     RaisePropertyChanged(nameof(SelectedItem));
 
                     OnNodeModified();
@@ -106,11 +107,11 @@ namespace CoreNodeModels.Input
             private CustomSelectionNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base("Value", inPorts, outPorts)
             {
                 AddCommand = new AddMenuItemCommand(AddMenuItem);
-                enumItems.CollectionChanged += EnumItems_CollectionChanged;
+                items.CollectionChanged += OnCollectionChanged;
             }
 
 
-            private void EnumItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+            private void OnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
             {
                 RaisePropertyChanged(nameof(ValidEnumItems));
                 OnNodeModified();
@@ -142,11 +143,19 @@ namespace CoreNodeModels.Input
                 base.Log(ex.StackTrace, Dynamo.Logging.WarningLevel.Error);
             }
 
+            /// <summary>
+            /// Dispose this node
+            /// </summary>
+            public override void Dispose()
+            {
+                base.Dispose();
+                items.CollectionChanged -= OnCollectionChanged;
+            }
 
             private void AddMenuItem(object param)
             {
                 var newItem = new CustomSelectionItemViewModel(new CustomSelectionItem());
-                InitEnumItem(newItem);
+                InitItem(newItem);
 
                 EnumItems.Add(newItem);
             }
@@ -159,7 +168,7 @@ namespace CoreNodeModels.Input
             }
 
 
-            private void EnumItem_ItemChanged()
+            private void OnItemChanged()
             {
                 RaisePropertyChanged(nameof(ValidEnumItems));
 
@@ -170,14 +179,21 @@ namespace CoreNodeModels.Input
             }
 
 
-            private void EnumItem_RemoveRequested(CustomSelectionItemViewModel item)
+            private void OnRemoveRequested(CustomSelectionItemViewModel item)
             {
+                item.IsUnique -= IsUnique;
+                item.ItemChanged -= OnItemChanged;
+                item.RemoveRequested -= OnRemoveRequested;
                 EnumItems.Remove(item);
                 RaisePropertyChanged(nameof(ValidEnumItems));
                 RaisePropertyChanged(nameof(SelectedItem));
             }
 
 
+            /// <summary>
+            /// Return the selected item as an int, or a double, or a string
+            /// </summary>
+            /// <returns></returns>
             private object GetSelectedValue()
             {
                 if (SelectedItem == null)
@@ -200,11 +216,11 @@ namespace CoreNodeModels.Input
                 return SelectedItem.Value;
             }
 
-            private void InitEnumItem(CustomSelectionItemViewModel enumItem)
+            private void InitItem(CustomSelectionItemViewModel item)
             {
-                enumItem.IsUnique += IsUnique;
-                enumItem.ItemChanged += EnumItem_ItemChanged;
-                enumItem.RemoveRequested += EnumItem_RemoveRequested;
+                item.IsUnique += IsUnique;
+                item.ItemChanged += OnItemChanged;
+                item.RemoveRequested += OnRemoveRequested;
             }
 
             protected override void SerializeCore(XmlElement element, SaveContext context)
@@ -253,7 +269,9 @@ namespace CoreNodeModels.Input
                         foreach (XmlAttribute attribute in subNode.Attributes)
                         {
                             if (attribute.Name == "Name")
+                            {
                                 SelectedItem = EnumItems.FirstOrDefault(item => item.Name == attribute.Value);
+                            }
                         }
                     }
                 }
@@ -264,7 +282,9 @@ namespace CoreNodeModels.Input
                 Items.Clear();
 
                 foreach (CustomSelectionItemViewModel enumItem in EnumItems)
+                {
                     Items.Add(new DynamoDropDownItem(enumItem.Name, enumItem.Value));
+                }
 
                 SelectedIndex = 0;
 
@@ -283,13 +303,17 @@ namespace CoreNodeModels.Input
                     foreach (XmlAttribute attribute in childNode.Attributes)
                     {
                         if (attribute.Name == "Name")
+                        {
                             name = attribute.Value;
+                        }
                         else if (attribute.Name == "Value")
+                        {
                             value = attribute.Value;
+                        }
                     }
 
                     var newItem = new CustomSelectionItemViewModel(new CustomSelectionItem() { Name = name, Value = value });
-                    InitEnumItem(newItem);
+                    InitItem(newItem);
 
                     EnumItems.Add(newItem);
                 }

@@ -49,7 +49,9 @@ namespace CoreNodeModelsWpf.Controls
             {
                 var viewModel = DataContext as CustomSelectionNodeModel;
                 if (viewModel != null)
+                {
                     viewModel.Log(ex);
+                }
             }
         }
 

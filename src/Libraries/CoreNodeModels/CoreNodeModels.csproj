@@ -86,6 +86,9 @@
             <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
         </EmbeddedResource>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Resources\" />
+    </ItemGroup>
     <Target Name="BinaryCompatibilityOps" BeforeTargets="Build">
         <Copy SourceFiles="$(PkgNCalc)\lib\NCalc.dll" DestinationFolder="$(OutputPath)" />
     </Target>
