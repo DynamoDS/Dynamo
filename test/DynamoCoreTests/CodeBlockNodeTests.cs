@@ -1472,6 +1472,28 @@ var06 = g;
             AssertPreviewValue(mathCeiling.AstIdentifierGuid, long.MinValue);
         }
 
+        [Test]
+        public void NestedLangBlock_MultipleLevels()
+        {
+            OpenModel(Path.Combine(TestDirectory, @"core\dsevaluation\Nested_Language_Blocks.dyn"));
+
+            var cbn1 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block1");
+            var cbn2 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block2");
+            var cbn3 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block3");
+            var cbn4 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block4");
+            var cbn5 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block5");
+            var cbn6 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block6");
+            var cbn7 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block7");
+
+            AssertPreviewValue(cbn1.AstIdentifierGuid, new object[] { new[] { 0, 3, 6, 9, 12 }, 2.2 });
+            AssertPreviewValue(cbn2.AstIdentifierGuid, new object[] { new[] { 0, 1.5, 3, 4.5, 6 }, 2 });
+            AssertPreviewValue(cbn3.AstIdentifierGuid,  new[] { 0, 3, 6, 9, 12 });
+            AssertPreviewValue(cbn4.AstIdentifierGuid, new object[] { new[] { 0, 3, 6, 9, 12 }, 2 });
+            AssertPreviewValue(cbn5.AstIdentifierGuid, 13);
+            AssertPreviewValue(cbn6.AstIdentifierGuid, new[] { 323, 210, 325 });
+            AssertPreviewValue(cbn7.AstIdentifierGuid, new object[] { new[] { 0, 2, 4, 6, 8 }, 2.2 });
+        }
+
         #region CodeBlockUtils Specific Tests
         [Test]
         [Category("UnitTests")]
@@ -1892,6 +1914,7 @@ var06 = g;
             var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, cbn.GUID, "Code", value);
             CurrentDynamoModel.ExecuteCommand(command);
         }
+
     }
 
     [TestFixture]
