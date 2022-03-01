@@ -369,10 +369,6 @@ namespace ProtoCore.SyntaxAnalysis
                 {
                     var replacer = new AssociativeIdentifierInPlaceMapper(core, cond, mapper);
                     assoc_cbn = assoc_cbn.Accept(replacer) as AST.AssociativeAST.CodeBlockNode;
-                    //var assoc_blk = new AST.AssociativeAST.LanguageBlockNode
-                    //{
-                    //    CodeBlockNode = assoc_cbn
-                    //};
                     return node;
                 }
                 else

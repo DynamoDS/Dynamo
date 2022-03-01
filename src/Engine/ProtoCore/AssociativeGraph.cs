@@ -45,10 +45,7 @@ namespace ProtoCore.AssociativeEngine
             {
                 foreach (AssociativeGraph.GraphNode gnode in graphNodesInScope)
                 {
-                    //if (gnode.languageBlockId == block)
-                    {
-                        gnode.isDirty = true;
-                    }
+                    gnode.isDirty = true;
                 }
             }
         }
