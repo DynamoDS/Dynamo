@@ -1484,6 +1484,7 @@ var06 = g;
             var cbn5 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block5");
             var cbn6 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block6");
             var cbn7 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block7");
+            var cbn8 = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Code Block8");
 
             AssertPreviewValue(cbn1.AstIdentifierGuid, new object[] { new[] { 0, 3, 6, 9, 12 }, 2.2 });
             AssertPreviewValue(cbn2.AstIdentifierGuid, new object[] { new[] { 0, 1.5, 3, 4.5, 6 }, 2 });
@@ -1492,6 +1493,7 @@ var06 = g;
             AssertPreviewValue(cbn5.AstIdentifierGuid, 13);
             AssertPreviewValue(cbn6.AstIdentifierGuid, new[] { 323, 210, 325 });
             AssertPreviewValue(cbn7.AstIdentifierGuid, new object[] { new[] { 0, 2, 4, 6, 8 }, 2.2 });
+            AssertPreviewValue(cbn8.AstIdentifierGuid, new object[] { new[] { 0, 2, 4, 6, 8 }, 2.2 });
         }
 
         #region CodeBlockUtils Specific Tests

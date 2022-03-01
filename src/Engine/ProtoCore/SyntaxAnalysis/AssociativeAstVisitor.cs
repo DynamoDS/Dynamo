@@ -445,6 +445,29 @@ namespace ProtoCore.SyntaxAnalysis
             this.mapper = mapper;
         }
 
+        public override AssociativeNode VisitLanguageBlockNode(LanguageBlockNode node)
+        {
+            var cbn = node.CodeBlockNode as CodeBlockNode;
+            if (cbn == null)
+            {
+                var imperative_cbn = node.CodeBlockNode as AST.ImperativeAST.CodeBlockNode;
+                if (imperative_cbn != null)
+                {
+                    var replacer = new ImperativeIdentifierInPlaceMapper(core, cond, mapper);
+                    imperative_cbn = imperative_cbn.Accept(replacer) as AST.ImperativeAST.CodeBlockNode;
+                    return node;
+                }
+                else
+                {
+                    return base.VisitLanguageBlockNode(node);
+                }
+            }
+
+            var nodeList = cbn.Body.Select(astNode => astNode.Accept(this)).ToList();
+            cbn.Body = nodeList;
+            return node;
+        }
+
         public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
         {
             var variable = node.Value;

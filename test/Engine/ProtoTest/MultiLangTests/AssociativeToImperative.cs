@@ -159,4 +159,33 @@ i = [Imperative]
             thisTest.Verify("a", 1);
             thisTest.Verify("i", new object[] { new[] { 0, 3, 6, 9, 12 }, 2.2 });
         }
+
+        [Test]
+        public void NestedLangBlock_WhileLoop4()
+        {
+            var code = @"
+a = 1;
+x = 3;
+i = [Imperative]
+{
+	c = 0;
+	b = 0..4;
+
+    while(a < 2)
+    {
+        [Associative]
+        {
+        	v = [Imperative]
+        	{
+            	return a;
+            }
+            c = v*b;
+        }
+        a = a+0.2;
+    }
+    return [c,a];
+};";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("i", new object[] { new[] { 0, 2, 4, 6, 8 }, 2.2 });
+        }
     }}
