@@ -613,7 +613,6 @@ namespace Dynamo.PackageManager
                 {
                     packageLoader.Remove(this);
                     Directory.Delete(RootDirectory, true);
-                    Analytics.TrackEvent(Actions.Delete, Categories.PackageManagerOperations, $"Delete the Package {this.Name} immediately");
                 }
             }
             catch (Exception e)

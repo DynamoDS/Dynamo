@@ -828,8 +828,6 @@ namespace Dynamo.PackageManager
                     Directory.Delete(pkgNameDirTup, true);
                     pkgDirsRemoved.Add(pkgNameDirTup);
                     Log(String.Format("Successfully uninstalled package from \"{0}\"", pkgNameDirTup));
-                    string package = System.IO.Path.GetFileNameWithoutExtension(pkgNameDirTup);
-                    Analytics.TrackEvent(Actions.Delete, Categories.PackageManagerOperations, $"Delete the Package {package} scheduled");
                 }
                 catch
                 {

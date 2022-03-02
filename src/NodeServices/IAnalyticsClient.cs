@@ -366,9 +366,9 @@ namespace Dynamo.Logging
         /// </summary>
         Sort,
         /// <summary>
-        /// View Details event, when user wants to see the details from a resource
+        /// View event, when user wants to see some information
         /// </summary>
-        ViewDetails,
+        View,
     }
 
     /// <summary>
