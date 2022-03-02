@@ -160,7 +160,7 @@ namespace Dynamo.Graph.Nodes
                 throw new ArgumentException("could not find an inputType for this type");
             }
         }
-        internal static InputTypes GetNodeInputTypeFromType(Type type)
+        internal static InputTypes GetInputTypeFromType(Type type)
         {
             InputTypes output;
             if (dotNetTypeToInputType.TryGetValue(type, out output))
