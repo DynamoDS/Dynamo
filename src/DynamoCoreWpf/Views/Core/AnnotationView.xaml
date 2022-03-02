@@ -12,6 +12,7 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:nodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore"
+             xmlns:utilities="clr-namespace:Dynamo.Wpf.Utilities"
              mc:Ignorable="d"
              Height="Auto"
              Width="Auto"
@@ -25,6 +26,7 @@
              d:DataContext="{d:DesignInstance Type=viewModels:AnnotationViewModel}">
 
     <UserControl.Resources>
+        <utilities:GroupStyleItemSelector x:Key="GroupStyleItemSelector"/>
         <CornerRadius x:Key="ExpanderCornerRadius"
                       TopLeft="10"
                       TopRight="10" />
@@ -262,6 +264,70 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="GroupStyleSeparatorStyle" TargetType="{x:Type MenuItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border Height="1"
+                                Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
+                            <Border Height="1"
+                                Width="129"
+                                Background="{StaticResource NodeContextMenuSeparatorColor}">
+                            </Border>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="GroupStyleItemStyle" TargetType="{x:Type MenuItem}">
+            <Setter Property="MenuItem.Command" 
+                    Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=MenuItem}, Path=DataContext.ChangeGroupStyleCommand}"/>
+            <Setter Property="MenuItem.CommandParameter" 
+                    Value="{Binding RelativeSource={RelativeSource Self},  Path=Header}"/>
+            <Setter Property="MenuItem.IsChecked"
+                    Value="{Binding IsChecked}"/>
+            <EventSetter Event="Click" 
+                     Handler="GroupStyleCheckmark_Click"/>
+            <EventSetter Event="Checked" 
+                     Handler="GroupStyleCheckmark_Checked"/>
+            <Setter Property="MenuItem.Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <StackPanel Orientation="Horizontal"
+                                    MinWidth="150"
+                                    Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
+                            <Label x:Name="GroupStyleCheckmark"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalContentAlignment="Center"
+                                   Content="✓"
+                                   FontSize="14px"
+                                   Foreground="White"
+                                   Visibility="{Binding Path=IsChecked,Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <Label x:Name="buttonColorPicker"
+                                    Margin="5,0,5,0"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="14px"
+                                    Background="{Binding HexColorString}" 
+                                    Width="15" 
+                                    Height="15"/>
+                            <Label Name="GroupStyleLabelName"
+                                    Content ="{Binding TextContent}"
+                                    Margin="5,0,5,0"
+                                    Foreground="{StaticResource NodeContextMenuForeground}"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="14px"
+                                    FontWeight="Medium"/>
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+       
+      
     </UserControl.Resources>
 
     <Grid Name="AnnotationGrid"
@@ -272,7 +338,9 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
-            <ContextMenu Background="#666666" Style="{StaticResource ContextMenuStyle}">
+            <ContextMenu Name="AnnotationContextMenu" 
+                         Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}" 
+                         Style="{StaticResource ContextMenuStyle}">
                 <MenuItem Name="DeleteAnnotation"
                           Click="OnDeleteAnnotation"
                           Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}" />
@@ -288,6 +356,13 @@
                 <MenuItem Name="GraphLayoutAnnotation"
                           Click="OnGraphLayoutAnnotation"
                           Header="{x:Static p:Resources.GroupContextMenuGraphLayout}" />
+                <MenuItem Name="GroupStyleAnnotation"
+                          ItemsSource="{Binding GroupStyleList}"
+                          Style="{StaticResource MenuItemGroupStyle}"
+                          SubmenuOpened="GroupStyleAnnotation_SubmenuOpened"
+                          Header="{x:Static p:Resources.GroupStyleContextAnnotation}"
+                          ItemContainerStyleSelector="{StaticResource GroupStyleItemSelector}">
+                </MenuItem>
                 <MenuItem Name="ChangeSize" Header="{x:Static p:Resources.GroupContextMenuFont}">
                     <MenuItem Name="FontSize0"
                               Command="{Binding ChangeFontSize}"

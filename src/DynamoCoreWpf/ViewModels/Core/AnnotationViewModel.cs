@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -13,6 +14,7 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
+using Dynamo.Wpf.Utilities;
 using Newtonsoft.Json;
 using Color = System.Windows.Media.Color;
 
@@ -27,7 +29,10 @@ namespace Dynamo.ViewModels
         // vertical offset accounts for the port margins
         private const int verticalOffset = 20;
         private const int portVerticalMidPoint = 17;
-        
+        private ObservableCollection<GroupStyleBase> groupStyleList;
+        private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
+        private PreferenceSettings preferenceSettings;
+
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
         #region Properties
@@ -169,6 +174,9 @@ namespace Dynamo.ViewModels
                 annotationModel.FontSize = value;
             }
         }
+
+        [JsonIgnore]
+        internal GroupStyleItemEntry CurrentGroupStyleSelected { get; set; }
 
         [JsonIgnore]
         public IEnumerable<ModelBase> Nodes
@@ -330,6 +338,22 @@ namespace Dynamo.ViewModels
             get => new GeometryCollection(GroupIdToCutGeometry.Values.Select(x => x));
         }
 
+        /// <summary>
+        /// This property will be used to populate the GroupStyle context menu (the one shown when clicking right over a Group)
+        /// </summary>
+        [JsonIgnore]
+        public ObservableCollection<GroupStyleBase> GroupStyleList
+        {
+            get
+            {
+                return groupStyleList;
+            }
+            set
+            {
+                groupStyleList = value;
+                RaisePropertyChanged(nameof(GroupStyleList));
+            }
+        }
         #endregion
 
         #region Commands
@@ -344,6 +368,20 @@ namespace Dynamo.ViewModels
                         new DelegateCommand(UpdateFontSize, CanChangeFontSize);
 
                 return _changeFontSize;
+            }
+        }
+
+        private DelegateCommand _changeGroupStyleCommand;
+        [JsonIgnore]
+        public DelegateCommand ChangeGroupStyleCommand
+        {
+            get
+            {
+                if (_changeGroupStyleCommand == null)
+                    _changeGroupStyleCommand =
+                        new DelegateCommand(UpdateGroupStyle, CanChangeGroupStyle);
+
+                return _changeGroupStyleCommand;
             }
         }
 
@@ -501,12 +539,18 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
+
+        private bool CanChangeGroupStyle(object obj)
+        {
+            return true;
+        }
         #endregion
 
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {
             annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;
+            this.preferenceSettings = WorkspaceViewModel.DynamoViewModel.PreferenceSettings;
             model.PropertyChanged += model_PropertyChanged;
             model.RemovedFromGroup += OnModelRemovedFromGroup;
             model.AddedToGroup += OnModelAddedToGroup;
@@ -542,6 +586,9 @@ namespace Dynamo.ViewModels
                 SetGroupOutPorts();
                 CollapseGroupContents(true);
             }
+            groupStyleList = new ObservableCollection<GroupStyleBase>();
+            //This will add the GroupStyles created in Preferences panel to the Group Style Context menu.
+            LoadGroupStylesFromPreferences(preferenceSettings.GroupStyleItemsList);
         }
 
         /// <summary>
@@ -941,6 +988,69 @@ namespace Dynamo.ViewModels
                     Guid.Empty, AnnotationModel.GUID, "FontSize", parameter.ToString()));
 
             WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
+        }
+
+        /// <summary>
+        /// This method will be called by the ChangeGroupStyleCommand when a GroupStyle is selected from the ContextMenu
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void UpdateGroupStyle(object parameter)
+        {
+            if (parameter == null) return;
+
+            var groupStyleSelected = parameter as GroupStyleItemEntry;
+
+            if (groupStyleSelected == null) return;
+
+            Background = (Color)ColorConverter.ConvertFromString(groupStyleSelected.HexColorString);
+        }
+
+        /// <summary>
+        /// This method loads the group styles defined by the user and stored in the xml file
+        /// </summary>
+        /// <param name="styleItemsList"></param>
+        /// <returns></returns>
+        private void LoadGroupStylesFromPreferences(IEnumerable<Configuration.StyleItem> styleItemsList)
+        {
+            preferencesStyleItemsList = styleItemsList;
+
+            var defaultGroupStylesList = styleItemsList.Where(style => style.IsDefault == true);
+            var customGroupStylesList = styleItemsList.Where(style => style.IsDefault == false);
+
+            //Adds to the list the Default Group Styles created by Dynamo
+            foreach (var style in defaultGroupStylesList)
+            {
+                groupStyleList.Add(new GroupStyleItemEntry { TextContent = style.Name, HexColorString = style.HexColorString, IsDefault = style.IsDefault });
+            }
+
+            //Adds the separator between the Default Group Styles and the Custom Group Styles
+            groupStyleList.Add(new GroupStyleSeparator());
+
+            //Adds to the list the Custom Group Styles created by the user
+            foreach (var style in customGroupStylesList)
+            {
+                groupStyleList.Add(new GroupStyleItemEntry { TextContent = style.Name, HexColorString = style.HexColorString, IsDefault = style.IsDefault });
+            }
+        }
+
+        /// <summary>
+        /// This method will be executed when the MenuIte.SubmenuOpened event is executed
+        /// The purpose is adding to the GroupStyles ContextMenu the Styles added in the Preferences panel.
+        /// </summary>
+        internal void ReloadGroupStyles()
+        {
+            if (preferencesStyleItemsList == null) return;
+            var currentSelectedGroupStyle = groupStyleList.OfType<GroupStyleItemEntry>().Where(style => style.IsChecked == true).FirstOrDefault();
+            groupStyleList.Clear();
+
+            LoadGroupStylesFromPreferences(preferencesStyleItemsList);
+            if (currentSelectedGroupStyle == null) return;
+
+            var currentCustomGroupStyles = groupStyleList.OfType<GroupStyleItemEntry>();
+            var selectedGroupStyle = currentCustomGroupStyles.Where(style => style.TextContent.Equals(currentSelectedGroupStyle.TextContent)).FirstOrDefault();
+
+            if (selectedGroupStyle == null) return;
+            selectedGroupStyle.IsChecked = true;  
         }
 
         /// <summary>

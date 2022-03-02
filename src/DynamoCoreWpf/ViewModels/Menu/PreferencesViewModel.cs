@@ -424,8 +424,24 @@ namespace Dynamo.ViewModels
         public void AddStyle(StyleItem style)
         {
             StyleItemsList.Add(style);
-            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { HexColorString = style.HexColorString, Name = style.GroupName });
+            preferenceSettings.GroupStyleItemsList.Add(new GroupStyleItem { HexColorString = style.HexColorString, Name = style.GroupName, IsDefault = style.IsDefault });
             RaisePropertyChanged(nameof(StyleItemsList));
+        }
+
+        /// <summary>
+        /// This method will add the Defaul GroupStyles to the Preferences panel
+        /// </summary>
+        private void AddDefaultStyles()
+        {
+            var defaultGroupStylesList = StyleItemsList.Where(style => style.IsDefault == true);
+            //Just in case the Default profiles have not been added then are added.
+            if(defaultGroupStylesList != null && defaultGroupStylesList.Count() == 0)
+            {
+                AddStyle(new StyleItem() { GroupName = Res.GroupStyleDefaultActions, HexColorString = Res.GroupStyleDefaultActionsColor, IsDefault = true });
+                AddStyle(new StyleItem() { GroupName = Res.GroupStyleDefaultInputs, HexColorString = Res.GroupStyleDefaultInputsColor, IsDefault = true });
+                AddStyle(new StyleItem() { GroupName = Res.GroupStyleDefaultOutputs, HexColorString = Res.GroupStyleDefaultOutputsColor, IsDefault = true });
+                AddStyle(new StyleItem() { GroupName = Res.GroupStyleDefaultReview, HexColorString = Res.GroupStyleDefaultReviewColor, IsDefault = true });
+            }           
         }
 
         /// <summary>
@@ -807,6 +823,9 @@ namespace Dynamo.ViewModels
             WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
 
             PropertyChanged += Model_PropertyChanged;
+
+            //Add the default group styles in the Group Styles section.
+            AddDefaultStyles();
         }
 
         /// <summary>
@@ -819,7 +838,7 @@ namespace Dynamo.ViewModels
             ObservableCollection<StyleItem> styles = new ObservableCollection<StyleItem>();
             foreach (var style in styleItemsList)
             {
-                styles.Add(new StyleItem { GroupName = style.Name, HexColorString = style.HexColorString });
+                styles.Add(new StyleItem { GroupName = style.Name, HexColorString = style.HexColorString, IsDefault = style.IsDefault });
             }
             return styles;
         }
@@ -1080,6 +1099,7 @@ namespace Dynamo.ViewModels
     {
         private string groupName;
         private string hexColorString;
+        private bool isDefault = false;
 
         /// <summary>
         /// This property will containt the Group Name thas was added by the user when creating a new Style
@@ -1104,6 +1124,19 @@ namespace Dynamo.ViewModels
             {
                 hexColorString = value;
                 RaisePropertyChanged(nameof(HexColorString));
+            }
+        }
+
+        /// <summary>
+        /// This property describes if the Style is default (created by Dynamo automatically), those default styles will be always present and cannot be deleted
+        /// </summary>
+        public bool IsDefault
+        {
+            get { return isDefault; }
+            set
+            {
+                isDefault = value;
+                RaisePropertyChanged(nameof(IsDefault));
             }
         }
     }
