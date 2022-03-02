@@ -280,12 +280,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <Style x:Key="GroupStyleItemStyle" TargetType="{x:Type MenuItem}">
-            <Setter Property="MenuItem.Command" 
-                    Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=MenuItem}, Path=DataContext.ChangeGroupStyleCommand}"/>
-            <Setter Property="MenuItem.CommandParameter" 
-                    Value="{Binding RelativeSource={RelativeSource Self},  Path=Header}"/>
             <Setter Property="MenuItem.IsChecked"
                     Value="{Binding IsChecked}"/>
             <EventSetter Event="Click" 

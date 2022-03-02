@@ -371,20 +371,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private DelegateCommand _changeGroupStyleCommand;
-        [JsonIgnore]
-        public DelegateCommand ChangeGroupStyleCommand
-        {
-            get
-            {
-                if (_changeGroupStyleCommand == null)
-                    _changeGroupStyleCommand =
-                        new DelegateCommand(UpdateGroupStyle, CanChangeGroupStyle);
-
-                return _changeGroupStyleCommand;
-            }
-        }
-
         private DelegateCommand _addToGroupCommand;
         [JsonIgnore]
         public DelegateCommand AddToGroupCommand
@@ -536,11 +522,6 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanChangeFontSize(object obj)
-        {
-            return true;
-        }
-
-        private bool CanChangeGroupStyle(object obj)
         {
             return true;
         }
@@ -994,15 +975,12 @@ namespace Dynamo.ViewModels
         /// This method will be called by the ChangeGroupStyleCommand when a GroupStyle is selected from the ContextMenu
         /// </summary>
         /// <param name="parameter"></param>
-        private void UpdateGroupStyle(object parameter)
+        internal void UpdateGroupStyle(GroupStyleItemEntry itemEntryParameter)
         {
-            if (parameter == null) return;
-
-            var groupStyleSelected = parameter as GroupStyleItemEntry;
-
-            if (groupStyleSelected == null) return;
-
-            Background = (Color)ColorConverter.ConvertFromString(groupStyleSelected.HexColorString);
+            if (itemEntryParameter == null) return;
+            itemEntryParameter.IsChecked = true;
+            CurrentGroupStyleSelected = itemEntryParameter;
+            Background = (Color)ColorConverter.ConvertFromString(itemEntryParameter.HexColorString);
         }
 
         /// <summary>

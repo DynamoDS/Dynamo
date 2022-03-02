@@ -455,8 +455,7 @@ namespace Dynamo.Nodes
             //Means that no GroupStyle (Default, Custom) has been selected the the clicked one will be selected
             if (ViewModel.CurrentGroupStyleSelected == null)
             {
-                groupStyleItemSelected.IsChecked = true;
-                ViewModel.CurrentGroupStyleSelected = groupStyleItemSelected;
+                ViewModel.UpdateGroupStyle(groupStyleItemSelected);
                 return;
             }           
 
@@ -468,20 +467,18 @@ namespace Dynamo.Nodes
                 {
                     cc.IsChecked = false;
                 });
-                groupStyleItemSelected.IsChecked = true;
-                ViewModel.CurrentGroupStyleSelected = groupStyleItemSelected;
+                ViewModel.UpdateGroupStyle(groupStyleItemSelected);
                 return;
             }
             
             //Means that the GroupStyle selected is not a Default Style and is already checked
             if (ViewModel.CurrentGroupStyleSelected.IsChecked == true && !groupStyleItemSelected.IsDefault)
             {
-                groupStyleItemSelected.IsChecked = false;
                 var groupStyleItems = ViewModel.GroupStyleList.OfType<GroupStyleItemEntry>();
                 var firstDefaultGroupStyle = groupStyleItems.Where(item => item.IsDefault == true).FirstOrDefault();
-                firstDefaultGroupStyle.IsChecked = true;
-                ViewModel.CurrentGroupStyleSelected = firstDefaultGroupStyle;
-            }                       
+                ViewModel.UpdateGroupStyle(firstDefaultGroupStyle);
+                return;
+            }
         }
 
         private void GroupStyleCheckmark_Checked(object sender, RoutedEventArgs e)
